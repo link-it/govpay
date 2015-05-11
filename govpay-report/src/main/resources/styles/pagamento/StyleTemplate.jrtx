@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE jasperTemplate PUBLIC "-//JasperReports//DTD Template//EN" "http://jasperreports.sourceforge.net/dtds/jaspertemplate.dtd">
+
+<jasperTemplate>
+	<style name="ReportTitle" hAlign="Center" fontName="Liberation Sans" fontSize="12" isBold="true"/>
+	<style name="BarcodeStyle" fontName="Liberation Sans" fontSize="8"/>
+	<style name="NoteStyle" fontName="Liberation Sans" fontSize="8"/>
+	<style name="FieldStyle" fontName="Liberation Sans" fontSize="10"/>
+	<style name="FieldStyleCenter" style="FieldStyle" hAlign="Center" isBold="true"/>
+	<style name="FieldStyleReceipt" style="FieldStyle" hAlign="Right" isBold="false"/>
+	<style name="LabelFieldStyle" fontName="Liberation Sans" fontSize="10" isBold="true"/>
+	<style name="MsgStyle" fontName="Liberation Sans" fontSize="10"/>
+	<style name="Anagrafica" hAlign="Left" fontName="Liberation Sans" fontSize="14"  isBold="true"/>
+	<style name="AnagraficaDettaglio" hAlign="Left" fontName="Liberation Sans" fontSize="8" isBold="false"/>
+	<style name="AnagraficaCittadino" hAlign="Left" vAlign="Middle" fontName="Liberation Sans" fontSize="12" isBold="false"/>
+	<style name="AvvisoIUV" hAlign="Center" vAlign="Middle" fontName="Liberation Sans" fontSize="14" isBold="true"/>
+	<style name="CarrelloHeader" hAlign="Left" vAlign="Top" fontName="Liberation Sans" fontSize="10" isBold="true"/>
+	<style name="BoxScadenza" hAlign="Left" vAlign="Middle" fontName="Liberation Sans" fontSize="14" forecolor="#1F5C1F" isBold="true"/>
+	<style name="BoxIUV" hAlign="Left" vAlign="Middle" fontName="Liberation Sans" fontSize="14" isBold="true"/>
+	<style name="BoxScadenzaBorder" radius="5">
+		<pen lineWidth="1.5" lineColor="#1F5C1F" />
+	</style>
+	<style name="FrameBorder">
+		<pen lineWidth="0.75" lineColor="#000000" />
+	</style>
+	<style name="FrameBorderCurve" radius="5">
+		<pen lineWidth="0.75" lineColor="#000000" />
+	</style>
+	<style name="CarrelloField" hAlign="Left" vAlign="Top" fontName="Liberation Sans" fontSize="10"/>
+	<style name="CarrelloHeaderAmount" style="CarrelloHeader" hAlign="Right"/>
+	<style name="CarrelloHeaderTotalAmount" style="CarrelloHeaderAmount" hAlign="Left" vAlign="Middle"/>
+	<style name="CarrelloFieldAmount" style="CarrelloField" hAlign="Right" isBold="true"/>
+	<style name="CarrelloFieldTotalAmount" style="CarrelloFieldAmount" vAlign="Middle" isBold="true"/>
+	<style name="GenericTitle" hAlign="Center" vAlign="Middle" fontName="Liberation Sans" fontSize="10" isBold="true"/>
+	<style name="CarrelloTitle" style="GenericTitle" fontName="Liberation Sans"/>
+	<style name="DocumentTitle" style="GenericTitle" fontName="Liberation Sans"/>
+	<style name="PageNum" hAlign="Right" fontName="Liberation Sans" fontSize="10"/>
+</jasperTemplate>

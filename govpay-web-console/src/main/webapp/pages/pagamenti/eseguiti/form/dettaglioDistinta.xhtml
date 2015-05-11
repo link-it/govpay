@@ -1,0 +1,90 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:op2web="http://www.openspcoop2.org/web/taglib/jsf">
+	<f:loadBundle var="msg" basename="messages" />
+
+
+	<ui:define name="pageTitle">#{msg['menu.group.pagamenti.distinta']}</ui:define>
+	<ui:define name="pageHeader">#{msg['menu.group.pagamenti.distinta']}</ui:define>
+	<ui:define name="navbar">
+		<ul>
+			<li><h:outputText value="/#{msg['menu.group.pagamenti']}" /></li>
+			<li><a4j:htmlCommandLink action="listaDistinte"
+					value="/#{msg['menu.group.pagamenti.distinta']}">
+				</a4j:htmlCommandLink></li>
+			<li><h:outputText
+					value="/#{msg['menu.group.pagamenti.distinta.dettaglio']} (#{distintaMBean.selectedElement.idDistinta.value})" /></li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+
+		<a4j:keepAlive beanName="distintaMBean" ajaxOnly="true" />
+
+		<rich:panel id="panelContainer1" style="padding:0"
+			headerClass="outpanelHeader" styleClass="noborder">
+			<h:outputText id="outNoDettaglio"
+				value="#{msg['distinta.dettaglio.nodata']}"
+				rendered="#{empty distintaMBean.selectedElement}" />
+
+			<rich:panel id="panelDettaglio1" bodyClass="inpanelBody"
+				rendered="#{not empty distintaMBean.selectedElement}">
+				<f:facet name="header">
+					<h:outputText id="outHeaderFattura1"
+						value="#{msg['menu.group.pagamenti.distinta.dettaglio']} (#{distintaMBean.selectedElement.idDistinta.value})"
+						rendered="#{not empty distintaMBean.selectedElement}" />
+				</f:facet>
+
+				<!-- Messaggio Idp -->
+				<h:panelGrid id="panelDettaglio2"
+					columnClasses="gridContent verticalAlignTop"
+					rendered="#{!empty distintaMBean.selectedElement}"
+					columns="1" width="100%">
+
+					<!-- Dati Generali  -->
+					<op2web:fieldset legend="#{msg['distinta.dettaglio.datiGenerali']}"
+						rendered="#{true}">
+						<op2web:outputGroup
+							group="#{distintaMBean.selectedElement.fieldsDatiGenerali}" />
+					</op2web:fieldset>
+
+					<!--Elenco Pagamenti -->
+					<op2web:fieldset legend="#{msg['distinta.dettaglio.listaPagamenti']}"
+						rendered="#{true}">
+						<c:set var="metadataPagamento"
+							value="#{distintaMBean.selectedElement.metadataPagamento}" />
+
+						<c:set var="listaPagamenti"
+							value="#{distintaMBean.selectedElement.listaPagamenti}" />
+
+						<h:outputText id="outNoListaPagamento"
+							value="#{msg['distinta.dettaglio.listaPagamenti.nodata']}"
+							rendered="#{empty listaPagamenti}" />
+
+						<op2web:simpleTable id="tabellaPagamento"
+							value="#{listaPagamenti}"
+							rendered="#{not empty listaPagamenti}">
+							<!-- Data Pagamento -->
+							<op2web:tableColumn fieldValue="#{item.dataPagamento}"
+								fieldDescriptor="#{metadataPagamento.dataPagamento}" />
+							<!-- Stato Pagamento -->
+							<op2web:tableColumn fieldValue="#{item.statoPagamento}"
+								fieldDescriptor="#{metadataPagamento.statoPagamento}" />
+							<!-- Importo Pagato -->
+							<op2web:tableColumn fieldValue="#{item.importoPagato}"
+								fieldDescriptor="#{metadataPagamento.importoPagato}" />
+						</op2web:simpleTable>
+					</op2web:fieldset>
+
+				</h:panelGrid>
+			</rich:panel>
+
+		</rich:panel>
+
+	</ui:define>
+</ui:composition>

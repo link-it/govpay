@@ -1,0 +1,356 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:op2web="http://www.openspcoop2.org/web/taglib/jsf">
+	<a4j:loadScript src="resource://jquery.js" />
+	<f:loadBundle var="msg" basename="messages" />
+
+	<ui:define name="pageTitle">#{msg['menu.group.anagrafica.scadenzari']}</ui:define>
+	<ui:define name="pageHeader">#{msg['menu.group.anagrafica.scadenzari']}</ui:define>
+	<ui:define name="navbar">
+		<ul>
+			<li><h:outputText value="/#{msg['menu.group.anagrafica']}" /></li>
+			<li><h:outputText
+					value="/#{msg['menu.group.anagrafica.scadenzari']}" /></li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<a4j:keepAlive beanName="scadenzarioMBean" ajaxOnly="true" />
+		<rich:panel styleClass="noborder">
+
+			<c:if test="#{empty rowsToDisplay}">
+				<c:set var="rowsToDisplay" value="#{scadenzarioMBean.search.pageSize}" />
+			</c:if>
+
+			<a4j:outputPanel id="panelContainer" ajaxRendered="false">
+				<h:form>
+					<a4j:outputPanel id="tabelPanel1" layout="block">
+						<c:set var="scadenzarioMetadata" value="#{scadenzarioMBean.metadata}" />
+
+						<op2web:dataTable value="#{scadenzarioDM}" id="scadenzarioTable"
+							enableDelete="false"
+							headerText="#{msg['scadenzario.tabellaRisultati']}"
+							showSelectAll="false"
+							selectionMapTarget="#{scadenzarioMBean.selectedIds[item]}"
+							rowsToDisplay="#{scadenzarioMBean.search.pageSize}"
+							mBean="#{scadenzarioMBean}">
+							<f:facet name="noData">
+								<h:outputText value="#{msg['scadenzario.noData']}" />
+							</f:facet>
+
+							<!-- Nome -->
+							<op2web:tableColumn fieldValue="#{item.nome}"
+								fieldDescriptor="#{scadenzarioMetadata.nome}" />
+								
+							<!-- idEnte -->
+							<op2web:tableColumn fieldValue="#{item.denominazioneEnte}"
+								fieldDescriptor="#{scadenzarioMetadata.denominazioneEnte}" />
+
+							<!-- idStazioneIntermediarioPA -->
+							<op2web:tableColumn fieldValue="#{item.idStazioneIntermediarioPA}"
+								fieldDescriptor="#{scadenzarioMetadata.idStazioneIntermediarioPA}" />
+
+							<!-- Link dettagli -->
+							<rich:column style="text-align: center;">
+								<h:panelGroup>
+									<a4j:commandLink id="dettaglio_btn"
+										action="#{scadenzarioMBean.dettaglio}" status="mainStatus"
+										reRender="mainct,menuct" ajaxSingle="true">
+										<a4j:actionparam name="selectedIdEnte"
+											value="#{item.idEnte.value}"
+											assignTo="#{scadenzarioMBean.selectedIdEnte}" />
+											<a4j:actionparam name="selectedIdSystem"
+											value="#{item.nome.value}"
+											assignTo="#{scadenzarioMBean.selectedIdSystem}" />
+										<h:graphicImage value="/images/magnifier.png" width="16"
+											height="16" title="#{msg['commons.button.dettaglioTitle']}" />
+									</a4j:commandLink>
+								</h:panelGroup>
+							</rich:column>
+
+							<ui:define name="buttons">
+								
+
+
+								<h:commandButton id="aggiungi" styleClass="icon-add"
+									value="#{msg['commons.button.aggiungi']}"
+									action="listaScadenzari?faces-redirect=true"
+									actionListener="#{scadenzarioMBean.addNewListener}" />
+							</ui:define>
+						</op2web:dataTable>
+
+					</a4j:outputPanel>
+
+
+
+				</h:form>
+			</a4j:outputPanel>
+		</rich:panel>
+
+		<br />
+		<rich:panel id="dettaglioPanel1" style="padding:0"
+			headerClass="outpanelHeader" styleClass="noborder"
+			rendered="#{not empty scadenzarioMBean.selectedId and scadenzarioMBean.showForm == false}">
+
+			<h:panelGrid id="panelDettaglio2"
+				columnClasses="gridContent verticalAlignTop" columns="1"
+				width="100%">
+
+				<!-- Dati Generali  -->
+				<op2web:fieldset collapsible="false" closed="false" 
+					legend="#{msg['scadenzario.form.label']}"
+					rendered="#{true}">
+					<op2web:outputGroup
+						group="#{scadenzarioMBean.selectedElement.fieldsDatiGenerali}" />
+						
+					<br />
+
+					<op2web:fieldset legend="#{msg['scadenzario.connettore.notifiche.fieldset']}"
+					collapsible="false" closed="false" 	rendered="#{true}">
+						<op2web:outputGroup
+							group="#{scadenzarioMBean.selectedElement.connettoreNotifica.fieldsDatiGenerali}" />
+						
+						<br />
+						<op2web:outputGroup
+							group="#{scadenzarioMBean.selectedElement.connettoreNotifica.fieldsAuthHttp}" />
+						<op2web:outputGroup
+							group="#{scadenzarioMBean.selectedElement.connettoreNotifica.fieldsAuthSsl}" />
+
+					</op2web:fieldset>
+
+					<br />
+
+					<op2web:fieldset legend="#{msg['scadenzario.connettore.pagamentiAttesa.fieldset']}"
+					collapsible="false" closed="false" 	rendered="#{true}">
+						<op2web:outputGroup
+							group="#{scadenzarioMBean.selectedElement.connettoreVerifica.fieldsDatiGenerali}" />
+						
+						<br />
+						<op2web:outputGroup
+							group="#{scadenzarioMBean.selectedElement.connettoreVerifica.fieldsAuthHttp}" />
+						<op2web:outputGroup
+							group="#{scadenzarioMBean.selectedElement.connettoreVerifica.fieldsAuthSsl}" />
+
+					</op2web:fieldset>
+
+					<br />
+					<h:form id="formShowUpdateForm">
+						<div class="buttonrow">
+							<a4j:commandButton id="aggiorna"
+								value="#{msg['commons.button.modifica']}" styleClass="icon-edit"
+								status="mainStatus" action="#{scadenzarioMBean.modifica}"
+								reRender="mainct,menuct">
+							</a4j:commandButton>
+
+							<a4j:commandButton id="elimina"
+								value="#{msg['commons.button.elimina']}"
+								styleClass="icon-delete" status="mainStatus"
+								action="#{scadenzarioMBean.elimina}" reRender="mainct,menuct">
+							</a4j:commandButton>
+						</div>
+					</h:form>
+
+				</op2web:fieldset>
+
+			</h:panelGrid>
+
+		</rich:panel>
+
+		<!-- Form Inserimento dati -->
+			<op2web:form formBean="#{scadenzarioMBean.form}"
+				rendered="#{scadenzarioMBean.showForm  == true}">
+				<p class="legend">
+					<strong>#{msg['commons.label.note']}</strong> (<em>*</em>)
+					#{msg['commons.label.campiObbligatori']}
+				</p>
+				<op2web:fieldset legend="#{msg['scadenzari.dettaglio.datiScadenzario']}"
+					collapsible="false" closed="false" rendered="#{true}">
+
+					<!-- Nome Soggetto SPC-->
+					<op2web:formField field="#{scadenzarioMBean.form.nome}" />
+					
+					<!-- id ente-->
+					<op2web:formField field="#{scadenzarioMBean.form.idEnte}" />
+
+					<!-- IdIntermediario -->
+					<op2web:formField field="#{scadenzarioMBean.form.idIntermediarioPA}" />
+
+					<!-- Codice-->
+					<op2web:formField field="#{scadenzarioMBean.form.codice}" />
+
+				<br/>
+			<op2web:fieldset legend="#{msg['scadenzario.connettore.notifiche.fieldset']}"
+					collapsible="false" closed="false" rendered="#{true}">
+					
+					<!-- abilitato -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.abilitato}" />
+
+					<!-- URL -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.url}" />
+
+					<!-- azione in url -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.azioneInUrl}" />
+					
+					<!-- tipo auth -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.autenticazione}" />
+										
+					<!-- http/username -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.username}" />
+					
+					<!-- http/password -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.password}" />
+					
+					<!-- ssl/tipoSsl -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.tipoSsl}" />
+					
+					<!-- ssl/sslKsType -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslKsType}" />
+					
+					<!-- ssl/sslKsLocation -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslKsLocation}" />
+					
+					<!-- ssl/sslKsPasswd -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslKsPasswd}" />
+					
+					<!-- ssl/sslPKeyPasswd -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslPKeyPasswd}" />
+					
+					<!-- ssl/sslTsType -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslTsType}" />
+					
+					<!-- ssl/sslTsLocation -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslTsLocation}" />
+					
+					<!-- ssl/sslTsPasswd -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslTsPasswd}" />
+					
+					<!-- ssl/sslType -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreNotifica.sslType}" />
+					 
+				</op2web:fieldset>
+				
+				<br/>
+				
+				<op2web:fieldset legend="#{msg['scadenzario.connettore.pagamentiAttesa.fieldset']}"
+					collapsible="false" closed="false" rendered="#{true}">
+
+					<!-- abilitato -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.abilitato}" />
+					
+					<!-- URL -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.url}" />
+
+					<!-- azione in url -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.azioneInUrl}" />
+					
+					<!-- tipo auth -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.autenticazione}" />
+										
+					<!-- http/username -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.username}" />
+					
+					<!-- http/password -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.password}" />
+					
+					<!-- ssl/tipoSsl -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.tipoSsl}" />
+					
+					<!-- ssl/sslKsType -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslKsType}" />
+					
+					<!-- ssl/sslKsLocation -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslKsLocation}" />
+					
+					<!-- ssl/sslKsPasswd -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslKsPasswd}" />
+					
+					<!-- ssl/sslPKeyPasswd -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslPKeyPasswd}" />
+					
+					<!-- ssl/sslTsType -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslTsType}" />
+					
+					<!-- ssl/sslTsLocation -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslTsLocation}" />
+					
+					<!-- ssl/sslTsPasswd -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslTsPasswd}" />
+					
+					<!-- ssl/sslType -->
+					<op2web:formField field="#{scadenzarioMBean.form.connettoreVerifica.sslType}" />
+					 
+				</op2web:fieldset>
+					
+
+				</op2web:fieldset>
+				<ui:define name="buttons">
+					<div class="buttonrow">
+						<a4j:commandButton id="invia"
+							value="#{msg['commons.button.invia']}" styleClass="icon-save"
+							reRender="mainct,menuct" status="mainStatus"
+							action="#{scadenzarioMBean.invia}">
+						</a4j:commandButton>
+
+						<a4j:commandButton id="annulla"
+							value="#{msg['commons.button.annulla']}" status="mainStatus"
+							styleClass="icon-delete" action="#{scadenzarioMBean.annulla}"
+							reRender="mainct,menuct">
+						</a4j:commandButton>
+					</div>
+				</ui:define>
+
+			</op2web:form>
+
+
+		<rich:modalPanel id="searchScadenzarioPanel" autosized="true" width="550"
+			height="250" style="overflow:auto;" showWhenRendered="false">
+			<f:facet name="header">
+				<h:outputText value="#{msg['commons.label.impostaFiltri']}" />
+			</f:facet>
+			<f:facet name="controls">
+				<h:panelGroup id="panelChiudi2">
+					<a href="#"
+						onclick="Richfaces.hideModalPanel('searchScadenzarioPanel');">#{msg['commons.label.chiudi']}</a>
+				</h:panelGroup>
+			</f:facet>
+			<div class="form-container">
+				<op2web:form formBean="#{scadenzarioMBean.search}">
+
+					<op2web:fieldset legend="#{msg['scadenzari.search.label']}"
+						rendered="#{true}" collapsible="false" closed="false">
+
+						<op2web:formField field="#{scadenzarioMBean.search.idIntermediario}" />
+
+						<op2web:formField field="#{scadenzarioMBean.search.idStazioneIntermediario}" />
+						
+						<op2web:formField field="#{scadenzarioMBean.search.idEnte}" />
+
+					</op2web:fieldset>
+					<ui:define name="buttons">
+						<div class="buttonrow">
+							<a4j:commandButton id="filtraButton"
+								value="#{msg['commons.button.filtra']}"
+								styleClass="icon-refresh" reRender="mainct,menuct"
+								status="mainStatus" action="#{scadenzarioMBean.filtra}">
+							</a4j:commandButton>
+
+							<a4j:commandButton id="pulisciButton"
+								value="#{msg['commons.button.reset']}" reRender="mainct,menuct"
+								status="mainStatus" styleClass="icon-delete"
+								action="#{scadenzarioMBean.resetFiltro}">
+							</a4j:commandButton>
+						</div>
+					</ui:define>
+
+				</op2web:form>
+			</div>
+
+
+		</rich:modalPanel>
+	</ui:define>
+</ui:composition>

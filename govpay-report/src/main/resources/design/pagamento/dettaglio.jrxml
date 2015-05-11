@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-12-02T09:41:33 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="SubreportCarrello" pageWidth="515" pageHeight="600" columnWidth="515" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" resourceBundle="resources.pagamento.reportMessages" uuid="7d2c68c6-332e-4582-ba66-35718a0b9e54">
+	<property name="ireport.zoom" value="3.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<template><![CDATA["styles/pagamento/StyleTemplate.jrtx"]]></template>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="codice" class="java.lang.String">
+		<fieldDescription><![CDATA[codice]]></fieldDescription>
+	</field>
+	<field name="descrizione" class="java.lang.String">
+		<fieldDescription><![CDATA[descrizione]]></fieldDescription>
+	</field>
+	<field name="anno" class="javax.xml.datatype.XMLGregorianCalendar">
+		<fieldDescription><![CDATA[anno]]></fieldDescription>
+	</field>
+	<field name="importo" class="java.math.BigDecimal">
+		<fieldDescription><![CDATA[importo]]></fieldDescription>
+	</field>
+	<detail>
+		<band height="16">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="CarrelloField" x="15" y="0" width="74" height="16" uuid="4fa6e7bf-1b84-4504-921c-ab8b33c729df"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{codice}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement style="CarrelloField" x="89" y="0" width="261" height="16" uuid="bbfd0aa5-0095-42bc-8138-8ea854be6c94"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{descrizione}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="yyyy" isBlankWhenNull="true">
+				<reportElement style="CarrelloField" x="350" y="0" width="39" height="16" uuid="4fa6e7bf-1b84-4504-921c-ab8b33c729df"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{anno}.toGregorianCalendar().getTime()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00 €">
+				<reportElement style="CarrelloFieldAmount" x="389" y="0" width="111" height="16" uuid="4efaaf5a-d1ee-4510-9cf7-d42d0fc111af"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{importo}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

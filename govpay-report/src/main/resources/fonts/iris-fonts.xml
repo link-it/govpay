@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fontFamilies>
+
+   <fontFamily name="Liberation Mono">
+       <normal><![CDATA[fonts/LiberationMono-Regular.ttf]]></normal>
+       <bold><![CDATA[fonts/LiberationMono-Bold.ttf]]></bold>
+       <italic><![CDATA[fonts/LiberationMono-Italic.ttf]]></italic>
+       <boldItalic><![CDATA[fonts/LiberationMono-BoldItalic.ttf]]></boldItalic>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+   <fontFamily name="Liberation Sans">
+       <normal><![CDATA[fonts/LiberationSans-Regular.ttf]]></normal>
+       <bold><![CDATA[fonts/LiberationSans-Bold.ttf]]></bold>
+       <italic><![CDATA[fonts/LiberationSans-Italic.ttf]]></italic>
+       <boldItalic><![CDATA[fonts/LiberationSans-BoldItalic.ttf]]></boldItalic>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+   <fontFamily name="Liberation Sans Narrow">
+       <normal><![CDATA[fonts/LiberationSansNarrow-Regular.ttf]]></normal>
+       <bold><![CDATA[fonts/LiberationSansNarrow-Bold.ttf]]></bold>
+       <italic><![CDATA[fonts/LiberationSansNarrow-Italic.ttf]]></italic>
+       <boldItalic><![CDATA[fonts/LiberationSansNarrow-BoldItalic.ttf]]></boldItalic>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+   <fontFamily name="Liberation Serif">
+       <normal><![CDATA[fonts/LiberationSerif-Regular.ttf]]></normal>
+       <bold><![CDATA[fonts/LiberationSerif-Bold.ttf]]></bold>
+       <italic><![CDATA[fonts/LiberationSerif-Italic.ttf]]></italic>
+       <boldItalic><![CDATA[fonts/LiberationSerif-BoldItalic.ttf]]></boldItalic>
+       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+   </fontFamily>
+
+
+</fontFamilies>

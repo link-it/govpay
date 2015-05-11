@@ -1,0 +1,122 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:op2web="http://www.openspcoop2.org/web/taglib/jsf">
+	<f:loadBundle var="msg" basename="messages" />
+
+	<ui:define name="pageTitle">#{msg['menu.group.simulazione.esito']}</ui:define>
+	<ui:define name="pageHeader">#{msg['menu.group.simulazione.esito']}</ui:define>
+	<ui:define name="navbar">
+		<ul>
+			<li><h:outputText value="/#{msg['menu.group.simulazione']}" /></li>
+			<li><h:outputText
+					value="/#{msg['menu.group.simulazione.esito']}" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<a4j:keepAlive beanName="esitoMBean" ajaxOnly="true" />
+
+		<rich:panel styleClass="noborder">
+
+
+
+			<a4j:outputPanel id="esitoLiveCtr" ajaxRendered="false">
+				<a4j:region id="esitoLive" renderRegionOnly="true">
+					<a4j:form id="res" rendered="#{esitoMBean.form.rendered == true}"
+						prependId="false">
+						<a4j:jsFunction id="pollFn" name="poll" reRender="dtTblLive"
+							oncomplete="startCounter()" />
+						<script type="text/javascript">
+						var cdifp = #{esitoMBean.form.intervalloRefresh.value};
+						var t;
+						var cdt;
+						var timer_is_on=0;
+						var cd = cdifp;
+					
+						function updateCountDown(){
+							if(cd>0){
+								cd--;
+								jQuery("[id='cdLabel']").text("Prossimo Aggiornamentro tra "+cd+" secondi");
+								cdt = setTimeout("updateCountDown()", 1000);
+							}
+						}
+					
+						function startCounter()
+						{
+							cd=cdifp;
+							t=setTimeout("poll()",cd*1000);
+							updateCountDown();
+						}
+					
+						function stopCounter(){
+							timer_is_on = 0;
+							clearTimeout(t);
+						}					
+					
+						function doTimer()
+						{
+							if (!timer_is_on){
+							  timer_is_on=1;
+							  startCounter();
+						 	}
+						}
+					
+						jQuery(document).ready(function(){
+							doTimer();
+						});
+					</script>
+						<h:outputLabel id="cdLabel" value="" />
+						<rich:spacer id="spacer2" height="5px" />
+					</a4j:form>
+				</a4j:region>
+			</a4j:outputPanel>
+			<br />
+			<rich:panel styleClass="noborder" id="dtTblLive">
+				<op2web:fieldset legend="#{msg['esito.form.datiGenerali']}"
+					rendered="#{true}" collapsible="false" closed="false">
+					<rich:spacer id="spacer3" height="5px"
+						rendered="#{esitoMBean.polling == true}" />
+					<op2web:outputGroup
+						group="#{esitoMBean.selectedElement.fieldsDatiGenerali}" />
+
+					<br />
+					<br />
+					<c:set var="metadataSV"
+						value="#{esitoMBean.metadataSingoloVersamento}" />
+					<c:set var="listaVersamenti" value="#{esitoMBean.listaVersamenti}" />
+					<op2web:simpleTable id="tabellaPsp"
+						rendered="#{not empty listaVersamenti}" value="#{listaVersamenti}">
+						<!-- Iusv-->
+						<op2web:tableColumn fieldValue="#{item.iusv}"
+							fieldDescriptor="#{metadataSV.iusv}" />
+
+						<!-- esito-->
+						<op2web:tableColumn fieldValue="#{item.esito}"
+							fieldDescriptor="#{metadataSV.esito}" />
+
+						<!-- Data-->
+						<op2web:tableColumn fieldValue="#{item.data}"
+							fieldDescriptor="#{metadataSV.data}" />
+
+						<!-- Importo-->
+						<op2web:tableColumn fieldValue="#{item.importoPagato}"
+							fieldDescriptor="#{metadataSV.importoPagato}" />
+
+						<!-- iur-->
+						<op2web:tableColumn fieldValue="#{item.iur}"
+							fieldDescriptor="#{metadataSV.iur}" />
+
+					</op2web:simpleTable>
+				</op2web:fieldset>
+			</rich:panel>
+
+		</rich:panel>
+	</ui:define>
+</ui:composition>

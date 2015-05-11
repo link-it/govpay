@@ -1,0 +1,61 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:op2web="http://www.openspcoop2.org/web/taglib/jsf">
+	<f:loadBundle var="msg" basename="messages" />
+
+	<ui:define name="pageTitle">#{msg['menu.group.anagrafica.psp.dettaglio']}</ui:define>
+	<ui:define name="pageHeader">#{msg['menu.group.anagrafica.psp.dettaglio']}</ui:define>
+	<ui:define name="navbar">
+		<ul>
+			<li><h:outputText value="/#{msg['menu.group.anagrafica']}" /></li>
+			<li><a4j:htmlCommandLink action="listaPsp"
+					value="/#{msg['menu.group.anagrafica.psp']}">
+				</a4j:htmlCommandLink></li>
+			<li><h:outputText
+					value="/#{msg['menu.group.anagrafica.psp.dettaglio']} (#{pspMBean.selectedElement.ragioneSociale.value})" /></li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+
+		<a4j:keepAlive beanName="pspMBean" ajaxOnly="true" />
+
+		<rich:panel id="panelContainer1" style="padding:0"
+			headerClass="outpanelHeader" styleClass="noborder">
+			<h:outputText id="outNoDettaglio"
+				value="#{msg['psp.dettaglio.nodata']}"
+				rendered="#{empty pspMBean.selectedElement}" />
+
+			<rich:panel id="panelDettaglio1" bodyClass="inpanelBody"
+				rendered="#{not empty pspMBean.selectedElement}">
+				<f:facet name="header">
+					<h:outputText id="outHeaderFattura1"
+						value="#{msg['menu.group.anagrafica.psp.dettaglio']} (#{pspMBean.selectedElement.ragioneSociale.value})"
+						rendered="#{not empty pspMBean.selectedElement}" />
+				</f:facet>
+
+				<!-- Messaggio Idp -->
+				<h:panelGrid id="panelDettaglio2"
+					columnClasses="gridContent verticalAlignTop"
+					rendered="#{!empty pspMBean.selectedElement}"
+					columns="1" width="100%">
+
+					<!-- Dati Generali  -->
+					<op2web:fieldset legend="#{msg['psp.dettaglio.datiGenerali']}"
+						rendered="#{true}">
+						<op2web:outputGroup
+							group="#{pspMBean.selectedElement.fieldsDatiGenerali}" />
+					</op2web:fieldset>
+
+				</h:panelGrid>
+
+			</rich:panel>
+		</rich:panel>
+	</ui:define>
+</ui:composition>
+

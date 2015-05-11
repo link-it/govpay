@@ -1,0 +1,35 @@
+#crumbs {
+	height: 2.3em;
+}
+
+#crumbs ul, li{
+	list-style-type:none;
+	padding:0;
+	margin:0;
+}
+#crumbs li {
+	float:left;
+	line-height:2.3em;
+	color:#036;
+	padding-left:.75em;
+	font-style: italic;
+	border-bottom: #036 thin dotted;															
+}		
+#crumbs li a {
+	background:url(../images/exteBullet.gif) no-repeat right center;
+	display:block;
+	padding:0 15px 0 0;
+	}							
+#crumbs li a:link,
+#crumbs li a:visited {
+	color:#036;
+	text-decoration:none;
+	}	
+	
+#crumbs li a:hover,
+#crumbs li a:focus {
+	color:#dd2c0d;
+}
+#breadcrumb-ct{
+	padding:2pt 0pt 5pt 0pt;
+}

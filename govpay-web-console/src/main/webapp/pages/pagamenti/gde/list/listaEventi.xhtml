@@ -1,0 +1,118 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich" xmlns:op2web="http://www.openspcoop2.org/web/taglib/jsf">
+	<f:loadBundle var="msg" basename="messages" />
+
+	<ui:define name="pageTitle">#{msg['menu.group.monitoraggio.gde']}</ui:define>
+	<ui:define name="pageHeader">#{msg['menu.group.monitoraggio.gde']}</ui:define>
+	<ui:define name="navbar">
+		<ul>
+			<li><h:outputText
+					value="/#{msg['menu.group.monitoraggio']}" /></li>
+			<li><h:outputText value="/#{msg['menu.group.monitoraggio.gde']}" /></li>
+		</ul>
+	</ui:define> 
+
+	<ui:define name="body">
+		<a4j:keepAlive beanName="eventiMBean" ajaxOnly="true" />
+		
+		<op2web:form formBean="#{eventiMBean.search}">
+			<!-- DATA  -->
+			<op2web:formField field="#{eventiMBean.search.data}" />
+			<!-- Dominio  -->
+			<op2web:formField field="#{eventiMBean.search.dominio}" />
+			<!-- IUV -->
+			<op2web:formField field="#{eventiMBean.search.iuv}" />
+			<!-- CCP -->
+			<op2web:formField field="#{eventiMBean.search.ccp}" />
+			<!-- categoria -->
+			<op2web:formField field="#{eventiMBean.search.categoria}" />
+			<!-- tipo -->
+			<op2web:formField field="#{eventiMBean.search.tipo}" />
+			<!-- Sottotipo -->
+			<op2web:formField field="#{eventiMBean.search.sottoTipo}" />
+		
+			<ui:define name="buttons">
+				<div class="buttonrow">
+					<a4j:commandButton id="filtraButton" value="#{msg['commons.button.filtra']}"
+						styleClass="icon-refresh" reRender="mainct,menuct"
+						status="mainStatus" action="#{eventiMBean.filtra}">
+					</a4j:commandButton>
+
+					<a4j:commandButton id="pulisciButton" value="#{msg['commons.button.reset']}"
+						reRender="mainct,menuct" status="mainStatus"
+						styleClass="icon-delete" action="#{eventiMBean.resetFiltro}">
+					</a4j:commandButton>
+				</div>	
+			</ui:define>
+		</op2web:form>
+		<br />
+		<br />
+
+		<c:if test="#{empty rowsToDisplay}">
+			<c:set var="rowsToDisplay" value="#{eventiMBean.search.pageSize}" />
+		</c:if>
+
+		<a4j:outputPanel id="panelContainer" ajaxRendered="false">
+			<c:set var="eventoMetadata" value="#{eventiMBean.metadata}" />
+			<h:form>
+			
+				<op2web:dataTable value="#{eventiDM}" mBean="#{eventiMBean}"
+					enableDelete="false" id="resultsTable" showSelectAll="true"
+					headerText="#{msg['eventi.tableTitle']}" 
+					selectionMapTarget="#{eventiMBean.selectedIds[item]}">
+					<f:facet name="noData">
+						<h:outputText value="#{msg['eventi.tableNoData']}" />
+					</f:facet>
+					<!-- Data -->
+					<op2web:tableColumn fieldValue="#{item.data}" fieldDescriptor="#{eventoMetadata.data}" />
+					<!-- Id Dominio -->
+					<op2web:tableColumn fieldValue="#{item.dominio}" fieldDescriptor="#{eventoMetadata.dominio}" />
+					<!-- IUV -->
+					<op2web:tableColumn fieldValue="#{item.iuv}" fieldDescriptor="#{eventoMetadata.iuv}" />
+					<!-- CCP -->
+					<op2web:tableColumn fieldValue="#{item.ccp}" fieldDescriptor="#{eventoMetadata.ccp}" />
+					<!-- Categoria Evento -->
+					<op2web:tableColumn fieldValue="#{item.categoria}" fieldDescriptor="#{eventoMetadata.categoria}" />
+					<!-- Tipo Evento  -->
+					<op2web:tableColumn fieldValue="#{item.tipo}" fieldDescriptor="#{eventoMetadata.tipo}" />
+					<!-- SottoTipo Evento  -->
+					<op2web:tableColumn fieldValue="#{item.sottoTipo}" fieldDescriptor="#{eventoMetadata.sottoTipo}" />
+					<!-- Esito -->
+					<op2web:tableColumn fieldValue="#{item.esito}" fieldDescriptor="#{eventoMetadata.esito}" />
+					<!-- Link dettagli -->
+					<rich:column>
+						<h:panelGroup>
+							<a4j:commandLink id="dettaglio_btn" action="dettaglioEvento"
+								ajaxSingle="true">
+									<a4j:actionparam assignTo="#{eventiMBean.selectedId}" name="selectedId" value="#{item.DTO.id}" />
+								<h:graphicImage value="/images/sh/magnifier.png" width="16"
+									height="16" title="#{msg['commons.button.dettaglioTitle']}" />
+							</a4j:commandLink>
+						</h:panelGroup>
+					</rich:column>
+
+					<ui:define name="buttons">
+						<h:panelGrid columns="2">
+							<h:selectOneRadio value="#{eventiMBean.tipoExport}"
+								required="true" requiredMessage="#{msg['eventi.export.requiredMsg']}">
+								<f:selectItem itemLabel="#{msg['commons.export.pdf']}" itemValue="pdf" />
+								<f:selectItem itemLabel="#{msg['commons.export.csv']}" itemValue="csv" />
+							</h:selectOneRadio>
+							<h:commandLink id="exportEventi-iconLink" target="_blank"
+								styleClass="icon-compress" action="#{eventiMBean.exportSelected}"
+								onclick="return checkSelection('resultsTable');">
+								<h:outputText value="#{msg['commons.button.esporta']}" />
+							</h:commandLink>
+						</h:panelGrid>
+					</ui:define>
+				</op2web:dataTable>
+			</h:form>
+		</a4j:outputPanel>
+	</ui:define>
+</ui:composition>

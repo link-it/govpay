@@ -1,0 +1,147 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:op2web="http://www.openspcoop2.org/web/taglib/jsf">
+	<f:loadBundle var="msg" basename="messages" />
+
+	<ui:define name="pageTitle">#{msg['menu.group.simulazione.nuovo']}</ui:define>
+	<ui:define name="pageHeader">#{msg['menu.group.simulazione.nuovo']}</ui:define>
+	<ui:define name="navbar">
+		<ul>
+			<li><h:outputText value="/#{msg['menu.group.simulazione']}" /></li>
+			<li><h:outputText value="/#{msg['menu.group.simulazione.nuovo']}" /></li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="body">
+
+		<a4j:keepAlive beanName="nuovoPagamentoMBean" ajaxOnly="true" />
+
+		<rich:panel styleClass="noborder">
+
+			<!-- Form Pagamento  -->
+			<op2web:form formBean="#{nuovoPagamentoMBean.form}">
+				<p class="legend">
+					<strong>Note:</strong> (<em>*</em>) Campi obbligatori
+				</p>
+
+				<op2web:fieldset legend="#{msg['nuovopagamento.form.datiGenerali']}"
+					rendered="#{true}" collapsible="false" closed="false">
+
+					<op2web:formField
+						field="#{nuovoPagamentoMBean.form.identificativoPsp}" />
+
+					<op2web:formField
+						field="#{nuovoPagamentoMBean.form.tipoVersamento}" />
+
+					<op2web:formField
+						field="#{nuovoPagamentoMBean.form.autenticazioneSoggetto}" />
+
+					<op2web:formField field="#{nuovoPagamentoMBean.form.email}" />
+
+				</op2web:fieldset>
+
+				<op2web:fieldset collapsible="false" closed="false"
+					legend="#{msg['nuovopagamento.form.soggettoVersante']}"
+					rendered="#{true}">
+
+					<op2web:formField
+						field="#{nuovoPagamentoMBean.form.soggettoVersanteAnagrafica}" />
+
+					<op2web:formField
+						field="#{nuovoPagamentoMBean.form.soggettoVersanteCF}" />
+
+				</op2web:fieldset>
+
+				<op2web:fieldset legend="#{msg['nuovopagamento.form.pagamenti']}"
+					rendered="#{true}" collapsible="false" closed="false">
+
+					<h:panelGrid columns="2">
+						<h:panelGrid columns="1">
+							<op2web:formField
+								field="#{nuovoPagamentoMBean.form.pagamento.identificativoBeneficiario}" />
+								<op2web:formField
+								field="#{nuovoPagamentoMBean.form.pagamento.tipoDebito}" />
+							<op2web:formField
+								field="#{nuovoPagamentoMBean.form.pagamento.firma}" />
+							<op2web:formField
+								field="#{nuovoPagamentoMBean.form.pagamento.iuv}" />
+							<op2web:formField
+								field="#{nuovoPagamentoMBean.form.pagamento.ibanAddebito}" />
+						</h:panelGrid>
+						<h:panelGrid columns="1">
+							<op2web:outputValuta
+								field="#{nuovoPagamentoMBean.form.pagamento.importoTotale}" />
+							<h:outputText value=" " />
+							<h:panelGroup layout="block;" styleClass="buttonrow">
+								<span class="buttonrow">
+									<a4j:commandButton id="generaIuv"  
+										value="#{msg['nuovopagamento.button.generaIuv']}"
+										reRender="mainct,menuct,formNuovoPagamento_formPnl" status="mainStatus"
+										styleClass="buttonrow icon-login" ajaxSingle="true" 
+										action="#{nuovoPagamentoMBean.form.pagamento.generaIuv}">
+									</a4j:commandButton>
+								</span>
+							</h:panelGroup>
+							<h:outputText value=" " />
+						</h:panelGrid>
+					</h:panelGrid>
+
+					<op2web:fieldset collapsible="false" closed="false"
+						legend="#{msg['nuovopagamento.form.soggettoPagatore']}"
+						rendered="#{true}">
+
+						<op2web:formField
+							field="#{nuovoPagamentoMBean.form.pagamento.soggettoPagatoreAnagrafica}" />
+
+						<op2web:formField
+							field="#{nuovoPagamentoMBean.form.pagamento.soggettoPagatoreCF}" />
+
+					</op2web:fieldset>
+
+
+					<op2web:fieldset collapsible="false" closed="false"
+						legend="#{msg['nuovopagamento.form.singoloVersamento']}"
+						rendered="#{true}">
+
+						<op2web:formField
+							field="#{nuovoPagamentoMBean.form.pagamento.versamento.iusv}" />
+						<op2web:formField
+							field="#{nuovoPagamentoMBean.form.pagamento.versamento.importoVersamento}" />
+						<op2web:formField
+							field="#{nuovoPagamentoMBean.form.pagamento.versamento.ibanAccredito}" />
+						<op2web:formField
+							field="#{nuovoPagamentoMBean.form.pagamento.versamento.causale}" />
+						<op2web:formField
+							field="#{nuovoPagamentoMBean.form.pagamento.versamento.annoRif}" />
+
+
+					</op2web:fieldset>
+				</op2web:fieldset>
+
+				<ui:define name="buttons">
+					<div class="buttonrow">
+						<a4j:commandButton id="invia"
+							value="#{msg['commons.button.invia']}" styleClass="icon-save"
+							status="mainStatus" action="#{nuovoPagamentoMBean.invia}">
+						</a4j:commandButton>
+
+						<a4j:commandButton id="reset"
+							value="#{msg['commons.button.reset']}" reRender="mainct,menuct"
+							status="mainStatus" styleClass="icon-delete"
+							action="#{nuovoPagamentoMBean.reset}">
+						</a4j:commandButton>
+					
+					</div>
+				</ui:define>
+
+			</op2web:form>
+
+		</rich:panel>
+	</ui:define>
+</ui:composition>

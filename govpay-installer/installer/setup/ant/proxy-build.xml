@@ -1,0 +1,30 @@
+
+<project name="setup-pdd" basedir=".">
+	
+	<description>
+        	SETUP PDD
+	</description>
+
+	<import file="utils.xml" />
+	
+	<target name="govpay_properties_settings">
+
+		<antcall target="replace_token">
+			<param name="file" value="${govpay.properties.file}"/>
+			<param name="token" value="#govpay.web.defaultBackUrl#"/>
+			<param name="value" value="${antinstaller_defaultBackUrl}"/>
+		</antcall>
+		
+		<antcall target="replace_token">
+			<param name="file" value="${persistence.properties.file}"/>
+			<param name="token" value="#hibernate.dialect#"/>
+			<param name="value" value="${antinstaller_hibernate_dialect}"/>
+		</antcall>
+		<antcall target="replace_token">
+			<param name="file" value="${log.properties.file}"/>
+			<param name="token" value="#log.folder#"/>
+			<param name="value" value="${antinstaller_log_folder}"/>
+		</antcall>
+	</target>
+	
+</project>

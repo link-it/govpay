@@ -1,0 +1,51 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.govpay.it/rs/avviso" xmlns="http://www.govpay.it/rs/avviso"
+	elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc">
+
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings>
+				<xjc:simple />
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
+	
+	<xs:element name="richiestaAvviso" type="RichiestaAvviso" />
+
+	<xs:complexType name="Soggetto">
+		<xs:sequence>
+			<xs:element name="identificativo" type="xs:string" />
+			<xs:element name="anagrafica" type="xs:string" />
+			<xs:element name="indirizzo" type="xs:string" />
+			<xs:element name="civico" type="xs:string"/>
+			<xs:element name="cap" type="xs:string"/>
+			<xs:element name="localita" type="xs:string"/>
+			<xs:element name="provincia" type="xs:string"/>
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="DettaglioImporto">
+		<xs:sequence>
+			<xs:element name="codice" type="xs:string" />
+			<xs:element name="descrizione" type="xs:string" />
+			<xs:element name="anno" type="xs:gYear" />
+			<xs:element name="importo" type="xs:decimal" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="RichiestaAvviso">
+		<xs:sequence>
+			<xs:element name="identificativoBeneficiario" type="xs:string" />
+			<xs:element name="iuv" type="xs:string" />
+			<xs:element name="dataScadenza" type="xs:date" />
+			<xs:element name="soggettoPagatore" type="Soggetto" />
+			<xs:element name="importoTotaleDaVersare" type="xs:decimal" />
+			<xs:element name="tipoDebito" type="xs:string" />
+			<xs:element name="dettagliPagamento" type="DettaglioImporto" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
+

@@ -1,0 +1,125 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.org/rich"
+	xmlns:op2web="http://www.openspcoop2.org/web/taglib/jsf">
+	<a4j:loadScript src="resource://jquery.js" />
+	<f:loadBundle var="msg" basename="messages" />
+
+	<ui:define name="pageTitle">#{msg['menu.group.simulazione.scadenzarioRemoto']}</ui:define>
+	<ui:define name="pageHeader">#{msg['menu.group.simulazione.scadenzarioRemoto']}</ui:define>
+	<ui:define name="navbar">
+		<ul>
+			<li><h:outputText value="/#{msg['menu.group.simulazione']}" /></li>
+			<li><h:outputText
+					value="/#{msg['menu.group.simulazione.scadenzarioRemoto']}" /></li>
+		</ul>
+	</ui:define>
+	<ui:define name="body">
+		<a4j:keepAlive beanName="scadenzarioRemotoMBean" ajaxOnly="true" />
+		<rich:panel styleClass="noborder">
+
+			<a4j:outputPanel id="panelContainer" ajaxRendered="false">
+				<h:form>
+					<a4j:outputPanel id="tabelPanel1" layout="block">
+						<c:set var="scadenzarioMetadata"
+							value="#{scadenzarioRemotoMBean.metadata}" />
+
+						<op2web:simpleTable rendered="#{true}"
+							value="#{scadenzarioRemotoMBean.listaPagamenti}"
+							id="scadenzarioTable">
+							<f:facet name="noData">
+								<h:outputText value="#{msg['scadenzarioRemoto.noData']}" />
+							</f:facet>
+
+							<!-- Iuv -->
+							<op2web:tableColumn fieldValue="#{item.iuv}"
+								fieldDescriptor="#{scadenzarioMetadata.iuv}" />
+
+							<!-- stato -->
+							<op2web:tableColumn fieldValue="#{item.stato}"
+								fieldDescriptor="#{scadenzarioMetadata.stato}" />
+
+							<!-- Notifica  (Icona) -->
+							<rich:column style="text-align: left;">
+								<f:facet name="header">
+									<h:outputText value="#{scadenzarioMetadata.notifica.label}" />
+								</f:facet>
+
+								<h:panelGroup>
+									<h:outputText value="#{item.notifica.value}" />
+
+									<h:commandLink id="visualizzaNotificaLink"
+										action="#{item.visualizzaNotifica}"
+										rendered="#{not empty item.notifica.link}">
+										<h:graphicImage value="/images/${item.notifica.icon}"
+											width="16" height="16" title="#{item.notifica.iconTitle}" />
+									</h:commandLink>
+									<h:graphicImage value="/images/s.gif" width="1" height="1"
+										rendered="#{empty item.notifica.link}" />
+								</h:panelGroup>
+							</rich:column>
+
+
+							<!-- Avviso -->
+							<rich:column style="text-align: center;">
+								<f:facet name="header">
+									<h:outputText value="#{scadenzarioMetadata.avviso.label}" />
+								</f:facet>
+
+								<h:panelGroup>
+									<h:commandLink id="visualizzaPdfLink"
+										action="#{item.visualizzaPdf}"
+										rendered="#{not empty item.avviso.link}">
+										<h:graphicImage value="/images/icons/mime/${item.avviso.icon}"
+											width="16" height="16" title="#{item.avviso.iconTitle}" />
+									</h:commandLink>
+								</h:panelGroup>
+							</rich:column>
+						</op2web:simpleTable>
+					</a4j:outputPanel>
+				</h:form>
+			</a4j:outputPanel>
+
+
+			<br />
+
+			<!-- Form Inserimento dati -->
+			<op2web:form formBean="#{scadenzarioRemotoMBean.form}"
+				rendered="#{true}">
+				<p class="legend">
+					<strong>#{msg['commons.label.note']}</strong> (<em>*</em>)
+					#{msg['commons.label.campiObbligatori']}
+				</p>
+				<op2web:fieldset legend="#{msg['scadenzarioRemoto.add.label']}"
+					collapsible="false" closed="false" rendered="#{true}">
+
+					<!-- id ente-->
+					<op2web:formField field="#{scadenzarioRemotoMBean.form.idEnte}" />
+
+					<!-- tributo-->
+					<op2web:formField
+						field="#{scadenzarioRemotoMBean.form.codiceTributo}" />
+
+					<br />
+
+				</op2web:fieldset>
+				<ui:define name="buttons">
+					<div class="buttonrow">
+						<a4j:commandButton id="invia"
+							value="#{msg['commons.button.invia']}" styleClass="icon-save"
+							reRender="mainct,menuct" status="mainStatus"
+							action="#{scadenzarioRemotoMBean.invia}">
+						</a4j:commandButton>
+					</div>
+				</ui:define>
+
+			</op2web:form>
+			
+		</rich:panel>
+	</ui:define>
+</ui:composition>
