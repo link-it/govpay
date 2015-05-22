@@ -1,0 +1,115 @@
+
+<project name="setup" basedir=".">
+	
+	<description>
+        	SETUP
+	</description>
+
+	<import file="local_env.xml" />
+	
+	<!-- estensione di ant (if .... ) -->
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+          <classpath>
+              <pathelement location="${lib}/ant/ant-contrib-1.0b3.jar"/>
+          </classpath>
+	</taskdef>
+	
+	<import file="./ant/proxy-build.xml" />
+	<import file="./ant/ds-build.xml" />
+	
+	
+	<property name="ear.original" value="../ear/govpay.ear" />
+	<property name="ear.unpacked.dir" value="${tmp_archivi}/ear" />
+	<property name="govpay.properties.file" value="${ear.unpacked.dir}/properties/govpay.properties" />
+	<property name="persistence.properties.file" value="${ear.unpacked.dir}/META-INF/hibernate.properties" />
+	<property name="log.properties.file" value="${ear.unpacked.dir}/properties/log4j2.xml" />
+	<property name="sql" value="../sql/" />
+	
+	<!-- Ripulisce la distribuzione -->
+	<target name="installer_clean">
+		<delete dir="${build}" />
+		<delete dir="${dist}" />
+	</target>
+
+	
+	<!-- Create the build directory structure used by compile -->
+	<target name="installer_init">
+		<mkdir dir="${build}" />
+		<mkdir dir="${tmp_ds}" />
+		<mkdir dir="${dist}" />
+	</target>
+
+	
+	<target name="init_setup" depends="installer_clean,installer_init">
+		<unzip src="${ear.original}" dest="${ear.unpacked.dir}"/>
+	</target>
+		
+	<target name="setup_properties">
+		
+		<antcall target="govpay_properties_settings"/>
+		
+	</target>
+	
+	
+	<target name="setup_datasource">
+		<var name="datasource_name" value="jdbc/govpay"/>
+		<if>
+			<or>
+				<matches string="${antinstaller_as}" pattern="jboss.*"/>
+				<matches string="${antinstaller_as}" pattern="wildfly.*"/>
+			</or>
+			<then>
+				<var name="jboss_datasource_dir_name" value=""/>
+				<if>
+					<or>
+						<equals arg1="${antinstaller_as}" arg2="jboss4" />
+						<equals arg1="${antinstaller_as}" arg2="jboss5" />
+						<equals arg1="${antinstaller_as}" arg2="jboss6" />
+					</or>
+					<then>
+						<var name="jboss_datasource_dir_name" value="v4_v5_v6"/>
+					</then>
+					<else>
+						<var name="jboss_datasource_dir_name" value="v7_v8"/>
+					</else>
+				</if>
+				<copy file="${deploy_ds}/jboss/${jboss_datasource_dir_name}/${antinstaller_tipo_database}/govpay-ds.xml" todir="${tmp_ds}"/>
+			</then>
+			<else>
+				<copy file="${deploy_ds}/tomcat/${antinstaller_tipo_database}/govpay.xml" todir="${tmp_ds}"/>
+			</else>
+		</if>
+		
+		
+		<if>
+			<or>
+				<matches string="${antinstaller_as}" pattern="jboss.*"/>
+				<matches string="${antinstaller_as}" pattern="wildfly.*"/>
+			</or>
+			<then>
+				<antcall target="ds_settings">
+					<param name="file" value="${tmp_ds}/govpay-ds.xml"/>
+				</antcall>
+			</then>
+			<else>
+				<antcall target="ds_settings">
+					<param name="file" value="${tmp_ds}/govpay.xml"/>
+				</antcall>
+			</else>
+		</if>
+		
+		
+	</target>
+	
+	<target name="setup_completo"  depends="init_setup, setup_properties, setup_datasource, setup_finished"/>
+	<target name="setup_finished">
+		<delete dir="${dist}"/>
+	
+		<zip destfile="${dist}/govpay.ear" basedir="${ear.unpacked.dir}"/>
+		<copy file="${tmp_ds}/govpay-ds.xml" todir="${dist}" />
+		<copy file="${sql}/govpay.sql" todir="${dist}"/>		
+		<delete dir="${build}"/>
+	</target>
+
+
+</project>

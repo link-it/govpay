@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.6.1  -->
+<!-- 2014-12-02T13:09:23 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ReportBone" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" resourceBundle="resources.pagamento.reportMessages" uuid="421ace9e-12c9-4fb7-aef3-176f90bd4368">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="338"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DDPFactory"/>
+	<template><![CDATA["styles/pagamento/StyleTemplate.jrtx"]]></template>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["compiled/pagamento/"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[]]>
+	</queryString>
+	<field name="richiestaAvviso" class="it.govpay.rs.avviso.RichiestaAvviso">
+		<fieldDescription><![CDATA[richiestaAvviso]]></fieldDescription>
+	</field>
+	<field name="qrCode" class="java.lang.String">
+		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
+	</field>
+	<field name="ente" class="it.govpay.ejb.model.EnteCreditoreModel">
+		<fieldDescription><![CDATA[ente]]></fieldDescription>
+	</field>
+	<pageHeader>
+		<band height="110">
+			<image>
+				<reportElement x="0" y="0" width="80" height="80" uuid="7a374176-ab58-48f6-a44c-287ad1027422"/>
+				<imageExpression><![CDATA["images/logo_pa.jpg"]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement style="Anagrafica" x="80" y="10" width="150" height="20" uuid="5621e0c5-300c-4073-812d-3ca92aff3cf4"/>
+				<textFieldExpression><![CDATA[$F{ente}.getDenominazione()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="AnagraficaDettaglio" x="80" y="35" width="150" height="75" uuid="5621e0c5-300c-4073-812d-3ca92aff3cf4"/>
+				<textFieldExpression><![CDATA[$F{ente}.getIndirizzo() + " " + $F{ente}.getLocalita() + " (" + $F{ente}.getProvincia() + ")" + "\nTel " + $F{ente}.getNumTelefono() + " - Fax " + $F{ente}.getNumFax() + "\nP.IVA " + $F{ente}.getIdFiscale()]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement style="FrameBorderCurve" mode="Transparent" x="247" y="0" width="268" height="80" uuid="0e776dbd-ad2a-445d-bffa-acb81ecd0245"/>
+			</rectangle>
+			<textField>
+				<reportElement style="AnagraficaCittadino" x="260" y="1" width="239" height="79" uuid="5621e0c5-300c-4073-812d-3ca92aff3cf4"/>
+				<textFieldExpression><![CDATA[$F{richiestaAvviso}.getSoggettoPagatore().getAnagrafica() + "\n" + $F{richiestaAvviso}.getSoggettoPagatore().getIndirizzo() + ", " + $F{richiestaAvviso}.getSoggettoPagatore().getCivico() + "\n" + $F{richiestaAvviso}.getSoggettoPagatore().getCap() + " " + $F{richiestaAvviso}.getSoggettoPagatore().getLocalita() + " (" + $F{richiestaAvviso}.getSoggettoPagatore().getProvincia() + ")\nCF " + $F{richiestaAvviso}.getSoggettoPagatore().getIdentificativo()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="250">
+			<staticText>
+				<reportElement style="DocumentTitle" mode="Transparent" x="1" y="0" width="515" height="20" uuid="106f5676-c2d3-4359-b735-ff6062f9da96"/>
+				<text><![CDATA[DETTAGLIO DEGLI IMPORTI]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="CarrelloField" x="15" y="22" width="74" height="16" uuid="4fa6e7bf-1b84-4504-921c-ab8b33c729df"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Codice]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="CarrelloField" x="89" y="22" width="261" height="16" uuid="bbfd0aa5-0095-42bc-8138-8ea854be6c94"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Descrizione]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="CarrelloField" x="350" y="22" width="39" height="16" uuid="4fa6e7bf-1b84-4504-921c-ab8b33c729df"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Anno]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="CarrelloFieldAmount" x="389" y="22" width="111" height="16" uuid="4efaaf5a-d1ee-4510-9cf7-d42d0fc111af"/>
+				<textElement verticalAlignment="Middle"/>
+				<text><![CDATA[Importo]]></text>
+			</staticText>
+			<subreport>
+				<reportElement positionType="Float" x="-1" y="40" width="515" height="15" uuid="cb31b535-0484-4a63-a1af-b6737d937474"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{richiestaAvviso}.getDettagliPagamentos())]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "dettaglio.jasper"]]></subreportExpression>
+			</subreport>
+			<line>
+				<reportElement x="0" y="20" width="515" height="1" uuid="90d2f1a5-ac74-4a28-9326-888de67da74a"/>
+			</line>
+			<line>
+				<reportElement x="0" y="39" width="515" height="1" uuid="e2e9ffe3-270c-4dfc-8962-fd5537981061"/>
+			</line>
+			<rectangle>
+				<reportElement style="BoxScadenzaBorder" mode="Transparent" x="0" y="190" width="515" height="60" uuid="40d7fe03-6985-41d9-b970-123f3b997309"/>
+			</rectangle>
+			<staticText>
+				<reportElement style="BoxScadenza" mode="Transparent" x="43" y="210" width="70" height="20" uuid="106f5676-c2d3-4359-b735-ff6062f9da96"/>
+				<text><![CDATA[Importo totale]]></text>
+			</staticText>
+			<textField pattern="#,##0.00 €">
+				<reportElement style="BoxScadenza" x="100" y="210" width="111" height="20" uuid="4efaaf5a-d1ee-4510-9cf7-d42d0fc111af"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{richiestaAvviso}.getImportoTotaleDaVersare()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="BoxScadenza" mode="Transparent" x="312" y="210" width="70" height="20" uuid="106f5676-c2d3-4359-b735-ff6062f9da96"/>
+				<text><![CDATA[Scadenza]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement style="BoxScadenza" x="383" y="210" width="111" height="20" uuid="4efaaf5a-d1ee-4510-9cf7-d42d0fc111af"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{richiestaAvviso}.getDataScadenza().toGregorianCalendar().getTime()]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="250">
+			<rectangle>
+				<reportElement style="FrameBorderCurve" positionType="FixRelativeToBottom" mode="Transparent" x="0" y="42" width="515" height="208" uuid="d8d697fb-a648-4818-9f05-0697f58afff3"/>
+			</rectangle>
+			<line>
+				<reportElement x="0" y="62" width="515" height="1" uuid="e2e9ffe3-270c-4dfc-8962-fd5537981061"/>
+			</line>
+			<staticText>
+				<reportElement style="DocumentTitle" mode="Transparent" x="1" y="43" width="515" height="20" uuid="106f5676-c2d3-4359-b735-ff6062f9da96"/>
+				<text><![CDATA[ISTRUZIONI PER IL PAGAMENTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="MsgStyle" x="15" y="77" width="485" height="25" uuid="5e63d5ca-1187-4330-a6de-b321f628f0fd"/>
+				<textElement textAlignment="Justified" markup="styled"/>
+				<text><![CDATA[Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement style="FrameBorder" mode="Transparent" x="120" y="127" width="275" height="25" uuid="a2722b39-9637-49d8-a5b4-953d2dcffa4a"/>
+			</rectangle>
+			<textField>
+				<reportElement style="BoxIUV" x="120" y="127" width="275" height="25" uuid="1fb2ef99-ab1b-40d7-8762-01ffd08b8b5d"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{richiestaAvviso}.getIuv()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="MsgStyle" x="15" y="181" width="485" height="50" uuid="5e63d5ca-1187-4330-a6de-b321f628f0fd"/>
+				<textElement textAlignment="Justified" markup="styled"/>
+				<text><![CDATA[Lorem ipsum dolor sit amet, consectetur adipisci elit, sed eiusmod tempor incidunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquid ex ea commodi consequat. Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint obcaecat cupiditat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="20"/>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="80">
+			<image scaleImage="FillFrame">
+				<reportElement positionType="FixRelativeToBottom" x="0" y="6" width="200" height="68" uuid="a441de3e-77b7-43c1-8bac-83e5145ff109"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(new com.google.zxing.oned.Code128Writer().encode($F{richiestaAvviso}.getIuv(), com.google.zxing.BarcodeFormat.CODE_128, 500, 500))]]></imageExpression>
+			</image>
+			<image scaleImage="FillFrame">
+				<reportElement positionType="FixRelativeToBottom" x="430" y="0" width="85" height="80" uuid="a441de3e-77b7-43c1-8bac-83e5145ff109"/>
+				<box>
+					<pen lineWidth="0.0" lineStyle="Solid"/>
+					<topPen lineWidth="0.0" lineStyle="Solid"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid"/>
+				</box>
+				<imageExpression><![CDATA[com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(new com.google.zxing.qrcode.QRCodeWriter().encode($F{qrCode}, com.google.zxing.BarcodeFormat.QR_CODE, 500, 500))]]></imageExpression>
+			</image>
+		</band>
+	</lastPageFooter>
+</jasperReport>

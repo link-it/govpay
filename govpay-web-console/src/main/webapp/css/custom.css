@@ -1,0 +1,71 @@
+a[id$="iconLink"] {
+	background-color: transparent;
+	background-position: left center;
+	background-repeat: no-repeat;
+	display: inline-block;
+	line-height: 18px;
+	padding-left: 20px;
+	padding-right: 5px;
+}
+
+.verticalAlignTop {
+	vertical-align: top;
+}
+
+.noborder {
+	border: none !important;
+}
+
+.nopadding
+{
+	padding: 0px;
+}
+
+.logoIris {
+	float: left;
+	vertical-align: middle !important;
+display: inline;	
+}
+
+.rich-page-footer{
+	padding: 5px 0px !important;
+}
+
+/** CLassi per i livelli di severita' dei msg diagnostici***/
+.fatalOpenspcoop {
+	color: Red;
+	font-weight: bold;
+	font-style: normal;
+}
+
+.errorSpcoop,
+.errorOpenspcoop,
+.tipoOperazioneSconosciuto
+ {
+	color: Red;
+}
+
+.infoSpcoop,
+.infoOpenspcoop {
+	color: #17B517;
+}
+
+.debugLow,
+.debugMedium,
+.debugHigh {
+	
+}
+
+
+/*Table row*/
+.even {
+        background-color: #FCFFFE;
+}
+
+.odd {
+        background-color: #ECF3FE;
+}
+
+.piubordo {
+	border-width: 3px;
+}

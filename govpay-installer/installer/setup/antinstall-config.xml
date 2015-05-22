@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+<installer name="GovPay v1.0b Installer" defaultImageResource="/logoSetup.png"
+    windowIcon="/iconaSetup.png" wide="550:275">
+    
+    <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
+    <!-- loadDefaults="true" > -->
+
+    <page type="input" name="intro" displayText="Installer GovPay v1.0b">
+        <comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay"/>
+        <comment explanatoryText="Copyright (c) 2014-2015 Link.it srl (http://www.link.it)."/>
+        <comment explanatoryText="Copyright (c) 2014-2015 TAS S.p.A. (http://www.tasgroup.it)."/>
+        <comment explanatoryText=""/>
+	<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."/>
+        <comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."/>
+	<comment explanatoryText="You should have received a copy of the GNU General Public License along with this program. If not, see &lt;http://www.gnu.org/licenses/&gt;."/>
+    </page>
+
+
+    <page name="informazioniente" type="input" displayText="Informazioni preliminari">
+        
+        <validated defaultValue="http://localhost:8080/govpay/backurl_ente" property="antinstaller_defaultBackUrl" displayText="Default Back URL"
+            regex=".+"/>
+        <validated defaultValue="/var/log/govpay" property="antinstaller_log_folder" displayText="Log Folder"
+            regex=".+"/>
+    </page>
+    
+    <page name="preinstallazione2" type="input" displayText="Ambiente di installazione">
+                       
+        <comment displayText=""/>
+        
+        <large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
+            <!--option value="postgresql" text="PostgreSQL"/-->
+            <option value="mysql" text="MySQL"/>
+            <!--option value="oracle" text="Oracle"/-->
+            <!--option value="hsql" text="HyperSQL"/-->
+            <!--option value="sqlserver" text="SQLServer 2005"/-->
+            <!--option value="db2" text="IBM DB2"/-->
+        </large-select>
+        
+        <comment displayText=""/>
+        
+        <large-select defaultValue="jboss7" property="antinstaller_as" displayText="Application Server">
+            <!--option value="jboss5" text="JBoss 5.x"/-->
+            <!--option value="jboss6" text="JBoss 6.x"/-->
+            <option value="jboss7" text="JBoss 7.x"/>
+            <!--option value="wildfly8" text="WildFly 8.x"/-->
+            <!--option value="tomcat" text="Apache Tomcat"/-->
+        </large-select>
+        
+     </page> 
+
+    <page name="informazionidibasexml" type="input" displayText="Il Database">
+        <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname"
+            regex=".+"/>
+        <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
+            <hidden property="porta-db" value="5432"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=mysql">
+            <hidden property="porta-db" value="3306"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="com.mysql.jdbc.Driver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=oracle">
+            <hidden property="porta-db" value="1521"/>
+            <hidden property="TABLESPACE" value="XE"/>
+            <hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.OracleDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=hsql">
+            <hidden property="porta-db" value="9001"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="org.hsqldb.jdbcDriver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.HSQLDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=sqlserver">
+            <hidden property="porta-db" value="1433"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.SQLServerDialect"/>
+        </conditional>
+         <conditional ifProperty="${antinstaller_tipo_database}=db2">
+            <hidden property="porta-db" value="50000"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="com.ibm.db2.jcc.DB2Driver"/>
+             <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.DB2Dialect"/>
+        </conditional>
+        <validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport"
+            displayText="Porta"/>
+
+        <validated defaultValue="govpay" property="antinstaller_dbname"
+            displayText="Nome Database" regex=".+"/>
+
+        <validated defaultValue="govpay" property="antinstaller_dbusername"
+            displayText="Username" regex=".+"/>
+        <validated defaultValue="govpay" property="antinstaller_dbpassword"
+            displayText="Password" regex=".+"/>
+        <validated defaultValue="modulo-driver-jdbc" property="antinstaller_modulo_driver"
+            displayText="Modulo Driver" regex=".+"/>
+    </page>
+    
+    <page name="Fine" displayText="Installazione" type="progress" showTargets="true"
+        target="setup_completo"/>
+    
+</installer>

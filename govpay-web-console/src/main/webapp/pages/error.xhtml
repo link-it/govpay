@@ -1,0 +1,18 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+      <f:loadBundle var="msg" basename="messages" />
+	<a4j:loadScript src="resource://jquery.js" />
+		<ui:define name="body">
+			<h:form>
+				<h:outputText value="#{msg['form.error.pre']} " />
+				<h:commandLink action="listaDistinte" value="#{msg['form.error.action']}" />
+				<h:outputText value=" " />
+				<h:outputText value="#{msg['form.error.post']}" />
+			</h:form>
+		</ui:define>
+</ui:composition>

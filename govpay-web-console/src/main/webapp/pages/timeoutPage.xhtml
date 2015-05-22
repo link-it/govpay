@@ -1,0 +1,17 @@
+<ui:composition template="/templates/defaultTemplate.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:rich="http://richfaces.org/rich"
+      xmlns:a4j="http://richfaces.org/a4j">
+<f:loadBundle var="msg" basename="messages" />
+		<ui:define name="body">
+			<h:form>
+				<h:outputText value="#{msg['login.form.timeout.pre']} " />
+				<h:commandLink action="login" value="#{msg['login.form.timeout.action']}" />
+				<h:outputText value=" " />
+				<h:outputText value="#{msg['login.form.timeout.post']}" />
+			</h:form>
+		</ui:define>
+</ui:composition>

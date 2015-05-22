@@ -1,0 +1,93 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.govpay.it/rs/" xmlns="http://www.govpay.it/rs/"
+	elementFormDefault="qualified">
+
+	<xs:element name="pagamento">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identificativoBeneficiario" type="xs:string" />
+				<xs:element name="soggettoPagatore" type="Soggetto" />
+				<xs:element name="datiVersamento" type="DatiVersamento" />
+				<xs:element name="firma" type="TipoFirmaRicevuta" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="Soggetto">
+		<xs:sequence>
+			<xs:element name="identificativo" type="xs:string" />
+			<xs:element name="anagrafica" type="xs:string" />
+			<xs:element name="indirizzo" type="xs:string" minOccurs="0" />
+			<xs:element name="civico" type="xs:string" minOccurs="0" />
+			<xs:element name="cap" type="xs:string" minOccurs="0" />
+			<xs:element name="localita" type="xs:string" minOccurs="0" />
+			<xs:element name="provincia" type="xs:string" minOccurs="0" />
+			<xs:element name="nazione" type="xs:string" minOccurs="0" />
+			<xs:element name="email" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="DatiVersamento">
+		<xs:sequence>
+			<xs:element name="importoTotaleDaVersare" type="xs:decimal" />
+			<xs:element name="iuv" type="xs:string" />
+			<xs:element name="tipoDebito" type="xs:string" />
+			<xs:element name="ibanAddebito" type="IbanIdentifier" minOccurs="0" />
+			<xs:element name="datiSingoloVersamento" type="DatiSingoloVersamento" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="DatiSingoloVersamento">
+		<xs:sequence>
+			<xs:element name="iusv" type="xs:string" />
+			<xs:element name="importoSingoloVersamento" type="xs:decimal" />
+			<xs:element name="ibanAccredito" type="IbanIdentifier" />
+			<xs:element name="causaleVersamento" type="xs:string" />
+			<xs:element name="annoRiferimento" type="xs:gYear" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="erroreEnte">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="codiceErrore">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="PAGAMENTO_SCONOSCIUTO" />
+							<xs:enumeration value="PAGAMENTO_DUPLICATO" />
+							<xs:enumeration value="PAGAMENTO_ANNULLATO" />
+							<xs:enumeration value="PAGAMENTO_SCADUTO" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="descrizione" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:simpleType name="AutenticazioneSoggetto">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CNS" />
+			<xs:enumeration value="USR" />
+			<xs:enumeration value="OTH" />
+			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="TipoFirmaRicevuta">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CaDes" />
+			<xs:enumeration value="XaDes" />
+			<xs:enumeration value="Avanzata" />
+			<xs:enumeration value="Nessuna" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="IbanIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}" />
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
+

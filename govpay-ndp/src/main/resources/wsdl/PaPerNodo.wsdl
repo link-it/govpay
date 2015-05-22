@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Questo WSDL rappresenta l'interfaccia esposta dalla PAA
+  per la ricezione delle Ricevute Telematiche
+-->
+<wsdl:definitions 
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:ppt="http://ws.pagamenti.telematici.gov/" 
+	xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT"
+	name="PPT" 
+	targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	jaxb:version="2.0">
+	<wsdl:types>
+		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
+			<xsd:simpleType name="stText35">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="35" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:element name="intestazionePPT">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="identificativoIntermediarioPA" type="ppthead:stText35" />
+						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35" />
+						<xsd:element name="identificativoDominio" type="ppthead:stText35" />
+						<xsd:element name="identificativoUnivocoVersamento" type="ppthead:stText35" />
+						<xsd:element name="codiceContestoPagamento" type="ppthead:stText35" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
+			<xsd:annotation>
+				<xsd:appinfo>
+					<jaxb:schemaBindings>
+						<jaxb:package name="it.gov.digitpa.schemas._2011.ws.nodo" />
+					</jaxb:schemaBindings>
+				</xsd:appinfo>
+			</xsd:annotation>
+			<xsd:simpleType name="stText35">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="35" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			<!-- Wrapper Elements -->
+			<xsd:element name="paaInviaRT" type="ppt:paaInviaRT" />
+			<xsd:element name="paaInviaRTRisposta" type="ppt:paaInviaRTRisposta" />
+			
+			<xsd:element name="paaInviaEsitoStorno" type="ppt:paaInviaEsitoStorno" />
+			<xsd:element name="paaInviaEsitoStornoRisposta" type="ppt:paaInviaEsitoStornoRisposta" />
+			
+			<!-- Element Definition -->
+			<xsd:complexType name="paaInviaRT">
+				<xsd:sequence>
+					<xsd:element name="tipoFirma" type="xsd:string" />
+					<xsd:element name="rt" type="xsd:base64Binary" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paaInviaRTRisposta">
+				<xsd:sequence>
+					<xsd:element name="paaInviaRTRisposta" type="ppt:esitoPaaInviaRT" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="esitoPaaInviaRT">
+				<xsd:complexContent>
+					<xsd:extension base="ppt:risposta">
+						<xsd:sequence>
+							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+			<xsd:complexType name="risposta">
+				<xsd:sequence>
+					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="faultBean">
+				<xsd:sequence>
+					<xsd:element name="faultCode" type="xsd:string" />
+					<xsd:element name="faultString" type="xsd:string" />
+					<xsd:element name="id" type="xsd:string" />
+					<xsd:element name="description" type="xsd:string" minOccurs="0" />
+					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="paaInviaEsitoStorno">
+				<xsd:sequence>
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" />
+					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35" />
+					<xsd:element name="codiceContestoPagamento" type="ppt:stText35" />
+					<xsd:element name="er" type="xsd:base64Binary" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="paaInviaEsitoStornoRisposta">
+				<xsd:sequence>
+					<xsd:element name="paaInviaEsitoStornoRisposta" type="ppt:tipoInviaEsitoStornoRisposta" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="tipoInviaEsitoStornoRisposta">
+				<xsd:complexContent>
+					<xsd:extension base="ppt:risposta">
+						<xsd:sequence>
+							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+		</xsd:schema>
+    </wsdl:types>
+	<wsdl:message name="paaInviaRT">
+		<wsdl:part name="bodyrichiesta" element="ppt:paaInviaRT" />
+		<wsdl:part name="header" element="ppthead:intestazionePPT" />
+	</wsdl:message>
+	<wsdl:message name="paaInviaRTResponse">
+		<wsdl:part name="bodyrisposta" element="ppt:paaInviaRTRisposta" />
+	</wsdl:message>
+	<wsdl:message name="paaInviaEsitoStorno">
+		<wsdl:part name="bodyrichiesta" element="ppt:paaInviaEsitoStorno" />
+	</wsdl:message>
+	<wsdl:message name="paaInviaEsitoStornoResponse">
+		<wsdl:part name="bodyrisposta" element="ppt:paaInviaEsitoStornoRisposta" />
+	</wsdl:message>
+	<wsdl:portType name="PagamentiTelematiciRT">
+		<wsdl:operation name="paaInviaRT">
+			<wsdl:input message="tns:paaInviaRT" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaInviaRTRichiesta" />
+			<wsdl:output message="tns:paaInviaRTResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaInviaRTRisposta" />
+		</wsdl:operation>
+		<wsdl:operation name="paaInviaEsitoStorno">
+			<wsdl:input message="tns:paaInviaEsitoStorno" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaInviaEsitoStornoRichiesta" />
+			<wsdl:output message="tns:paaInviaEsitoStornoResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaInviaEsitoStornoRisposta" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="PagamentiTelematiciRTbinding" type="tns:PagamentiTelematiciRT">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="paaInviaRT">
+			<soap:operation soapAction="paaInviaRT" />
+			<wsdl:input>
+				<soap:body parts="bodyrichiesta" use="literal" />
+				<soap:header message="tns:paaInviaRT" part="header" use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="paaInviaEsitoStorno">
+			<soap:operation soapAction="paaInviaEsitoStorno" />
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="PagamentiTelematiciRTservice">
+		<wsdl:port name="PPTPort" binding="tns:PagamentiTelematiciRTbinding">
+			<soap:address location="http://NodoPagamentiSPC.spcoop.gov.it/" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>
