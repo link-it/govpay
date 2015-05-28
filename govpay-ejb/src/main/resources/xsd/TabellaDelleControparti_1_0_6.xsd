@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0.6">
+	<xs:annotation>
+		<xs:documentation>Tabella delle controparti</xs:documentation>
+    </xs:annotation>
+    
+    <xs:element name="listaInformativeControparte" type="ctListaInformativeControparte" />
+    <xs:element name="informativaControparte" type="ctInformativaControparte" />
+	
+	<xs:simpleType name="stText35">
+		<xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:maxLength value="35"/>
+        </xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stTipoPeriodo">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="giornaliera"></xs:enumeration>
+			<xs:enumeration value="settimanale"></xs:enumeration>
+			<xs:enumeration value="mensile"></xs:enumeration>
+			<xs:enumeration value="annuale"></xs:enumeration>
+		</xs:restriction>
+	</xs:simpleType>
+	
+    <xs:complexType name="ctListaInformativeControparte">
+		<xs:sequence>
+			<xs:element name="informativaControparte" type="ctInformativaControparte" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctInformativaControparte">
+		<xs:sequence>
+			<xs:element type="stText35" name="identificativoFlusso" />
+			<xs:element type="stText35" name="identificativoDominio" />
+			<xs:element type="stText35" name="ragioneSociale" />
+			<xs:element type="xs:dateTime" name="dataPubblicazione" />
+			<xs:element type="xs:dateTime" name="dataInizioValidita" />
+			<xs:element type="ctErogazioneServizio" name="erogazioneServizio" />
+		</xs:sequence>
+
+	</xs:complexType>
+	
+	<xs:complexType name="ctFasciaOraria">
+			<xs:sequence>
+				<xs:element type="xs:time" name="da" minOccurs="0" />
+				<xs:element type="xs:time" name="a" minOccurs="0" />
+			</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctErogazione">
+		<xs:sequence>
+			<xs:element name="tipoPeriodo" type="stTipoPeriodo" minOccurs="0" />
+			<xs:element name="giorno" type="stText35" minOccurs="0" />
+			<xs:element name="fasciaOraria" type="ctFasciaOraria" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctListaDisponibilita">
+		<xs:sequence>
+			<xs:element type="ctErogazione" name="disponibilita" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctListaIndisponibilita">
+		<xs:sequence>
+			<xs:element type="ctErogazione" name="indisponibilita" maxOccurs="unbounded" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="ctErogazioneServizio">
+		<xs:sequence>
+			<xs:element type="ctListaDisponibilita" name="listaDisponibilita" />
+			<xs:element type="ctListaIndisponibilita" name="listaIndisponibilita" />
+		</xs:sequence>
+	</xs:complexType>
+
+</xs:schema>

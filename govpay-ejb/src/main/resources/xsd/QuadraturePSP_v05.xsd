@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0.5">
+	<xsd:annotation>
+		<xsd:documentation>Quadratura dei Flussi di traffico per PSP</xsd:documentation>
+    </xsd:annotation>
+	<xsd:annotation>
+		<xsd:documentation></xsd:documentation>
+    </xsd:annotation>
+	<xs:simpleType name="totaleImportiType">
+		<xs:restriction base="xs:decimal">
+			<xs:fractionDigits value="2"/>
+			<xs:totalDigits value="18"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="totaleOggettiType">
+		<xs:restriction base="xs:nonNegativeInteger">
+			<xs:minInclusive value="0"/>
+			<xs:maxInclusive value="999999999"/>
+		</xs:restriction>
+	</xs:simpleType>
+
+    <xs:element name="flussoQuadraturaPSP" type="flussoQuadraturaPSPType"/>
+	<xs:complexType name="soggettoRichiedenteFlussoType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="identificativoIntermediarioPSP" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="totaliType">
+		<xs:sequence>
+			<xs:element type="totaleImportiType" name="totaleImporti"/>
+			<xs:element type="totaleOggettiType" name="totaleOggetti"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="totaliAggregatiRPTType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="identificativoIntermediarioPAMittente"/>
+			<xs:element type="xs:string" name="identificativoPSPDestinatario"/>
+			<xs:element type="xs:string" name="identificativoCanaleDestinatario"/>
+			<xs:element type="totaliType" name="totaliInAttesa"/>
+			<xs:element type="totaliType" name="totaliConsegnate"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="totaliAggregatiRTType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="identificativoPSPMittente"/>
+			<xs:element type="xs:string" name="identificativoCanaleMittente"/>
+			<xs:element type="xs:string" name="identificativoIntermediarioPADestinatario"/>
+			<xs:element type="totaliType" name="totaliInAttesa"/>
+			<xs:element type="totaliType" name="totaliConsegnate"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="listaTotaliRPTType">
+		<xs:sequence>
+			<xs:element type="totaliAggregatiRPTType" name="totaliAggregati" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="listaTotaliRTTType">
+		<xs:sequence>
+			<xs:element type="totaliAggregatiRTType" name="totaliAggregati" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="quadraturaRPTType">
+		<xs:sequence>
+			<xs:element type="listaTotaliRPTType" name="listaTotali"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="quadraturaRTType">
+		<xs:sequence>
+			<xs:element type="listaTotaliRTTType" name="listaTotali"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="flussoQuadraturaPSPType">
+		<xs:sequence>
+			<xs:element type="xs:string" name="versioneOggetto"/>
+			<xs:element type="xs:string" name="identificativoFlusso"/>
+			<xs:element type="xs:dateTime" name="dataOraFlusso"/>
+			<xs:element type="soggettoRichiedenteFlussoType" name="soggettoRichiedenteFlusso"/>
+			<xs:element type="quadraturaRPTType" name="quadraturaRPT"/>
+			<xs:element type="quadraturaRTType" name="quadraturaRT"/>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
+
+

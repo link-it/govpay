@@ -46,6 +46,12 @@
 			<artifactId>cdi-api</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
 
 		<!-- Import the JPA API, we use provided scope as the API is included in 
 			JBoss AS 7 -->
@@ -106,26 +112,64 @@
 				<artifactId>maven-ejb-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
-					<!-- Tell Maven we are using EJB 3.1 -->
 					<ejbVersion>3.1</ejbVersion>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>1.5</version>
+				<version>1.6</version>
 				<executions>
 					<execution>
 						<id>xjc</id>
 						<goals>
 							<goal>xjc</goal>
 						</goals>
+						<configuration>
+							<schemaDirectory>src/main/resources/xsd/</schemaDirectory>
+							<schemaFiles>rest.xsd,CatalogoDatiInformativi_1_0_7.xsd</schemaFiles>
+							<arguments>-extension</arguments>
+						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-codegen-plugin</artifactId>
+				<version>2.7.11</version>
 				<configuration>
-					<schemaFiles>rest.xsd</schemaFiles>
-					<arguments>-extension</arguments>
+					<source>1.6</source>
+					<target>1.6</target>
 				</configuration>
+				<executions>
+					<execution>
+						<id>generate-sources</id>
+						<phase>generate-sources</phase>
+						<configuration>
+							<sourceRoot>${project.build.directory}/generated-sources/jaxb</sourceRoot>
+							<wsdlOptions>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/NodoPerPa.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/NodoPerPa.wsdl</wsdlLocation>
+								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodo.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/PaPerNodo.wsdl</wsdlLocation>
+								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/PaPerNodoPagamentoPsp.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/PaPerNodoPagamentoPsp.wsdl</wsdlLocation>
+								</wsdlOption>
+							</wsdlOptions>
+						</configuration>
+						<goals>
+							<goal>wsdl2java</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

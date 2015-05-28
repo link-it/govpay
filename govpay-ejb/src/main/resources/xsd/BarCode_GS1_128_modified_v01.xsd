@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema  
+elementFormDefault="qualified" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:bc="http://PuntoAccessoPSP.spcoop.gov.it/BarCode_GS1_128_Modified" 
+	targetNamespace="http://PuntoAccessoPSP.spcoop.gov.it/BarCode_GS1_128_Modified">
+	
+	<xs:simpleType name="stCodStazPA">
+		<xs:restriction base="xs:string">
+			<xs:minLength value="2" />
+			<xs:maxLength value="2" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stAuxDigit">
+		<xs:restriction base="xs:string">
+			<xs:length value="1" />
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="stGln">
+		<xs:restriction base="xs:string">
+			<xs:length value="13" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="stCodIUV">
+		<xs:restriction base="xs:string">
+			<xs:length value="15" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:complexType name="BarCodeType">
+		<xs:sequence>
+			<xs:element type="bc:stGln" name="Gln" />
+			<xs:element type="bc:stCodStazPA" name="CodStazPA" />
+			<xs:element type="bc:stAuxDigit" name="AuxDigit" />
+			<xs:element type="bc:stCodIUV" name="CodIUV" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:element name="BarCode" type="bc:BarCodeType" />
+	
+</xs:schema>
