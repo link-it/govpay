@@ -19,9 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.model.CondizionePagamentoModel;
+import it.govpay.ejb.core.model.CondizionePagamentoModel;
 import it.govpay.orm.posizionedebitoria.Condizione;
 
 public class CondizionePagamentoBuilder {

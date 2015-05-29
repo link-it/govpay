@@ -19,11 +19,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils;
+package it.govpay.ejb.core.utils;
 
 import java.util.Map;
 
-import it.govpay.ejb.filter.PagingFilter;
+import it.govpay.ejb.core.filter.PagingFilter;
 
 import javax.persistence.Query;
 

@@ -24,6 +24,7 @@ package it.govpay.ejb.ndp.controller;
 import it.gov.digitpa.schemas._2011.psp.CtInformativaDetail;
 import it.gov.digitpa.schemas._2011.psp.InformativaPSP;
 import it.gov.digitpa.schemas._2011.psp.ListaInformativePSP;
+import it.gov.digitpa.schemas._2011.psp.ObjectFactory;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSP;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSPRisposta;
 import it.govpay.ejb.core.exception.GovPayException;
@@ -51,7 +52,6 @@ import javax.activation.DataHandler;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
@@ -94,15 +94,14 @@ public class PspController {
 			ByteArrayOutputStream output = new ByteArrayOutputStream();
 			dh.writeTo(output);
 
-			JAXBContext jaxbContext = JAXBContext.newInstance(it.gov.digitpa.schemas._2011.psp.ObjectFactory.class);
+			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
 			Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 
-			Object o = jaxbUnmarshaller.unmarshal(risposta.getXmlInformativa().getDataSource().getInputStream());
-			ListaInformativePSP ricevuta = (ListaInformativePSP) ((JAXBElement<?>) o).getValue();
+			ListaInformativePSP informativePsp = (ListaInformativePSP) jaxbUnmarshaller.unmarshal(risposta.getXmlInformativa().getDataSource().getInputStream());
 
 			List<GatewayPagamentoModel> listaPsp = new ArrayList<GatewayPagamentoModel>();
 
-			for(InformativaPSP informativaPsp : ricevuta.getInformativaPSPs()) {
+			for(InformativaPSP informativaPsp : informativePsp.getInformativaPSPs()) {
 				for(CtInformativaDetail informativaPspDetail : informativaPsp.getListaInformativaDetail().getInformativaDetails()) {
 				
 					GatewayPagamentoModel psp = new GatewayPagamentoModel();
@@ -183,7 +182,14 @@ public class PspController {
 						psp.setCanalePagamento(EnumCanalePagamento.PSP);
 						psp.setDocumentoPagamento(null);										
 						break;
+					case OBEP:
+						psp.setModalitaPagamento(EnumModalitaPagamento.MYBANK);
+						psp.setStrumentoPagamento(EnumStrumentoPagamento.DOCUMENTO_PAGAMENTO);
+						psp.setCanalePagamento(EnumCanalePagamento.PSP);
+						psp.setDocumentoPagamento(null);										
+						break;
 					}
+					
 
 					listaPsp.add(psp);
 				}

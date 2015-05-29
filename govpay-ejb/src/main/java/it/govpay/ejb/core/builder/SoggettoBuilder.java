@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.model.DestinatarioPendenzaModel;
-import it.govpay.ejb.model.VersanteModel;
+import it.govpay.ejb.core.model.DestinatarioPendenzaModel;
+import it.govpay.ejb.core.model.VersanteModel;
 import it.govpay.orm.pagamenti.DatiAnagraficiVersante;
 import it.govpay.orm.posizionedebitoria.DatiAnagraficiDestinatario;
 

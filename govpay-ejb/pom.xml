@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>1.0b2</version>
+		<version>1.0b3</version>
 	</parent>
 
 	<artifactId>govpay-ejb</artifactId>
@@ -24,15 +24,11 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-			<scope>provided</scope><!--per compilazione da eclipse, si evita linkage 
-				error -->
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-			<scope>provided</scope><!--per compilazione da eclipse, si evita linkage 
-				error -->
 		</dependency>
 
 		<dependency>
@@ -118,20 +114,20 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>1.6</version>
+				<version>1.5</version>
 				<executions>
 					<execution>
 						<id>xjc</id>
 						<goals>
 							<goal>xjc</goal>
 						</goals>
-						<configuration>
-							<schemaDirectory>src/main/resources/xsd/</schemaDirectory>
-							<schemaFiles>rest.xsd,CatalogoDatiInformativi_1_0_7.xsd</schemaFiles>
-							<arguments>-extension</arguments>
-						</configuration>
 					</execution>
 				</executions>
+				<configuration>
+					<schemaDirectory>${basedir}/src/main/resources/xsd/</schemaDirectory>
+					<arguments>-extension</arguments>
+					<schemaFiles>rest.xsd,CatalogoDatiInformativi_1_0_8.xsd</schemaFiles>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.cxf</groupId>

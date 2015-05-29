@@ -21,20 +21,20 @@
  */
 package it.govpay.web.console.pagamenti.service;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.controller.DistintaEJB;
-import it.govpay.ejb.controller.PendenzaEJB;
-import it.govpay.ejb.filter.DistintaFilter;
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.DistintaModel.EnumStatoDistinta;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.EsitoPagamentoDistinta;
-import it.govpay.ejb.model.PagamentoModel.EnumStatoPagamento;
-import it.govpay.ejb.model.PendenzaModel;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
-import it.govpay.ndp.ejb.DocumentiEJB;
-import it.govpay.ndp.model.impl.RPTModel;
-import it.govpay.ndp.model.impl.RTModel;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.ejb.DistintaEJB;
+import it.govpay.ejb.core.ejb.PendenzaEJB;
+import it.govpay.ejb.core.filter.DistintaFilter;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.DistintaModel.EnumStatoDistinta;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.EsitoPagamentoDistinta;
+import it.govpay.ejb.core.model.PagamentoModel.EnumStatoPagamento;
+import it.govpay.ejb.core.model.PendenzaModel;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.ndp.ejb.DocumentiEJB;
+import it.govpay.ejb.ndp.model.impl.RPTModel;
+import it.govpay.ejb.ndp.model.impl.RTModel;
 import it.govpay.web.console.pagamenti.bean.DistintaBean;
 import it.govpay.web.console.pagamenti.form.DistintaSearchForm;
 import it.govpay.web.console.pagamenti.iservice.IDistintaService;
@@ -183,7 +183,7 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 
 				List<DettaglioPagamento> dettagliPagamento = new ArrayList<PagamentoModel.DettaglioPagamento>();
 
-				for(it.govpay.ejb.model.PagamentoModel pagamentoEjbModel : distintaById.getPagamenti()) {
+				for(it.govpay.ejb.core.model.PagamentoModel pagamentoEjbModel : distintaById.getPagamenti()) {
 					PendenzaModel pendenzaModel = null;
 					for(PendenzaModel pendenzaModelAct : pendenze) {
 						if(pendenzaModelAct.getCondizioniPagamento().get(0).getIdCondizione().equals(pagamentoEjbModel.getIdCondizionePagamento())) {

@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.model.TributoModel;
-import it.govpay.ejb.model.TributoModel.EnumStatoTributo;
+import it.govpay.ejb.core.model.TributoModel;
+import it.govpay.ejb.core.model.TributoModel.EnumStatoTributo;
 import it.govpay.orm.profilazione.TributoEnte;
 
 public class TributoBuilder {

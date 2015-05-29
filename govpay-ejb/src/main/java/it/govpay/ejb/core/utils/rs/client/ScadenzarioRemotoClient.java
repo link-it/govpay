@@ -19,16 +19,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils.rs.client;
+package it.govpay.ejb.core.utils.rs.client;
 
-import it.govpay.ejb.exception.GovPayEnteException;
-import it.govpay.ejb.exception.GovPayEnteException.EnteFaultCode;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.utils.rs.HttpUrlUtils;
-import it.govpay.ejb.utils.rs.JaxbUtils;
+import it.govpay.ejb.core.exception.GovPayEnteException;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayEnteException.EnteFaultCode;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.utils.rs.HttpUrlUtils;
+import it.govpay.ejb.core.utils.rs.JaxbUtils;
 import it.govpay.rs.ErroreEnte;
 import it.govpay.rs.Pagamento;
 

@@ -21,15 +21,15 @@
  */
 package it.govpay.web.console.anagrafica.service;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumFornitoreGateway;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumStato;
-import it.govpay.ndp.controller.PspController;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
-import it.govpay.ndp.model.DominioEnteModel;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumFornitoreGateway;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumStato;
+import it.govpay.ejb.ndp.controller.PspController;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.ndp.model.DominioEnteModel;
 import it.govpay.web.console.anagrafica.bean.PspBean;
 import it.govpay.web.console.anagrafica.form.PspSearchForm;
 import it.govpay.web.console.anagrafica.iservice.IPspService;

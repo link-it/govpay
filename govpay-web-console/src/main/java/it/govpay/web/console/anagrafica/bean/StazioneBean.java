@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
-import it.govpay.ndp.model.StazioneModel;
+import it.govpay.ejb.ndp.model.StazioneModel;
 
 import org.openspcoop2.generic_project.web.bean.BaseBean;
 import org.openspcoop2.generic_project.web.core.Utils;

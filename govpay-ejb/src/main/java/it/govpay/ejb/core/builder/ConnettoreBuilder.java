@@ -19,12 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.model.ConnettoreModel;
-import it.govpay.ejb.model.ConnettoreModel.EnumAuthType;
-import it.govpay.ejb.model.ConnettoreModel.EnumSslType;
-import it.govpay.ejb.model.ConnettorePddModel;
+import it.govpay.ejb.core.model.ConnettoreModel;
+import it.govpay.ejb.core.model.ConnettorePddModel;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumAuthType;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumSslType;
 import it.govpay.orm.profilazione.ProprietaConnettore;
 
 import java.util.ArrayList;

@@ -228,6 +228,7 @@
 			<xs:enumeration value="AddebitoDiretto" />
 			<xs:enumeration value="CartaPagamento" />
 			<xs:enumeration value="AttivatoPressoPsp" />
+			<xs:enumeration value="MyBank" />
 		</xs:restriction>
 	</xs:simpleType>
 

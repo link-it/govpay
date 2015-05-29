@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.ScadenzarioModelId;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.ScadenzarioModelId;
 import it.govpay.web.console.anagrafica.model.ScadenzarioModel;
 import it.govpay.web.console.utils.Utils;
 

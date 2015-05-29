@@ -19,13 +19,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils.rs.client;
+package it.govpay.ejb.core.utils.rs.client;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.model.ConnettoreModel;
-import it.govpay.ejb.model.ConnettoreModel.EnumAuthType;
-import it.govpay.ejb.model.ConnettoreModel.EnumSslType;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.model.ConnettoreModel;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumAuthType;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumSslType;
 
 import java.io.FileInputStream;
 import java.net.URL;

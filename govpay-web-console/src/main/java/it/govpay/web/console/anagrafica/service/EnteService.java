@@ -21,12 +21,12 @@
  */
 package it.govpay.web.console.anagrafica.service;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.filter.EnteCreditoreFilter;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.TributoModel;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
-import it.govpay.ndp.model.DominioEnteModel;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.filter.EnteCreditoreFilter;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.TributoModel;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.ndp.model.DominioEnteModel;
 import it.govpay.web.console.anagrafica.bean.EnteBean;
 import it.govpay.web.console.anagrafica.bean.TributoBean;
 import it.govpay.web.console.anagrafica.form.EnteSearchForm;

@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.anagrafica.form;
 
-import it.govpay.ejb.model.ConnettorePddModel;
-import it.govpay.ndp.model.IntermediarioModel;
+import it.govpay.ejb.core.model.ConnettorePddModel;
+import it.govpay.ejb.ndp.model.IntermediarioModel;
 import it.govpay.web.console.anagrafica.bean.IntermediarioNdpBean;
 
 import java.io.Serializable;

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils;
+package it.govpay.ejb.core.utils;
 
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;

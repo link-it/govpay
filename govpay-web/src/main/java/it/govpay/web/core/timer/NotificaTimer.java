@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.timer;
+package it.govpay.web.core.timer;
 
 import java.util.List;
 
@@ -30,12 +30,12 @@ import javax.ejb.Singleton;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.controller.DistintaEJB;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.web.controller.PagamentiController;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.ejb.DistintaEJB;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.web.core.controller.PagamentiController;
 
 @Singleton
 public class NotificaTimer {

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.timer;
+package it.govpay.web.core.timer;
 
 import java.util.List;
 
@@ -30,10 +30,10 @@ import javax.ejb.Singleton;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ndp.controller.RptController;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.ndp.controller.RptController;
 
 @Singleton
 public class SpedizioneAttivatiTimer {

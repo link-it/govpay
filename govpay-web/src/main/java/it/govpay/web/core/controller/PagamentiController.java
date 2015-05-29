@@ -19,27 +19,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.controller;
+package it.govpay.web.core.controller;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.controller.DistintaEJB;
-import it.govpay.ejb.controller.ScadenzarioEJB;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.DistintaModel.EnumStatoDistinta;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModelloVersamento;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.EsitoPagamentoDistinta;
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.PendenzaModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.utils.rs.EjbUtils;
-import it.govpay.ndp.controller.RptController;
-import it.govpay.ndp.controller.RptController.DatiStatoRPT;
-import it.govpay.ndp.controller.RrController;
-import it.govpay.ndp.controller.RtController;
-import it.govpay.ndp.util.exception.GovPayNdpException;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.ejb.DistintaEJB;
+import it.govpay.ejb.core.ejb.ScadenzarioEJB;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.EsitoPagamentoDistinta;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.PendenzaModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.model.DistintaModel.EnumStatoDistinta;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModelloVersamento;
+import it.govpay.ejb.core.utils.rs.EjbUtils;
+import it.govpay.ejb.ndp.controller.RptController;
+import it.govpay.ejb.ndp.controller.RrController;
+import it.govpay.ejb.ndp.controller.RtController;
+import it.govpay.ejb.ndp.controller.RptController.DatiStatoRPT;
+import it.govpay.ejb.ndp.util.exception.GovPayNdpException;
 import it.govpay.rs.RichiestaPagamento;
 import it.govpay.rs.VerificaPagamento;
 import it.govpay.web.utils.ValidazioneUtil;
@@ -149,7 +149,7 @@ public class PagamentiController {
 			// Errore di trasmissione
 			// Non so se la spedizione e' stata comunque acquisita.
 			// Lascio in corso e aggiornero alla prima verifica.
-			log.error("Spedizione fallita: " + e);
+			log.error("Spedizione fallita: " + e, e);
 
 			if(gw.getModelloVersamento().equals(EnumModelloVersamento.DIFFERITO))
 				nuovo_stato = EnumStatoDistinta.ESEGUITO_SBF;

@@ -21,10 +21,10 @@
  */
 package it.govpay.web.rs;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
-import it.govpay.ndp.ejb.RendicontazioneEJB;
-import it.govpay.ndp.model.RendicontazioneModel;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.ndp.ejb.RendicontazioneEJB;
+import it.govpay.ejb.ndp.model.RendicontazioneModel;
 import it.govpay.rs.ListaRendicontazioni;
 
 import javax.inject.Inject;

@@ -19,15 +19,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils;
+package it.govpay.ejb.core.utils;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashSet;
 
-import it.govpay.ejb.model.CondizionePagamentoModel;
-import it.govpay.ejb.model.DestinatarioPendenzaModel;
-import it.govpay.ejb.model.PendenzaModel;
+import it.govpay.ejb.core.model.CondizionePagamentoModel;
+import it.govpay.ejb.core.model.DestinatarioPendenzaModel;
+import it.govpay.ejb.core.model.PendenzaModel;
 import it.govpay.orm.posizionedebitoria.Condizione;
 import it.govpay.orm.posizionedebitoria.DestinatarioPendenza;
 import it.govpay.orm.posizionedebitoria.Pendenza;

@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.utils;
 
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.OperatoreModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.OperatoreModel;
 import it.govpay.web.console.mbean.LoginMBean;
 
 import java.io.IOException;

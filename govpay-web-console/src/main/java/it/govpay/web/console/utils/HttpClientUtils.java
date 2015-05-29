@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.utils;
 
-import it.govpay.ejb.utils.rs.JaxbUtils;
+import it.govpay.ejb.core.utils.rs.JaxbUtils;
 import it.govpay.rs.RichiestaPagamento;
 
 import java.io.ByteArrayInputStream;

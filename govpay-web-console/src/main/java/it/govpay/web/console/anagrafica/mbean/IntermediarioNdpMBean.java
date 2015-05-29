@@ -21,9 +21,9 @@
  */
 package it.govpay.web.console.anagrafica.mbean;
 
-import it.govpay.ejb.model.ConnettoreModel.EnumAuthType;
-import it.govpay.ejb.model.ConnettoreModel.EnumSslType;
-import it.govpay.ndp.model.IntermediarioModel;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumAuthType;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumSslType;
+import it.govpay.ejb.ndp.model.IntermediarioModel;
 import it.govpay.web.console.GovPayWebConsoleConversationManager;
 import it.govpay.web.console.anagrafica.bean.IntermediarioNdpBean;
 import it.govpay.web.console.anagrafica.form.IntermediarioNdpForm;

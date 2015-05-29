@@ -23,7 +23,7 @@ package it.govpay.web.console.anagrafica.iservice;
 
 import java.util.List;
 
-import it.govpay.ndp.model.DominioEnteModel;
+import it.govpay.ejb.ndp.model.DominioEnteModel;
 import it.govpay.web.console.anagrafica.bean.EnteBean;
 import it.govpay.web.console.anagrafica.bean.TributoBean;
 import it.govpay.web.console.anagrafica.form.EnteSearchForm;

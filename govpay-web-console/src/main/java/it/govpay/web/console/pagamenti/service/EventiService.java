@@ -21,11 +21,11 @@
  */
 package it.govpay.web.console.pagamenti.service;
 
-import it.govpay.ndp.ejb.EventoEJB;
-import it.govpay.ndp.ejb.filter.EventoFilter;
-import it.govpay.ndp.model.EventiInterfacciaModel;
-import it.govpay.ndp.model.EventiInterfacciaModel.Evento;
-import it.govpay.ndp.model.EventiInterfacciaModel.Infospcoop;
+import it.govpay.ejb.ndp.ejb.EventoEJB;
+import it.govpay.ejb.ndp.ejb.filter.EventoFilter;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Evento;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Infospcoop;
 import it.govpay.web.console.pagamenti.bean.EventoBean;
 import it.govpay.web.console.pagamenti.bean.InfospcoopBean;
 import it.govpay.web.console.pagamenti.form.EventiSearchForm;

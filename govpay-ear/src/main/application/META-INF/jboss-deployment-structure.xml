@@ -1,16 +1,12 @@
-<jboss-deployment-structure>
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
 	<deployment>
 		<dependencies>
 			<module name="javax.faces.api" slot="main" export="true" />
 			<module name="com.sun.jsf-impl" slot="main" export="true" />
 		</dependencies>
 	</deployment>
-	<sub-deployment name="govpay-web-console-1.0b2.war">
+	<sub-deployment name="govpay-web-console-1.0b3.war">
 	</sub-deployment>
-	<sub-deployment name="govpay-web-1.0b2.war">
-	</sub-deployment>
-	<sub-deployment name="govpay-ndp-web-1.0b2.war">
-	</sub-deployment>
-	<sub-deployment name="govpay-pub-web-1.0b2.war">
+	<sub-deployment name="govpay-web-1.0b3.war">
 	</sub-deployment>
 </jboss-deployment-structure>

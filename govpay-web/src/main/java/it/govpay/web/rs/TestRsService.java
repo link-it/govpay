@@ -21,36 +21,36 @@
  */
 package it.govpay.web.rs;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.controller.DistintaEJB;
-import it.govpay.ejb.controller.PendenzaEJB;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.filter.DistintaFilter;
-import it.govpay.ejb.filter.EnteCreditoreFilter;
-import it.govpay.ejb.model.ConnettoreModel;
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.DistintaModel.EnumStatoDistinta;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.EnteCreditoreModel.EnumStato;
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.OperatoreModel;
-import it.govpay.ejb.model.PendenzaModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.model.ScadenzarioModelId;
-import it.govpay.ejb.model.TributoModel;
-import it.govpay.ejb.model.TributoModel.EnumStatoTributo;
-import it.govpay.ndp.controller.FrController;
-import it.govpay.ndp.controller.RptController;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
-import it.govpay.ndp.ejb.EventoEJB;
-import it.govpay.ndp.ejb.filter.EventoFilter;
-import it.govpay.ndp.ejb.filter.IntermediarioFilter;
-import it.govpay.ndp.ejb.filter.ScadenzarioFilter;
-import it.govpay.ndp.model.DominioEnteModel;
-import it.govpay.ndp.model.EventiInterfacciaModel.Evento;
-import it.govpay.ndp.model.IntermediarioModel;
-import it.govpay.ndp.model.StazioneModel;
-import it.govpay.web.controller.GatewayController;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.ejb.DistintaEJB;
+import it.govpay.ejb.core.ejb.PendenzaEJB;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.filter.DistintaFilter;
+import it.govpay.ejb.core.filter.EnteCreditoreFilter;
+import it.govpay.ejb.core.model.ConnettoreModel;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.OperatoreModel;
+import it.govpay.ejb.core.model.PendenzaModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.model.ScadenzarioModelId;
+import it.govpay.ejb.core.model.TributoModel;
+import it.govpay.ejb.core.model.DistintaModel.EnumStatoDistinta;
+import it.govpay.ejb.core.model.EnteCreditoreModel.EnumStato;
+import it.govpay.ejb.core.model.TributoModel.EnumStatoTributo;
+import it.govpay.ejb.ndp.controller.FrController;
+import it.govpay.ejb.ndp.controller.RptController;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.ndp.ejb.EventoEJB;
+import it.govpay.ejb.ndp.ejb.filter.EventoFilter;
+import it.govpay.ejb.ndp.ejb.filter.IntermediarioFilter;
+import it.govpay.ejb.ndp.ejb.filter.ScadenzarioFilter;
+import it.govpay.ejb.ndp.model.DominioEnteModel;
+import it.govpay.ejb.ndp.model.IntermediarioModel;
+import it.govpay.ejb.ndp.model.StazioneModel;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Evento;
+import it.govpay.web.core.controller.GatewayController;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -503,7 +503,7 @@ public class TestRsService {
 	public void aggiornaStatoGateway() throws GovPayException {
 		GatewayPagamentoModel gateway = new GatewayPagamentoModel();
 		gateway.setIdGateway(17l);
-		gateway.setStato(it.govpay.ejb.model.GatewayPagamentoModel.EnumStato.ATTIVO);
+		gateway.setStato(it.govpay.ejb.core.model.GatewayPagamentoModel.EnumStato.ATTIVO);
 		anagraficaEjb.aggiornaStatoGateway(gateway);
 	}
 

@@ -25,10 +25,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.SoggettoModel;
-import it.govpay.ejb.model.TributoModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.SoggettoModel;
+import it.govpay.ejb.core.model.TributoModel;
 
 public class PagamentoModel {
 	

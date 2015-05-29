@@ -19,24 +19,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.model.CondizionePagamentoModel;
-import it.govpay.ejb.model.CondizionePagamentoModel.EnumTipoPagamento;
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.DistintaModel.EnumStatoDistinta;
-import it.govpay.ejb.model.DistintaModel.EnumTipoAutenticazioneSoggetto;
-import it.govpay.ejb.model.DistintaModel.EnumTipoFirma;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.PagamentoModel;
-import it.govpay.ejb.model.PendenzaModel;
-import it.govpay.ejb.model.PendenzaModel.EnumModalitaPagamento;
-import it.govpay.ejb.model.PendenzaModel.EnumStatoPendenza;
-import it.govpay.ejb.model.TributoModel;
-import it.govpay.ejb.utils.DataTypeUtils;
-import it.govpay.ejb.utils.EnumUtils;
-import it.govpay.ejb.utils.rs.EjbUtils;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.model.CondizionePagamentoModel;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.PagamentoModel;
+import it.govpay.ejb.core.model.PendenzaModel;
+import it.govpay.ejb.core.model.TributoModel;
+import it.govpay.ejb.core.model.CondizionePagamentoModel.EnumTipoPagamento;
+import it.govpay.ejb.core.model.DistintaModel.EnumStatoDistinta;
+import it.govpay.ejb.core.model.DistintaModel.EnumTipoAutenticazioneSoggetto;
+import it.govpay.ejb.core.model.DistintaModel.EnumTipoFirma;
+import it.govpay.ejb.core.model.PendenzaModel.EnumModalitaPagamento;
+import it.govpay.ejb.core.model.PendenzaModel.EnumStatoPendenza;
+import it.govpay.ejb.core.utils.DataTypeUtils;
+import it.govpay.ejb.core.utils.EnumUtils;
+import it.govpay.ejb.core.utils.rs.EjbUtils;
 import it.govpay.orm.pagamenti.DistintaPagamento;
 import it.govpay.orm.pagamenti.Pagamento;
 import it.govpay.rs.DatiSingoloVersamento;

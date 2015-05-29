@@ -25,11 +25,11 @@ import java.util.ArrayList;
 
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.CtNumeroAvviso;
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
 import it.govpay.report.AvvisiDiPagamento;
 import it.govpay.report.dto.DocumentoDiPagamentoDTO;
 import it.govpay.rs.avviso.RichiestaAvviso;

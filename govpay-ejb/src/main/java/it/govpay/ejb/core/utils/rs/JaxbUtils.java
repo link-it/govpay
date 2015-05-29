@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils.rs;
+package it.govpay.ejb.core.utils.rs;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -49,8 +49,8 @@ public class JaxbUtils {
 	public static void init() throws Exception {
 		jaxbContext = JAXBContext.newInstance(EsitoRevoca.class, RichiestaPagamento.class, VerificaPagamento.class, Errore.class, ErroreEnte.class, Pagamento.class);
 		SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-		schema = sf.newSchema(new StreamSource(JaxbUtils.class.getClassLoader().getResourceAsStream("/rest.xsd")));
-		schemaScadenzario = sf.newSchema(new StreamSource(JaxbUtils.class.getClassLoader().getResourceAsStream("/restScadenzario.xsd")));
+		schema = sf.newSchema(new StreamSource(JaxbUtils.class.getClassLoader().getResourceAsStream("xsd/rest.xsd")));
+		schemaScadenzario = sf.newSchema(new StreamSource(JaxbUtils.class.getClassLoader().getResourceAsStream("xsd/restScadenzario.xsd")));
 	}
 
 	public static String toString(RichiestaPagamento richiestaPagamento) throws JAXBException {

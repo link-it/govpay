@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>1.0b2</version>
+		<version>1.0b3</version>
 	</parent>
 
 	<artifactId>govpay-web</artifactId>
@@ -35,27 +35,8 @@
 			<artifactId>govpay-ejb</artifactId>
 			<type>ejb</type>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-ndp</artifactId>
-			<type>ejb</type>
-			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>*</groupId>
-					<artifactId>*</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-report</artifactId>

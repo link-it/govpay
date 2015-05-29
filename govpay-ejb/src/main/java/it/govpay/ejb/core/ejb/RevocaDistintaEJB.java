@@ -19,12 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.controller;
+package it.govpay.ejb.core.ejb;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.RevocaDistintaModel;
-import it.govpay.ejb.model.RevocaDistintaModel.EnumStatoRevoca;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.RevocaDistintaModel;
+import it.govpay.ejb.core.model.RevocaDistintaModel.EnumStatoRevoca;
 
 import java.math.BigDecimal;
 import java.util.Date;

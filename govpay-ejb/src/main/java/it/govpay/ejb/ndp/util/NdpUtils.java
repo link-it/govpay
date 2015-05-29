@@ -81,7 +81,7 @@ public class NdpUtils {
 	private static void init() throws JAXBException, SAXException {
 		if(jaxbContext == null || RPT_RT_schema==null) {
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(ValidatoreNdP.class.getResourceAsStream("/wsdl/PagInf_RPT_RT_6_0_1.xsd"))); 
+			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(ValidatoreNdP.class.getResourceAsStream("/xsd/PagInf_RPT_RT_6_0_1.xsd"))); 
 			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.ws.paa");
 		}
 	}
@@ -267,6 +267,9 @@ public class NdpUtils {
 			break;
 		case ATTIVATO_PRESSO_PSP:
 			datiVersamento.setTipoVersamento(StTipoVersamento.PO);
+			break;
+		case MYBANK:
+			datiVersamento.setTipoVersamento(StTipoVersamento.OBEP);
 			break;
 		}
 		

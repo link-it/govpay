@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils;
+package it.govpay.ejb.core.utils;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
 
 import java.math.BigInteger;
 

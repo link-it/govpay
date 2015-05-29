@@ -11,8 +11,7 @@
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
 	jaxb:version="2.0">
 	<wsdl:types>
-		<xsd:schema version="1.0"
-			targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
+		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
 			<xsd:simpleType name="stText35">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
@@ -22,13 +21,10 @@
 			<xsd:element name="intestazionePPT">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="identificativoIntermediarioPA"
-							type="ppthead:stText35" />
-						<xsd:element name="identificativoStazioneIntermediarioPA"
-							type="ppthead:stText35" />
+						<xsd:element name="identificativoIntermediarioPA" type="ppthead:stText35" />
+						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35" />
 						<xsd:element name="identificativoDominio" type="ppthead:stText35" />
-						<xsd:element name="identificativoUnivocoVersamento"
-							type="ppthead:stText35" />
+						<xsd:element name="identificativoUnivocoVersamento" type="ppthead:stText35" />
 						<xsd:element name="codiceContestoPagamento" type="ppthead:stText35" />
 					</xsd:sequence>
 				</xsd:complexType>
@@ -44,7 +40,7 @@
 				</xsd:appinfo>
 			</xsd:annotation>
 
-			<xsd:import schemaLocation="PagInf_RPT_RT_6_0_1.xsd" namespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" />
+			<xsd:import schemaLocation="../xsd/Merge.xsd" namespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" />
 
 			<xsd:simpleType name="stText35">
 				<xsd:restriction base="xsd:string">
@@ -60,51 +56,38 @@
 			<!-- Element Definition -->
 			<xsd:complexType name="paaTipoDatiPagamentoPA">
 				<xsd:sequence>
-					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto"
-						minOccurs="1">
+					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier"
-						minOccurs="0">
+					<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier" minOccurs="0">
 					</xsd:element>
-					<xsd:element name="bicAccredito" type="pay_i:stBICIdentifier"
-						minOccurs="0">
+					<xsd:element name="bicAccredito" type="pay_i:stBICIdentifier" minOccurs="0">
 					</xsd:element>
-					<xsd:element name="enteBeneficiario" type="pay_i:ctEnteBeneficiario"
-						minOccurs="0" maxOccurs="1">
+					<xsd:element name="enteBeneficiario" type="pay_i:ctEnteBeneficiario" minOccurs="0" maxOccurs="1">
 					</xsd:element>
-					<xsd:element name="credenzialiPagatore" type="pay_i:stText35"
-						minOccurs="0">
+					<xsd:element name="credenzialiPagatore" type="pay_i:stText35" minOccurs="0">
 					</xsd:element>
-					<xsd:element name="causaleVersamento" type="pay_i:stText140"
-						minOccurs="1">
+					<xsd:element name="causaleVersamento" type="pay_i:stText140" minOccurs="1">
 					</xsd:element>
-					<!-- xsd:element name="datiSpecificiRiscossione" type="pay_i:stDatiSpecificiRiscossione" 
-						minOccurs="1"> </xsd:element -->
+					<!-- xsd:element name="datiSpecificiRiscossione" type="pay_i:stDatiSpecificiRiscossione" minOccurs="1">
+					</xsd:element -->
 				</xsd:sequence>
 			</xsd:complexType>
 
 			<xsd:complexType name="paaTipoDatiPagamentoPSP">
 				<xsd:sequence>
-					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto"
-						minOccurs="1">
+					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto" minOccurs="1">
 					</xsd:element>
-					<xsd:element name="ibanAppoggio" type="pay_i:stIBANIdentifier"
-						minOccurs="0">
+					<xsd:element name="ibanAppoggio" type="pay_i:stIBANIdentifier" minOccurs="0">
 					</xsd:element>
-					<xsd:element name="bicAppoggio" type="pay_i:stBICIdentifier"
-						minOccurs="0">
+					<xsd:element name="bicAppoggio" type="pay_i:stBICIdentifier" minOccurs="0">
 					</xsd:element>
-					<xsd:element name="soggettoVersante" type="pay_i:ctSoggettoVersante"
-						minOccurs="0"></xsd:element>
-					<!-- TODO: Da valutare -->
-					<xsd:element name="ibanAddebito" type="pay_i:stIBANIdentifier"
-						minOccurs="0">
+					<xsd:element name="soggettoVersante" type="pay_i:ctSoggettoVersante" minOccurs="0"></xsd:element>
+							<!-- TODO: Da valutare -->
+					<xsd:element name="ibanAddebito" type="pay_i:stIBANIdentifier" minOccurs="0">
 					</xsd:element>
-					<xsd:element name="bicAddebito" type="pay_i:stBICIdentifier"
-						minOccurs="0">
+					<xsd:element name="bicAddebito" type="pay_i:stBICIdentifier" minOccurs="0">
 					</xsd:element>
-					<xsd:element name="soggettoPagatore" type="pay_i:ctSoggettoPagatore"
-						minOccurs="0"></xsd:element>
+					<xsd:element name="soggettoPagatore" type="pay_i:ctSoggettoPagatore" minOccurs="0"></xsd:element>
 				</xsd:sequence>
 
 			</xsd:complexType>
@@ -124,10 +107,8 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="xsd:string"
-								minOccurs="0" />
-							<xsd:element name="datiPagamentoPA" type="ppt:paaTipoDatiPagamentoPA"
-								minOccurs="0" />
+							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+							<xsd:element name="datiPagamentoPA" type="ppt:paaTipoDatiPagamentoPA" minOccurs="0" />
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -147,18 +128,15 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="xsd:string"
-								minOccurs="0" />
-							<xsd:element name="datiPagamentoPA" type="ppt:paaTipoDatiPagamentoPA"
-								minOccurs="0" />
+							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+							<xsd:element name="datiPagamentoPA" type="ppt:paaTipoDatiPagamentoPA" minOccurs="0" />
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>
 			<xsd:complexType name="risposta">
 				<xsd:sequence>
-					<xsd:element name="fault" type="ppt:faultBean"
-						minOccurs="0" />
+					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
 			<xsd:complexType name="faultBean">
@@ -166,8 +144,7 @@
 					<xsd:element name="faultCode" type="xsd:string" />
 					<xsd:element name="faultString" type="xsd:string" />
 					<xsd:element name="id" type="xsd:string" />
-					<xsd:element name="description" type="xsd:string"
-						minOccurs="0" />
+					<xsd:element name="description" type="xsd:string" minOccurs="0" />
 					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
@@ -189,27 +166,21 @@
 	</wsdl:message>
 	<wsdl:portType name="PagamentiTelematiciCCP">
 		<wsdl:operation name="paaVerificaRPT">
-			<wsdl:input message="tns:paaVerificaRPT"
-				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRichiesta" />
-			<wsdl:output message="tns:paaVerificaRPTRisposta"
-				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRisposta" />
+			<wsdl:input message="tns:paaVerificaRPT" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRichiesta" />
+			<wsdl:output message="tns:paaVerificaRPTRisposta" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRisposta" />
 		</wsdl:operation>
 		<wsdl:operation name="paaAttivaRPT">
-			<wsdl:input message="tns:paaAttivaRPT"
-				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaAttivaRPTRichiesta" />
-			<wsdl:output message="tns:paaAttivaRPTRisposta"
-				wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaAttivaRPTRisposta" />
+			<wsdl:input message="tns:paaAttivaRPT" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaAttivaRPTRichiesta" />
+			<wsdl:output message="tns:paaAttivaRPTRisposta" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaAttivaRPTRisposta" />
 		</wsdl:operation>
 	</wsdl:portType>
 	<wsdl:binding name="PagamentiTelematiciCCPbinding" type="tns:PagamentiTelematiciCCP">
-		<soap:binding style="document"
-			transport="http://schemas.xmlsoap.org/soap/http" />
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
 		<wsdl:operation name="paaAttivaRPT">
 			<soap:operation soapAction="paaAttivaRPT" />
 			<wsdl:input>
 				<soap:body parts="bodyrichiesta" use="literal" />
-				<soap:header message="tns:paaAttivaRPT" part="header"
-					use="literal" />
+				<soap:header message="tns:paaAttivaRPT" part="header" use="literal" />
 			</wsdl:input>
 			<wsdl:output>
 				<soap:body use="literal" />
@@ -219,8 +190,7 @@
 			<soap:operation soapAction="paaVerificaRPT" />
 			<wsdl:input>
 				<soap:body parts="bodyrichiesta" use="literal" />
-				<soap:header message="tns:paaVerificaRPT" part="header"
-					use="literal" />
+				<soap:header message="tns:paaVerificaRPT" part="header" use="literal" />
 			</wsdl:input>
 			<wsdl:output>
 				<soap:body use="literal" />

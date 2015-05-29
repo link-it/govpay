@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.model;
+package it.govpay.ejb.core.model;
 
 /* vedi tabella pagamenti_online */
 public class TrackingOperazioniPagamentoModel {

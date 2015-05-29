@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0.8">
+<xs:schema attributeFormDefault="unqualified"
+	elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	version="1.0.8"        
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+    jaxb:version="2.0">
+
 	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:schemaBindings>
+				<jaxb:package name="it.gov.digitpa.schemas._2011.psp" />
+			</jaxb:schemaBindings>
+		</xs:appinfo>
+	</xs:annotation>
+    
+    
+    <xs:annotation>
 		<xs:documentation>Catalogo dati informativi</xs:documentation>
     </xs:annotation>
     

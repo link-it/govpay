@@ -19,12 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils.rs.client;
+package it.govpay.ejb.core.utils.rs.client;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.utils.rs.JaxbUtils;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.utils.rs.JaxbUtils;
 import it.govpay.rs.EsitoRevoca;
 import it.govpay.rs.VerificaPagamento;
 

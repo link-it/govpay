@@ -19,18 +19,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumCanalePagamento;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumDocumentoPagamento;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumFornitoreGateway;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModalitaPagamento;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModelloVersamento;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumStato;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumStrumentoPagamento;
-import it.govpay.ejb.utils.EnumUtils;
-import it.govpay.ejb.utils.GovPayConstants;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumCanalePagamento;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumDocumentoPagamento;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumFornitoreGateway;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModalitaPagamento;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModelloVersamento;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumStato;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumStrumentoPagamento;
+import it.govpay.ejb.core.utils.EnumUtils;
+import it.govpay.ejb.core.utils.GovPayConstants;
 import it.govpay.orm.configurazione.CfgCanalePagamento;
 import it.govpay.orm.configurazione.CfgCommissionePagamento;
 import it.govpay.orm.configurazione.CfgDocumentoPagamento;
@@ -124,6 +124,7 @@ public class GatewayPagamentoBuilder {
 			put(EnumModalitaPagamento.BOLLETTINO_POSTALE,15L);
 			put(EnumModalitaPagamento.BONIFICO_BANCARIO_TESORERIA,14L);
 			put(EnumModalitaPagamento.CARTA_PAGAMENTO,4L);
+			put(EnumModalitaPagamento.MYBANK,17L);
 		}
 	};
 
@@ -135,6 +136,7 @@ public class GatewayPagamentoBuilder {
 			put(15L,EnumModalitaPagamento.BOLLETTINO_POSTALE);
 			put(14L,EnumModalitaPagamento.BONIFICO_BANCARIO_TESORERIA);
 			put(4L,EnumModalitaPagamento.CARTA_PAGAMENTO);
+			put(17L,EnumModalitaPagamento.MYBANK);
 		}
 	};	
 

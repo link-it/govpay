@@ -24,7 +24,7 @@ package it.govpay.ejb.ndp.ejb;
 import it.govpay.ejb.core.builder.ConnettoreBuilder;
 import it.govpay.ejb.core.builder.CreditoreBuilder;
 import it.govpay.ejb.core.builder.ScadenzarioBuilder;
-import it.govpay.ejb.core.controller.AnagraficaEJB;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
 import it.govpay.ejb.core.exception.GovPayException;
 import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.ejb.core.model.ConnettoreModel;

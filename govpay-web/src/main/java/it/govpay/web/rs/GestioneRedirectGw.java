@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.pub.rs;
+package it.govpay.web.rs;
 
 import java.net.URL;
 
@@ -33,7 +33,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
-@Path("/gw")
+@Path("/pub")
 public class GestioneRedirectGw {
 
 	@GET

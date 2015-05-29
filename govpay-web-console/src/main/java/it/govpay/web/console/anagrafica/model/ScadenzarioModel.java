@@ -22,9 +22,9 @@
 package it.govpay.web.console.anagrafica.model;
 
 
-public class ScadenzarioModel extends it.govpay.ejb.model.ScadenzarioModel {
+public class ScadenzarioModel extends it.govpay.ejb.core.model.ScadenzarioModel {
 	
-	public ScadenzarioModel(it.govpay.ejb.model.ScadenzarioModel basicModel) {
+	public ScadenzarioModel(it.govpay.ejb.core.model.ScadenzarioModel basicModel) {
 		this.setConnettoreNotifica(basicModel.getConnettoreNotifica());
 		this.setConnettoreVerifica(basicModel.getConnettoreVerifica());
 		this.setDescrizione(basicModel.getDescrizione());

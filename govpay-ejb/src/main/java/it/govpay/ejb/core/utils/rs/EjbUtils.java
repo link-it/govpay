@@ -19,21 +19,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils.rs;
+package it.govpay.ejb.core.utils.rs;
 
-import it.govpay.ejb.model.DestinatarioPendenzaModel;
-import it.govpay.ejb.model.DistintaModel.EnumStatoDistinta;
-import it.govpay.ejb.model.EsitoPagamentoDistinta;
-import it.govpay.ejb.model.EsitoRevocaDistinta;
-import it.govpay.ejb.model.EsitoRevocaDistinta.EsitoSingolaRevoca;
-import it.govpay.ejb.model.RevocaDistintaModel.EnumStatoRevoca;
-import it.govpay.ejb.model.SoggettoModel;
-import it.govpay.ejb.model.VersanteModel;
-import it.govpay.ejb.model.DestinatarioPendenzaModel.EnumTipoDestinatario;
-import it.govpay.ejb.model.DistintaModel.EnumTipoAutenticazioneSoggetto;
-import it.govpay.ejb.model.DistintaModel.EnumTipoFirma;
-import it.govpay.ejb.model.EsitoPagamentoDistinta.EsitoSingoloPagamento;
-import it.govpay.ejb.utils.DataTypeUtils;
+import it.govpay.ejb.core.model.DestinatarioPendenzaModel;
+import it.govpay.ejb.core.model.EsitoPagamentoDistinta;
+import it.govpay.ejb.core.model.EsitoRevocaDistinta;
+import it.govpay.ejb.core.model.SoggettoModel;
+import it.govpay.ejb.core.model.VersanteModel;
+import it.govpay.ejb.core.model.DestinatarioPendenzaModel.EnumTipoDestinatario;
+import it.govpay.ejb.core.model.DistintaModel.EnumStatoDistinta;
+import it.govpay.ejb.core.model.DistintaModel.EnumTipoAutenticazioneSoggetto;
+import it.govpay.ejb.core.model.DistintaModel.EnumTipoFirma;
+import it.govpay.ejb.core.model.EsitoPagamentoDistinta.EsitoSingoloPagamento;
+import it.govpay.ejb.core.model.EsitoRevocaDistinta.EsitoSingolaRevoca;
+import it.govpay.ejb.core.model.RevocaDistintaModel.EnumStatoRevoca;
+import it.govpay.ejb.core.utils.DataTypeUtils;
 import it.govpay.rs.DatiSingolaRevoca;
 import it.govpay.rs.DatiSingoloPagamento;
 import it.govpay.rs.EsitoRevoca;
@@ -90,15 +90,15 @@ public class EjbUtils {
 	}
 	
 
-	public static List<Psp> toWebPsp(List<it.govpay.ejb.model.GatewayPagamentoModel> pspList) {
+	public static List<Psp> toWebPsp(List<it.govpay.ejb.core.model.GatewayPagamentoModel> pspList) {
 		List<Psp> pList = new ArrayList<Psp>(); 
-		for(it.govpay.ejb.model.GatewayPagamentoModel psp : pspList) {
+		for(it.govpay.ejb.core.model.GatewayPagamentoModel psp : pspList) {
 			pList.add(toWebPsp(psp));
 		}
 		return pList;
 	}
 	
-	public static Psp toWebPsp(it.govpay.ejb.model.GatewayPagamentoModel psp) {
+	public static Psp toWebPsp(it.govpay.ejb.core.model.GatewayPagamentoModel psp) {
 		Psp p = new Psp();
 		p.setCondizioniEconomicheMassime(psp.getImportoCommissioneMassima());
 		p.setDescrizione(psp.getDescrizione());
@@ -122,6 +122,9 @@ public class EjbUtils {
 			break;
 		case ATTIVATO_PRESSO_PSP:
 			p.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
+			break;
+		case MYBANK:
+			p.setTipoVersamento(TipoVersamento.MY_BANK);
 			break;
 		}
 		

@@ -21,9 +21,9 @@
  */
 package it.govpay.web.console;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.utils.rs.JaxbUtils;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.utils.rs.JaxbUtils;
 import it.govpay.web.console.utils.GovpayWebConsoleConfiguration;
 
 import javax.annotation.PostConstruct;

@@ -19,28 +19,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.controller;
+package it.govpay.ejb.core.ejb;
 
-import it.govpay.ejb.builder.CreditoreBuilder;
-import it.govpay.ejb.builder.GatewayPagamentoBuilder;
-import it.govpay.ejb.builder.OperatoreBuilder;
-import it.govpay.ejb.builder.ScadenzarioBuilder;
-import it.govpay.ejb.builder.TributoBuilder;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.filter.EnteCreditoreFilter;
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumFornitoreGateway;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModalitaPagamento;
-import it.govpay.ejb.model.OperatoreModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.model.TributoModel;
-import it.govpay.ejb.utils.CryptUtils;
-import it.govpay.ejb.utils.GeneratoreIdUnivoci;
-import it.govpay.ejb.utils.GovPayConstants;
-import it.govpay.ejb.utils.QueryUtils;
+import it.govpay.ejb.core.builder.CreditoreBuilder;
+import it.govpay.ejb.core.builder.GatewayPagamentoBuilder;
+import it.govpay.ejb.core.builder.OperatoreBuilder;
+import it.govpay.ejb.core.builder.ScadenzarioBuilder;
+import it.govpay.ejb.core.builder.TributoBuilder;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.filter.EnteCreditoreFilter;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.OperatoreModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.model.TributoModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumFornitoreGateway;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModalitaPagamento;
+import it.govpay.ejb.core.utils.CryptUtils;
+import it.govpay.ejb.core.utils.GeneratoreIdUnivoci;
+import it.govpay.ejb.core.utils.GovPayConstants;
+import it.govpay.ejb.core.utils.QueryUtils;
 import it.govpay.orm.configurazione.CfgGatewayPagamento;
 import it.govpay.orm.profilazione.CategoriaEnte;
 import it.govpay.orm.profilazione.Ente;

@@ -19,9 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.model;
+package it.govpay.ejb.core.model;
 
-import it.govpay.ejb.utils.EnumChiaveDescrizione;
+import it.govpay.ejb.core.utils.EnumChiaveDescrizione;
 
 import java.util.Date;
 
@@ -40,6 +40,7 @@ public class GatewayPagamentoModel {
 		BOLLETTINO_POSTALE("Bollettino postale"), 
 		ADDEBITO_DIRETTO("Addebito diretto"), 
 		CARTA_PAGAMENTO("Carta pagamento"), 
+		MYBANK("MyBank"), 
 		ATTIVATO_PRESSO_PSP("Attivato presso PSP");
 		
 		private String chiave;

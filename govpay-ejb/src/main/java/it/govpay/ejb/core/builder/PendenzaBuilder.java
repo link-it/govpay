@@ -19,12 +19,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.model.CondizionePagamentoModel;
-import it.govpay.ejb.model.PendenzaModel;
-import it.govpay.ejb.model.PendenzaModel.EnumModalitaPagamento;
-import it.govpay.ejb.model.PendenzaModel.EnumStatoPendenza;
+import it.govpay.ejb.core.model.CondizionePagamentoModel;
+import it.govpay.ejb.core.model.PendenzaModel;
+import it.govpay.ejb.core.model.PendenzaModel.EnumModalitaPagamento;
+import it.govpay.ejb.core.model.PendenzaModel.EnumStatoPendenza;
 import it.govpay.orm.posizionedebitoria.Condizione;
 import it.govpay.orm.posizionedebitoria.DestinatarioPendenza;
 import it.govpay.orm.posizionedebitoria.Pendenza;

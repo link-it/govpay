@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.OperatoreModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.OperatoreModel;
 import it.govpay.orm.profilazione.IntestatarioOperatore;
 import it.govpay.orm.profilazione.Operatore;
 

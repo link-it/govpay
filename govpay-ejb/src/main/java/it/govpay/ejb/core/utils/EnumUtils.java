@@ -19,10 +19,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.utils;
+package it.govpay.ejb.core.utils;
 
-import it.govpay.ejb.model.DistintaModel.EnumStatoDistinta;
-import it.govpay.ejb.model.PagamentoModel.EnumStatoPagamento;
+import it.govpay.ejb.core.model.DistintaModel.EnumStatoDistinta;
+import it.govpay.ejb.core.model.PagamentoModel.EnumStatoPagamento;
 
 import java.lang.reflect.Method;
 

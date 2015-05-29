@@ -22,8 +22,8 @@
 package it.govpay.web.console.facade;
 
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.model.OperatoreModel;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.model.OperatoreModel;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;

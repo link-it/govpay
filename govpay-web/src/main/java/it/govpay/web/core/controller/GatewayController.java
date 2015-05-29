@@ -19,19 +19,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.controller;
+package it.govpay.web.core.controller;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumFornitoreGateway;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModalitaPagamento;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.utils.rs.EjbUtils;
-import it.govpay.ndp.controller.PspController;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
-import it.govpay.ndp.model.DominioEnteModel;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumFornitoreGateway;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModalitaPagamento;
+import it.govpay.ejb.core.utils.rs.EjbUtils;
+import it.govpay.ejb.ndp.controller.PspController;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.ndp.model.DominioEnteModel;
 
 import java.util.ArrayList;
 import java.util.List;

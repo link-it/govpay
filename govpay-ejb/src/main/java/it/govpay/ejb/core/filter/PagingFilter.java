@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.filter;
+package it.govpay.ejb.core.filter;
 
 import java.io.Serializable;
 

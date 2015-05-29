@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.anagrafica.form;
 
-import it.govpay.ejb.model.TributoModel;
-import it.govpay.ejb.model.TributoModel.EnumStatoTributo;
+import it.govpay.ejb.core.model.TributoModel;
+import it.govpay.ejb.core.model.TributoModel.EnumStatoTributo;
 import it.govpay.web.console.anagrafica.bean.TributoBean;
 
 import java.io.Serializable;

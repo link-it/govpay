@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.builder;
+package it.govpay.ejb.core.builder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,7 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 
-import it.govpay.ejb.model.ScadenzarioModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
 import it.govpay.orm.profilazione.SistemaEnte;
 
 public class ScadenzarioBuilder {

@@ -21,7 +21,7 @@
  */
 package it.govpay.web.utils;
 
-import it.govpay.ejb.utils.rs.GovPayEventHandler;
+import it.govpay.ejb.core.utils.rs.GovPayEventHandler;
 import it.govpay.rs.RichiestaPagamento;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class ValidatingReader implements MessageBodyReader<RichiestaPagamento> {
 		try {
 			jaxbContext = JAXBContext.newInstance(RichiestaPagamento.class);
 			SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			schema = sf.newSchema(new StreamSource(ValidatingReader.class.getClassLoader().getResourceAsStream("/rest.xsd")));
+			schema = sf.newSchema(new StreamSource(ValidatingReader.class.getClassLoader().getResourceAsStream("/xsd/rest.xsd")));
 		} catch(Exception e) {
 			throw new RuntimeException(e);
 		}

@@ -19,16 +19,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.controller;
+package it.govpay.ejb.core.ejb;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.ScadenzarioModel;
-import it.govpay.ejb.utils.rs.EjbUtils;
-import it.govpay.ejb.utils.rs.client.NotificaClient;
-import it.govpay.ejb.utils.rs.client.ScadenzarioRemotoClient;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.ScadenzarioModel;
+import it.govpay.ejb.core.utils.rs.EjbUtils;
+import it.govpay.ejb.core.utils.rs.client.NotificaClient;
+import it.govpay.ejb.core.utils.rs.client.ScadenzarioRemotoClient;
 import it.govpay.rs.Pagamento;
 
 import javax.ejb.Stateless;

@@ -19,7 +19,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.model;
+package it.govpay.ejb.core.model;
 
 public class ConnettorePddModel  extends ConnettoreModel {
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>govpay</artifactId>
-	<version>1.0b2</version>
+	<version>1.0b3</version>
 	<packaging>pom</packaging>
 	<name>GovPAY</name>
 
@@ -12,11 +12,8 @@
 		<module>govpay-ejb</module>
 		<module>govpay-orm</module>
 		<module>govpay-report</module>
-		<module>govpay-ndp</module>
-		<module>govpay-ndp-web</module>
 		<module>govpay-web</module>
 		<module>govpay-web-console</module>
-		<module>govpay-pub-web</module>
 		<module>govpay-ear</module>
 	</modules>
 
@@ -80,14 +77,6 @@
 
 			<dependency>
 				<groupId>it.govpay</groupId>
-				<artifactId>govpay-ndp</artifactId>
-				<version>${project.version}</version>
-				<type>ejb</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
 				<artifactId>govpay-orm</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
@@ -99,22 +88,6 @@
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-web</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
-				<artifactId>govpay-ndp-web</artifactId>
-				<version>${project.version}</version>
-				<type>war</type>
-				<scope>compile</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>it.govpay</groupId>
-				<artifactId>govpay-pub-web</artifactId>
 				<version>${project.version}</version>
 				<type>war</type>
 				<scope>compile</scope>

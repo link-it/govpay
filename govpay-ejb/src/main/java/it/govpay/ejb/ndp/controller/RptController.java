@@ -38,10 +38,10 @@ import it.gov.digitpa.schemas._2011.ws.paa.TipoElementoListaRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoListaRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoRPTPendente;
 import it.gov.digitpa.schemas._2011.ws.psp.PaaAttivaRPT;
-import it.govpay.ejb.core.controller.AnagraficaEJB;
-import it.govpay.ejb.core.controller.DistintaEJB;
-import it.govpay.ejb.core.controller.PendenzaEJB;
-import it.govpay.ejb.core.controller.ScadenzarioEJB;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.ejb.DistintaEJB;
+import it.govpay.ejb.core.ejb.PendenzaEJB;
+import it.govpay.ejb.core.ejb.ScadenzarioEJB;
 import it.govpay.ejb.core.exception.GovPayEnteException;
 import it.govpay.ejb.core.exception.GovPayException;
 import it.govpay.ejb.core.exception.GovPayEnteException.EnteFaultCode;
@@ -546,15 +546,16 @@ public class RptController {
 				risposta = client.nodoChiediListaPendentiRPT(richiesta);
 			} catch (Exception e) {
 				log.error("Errore durante la richiesta di lista pendenti", e);
-				continue;
+				break;
 			}
 			if(risposta == null) {
 				log.debug("Lista pendenti vuota.");
+				i = i+step;
 				continue;
 			}
 			if(risposta.getFault() != null) {
 				log.error("Ricevuto errore durante la richiesta di lista pendenti: " + risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
-				continue;
+				break;
 			}
 			
 			if(risposta.getListaRPTPendenti().getRptPendente().size() == 100){

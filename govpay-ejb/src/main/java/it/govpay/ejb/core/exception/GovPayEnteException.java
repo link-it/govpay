@@ -19,9 +19,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.ejb.exception;
+package it.govpay.ejb.core.exception;
 
-import it.govpay.ejb.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException;
 import it.govpay.rs.ErroreEnte;
 
 public class GovPayEnteException extends GovPayException {

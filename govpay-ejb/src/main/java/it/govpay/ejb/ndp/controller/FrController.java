@@ -26,8 +26,8 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediElencoFlussiRendicontazione
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazioneRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoIdRendicontazione;
-import it.govpay.ejb.core.controller.AnagraficaEJB;
-import it.govpay.ejb.core.controller.DistintaEJB;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.ejb.DistintaEJB;
 import it.govpay.ejb.core.exception.GovPayException;
 import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.ejb.core.model.GatewayPagamentoModel;

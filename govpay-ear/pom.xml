@@ -6,13 +6,12 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>1.0b2</version>
+		<version>1.0b3</version>
 	</parent>
 
 	<artifactId>govpay-ear</artifactId>
 	<packaging>ear</packaging>
 	<name>GovPAY EAR module</name>
-
 
 	<profiles>
 		<profile>
@@ -30,12 +29,13 @@
 				<resourceToExclude></resourceToExclude>
 			</properties>
 		</profile>
-
-
 	</profiles>
+	
+	<properties>
+        <env>template</env>            
+    </properties>
 
 	<dependencies>
-
 		<!-- Depend on the ejb module and war so that we can package them -->
 		<dependency>
 			<groupId>it.govpay</groupId>
@@ -45,39 +45,12 @@
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-web</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-pub-web</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-pub-web</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-ndp-web</artifactId>
-			<type>war</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-ndp-web</artifactId>
-			<version>${project.version}</version>
+			<version>${project.version}</version><!--$NO-MVN-MAN-VER$-->
 			<type>pom</type>
 		</dependency>
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-ejb</artifactId>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-ndp</artifactId>
 			<type>ejb</type>
 		</dependency>
 		<dependency>
@@ -88,35 +61,10 @@
 	</dependencies>
 
 	<build>
+	
 		<finalName>govpay</finalName>
+		
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.3.1</version>
-				<executions>
-					<execution>
-						<id>enforce-property</id>
-						<goals>
-							<goal>enforce</goal>
-						</goals>
-						<configuration>
-							<rules>
-								<requireProperty>
-									<property>env</property>
-									<message>----------------------------------------------------
-										------------------ Attenzione !!! ------------------
-										----------------------------------------------------
-										Deve essere fornita la proprieta 'env' che definisce
-										il filtro da utilizzare per le properties
-										./resources/filters/${env}.filter.properties</message>
-								</requireProperty>
-							</rules>
-							<fail>true</fail>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
@@ -138,18 +86,8 @@
 						</webModule>
 						<webModule>
 							<groupId>it.govpay</groupId>
-							<artifactId>govpay-ndp-web</artifactId>
-							<contextRoot>/govpay-ndp</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
 							<artifactId>govpay-web-console</artifactId>
 							<contextRoot>/govpayConsole</contextRoot>
-						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>govpay-pub-web</artifactId>
-							<contextRoot>/govpay-pub</contextRoot>
 						</webModule>
 					</modules>
 				</configuration>

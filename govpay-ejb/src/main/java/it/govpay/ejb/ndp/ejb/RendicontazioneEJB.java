@@ -23,8 +23,8 @@ package it.govpay.ejb.ndp.ejb;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoliPagamenti;
 import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
-import it.govpay.ejb.core.controller.DistintaEJB;
-import it.govpay.ejb.core.controller.PendenzaEJB;
+import it.govpay.ejb.core.ejb.DistintaEJB;
+import it.govpay.ejb.core.ejb.PendenzaEJB;
 import it.govpay.ejb.core.exception.GovPayException;
 import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.ejb.core.model.DistintaModel;
