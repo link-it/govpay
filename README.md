@@ -7,6 +7,7 @@ GovPay, nato da un'iniziativa congiunta di [Link.it](www.link.it) e [TAS S.p.A.]
 
 Di seguito un elenco delle principali funzionalità del prodotto.
 * implementazione completa delle specifiche 1.6 del Nodo dei Pagamenti, con supporto evoluto per pagamenti di tipo immediato, differito e ad iniziativa PSP sia monobeneficiario che multibeneficiario.
+* supporto ai pagamenti su circuito MyBank
 * integrazione con gli applicativi dell'Ente preposti alla gestione delle posizioni creditorie tramite Web API.
 * integrazione semplificata del/i portali cittadini dell'Ente.
 * implementazione di servizi accessori ai pagamenti 
@@ -18,3 +19,5 @@ Di seguito un elenco delle principali funzionalità del prodotto.
   * ...
 * completa integrazione con il software di Porta di Dominio OpenSPCoop.
 * cruscotto Web di gestione e configurazione.
+![alt tag](https://github.com/link-it/GovPay/blob/1.0b3.dev/resources/doc/LogoMyBank.jpg)
+![alt tag](https://github.com/link-it/GovPay/blob/1.0b3.dev/resources/doc/PagoPA.jpg)
