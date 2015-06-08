@@ -23,12 +23,12 @@ package it.govpay.web.utils;
 
 import java.math.BigDecimal;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.model.GatewayPagamentoModel;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumFornitoreGateway;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModalitaPagamento;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModelloVersamento;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumFornitoreGateway;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModalitaPagamento;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModelloVersamento;
 import it.govpay.rs.DatiSingoloVersamento;
 import it.govpay.rs.Pagamento;
 import it.govpay.rs.RichiestaPagamento;
@@ -56,6 +56,14 @@ public class ValidazioneUtil {
 			if(!gw.getFornitoreGateway().equals(EnumFornitoreGateway.NODO_PAGAMENTI_SPC)) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_VALIDAZIONE, "Il psp selezionato [Id: " + gw.getIdGateway() + "] non e' gestito da questa applicazione.");
 			} 
+			
+			// Pagamento MyBank. Deve essere un pagamento singolo con una sola condizione
+			if(gw.getModalitaPagamento().equals(EnumModalitaPagamento.MYBANK)) {
+				if(richiestaPagamento.getPagamentis().size() != 1)
+					throw new GovPayException(GovPayExceptionEnum.ERRORE_VALIDAZIONE, "La modalita di pagamento MyBank non supporta pagamenti multipli");
+				if(richiestaPagamento.getPagamentis().get(0).getDatiVersamento().getDatiSingoloVersamentos().size() != 1)
+					throw new GovPayException(GovPayExceptionEnum.ERRORE_VALIDAZIONE, "La modalita di pagamento MyBank non supporta pagamenti con versamenti multipli");
+			}
 			
 			if(richiestaPagamento.getPagamentis().size() > 1){
 				// Pagamento multiplo. Il psp deve avere la modalita multi-beneficiario

@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.pagamenti.mbean;
 
-import it.govpay.ejb.model.DistintaModel.EnumStatoDistinta;
+import it.govpay.ejb.core.model.DistintaModel.EnumStatoDistinta;
 import it.govpay.web.console.GovPayWebConsoleConversationManager;
 import it.govpay.web.console.pagamenti.bean.DistintaBean;
 import it.govpay.web.console.pagamenti.bean.PagamentoBean;

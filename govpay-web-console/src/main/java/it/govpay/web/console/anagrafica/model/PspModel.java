@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.anagrafica.model;
 
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModalitaPagamento;
-import it.govpay.ejb.model.GatewayPagamentoModel.EnumModelloVersamento;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModalitaPagamento;
+import it.govpay.ejb.core.model.GatewayPagamentoModel.EnumModelloVersamento;
 
 import java.util.ArrayList;
 import java.util.Date;

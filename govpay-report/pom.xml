@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>it.govpay</groupId>
 		<artifactId>govpay</artifactId>
-		<version>1.0b2</version>
+		<version>1.0b3</version>
 	</parent>
 
 	<artifactId>govpay-report</artifactId>

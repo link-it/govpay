@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
-import it.govpay.ejb.model.GatewayPagamentoModel;
+import it.govpay.ejb.core.model.GatewayPagamentoModel;
 
 import org.openspcoop2.generic_project.web.bean.BaseBean;
 

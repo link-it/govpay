@@ -21,9 +21,9 @@
  */
 package it.govpay.web.console.utils;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.utils.ConfigurationUtils;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.utils.ConfigurationUtils;
 
 import java.net.URL;
 

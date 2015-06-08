@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.pagamenti.bean;
 
-import it.govpay.ejb.model.PagamentoModel.EnumStatoPagamento;
+import it.govpay.ejb.core.model.PagamentoModel.EnumStatoPagamento;
 import it.govpay.web.console.pagamenti.model.PagamentoModel.DettaglioPagamento;
 
 import java.util.Date;

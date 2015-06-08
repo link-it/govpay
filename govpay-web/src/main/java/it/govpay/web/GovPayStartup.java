@@ -27,15 +27,15 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ejb.utils.DataTypeUtils;
-import it.govpay.ejb.utils.GovpayConfiguration;
-import it.govpay.ejb.utils.rs.JaxbUtils;
-import it.govpay.ndp.util.NdpConfiguration;
-import it.govpay.ndp.util.wsclient.NodoPerPa;
-import it.govpay.web.controller.GatewayController;
-import it.govpay.web.timer.AggiornaPspTimer;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.core.utils.DataTypeUtils;
+import it.govpay.ejb.core.utils.GovpayConfiguration;
+import it.govpay.ejb.core.utils.rs.JaxbUtils;
+import it.govpay.ejb.ndp.util.NdpConfiguration;
+import it.govpay.ejb.ndp.util.wsclient.NodoPerPa;
+import it.govpay.web.core.controller.GatewayController;
+import it.govpay.web.core.timer.AggiornaPspTimer;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;

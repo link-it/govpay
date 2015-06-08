@@ -21,7 +21,7 @@
  */
 package it.govpay.web.rs;
 
-import it.govpay.web.controller.GatewayController;
+import it.govpay.web.core.controller.GatewayController;
 import it.govpay.rs.ListaPsp;
 
 import javax.inject.Inject;

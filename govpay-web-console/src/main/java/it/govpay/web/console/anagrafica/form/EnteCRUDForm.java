@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.anagrafica.form;
 
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.EnteCreditoreModel.EnumStato;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel.EnumStato;
 import it.govpay.web.console.anagrafica.bean.EnteBean;
 
 import java.io.Serializable;

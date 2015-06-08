@@ -21,10 +21,10 @@
  */
 package it.govpay.web.console.anagrafica.mbean;
 
-import it.govpay.ejb.model.ConnettoreModel.EnumAuthType;
-import it.govpay.ejb.model.ConnettoreModel.EnumSslType;
-import it.govpay.ejb.model.ScadenzarioModelId;
-import it.govpay.ndp.model.DominioEnteModel;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumAuthType;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumSslType;
+import it.govpay.ejb.core.model.ScadenzarioModelId;
+import it.govpay.ejb.ndp.model.DominioEnteModel;
 import it.govpay.web.console.anagrafica.bean.EnteBean;
 import it.govpay.web.console.anagrafica.bean.IntermediarioNdpBean;
 import it.govpay.web.console.anagrafica.bean.ScadenzarioBean;

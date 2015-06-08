@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.pagamenti.mbean;
 
-import it.govpay.ndp.model.EventiInterfacciaModel.Categoria;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Categoria;
 import it.govpay.web.console.GovPayWebConsoleConversationManager;
 import it.govpay.web.console.pagamenti.bean.EventoBean;
 import it.govpay.web.console.pagamenti.form.EventiSearchForm;

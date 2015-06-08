@@ -21,11 +21,11 @@
  */
 package it.govpay.web.console.anagrafica.service;
 
-import it.govpay.ejb.controller.AnagraficaEJB;
-import it.govpay.ejb.model.EnteCreditoreModel;
-import it.govpay.ejb.model.ScadenzarioModelId;
-import it.govpay.ndp.ejb.AnagraficaDominioEJB;
-import it.govpay.ndp.ejb.filter.ScadenzarioFilter;
+import it.govpay.ejb.core.ejb.AnagraficaEJB;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.ScadenzarioModelId;
+import it.govpay.ejb.ndp.ejb.AnagraficaDominioEJB;
+import it.govpay.ejb.ndp.ejb.filter.ScadenzarioFilter;
 import it.govpay.web.console.anagrafica.bean.ScadenzarioBean;
 import it.govpay.web.console.anagrafica.form.ScadenzarioSearchForm;
 import it.govpay.web.console.anagrafica.iservice.IScadenzarioService;
@@ -135,16 +135,16 @@ public class ScadenzarioService extends BaseService<ScadenzarioSearchForm> imple
 	@Override
 	public ScadenzarioBean findById(ScadenzarioModelId key) throws ServiceException {
 		try{
-//			Map<it.govpay.ejb.model.ScadenzarioModel, StazioneModel> map = anagraficaDominioEJB.getScadenzarioById(key);
-			it.govpay.ejb.model.ScadenzarioModel s = anagraficaDominioEJB.getScadenzarioById(key); 
+//			Map<it.govpay.ejb.core.model.ScadenzarioModel, StazioneModel> map = anagraficaDominioEJB.getScadenzarioById(key);
+			it.govpay.ejb.core.model.ScadenzarioModel s = anagraficaDominioEJB.getScadenzarioById(key); 
 //			StazioneModel st = null;
 //			if(map != null){
-//				Set<it.govpay.ejb.model.ScadenzarioModel> keySet = map.keySet();
+//				Set<it.govpay.ejb.core.model.ScadenzarioModel> keySet = map.keySet();
 //				if(keySet.size() != 1)
 //					throw new ServiceException("Il numero di risultati trovati e' diverso da 1");
 //
 //
-//				for (it.govpay.ejb.model.ScadenzarioModel scadenzarioModel : keySet) {
+//				for (it.govpay.ejb.core.model.ScadenzarioModel scadenzarioModel : keySet) {
 //					s = scadenzarioModel;
 //					st = map.get(s);
 //				}
@@ -208,17 +208,17 @@ public class ScadenzarioService extends BaseService<ScadenzarioSearchForm> imple
 	private List<ScadenzarioBean> findAll(Integer start, Integer limit, ScadenzarioSearchForm scadForm) throws Exception {
 		List<ScadenzarioBean> lst = new ArrayList<ScadenzarioBean>();
 
-//		List<Map<it.govpay.ejb.model.ScadenzarioModel, StazioneModel>> scadenzariList = this.anagraficaDominioEJB.findAllScadenzari(getFiltro(start,limit,scadForm));
+//		List<Map<it.govpay.ejb.core.model.ScadenzarioModel, StazioneModel>> scadenzariList = this.anagraficaDominioEJB.findAllScadenzari(getFiltro(start,limit,scadForm));
 		
-		List<it.govpay.ejb.model.ScadenzarioModel> scadenzariList = this.anagraficaDominioEJB.findAllScadenzari(getFiltro(start,limit,scadForm));
+		List<it.govpay.ejb.core.model.ScadenzarioModel> scadenzariList = this.anagraficaDominioEJB.findAllScadenzari(getFiltro(start,limit,scadForm));
 
 		if(scadenzariList != null && scadenzariList.size() > 0 ){
 			
 			int s = 0;
-//			it.govpay.ejb.model.ScadenzarioModel sc = null;
+//			it.govpay.ejb.core.model.ScadenzarioModel sc = null;
 //			StazioneModel st = null;
-			for( it.govpay.ejb.model.ScadenzarioModel sc : scadenzariList) {
-//				for (Map<it.govpay.ejb.model.ScadenzarioModel, StazioneModel> map : scadenzariList) {
+			for( it.govpay.ejb.core.model.ScadenzarioModel sc : scadenzariList) {
+//				for (Map<it.govpay.ejb.core.model.ScadenzarioModel, StazioneModel> map : scadenzariList) {
 				
 				ScadenzarioBean bean = new ScadenzarioBean();
 				ScadenzarioModel sm = new ScadenzarioModel(sc);
@@ -228,12 +228,12 @@ public class ScadenzarioService extends BaseService<ScadenzarioSearchForm> imple
 				bean.setId((long) s ++);
 				lst.add(bean);
 				
-//				Set<it.govpay.ejb.model.ScadenzarioModel> keySet = map.keySet();
+//				Set<it.govpay.ejb.core.model.ScadenzarioModel> keySet = map.keySet();
 //				if(keySet.size() != 1)
 //					throw new ServiceException("Il numero di risultati trovati e' diverso da 1");
 //
 //
-//				for (it.govpay.ejb.model.ScadenzarioModel scadenzarioModel : keySet) {
+//				for (it.govpay.ejb.core.model.ScadenzarioModel scadenzarioModel : keySet) {
 //					sc = scadenzarioModel;
 //					st = map.get(sc);
 //				}

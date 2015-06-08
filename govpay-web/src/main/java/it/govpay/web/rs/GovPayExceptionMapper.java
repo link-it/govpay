@@ -21,9 +21,9 @@
  */
 package it.govpay.web.rs;
 
-import it.govpay.ejb.exception.GovPayException;
-import it.govpay.ejb.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.ndp.util.exception.GovPayNdpException;
+import it.govpay.ejb.core.exception.GovPayException;
+import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.ejb.ndp.util.exception.GovPayNdpException;
 import it.govpay.rs.Errore;
 
 import javax.inject.Inject;

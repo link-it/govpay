@@ -7,16 +7,17 @@
 	xmlns:sec="http://www.springframework.org/security/facelets/tags"
 	xmlns:link="http://www.link.it"
 	template="/templates/defaultTemplate.xhtml"
-             xmlns:c="http://java.sun.com/jstl/core">
-             <f:loadBundle var="msg" basename="messages" />
-	
+	xmlns:c="http://java.sun.com/jstl/core">
+	<f:loadBundle var="msg" basename="messages" />
+
 	<ui:define name="body">
 		<rich:panel styleClass="noborder">
 			<p class="legend">
-				<strong>#{msg['commons.label.note']}</strong> (<em>*</em>) #{msg['commons.label.campiObbligatori']} 
-			</p>	
-			<div class="form-container noborder">				
-				<ui:insert name="body"/>
+				<strong>#{msg['commons.label.note']}</strong> (<em>*</em>)
+				#{msg['commons.label.campiObbligatori']}
+			</p>
+			<div class="form-container noborder">
+				<ui:insert name="body" />
 			</div>
 		</rich:panel>
 	</ui:define>

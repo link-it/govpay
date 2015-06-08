@@ -214,7 +214,7 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 
 
 	public ScadenzarioModel getScadenzario(){
-		it.govpay.ejb.model.ScadenzarioModel scadenzarioModel = new it.govpay.ejb.model.ScadenzarioModel();
+		it.govpay.ejb.core.model.ScadenzarioModel scadenzarioModel = new it.govpay.ejb.core.model.ScadenzarioModel();
 
 		String value = this.idEnte.getValue();
 		scadenzarioModel.setIdEnte(value); 

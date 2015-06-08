@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
-import it.govpay.ejb.model.TributoModel;
-import it.govpay.ejb.model.TributoModel.EnumStatoTributo;
+import it.govpay.ejb.core.model.TributoModel;
+import it.govpay.ejb.core.model.TributoModel.EnumStatoTributo;
 
 import org.openspcoop2.generic_project.web.bean.BaseBean;
 import org.openspcoop2.generic_project.web.core.Utils;

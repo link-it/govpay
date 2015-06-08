@@ -19,7 +19,7 @@
 	<field name="qrCode" class="java.lang.String">
 		<fieldDescription><![CDATA[qrCode]]></fieldDescription>
 	</field>
-	<field name="ente" class="it.govpay.ejb.model.EnteCreditoreModel">
+	<field name="ente" class="it.govpay.ejb.core.model.EnteCreditoreModel">
 		<fieldDescription><![CDATA[ente]]></fieldDescription>
 	</field>
 	<pageHeader>

@@ -1,0 +1,298 @@
+<?xml version="1.0" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://www.govpay.it/rs/" xmlns="http://www.govpay.it/rs/"
+	elementFormDefault="qualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+	jaxb:version="2.0" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+	jaxb:extensionBindingPrefixes="xjc">
+
+	<xs:annotation>
+		<xs:appinfo>
+			<jaxb:globalBindings>
+				<xjc:simple />
+			</jaxb:globalBindings>
+		</xs:appinfo>
+	</xs:annotation>
+
+	<xs:element name="notificaPagamento" type="ricevutaTelematica" />
+
+	<xs:element name="pagamento" type="pagamento" />
+
+	<xs:element name="esitoRevoca" type="esitoRevoca" />
+
+	<xs:element name="listaPsp">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="psp" type="psp" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="listaRendicontazioni">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="rendicontazione" maxOccurs="unbounded" type="rendicontazione" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:element name="rendicontazione" type="rendicontazione" />
+	
+	<xs:complexType name="rendicontazione">
+		<xs:sequence>
+			<xs:element name="identificativoBeneficiario" type="xs:string" />
+			<xs:element name="identificativoPsp" type="xs:long" />
+			<xs:element name="idFlusso" type="xs:string"/>
+			<xs:element name="dataFlusso" type="xs:date"/>
+			<xs:element name="valido" type="xs:boolean"/>
+			<xs:element name="errore" type="xs:string" minOccurs="0"/>
+			<xs:element name="listaSingoliPagamenti" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="singoloPagamento" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:complexContent>
+									<xs:extension base="datiSingoloPagamento">
+										<xs:attribute name="iuv"></xs:attribute>
+									</xs:extension>
+								</xs:complexContent>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="flusso" type="xs:base64Binary" minOccurs="0" />
+			
+		</xs:sequence>
+	</xs:complexType>
+
+
+	<xs:element name="richiestaPagamento">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="identificativoPsp" type="xs:long" />
+				<xs:element name="autenticazioneSoggetto" type="autenticazioneSoggetto" />
+				<xs:element name="soggettoVersante" type="soggetto" minOccurs="0" />
+				<xs:element name="email" type="xs:string" />
+				<xs:element name="redirectUrl" type="xs:anyURI" minOccurs="0" />
+				<xs:element name="pagamenti" maxOccurs="unbounded" type="pagamento" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="verificaPagamento" type="verificaPagamento" />
+
+	<xs:element name="erroreEnte">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="codiceErrore">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="PAGAMENTO_SCONOSCIUTO" />
+							<xs:enumeration value="PAGAMENTO_DUPLICATO" />
+							<xs:enumeration value="PAGAMENTO_ANNULLATO" />
+							<xs:enumeration value="PAGAMENTO_SCADUTO" />
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="descrizione" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+
+	<xs:element name="errore">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="codiceErrore" type="xs:string" />
+				<xs:element name="descrizione" type="xs:string" />
+				<xs:element name="descrizioneCausa" type="xs:string" minOccurs="0" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:complexType name="psp">
+		<xs:sequence>
+			<xs:element name="idPsp" type="xs:long" />
+			<xs:element name="ragioneSociale" type="xs:string" />
+			<xs:element name="descrizione" type="xs:string" />
+			<xs:element name="disponibilita" type="xs:string" />
+			<xs:element name="condizioniEconomicheMassime" type="xs:string" />
+			<xs:element name="infoUrl" type="xs:string" />
+			<xs:element name="stornoGestito" type="xs:boolean" />
+			<xs:element name="tipoVersamento" type="tipoVersamento" />
+			<xs:element name="modelloVersamento" type="modelloVersamento" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="ricevutaTelematica">
+		<xs:sequence>
+			<xs:element name="identificativoBeneficiario" type="xs:string" />
+			<xs:element name="iuv" type="xs:string" />
+			<xs:element name="statoPagamento" type="statoPagamento" />
+			<xs:element name="importoTotalePagato" type="xs:decimal" />
+			<xs:element name="datiSingoloPagamento" type="datiSingoloPagamento" maxOccurs="5" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="esitoRevoca">
+		<xs:sequence>
+			<xs:element name="identificativoBeneficiario" type="xs:string" />
+			<xs:element name="iuv" type="xs:string" />
+			<xs:element name="ccp" type="xs:string" />
+			<xs:element name="stato" type="statoRevoca" />
+			<xs:element name="importoTotaleRevocato" type="xs:decimal" />
+			<xs:element name="datiSingolaRevoca" type="datiSingolaRevoca" maxOccurs="5" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="datiSingolaRevoca">
+		<xs:sequence>
+			<xs:element name="iusv" type="xs:string" />
+			<xs:element name="stato" type="statoSingolaRevoca" />
+			<xs:element name="causale" type="xs:string" />
+			<xs:element name="data" type="xs:date" />
+			<xs:element name="importoRevocato" type="xs:decimal" />
+			<xs:element name="iur" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="datiSingoloPagamento">
+		<xs:sequence>
+			<xs:element name="iusv" type="xs:string" />
+			<xs:element name="esito" type="xs:string" />
+			<xs:element name="data" type="xs:date" />
+			<xs:element name="importoPagato" type="xs:decimal" />
+			<xs:element name="iur" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="soggetto">
+		<xs:sequence>
+			<xs:element name="identificativo" type="xs:string" />
+			<xs:element name="anagrafica" type="xs:string" />
+			<xs:element name="indirizzo" type="xs:string" minOccurs="0" />
+			<xs:element name="civico" type="xs:string" minOccurs="0" />
+			<xs:element name="cap" type="xs:string" minOccurs="0" />
+			<xs:element name="localita" type="xs:string" minOccurs="0" />
+			<xs:element name="provincia" type="xs:string" minOccurs="0" />
+			<xs:element name="nazione" type="xs:string" minOccurs="0" />
+			<xs:element name="email" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="datiVersamento">
+		<xs:sequence>
+			<xs:element name="importoTotaleDaVersare" type="xs:decimal" />
+			<xs:element name="iuv" type="xs:string" />
+			<xs:element name="tipoDebito" type="xs:string" />
+			<xs:element name="ibanAddebito" type="ibanIdentifier" minOccurs="0" />
+			<xs:element name="datiSingoloVersamento" type="datiSingoloVersamento" minOccurs="1" maxOccurs="5" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="datiSingoloVersamento">
+		<xs:sequence>
+			<xs:element name="iusv" type="xs:string" />
+			<xs:element name="importoSingoloVersamento" type="xs:decimal" />
+			<xs:element name="ibanAccredito" type="ibanIdentifier" />
+			<xs:element name="causaleVersamento" type="xs:string" />
+			<xs:element name="annoRiferimento" type="xs:gYear" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="pagamento">
+		<xs:sequence>
+			<xs:element name="identificativoBeneficiario" type="xs:string" />
+			<xs:element name="soggettoPagatore" type="soggetto" />
+			<xs:element name="datiVersamento" type="datiVersamento" />
+			<xs:element name="firma" type="tipoFirmaRicevuta" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="verificaPagamento">
+		<xs:sequence>
+			<xs:element name="identificativoBeneficiario" type="xs:string" />
+			<xs:element name="iuv" type="xs:string" />
+			<xs:element name="ccp" type="xs:string" />
+			<xs:element name="statoPagamento" type="statoPagamento" />
+			<xs:element name="importoTotalePagato" type="xs:decimal" />
+			<xs:element name="datiSingoloPagamento" type="datiSingoloPagamento" nillable="true" minOccurs="0" maxOccurs="5" />
+			<xs:element name="urlPagamento" type="xs:string" minOccurs="0" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:simpleType name="tipoVersamento">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="BonificoBancarioTesoreria" />
+			<xs:enumeration value="BollettinoPostale" />
+			<xs:enumeration value="AddebitoDiretto" />
+			<xs:enumeration value="CartaPagamento" />
+			<xs:enumeration value="AttivatoPressoPsp" />
+			<xs:enumeration value="MyBank" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="modelloVersamento">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Immediato" />
+			<xs:enumeration value="ImmediatoMultibeneficiario" />
+			<xs:enumeration value="Differito" />
+			<xs:enumeration value="AttivatoPressoPsp" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="autenticazioneSoggetto">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CNS" />
+			<xs:enumeration value="USR" />
+			<xs:enumeration value="OTH" />
+			<xs:enumeration value="N/A" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="tipoFirmaRicevuta">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="CaDes" />
+			<xs:enumeration value="XaDes" />
+			<xs:enumeration value="Avanzata" />
+			<xs:enumeration value="Nessuna" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="statoPagamento">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="IN_CORSO" />
+			<xs:enumeration value="IN_ERRORE" />
+			<xs:enumeration value="ESEGUITO" />
+			<xs:enumeration value="NON_ESEGUITO" />
+			<xs:enumeration value="PARZIALMENTE_ESEGUITO" />
+			<xs:enumeration value="ANNULLATO" />
+			<xs:enumeration value="STORNATO" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="statoRevoca">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="IN_CORSO" />
+			<xs:enumeration value="IN_ERRORE" />
+			<xs:enumeration value="ESEGUITO" />
+			<xs:enumeration value="NON_ESEGUITO" />
+			<xs:enumeration value="PARZIALMENTE_ESEGUITO" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="statoSingolaRevoca">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="ESEGUITO" />
+			<xs:enumeration value="NON_ESEGUITO" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:simpleType name="ibanIdentifier">
+		<xs:restriction base="xs:string">
+			<xs:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}" />
+		</xs:restriction>
+	</xs:simpleType>
+
+</xs:schema>
+

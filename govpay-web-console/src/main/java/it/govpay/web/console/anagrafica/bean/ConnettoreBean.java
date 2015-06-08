@@ -21,10 +21,10 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
-import it.govpay.ejb.model.ConnettoreModel;
-import it.govpay.ejb.model.ConnettoreModel.EnumAuthType;
-import it.govpay.ejb.model.ConnettoreModel.EnumSslType;
-import it.govpay.ejb.model.ConnettorePddModel;
+import it.govpay.ejb.core.model.ConnettoreModel;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumAuthType;
+import it.govpay.ejb.core.model.ConnettoreModel.EnumSslType;
+import it.govpay.ejb.core.model.ConnettorePddModel;
 
 import org.openspcoop2.generic_project.web.bean.BaseBean;
 import org.openspcoop2.generic_project.web.core.Utils;

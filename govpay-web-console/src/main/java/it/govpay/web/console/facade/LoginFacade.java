@@ -24,7 +24,7 @@ package it.govpay.web.console.facade;
 
 import javax.ejb.Local;
 
-import it.govpay.ejb.model.OperatoreModel;
+import it.govpay.ejb.core.model.OperatoreModel;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.web.dao.ILoginDAO;

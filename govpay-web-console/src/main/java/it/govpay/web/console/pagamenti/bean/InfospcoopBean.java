@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.pagamenti.bean;
 
-import it.govpay.ndp.model.EventiInterfacciaModel.Infospcoop;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Infospcoop;
 import it.govpay.web.console.utils.Utils;
 
 import org.openspcoop2.generic_project.web.bean.BaseBean;

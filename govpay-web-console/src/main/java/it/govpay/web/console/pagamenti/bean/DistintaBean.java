@@ -21,9 +21,9 @@
  */
 package it.govpay.web.console.pagamenti.bean;
 
-import it.govpay.ejb.model.DistintaModel;
-import it.govpay.ejb.model.SoggettoModel;
-import it.govpay.ejb.model.DistintaModel.EnumTipoAutenticazioneSoggetto;
+import it.govpay.ejb.core.model.DistintaModel;
+import it.govpay.ejb.core.model.SoggettoModel;
+import it.govpay.ejb.core.model.DistintaModel.EnumTipoAutenticazioneSoggetto;
 import it.govpay.web.console.pagamenti.model.PagamentoModel;
 import it.govpay.web.console.pagamenti.model.PagamentoModel.DettaglioPagamento;
 import it.govpay.web.console.utils.Utils;

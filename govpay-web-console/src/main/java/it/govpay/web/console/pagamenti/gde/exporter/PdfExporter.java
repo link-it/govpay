@@ -21,8 +21,8 @@
  */
 package it.govpay.web.console.pagamenti.gde.exporter;
 
-import it.govpay.ndp.model.EventiInterfacciaModel.Evento;
-import it.govpay.ndp.model.EventiInterfacciaModel.Infospcoop;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Evento;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Infospcoop;
 import it.govpay.web.console.pagamenti.bean.EventoBean;
 import it.govpay.web.console.pagamenti.iservice.IEventiService;
 

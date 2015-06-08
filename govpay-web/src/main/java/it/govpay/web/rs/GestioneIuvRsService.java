@@ -21,8 +21,8 @@
  */
 package it.govpay.web.rs;
 
-import it.govpay.ejb.controller.DistintaEJB;
-import it.govpay.ejb.exception.GovPayException;
+import it.govpay.ejb.core.ejb.DistintaEJB;
+import it.govpay.ejb.core.exception.GovPayException;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;

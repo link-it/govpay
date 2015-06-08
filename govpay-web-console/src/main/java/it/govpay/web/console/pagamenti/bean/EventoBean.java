@@ -21,10 +21,10 @@
  */
 package it.govpay.web.console.pagamenti.bean;
 
-import it.govpay.ndp.model.EventiInterfacciaModel.Categoria;
-import it.govpay.ndp.model.EventiInterfacciaModel.Componente;
-import it.govpay.ndp.model.EventiInterfacciaModel.Evento;
-import it.govpay.ndp.model.EventiInterfacciaModel.SottoTipo;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Categoria;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Componente;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Evento;
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.SottoTipo;
 import it.govpay.web.console.utils.Utils;
 
 import java.util.Date;

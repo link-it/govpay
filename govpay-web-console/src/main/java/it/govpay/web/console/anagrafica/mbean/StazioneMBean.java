@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.anagrafica.mbean;
 
-import it.govpay.ndp.model.StazioneModel;
+import it.govpay.ejb.ndp.model.StazioneModel;
 import it.govpay.web.console.anagrafica.bean.IntermediarioNdpBean;
 import it.govpay.web.console.anagrafica.bean.StazioneBean;
 import it.govpay.web.console.anagrafica.form.StazioneForm;

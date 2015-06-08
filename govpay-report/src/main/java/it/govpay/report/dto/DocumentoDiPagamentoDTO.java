@@ -22,7 +22,7 @@
 package it.govpay.report.dto;
 
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
-import it.govpay.ejb.model.EnteCreditoreModel;
+import it.govpay.ejb.core.model.EnteCreditoreModel;
 import it.govpay.report.utils.JaxbUtils;
 import it.govpay.rs.avviso.RichiestaAvviso;
 

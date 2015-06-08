@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.anagrafica.form;
 
-import it.govpay.ejb.model.OperatoreModel;
+import it.govpay.ejb.core.model.OperatoreModel;
 import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;

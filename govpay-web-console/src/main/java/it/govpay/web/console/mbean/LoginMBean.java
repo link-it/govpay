@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.mbean;
 
-import it.govpay.ejb.model.OperatoreModel;
+import it.govpay.ejb.core.model.OperatoreModel;
 import it.govpay.web.console.GovPayWebConsoleConversationManager;
 import it.govpay.web.console.facade.LoginFacade;
 import it.govpay.web.console.utils.GovpayWebConsoleConfiguration;

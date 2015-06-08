@@ -21,7 +21,7 @@
  */
 package it.govpay.web.console.anagrafica.mbean;
 
-import it.govpay.ejb.model.TributoModel;
+import it.govpay.ejb.core.model.TributoModel;
 import it.govpay.web.console.anagrafica.bean.EnteBean;
 import it.govpay.web.console.anagrafica.bean.ScadenzarioBean;
 import it.govpay.web.console.anagrafica.bean.TributoBean;
