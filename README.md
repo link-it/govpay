@@ -14,7 +14,7 @@ Di seguito un elenco delle principali funzionalità del prodotto.
   * stampa dell'avviso di pagamento
   * generazione identificativi ISO 11649
   * gestione flussi rendicontazione
-  * risoluzione pagamenti appesi
+  * risoluzione pagamenti incompleti
   * giornale degli eventi
   * ...
 * completa integrazione con il software di Porta di Dominio OpenSPCoop.
