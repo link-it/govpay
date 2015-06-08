@@ -20,5 +20,4 @@ Di seguito un elenco delle principali funzionalità del prodotto.
 * completa integrazione con il software di Porta di Dominio OpenSPCoop.
 * cruscotto Web di gestione e configurazione.
 
-![Pago la PA](https://github.com/link-it/GovPay/blob/1.0b3.dev/resources/doc/PagoPA.jpg) ![MyBank](https://github.com/link-it/GovPay/blob/1.0b3.dev/resources/doc/LogoMyBank.jpg)
-
+![Gov4J](https://github.com/link-it/GovPay/blob/1.0b3/resources/doc/Gov4J.jpg) ![OpenSPCoop](https://github.com/link-it/GovPay/blob/1.0b3/resources/doc/OpenSPCoop.jpg) ![Pago la PA](https://github.com/link-it/GovPay/blob/1.0b3/resources/doc/PagoPA.jpg) ![MyBank](https://github.com/link-it/GovPay/blob/1.0b3/resources/doc/LogoMyBank.jpg) 
