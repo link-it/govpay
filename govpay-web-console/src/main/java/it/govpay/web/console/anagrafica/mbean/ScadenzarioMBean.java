@@ -346,6 +346,20 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		this.form.getIdIntermediarioPA().setElencoSelectItems(this.getListaIntermediari()); 
 		this.form.getStazione().setElencoSelectItems(this.getListaStazioni(this.form.getIdIntermediarioPA().getValue().getValue()));  
 
+		if(this.form.getIdIntermediarioPA()!= null){
+			org.openspcoop2.generic_project.web.form.field.SelectItem value = this.form.getIdIntermediarioPA().getValue();
+			if(value != null){
+				try{
+					IntermediarioNdpBean findById = this.ndpService.findById(value.getValue());
+					String id = findById.getIdIntermediarioPA().getValue();
+					String label = findById.getNomeSoggettoSPC().getValue();
+					value.setLabel(label + " (" + id + ")");
+				}catch(Exception e){
+
+				}
+			}
+		}
+
 		this.getTributoMBean().setSelectedEnte(this.selectedEnte);
 		this.getTributoMBean().setSelectedElement(null);
 		this.getTributoMBean().setSelectedId(null);
@@ -524,13 +538,22 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 						boolean found = false;
 						String id = stazioneBean.getIdStazioneIntermediarioPA().getValue();
 
+						// Controllo il valore attuale della stazione, se e' selezionato un valore deve andare nella select list altrimenti non si passa la validazione Jsf
+						String stazValue  = null;
+						org.openspcoop2.generic_project.web.form.field.SelectItem selectItemStaz = this.form.getStazione().getValue();
+						if(selectItemStaz != null){
+							stazValue= selectItemStaz.getValue();
+						}
+
 						if(this.listaScadenzari != null && this.listaScadenzari.size() > 0)
 							for (ScadenzarioBean scadenzario : this.listaScadenzari) {
 								String idStazioneUsata = scadenzario.getIdStazioneIntermediarioPA().getValue();
 
 								if(idStazioneUsata.equals(stazioneBean.getIdStazioneIntermediarioPA().getValue())){
-									found = true;
-									break;
+									if(stazValue == null || !stazValue.equals(idStazioneUsata)){
+										found = true;
+										break;
+									}
 								}
 							} 
 

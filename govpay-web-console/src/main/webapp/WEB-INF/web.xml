@@ -126,6 +126,28 @@
 		<filter-name>SessionTimeoutFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<filter>
+    <filter-name>RichFacesFirefox11Filter</filter-name>
+    <filter-class>org.openspcoop2.generic_project.web.listener.RichFacesFirefox11Filter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>RichFacesFirefox11Filter</filter-name>
+    <url-pattern>/a4j/*</url-pattern>
+  </filter-mapping>
+	
+	 <!-- Filtro Visualizzazione IE -->
+  <filter>
+        <display-name>IE Filter</display-name>
+        <filter-name>iefilter</filter-name>
+        <filter-class>org.openspcoop2.generic_project.web.listener.IEFilter</filter-class>
+    </filter>
+
+        <filter-mapping>
+        <filter-name>iefilter</filter-name>
+        <url-pattern>*</url-pattern>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
 
 	<!--End of the configuration part for Richfaces -->
 	
