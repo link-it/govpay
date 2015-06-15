@@ -21,11 +21,15 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+
 import it.govpay.ejb.core.model.GatewayPagamentoModel;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
+public class GatewayPagamentoBean extends BaseBean<GatewayPagamentoModel, Long> implements IBean<GatewayPagamentoModel, Long>{
 
-public class GatewayPagamentoBean extends BaseBean<GatewayPagamentoModel, Long>{ 
-	
-
+	@Override
+	public Long getId() {
+		return null;
+	} 
 }

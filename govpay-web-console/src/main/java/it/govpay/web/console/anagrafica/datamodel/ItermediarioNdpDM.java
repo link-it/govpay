@@ -21,7 +21,9 @@
  */
 package it.govpay.web.console.anagrafica.datamodel;
 
+import it.govpay.ejb.ndp.model.IntermediarioModel;
 import it.govpay.web.console.anagrafica.bean.IntermediarioNdpBean;
+import it.govpay.web.console.anagrafica.form.IntermediarioNdpSearchForm;
 import it.govpay.web.console.anagrafica.iservice.IIntermediarioNdpService;
 
 import java.io.IOException;
@@ -40,26 +42,26 @@ import org.ajax4jsf.model.Range;
 import org.ajax4jsf.model.SequenceRange;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.datamodel.BaseDataModel;
+import org.openspcoop2.generic_project.web.impl.jsf1.datamodel.ParameterizedDataModel;
 
 @Named("intNdpDM") @RequestScoped 
-public class ItermediarioNdpDM extends BaseDataModel<Long, IntermediarioNdpBean, IIntermediarioNdpService> { 
+public class ItermediarioNdpDM extends ParameterizedDataModel<Long, IntermediarioNdpBean, IIntermediarioNdpService, IntermediarioModel,IntermediarioNdpSearchForm> { 
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private Map<Long,String> keyconverter = new HashMap<Long,String>();
-	
+
 	@Inject  
-    private transient Logger log;
-	
-	
+	private transient Logger log;
+
+
 	@Override @Inject @Named("intNdpService")
 	public void setDataProvider(IIntermediarioNdpService dataProvider) {
-			super.setDataProvider(dataProvider);
+		super.setDataProvider(dataProvider);
 	}
-	
+
 	@Override
 	public void walk(FacesContext context, DataVisitor visitor, Range range,
 			Object argument) throws IOException {
@@ -76,7 +78,7 @@ public class ItermediarioNdpDM extends BaseDataModel<Long, IntermediarioNdpBean,
 					start = this.getDataProvider().getForm().getStart();
 					limit = this.getDataProvider().getForm().getLimit();
 					this.getDataProvider().getForm().setRestoreSearch(false);
-					
+
 					int pageIndex = (start / limit) + 1;
 					this.getDataProvider().getForm().setPageIndex(pageIndex);
 					this.getDataProvider().getForm().setCurrentPage(pageIndex);
@@ -84,15 +86,15 @@ public class ItermediarioNdpDM extends BaseDataModel<Long, IntermediarioNdpBean,
 					range = new SequenceRange(start,limit);
 				}
 				else{
-					  start = ((SequenceRange)range).getFirstRow();
-					  limit = ((SequenceRange)range).getRows();
+					start = ((SequenceRange)range).getFirstRow();
+					limit = ((SequenceRange)range).getRows();
 				}
-				
+
 				log.debug("Richiesti Record S["+start+"] L["+limit+"], FiltroPagina ["+this.getDataProvider().getForm().getCurrentPage()+"]"); 
 
 				this.getDataProvider().getForm().setStart(start);
 				this.getDataProvider().getForm().setLimit(limit); 
-				
+
 				this.wrappedKeys = new ArrayList<Long>();
 				this.keyconverter = new HashMap<Long, String>();
 				List<IntermediarioNdpBean> list = this.getDataProvider().findAll(start, limit);
@@ -100,7 +102,7 @@ public class ItermediarioNdpDM extends BaseDataModel<Long, IntermediarioNdpBean,
 					String idInt = intermediario.getDTO().getIdIntermediarioPA();
 
 					Long id = intermediario.getId();
-					
+
 					this.keyconverter.put(id, idInt);
 					this.wrappedData.put(id, intermediario);
 					this.wrappedKeys.add(id);
@@ -148,4 +150,5 @@ public class ItermediarioNdpDM extends BaseDataModel<Long, IntermediarioNdpBean,
 			return t;
 		}
 	}
+ 
 }

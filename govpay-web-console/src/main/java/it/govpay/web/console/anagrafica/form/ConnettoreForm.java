@@ -26,6 +26,7 @@ import it.govpay.ejb.core.model.ConnettoreModel.EnumAuthType;
 import it.govpay.ejb.core.model.ConnettoreModel.EnumSslType;
 import it.govpay.ejb.core.model.ConnettorePddModel;
 import it.govpay.web.console.anagrafica.bean.ConnettoreBean;
+import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
 import java.net.URI;
@@ -33,41 +34,42 @@ import java.net.URI;
 import javax.faces.event.ActionEvent;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseForm;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.BooleanField;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.SelectItem;
-import org.openspcoop2.generic_project.web.form.field.SelectListField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.form.Form;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem;
+import org.openspcoop2.generic_project.web.input.BooleanCheckBox;
+import org.openspcoop2.generic_project.web.input.FormField;
+import org.openspcoop2.generic_project.web.input.SelectList;
+import org.openspcoop2.generic_project.web.input.Text;
 
-public class ConnettoreForm extends BaseForm implements Serializable{
+public class ConnettoreForm extends BaseForm implements Form,Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private FormField<String> url;
-	private BooleanField azioneInUrl;
-	private BooleanField abilitato;
-	private SelectListField autenticazione;
+	private Text url;
+	private BooleanCheckBox azioneInUrl;
+	private BooleanCheckBox abilitato;
+	private SelectList<SelectItem> autenticazione;
 
-	private FormField<String> username;
-	private FormField<String> password;
+	private Text username;
+	private Text password;
 
-	private SelectListField tipoSsl;
-	private FormField<String> sslKsType;
-	private FormField<String> sslKsLocation;
-	private FormField<String> sslKsPasswd;
-	private FormField<String> sslPKeyPasswd;
-	private FormField<String> sslTsType;
-	private FormField<String> sslTsLocation;
-	private FormField<String> sslTsPasswd;
-	private FormField<String> sslType;
+	private SelectList<SelectItem> tipoSsl;
+	private Text sslKsType;
+	private Text sslKsLocation;
+	private Text sslKsPasswd;
+	private Text sslPKeyPasswd;
+	private Text sslTsType;
+	private Text sslTsLocation;
+	private Text sslTsPasswd;
+	private Text sslType;
 
-	private BaseForm form;
+	private Form form;
 
 	private boolean isConnettorePdd = false;
 
@@ -80,102 +82,105 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 	public ConnettoreForm (String idConn){
 		if(idConn != null)
 			this.idConn = idConn;
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
-	public void init(){
+	public void init() throws FactoryException{
 
-		this.tipoSsl = new SelectListField();
+		this.tipoSsl = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.tipoSsl.setName(this.idConn+"_tipoSsl");
 		this.tipoSsl.setValue(null);
 		this.tipoSsl.setRequired(true);
 		this.tipoSsl.setLabel("connettore.autenticazione.ssl.tipoSsl");
 
-		this.autenticazione = new SelectListField();
+		this.autenticazione = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.autenticazione.setRequired(true);
-		this.autenticazione.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione"));
+		this.autenticazione.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione"));
 		this.autenticazione.setName(this.idConn+"_autenticazione");
 		this.autenticazione.setHandlerMethodPrefix("autenticazione");
 		this.autenticazione.setValue(null);
 		this.autenticazione.setForm(this);
 
-		this.url = new TextField();
+		this.url = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.url.setRequired(true);
-		this.url.setLabel(Utils.getMessageFromResourceBundle("connettore.url"));
+		this.url.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.url"));
 		this.url.setName(this.idConn+"_url");
 		this.url.setValue(null);
 
-		this.azioneInUrl = new BooleanField();
+		this.azioneInUrl = this.getWebGenericProjectFactory().getInputFieldFactory().createBooleanCheckBox();
 		this.azioneInUrl.setRequired(false);
-		this.azioneInUrl.setLabel(Utils.getMessageFromResourceBundle("connettore.azioneInUrl"));
+		this.azioneInUrl.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.azioneInUrl"));
 		this.azioneInUrl.setName(this.idConn+"_azioneInUrl");
 		this.azioneInUrl.setValue(null);
 
-		this.abilitato = new BooleanField();
+		this.abilitato = this.getWebGenericProjectFactory().getInputFieldFactory().createBooleanCheckBox();
 		this.abilitato.setRequired(false);
-		this.abilitato.setLabel(Utils.getMessageFromResourceBundle("connettore.abilitato"));
+		this.abilitato.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.abilitato"));
 		this.abilitato.setName(this.idConn+"_abilitato");
 		this.abilitato.setHandlerMethodPrefix("abilitato"); 
 		this.abilitato.setValue(null);
 		this.abilitato.setForm(this);
 
-		this.username = new TextField();
+		this.username = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.username.setRequired(true);
-		this.username.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.http.username"));
+		this.username.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.http.username"));
 		this.username.setName(this.idConn+"_httpUsername");
 		this.username.setValue(null);
 
-		this.password = new TextField();
+		this.password = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.password.setRequired(true);
-		this.password.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.http.password"));
+		this.password.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.http.password"));
 		this.password.setName(this.idConn+"_httpPassword");
 		this.password.setValue(null);
 
-		this.sslKsType = new TextField();
+		this.sslKsType = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslKsType.setRequired(true);
-		this.sslKsType.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslKsType"));
+		this.sslKsType.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslKsType"));
 		this.sslKsType.setName(this.idConn+"_sslKsType");
 		this.sslKsType.setValue(null);
 
-		this.sslKsLocation = new TextField();
+		this.sslKsLocation = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslKsLocation.setRequired(true);
-		this.sslKsLocation.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslKsLocation"));
+		this.sslKsLocation.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslKsLocation"));
 		this.sslKsLocation.setName(this.idConn+"_sslKsLocation");
 		this.sslKsLocation.setValue(null);
 
-		this.sslKsPasswd = new TextField();
+		this.sslKsPasswd = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslKsPasswd.setRequired(true);
-		this.sslKsPasswd.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslKsPasswd"));
+		this.sslKsPasswd.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslKsPasswd"));
 		this.sslKsPasswd.setName(this.idConn+"_sslKsPasswd");
 		this.sslKsPasswd.setValue(null);
 
-		this.sslPKeyPasswd = new TextField();
+		this.sslPKeyPasswd = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslPKeyPasswd.setRequired(true);
-		this.sslPKeyPasswd.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslPKeyPasswd"));
+		this.sslPKeyPasswd.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslPKeyPasswd"));
 		this.sslPKeyPasswd.setName(this.idConn+"_sslPKeyPasswd");
 		this.sslPKeyPasswd.setValue(null);
 
-		this.sslTsType = new TextField();
+		this.sslTsType = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslTsType.setRequired(true);
-		this.sslTsType.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslTsType"));
+		this.sslTsType.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslTsType"));
 		this.sslTsType.setName(this.idConn+"_sslTsType");
 		this.sslTsType.setValue(null);
 
-		this.sslTsLocation = new TextField();
+		this.sslTsLocation = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslTsLocation.setRequired(true);
-		this.sslTsLocation.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslTsLocation"));
+		this.sslTsLocation.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslTsLocation"));
 		this.sslTsLocation.setName(this.idConn+"_sslTsLocation");
 		this.sslTsLocation.setValue(null);
 
-		this.sslTsPasswd = new TextField();
+		this.sslTsPasswd = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslTsPasswd.setRequired(true);
-		this.sslTsPasswd.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslTsPasswd"));
+		this.sslTsPasswd.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslTsPasswd"));
 		this.sslTsPasswd.setName(this.idConn+"_sslTsPasswd");
 		this.sslTsPasswd.setValue(null);
 
-		this.sslType = new TextField();
+		this.sslType = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.sslType.setRequired(true);
-		this.sslType.setLabel(Utils.getMessageFromResourceBundle("connettore.autenticazione.ssl.sslType"));
+		this.sslType.setLabel(Utils.getInstance().getMessageFromResourceBundle("connettore.autenticazione.ssl.sslType"));
 		this.sslType.setName(this.idConn+"_sslType");
 		this.sslType.setValue(null);
 
@@ -189,147 +194,147 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 		this.idConn = idConn;
 	}
 
-	public FormField<String> getUrl() {
+	public Text getUrl() {
 		setRendered(url, true,false, false);
 		return url;
 	}
 
-	public void setUrl(FormField<String> url) {
+	public void setUrl(Text url) {
 		this.url = url;
 	}
 
-	public BooleanField getAzioneInUrl() {
+	public BooleanCheckBox getAzioneInUrl() {
 		return azioneInUrl;
 	}
 
-	public void setAzioneInUrl(BooleanField azioneInUrl) {
+	public void setAzioneInUrl(BooleanCheckBox azioneInUrl) {
 		this.azioneInUrl = azioneInUrl;
 	}
 
-	public BooleanField getAbilitato() {
+	public BooleanCheckBox getAbilitato() {
 		return abilitato;
 	}
 
-	public void setAbilitato(BooleanField abilitato) {
+	public void setAbilitato(BooleanCheckBox abilitato) {
 		this.abilitato = abilitato;
 	}
 
-	public SelectListField getAutenticazione() {
+	public SelectList<SelectItem> getAutenticazione() {
 		setRendered(autenticazione, true,false, false);
 		return autenticazione;
 	}
 
-	public void setAutenticazione(SelectListField autenticazione) {
+	public void setAutenticazione(SelectList<SelectItem> autenticazione) {
 		this.autenticazione = autenticazione;
 	}
 
-	public FormField<String> getUsername() {
+	public Text getUsername() {
 		setRendered(username, false,true, false);
 		return username;
 	}
 
-	public void setUsername(FormField<String> username) {
+	public void setUsername(Text username) {
 		this.username = username;
 	}
 
-	public FormField<String> getPassword() {
+	public Text getPassword() {
 		setRendered(password, false,true, false);
 		return password;
 	}
 
-	public void setPassword(FormField<String> password) {
+	public void setPassword(Text password) {
 		this.password = password;
 	}
 
-	public SelectListField getTipoSsl() {
+	public SelectList<SelectItem> getTipoSsl() {
 		setRendered(tipoSsl, false,false, true);
 		return tipoSsl;
 	}
 
-	public void setTipoSsl(SelectListField tipoSsl) {
+	public void setTipoSsl(SelectList<SelectItem> tipoSsl) {
 		this.tipoSsl = tipoSsl;
 	}
 
-	public FormField<String> getSslKsType() {
+	public Text getSslKsType() {
 		setRendered(sslKsType, false,false, true);
 		return sslKsType;
 	}
 
-	public void setSslKsType(FormField<String> sslKsType) {
+	public void setSslKsType(Text sslKsType) {
 		this.sslKsType = sslKsType;
 	}
 
-	public FormField<String> getSslKsLocation() {
+	public Text getSslKsLocation() {
 		setRendered(sslKsLocation,false, false, true);
 		return sslKsLocation;
 	}
 
-	public void setSslKsLocation(FormField<String> sslKsLocation) {
+	public void setSslKsLocation(Text sslKsLocation) {
 		this.sslKsLocation = sslKsLocation;
 	}
 
-	public FormField<String> getSslKsPasswd() {
+	public Text getSslKsPasswd() {
 		setRendered(sslKsPasswd, false,false, true);
 		return sslKsPasswd;
 	}
 
-	public void setSslKsPasswd(FormField<String> sslKsPasswd) {
+	public void setSslKsPasswd(Text sslKsPasswd) {
 		this.sslKsPasswd = sslKsPasswd;
 	}
 
-	public FormField<String> getSslPKeyPasswd() {
+	public Text getSslPKeyPasswd() {
 		setRendered(sslPKeyPasswd, false,false, true);
 		return sslPKeyPasswd;
 	}
 
-	public void setSslPKeyPasswd(FormField<String> sslPKeyPasswd) {
+	public void setSslPKeyPasswd(Text sslPKeyPasswd) {
 		this.sslPKeyPasswd = sslPKeyPasswd;
 	}
 
-	public FormField<String> getSslTsType() {
+	public Text getSslTsType() {
 		setRendered(sslTsType, false,false, true);
 		return sslTsType;
 	}
 
-	public void setSslTsType(FormField<String> sslTsType) {
+	public void setSslTsType(Text sslTsType) {
 		this.sslTsType = sslTsType;
 	}
 
-	public FormField<String> getSslTsLocation() {
+	public Text getSslTsLocation() {
 		setRendered(sslTsLocation,false, false, true);
 		return sslTsLocation;
 	}
 
-	public void setSslTsLocation(FormField<String> sslTsLocation) {
+	public void setSslTsLocation(Text sslTsLocation) {
 		this.sslTsLocation = sslTsLocation;
 	}
 
-	public FormField<String> getSslTsPasswd() {
+	public Text getSslTsPasswd() {
 		setRendered(sslTsPasswd, false,false, true);
 		return sslTsPasswd;
 	}
 
-	public void setSslTsPasswd(FormField<String> sslTsPasswd) {
+	public void setSslTsPasswd(Text sslTsPasswd) {
 		this.sslTsPasswd = sslTsPasswd;
 	}
 
-	public FormField<String> getSslType() {
+	public Text getSslType() {
 		setRendered(sslType, false,false, true); 
 		return sslType;
 	}
 
-	public void setSslType(FormField<String> sslType) {
+	public void setSslType(Text sslType) {
 		this.sslType = sslType;
 	}
 
-	public BaseForm getForm() {
+	public Form getForm() {
 		return form;
 	}
 
-	public void setForm(BaseForm form) {
+	public void setForm(Form form) {
 		this.form = form;
-		this.autenticazione.setFieldsToUpdate(this.form.getIdForm() + "_formPnl");
-		this.abilitato.setFieldsToUpdate(this.form.getIdForm() + "_formPnl");
+		this.autenticazione.setFieldsToUpdate(this.form.getId() + "_formPnl");
+		this.abilitato.setFieldsToUpdate(this.form.getId() + "_formPnl");
 	}
 
 	public void reset(){
@@ -374,16 +379,16 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 
 			if(enumTipoAuth!= null){
 				if(enumTipoAuth.equals(EnumAuthType.NONE))
-					this.autenticazione.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(
+					this.autenticazione.setDefaultValue(new SelectItem(
 							EnumAuthType.NONE.toString(), ("connettore.autenticazione.nessuna")));
 				else if(enumTipoAuth.equals(EnumAuthType.HTTPBasic))
-					this.autenticazione.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(
+					this.autenticazione.setDefaultValue(new SelectItem(
 							EnumAuthType.HTTPBasic.toString(), ("connettore.autenticazione.http")));
 				else 
-					this.autenticazione.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(
+					this.autenticazione.setDefaultValue(new SelectItem(
 							EnumAuthType.SSL.toString(), ("connettore.autenticazione.ssl")));
 			}else 
-				this.autenticazione.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				this.autenticazione.setDefaultValue(new SelectItem(
 						EnumAuthType.NONE.toString(), ("connettore.autenticazione.nessuna")));
 
 			this.username.setDefaultValue(bean.getDTO().getHttpUser());
@@ -392,13 +397,13 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 			EnumSslType enumSslType = bean.getDTO().getTipoSsl();
 			if(enumSslType != null){
 				if(enumSslType.equals(EnumSslType.CLIENT))
-					this.tipoSsl.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(
+					this.tipoSsl.setDefaultValue(new SelectItem(
 							EnumSslType.CLIENT.toString(), ("connettore.autenticazione.ssl.tipoSsl.client")));
 				else 
-					this.tipoSsl.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(
+					this.tipoSsl.setDefaultValue(new SelectItem(
 							EnumSslType.SERVER.toString(), ("connettore.autenticazione.ssl.tipoSsl.server")));
 			}else 
-				this.tipoSsl.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO));
+				this.tipoSsl.setDefaultValue(new SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO));
 
 
 			this.sslKsType.setDefaultValue(bean.getDTO().getSslKsType());
@@ -412,11 +417,10 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 		}else {
 			this.url.setDefaultValue(null);
 
-			this.autenticazione.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(
-					EnumAuthType.NONE.toString(), ("connettore.autenticazione.nessuna")));
+			this.autenticazione.setDefaultValue(new SelectItem(EnumAuthType.NONE.toString(), ("connettore.autenticazione.nessuna")));
 			this.username.setDefaultValue(null);
 			this.password.setDefaultValue(null);
-			this.tipoSsl.setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO));
+			this.tipoSsl.setDefaultValue(new SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO));
 			this.sslKsType.setDefaultValue(null);
 			this.sslKsLocation.setDefaultValue(null);
 			this.sslKsPasswd.setDefaultValue(null);
@@ -505,12 +509,12 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 		// URL
 		String _codice = this.url.getValue();
 		if(StringUtils.isEmpty(_codice))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.url.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.url.getLabel());
 
 		try{
 			new URI(this.url.getValue());
 		}catch(Exception e){
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO, this.url.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO, this.url.getLabel());
 		}
 
 		SelectItem value = this.autenticazione.getValue();
@@ -525,11 +529,11 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 			else if(auth.equals(EnumAuthType.HTTPBasic)){
 				String _usr = this.username.getValue();
 				if(StringUtils.isEmpty(_usr))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.username.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.username.getLabel());
 
 				String _password = this.password.getValue();
 				if(StringUtils.isEmpty(_password))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.password.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.password.getLabel());
 
 			} else {
 				SelectItem sslTypeValue = this.tipoSsl.getValue();
@@ -537,40 +541,40 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 					String _sslType = sslTypeValue.getValue();
 
 					if(_sslType.equals(CostantiForm.NON_SELEZIONATO))
-						return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.tipoSsl.getLabel());
+						return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.tipoSsl.getLabel());
 				}
 
 				String _sslValue = this.sslKsType.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslKsType.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslKsType.getLabel());
 
 				_sslValue = this.sslKsPasswd.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslKsPasswd.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslKsPasswd.getLabel());
 
 				_sslValue = this.sslKsLocation.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslKsLocation.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslKsLocation.getLabel());
 
 				_sslValue = this.sslPKeyPasswd.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslPKeyPasswd.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslPKeyPasswd.getLabel());
 
 				_sslValue = this.sslTsType.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslTsType.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslTsType.getLabel());
 
 				_sslValue = this.sslTsLocation.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslTsLocation.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslTsLocation.getLabel());
 
 				_sslValue = this.sslTsPasswd.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslTsPasswd.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslTsPasswd.getLabel());
 
 				_sslValue = this.sslType.getValue();
 				if(StringUtils.isEmpty(_sslValue))
-					return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslType.getLabel());
+					return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.sslType.getLabel());
 
 			}
 		}
@@ -646,9 +650,8 @@ public class ConnettoreForm extends BaseForm implements Serializable{
 	}
 
 	public void autenticazioneSelectListener(FormField<?> field, ActionEvent ae){
-		SelectListField selField = (SelectListField) field;
-
-		SelectItem value = selField.getValue();
+		SelectList<?> selField = (SelectList<?>) field;
+		SelectItem value = (SelectItem) selField.getValue(); 
 
 		if(value!= null){
 			String value2 = value.getValue();

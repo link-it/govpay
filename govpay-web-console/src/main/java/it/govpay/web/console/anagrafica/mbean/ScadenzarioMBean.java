@@ -34,6 +34,7 @@ import it.govpay.web.console.anagrafica.form.ScadenzarioSearchForm;
 import it.govpay.web.console.anagrafica.iservice.IEnteService;
 import it.govpay.web.console.anagrafica.iservice.IIntermediarioNdpService;
 import it.govpay.web.console.anagrafica.iservice.IScadenzarioService;
+import it.govpay.web.console.anagrafica.model.ScadenzarioModel;
 import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
@@ -43,27 +44,25 @@ import java.util.List;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.impl.SelectListImpl;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseListView;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
 
 //@Named("scadenzarioMBean") @ConversationScoped 
-public class ScadenzarioMBean 
-extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Serializable{
+public class ScadenzarioMBean extends BaseListView<ScadenzarioBean, Long, ScadenzarioSearchForm,ScadenzarioForm,ScadenzarioModel> implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Logger log;
-
 	private String azione = null;
 
 	//	@Inject @Named("scadenzarioForm")
-	private ScadenzarioForm form = null;
+//	private ScadenzarioForm form = null;
 
 	//  @Inject @Named("intNdpService")
 	private IIntermediarioNdpService ndpService ;
@@ -75,7 +74,6 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 
 	private String selectedIdEnte = null;
 	private String selectedIdSystem = null;
-	private ScadenzarioModelId selectedId= null;
 
 	private EnteBean selectedEnte = null;
 	private EnteMBean enteMbean = null;
@@ -83,8 +81,11 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 	private List<ScadenzarioBean> listaScadenzari;
 
 	private TributoMBean tributoMBean = null;
+	
+	private ScadenzarioModelId selectedIdScadenzario = null;
 
 	public ScadenzarioMBean(){
+		super(Logger.getLogger(ScadenzarioMBean.class)); 
 
 		this.search = new ScadenzarioSearchForm();
 		this.search.reset();
@@ -96,11 +97,12 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		this.selectedIdEnte= null;
 		this.selectedIdSystem= null; 
 		this.selectedId = null;
+		this.selectedIdScadenzario = null;
 		this.form.setRendered(this.showForm);
-		this.form.getConnettoreNotifica().getAutenticazione().setElencoSelectItems(this.getListaTipiAutenticazione());
-		this.form.getConnettoreNotifica().getTipoSsl().setElencoSelectItems(this.getListaTipiSSL());
-		this.form.getConnettoreVerifica().getAutenticazione().setElencoSelectItems(this.getListaTipiAutenticazione());
-		this.form.getConnettoreVerifica().getTipoSsl().setElencoSelectItems(this.getListaTipiSSL());
+		((SelectListImpl) this.form.getConnettoreNotifica().getAutenticazione()).setElencoSelectItems(this.getListaTipiAutenticazione());
+		((SelectListImpl) this.form.getConnettoreNotifica().getTipoSsl()).setElencoSelectItems(this.getListaTipiSSL());
+		((SelectListImpl) this.form.getConnettoreVerifica().getAutenticazione()).setElencoSelectItems(this.getListaTipiAutenticazione());
+		((SelectListImpl) this.form.getConnettoreVerifica().getTipoSsl()).setElencoSelectItems(this.getListaTipiSSL());
 		this.form.reset();
 
 
@@ -130,13 +132,14 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		this.selectedIdEnte= null;
 		this.selectedIdSystem= null;  
 		this.selectedId = null;
+		this.selectedIdScadenzario = null;
 		this.showForm = false;
 		this.form.setRendered(this.showForm);
 		this.azione = null;
-		this.form.getConnettoreNotifica().getAutenticazione().setElencoSelectItems(this.getListaTipiAutenticazione());
-		this.form.getConnettoreNotifica().getTipoSsl().setElencoSelectItems(this.getListaTipiSSL());
-		this.form.getConnettoreVerifica().getAutenticazione().setElencoSelectItems(this.getListaTipiAutenticazione());
-		this.form.getConnettoreVerifica().getTipoSsl().setElencoSelectItems(this.getListaTipiSSL());
+		((SelectListImpl) this.form.getConnettoreNotifica().getAutenticazione()).setElencoSelectItems(this.getListaTipiAutenticazione());
+		((SelectListImpl) this.form.getConnettoreNotifica().getTipoSsl()).setElencoSelectItems(this.getListaTipiSSL());
+		((SelectListImpl) this.form.getConnettoreVerifica().getAutenticazione()).setElencoSelectItems(this.getListaTipiAutenticazione());
+		((SelectListImpl) this.form.getConnettoreVerifica().getTipoSsl()).setElencoSelectItems(this.getListaTipiSSL());
 		this.form.reset();
 		return "listaEnti";
 	}
@@ -146,7 +149,7 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		String msg = this.form.valida();
 
 		if(msg!= null){
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("scadenzario.form.erroreValidazione")+": " + msg);
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("scadenzario.form.erroreValidazione")+": " + msg);
 			return null;
 		}
 
@@ -164,8 +167,8 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 				ScadenzarioBean oldInt = ((IScadenzarioService) this.service).findById(key);
 
 				if(oldInt!= null){
-					MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("scadenzario.form.erroreValidazione") +
-							": " +Utils.getMessageWithParamsFromResourceBundle("scadenzario.form.intermediarioEsistente",this.form.getNome().getValue()));
+					MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("scadenzario.form.erroreValidazione") +
+							": " +Utils.getInstance().getMessageWithParamsFromResourceBundle("scadenzario.form.intermediarioEsistente",this.form.getNome().getValue()));
 					return null;
 				}
 			} else {
@@ -184,7 +187,7 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 
 
 			((IScadenzarioService)this.service).store(oldId,bean);
-			MessageUtils.addInfoMsg(Utils.getMessageFromResourceBundle("scadenzario.form.salvataggioOk"));
+			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("scadenzario.form.salvataggioOk"));
 			this.setSelectedIdSystem(bean.getNome().getValue());
 			this.setSelectedIdEnte(this.form.getIdEnte().getValue());
 			this.setSelectedEnte(this.getSelectedEnte());
@@ -195,20 +198,20 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 			return null;//"invia";
 		}catch(Exception e){
 			log.error("Si e' verificato un errore durante il salvataggio dello scadenzario: " + e.getMessage(), e);
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("scadenzario.form.erroreGenerico"));
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("scadenzario.form.erroreGenerico"));
 			return null;
 		}
 		//return "listaEnti?faces-redirect=true";
 	}
 
 	public String dettaglio(){
-		this.selectedId = new ScadenzarioModelId();
-		this.selectedId.setIdEnte(selectedIdEnte);
-		this.selectedId.setIdSystem(selectedIdSystem);
+		this.selectedIdScadenzario = new ScadenzarioModelId();
+		this.selectedIdScadenzario.setIdEnte(selectedIdEnte);
+		this.selectedIdScadenzario.setIdSystem(selectedIdSystem);
 
-		if(this.selectedId != null){
+		if(this.selectedIdScadenzario != null){
 			try {
-				ScadenzarioBean findById = ((IScadenzarioService)this.service).findById(selectedId);
+				ScadenzarioBean findById = ((IScadenzarioService)this.service).findById(this.selectedIdScadenzario);
 				this.setSelectedElement(findById);
 			} catch (ServiceException e) {
 				this.log.error("Si e' verificato un errore durante la lettura dell'IntermediarioNDP: " + e.getMessage(), e); 
@@ -261,16 +264,17 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		this.selectedIdEnte= null;
 		this.selectedIdSystem= null; 
 		this.selectedId = null;
+		this.selectedIdScadenzario = null;
 		this.azione = "add";
 		this.showForm = true;
 		this.form.setRendered(this.showForm);
 		this.form.setValues(this.selectedElement);
 
 		this.form.getIdEnte().setDefaultValue(this.selectedEnte.getIdEnteCreditore().getValue());
-		this.form.getIdIntermediarioPA().setElencoSelectItems(this.getListaIntermediari());
-		this.form.getStazione().setElencoSelectItems(this.getListaStazioni(null));
-		//		this.form.getIdIntermediarioPA().setDefaultValue(new org.openspcoop2.generic_project.web.form.field.SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)); 
-
+		((SelectListImpl) this.form.getIdIntermediarioPA()).setElencoSelectItems(this.getListaIntermediari());
+		((SelectListImpl) this.form.getStazione()).setElencoSelectItems(this.getListaStazioni(null));
+		//		this.form.getIdIntermediarioPA().setDefaultValue(new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)); 
+ 
 
 		this.form.reset();
 
@@ -324,12 +328,12 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		this.selectedIdSystem = selectedIdSystem;
 	}
 
-	public ScadenzarioModelId getSelectedId() {
-		return selectedId;
+	public ScadenzarioModelId getSelectedIdScadenzario() {
+		return selectedIdScadenzario;
 	}
 
-	public void setSelectedId(ScadenzarioModelId selectedId) {
-		this.selectedId = selectedId;
+	public void setSelectedIdScadenzario(ScadenzarioModelId selectedIdScadenzario) {
+		this.selectedIdScadenzario = selectedIdScadenzario;
 	}
 
 	public String modifica(){
@@ -343,11 +347,11 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 
 		this.form.reset();
 
-		this.form.getIdIntermediarioPA().setElencoSelectItems(this.getListaIntermediari()); 
-		this.form.getStazione().setElencoSelectItems(this.getListaStazioni(this.form.getIdIntermediarioPA().getValue().getValue()));  
+		((SelectListImpl) this.form.getIdIntermediarioPA()).setElencoSelectItems(this.getListaIntermediari()); 
+		((SelectListImpl) this.form.getStazione()).setElencoSelectItems(this.getListaStazioni(this.form.getIdIntermediarioPA().getValue().getValue()));  
 
 		if(this.form.getIdIntermediarioPA()!= null){
-			org.openspcoop2.generic_project.web.form.field.SelectItem value = this.form.getIdIntermediarioPA().getValue();
+			org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem value = this.form.getIdIntermediarioPA().getValue();
 			if(value != null){
 				try{
 					IntermediarioNdpBean findById = this.ndpService.findById(value.getValue());
@@ -380,13 +384,13 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumAuthType.NONE.toString(), ("connettore.autenticazione.nessuna"))));
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumAuthType.HTTPBasic.toString(),   ("connettore.autenticazione.http"))));
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumAuthType.SSL.toString(),   ("connettore.autenticazione.ssl"))));
 
 		return lista;
@@ -396,14 +400,14 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)));
 
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumSslType.CLIENT.toString(), ("connettore.autenticazione.ssl.tipoSsl.client"))));
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumSslType.SERVER.toString(),   ("connettore.autenticazione.ssl.tipoSsl.server"))));
 
 		return lista;
@@ -422,13 +426,10 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 		return null;
 	}
 
-	public Logger getLog() {
-		return log;
-	}
 
 	public void setLog(Logger log) {
 		this.log = log;
-		this.getTributoMBean().setLogger(log);
+		//this.getTributoMBean().setLogger(log);
 
 	}
 
@@ -463,8 +464,8 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 			try {
 				ScadenzarioSearchForm ricerca= new ScadenzarioSearchForm() ;
 				ricerca.getIdEnte().setValue(this.selectedEnte.getIdEnteCreditore().getValue());
-
-				this.listaScadenzari = ((IScadenzarioService) this.service).findAll(ricerca );
+				
+				this.listaScadenzari =   ((IScadenzarioService) this.service).findAll(ricerca );
 			} catch (ServiceException e) {
 				log.error("Errore durante il caricamento della lista sscadenzari");
 				this.listaScadenzari = new ArrayList<ScadenzarioBean>();
@@ -502,7 +503,7 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 	public List<SelectItem> getListaIntermediari(){
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)));
 
 		try {
@@ -513,7 +514,7 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 					String id = intermediarioNdpBean.getIdIntermediarioPA().getValue();
 					String label = intermediarioNdpBean.getNomeSoggettoSPC().getValue();
 					lista.add(new SelectItem(
-							new org.openspcoop2.generic_project.web.form.field.SelectItem(id,label + " (" + id + ")")));
+							new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(id,label + " (" + id + ")")));
 				}
 			}
 		} catch (ServiceException e) {
@@ -526,7 +527,7 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 	public List<SelectItem> getListaStazioni(String idIntermediarioPA){
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)));
 
 		try {
@@ -540,7 +541,7 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 
 						// Controllo il valore attuale della stazione, se e' selezionato un valore deve andare nella select list altrimenti non si passa la validazione Jsf
 						String stazValue  = null;
-						org.openspcoop2.generic_project.web.form.field.SelectItem selectItemStaz = this.form.getStazione().getValue();
+						org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem selectItemStaz = this.form.getStazione().getValue();
 						if(selectItemStaz != null){
 							stazValue= selectItemStaz.getValue();
 						}
@@ -558,7 +559,7 @@ extends BaseMBean<ScadenzarioBean, Long, ScadenzarioSearchForm> implements Seria
 							} 
 
 						if(!found)
-							lista.add(new SelectItem(new org.openspcoop2.generic_project.web.form.field.SelectItem(id,id)));
+							lista.add(new SelectItem(new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(id,id)));
 					}
 				}
 			}

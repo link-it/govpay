@@ -24,50 +24,54 @@ package it.govpay.web.console.anagrafica.form;
 import it.govpay.ejb.core.model.ConnettorePddModel;
 import it.govpay.ejb.ndp.model.IntermediarioModel;
 import it.govpay.web.console.anagrafica.bean.IntermediarioNdpBean;
+import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
 
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseForm;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.form.Form;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseForm;
+import org.openspcoop2.generic_project.web.input.Text;
 
 @Named("intNdpForm")
-public class IntermediarioNdpForm extends BaseForm implements Serializable{
+public class IntermediarioNdpForm extends BaseForm implements Form,Serializable{
 
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private FormField<String> nomeSoggettoSPC;
-	private FormField<String> idIntermediarioPA;
+	private Text nomeSoggettoSPC;
+	private Text idIntermediarioPA;
 	
 	private ConnettoreForm connettore;
 
 	public IntermediarioNdpForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
 	@Override
-	protected void init() {
+	public void init() throws FactoryException{
 		this.setClosable(false);
-		this.setIdForm("formIntNdp");
+		this.setId("formIntNdp");
 		this.setNomeForm(null); 
 
-		this.nomeSoggettoSPC = new TextField();
+		this.nomeSoggettoSPC = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.nomeSoggettoSPC.setRequired(true);
-		this.nomeSoggettoSPC.setLabel(Utils.getMessageFromResourceBundle("intermediariNdp.nomeSoggettoSPC"));
+		this.nomeSoggettoSPC.setLabel(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.nomeSoggettoSPC"));
 		this.nomeSoggettoSPC.setName("nomeSoggettoSPC");
 		this.nomeSoggettoSPC.setValue(null);
 
-		this.idIntermediarioPA = new TextField();
+		this.idIntermediarioPA = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idIntermediarioPA.setRequired(true);
-		this.idIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("intermediariNdp.idIntermediarioPA"));
+		this.idIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.idIntermediarioPA"));
 		this.idIntermediarioPA.setName("idIntermediarioPA");
 		this.idIntermediarioPA.setValue(null);
 
@@ -105,19 +109,19 @@ public class IntermediarioNdpForm extends BaseForm implements Serializable{
 		this.reset();
 	}
 
-	public FormField<String> getNomeSoggettoSPC() {
+	public Text getNomeSoggettoSPC() {
 		return nomeSoggettoSPC;
 	}
 
-	public void setNomeSoggettoSPC(FormField<String> nomeSoggettoSPC) {
+	public void setNomeSoggettoSPC(Text nomeSoggettoSPC) {
 		this.nomeSoggettoSPC = nomeSoggettoSPC;
 	}
 
-	public FormField<String> getIdIntermediarioPA() {
+	public Text getIdIntermediarioPA() {
 		return idIntermediarioPA;
 	}
 
-	public void setIdIntermediarioPA(FormField<String> idIntermediarioPA) {
+	public void setIdIntermediarioPA(Text idIntermediarioPA) {
 		this.idIntermediarioPA = idIntermediarioPA;
 	}
 
@@ -145,11 +149,11 @@ public class IntermediarioNdpForm extends BaseForm implements Serializable{
 	public String valida(){
 		String _nomeSoggettoSPC = this.nomeSoggettoSPC.getValue();
 		if(StringUtils.isEmpty(_nomeSoggettoSPC))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.nomeSoggettoSPC.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.nomeSoggettoSPC.getLabel());
 
 		String _idIntermediarioPA = this.idIntermediarioPA.getValue();
 		if(StringUtils.isEmpty(_idIntermediarioPA))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.idIntermediarioPA.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.idIntermediarioPA.getLabel());
 	
 		return this.connettore.valida();
 	}

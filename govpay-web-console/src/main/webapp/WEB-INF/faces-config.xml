@@ -197,7 +197,7 @@
 	<!-- Converter per le selectList -->
 	<converter>
 		<converter-id>selectItemConverter</converter-id>
-		<converter-class>org.openspcoop2.generic_project.web.converter.SelectListItemConverter</converter-class>
+		<converter-class>org.openspcoop2.generic_project.web.impl.jsf1.converter.SelectListItemConverter</converter-class>
 	</converter>
 
 	<application>
@@ -220,6 +220,6 @@
 	</factory>
 
 	<lifecycle>
-		<phase-listener id="loginPhaseListener">org.openspcoop2.generic_project.web.listener.LoginPhaseListener</phase-listener>
+		<phase-listener id="loginPhaseListener">org.openspcoop2.generic_project.web.impl.jsf1.listener.LoginPhaseListener</phase-listener>
 	</lifecycle>
 </faces-config>

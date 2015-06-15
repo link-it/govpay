@@ -25,10 +25,12 @@ import java.io.Serializable;
 
 import javax.inject.Named;
 
-import org.openspcoop2.generic_project.web.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.form.SearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseSearchForm;
+
 
 @Named("pspSearchForm")
-public class PspSearchForm extends BaseSearchForm implements Serializable{
+public class PspSearchForm extends BaseSearchForm implements SearchForm,Serializable{
 
 	/**
 	 * 
@@ -36,14 +38,14 @@ public class PspSearchForm extends BaseSearchForm implements Serializable{
 	private static final long serialVersionUID = 1L;
  
 	@Override
-	protected void init() {
+	public void init() {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void reset() {
-		resetParametriPaginazione();
+		resetParametriPaginazione(); 
 	}
 
 }

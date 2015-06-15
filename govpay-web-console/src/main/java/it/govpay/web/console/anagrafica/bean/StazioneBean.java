@@ -21,93 +21,23 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
+
 import it.govpay.ejb.ndp.model.StazioneModel;
+import it.govpay.web.console.utils.Utils;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
-
-public class StazioneBean extends BaseBean<StazioneModel, String> { 
+public class StazioneBean extends BaseBean<StazioneModel, Long> implements IBean<StazioneModel, Long> {  
 
 
-	private OutputField<String> password;
+	private Text password;
 	private OutputGroup fieldsDatiGenerali = null;
-	private OutputField<String> idIntermediarioPA;
-	private OutputField<String> idStazioneIntermediarioPA;
-	private Long id = null;
+	private Text idIntermediarioPA;
+	private Text idStazioneIntermediarioPA;
 
-	public StazioneBean() {
-		this.password = new OutputText();
-		this.password.setLabel(Utils.getMessageFromResourceBundle("stazione.password"));
-		this.password.setName("staz_password");
-
-		this.idIntermediarioPA = new OutputText();
-		this.idIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("stazione.idIntermediarioPA"));
-		this.idIntermediarioPA.setName("staz_idIntermediarioPA");
-		
-		this.idStazioneIntermediarioPA = new OutputText();
-		this.idStazioneIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("stazione.idStazioneIntermediarioPA"));
-		this.idStazioneIntermediarioPA.setName("staz_idStazioneIntermediarioPA");
-
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("staz_datiGenerali");
-		this.fieldsDatiGenerali.setColumns(2);
-		this.fieldsDatiGenerali.setRendered(true);
-		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
-		this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
-
-
-		this.fieldsDatiGenerali.addField(this.idIntermediarioPA);
-		this.fieldsDatiGenerali.addField(this.idStazioneIntermediarioPA);
-		this.fieldsDatiGenerali.addField(this.password);
-	}
-
-	@Override
-	public void setDTO(StazioneModel dto) {
-		super.setDTO(dto);
-		
-		this.idStazioneIntermediarioPA.setValue(this.getDTO().getIdStazioneIntermediarioPA()); 
-		this.idIntermediarioPA.setValue(this.getDTO().getIdIntermediarioPA());
-		this.password.setValue(this.getDTO().getPassword());
-	}
-	
-	public OutputGroup getFieldsDatiGenerali() {
-		return fieldsDatiGenerali;
-	}
-
-
-	public void setFieldsDatiGenerali(OutputGroup fieldsDatiGenerali) {
-		this.fieldsDatiGenerali = fieldsDatiGenerali;
-	}
-
-	public OutputField<String> getIdIntermediarioPA() {
-		return idIntermediarioPA;
-	}
-
-
-	public void setIdIntermediarioPA(OutputField<String> idIntermediarioPA) {
-		this.idIntermediarioPA = idIntermediarioPA;
-	}
-
-	public OutputField<String> getIdStazioneIntermediarioPA() {
-		return idStazioneIntermediarioPA;
-	}
-
-	public void setIdStazioneIntermediarioPA(
-			OutputField<String> idStazioneIntermediarioPA) {
-		this.idStazioneIntermediarioPA = idStazioneIntermediarioPA;
-	}
-
-	public OutputField<String> getPassword() {
-		return password;
-	}
-
-
-	public void setPassword(OutputField<String> password) {
-		this.password = password;
-	}
 
 	public Long getId() {
 		return id;
@@ -117,4 +47,80 @@ public class StazioneBean extends BaseBean<StazioneModel, String> {
 	public void setId(Long id) {
 		this.id = id;
 	}
+
+	public StazioneBean() {
+		try {
+			this.password = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+
+			this.password.setLabel(Utils.getInstance().getMessageFromResourceBundle("stazione.password"));
+			this.password.setName("staz_password");
+
+			this.idIntermediarioPA = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.idIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("stazione.idIntermediarioPA"));
+			this.idIntermediarioPA.setName("staz_idIntermediarioPA");
+
+			this.idStazioneIntermediarioPA = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.idStazioneIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("stazione.idStazioneIntermediarioPA"));
+			this.idStazioneIntermediarioPA.setName("staz_idStazioneIntermediarioPA");
+
+			this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+			this.fieldsDatiGenerali.setId ("staz_datiGenerali");
+			this.fieldsDatiGenerali.setColumns(2);
+			this.fieldsDatiGenerali.setRendered(true);
+			this.fieldsDatiGenerali.setStyleClass("beanTable"); 
+			this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
+
+
+			this.fieldsDatiGenerali.addField(this.idIntermediarioPA);
+			this.fieldsDatiGenerali.addField(this.idStazioneIntermediarioPA);
+			this.fieldsDatiGenerali.addField(this.password);
+		} catch (FactoryException e) {
+		}
+	}
+
+	@Override
+	public void setDTO(StazioneModel dto) {
+		super.setDTO(dto);
+
+		this.idStazioneIntermediarioPA.setValue(this.getDTO().getIdStazioneIntermediarioPA()); 
+		this.idIntermediarioPA.setValue(this.getDTO().getIdIntermediarioPA());
+		this.password.setValue(this.getDTO().getPassword());
+	}
+
+	public OutputGroup getFieldsDatiGenerali() {
+		return fieldsDatiGenerali;
+	}
+
+
+	public void setFieldsDatiGenerali(OutputGroup fieldsDatiGenerali) {
+		this.fieldsDatiGenerali = fieldsDatiGenerali;
+	}
+
+	public Text getIdIntermediarioPA() {
+		return idIntermediarioPA;
+	}
+
+
+	public void setIdIntermediarioPA(Text idIntermediarioPA) {
+		this.idIntermediarioPA = idIntermediarioPA;
+	}
+
+	public Text getIdStazioneIntermediarioPA() {
+		return idStazioneIntermediarioPA;
+	}
+
+	public void setIdStazioneIntermediarioPA(
+			Text idStazioneIntermediarioPA) {
+		this.idStazioneIntermediarioPA = idStazioneIntermediarioPA;
+	}
+
+	public Text getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(Text password) {
+		this.password = password;
+	}
+
 }

@@ -23,7 +23,9 @@ package it.govpay.web.console.anagrafica.datamodel;
 
 import it.govpay.ejb.core.model.ScadenzarioModelId;
 import it.govpay.web.console.anagrafica.bean.ScadenzarioBean;
+import it.govpay.web.console.anagrafica.form.ScadenzarioSearchForm;
 import it.govpay.web.console.anagrafica.iservice.IScadenzarioService;
+import it.govpay.web.console.anagrafica.model.ScadenzarioModel;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,10 +42,10 @@ import org.ajax4jsf.model.Range;
 import org.ajax4jsf.model.SequenceRange;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.datamodel.BaseDataModel;
+import org.openspcoop2.generic_project.web.impl.jsf1.datamodel.ParameterizedDataModel;
 
-@Named("scadenzarioDM") @RequestScoped 
-public class ScadenzarioDM extends BaseDataModel<Long, ScadenzarioBean, IScadenzarioService> { 
+//@Named("scadenzarioDM") @RequestScoped 
+public class ScadenzarioDM extends ParameterizedDataModel<Long, ScadenzarioBean, IScadenzarioService, ScadenzarioModel,ScadenzarioSearchForm> { 
 
 	/**
 	 * 

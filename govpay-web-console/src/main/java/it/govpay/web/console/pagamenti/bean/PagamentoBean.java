@@ -23,91 +23,95 @@ package it.govpay.web.console.pagamenti.bean;
 
 import it.govpay.ejb.core.model.PagamentoModel.EnumStatoPagamento;
 import it.govpay.web.console.pagamenti.model.PagamentoModel.DettaglioPagamento;
+import it.govpay.web.console.utils.Utils;
 
-import java.util.Date;
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.Costanti;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.DateTime;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.OutputNumber;
+import org.openspcoop2.generic_project.web.output.Text;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.presentation.field.OutputDate;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputNumber;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
+public class PagamentoBean  extends BaseBean<DettaglioPagamento, String> implements IBean<DettaglioPagamento, String>{ 
 
-public class PagamentoBean  extends BaseBean<DettaglioPagamento, String>{
+	private Text identificativoPagamento = null;
+	private OutputNumber importoPagato = null;
+	private OutputNumber importoDovuto = null;
+	private Text statoPagamento = null;
 
-	private OutputField<String> identificativoPagamento = null;
-	private OutputField<Number> importoPagato = null;
-	private OutputField<Number> importoDovuto = null;
-	private OutputField<String> statoPagamento = null;
-
-	private OutputField<String> causale =  null;
-	private OutputField<String> annoRiferimento =  null;
-	private OutputField<String> ibanAccredito = null;
-	private OutputField<Date> dataPagamento = null;
-	private OutputField<String> idRiscossionePSP =  null;
+	private Text causale =  null;
+	private Text annoRiferimento =  null;
+	private Text ibanAccredito = null;
+	private DateTime dataPagamento = null;
+	private Text idRiscossionePSP =  null;
 	
 	private String htmlId = null;
 	
 	// Gruppo Informazioni Dati Genareli
-	private OutputGroup fieldsDatiGenerali = new OutputGroup();
+	private OutputGroup fieldsDatiGenerali = null;
 	
 	public PagamentoBean(String id){
 		this.htmlId = id;
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 	
 	public PagamentoBean(){
 		this.htmlId = "pag_";
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
-	private void init() {
-		this.statoPagamento = new OutputText();
-		this.statoPagamento.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento"));
+	private void init() throws FactoryException {
+		this.statoPagamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.statoPagamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento"));
 		this.statoPagamento.setName(this.htmlId + "statoPagamento");
 		
-		this.identificativoPagamento = new OutputText();
-		this.identificativoPagamento.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.identificativoPagamento"));
+		this.identificativoPagamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.identificativoPagamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.identificativoPagamento"));
 		this.identificativoPagamento.setName(this.htmlId + "identificativoPagamento");
 		
-		this.idRiscossionePSP = new OutputText();
-		this.idRiscossionePSP.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.idRiscossionePSP"));
+		this.idRiscossionePSP = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idRiscossionePSP.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.idRiscossionePSP"));
 		this.idRiscossionePSP.setName(this.htmlId + "idRiscossionePSP");
 		
-		this.causale = new OutputText();
-		this.causale.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.causale"));
+		this.causale = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.causale.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.causale"));
 		this.causale.setName(this.htmlId + "causale");
 		
-		this.annoRiferimento = new OutputText();
-		this.annoRiferimento.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.annoRiferimento"));
+		this.annoRiferimento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.annoRiferimento.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.annoRiferimento"));
 		this.annoRiferimento.setName(this.htmlId + "annoRiferimento");
 		
-		this.ibanAccredito = new OutputText();
-		this.ibanAccredito.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.ibanAccredito"));
+		this.ibanAccredito = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.ibanAccredito.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.ibanAccredito"));
 		this.ibanAccredito.setName(this.htmlId + "ibanAccredito");
 
-		this.dataPagamento = new OutputDate();
-		this.dataPagamento.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.dataRicevuta"));
+		this.dataPagamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createDateTime();
+		this.dataPagamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.dataRicevuta"));
 		this.dataPagamento.setName(this.htmlId + "dataPagamento");
 
-		this.importoPagato = new OutputNumber<Double>();
-		this.importoPagato.setType("valuta"); 
-		this.importoPagato.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.importoPagato"));
+		this.importoPagato = this.getWebGenericProjectFactory().getOutputFieldFactory().createNumber();
+		this.importoPagato.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.importoPagato"));
 		this.importoPagato.setName(this.htmlId + "importoPagato");
-		((OutputNumber<Number>)this.importoPagato).setConverterType(OutputNumber.CONVERT_TYPE_CURRENCY);
-		((OutputNumber<Number>)this.importoPagato).setCurrencySymbol(OutputNumber.CURRENCY_SYMBOL_EURO);
+		this.importoPagato.setConverterType(Costanti.CONVERT_TYPE_CURRENCY);
+		this.importoPagato.setCurrencySymbol(Costanti.CURRENCY_SYMBOL_EURO);
 		
-		this.importoDovuto = new OutputNumber<Double>();
-		this.importoDovuto.setType("valuta"); 
-		this.importoDovuto.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.importoDovuto"));
+		this.importoDovuto = this.getWebGenericProjectFactory().getOutputFieldFactory().createNumber();
+		this.importoDovuto.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.importoDovuto"));
 		this.importoDovuto.setName(this.htmlId + "importoDovuto");
-		((OutputNumber<Number>)this.importoDovuto).setConverterType(OutputNumber.CONVERT_TYPE_CURRENCY);
-		((OutputNumber<Number>)this.importoDovuto).setCurrencySymbol(OutputNumber.CURRENCY_SYMBOL_EURO);
+		this.importoDovuto.setConverterType(Costanti.CONVERT_TYPE_CURRENCY);
+		this.importoDovuto.setCurrencySymbol(Costanti.CURRENCY_SYMBOL_EURO);
 		
 		
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("dett_singoloPag");
+		this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+		this.fieldsDatiGenerali.setId("dett_singoloPag");
 		this.fieldsDatiGenerali.setColumns(2);
 		this.fieldsDatiGenerali.setRendered(true);
 		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
@@ -141,73 +145,73 @@ public class PagamentoBean  extends BaseBean<DettaglioPagamento, String>{
 		if(statoPag != null){
 			switch (statoPag) { 
 			case AN:
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.an");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.an");
 			case AO:
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ao");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ao");
 			case EF:
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ef");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ef");
 			case ES:
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.es");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.es");
 			case IC:
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ic");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ic");
 			case IE: 
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ie");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ie");
 			case NE: 
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ne");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.ne");
 			case ST:
-				return Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento.st");
+				return Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento.st");
 			}
 		}
 
 		return null;
 	}
 
-	public OutputField<String> getStatoPagamento() {
+	public Text getStatoPagamento() {
 		return statoPagamento;
 	}
 
-	public void setStatoPagamento(OutputField<String> statoPagamento) {
+	public void setStatoPagamento(Text statoPagamento) {
 		this.statoPagamento = statoPagamento;
 	}
 
-	public OutputField<Date> getDataPagamento() {
+	public DateTime getDataPagamento() {
 		return dataPagamento;
 	}
 
-	public void setDataPagamento(OutputField<Date> dataPagamento) {
+	public void setDataPagamento(DateTime dataPagamento) {
 		this.dataPagamento = dataPagamento;
 	}
 
-	public OutputField<Number> getImportoPagato() {
+	public OutputNumber getImportoPagato() {
 		return importoPagato;
 	}
 
-	public void setImportoPagato(OutputField<Number> importoPagato) {
+	public void setImportoPagato(OutputNumber importoPagato) {
 		this.importoPagato = importoPagato;
 	}
 
-	public OutputField<Number> getImportoDovuto() {
+	public OutputNumber getImportoDovuto() {
 		return importoDovuto;
 	}
 
-	public void setImportoDovuto(OutputField<Number> importoDovuto) {
+	public void setImportoDovuto(OutputNumber importoDovuto) {
 		this.importoDovuto = importoDovuto;
 	}
 
-	public OutputField<String> getIdentificativoPagamento() {
+	public Text getIdentificativoPagamento() {
 		return identificativoPagamento;
 	}
 
 	public void setIdentificativoPagamento(
-			OutputField<String> identificativoPagamento) {
+			Text identificativoPagamento) {
 		this.identificativoPagamento = identificativoPagamento;
 	}
 
-	public OutputField<String> getIdRiscossionePSP() {
+	public Text getIdRiscossionePSP() {
 		return idRiscossionePSP;
 	}
 
-	public void setIdRiscossionePSP(OutputField<String> idRiscossionePSP) {
+	public void setIdRiscossionePSP(Text idRiscossionePSP) {
 		this.idRiscossionePSP = idRiscossionePSP;
 	}
 
@@ -219,27 +223,32 @@ public class PagamentoBean  extends BaseBean<DettaglioPagamento, String>{
 		this.fieldsDatiGenerali = fieldsDatiGenerali;
 	}
 
-	public OutputField<String> getCausale() {
+	public Text getCausale() {
 		return causale;
 	}
 
-	public void setCausale(OutputField<String> causale) {
+	public void setCausale(Text causale) {
 		this.causale = causale;
 	}
 
-	public OutputField<String> getAnnoRiferimento() {
+	public Text getAnnoRiferimento() {
 		return annoRiferimento;
 	}
 
-	public void setAnnoRiferimento(OutputField<String> annoRiferimento) {
+	public void setAnnoRiferimento(Text annoRiferimento) {
 		this.annoRiferimento = annoRiferimento;
 	}
 
-	public OutputField<String> getIbanAccredito() {
+	public Text getIbanAccredito() {
 		return ibanAccredito;
 	}
 
-	public void setIbanAccredito(OutputField<String> ibanAccredito) {
+	public void setIbanAccredito(Text ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
+	}
+
+	@Override
+	public String getId() {
+		return this.getDTO().getIur();
 	}
 }

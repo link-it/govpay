@@ -18,6 +18,16 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
+		<script type="text/javascript">
+            jQuery(document).ready(evidenziaSelezionati);
+
+			function evidenziaSelezionati(){
+
+				selezionaRiga('h_selPspId', 'ragioneSociale');
+				selezionaRiga('h_selCanId', 'idPsp');
+					
+			}
+        </script>
 		<a4j:keepAlive beanName="pspMBean" ajaxOnly="true" />
 		<c:set var="canaleMBean" value="#{pspMBean.canaleMBean}" />
 		<c:set var="canaleMetadata" value="#{canaleMBean.metadata}" />
@@ -32,6 +42,7 @@
 
 					<c:set var="listaPsp" value="#{pspMBean.listaPsp}" />
 					<h:form>
+						<input type="hidden" name="h_selPspId" value="#{pspMBean.selectedElement.ragioneSociale.value}" /> 
 						<op2web:simpleTable id="tabellaPsp"
 							rendered="#{not empty listaPsp}" value="#{listaPsp}">
 							<!-- Ragione Sociale -->
@@ -60,7 +71,7 @@
 					<br />
 					<div class="buttonrow">
 						<h:form>
-							<a4j:commandButton id="aggiornaListaPsp" reRender="panelGriglia"
+							<a4j:commandButton id="aggiornaListaPsp" reRender="panelContainer1,panelContainerCanali"
 								value="#{msg['psp.button.aggiorna']}" styleClass="icon-refresh"
 								status="mainStatus" action="#{pspMBean.aggiorna}">
 							</a4j:commandButton>
@@ -72,7 +83,7 @@
 				<br />
 				<rich:panel id="dettaglioPanel1" style="padding:0"
 					headerClass="outpanelHeader" styleClass="noborder"
-					rendered="#{not empty pspMBean.selectedId}">
+					rendered="#{not empty pspMBean.selectedIdPsp}">
 
 					<!-- Messaggio Idp -->
 					<h:panelGrid id="panelDettaglio2"
@@ -81,7 +92,7 @@
 
 						<!-- Dati Generali  -->
 						<op2web:fieldset collapsible="false" closed="false"
-							legend="#{msg['psp.dettaglio.datiGenerali']}" rendered="#{true}">
+							legend="#{msg['psp.dettaglio.datiGenerali']} #{item.ragioneSociale.value}" rendered="#{true}">
 							<op2web:outputGroup
 								group="#{pspMBean.selectedElement.fieldsDatiGenerali}" />
 
@@ -99,10 +110,10 @@
 
 				<rich:panel styleClass="noborder">
 					<a4j:outputPanel id="panelContainerCanali" ajaxRendered="false"
-						rendered="#{not empty pspMBean.selectedId}">
+						rendered="#{not empty pspMBean.selectedIdPsp}">
 						<h:form>
 							<a4j:outputPanel id="tabelPanelCanali1" layout="block">
-
+								<input type="hidden" name="h_selCanId" value="#{canaleMBean.selectedElement.idPsp.value}" /> 
 								<op2web:simpleTable id="tabellaCanali"
 									rendered="#{not empty canaleMBean.listaCanali}"
 									value="#{canaleMBean.listaCanali}">
@@ -146,7 +157,7 @@
 				<br />
 				<rich:panel id="dettaglioPanelCanali1" style="padding:0"
 					headerClass="outpanelHeader" styleClass="noborder"
-					rendered="#{not empty pspMBean.selectedId and not empty canaleMBean.selectedId and canaleMBean.showForm == false}">
+					rendered="#{not empty pspMBean.selectedIdPsp and not empty canaleMBean.selectedId and canaleMBean.showForm == false}">
 
 					<h:panelGrid id="panelDettaglioCanali2"
 						columnClasses="gridContent verticalAlignTop" columns="1"
@@ -154,7 +165,7 @@
 
 						<!-- Dati Generali  -->
 						<op2web:fieldset collapsible="false" closed="false"
-							legend="#{msg['psp.dettaglio.canale.datiGenerali']}"
+							legend="#{msg['psp.dettaglio.canale.datiGenerali']} #{canaleMBean.selectedElement.idPsp.value}"
 							rendered="#{true}">
 							<op2web:outputGroup
 								group="#{canaleMBean.selectedElement.fieldsDatiGenerali}" />

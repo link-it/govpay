@@ -43,11 +43,11 @@ import javax.inject.Named;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.impl.SelectListImpl;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseMBean;
 import org.openspcoop2.generic_project.web.iservice.IBaseService;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
 
 
 @Named("eventiMBean") @ConversationScoped
@@ -75,8 +75,9 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 	
 	private Long selectedId = null;
 	
-	@Inject  
-    private transient Logger log;
+	public EventiMBean (){
+		super(org.apache.log4j.Logger.getLogger(EventiMBean.class)); 
+	}
 	
 	@PostConstruct
 	private void _EventiMBean(){
@@ -103,9 +104,9 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 	public String menuAction(){
 		this.conversationManager.startConversation(GovPayWebConsoleConversationManager.GDE_CID, this.conversation);
 		
-		this.search.getTipo().setElencoSelectItems(this.getElencoTipiEvento());
-		this.search.getCategoria().setElencoSelectItems(this.getElencoCategorieEvento());
-		this.search.getSottoTipo().setElencoSelectItems(this.getElencoSottotipiEvento()); 
+		((SelectListImpl) this.search.getTipo()).setElencoSelectItems(this.getElencoTipiEvento());
+		((SelectListImpl) this.search.getCategoria()).setElencoSelectItems(this.getElencoCategorieEvento());
+		((SelectListImpl) this.search.getSottoTipo()).setElencoSelectItems(this.getElencoSottotipiEvento()); 
 		
 		this.search.reset();
 		((EventiSearchForm)this.search).setFiltroSet("true");
@@ -185,11 +186,11 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 			this.elencoCategorieEvento = new ArrayList<SelectItem>();
 			
 			this.elencoCategorieEvento.add(new SelectItem(
-					 new  org.openspcoop2.generic_project.web.form.field.SelectItem(
+					 new  org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 							 CostantiForm.ALL,  ("commons.label.qualsiasi"))));
 
 			this.elencoCategorieEvento.add(new SelectItem(
-					new  org.openspcoop2.generic_project.web.form.field.SelectItem(
+					new  org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 							Categoria.INTERFACCIA.toString(), "eventi.search.categoria.interfaccia")));
 			
 		}
@@ -205,7 +206,7 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 			this.elencoTipiEvento = new ArrayList<SelectItem>();
 			
 			this.elencoTipiEvento.add(new SelectItem(
-					 new  org.openspcoop2.generic_project.web.form.field.SelectItem(
+					 new  org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 							 CostantiForm.ALL,  ("commons.label.qualsiasi"))));
 			
 			
@@ -227,7 +228,7 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 			this.elencoSottotipiEvento = new ArrayList<SelectItem>();
 			
 			this.elencoSottotipiEvento.add(new SelectItem(
-					 new  org.openspcoop2.generic_project.web.form.field.SelectItem(
+					 new  org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 							 CostantiForm.ALL,  ("commons.label.qualsiasi"))));
 			
 			//[TODO] aggiungere i valori leggendoli dal db

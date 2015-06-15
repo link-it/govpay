@@ -24,8 +24,10 @@ package it.govpay.web.console.anagrafica.mbean;
 import it.govpay.web.console.GovPayWebConsoleConversationManager;
 import it.govpay.web.console.anagrafica.bean.CanaleBean;
 import it.govpay.web.console.anagrafica.bean.PspBean;
+import it.govpay.web.console.anagrafica.form.PspForm;
 import it.govpay.web.console.anagrafica.form.PspSearchForm;
 import it.govpay.web.console.anagrafica.iservice.IPspService;
+import it.govpay.web.console.anagrafica.model.PspModel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,22 +39,20 @@ import javax.enterprise.context.ConversationScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
+import org.apache.log4j.Logger;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseListView;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
 import org.openspcoop2.generic_project.web.iservice.IBaseService;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
 
 
 @Named("pspMBean") @ConversationScoped
-public class PspMBean extends BaseMBean<PspBean, Long, PspSearchForm> implements Serializable {
+public class PspMBean extends BaseListView<PspBean, Long, PspSearchForm,PspForm,PspModel> implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Inject  
-	private transient Logger log;
 
 	private List<PspBean> listaPsp = null; 
 
@@ -61,18 +61,21 @@ public class PspMBean extends BaseMBean<PspBean, Long, PspSearchForm> implements
 	@Inject @Named("govpayConversationManager")
 	GovPayWebConsoleConversationManager conversationManager;
 
-	private String selectedId = null;
+	private String selectedIdPsp = null;
 
 	private CanaleMBean canaleMBean = null;
+	
+	public PspMBean(){
+		super(Logger.getLogger(PspMBean.class)); 
+	}
 
 	@PostConstruct
 	private void _PspMBean(){
 		this.log.debug("Init PspMBean completato."); 
 
 		this.selectedId = null;
-
+		this.selectedIdPsp = null;
 		this.canaleMBean = new CanaleMBean();
-		this.canaleMBean.setLog(log);
 		this.canaleMBean.setPspService((IPspService)this.service);
 	}
 
@@ -91,7 +94,7 @@ public class PspMBean extends BaseMBean<PspBean, Long, PspSearchForm> implements
 		super.setSelectedElement(selectedElement);
 
 		if(selectedElement != null){
-			this.selectedId = selectedElement.getDTO().getRagioneSociale() + "";
+			this.selectedIdPsp  = selectedElement.getDTO().getRagioneSociale() + "";
 
 			this.canaleMBean.setListaCanali(this.selectedElement.getListaCanali());
 		}
@@ -101,6 +104,7 @@ public class PspMBean extends BaseMBean<PspBean, Long, PspSearchForm> implements
 		this.conversationManager.startConversation(GovPayWebConsoleConversationManager.GATEWAY_CID, this.conversation);
 		this.search.reset();
 		this.selectedId = null;
+		this.selectedIdPsp = null;
 		this.selectedElement = null;
 		this.listaPsp = null;
 
@@ -170,8 +174,19 @@ public class PspMBean extends BaseMBean<PspBean, Long, PspSearchForm> implements
 			this.listaPsp = this.service.findAll();
 
 			this.log.debug("Caricamento nuova lista Psp completato.");
-
-
+			
+			// Reset delle selezioni
+			
+			this.selectedId = null;
+			this.selectedIdPsp = null;
+			this.selectedElement = null;
+			this.canaleMBean.setSelectedElement(null); 
+			this.canaleMBean.setListaCanali(new ArrayList<CanaleBean>());
+			this.canaleMBean.setSelectedId(null);
+			this.canaleMBean.setAzione(null);
+			this.canaleMBean.setShowForm(false); 
+			
+			
 			MessageUtils.addInfoMsg("Aggiornamento della lista Psp completato con successo.");
 
 		}catch(Exception e){
@@ -182,12 +197,12 @@ public class PspMBean extends BaseMBean<PspBean, Long, PspSearchForm> implements
 		return null;
 	}
 
-	public String getSelectedId() {
-		return selectedId;
+	public String getSelectedIdPsp() {
+		return this.selectedIdPsp;
 	}
 
-	public void setSelectedId(String selectedId) {
-		this.selectedId = selectedId;
+	public void setSelectedIdPsp(String selectedIdPsp) {
+		this.selectedIdPsp = selectedIdPsp;
 	}
 
 	public CanaleMBean getCanaleMBean() {

@@ -22,153 +22,165 @@
 package it.govpay.web.console.anagrafica.bean;
 
 import it.govpay.web.console.anagrafica.model.PspModel.CanaleModel;
+import it.govpay.web.console.utils.Utils;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
 
-public class CanaleBean extends BaseBean<CanaleModel, String>{
+public class CanaleBean extends BaseBean<CanaleModel, String> implements IBean<CanaleModel, String>{ 
 
-	private OutputField<String> descrizione= null;
-	private OutputField<String> tipoVersamento= null;
-	private OutputField<String> disponibilita= null;
-	private OutputField<String> modelloVersamento= null;
-	private OutputField<String> infoUrl= null;
-	private OutputField<String> stornoGestito= null;
-	private OutputField<String> idPsp= null;
-	private OutputField<String> stato = null;
+	private Text descrizione= null;
+	private Text tipoVersamento= null;
+	private Text disponibilita= null;
+	private Text modelloVersamento= null;
+	private Text infoUrl= null;
+	private Text stornoGestito= null;
+	private Text idPsp= null;
+	private Text stato = null;
 
 	private OutputGroup fieldsDatiGenerali = null;
-	
+
 	public CanaleBean(){
-		
-		this.descrizione = new OutputText();
-		this.descrizione.setLabel(Utils.getMessageFromResourceBundle("psp.descrizione"));
-		this.descrizione.setName("can_descrizione");
-		
-		this.tipoVersamento = new OutputText();
-		this.tipoVersamento.setLabel(Utils.getMessageFromResourceBundle("psp.tipoVersamento"));
-		this.tipoVersamento.setName("can_tipoVersamento");
-		
-		this.disponibilita = new OutputText();
-		this.disponibilita.setLabel(Utils.getMessageFromResourceBundle("psp.disponibilita"));
-		this.disponibilita.setName("can_disponibilita");
-		
-		this.modelloVersamento = new OutputText();
-		this.modelloVersamento.setLabel(Utils.getMessageFromResourceBundle("psp.modelloVersamento"));
-		this.modelloVersamento.setName("can_modelloVersamento");
-		
-		this.stornoGestito = new OutputText();
-		this.stornoGestito.setLabel(Utils.getMessageFromResourceBundle("psp.stornoGestito"));
-		this.stornoGestito.setName("can_stornoGestito");
-		
-		this.infoUrl = new OutputText();
-		this.infoUrl.setLabel(Utils.getMessageFromResourceBundle("psp.infoUrl"));
-		this.infoUrl.setName("can_infoUrl");
-		
-		this.idPsp = new OutputText();
-		this.idPsp.setLabel(Utils.getMessageFromResourceBundle("psp.idPsp"));
-		this.idPsp.setName("can_idPsp");
-		
-		this.stato = new OutputText();
-		this.stato.setLabel(Utils.getMessageFromResourceBundle("psp.stato"));
-		this.stato.setName("can_stato");
-		
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("can_datiGenerali");
-		this.fieldsDatiGenerali.setColumns(2);
-		this.fieldsDatiGenerali.setRendered(true);
-		
-		this.fieldsDatiGenerali.addField(this.stato);
-		this.fieldsDatiGenerali.addField(this.disponibilita);
-		this.fieldsDatiGenerali.addField(this.tipoVersamento);
-		this.fieldsDatiGenerali.addField(this.modelloVersamento);
-		this.fieldsDatiGenerali.addField(this.infoUrl);
-		this.fieldsDatiGenerali.addField(this.stornoGestito);
-		this.fieldsDatiGenerali.addField(this.descrizione);
-		
-		
-		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
-		this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
+
+		try{
+			this.descrizione = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.descrizione.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.descrizione"));
+			this.descrizione.setName("can_descrizione");
+
+			this.tipoVersamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.tipoVersamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.tipoVersamento"));
+			this.tipoVersamento.setName("can_tipoVersamento");
+
+			this.disponibilita = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.disponibilita.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.disponibilita"));
+			this.disponibilita.setName("can_disponibilita");
+
+			this.modelloVersamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.modelloVersamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.modelloVersamento"));
+			this.modelloVersamento.setName("can_modelloVersamento");
+
+			this.stornoGestito = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.stornoGestito.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.stornoGestito"));
+			this.stornoGestito.setName("can_stornoGestito");
+
+			this.infoUrl = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.infoUrl.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.infoUrl"));
+			this.infoUrl.setName("can_infoUrl");
+
+			this.idPsp = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.idPsp.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.idPsp"));
+			this.idPsp.setName("can_idPsp");
+
+			this.stato = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.stato.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.stato"));
+			this.stato.setName("can_stato");
+
+			this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+			this.fieldsDatiGenerali.setId("can_datiGenerali");
+			this.fieldsDatiGenerali.setColumns(2);
+			this.fieldsDatiGenerali.setRendered(true);
+
+			this.fieldsDatiGenerali.addField(this.stato);
+			this.fieldsDatiGenerali.addField(this.disponibilita);
+			this.fieldsDatiGenerali.addField(this.tipoVersamento);
+			this.fieldsDatiGenerali.addField(this.modelloVersamento);
+			this.fieldsDatiGenerali.addField(this.infoUrl);
+			this.fieldsDatiGenerali.addField(this.stornoGestito);
+			this.fieldsDatiGenerali.addField(this.descrizione);
+
+
+			this.fieldsDatiGenerali.setStyleClass("beanTable"); 
+			this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
+		}catch(Exception e){
+
+		}
+	}
+
+	@Override
+	public String getId() {
+		return this.id;
 	}
 
 	@Override
 	public void setDTO(CanaleModel dto) {
 		super.setDTO(dto);
 
+		// [TODO] Check
+		this.id = this.getDTO().getIdPsp() + "";
+
 		this.descrizione.setValue(this.getDTO().getDescrizione());
 		String tV = this.getDTO().getTipoVersamento().name();
-		this.tipoVersamento.setValue(Utils.getMessageFromResourceBundle("psp.tipoVersamento." + tV));
+		this.tipoVersamento.setValue(Utils.getInstance().getMessageFromResourceBundle("psp.tipoVersamento." + tV));
 		this.disponibilita.setValue(this.getDTO().getDisponibilita());
 		String mV= this.getDTO().getModelloVersamento().name();
-		this.modelloVersamento.setValue(Utils.getMessageFromResourceBundle("psp.modelloVersamento." + mV));
+		this.modelloVersamento.setValue(Utils.getInstance().getMessageFromResourceBundle("psp.modelloVersamento." + mV));
 		this.infoUrl.setValue("");
-		String storno = this.getDTO().isStornoGestito() ? Utils.getMessageFromResourceBundle("commons.label.SI") :
-			Utils.getMessageFromResourceBundle("commons.label.NO");
+		String storno = this.getDTO().isStornoGestito() ? Utils.getInstance().getMessageFromResourceBundle("commons.label.SI") :
+			Utils.getInstance().getMessageFromResourceBundle("commons.label.NO");
 		this.stornoGestito.setValue(storno);
 		this.idPsp.setValue(this.getDTO().getIdPsp() + "");
-		
-		String stato = this.getDTO().isAbilitato() ? Utils.getMessageFromResourceBundle("commons.label.attivo") : 
-			Utils.getMessageFromResourceBundle("commons.label.nonAttivo");
-		
+
+		String stato = this.getDTO().isAbilitato() ? Utils.getInstance().getMessageFromResourceBundle("commons.label.attivo") : 
+			Utils.getInstance().getMessageFromResourceBundle("commons.label.nonAttivo");
+
 		this.stato.setValue(stato);
 	}
-	
-	public OutputField<String> getDescrizione() {
+
+	public Text getDescrizione() {
 		return descrizione;
 	}
 
-	public void setDescrizione(OutputField<String> descrizione) {
+	public void setDescrizione(Text descrizione) {
 		this.descrizione = descrizione;
 	}
 
-	public OutputField<String> getTipoVersamento() {
+	public Text getTipoVersamento() {
 		return tipoVersamento;
 	}
 
-	public void setTipoVersamento(OutputField<String> tipoVersamento) {
+	public void setTipoVersamento(Text tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 
-	public OutputField<String> getDisponibilita() {
+	public Text getDisponibilita() {
 		return disponibilita;
 	}
 
-	public void setDisponibilita(OutputField<String> disponibilita) {
+	public void setDisponibilita(Text disponibilita) {
 		this.disponibilita = disponibilita;
 	}
 
-	public OutputField<String> getModelloVersamento() {
+	public Text getModelloVersamento() {
 		return modelloVersamento;
 	}
 
-	public void setModelloVersamento(OutputField<String> modelloVersamento) {
+	public void setModelloVersamento(Text modelloVersamento) {
 		this.modelloVersamento = modelloVersamento;
 	}
 
-	public OutputField<String> getInfoUrl() {
+	public Text getInfoUrl() {
 		return infoUrl;
 	}
 
-	public void setInfoUrl(OutputField<String> infoUrl) {
+	public void setInfoUrl(Text infoUrl) {
 		this.infoUrl = infoUrl;
 	}
 
-	public OutputField<String> getStornoGestito() {
+	public Text getStornoGestito() {
 		return stornoGestito;
 	}
 
-	public void setStornoGestito(OutputField<String> stornoGestito) {
+	public void setStornoGestito(Text stornoGestito) {
 		this.stornoGestito = stornoGestito;
 	}
 
-	public OutputField<String> getIdPsp() {
+	public Text getIdPsp() {
 		return idPsp;
 	}
 
-	public void setIdPsp(OutputField<String> idPsp) {
+	public void setIdPsp(Text idPsp) {
 		this.idPsp = idPsp;
 	}
 
@@ -180,13 +192,13 @@ public class CanaleBean extends BaseBean<CanaleModel, String>{
 		this.fieldsDatiGenerali = fieldsDatiGenerali;
 	}
 
-	public OutputField<String> getStato() {
+	public Text getStato() {
 		return stato;
 	}
 
-	public void setStato(OutputField<String> stato) {
+	public void setStato(Text stato) {
 		this.stato = stato;
 	}
-	
-	
+
+
 }

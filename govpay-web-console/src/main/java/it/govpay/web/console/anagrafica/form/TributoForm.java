@@ -24,83 +24,87 @@ package it.govpay.web.console.anagrafica.form;
 import it.govpay.ejb.core.model.TributoModel;
 import it.govpay.ejb.core.model.TributoModel.EnumStatoTributo;
 import it.govpay.web.console.anagrafica.bean.TributoBean;
+import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseForm;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.BooleanField;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.SelectItem;
-import org.openspcoop2.generic_project.web.form.field.SelectListField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.form.Form;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem;
+import org.openspcoop2.generic_project.web.input.BooleanCheckBox;
+import org.openspcoop2.generic_project.web.input.SelectList;
+import org.openspcoop2.generic_project.web.input.Text;
 
-public class TributoForm extends BaseForm implements Serializable{
+public class TributoForm extends BaseForm implements Form,Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L; 
 
-	private FormField<String> idEnteCreditore;
-	private FormField<String> idTributo; 
-	private FormField<String> codice;
-	private FormField<String> ibanAccredito;
-	private FormField<String> descrizione;
-	private BooleanField stato;
-	private FormField<SelectItem> scadenzario;
+	private Text idEnteCreditore;
+	private Text idTributo; 
+	private Text codice;
+	private Text ibanAccredito;
+	private Text descrizione;
+	private BooleanCheckBox stato;
+	private SelectList<SelectItem> scadenzario; 
 
 
 	public TributoForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 	@Override
-	protected void init() {
+	public void init() throws FactoryException{
 		this.setClosable(false);
-		this.setIdForm("formTributo");
+		this.setId("formTributo");
 		this.setNomeForm(null); 
 
-		this.idEnteCreditore = new TextField();
+		this.idEnteCreditore = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idEnteCreditore.setRequired(true);
-		this.idEnteCreditore.setLabel(Utils.getMessageFromResourceBundle("tributo.idEnteCreditore"));
+		this.idEnteCreditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.idEnteCreditore"));
 		this.idEnteCreditore.setName("tr_idEnteCreditore");
 		this.idEnteCreditore.setValue(null);
 
-		this.idTributo = new TextField();
+		this.idTributo = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idTributo.setRequired(true);
-		this.idTributo.setLabel(Utils.getMessageFromResourceBundle("tributo.idTributo"));
+		this.idTributo.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.idTributo"));
 		this.idTributo.setName("tr_idTributo");
 		this.idTributo.setValue(null);
 
-		this.codice = new TextField();
+		this.codice = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.codice.setRequired(true);
-		this.codice.setLabel(Utils.getMessageFromResourceBundle("tributo.codice"));
+		this.codice.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.codice"));
 		this.codice.setName("tr_codice");
 		this.codice.setValue(null);
 		
-		this.ibanAccredito = new TextField();
+		this.ibanAccredito = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 //		this.ibanAccredito.setRequired(true);
-		this.ibanAccredito.setLabel(Utils.getMessageFromResourceBundle("tributo.ibanAccredito"));
+		this.ibanAccredito.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.ibanAccredito"));
 		this.ibanAccredito.setName("tr_ibanAccredito");
 		this.ibanAccredito.setValue(null);
 
-		this.descrizione = new TextField();
+		this.descrizione = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		//		this.descrizione.setRequired(true);
-		this.descrizione.setLabel(Utils.getMessageFromResourceBundle("tributo.descrizione"));
+		this.descrizione.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.descrizione"));
 		this.descrizione.setName("tr_descrizione");
 		this.descrizione.setValue(null);
 
-		this.stato = new BooleanField();
+		this.stato = this.getWebGenericProjectFactory().getInputFieldFactory().createBooleanCheckBox();
 		this.stato.setRequired(false);
-		this.stato.setLabel(Utils.getMessageFromResourceBundle("tributo.attivo"));
+		this.stato.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.attivo"));
 		this.stato.setName("tr_statoTributo");
 		this.stato.setValue(null);
 
-		this.scadenzario = new SelectListField(); 
+		this.scadenzario = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.scadenzario.setRequired(true);
-		this.scadenzario.setLabel(Utils.getMessageFromResourceBundle("tributo.scadenzario"));
+		this.scadenzario.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.scadenzario"));
 		this.scadenzario.setName("tr_scadenzario");
 		this.scadenzario.setValue(null);
 	}
@@ -116,45 +120,45 @@ public class TributoForm extends BaseForm implements Serializable{
 		this.descrizione.reset();
 	}
 
-	public FormField<String> getDescrizione() {
+	public Text getDescrizione() {
 		return descrizione;
 	}
-	public void setDescrizione(FormField<String> descrizione) {
+	public void setDescrizione(Text descrizione) {
 		this.descrizione = descrizione;
 	}
-	public FormField<SelectItem> getScadenzario() {
+	public SelectList<SelectItem> getScadenzario() {
 		return scadenzario;
 	}
-	public void setScadenzario(FormField<SelectItem> scadenzario) {
+	public void setScadenzario(SelectList<SelectItem> scadenzario) {
 		this.scadenzario = scadenzario;
 	}
-	public FormField<String> getCodice() {
+	public Text getCodice() {
 		return codice;
 	}
 
-	public void setCodice(FormField<String> codice) {
+	public void setCodice(Text codice) {
 		this.codice = codice;
 	}
 
-	public FormField<String> getIdEnteCreditore() {
+	public Text getIdEnteCreditore() {
 		return idEnteCreditore;
 	}
 
-	public void setIdEnteCreditore(FormField<String> idEnteCreditore) {
+	public void setIdEnteCreditore(Text idEnteCreditore) {
 		this.idEnteCreditore = idEnteCreditore;
 	}
 
 	public String valida (){ 
 		String _codice = this.codice.getValue();
 		if(StringUtils.isEmpty(_codice))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.codice.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.codice.getLabel());
 
 		SelectItem idSistema = this.scadenzario.getValue();
 		if(idSistema!= null){
 			String _idSistema = idSistema.getValue();
 
 			if(_idSistema.equals(CostantiForm.NON_SELEZIONATO))
-				return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.scadenzario.getLabel());
+				return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.scadenzario.getLabel());
 		}
 
 		return null;
@@ -215,23 +219,23 @@ public class TributoForm extends BaseForm implements Serializable{
 		this.reset();
 	}
 
-	public BooleanField getStato() {
+	public BooleanCheckBox getStato() {
 		return stato;
 	}
 
-	public void setStato(BooleanField stato) {
+	public void setStato(BooleanCheckBox stato) {
 		this.stato = stato;
 	}
-	public FormField<String> getIdTributo() {
+	public Text getIdTributo() {
 		return idTributo;
 	}
-	public void setIdTributo(FormField<String> idTributo) {
+	public void setIdTributo(Text idTributo) {
 		this.idTributo = idTributo;
 	}
-	public FormField<String> getIbanAccredito() {
+	public Text getIbanAccredito() {
 		return ibanAccredito;
 	}
-	public void setIbanAccredito(FormField<String> ibanAccredito) {
+	public void setIbanAccredito(Text ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 	}
 	

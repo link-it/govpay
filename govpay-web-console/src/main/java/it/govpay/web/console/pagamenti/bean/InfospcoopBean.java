@@ -24,65 +24,69 @@ package it.govpay.web.console.pagamenti.bean;
 import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Infospcoop;
 import it.govpay.web.console.utils.Utils;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
 
-public class InfospcoopBean extends BaseBean<Infospcoop, String>{
+public class InfospcoopBean extends BaseBean<Infospcoop, String> implements IBean<Infospcoop, String>{ 
 
-	private OutputField<String> idEgov;
-//	private OutputField<String> tipoSoggettoErogatore;
-	private OutputField<String> soggettoErogatore;
-//	private OutputField<String> tipoSoggettoFruitore;
-	private OutputField<String> soggettoFruitore;
-//	private OutputField<String> tipoServizio;
-	private OutputField<String> servizio;
-	private OutputField<String> azione;
+	private Text idEgov;
+//	private Text tipoSoggettoErogatore;
+	private Text soggettoErogatore;
+//	private Text tipoSoggettoFruitore;
+	private Text soggettoFruitore;
+//	private Text tipoServizio;
+	private Text servizio;
+	private Text azione;
 
 	// Gruppo Informazioni Dati Genareli
-	private OutputGroup fieldsDatiGenerali = new OutputGroup();
+	private OutputGroup fieldsDatiGenerali = null;
 
 	public  InfospcoopBean(){
-		initFields();
+		try {
+			initFields();
+		} catch (FactoryException e) {
+		}
 	}
 
-	private void initFields(){
-		this.idEgov = new OutputText();
-		this.idEgov.setLabel(Utils.getMessageFromResourceBundle("infospcoop.idEgov"));
+	private void initFields() throws FactoryException{
+		this.idEgov = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idEgov.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.idEgov"));
 		this.idEgov.setName("infospcoop_idEgov");
 		
-//		this.tipoSoggettoErogatore = new OutputText();
-//		this.tipoSoggettoErogatore.setLabel(Utils.getMessageFromResourceBundle("infospcoop.tipoSoggettoErogatore"));
+//		this.tipoSoggettoErogatore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+//		this.tipoSoggettoErogatore.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.tipoSoggettoErogatore"));
 //		this.tipoSoggettoErogatore.setName("infospcoop_tipoSoggettoErogatore");
 		
-		this.soggettoErogatore = new OutputText();
-		this.soggettoErogatore.setLabel(Utils.getMessageFromResourceBundle("infospcoop.soggettoErogatore"));
+		this.soggettoErogatore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.soggettoErogatore.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.soggettoErogatore"));
 		this.soggettoErogatore.setName("infospcoop_soggettoErogatore");
 		
-//		this.tipoSoggettoFruitore = new OutputText();
-//		this.tipoSoggettoFruitore.setLabel(Utils.getMessageFromResourceBundle("infospcoop.tipoSoggettoFruitore"));
+//		this.tipoSoggettoFruitore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+//		this.tipoSoggettoFruitore.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.tipoSoggettoFruitore"));
 //		this.tipoSoggettoFruitore.setName("infospcoop_tipoSoggettoFruitore");
 		
-		this.soggettoFruitore = new OutputText();
-		this.soggettoFruitore.setLabel(Utils.getMessageFromResourceBundle("infospcoop.soggettoFruitore"));
+		this.soggettoFruitore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.soggettoFruitore.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.soggettoFruitore"));
 		this.soggettoFruitore.setName("infospcoop_soggettoFruitore");
 		
-//		this.tipoServizio = new OutputText();
-//		this.tipoServizio.setLabel(Utils.getMessageFromResourceBundle("infospcoop.tipoServizio"));
+//		this.tipoServizio = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+//		this.tipoServizio.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.tipoServizio"));
 //		this.tipoServizio.setName("infospcoop_tipoServizio");
 		
-		this.servizio = new OutputText();
-		this.servizio.setLabel(Utils.getMessageFromResourceBundle("infospcoop.servizio"));
+		this.servizio = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.servizio.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.servizio"));
 		this.servizio.setName("infospcoop_servizio");
 		
-		this.azione = new OutputText();
-		this.azione.setLabel(Utils.getMessageFromResourceBundle("infospcoop.azione"));
+		this.azione = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.azione.setLabel(Utils.getInstance().getMessageFromResourceBundle("infospcoop.azione"));
 		this.azione.setName("infospcoop_azione");
 		
 		
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("infospcoop_datiGenerali");
+		this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+		this.fieldsDatiGenerali.setId ("infospcoop_datiGenerali");
 		this.fieldsDatiGenerali.setColumns(2);
 		this.fieldsDatiGenerali.setRendered(true);
 		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
@@ -113,43 +117,43 @@ public class InfospcoopBean extends BaseBean<Infospcoop, String>{
 		this.azione.setValue(this.getDTO().getAzione());
 	}
 
-	public OutputField<String> getIdEgov() {
+	public Text getIdEgov() {
 		return idEgov;
 	}
 
-	public void setIdEgov(OutputField<String> idEgov) {
+	public void setIdEgov(Text idEgov) {
 		this.idEgov = idEgov;
 	}
 
-	public OutputField<String> getSoggettoErogatore() {
+	public Text getSoggettoErogatore() {
 		return soggettoErogatore;
 	}
 
-	public void setSoggettoErogatore(OutputField<String> soggettoErogatore) {
+	public void setSoggettoErogatore(Text soggettoErogatore) {
 		this.soggettoErogatore = soggettoErogatore;
 	}
 
-	public OutputField<String> getSoggettoFruitore() {
+	public Text getSoggettoFruitore() {
 		return soggettoFruitore;
 	}
 
-	public void setSoggettoFruitore(OutputField<String> soggettoFruitore) {
+	public void setSoggettoFruitore(Text soggettoFruitore) {
 		this.soggettoFruitore = soggettoFruitore;
 	}
 
-	public OutputField<String> getServizio() {
+	public Text getServizio() {
 		return servizio;
 	}
 
-	public void setServizio(OutputField<String> servizio) {
+	public void setServizio(Text servizio) {
 		this.servizio = servizio;
 	}
 
-	public OutputField<String> getAzione() {
+	public Text getAzione() {
 		return azione;
 	}
 
-	public void setAzione(OutputField<String> azione) {
+	public void setAzione(Text azione) {
 		this.azione = azione;
 	}
 
@@ -159,6 +163,11 @@ public class InfospcoopBean extends BaseBean<Infospcoop, String>{
 
 	public void setFieldsDatiGenerali(OutputGroup fieldsDatiGenerali) {
 		this.fieldsDatiGenerali = fieldsDatiGenerali;
+	}
+
+	@Override
+	public String getId() {
+		return this.getDTO().getIdEgov();
 	}
 
 }

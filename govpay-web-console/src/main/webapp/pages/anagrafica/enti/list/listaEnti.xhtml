@@ -44,7 +44,7 @@
 
 				<a4j:outputPanel id="panelContainer" ajaxRendered="false">
 					<h:form>
-						<input type="hidden" name="h_selEnteId" value="#{not empty enteMBean.selectedId ? enteMBean.selectedElement.idFiscale.value : ''}" /> 
+						<input type="hidden" name="h_selEnteId" value="#{not empty enteMBean.selectedIdEnte ? enteMBean.selectedElement.idFiscale.value : ''}" /> 
 						<a4j:outputPanel id="tabelPanel1" layout="block">
 							<c:set var="enteMetadata" value="#{enteMBean.metadata}" />
 
@@ -79,7 +79,7 @@
 											reRender="mainct,menuct" ajaxSingle="true">
 											<a4j:actionparam name="selectedId"
 												value="#{item.idEnteCreditore.value}"
-												assignTo="#{enteMBean.selectedId}" />
+												assignTo="#{enteMBean.selectedIdEnte}" />
 											<h:graphicImage value="/images/magnifier.png" width="16"
 												height="16" title="#{msg['commons.button.dettaglioTitle']}" />
 										</a4j:commandLink>
@@ -104,7 +104,7 @@
 			<br />
 			<rich:panel id="dettaglioPanel1" style="padding:0"
 				headerClass="outpanelHeader" styleClass="noborder"
-				rendered="#{not empty enteMBean.selectedId}">
+				rendered="#{not empty enteMBean.selectedIdEnte}">
 
 				<h:panelGrid id="panelDettaglio2"
 					rendered="#{enteMBean.showForm == false}"
@@ -214,7 +214,7 @@
 									<br />
 									<rich:panel id="dettaglioScadenzarioPanel1" style="padding:0"
 										headerClass="outpanelHeader" styleClass="noborder"
-										rendered="#{not empty scadenzarioMBean.selectedId and scadenzarioMBean.showForm == false}">
+										rendered="#{not empty scadenzarioMBean.selectedIdScadenzario and scadenzarioMBean.showForm == false}">
 
 										<h:panelGrid id="panelScadenzarioDettaglio2" columns="1"
 											width="100%">
@@ -460,11 +460,11 @@
 
 							<op2web:fieldset collapsible="false" closed="false"
 									legend="#{msg['tributo.tributi']}"
-									rendered="#{not empty scadenzarioMBean.selectedId}">
+									rendered="#{not empty scadenzarioMBean.selectedIdScadenzario}">
 
 
 								<rich:panel styleClass="noborder">
-						<a4j:outputPanel id="panelContainerTributi" ajaxRendered="false" rendered="#{not empty scadenzarioMBean.selectedId}">
+						<a4j:outputPanel id="panelContainerTributi" ajaxRendered="false" rendered="#{not empty scadenzarioMBean.selectedIdScadenzario}">
 							<h:form>
 								<input type="hidden" name="h_selTrId" value="#{tributoMBean.selectedId}" /> 
 								<a4j:outputPanel id="tabelPanelTributi1" layout="block">
@@ -523,7 +523,7 @@
 				<br />
 				<rich:panel id="dettaglioPanelTributi1" style="padding:0"
 					headerClass="outpanelHeader" styleClass="noborder"
-					rendered="#{not empty scadenzarioMBean.selectedId and not empty tributoMBean.selectedId and tributoMBean.showForm == false}">
+					rendered="#{not empty scadenzarioMBean.selectedIdScadenzario and not empty tributoMBean.selectedId and tributoMBean.showForm == false}">
 					
 						<h:panelGrid id="panelDettaglioTributi2"
 						columnClasses="gridContent verticalAlignTop" columns="1"
@@ -555,7 +555,7 @@
 					
 					<!-- Form Inserimento dati -->
 				<op2web:form formBean="#{tributoMBean.form}"
-					rendered="#{not empty scadenzarioMBean.selectedId and tributoMBean.showForm  == true}">
+					rendered="#{not empty scadenzarioMBean.selectedIdScadenzario and tributoMBean.showForm  == true}">
 					<p class="legend">
 						<strong>#{msg['commons.label.note']}</strong> (<em>*</em>)
 						#{msg['commons.label.campiObbligatori']}

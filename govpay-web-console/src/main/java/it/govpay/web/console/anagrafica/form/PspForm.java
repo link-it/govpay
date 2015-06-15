@@ -22,27 +22,33 @@
 package it.govpay.web.console.anagrafica.form;
 
 import it.govpay.web.console.anagrafica.bean.CanaleBean;
+import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
 
 import javax.inject.Named;
 
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseForm;
-import org.openspcoop2.generic_project.web.form.field.BooleanField;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.form.Form;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseForm;
+import org.openspcoop2.generic_project.web.input.BooleanCheckBox;
+
 
 @Named("pspForm")
-public class PspForm extends BaseForm implements Serializable{
+public class PspForm extends BaseForm implements Form,Serializable{
 
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private BooleanField stato;
+	private BooleanCheckBox stato;
 
 	public PspForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
 	/**
@@ -65,14 +71,14 @@ public class PspForm extends BaseForm implements Serializable{
 	}
 
 	@Override
-	protected void init() {
+	public void init() throws FactoryException{
 		this.setClosable(false);
-		this.setIdForm("formPsp");
+		this.setId("formPsp");
 		this.setNomeForm(null); 
 
-		this.stato = new BooleanField();
+		this.stato = this.getWebGenericProjectFactory().getInputFieldFactory().createBooleanCheckBox();
 		this.stato.setRequired(false);
-		this.stato.setLabel(Utils.getMessageFromResourceBundle("psp.attivo"));
+		this.stato.setLabel(Utils.getInstance().getMessageFromResourceBundle("psp.attivo"));
 		this.stato.setName("statoPsp");
 		this.stato.setValue(null);
 	}
@@ -87,11 +93,11 @@ public class PspForm extends BaseForm implements Serializable{
 	}
 
 
-	public BooleanField getStato() {
+	public BooleanCheckBox getStato() {
 		return stato;
 	}
 
-	public void setStato(BooleanField stato) {
+	public void setStato(BooleanCheckBox stato) {
 		this.stato = stato;
 	}
 

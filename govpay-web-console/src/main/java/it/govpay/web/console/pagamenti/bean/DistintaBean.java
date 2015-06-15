@@ -22,8 +22,8 @@
 package it.govpay.web.console.pagamenti.bean;
 
 import it.govpay.ejb.core.model.DistintaModel;
-import it.govpay.ejb.core.model.SoggettoModel;
 import it.govpay.ejb.core.model.DistintaModel.EnumTipoAutenticazioneSoggetto;
+import it.govpay.ejb.core.model.SoggettoModel;
 import it.govpay.web.console.pagamenti.model.PagamentoModel;
 import it.govpay.web.console.pagamenti.model.PagamentoModel.DettaglioPagamento;
 import it.govpay.web.console.utils.Utils;
@@ -31,46 +31,47 @@ import it.govpay.web.console.utils.Utils;
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.servlet.http.HttpServletResponse;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
-import org.openspcoop2.generic_project.web.presentation.field.OutputButton;
-import org.openspcoop2.generic_project.web.presentation.field.OutputDate;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputNumber;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.Costanti;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
+import org.openspcoop2.generic_project.web.output.Button;
+import org.openspcoop2.generic_project.web.output.DateTime;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.OutputNumber;
+import org.openspcoop2.generic_project.web.output.Text;
 
-public class DistintaBean extends BaseBean<DistintaModel, Long> {  
+public class DistintaBean extends BaseBean<DistintaModel, Long> implements IBean<DistintaModel, Long> {   
 
 	// Field Che visualizzo nella maschera di ricerca
-	private OutputField<String> identificativoFiscaleCreditore = null; 
-	private OutputField<String> iuv = null;
-	private OutputField<String> codiceTributo = null;
-	private OutputField<String> cfDebitore = null;
-	private OutputField<Date> data = null;
-	private OutputField<String> stato = null;
-	private OutputField<Number> importoTotale = null; 
+	private Text identificativoFiscaleCreditore = null; 
+	private Text iuv = null;
+	private Text codiceTributo = null;
+	private Text cfDebitore = null;
+	private DateTime data = null;
+	private Text stato = null;
+	private OutputNumber importoTotale = null; 
 
 
-	private OutputField<String> gateway = null;
-	private OutputField<String> creditore = null;
-	private OutputField<String> tributo = null;
-	private OutputField<String> tipoAutenticazioneSoggetto = null;
-	private OutputField<String> ccp = null;
-	private OutputField<String> tipoFirma = null;
-	private OutputField<String> ibanAddebito = null;
+	private Text gateway = null;
+	private Text creditore = null;
+	private Text tributo = null;
+	private Text tipoAutenticazioneSoggetto = null;
+	private Text ccp = null;
+	private Text tipoFirma = null;
+	private Text ibanAddebito = null;
 
-	private OutputField<String> soggettoVersante = null;
-	private OutputField<String> soggettoDebitore = null;
+	private Text soggettoVersante = null;
+	private Text soggettoDebitore = null;
 
-	private OutputField<String> idDistinta = null;
+	private Text idDistinta = null;
 
 	private List<PagamentoBean> listaPagamenti = null;
 
@@ -79,11 +80,11 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 	private PagamentoBean totale = null;
 
 	// Link download
-	private OutputField<String> rpt = null;
-	private OutputField<String> rt = null;
+	private Button rpt = null;
+	private Button rt = null;
 
 	// Gruppo Informazioni Dati Genareli
-	private OutputGroup fieldsDatiGenerali = new OutputGroup();
+	private OutputGroup fieldsDatiGenerali = null;
 
 	@Override
 	public void setDTO(DistintaModel dto) {
@@ -100,6 +101,11 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 		if(this.getDTO().getStato() != null){
 			this.stato.setValue(this.getDTO().getStato().getDescrizione());
 		}
+	}
+	
+	@Override
+	public Long getId() {
+		 return this.getDTO().getIdDistinta();
 	}
 
 	public void setDTO(it.govpay.web.console.pagamenti.model.PagamentoModel dettaglioPagamento){
@@ -148,7 +154,7 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 				DettaglioPagamento totale = new PagamentoModel().new DettaglioPagamento();
 				totale.setImportoDovuto(importoDovutoTotale);
 				totale.setImportoVersato(importoVersatoTotale);
-				totale.setIdentificativo(it.govpay.web.console.utils.Utils.getMessageFromResourceBundle("pagamento.dettaglio.totale.label"));
+				totale.setIdentificativo(it.govpay.web.console.utils.Utils.getInstance().getMessageFromResourceBundle("pagamento.dettaglio.totale.label"));
 				totale.setStato(" "); 
 				this.totale.setDTO(totale);
 			}
@@ -162,87 +168,89 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 	}
 
 	public DistintaBean(){
-		initFields();
+		try {
+			initFields();
+		} catch (FactoryException e) {
+		}
 	}
 
-	private void initFields(){
+	private void initFields() throws FactoryException{ 
 
-		this.idDistinta = new OutputText();
-		this.idDistinta.setLabel(Utils.getMessageFromResourceBundle("distinta.idDistinta"));
+		this.idDistinta = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idDistinta.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.idDistinta"));
 		this.idDistinta.setName("idDistinta");
 
-		this.codiceTributo = new OutputText();
-		this.codiceTributo.setLabel(Utils.getMessageFromResourceBundle("distinta.codiceTributo"));
+		this.codiceTributo = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.codiceTributo.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.codiceTributo"));
 		this.codiceTributo.setName("codiceTributo");
 
-		this.cfDebitore = new OutputText();
-		this.cfDebitore.setLabel(Utils.getMessageFromResourceBundle("distinta.cfDebitore"));
+		this.cfDebitore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.cfDebitore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.cfDebitore"));
 		this.cfDebitore.setName("cfDebitore");
 
-		this.soggettoVersante = new OutputText();
-		this.soggettoVersante.setLabel(Utils.getMessageFromResourceBundle("distinta.soggettoVersante"));
+		this.soggettoVersante = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.soggettoVersante.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.soggettoVersante"));
 		this.soggettoVersante.setName("soggettoVersante");
 		this.soggettoVersante.setEscape(false);
 
-		this.stato = new OutputText();
-		this.stato.setLabel(Utils.getMessageFromResourceBundle("distinta.stato"));
+		this.stato = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.stato.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.stato"));
 		this.stato.setName("stato");
 
-		this.creditore = new OutputText();
-		this.creditore.setLabel(Utils.getMessageFromResourceBundle("distinta.creditore"));
+		this.creditore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.creditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.creditore"));
 		this.creditore.setName("creditore");
 
-		this.data = new OutputDate();
-		this.data.setLabel(Utils.getMessageFromResourceBundle("distinta.data"));
+		this.data = this.getWebGenericProjectFactory().getOutputFieldFactory().createDateTime();
+		this.data.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.data"));
 		this.data.setName("data");
 
-		this.importoTotale = new OutputNumber<Double>();
-		this.importoTotale.setType("valuta"); 
-		this.importoTotale.setLabel(Utils.getMessageFromResourceBundle("distinta.importoDovuto"));
+		this.importoTotale = this.getWebGenericProjectFactory().getOutputFieldFactory().createNumber();
+		this.importoTotale.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.importoDovuto"));
 		this.importoTotale.setName("importoTotale");
-		((OutputNumber<Number>)this.importoTotale).setConverterType(OutputNumber.CONVERT_TYPE_CURRENCY);
-		((OutputNumber<Number>)this.importoTotale).setCurrencySymbol(OutputNumber.CURRENCY_SYMBOL_EURO);
+		this.importoTotale.setConverterType(Costanti.CONVERT_TYPE_CURRENCY);
+		this.importoTotale.setCurrencySymbol(Costanti.CURRENCY_SYMBOL_EURO);
 
-		this.ibanAddebito = new OutputText();
-		this.ibanAddebito.setLabel(Utils.getMessageFromResourceBundle("distinta.ibanAddebito"));
+		this.ibanAddebito = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.ibanAddebito.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.ibanAddebito"));
 		this.ibanAddebito.setName("ibanAddebito");
 
-		this.tipoAutenticazioneSoggetto = new OutputText();
-		this.tipoAutenticazioneSoggetto.setLabel(Utils.getMessageFromResourceBundle("distinta.tipoAutenticazioneSoggetto"));
+		this.tipoAutenticazioneSoggetto = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.tipoAutenticazioneSoggetto.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.tipoAutenticazioneSoggetto"));
 		this.tipoAutenticazioneSoggetto.setName("tipoAutenticazioneSoggetto");
 
-		this.gateway = new OutputText();
-		this.gateway.setLabel(Utils.getMessageFromResourceBundle("distinta.gateway"));
+		this.gateway = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.gateway.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.gateway"));
 		this.gateway.setName("gateway");
 
-		this.iuv = new OutputText();
-		this.iuv.setLabel(Utils.getMessageFromResourceBundle("distinta.iuv"));
+		this.iuv = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.iuv.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.iuv"));
 		this.iuv.setName("iuv");
 
-		this.identificativoFiscaleCreditore = new OutputText();
-		this.identificativoFiscaleCreditore.setLabel(Utils.getMessageFromResourceBundle("distinta.identificativoFiscaleCreditore"));
+		this.identificativoFiscaleCreditore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.identificativoFiscaleCreditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.identificativoFiscaleCreditore"));
 		this.identificativoFiscaleCreditore.setName("identificativoFiscaleCreditore");
 
-		this.tributo = new OutputText();
-		this.tributo.setLabel(Utils.getMessageFromResourceBundle("distinta.tributo"));
+		this.tributo = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.tributo.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.tributo"));
 		this.tributo.setName("tributo");
 
 
-		this.ccp = new OutputText();
-		this.ccp.setLabel(Utils.getMessageFromResourceBundle("distinta.ccp"));
+		this.ccp = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.ccp.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.ccp"));
 		this.ccp.setName("ccp");
 
-		this.tipoFirma = new OutputText();
-		this.tipoFirma.setLabel(Utils.getMessageFromResourceBundle("distinta.tipoFirma"));
+		this.tipoFirma = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.tipoFirma.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.tipoFirma"));
 		this.tipoFirma.setName("tipoFirma");
 
-		this.soggettoDebitore = new OutputText();
-		this.soggettoDebitore.setLabel(Utils.getMessageFromResourceBundle("distinta.soggettoDebitore"));
+		this.soggettoDebitore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.soggettoDebitore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.soggettoDebitore"));
 		this.soggettoDebitore.setName("soggettoDebitore");
 		this.soggettoDebitore.setEscape(false);
 
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("datiGenerali");
+		this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+		this.fieldsDatiGenerali.setId("datiGenerali");
 		this.fieldsDatiGenerali.setColumns(2);
 		this.fieldsDatiGenerali.setRendered(true);
 		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
@@ -263,61 +271,61 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 
 		this.listaPagamenti = new ArrayList<PagamentoBean>();
 
-		this.rpt = new OutputButton();
+		this.rpt = this.getWebGenericProjectFactory().getOutputFieldFactory().createButton();
 		this.rpt.setLabel( ("distinta.link.rpt"));
 		this.rpt.setName("rpt");
-		((OutputButton) this.rpt).setIcon("download.png");
-		((OutputButton) this.rpt).setIconTitle( ("distinta.link.rpt.iconTitle"));
+		this.rpt.setImage("download.png");
+		this.rpt.setTitle( ("distinta.link.rpt.iconTitle"));
 
-		this.rt = new OutputButton();
+		this.rt = this.getWebGenericProjectFactory().getOutputFieldFactory().createButton();
 		this.rt.setLabel( ("distinta.link.rt"));
 		this.rt.setName("rt");
-		((OutputButton) this.rt).setIcon("download.png");
-		((OutputButton) this.rt).setIconTitle( ("distinta.link.rt.iconTitle"));
+		this.rt.setImage("download.png");
+		this.rt.setTitle( ("distinta.link.rt.iconTitle"));
 		
 		this.totale = new PagamentoBean("tot_");
 		DettaglioPagamento totale = new PagamentoModel().new DettaglioPagamento();
 		totale.setImportoDovuto(BigDecimal.ZERO);
 		totale.setImportoVersato(BigDecimal.ZERO);
-		totale.setIdentificativo(it.govpay.web.console.utils.Utils.getMessageFromResourceBundle("pagamento.dettaglio.totale.label"));
+		totale.setIdentificativo(Utils.getInstance().getMessageFromResourceBundle("pagamento.dettaglio.totale.label"));
 		totale.setStato(" "); 
 		this.totale.setDTO(totale); 
 	}
 
 	private void prepareUrls(){
-		((OutputButton) this.rpt).setLink(this.dettaglioPagamento.getRpt() != null ?  "downloadLink" : null);
-		((OutputButton) this.rt).setLink( this.dettaglioPagamento.getRt() != null ? "downloadLink" : null);
+		this.rpt.setHref(this.dettaglioPagamento.getRpt() != null ?  "downloadLink" : null);
+		this.rt.setHref( this.dettaglioPagamento.getRt() != null ? "downloadLink" : null);
 	}
 
-	public OutputField<String> getSoggettoVersante() {
+	public Text getSoggettoVersante() {
 		return this.soggettoVersante;
 	}
 
-	public void setSoggettoVersante(OutputField<String> soggettoVersante) {
+	public void setSoggettoVersante(Text soggettoVersante) {
 		this.soggettoVersante = soggettoVersante;
 	}
 
-	public OutputField<String> getStato() {
+	public Text getStato() {
 		return this.stato;
 	}
 
-	public void setStato(OutputField<String> stato) {
+	public void setStato(Text stato) {
 		this.stato = stato;
 	}
 
-	public OutputField<Date> getData() {
+	public DateTime getData() {
 		return this.data;
 	}
 
-	public void setData(OutputField<Date> data) {
+	public void setData(DateTime data) {
 		this.data = data;
 	}
 
-	public OutputField<Number> getImportoTotale() {
+	public OutputNumber getImportoTotale() {
 		return this.importoTotale;
 	}
 
-	public void setImportoTotale(OutputField<Number> importoTotale) {
+	public void setImportoTotale(OutputNumber importoTotale) {
 		this.importoTotale = importoTotale;
 	}
 
@@ -337,46 +345,46 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 		this.listaPagamenti = listaPagamenti;
 	}
 
-	public OutputField<String> getIbanAddebito() {
+	public Text getIbanAddebito() {
 		return ibanAddebito;
 	}
 
-	public void setIbanAddebito(OutputField<String> ibanAddebito) {
+	public void setIbanAddebito(Text ibanAddebito) {
 		this.ibanAddebito = ibanAddebito;
 	}
 
-	public OutputField<String> getTipoAutenticazioneSoggetto() {
+	public Text getTipoAutenticazioneSoggetto() {
 		return tipoAutenticazioneSoggetto;
 	}
 
 	public void setTipoAutenticazioneSoggetto(
-			OutputField<String> tipoAutenticazioneSoggetto) {
+			Text tipoAutenticazioneSoggetto) {
 		this.tipoAutenticazioneSoggetto = tipoAutenticazioneSoggetto;
 	}
 
-	public OutputField<String> getIuv() {
+	public Text getIuv() {
 		return iuv;
 	}
 
-	public void setIuv(OutputField<String> iuv) {
+	public void setIuv(Text iuv) {
 		this.iuv = iuv;
 	}
 
-	public OutputField<String> getIdentificativoFiscaleCreditore() {
+	public Text getIdentificativoFiscaleCreditore() {
 		return identificativoFiscaleCreditore;
 	}
 
 	public void setIdentificativoFiscaleCreditore(
-			OutputField<String> identificativoFiscaleCreditore) {
+			Text identificativoFiscaleCreditore) {
 		this.identificativoFiscaleCreditore = identificativoFiscaleCreditore;
 	}
 
 
-	public OutputField<String> getIdDistinta() {
+	public Text getIdDistinta() {
 		return idDistinta;
 	}
 
-	public void setIdDistinta(OutputField<String> idDistinta) {
+	public void setIdDistinta(Text idDistinta) {
 		this.idDistinta = idDistinta;
 	}
 
@@ -387,67 +395,67 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 		return null;
 	}
 
-	public OutputField<String> getCodiceTributo() {
+	public Text getCodiceTributo() {
 		return codiceTributo;
 	}
 
-	public void setCodiceTributo(OutputField<String> codiceTributo) {
+	public void setCodiceTributo(Text codiceTributo) {
 		this.codiceTributo = codiceTributo;
 	}
 
-	public OutputField<String> getCfDebitore() {
+	public Text getCfDebitore() {
 		return cfDebitore;
 	}
 
-	public void setCfDebitore(OutputField<String> cfDebitore) {
+	public void setCfDebitore(Text cfDebitore) {
 		this.cfDebitore = cfDebitore;
 	}
 
-	public OutputField<String> getGateway() {
+	public Text getGateway() {
 		return gateway;
 	}
 
-	public void setGateway(OutputField<String> gateway) {
+	public void setGateway(Text gateway) {
 		this.gateway = gateway;
 	}
 
-	public OutputField<String> getCreditore() {
+	public Text getCreditore() {
 		return creditore;
 	}
 
-	public void setCreditore(OutputField<String> creditore) {
+	public void setCreditore(Text creditore) {
 		this.creditore = creditore;
 	}
 
-	public OutputField<String> getTributo() {
+	public Text getTributo() {
 		return tributo;
 	}
 
-	public void setTributo(OutputField<String> tributo) {
+	public void setTributo(Text tributo) {
 		this.tributo = tributo;
 	}
 
-	public OutputField<String> getCcp() {
+	public Text getCcp() {
 		return ccp;
 	}
 
-	public void setCcp(OutputField<String> ccp) {
+	public void setCcp(Text ccp) {
 		this.ccp = ccp;
 	}
 
-	public OutputField<String> getTipoFirma() {
+	public Text getTipoFirma() {
 		return tipoFirma;
 	}
 
-	public void setTipoFirma(OutputField<String> tipoFirma) {
+	public void setTipoFirma(Text tipoFirma) {
 		this.tipoFirma = tipoFirma;
 	}
 
-	public OutputField<String> getSoggettoDebitore() {
+	public Text getSoggettoDebitore() {
 		return soggettoDebitore;
 	}
 
-	public void setSoggettoDebitore(OutputField<String> soggettoDebitore) {
+	public void setSoggettoDebitore(Text soggettoDebitore) {
 		this.soggettoDebitore = soggettoDebitore;
 	}
 
@@ -460,19 +468,19 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> {
 		this.dettaglioPagamento = dettaglioPagamento;
 	}
 
-	public OutputField<String> getRpt() {
+	public Button getRpt() {
 		return rpt;
 	}
 
-	public void setRpt(OutputField<String> rpt) {
+	public void setRpt(Button rpt) {
 		this.rpt = rpt;
 	}
 
-	public OutputField<String> getRt() {
+	public Button getRt() {
 		return rt;
 	}
 
-	public void setRt(OutputField<String> rt) {
+	public void setRt(Button rt) {
 		this.rt = rt;
 	}
 

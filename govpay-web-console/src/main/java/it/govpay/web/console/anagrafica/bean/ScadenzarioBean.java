@@ -28,68 +28,70 @@ import it.govpay.web.console.utils.Utils;
 
 import java.util.List;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
 
-public class ScadenzarioBean extends BaseBean<ScadenzarioModel, String>{
+public class ScadenzarioBean extends BaseBean<ScadenzarioModel, Long> implements IBean<ScadenzarioModel, Long>{
 
 	private OutputGroup fieldsDatiGenerali = null;
 
-	private OutputField<String> nome;
-	private OutputField<String> idEnte;
-	private OutputField<String> cfEnte;
-	private OutputField<String> denominazioneEnte;
-	private OutputField<String> idIntermediarioPA;
-	private OutputField<String> codice;
-	private OutputField<String> idStazioneIntermediarioPA;
+	private Text nome;
+	private Text idEnte;
+	private Text cfEnte;
+	private Text denominazioneEnte;
+	private Text idIntermediarioPA;
+	private Text codice;
+	private Text idStazioneIntermediarioPA;
 
 	private ConnettoreBean connettoreNotifica = null;
 	private ConnettoreBean connettoreVerifica = null;
 
-	private Long id = null;
+	private ScadenzarioModelId idSistemaEnte;
 	
-	private ScadenzarioModelId idSistemaEnte = null;
-
 	public ScadenzarioBean(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
-	private void init(){
+	private void init() throws FactoryException{
 		
 		this.idSistemaEnte = new ScadenzarioModelId();
 
-		this.nome = new OutputText();
-		this.nome.setLabel(Utils.getMessageFromResourceBundle("scadenzario.nome"));
+		this.nome = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.nome.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.nome"));
 		this.nome.setName("scad_nome");
 		
-		this.idEnte = new OutputText();
-		this.idEnte.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idEnte"));
+		this.idEnte = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idEnte.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idEnte"));
 		this.idEnte.setName("scad_idEnte");
 		
-		this.denominazioneEnte = new OutputText();
-		this.denominazioneEnte.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idEnte"));
+		this.denominazioneEnte = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.denominazioneEnte.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idEnte"));
 		this.denominazioneEnte.setName("scad_denominazioneEnte");
 		
-		this.cfEnte = new OutputText();
-		this.cfEnte.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idEnte"));
+		this.cfEnte = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.cfEnte.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idEnte"));
 		this.cfEnte.setName("scad_cfEnte");
 
-		this.idIntermediarioPA = new OutputText();
-		this.idIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idIntermediarioPA"));
+		this.idIntermediarioPA = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idIntermediarioPA"));
 		this.idIntermediarioPA.setName("scad_idIntermediarioPA");
 		
-		this.idStazioneIntermediarioPA = new OutputText();
-		this.idStazioneIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idStazioneIntermediarioPA"));
+		this.idStazioneIntermediarioPA = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idStazioneIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idStazioneIntermediarioPA"));
 		this.idStazioneIntermediarioPA.setName("scad_idStazioneIntermediarioPA");
 
-		this.codice = new OutputText();
-		this.codice.setLabel(Utils.getMessageFromResourceBundle("scadenzario.codice"));
+		this.codice = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.codice.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.codice"));
 		this.codice.setName("scad_codice");
 
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("datiGeneraliScadenzario");
+		this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+		this.fieldsDatiGenerali.setId("datiGeneraliScadenzario");
 		this.fieldsDatiGenerali.setColumns(4);
 		this.fieldsDatiGenerali.setRendered(true);
 		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
@@ -152,12 +154,12 @@ public class ScadenzarioBean extends BaseBean<ScadenzarioModel, String>{
 		this.connettoreVerifica.setDTO(this.getDTO().getConnettoreVerifica());
 	}
 
-	public OutputField<String> getIdStazioneIntermediarioPA() {
+	public Text getIdStazioneIntermediarioPA() {
 		return idStazioneIntermediarioPA;
 	}
 
 	public void setIdStazioneIntermediarioPA(
-			OutputField<String> idStazioneIntermediarioPA) {
+			Text idStazioneIntermediarioPA) {
 		this.idStazioneIntermediarioPA = idStazioneIntermediarioPA;
 	}
 
@@ -177,27 +179,27 @@ public class ScadenzarioBean extends BaseBean<ScadenzarioModel, String>{
 		this.fieldsDatiGenerali = fieldsDatiGenerali;
 	}
 
-	public OutputField<String> getNome() {
+	public Text getNome() {
 		return nome;
 	}
 
-	public void setNome(OutputField<String> nome) {
+	public void setNome(Text nome) {
 		this.nome = nome;
 	}
 
-	public OutputField<String> getIdIntermediarioPA() {
+	public Text getIdIntermediarioPA() {
 		return idIntermediarioPA;
 	}
 
-	public void setIdIntermediarioPA(OutputField<String> idIntermediarioPA) {
+	public void setIdIntermediarioPA(Text idIntermediarioPA) {
 		this.idIntermediarioPA = idIntermediarioPA;
 	}
 
-	public OutputField<String> getCodice() {
+	public Text getCodice() {
 		return codice;
 	}
 
-	public void setCodice(OutputField<String> codice) {
+	public void setCodice(Text codice) {
 		this.codice = codice;
 	}
 
@@ -209,11 +211,11 @@ public class ScadenzarioBean extends BaseBean<ScadenzarioModel, String>{
 		this.connettoreNotifica = connettoreNotifica;
 	}
 
-	public OutputField<String> getIdEnte() {
+	public Text getIdEnte() {
 		return idEnte;
 	}
 
-	public void setIdEnte(OutputField<String> idEnte) {
+	public void setIdEnte(Text idEnte) {
 		this.idEnte = idEnte;
 	}
 
@@ -228,24 +230,20 @@ public class ScadenzarioBean extends BaseBean<ScadenzarioModel, String>{
 	public Long getId() {
 		return id;
 	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public OutputField<String> getCfEnte() {
+	
+	public Text getCfEnte() {
 		return cfEnte;
 	}
 
-	public void setCfEnte(OutputField<String> cfEnte) {
+	public void setCfEnte(Text cfEnte) {
 		this.cfEnte = cfEnte;
 	}
 
-	public OutputField<String> getDenominazioneEnte() {
+	public Text getDenominazioneEnte() {
 		return denominazioneEnte;
 	}
 
-	public void setDenominazioneEnte(OutputField<String> denominazioneEnte) {
+	public void setDenominazioneEnte(Text denominazioneEnte) {
 		this.denominazioneEnte = denominazioneEnte;
 	}
 	

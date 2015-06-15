@@ -40,11 +40,11 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.impl.SelectListImpl;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseMBean;
 import org.openspcoop2.generic_project.web.iservice.IBaseService;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
 
 @Named("distintaMBean") @ConversationScoped
 public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchForm> implements Serializable{
@@ -53,9 +53,6 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	@Inject  
-	private transient Logger log;
 
 	// Usato per visualizzare il form di invio
 	private boolean showForm = false;
@@ -79,6 +76,9 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 	// Periodi temporali
 	private List<SelectItem> listaPeriodoTemporale = null;
 
+	public DistintaMBean(){
+		super(org.apache.log4j.Logger.getLogger(DistintaMBean.class));
+	}
 
 	@PostConstruct
 	private void _DistintaMBean(){
@@ -102,8 +102,8 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 	public void setSearch(DistintaSearchForm search) {
 		this.search = search;
 		this.search.setmBean(this);
-		this.search.getStatoDistinta().setElencoSelectItems(this.getListaStatoDistinta());
-		this.search.getDataPeriodo().setElencoSelectItems(this.getListaPeriodoTemporale());
+		((SelectListImpl) this.search.getStatoDistinta()).setElencoSelectItems(this.getListaStatoDistinta());
+		((SelectListImpl) this.search.getDataPeriodo()).setElencoSelectItems(this.getListaPeriodoTemporale());
 
 		this.conversationManager.startConversation(GovPayWebConsoleConversationManager.DISTINTA_CID, this.conversation);
 		//this.search.reset();
@@ -206,13 +206,13 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 			this.listaPeriodoTemporale = new ArrayList<SelectItem>();
 
 			this.listaPeriodoTemporale.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(DistintaSearchForm.DATA_PERIODO_ULTIMA_SETTIMANA,Utils.getMessageFromResourceBundle("distinta.search.data.ultimaSettimana"))));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(DistintaSearchForm.DATA_PERIODO_ULTIMA_SETTIMANA,Utils.getInstance().getMessageFromResourceBundle("distinta.search.data.ultimaSettimana"))));
 			this.listaPeriodoTemporale.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(DistintaSearchForm.DATA_PERIODO_ULTIMO_MESE,Utils.getMessageFromResourceBundle("distinta.search.data.ultimoMese"))));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(DistintaSearchForm.DATA_PERIODO_ULTIMO_MESE,Utils.getInstance().getMessageFromResourceBundle("distinta.search.data.ultimoMese"))));
 			this.listaPeriodoTemporale.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(DistintaSearchForm.DATA_PERIODO_ULTIMI_TRE_MESI,Utils.getMessageFromResourceBundle("distinta.search.data.ultimiTreMesi"))));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(DistintaSearchForm.DATA_PERIODO_ULTIMI_TRE_MESI,Utils.getInstance().getMessageFromResourceBundle("distinta.search.data.ultimiTreMesi"))));
 			this.listaPeriodoTemporale.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(DistintaSearchForm.DATA_PERIODO_PERSONALIZZATO,Utils.getMessageFromResourceBundle("distinta.search.data.personalizzato"))));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(DistintaSearchForm.DATA_PERIODO_PERSONALIZZATO,Utils.getInstance().getMessageFromResourceBundle("distinta.search.data.personalizzato"))));
 
 		}
 
@@ -225,25 +225,25 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 
 
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(CostantiForm.ALL,"[Qualsiasi]")));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(CostantiForm.ALL,"[Qualsiasi]")));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.ESEGUITO.getChiave(), EnumStatoDistinta.ESEGUITO.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.ESEGUITO.getChiave(), EnumStatoDistinta.ESEGUITO.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.ESEGUITO_SBF.getChiave(), EnumStatoDistinta.ESEGUITO_SBF.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.ESEGUITO_SBF.getChiave(), EnumStatoDistinta.ESEGUITO_SBF.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.ANNULLATO.getChiave(), EnumStatoDistinta.ANNULLATO.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.ANNULLATO.getChiave(), EnumStatoDistinta.ANNULLATO.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.ANNULLATO_OPE.getChiave(), EnumStatoDistinta.ANNULLATO_OPE.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.ANNULLATO_OPE.getChiave(), EnumStatoDistinta.ANNULLATO_OPE.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.IN_CORSO.getChiave(), EnumStatoDistinta.IN_CORSO.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.IN_CORSO.getChiave(), EnumStatoDistinta.IN_CORSO.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.IN_ERRORE.getChiave(), EnumStatoDistinta.IN_ERRORE.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.IN_ERRORE.getChiave(), EnumStatoDistinta.IN_ERRORE.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.NON_ESEGUITO.getChiave(), EnumStatoDistinta.NON_ESEGUITO.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.NON_ESEGUITO.getChiave(), EnumStatoDistinta.NON_ESEGUITO.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.PARZIALMENTE_ESEGUITO.getChiave(), EnumStatoDistinta.PARZIALMENTE_ESEGUITO.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.PARZIALMENTE_ESEGUITO.getChiave(), EnumStatoDistinta.PARZIALMENTE_ESEGUITO.getDescrizione())));
 			this.listaStatoDistinta.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStatoDistinta.STORNATO.getChiave(), EnumStatoDistinta.STORNATO.getDescrizione())));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStatoDistinta.STORNATO.getChiave(), EnumStatoDistinta.STORNATO.getDescrizione())));
 		}
 
 		return listaStatoDistinta; 
@@ -253,21 +253,21 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 		this.listaStatoDistinta = listaStatoDistinta;
 	}
 
-	public List<org.openspcoop2.generic_project.web.form.field.SelectItem> soggettoVersanteAutoComplete(Object val) {
-		List<org.openspcoop2.generic_project.web.form.field.SelectItem> lst = new ArrayList<org.openspcoop2.generic_project.web.form.field.SelectItem>();
+	public List<org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem> soggettoVersanteAutoComplete(Object val) {
+		List<org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem> lst = new ArrayList<org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem>();
 
-		org.openspcoop2.generic_project.web.form.field.SelectItem item0 = 
-				new  org.openspcoop2.generic_project.web.form.field.SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO);
+		org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem item0 = 
+				new  org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO);
 
 		//		try{
 		//			if(val==null || StringUtils.isEmpty((String)val) || ((String)val).equals(BaseForm.NON_SELEZIONATO))
-		//				lst = new ArrayList<org.openspcoop2.generic_project.web.form.field.SelectItem>();
+		//				lst = new ArrayList<org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem>();
 		//			else{
 		//				List<String> listaMittenti = ((IFatturaElettronicaService)this.service).getMittenteAutoComplete((String)val);
 		//
 		//				if(listaMittenti != null && listaMittenti.size() > 0){
 		//					for (String string : listaMittenti) {
-		//						lst.add(new  org.openspcoop2.generic_project.web.form.field.SelectItem(string,string));
+		//						lst.add(new  org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(string,string));
 		//					}
 		//				}
 		//			}

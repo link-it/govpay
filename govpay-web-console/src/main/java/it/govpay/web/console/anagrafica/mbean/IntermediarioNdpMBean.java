@@ -43,33 +43,28 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.impl.SelectListImpl;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseListView;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
 import org.openspcoop2.generic_project.web.iservice.IBaseService;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
 
 @Named("intNdpMBean") @ConversationScoped 
 public class IntermediarioNdpMBean 
-extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implements Serializable{
+extends BaseListView<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm,IntermediarioNdpForm,IntermediarioModel> implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Inject  
-	private transient Logger log;
-
 	private String azione = null;
-
-	@Inject @Named("intNdpForm")
-	private IntermediarioNdpForm form = null;
 
 	private boolean showForm = false;
 
-	private String selectedId = null;
+	private String selectedIdIntNdp = null;
 	
 	private @Inject Conversation conversation;
 	
@@ -78,22 +73,25 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 	@Inject @Named("govpayConversationManager")
 	GovPayWebConsoleConversationManager conversationManager;
 
+	public IntermediarioNdpMBean() {
+		super(Logger.getLogger(IntermediarioNdpMBean.class)); 
+	}
+	
 	@PostConstruct
 	private void _IntermediarioNdpMBean(){
 		this.log.debug("Init IntermediarioNdpMBean completato."); 
 
 		this.stazioneMBean = new StazioneMBean();
-		this.stazioneMBean.setLog(this.log);
 		this.stazioneMBean.setNdpService((IIntermediarioNdpService) this.service);
-		
 		this.form = new IntermediarioNdpForm();
 		this.showForm = false;
 		this.azione = null;
 		this.selectedId = null;
+		this.selectedIdIntNdp = null;
 		this.form.setRendered(this.showForm);
-		this.form.getConnettore().getAutenticazione().setElencoSelectItems(this.getListaTipiAutenticazione());
-		this.form.getConnettore().getTipoSsl().setElencoSelectItems(this.getListaTipiSSL());
-		this.form.reset();
+		((SelectListImpl) this.form.getConnettore().getAutenticazione()).setElencoSelectItems(this.getListaTipiAutenticazione());
+		((SelectListImpl) this.form.getConnettore().getTipoSsl()).setElencoSelectItems(this.getListaTipiSSL());
+		this.form.reset(); 
 	}
 
 	@Override @Inject @Named("intNdpService")
@@ -105,6 +103,11 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 	@Override @Inject @Named("intNdpSearchForm")
 	public void setSearch(IntermediarioNdpSearchForm search) {
 		super.setSearch(search);
+	}
+	
+	@Override 	@Inject @Named("intNdpForm")
+	public void setForm(IntermediarioNdpForm form) {
+		super.setForm(form);
 	}
 
 	@Override
@@ -122,6 +125,7 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 		this.showForm = false;
 		this.azione = null;
 		this.selectedId = null;
+		this.selectedIdIntNdp = null;
 		this.form.setRendered(this.showForm);
 		
 		this.stazioneMBean.setSelectedIntermediario(this.selectedElement);
@@ -139,7 +143,7 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 		String msg = this.form.valida();
 
 		if(msg!= null){
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("intermediario.form.erroreValidazione")+": " + msg);
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.erroreValidazione")+": " + msg);
 			return null;
 		}
 
@@ -150,8 +154,8 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 				IntermediarioNdpBean oldInt = ((IIntermediarioNdpService) this.service).findById(this.form.getIdIntermediarioPA().getValue());
 
 				if(oldInt!= null){
-					MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("intermediario.form.erroreValidazione") +
-							": " +Utils.getMessageWithParamsFromResourceBundle("intermediario.form.intermediarioEsistente",this.form.getIdIntermediarioPA().getValue()));
+					MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.erroreValidazione") +
+							": " +Utils.getInstance().getMessageWithParamsFromResourceBundle("intermediario.form.intermediarioEsistente",this.form.getIdIntermediarioPA().getValue()));
 					return null;
 				}
 			} else {
@@ -163,14 +167,14 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 			bean.setDTO(newDip);
 
 			((IIntermediarioNdpService)this.service).store(oldId,bean);
-			MessageUtils.addInfoMsg(Utils.getMessageFromResourceBundle("intermediario.form.salvataggioOk"));
+			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.salvataggioOk"));
 			
 			this.setSelectedElement(bean);
 
 //			return null;//"invia";
 		}catch(Exception e){
 			log.error("Si e' verificato un errore durante il salvataggio dell'intermediario: " + e.getMessage(), e);
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("intermediario.form.erroreGenerico"));
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.erroreGenerico"));
 //			return null;
 		}
 		return "listaIntermediariNdp?faces-redirect=true";
@@ -245,14 +249,6 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 		this.azione = azione;
 	}
 
-	public IntermediarioNdpForm getForm() {
-		return form;
-	}
-
-	public void setForm(IntermediarioNdpForm form) {
-		this.form = form;
-	}
-
 	public boolean isShowForm() {
 		return showForm;
 	}
@@ -263,14 +259,14 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 
 	
 	
-	public String getSelectedId() {
-		return selectedId;
+	public String getSelectedIdIntNdp() {
+		return selectedIdIntNdp;
 	}
 
-	public void setSelectedId(String selectedId) {
-		this.selectedId = selectedId;
+	public void setSelectedIdIntNdp(String selectedId) {
+		this.selectedIdIntNdp = selectedId;
 
-		if(this.selectedId != null){
+		if(this.selectedIdIntNdp != null){
 			try {
 				IntermediarioNdpBean findById = ((IIntermediarioNdpService)this.service).findById(selectedId);
 				this.setSelectedElement(findById);
@@ -312,13 +308,13 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 		
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumAuthType.NONE.toString(), ("connettore.autenticazione.nessuna"))));
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumAuthType.HTTPBasic.toString(),   ("connettore.autenticazione.http"))));
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumAuthType.SSL.toString(),   ("connettore.autenticazione.ssl"))));
 		
 		return lista;
@@ -328,14 +324,14 @@ extends BaseMBean<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm> implem
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 		
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)));
 		
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumSslType.CLIENT.toString(), ("connettore.autenticazione.ssl.tipoSsl.client"))));
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						EnumSslType.SERVER.toString(),   ("connettore.autenticazione.ssl.tipoSsl.server"))));
 		
 		return lista;

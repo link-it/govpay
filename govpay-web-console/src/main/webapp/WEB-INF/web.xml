@@ -116,7 +116,7 @@
 	<!-- Session TimeOut -->
 	<filter>
 		<filter-name>SessionTimeoutFilter</filter-name>
-		<filter-class>org.openspcoop2.generic_project.web.listener.SessionTimeoutFilter</filter-class>
+		<filter-class>org.openspcoop2.generic_project.web.impl.jsf1.filter.SessionTimeoutFilter</filter-class>
 	</filter>
 	<filter-mapping>
 		<filter-name>richfaces</filter-name>
@@ -129,7 +129,7 @@
 	
 	<filter>
     <filter-name>RichFacesFirefox11Filter</filter-name>
-    <filter-class>org.openspcoop2.generic_project.web.listener.RichFacesFirefox11Filter</filter-class>
+    <filter-class>org.openspcoop2.generic_project.web.impl.jsf1.filter.RichFacesFirefox11Filter</filter-class>
   </filter>
   <filter-mapping>
     <filter-name>RichFacesFirefox11Filter</filter-name>
@@ -140,7 +140,7 @@
   <filter>
         <display-name>IE Filter</display-name>
         <filter-name>iefilter</filter-name>
-        <filter-class>org.openspcoop2.generic_project.web.listener.IEFilter</filter-class>
+        <filter-class>org.openspcoop2.generic_project.web.filter.IEFilter</filter-class>
     </filter>
 
         <filter-mapping>

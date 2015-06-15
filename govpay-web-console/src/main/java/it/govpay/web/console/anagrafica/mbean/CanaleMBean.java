@@ -29,28 +29,24 @@ import it.govpay.web.console.utils.Utils;
 
 import java.util.List;
 
-import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseMBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
 
-public class CanaleMBean extends BaseMBean<CanaleBean, Long, TributoSearchForm>{
+public class CanaleMBean extends BaseMBean<CanaleBean, String, TributoSearchForm>{
 
 	private boolean showForm = false;
-
-	private String selectedId = null;
 
 	private String azione = null;
 	
 	private PspForm form = null;
 
-	private transient Logger log;
-	
 	private IPspService pspService  = null;
 	
 	private List<CanaleBean> listaCanali = null;
 	
 	
 	public CanaleMBean(){
+		super(org.apache.log4j.Logger.getLogger(CanaleMBean.class)); 
 		this.selectedId = null;
 		this.form = new PspForm();
 		this.showForm = false;
@@ -76,7 +72,7 @@ public class CanaleMBean extends BaseMBean<CanaleBean, Long, TributoSearchForm>{
 		String msg = this.form.valida();
 
 		if(msg!= null){
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("psp.form.erroreValidazione")+": " + msg);
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("psp.form.erroreValidazione")+": " + msg);
 			return null;
 		}
 
@@ -87,12 +83,12 @@ public class CanaleMBean extends BaseMBean<CanaleBean, Long, TributoSearchForm>{
 			
 			this.service.store(selectedElement);
 			
-			MessageUtils.addInfoMsg(Utils.getMessageFromResourceBundle("psp.form.salvataggioOk"));
+			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("psp.form.salvataggioOk"));
 
 //			return null;//"invia";
 		}catch(Exception e){
 			log.error("Si e' verificato un errore durante il salvataggio dell'psp: " + e.getMessage(), e);
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("psp.form.erroreGenerico"));
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("psp.form.erroreGenerico"));
 //			return null;
 		}
 		return "listaPsp?faces-redirect=true";
@@ -146,25 +142,9 @@ public class CanaleMBean extends BaseMBean<CanaleBean, Long, TributoSearchForm>{
 		} 
 		this.form.setRendered(this.showForm); 
 		this.form.reset();
-		this.selectedId = null;
+//		this.selectedId = null;
 		
 		return "listaPsp?faces-redirect=true";
-	}
-
-	public String getSelectedId() {
-		return selectedId;
-	}
-
-	public void setSelectedId(String selectedId) {
-		this.selectedId = selectedId;
-	}
-
-	public Logger getLog() {
-		return log;
-	}
-
-	public void setLog(Logger log) {
-		this.log = log;
 	}
 
 	public IPspService getPspService() {

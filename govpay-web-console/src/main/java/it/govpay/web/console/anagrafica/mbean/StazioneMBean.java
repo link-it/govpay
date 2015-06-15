@@ -35,12 +35,12 @@ import java.util.List;
 
 import javax.faces.event.ActionEvent;
 
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseListView;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
 
-public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearchForm>  implements Serializable {
+public class StazioneMBean extends BaseListView<StazioneBean, String, StazioneSearchForm,StazioneForm,StazioneModel>  implements Serializable {
 
 
 	/**
@@ -48,10 +48,7 @@ public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearc
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Logger log;
-
 	private String azione = null;
-	private StazioneForm form = null;
 
 	private IIntermediarioNdpService ndpService ;
 
@@ -68,7 +65,8 @@ public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearc
 	private IntermediarioNdpMBean intNdpMBean = null;
 
 	public StazioneMBean(){
-
+		super(Logger.getLogger(StazioneMBean.class)); 
+		
 		this.search = new StazioneSearchForm();
 		this.search.reset();
 		this.form = new StazioneForm();
@@ -82,14 +80,6 @@ public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearc
 		this.form.setRendered(this.showForm);
 		this.form.reset();
 
-	}
-
-	public Logger getLog() {
-		return log;
-	}
-
-	public void setLog(Logger log) {
-		this.log = log;
 	}
 
 	public String getAzione() {
@@ -188,7 +178,7 @@ public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearc
 		String msg = this.form.valida();
 
 		if(msg!= null){
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("stazione.form.erroreValidazione")+": " + msg);
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("stazione.form.erroreValidazione")+": " + msg);
 			return null;
 		}
 
@@ -202,8 +192,8 @@ public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearc
 				StazioneBean oldInt = this.ndpService.findStazioneById(dto.getIdStazioneIntermediarioPA());
 
 				if(oldInt!= null){
-					MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("stazione.form.erroreValidazione") +
-							": " +Utils.getMessageWithParamsFromResourceBundle("stazione.form.stazioneEsistente",this.form.getCodice().getValue()));
+					MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("stazione.form.erroreValidazione") +
+							": " +Utils.getInstance().getMessageWithParamsFromResourceBundle("stazione.form.stazioneEsistente",this.form.getCodice().getValue()));
 					return null;
 				}
 			}
@@ -212,7 +202,7 @@ public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearc
 			bean.setDTO(dto);
 
 			this.ndpService.salvaStazione(bean, isAdd);
-			MessageUtils.addInfoMsg(Utils.getMessageFromResourceBundle("stazione.form.salvataggioOk"));
+			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("stazione.form.salvataggioOk"));
 
 			this.setSelectedIntermediario(this.getSelectedIntermediario()); 
 			this.setSelectedId(bean.getDTO().getIdStazioneIntermediarioPA());
@@ -222,7 +212,7 @@ public class StazioneMBean extends BaseMBean<StazioneBean, String, StazioneSearc
 
 		}catch(Exception e){
 			log.error("Si e' verificato un errore durante il salvataggio stazione: " + e.getMessage(), e);
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("stazione.form.erroreGenerico"));
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("stazione.form.erroreGenerico"));
 			//			return null;
 		}
 		return "listaIntermediariNdp?faces-redirect=true";

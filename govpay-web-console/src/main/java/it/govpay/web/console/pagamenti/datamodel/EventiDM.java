@@ -21,7 +21,9 @@
  */
 package it.govpay.web.console.pagamenti.datamodel;
 
+import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Evento;
 import it.govpay.web.console.pagamenti.bean.EventoBean;
+import it.govpay.web.console.pagamenti.form.EventiSearchForm;
 import it.govpay.web.console.pagamenti.iservice.IEventiService;
 
 import java.io.IOException;
@@ -38,11 +40,11 @@ import org.ajax4jsf.model.Range;
 import org.ajax4jsf.model.SequenceRange;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.datamodel.BaseDataModel;
+import org.openspcoop2.generic_project.web.impl.jsf1.datamodel.ParameterizedDataModel;
 
 
 @Named("eventiDM") @RequestScoped
-public class EventiDM extends BaseDataModel<Long, EventoBean, IEventiService>{
+public class EventiDM extends ParameterizedDataModel<Long, EventoBean, IEventiService,Evento,EventiSearchForm>{
 
 	/**
 	 * 

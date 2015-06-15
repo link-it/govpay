@@ -27,117 +27,118 @@ import it.govpay.ejb.ndp.model.EventiInterfacciaModel.Evento;
 import it.govpay.ejb.ndp.model.EventiInterfacciaModel.SottoTipo;
 import it.govpay.web.console.utils.Utils;
 
-import java.util.Date;
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.DateTime;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.presentation.field.OutputDate;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
-
-public class EventoBean extends BaseBean<Evento, Long>{
+public class EventoBean extends BaseBean<Evento, Long> implements IBean<Evento, Long>{ 
 
 
-	private OutputField<Date> data;
-	private OutputField<String> dominio;
-	private OutputField<String> iuv;
-	private OutputField<String> ccp;
-	private OutputField<String> psp;
-	private OutputField<String> tipoVersamento;
-	private OutputField<String> componente;
-	private OutputField<String> categoria;
-	private OutputField<String> tipo;
-	private OutputField<String> sottoTipo;
-	private OutputField<String> fruitore;
-	private OutputField<String> erogatore;
-	private OutputField<String> stazioneIntermediarioPA;
-	private OutputField<String> canalePagamento;
-	private OutputField<String> parametri;
-	private OutputField<String> esito;
-	private OutputField<String> idEgov;
-	private Long id;
+	private DateTime data;
+	private Text dominio;
+	private Text iuv;
+	private Text ccp;
+	private Text psp;
+	private Text tipoVersamento;
+	private Text componente;
+	private Text categoria;
+	private Text tipo;
+	private Text sottoTipo;
+	private Text fruitore;
+	private Text erogatore;
+	private Text stazioneIntermediarioPA;
+	private Text canalePagamento;
+	private Text parametri;
+	private Text esito;
+	private Text idEgov;
 
 	private InfospcoopBean infospcoop = null;
 	//	private boolean esitoOk = false;
 
 	// Gruppo Informazioni Dati Genareli
-	private OutputGroup fieldsDatiGenerali = new OutputGroup();
+	private OutputGroup fieldsDatiGenerali = null;
 
 	public EventoBean(){
-		initFields();
+		try {
+			initFields();
+		} catch (FactoryException e) {
+		}
 	}
 
-	private void initFields(){
-		this.data = new OutputDate();
-		this.data.setLabel(Utils.getMessageFromResourceBundle("evento.data"));
+	private void initFields() throws FactoryException{
+		this.data = this.getWebGenericProjectFactory().getOutputFieldFactory().createDateTime();
+		this.data.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.data"));
 		this.data.setName("data");
 
-		this.idEgov = new OutputText();
-		this.idEgov.setLabel(Utils.getMessageFromResourceBundle("evento.idEgov"));
+		this.idEgov = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idEgov.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.idEgov"));
 		this.idEgov.setName("idEgov");
 
-		this.dominio = new OutputText();
-		this.dominio.setLabel(Utils.getMessageFromResourceBundle("evento.dominio"));
+		this.dominio = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.dominio.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.dominio"));
 		this.dominio.setName("dominio");
 
-		this.iuv = new OutputText();
-		this.iuv.setLabel(Utils.getMessageFromResourceBundle("evento.iuv"));
+		this.iuv = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.iuv.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.iuv"));
 		this.iuv.setName("iuv");
 
-		this.ccp = new OutputText();
-		this.ccp.setLabel(Utils.getMessageFromResourceBundle("evento.ccp"));
+		this.ccp = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.ccp.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.ccp"));
 		this.ccp.setName("ccp");
 
-		this.psp = new OutputText();
-		this.psp.setLabel(Utils.getMessageFromResourceBundle("evento.psp"));
+		this.psp = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.psp.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.psp"));
 		this.psp.setName("psp");
 
-		this.tipoVersamento = new OutputText();
-		this.tipoVersamento.setLabel(Utils.getMessageFromResourceBundle("evento.tipoVersamento"));
+		this.tipoVersamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.tipoVersamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.tipoVersamento"));
 		this.tipoVersamento.setName("tipoVersamento");
 
-		this.componente = new OutputText();
-		this.componente.setLabel(Utils.getMessageFromResourceBundle("evento.componente"));
+		this.componente = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.componente.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.componente"));
 		this.componente.setName("componente");
 
-		this.categoria = new OutputText();
-		this.categoria.setLabel(Utils.getMessageFromResourceBundle("evento.categoria"));
+		this.categoria = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.categoria.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.categoria"));
 		this.categoria.setName("categoria");
 
-		this.tipo = new OutputText();
-		this.tipo.setLabel(Utils.getMessageFromResourceBundle("evento.tipo"));
+		this.tipo = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.tipo.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.tipo"));
 		this.tipo.setName("tipo");
 
-		this.sottoTipo = new OutputText();
-		this.sottoTipo.setLabel(Utils.getMessageFromResourceBundle("evento.sottoTipo"));
+		this.sottoTipo = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.sottoTipo.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.sottoTipo"));
 		this.sottoTipo.setName("sottoTipo");
 
-		this.fruitore = new OutputText();
-		this.fruitore.setLabel(Utils.getMessageFromResourceBundle("evento.fruitore"));
+		this.fruitore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.fruitore.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.fruitore"));
 		this.fruitore.setName("fruitore");
 
-		this.erogatore = new OutputText();
-		this.erogatore.setLabel(Utils.getMessageFromResourceBundle("evento.erogatore"));
+		this.erogatore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.erogatore.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.erogatore"));
 		this.erogatore.setName("erogatore");
 
-		this.stazioneIntermediarioPA = new OutputText();
-		this.stazioneIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("evento.stazioneIntermediarioPA"));
+		this.stazioneIntermediarioPA = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.stazioneIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.stazioneIntermediarioPA"));
 		this.stazioneIntermediarioPA.setName("stazioneIntermediarioPA");
 
-		this.canalePagamento = new OutputText();
-		this.canalePagamento.setLabel(Utils.getMessageFromResourceBundle("evento.canalePagamento"));
+		this.canalePagamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.canalePagamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.canalePagamento"));
 		this.canalePagamento.setName("canalePagamento");
 
-		this.parametri = new OutputText();
-		this.parametri.setLabel(Utils.getMessageFromResourceBundle("evento.parametri"));
+		this.parametri = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.parametri.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.parametri"));
 		this.parametri.setName("parametri");
 
-		this.esito = new OutputText();
-		this.esito.setLabel(Utils.getMessageFromResourceBundle("evento.esito"));
+		this.esito = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.esito.setLabel(Utils.getInstance().getMessageFromResourceBundle("evento.esito"));
 		this.esito.setName("esito");
 
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("datiGenerali");
+		this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+		this.fieldsDatiGenerali.setId("datiGenerali");
 		this.fieldsDatiGenerali.setColumns(2);
 		this.fieldsDatiGenerali.setRendered(true);
 		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
@@ -211,149 +212,141 @@ public class EventoBean extends BaseBean<Evento, Long>{
 		}
 	}
 
-	public OutputField<Date> getData() {
+	public DateTime getData() {
 		return data;
 	}
 
-	public void setData(OutputField<Date> data) {
+	public void setData(DateTime data) {
 		this.data = data;
 	}
 
-	public OutputField<String> getDominio() {
+	public Text getDominio() {
 		return dominio;
 	}
 
-	public void setDominio(OutputField<String> dominio) {
+	public void setDominio(Text dominio) {
 		this.dominio = dominio;
 	}
 
-	public OutputField<String> getIuv() {
+	public Text getIuv() {
 		return iuv;
 	}
 
-	public void setIuv(OutputField<String> iuv) {
+	public void setIuv(Text iuv) {
 		this.iuv = iuv;
 	}
 
-	public OutputField<String> getCcp() {
+	public Text getCcp() {
 		return ccp;
 	}
 
-	public void setCcp(OutputField<String> ccp) {
+	public void setCcp(Text ccp) {
 		this.ccp = ccp;
 	}
 
-	public OutputField<String> getPsp() {
+	public Text getPsp() {
 		return psp;
 	}
 
-	public void setPsp(OutputField<String> psp) {
+	public void setPsp(Text psp) {
 		this.psp = psp;
 	}
 
-	public OutputField<String> getTipoVersamento() {
+	public Text getTipoVersamento() {
 		return tipoVersamento;
 	}
 
-	public void setTipoVersamento(OutputField<String> tipoVersamento) {
+	public void setTipoVersamento(Text tipoVersamento) {
 		this.tipoVersamento = tipoVersamento;
 	}
 
-	public OutputField<String> getComponente() {
+	public Text getComponente() {
 		return componente;
 	}
 
-	public void setComponente(OutputField<String> componente) {
+	public void setComponente(Text componente) {
 		this.componente = componente;
 	}
 
-	public OutputField<String> getCategoria() {
+	public Text getCategoria() {
 		return categoria;
 	}
 
-	public void setCategoria(OutputField<String> categoria) {
+	public void setCategoria(Text categoria) {
 		this.categoria = categoria;
 	}
 
-	public OutputField<String> getTipo() {
+	public Text getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(OutputField<String> tipo) {
+	public void setTipo(Text tipo) {
 		this.tipo = tipo;
 	}
 
-	public OutputField<String> getSottoTipo() {
+	public Text getSottoTipo() {
 		return sottoTipo;
 	}
 
-	public void setSottoTipo(OutputField<String> sottoTipo) {
+	public void setSottoTipo(Text sottoTipo) {
 		this.sottoTipo = sottoTipo;
 	}
 
-	public OutputField<String> getFruitore() {
+	public Text getFruitore() {
 		return fruitore;
 	}
 
-	public void setFruitore(OutputField<String> fruitore) {
+	public void setFruitore(Text fruitore) {
 		this.fruitore = fruitore;
 	}
 
-	public OutputField<String> getErogatore() {
+	public Text getErogatore() {
 		return erogatore;
 	}
 
-	public void setErogatore(OutputField<String> erogatore) {
+	public void setErogatore(Text erogatore) {
 		this.erogatore = erogatore;
 	}
 
-	public OutputField<String> getStazioneIntermediarioPA() {
+	public Text getStazioneIntermediarioPA() {
 		return stazioneIntermediarioPA;
 	}
 
 	public void setStazioneIntermediarioPA(
-			OutputField<String> stazioneIntermediarioPA) {
+			Text stazioneIntermediarioPA) {
 		this.stazioneIntermediarioPA = stazioneIntermediarioPA;
 	}
 
-	public OutputField<String> getCanalePagamento() {
+	public Text getCanalePagamento() {
 		return canalePagamento;
 	}
 
-	public void setCanalePagamento(OutputField<String> canalePagamento) {
+	public void setCanalePagamento(Text canalePagamento) {
 		this.canalePagamento = canalePagamento;
 	}
 
-	public OutputField<String> getParametri() {
+	public Text getParametri() {
 		return parametri;
 	}
 
-	public void setParametri(OutputField<String> parametri) {
+	public void setParametri(Text parametri) {
 		this.parametri = parametri;
 	}
 
-	public OutputField<String> getEsito() {
+	public Text getEsito() {
 		return esito;
 	}
 
-	public void setEsito(OutputField<String> esito) {
+	public void setEsito(Text esito) {
 		this.esito = esito;
 	}
 
-	public OutputField<String> getIdEgov() {
+	public Text getIdEgov() {
 		return idEgov;
 	}
 
-	public void setIdEgov(OutputField<String> idEgov) {
+	public void setIdEgov(Text idEgov) {
 		this.idEgov = idEgov;
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
 	}
 
 	public OutputGroup getFieldsDatiGenerali() {
@@ -362,6 +355,11 @@ public class EventoBean extends BaseBean<Evento, Long>{
 
 	public void setFieldsDatiGenerali(OutputGroup fieldsDatiGenerali) {
 		this.fieldsDatiGenerali = fieldsDatiGenerali;
+	}
+
+	@Override
+	public Long getId() {
+		return this.getDTO().getId();
 	}
 
 

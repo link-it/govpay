@@ -122,14 +122,10 @@ public class ScadenzarioService extends BaseService<ScadenzarioSearchForm> imple
 
 	@Override
 	public void deleteById(Long key) throws ServiceException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void delete(ScadenzarioBean obj) throws ServiceException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -268,6 +264,11 @@ public class ScadenzarioService extends BaseService<ScadenzarioSearchForm> imple
 			filtro.setIdIntermediarioPA( form.getIdIntermediario().getValue());
 
 		return filtro;
+	}
+
+	@Override
+	public boolean exists(ScadenzarioBean arg0) throws ServiceException {
+		return false;
 	}
 
 }
