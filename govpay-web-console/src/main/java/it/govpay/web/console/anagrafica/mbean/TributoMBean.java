@@ -37,22 +37,23 @@ import java.util.List;
 import javax.faces.event.ActionEvent;
 import javax.faces.model.SelectItem;
 
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.impl.SelectListImpl;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseListView;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
 
-public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchForm> { 
+public class TributoMBean extends BaseListView<TributoBean, String, TributoSearchForm,TributoForm,TributoModel> { 
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L; 
 
 	private boolean showForm = false;
 
 	private String selectedId = null;
 
 	private String azione = null;
-
-	private TributoForm form = null;
-
-	private transient Logger log;
 
 	private IEnteService enteService= null;
 
@@ -67,7 +68,7 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 	private ScadenzarioMBean scadenzarioMbean = null;
 	
 	public TributoMBean(){
-		
+		super(org.apache.log4j.Logger.getLogger(TributoMBean.class));
 
 		this.search = new TributoSearchForm();
 		this.form = new TributoForm();
@@ -78,10 +79,6 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 		this.selectedScadenzario = null;
 		this.form.setRendered(this.showForm);
 
-	}
-
-	public void setLogger(Logger log){
-		this.log = log; 
 	}
 
 	@Override
@@ -101,7 +98,7 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 		String msg = this.form.valida();
 
 		if(msg!= null){
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("tributo.form.erroreValidazione")+": " + msg);
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("tributo.form.erroreValidazione")+": " + msg);
 			return null;
 		}
 
@@ -112,8 +109,8 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 				TributoBean oldInt = ((IEnteService) this.enteService).findTributoById(this.selectedEnte.getIdEnteCreditore().getValue(),this.form.getCodice().getValue());
 
 				if(oldInt!= null){
-					MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("tributo.form.erroreValidazione") +
-							": " +Utils.getMessageWithParamsFromResourceBundle("tributo.form.tributoEsistente",this.form.getIdEnteCreditore().getValue()));
+					MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("tributo.form.erroreValidazione") +
+							": " +Utils.getInstance().getMessageWithParamsFromResourceBundle("tributo.form.tributoEsistente",this.form.getIdEnteCreditore().getValue()));
 					return null;
 				}
 			} else {
@@ -127,10 +124,10 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 			bean.setDTO(newEnte);
 
 			((IEnteService)this.enteService).storeTributo(newEnte.getIdEnteCreditore(),oldId,bean);
-			MessageUtils.addInfoMsg(Utils.getMessageFromResourceBundle("tributo.form.salvataggioOk"));
+			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("tributo.form.salvataggioOk"));
 			
 			// Aggiorno la tabella dei tributi
-			this.enteMbean.setSelectedId(this.selectedEnte.getDTO().getIdEnteCreditore());
+			this.enteMbean.setSelectedIdEnte(this.selectedEnte.getDTO().getIdEnteCreditore());
 			
 			this.setSelectedScadenzario(this.getSelectedScadenzario()); 
 			this.setSelectedElement(bean);
@@ -141,7 +138,7 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 			
 		}catch(Exception e){
 			log.error("Si e' verificato un errore durante il salvataggio tributo: " + e.getMessage(), e);
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("tributo.form.erroreGenerico"));
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("tributo.form.erroreGenerico"));
 			//			return null;
 		}
 		return "listaEnti?faces-redirect=true";
@@ -215,14 +212,14 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 		this.form.setValues(this.selectedElement);
 		
 		
-		org.openspcoop2.generic_project.web.form.field.SelectItem defEnte = 
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(this.selectedScadenzario.getIdSistemaEnte().getIdSystem(),this.selectedScadenzario.getIdSistemaEnte().getIdSystem());
+		org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem defEnte = 
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(this.selectedScadenzario.getIdSistemaEnte().getIdSystem(),this.selectedScadenzario.getIdSistemaEnte().getIdSystem());
 		this.form.getScadenzario().setDefaultValue(defEnte);
 
 		ArrayList<SelectItem> elencoSelectItems = new ArrayList<SelectItem>();
 		elencoSelectItems.add(new SelectItem(defEnte));
 		
-		this.form.getScadenzario().setElencoSelectItems(elencoSelectItems);
+		((SelectListImpl) this.form.getScadenzario()).setElencoSelectItems(elencoSelectItems); 
 		
 		this.form.reset();
 
@@ -261,14 +258,14 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 		this.form.setValues(this.selectedElement);
 
 		// Carica valori tendine
-		org.openspcoop2.generic_project.web.form.field.SelectItem defEnte = 
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(this.selectedScadenzario.getIdSistemaEnte().getIdSystem(),this.selectedScadenzario.getIdSistemaEnte().getIdSystem());
+		org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem defEnte = 
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(this.selectedScadenzario.getIdSistemaEnte().getIdSystem(),this.selectedScadenzario.getIdSistemaEnte().getIdSystem());
 		this.form.getScadenzario().setDefaultValue(defEnte);
 
 		ArrayList<SelectItem> elencoSelectItems = new ArrayList<SelectItem>();
 		elencoSelectItems.add(new SelectItem(defEnte));
 		
-		this.form.getScadenzario().setElencoSelectItems(elencoSelectItems);
+		((SelectListImpl) this.form.getScadenzario()).setElencoSelectItems(elencoSelectItems);
 
 		this.form.reset();
 
@@ -278,14 +275,6 @@ public class TributoMBean extends BaseMBean<TributoBean, String, TributoSearchFo
 	public String elimina(){
 
 		return "listaEnti?faces-redirect=true";
-	}
-
-	public TributoForm getForm() {
-		return form;
-	}
-
-	public void setForm(TributoForm form) {
-		this.form = form;
 	}
 
 	public List<TributoBean> getListaTributi() {

@@ -21,53 +21,53 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
+
 import it.govpay.ejb.ndp.model.IntermediarioModel;
+import it.govpay.web.console.utils.Utils;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
+public class IntermediarioNdpBean extends BaseBean<IntermediarioModel, Long>  implements IBean<IntermediarioModel, Long>{ 
 
-public class IntermediarioNdpBean extends BaseBean<IntermediarioModel, String>  {
 
-	
 	private OutputGroup fieldsDatiGenerali = null;
-	private OutputField<String> nomeSoggettoSPC;
-	private OutputField<String> idIntermediarioPA;
-	
+	private Text nomeSoggettoSPC;
+	private Text idIntermediarioPA;
 	private ConnettoreBean connettore = null;
-	
-	private Long id = null;
-	
 	public IntermediarioNdpBean(){
-		
-		this.nomeSoggettoSPC = new OutputText();
-		this.nomeSoggettoSPC.setLabel(Utils.getMessageFromResourceBundle("intermediariNdp.nomeSoggettoSPC"));
-		this.nomeSoggettoSPC.setName("nomeSoggettoSPC");
-		
-		this.idIntermediarioPA = new OutputText();
-		this.idIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("intermediariNdp.idIntermediarioPA"));
-		this.idIntermediarioPA.setName("idIntermediarioPA");
-		
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("datiGenerali");
-		this.fieldsDatiGenerali.setColumns(2);
-		this.fieldsDatiGenerali.setRendered(true);
-		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
-		this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
-		
-		this.fieldsDatiGenerali.addField(this.nomeSoggettoSPC);
-		this.fieldsDatiGenerali.addField(this.idIntermediarioPA);
-		
-		this.connettore = new ConnettoreBean();
-		this.connettore.setConnettorePdd(true); 
+
+		try {
+			this.nomeSoggettoSPC = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.nomeSoggettoSPC.setLabel(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.nomeSoggettoSPC"));
+			this.nomeSoggettoSPC.setName("nomeSoggettoSPC");
+
+			this.idIntermediarioPA = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.idIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.idIntermediarioPA"));
+			this.idIntermediarioPA.setName("idIntermediarioPA");
+
+			this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+			this.fieldsDatiGenerali.setId("datiGenerali");
+			this.fieldsDatiGenerali.setColumns(2);
+			this.fieldsDatiGenerali.setRendered(true);
+			this.fieldsDatiGenerali.setStyleClass("beanTable"); 
+			this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
+
+			this.fieldsDatiGenerali.addField(this.nomeSoggettoSPC);
+			this.fieldsDatiGenerali.addField(this.idIntermediarioPA);
+
+			this.connettore = new ConnettoreBean();
+			this.connettore.setConnettorePdd(true); 
+		} catch (FactoryException e) {
+		}
 	}
-	
+
 	@Override
 	public void setDTO(IntermediarioModel dto) {
 		super.setDTO(dto);
-		
+
 		this.idIntermediarioPA.setValue(this.getDTO().getIdIntermediarioPA());
 		this.nomeSoggettoSPC.setValue(this.getDTO().getNomeSoggettoSPC());
 		//this.password.setValue(this.getDTO().getPassword());
@@ -84,22 +84,22 @@ public class IntermediarioNdpBean extends BaseBean<IntermediarioModel, String>  
 		this.fieldsDatiGenerali = fieldsDatiGenerali;
 	}
 
-	public OutputField<String> getNomeSoggettoSPC() {
+	public Text getNomeSoggettoSPC() {
 		return nomeSoggettoSPC;
 	}
 
 
-	public void setNomeSoggettoSPC(OutputField<String> nomeSoggettoSPC) {
+	public void setNomeSoggettoSPC(Text nomeSoggettoSPC) {
 		this.nomeSoggettoSPC = nomeSoggettoSPC;
 	}
 
 
-	public OutputField<String> getIdIntermediarioPA() {
+	public Text getIdIntermediarioPA() {
 		return idIntermediarioPA;
 	}
 
 
-	public void setIdIntermediarioPA(OutputField<String> idIntermediarioPA) {
+	public void setIdIntermediarioPA(Text idIntermediarioPA) {
 		this.idIntermediarioPA = idIntermediarioPA;
 	}
 
@@ -123,7 +123,7 @@ public class IntermediarioNdpBean extends BaseBean<IntermediarioModel, String>  
 	}
 
 
- 
-	
-	
+
+
+
 }

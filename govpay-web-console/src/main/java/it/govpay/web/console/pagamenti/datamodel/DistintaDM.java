@@ -21,7 +21,9 @@
  */
 package it.govpay.web.console.pagamenti.datamodel;
 
+import it.govpay.ejb.core.model.DistintaModel;
 import it.govpay.web.console.pagamenti.bean.DistintaBean;
+import it.govpay.web.console.pagamenti.form.DistintaSearchForm;
 import it.govpay.web.console.pagamenti.iservice.IDistintaService;
 
 import java.io.IOException;
@@ -39,10 +41,10 @@ import org.ajax4jsf.model.Range;
 import org.ajax4jsf.model.SequenceRange;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.datamodel.BaseDataModel;
+import org.openspcoop2.generic_project.web.impl.jsf1.datamodel.ParameterizedDataModel;
 
 @Named("distintaDM") @RequestScoped
-public class DistintaDM  extends BaseDataModel<Long, DistintaBean, IDistintaService>{ 
+public class DistintaDM  extends ParameterizedDataModel<Long, DistintaBean, IDistintaService,DistintaModel,DistintaSearchForm>{ 
 	/**
 	 * 
 	 */

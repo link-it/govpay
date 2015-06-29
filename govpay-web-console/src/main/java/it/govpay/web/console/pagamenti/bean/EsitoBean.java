@@ -24,93 +24,95 @@ package it.govpay.web.console.pagamenti.bean;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.Costanti;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.OutputNumber;
+import org.openspcoop2.generic_project.web.output.Text;
+
 import it.govpay.rs.DatiSingoloPagamento;
 import it.govpay.rs.VerificaPagamento;
+import it.govpay.web.console.utils.Utils;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputNumber;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
-
-public class EsitoBean extends BaseBean<VerificaPagamento, String>{
+public class EsitoBean extends BaseBean<VerificaPagamento, String> implements IBean<VerificaPagamento, String>{ 
 
 
-	private OutputField<String> statoPagamento = null;
-	private OutputField<Number> importoPagato = null;
-	private OutputField<String> identificativoBeneficiario = null;
-	private OutputField<String> urlPagamento = null;
-	private OutputField<String> iuv = null;
-	
+	private Text statoPagamento = null;
+	private OutputNumber importoPagato = null;
+	private Text identificativoBeneficiario = null;
+	private Text urlPagamento = null;
+	private Text iuv = null;
+
 	// Gruppo Informazioni Dati Genareli
-	private OutputGroup fieldsDatiGenerali = new OutputGroup();
-	
+	private OutputGroup fieldsDatiGenerali = null;
+
 	private List<SingoloVersamentoBean> listaVersamenti = null;
-	
+
 	public EsitoBean(){
-		
-		
-		
-		this.iuv = new OutputText();
-		this.iuv.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.iuv"));
-		this.iuv.setName("iuv");
+		try {
+			this.iuv = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.iuv.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.iuv"));
+			this.iuv.setName("iuv");
 
-		this.identificativoBeneficiario = new OutputText();
-		this.identificativoBeneficiario.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.identificativoBeneficiario"));
-		this.identificativoBeneficiario.setName("identificativoBeneficiario");
+			this.identificativoBeneficiario = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.identificativoBeneficiario.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.identificativoBeneficiario"));
+			this.identificativoBeneficiario.setName("identificativoBeneficiario");
 
-		this.statoPagamento = new OutputText();
-		this.statoPagamento.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.statoPagamento"));
-		this.statoPagamento.setName("statoPagamento");
+			this.statoPagamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.statoPagamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.statoPagamento"));
+			this.statoPagamento.setName("statoPagamento");
 
-		this.urlPagamento = new OutputText();
-		this.urlPagamento.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.urlPagamento"));
-		this.urlPagamento.setName("urlPagamento");
+			this.urlPagamento = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+			this.urlPagamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.urlPagamento"));
+			this.urlPagamento.setName("urlPagamento");
 
-		this.importoPagato = new OutputNumber<Double>();
-		this.importoPagato.setType("valuta"); 
-		this.importoPagato.setLabel(Utils.getMessageFromResourceBundle("distinta.pagamento.importoPagato"));
-		this.importoPagato.setName("importoPagato");
-		((OutputNumber<Number>)this.importoPagato).setConverterType(OutputNumber.CONVERT_TYPE_CURRENCY);
-		((OutputNumber<Number>)this.importoPagato).setCurrencySymbol(OutputNumber.CURRENCY_SYMBOL_EURO);
-		
-		this.listaVersamenti  = new ArrayList<SingoloVersamentoBean>();
-		
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("esitoDatiGenerali");
-		this.fieldsDatiGenerali.setColumns(2);
-		this.fieldsDatiGenerali.setRendered(true);
-		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
-		this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
-		
-		this.fieldsDatiGenerali.addField(this.statoPagamento);
-		this.fieldsDatiGenerali.addField(this.iuv);
-		this.fieldsDatiGenerali.addField(this.identificativoBeneficiario);
-		this.fieldsDatiGenerali.addField(this.importoPagato);
-		this.fieldsDatiGenerali.addField(this.urlPagamento);
+			this.importoPagato =this.getWebGenericProjectFactory().getOutputFieldFactory().createNumber();
+			this.importoPagato.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.pagamento.importoPagato"));
+			this.importoPagato.setName("importoPagato");
+			this.importoPagato.setConverterType(Costanti.CONVERT_TYPE_CURRENCY);
+			this.importoPagato.setCurrencySymbol(Costanti.CURRENCY_SYMBOL_EURO);
+
+			this.listaVersamenti  = new ArrayList<SingoloVersamentoBean>();
+
+			this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+			this.fieldsDatiGenerali.setId ("esitoDatiGenerali");
+			this.fieldsDatiGenerali.setColumns(2);
+			this.fieldsDatiGenerali.setRendered(true);
+			this.fieldsDatiGenerali.setStyleClass("beanTable"); 
+			this.fieldsDatiGenerali.setColumnClasses("labelAllineataDx,valueAllineataSx");
+
+			this.fieldsDatiGenerali.addField(this.statoPagamento);
+			this.fieldsDatiGenerali.addField(this.iuv);
+			this.fieldsDatiGenerali.addField(this.identificativoBeneficiario);
+			this.fieldsDatiGenerali.addField(this.importoPagato);
+			this.fieldsDatiGenerali.addField(this.urlPagamento);
+		} catch (FactoryException e) {
+		}
+
 	}
-	
-	
+
+
 	@Override
 	public void setDTO(VerificaPagamento dto) {
 		super.setDTO(dto);
-		
-		 this.statoPagamento.setValue(this.getDTO().getStatoPagamento().toString());
-		 this.importoPagato.setValue(this.getDTO().getImportoTotalePagato());
-		 this.identificativoBeneficiario.setValue(this.getDTO().getIdentificativoBeneficiario());
-		 this.urlPagamento.setValue(this.getDTO().getUrlPagamento());
-		 this.iuv.setValue(this.getDTO().getIuv()); 
-		 
-		 if(this.getDTO().getDatiSingoloPagamentos() != null && this.getDTO().getDatiSingoloPagamentos().size() > 0){
-			 for (DatiSingoloPagamento singVers : this.getDTO().getDatiSingoloPagamentos()) {
-				 SingoloVersamentoBean bean = new SingoloVersamentoBean();
-				 bean.setDTO(singVers);
-				 
-				 this.listaVersamenti.add(bean);
-				
+
+		this.statoPagamento.setValue(this.getDTO().getStatoPagamento().toString());
+		this.importoPagato.setValue(this.getDTO().getImportoTotalePagato());
+		this.identificativoBeneficiario.setValue(this.getDTO().getIdentificativoBeneficiario());
+		this.urlPagamento.setValue(this.getDTO().getUrlPagamento());
+		this.iuv.setValue(this.getDTO().getIuv()); 
+
+		if(this.getDTO().getDatiSingoloPagamentos() != null && this.getDTO().getDatiSingoloPagamentos().size() > 0){
+			for (DatiSingoloPagamento singVers : this.getDTO().getDatiSingoloPagamentos()) {
+				SingoloVersamentoBean bean = new SingoloVersamentoBean();
+				bean.setDTO(singVers);
+
+				this.listaVersamenti.add(bean);
+
 			}
-		 }
+		}
 	}
 
 	public OutputGroup getFieldsDatiGenerali() {
@@ -122,53 +124,53 @@ public class EsitoBean extends BaseBean<VerificaPagamento, String>{
 	}
 
 
-	public OutputField<String> getStatoPagamento() {
+	public Text getStatoPagamento() {
 		return statoPagamento;
 	}
 
 
-	public void setStatoPagamento(OutputField<String> statoPagamento) {
+	public void setStatoPagamento(Text statoPagamento) {
 		this.statoPagamento = statoPagamento;
 	}
 
 
-	public OutputField<Number> getImportoPagato() {
+	public OutputNumber getImportoPagato() {
 		return importoPagato;
 	}
 
 
-	public void setImportoPagato(OutputField<Number> importoPagato) {
+	public void setImportoPagato(OutputNumber importoPagato) {
 		this.importoPagato = importoPagato;
 	}
 
 
-	public OutputField<String> getIdentificativoBeneficiario() {
+	public Text getIdentificativoBeneficiario() {
 		return identificativoBeneficiario;
 	}
 
 
 	public void setIdentificativoBeneficiario(
-			OutputField<String> identificativoBeneficiario) {
+			Text identificativoBeneficiario) {
 		this.identificativoBeneficiario = identificativoBeneficiario;
 	}
 
 
-	public OutputField<String> getUrlPagamento() {
+	public Text getUrlPagamento() {
 		return urlPagamento;
 	}
 
 
-	public void setUrlPagamento(OutputField<String> urlPagamento) {
+	public void setUrlPagamento(Text urlPagamento) {
 		this.urlPagamento = urlPagamento;
 	}
 
 
-	public OutputField<String> getIuv() {
+	public Text getIuv() {
 		return iuv;
 	}
 
 
-	public void setIuv(OutputField<String> iuv) {
+	public void setIuv(Text iuv) {
 		this.iuv = iuv;
 	}
 
@@ -181,8 +183,14 @@ public class EsitoBean extends BaseBean<VerificaPagamento, String>{
 	public void setListaVersamenti(List<SingoloVersamentoBean> listaVersamenti) {
 		this.listaVersamenti = listaVersamenti;
 	}
-	
-	
-	
-	
+
+
+	@Override
+	public String getId() {
+		return		this.getDTO().getIuv();
+	}
+
+
+
+
 }

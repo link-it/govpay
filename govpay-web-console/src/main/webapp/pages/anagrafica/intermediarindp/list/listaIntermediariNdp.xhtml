@@ -46,7 +46,7 @@
 
 					<a4j:outputPanel id="panelContainer" ajaxRendered="false">
 						<h:form>
-						<input type="hidden" name="h_selIntId" value="#{intNdpMBean.selectedId}" /> 
+						<input type="hidden" name="h_selIntId" value="#{intNdpMBean.selectedIdIntNdp}" /> 
 
 							<a4j:outputPanel id="tabelPanel1" layout="block">
 								<c:set var="intNdpMetadata" value="#{intNdpMBean.metadata}" />
@@ -78,7 +78,7 @@
 										reRender="mainct,menuct" ajaxSingle="true">
 										<a4j:actionparam name="selectedId"
 											value="#{item.idIntermediarioPA.value}"
-											assignTo="#{intNdpMBean.selectedId}" />
+											assignTo="#{intNdpMBean.selectedIdIntNdp}" />
 										<h:graphicImage value="/images/magnifier.png" width="16"
 											height="16" title="#{msg['commons.button.dettaglioTitle']}" />
 									</a4j:commandLink>
@@ -101,7 +101,7 @@
 		<br />
 		<rich:panel id="dettaglioPanel1" style="padding:0"
 			headerClass="outpanelHeader" styleClass="noborder"
-			rendered="#{not empty intNdpMBean.selectedId and intNdpMBean.showForm == false}">
+			rendered="#{not empty intNdpMBean.selectedIdIntNdp and intNdpMBean.showForm == false}">
 
 			<!-- Messaggio Idp -->
 			<h:panelGrid id="panelDettaglio2"
@@ -244,7 +244,7 @@
 			<rich:layoutPanel  position="right" width="50%">
 
 					<rich:panel styleClass="noborder">
-						<a4j:outputPanel id="panelContainerStazioni" ajaxRendered="false" rendered="#{not empty intNdpMBean.selectedId and intNdpMBean.showForm == false}">
+						<a4j:outputPanel id="panelContainerStazioni" ajaxRendered="false" rendered="#{not empty intNdpMBean.selectedIdIntNdp and intNdpMBean.showForm == false}">
 							<h:form>
 								<a4j:outputPanel id="tabelPanelStazioni1" layout="block">
 
@@ -298,7 +298,7 @@
 				<br />
 				<rich:panel id="dettaglioPanelStazioni1" style="padding:0"
 					headerClass="outpanelHeader" styleClass="noborder"
-					rendered="#{not empty intNdpMBean.selectedId and not empty stazioneMBean.selectedId and stazioneMBean.showForm == false}">
+					rendered="#{not empty intNdpMBean.selectedIdIntNdp and not empty stazioneMBean.selectedId and stazioneMBean.showForm == false}">
 					
 						<h:panelGrid id="panelDettaglioStazioni2"
 						columnClasses="gridContent verticalAlignTop" columns="1"
@@ -330,7 +330,7 @@
 					
 					<!-- Form Inserimento dati -->
 				<op2web:form formBean="#{stazioneMBean.form}"
-					rendered="#{not empty intNdpMBean.selectedId and stazioneMBean.showForm  == true}">
+					rendered="#{not empty intNdpMBean.selectedIdIntNdp and stazioneMBean.showForm  == true}">
 					<p class="legend">
 						<strong>#{msg['commons.label.note']}</strong> (<em>*</em>)
 						#{msg['commons.label.campiObbligatori']}

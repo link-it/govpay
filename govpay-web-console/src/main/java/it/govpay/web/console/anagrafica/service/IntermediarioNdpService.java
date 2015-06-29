@@ -113,14 +113,10 @@ public class IntermediarioNdpService extends BaseService<IntermediarioNdpSearchF
 
 	@Override
 	public void deleteById(Long key) throws ServiceException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void delete(IntermediarioNdpBean obj) throws ServiceException {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -142,7 +138,6 @@ public class IntermediarioNdpService extends BaseService<IntermediarioNdpSearchF
 
 	@Override
 	public IntermediarioNdpBean findById(Long key) throws ServiceException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -266,6 +261,11 @@ public class IntermediarioNdpService extends BaseService<IntermediarioNdpSearchF
 			log.error("Si e' verificato un errore durante il salvataggio della stazione: "+ e.getMessage(), e);
 			throw new ServiceException(e);
 		}
+	}
+
+	@Override
+	public boolean exists(IntermediarioNdpBean arg0) throws ServiceException {
+		return false;
 	}
 
 }

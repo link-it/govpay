@@ -40,7 +40,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.mbean.LoginBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.LoginBean;
 
 /***
  * 

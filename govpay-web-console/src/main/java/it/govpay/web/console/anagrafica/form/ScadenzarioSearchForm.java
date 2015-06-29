@@ -28,63 +28,67 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
-import org.openspcoop2.generic_project.web.form.BaseSearchForm;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.form.SearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.input.Text;
 
 
 @Named("scadenzarioSearchForm") @SessionScoped
-public class ScadenzarioSearchForm  extends BaseSearchForm implements Serializable{
+public class ScadenzarioSearchForm  extends BaseSearchForm implements SearchForm,Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private FormField<String> idIntermediario = null;
-	private FormField<String> idStazioneIntermediario = null;
-	private FormField<String> idEnte = null;
-	private FormField<String> nome = null;
+	private Text idIntermediario = null;
+	private Text idStazioneIntermediario = null;
+	private Text idEnte = null;
+	private Text nome = null;
 	
 	public ScadenzarioSearchForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 	
 	@Override
-	protected void init() {
+	public void init() throws FactoryException {
 		// Properties del form
-		this.setIdForm("searchScadenzariForm");
+		this.setId("searchScadenzariForm");
 		this.setNomeForm("Ricerca Scadenzari Nodo dei pagamenti");
 		this.setClosable(false);
 		
-		this.nome = new TextField();
-		this.nome.setLabel(Utils.getMessageFromResourceBundle("scadenzario.nome"));
+		this.nome = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.nome.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.nome"));
 		this.nome.setName("nome");
 		this.nome.setValue(null);
 		
-		this.idIntermediario = new TextField();
-		this.idIntermediario.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idIntermediario"));
+		this.idIntermediario = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.idIntermediario.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idIntermediario"));
 		this.idIntermediario.setName("idIntermediario");
 		this.idIntermediario.setValue(null);
 		
-		this.idStazioneIntermediario = new TextField();
-		this.idStazioneIntermediario.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idStazioneIntermediario"));
+		this.idStazioneIntermediario = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.idStazioneIntermediario.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idStazioneIntermediario"));
 		this.idStazioneIntermediario.setName("idStazioneIntermediario");
 		this.idStazioneIntermediario.setValue(null);
 		
-		this.idEnte = new TextField();
-		this.idEnte.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idEnte"));
+		this.idEnte = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.idEnte.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idEnte"));
 		this.idEnte.setName("idEnte");
 		this.idEnte.setValue(null);
 	 
 		resetParametriPaginazione();
 	}
 
-	public FormField<String> getIdEnte() {
+	public Text getIdEnte() {
 		return idEnte;
 	}
 
-	public void setIdEnte(FormField<String> idEnte) {
+	public void setIdEnte(Text idEnte) {
 		this.idEnte = idEnte;
 	}
 
@@ -93,27 +97,27 @@ public class ScadenzarioSearchForm  extends BaseSearchForm implements Serializab
 		resetParametriPaginazione();
 	}
 
-	public FormField<String> getIdIntermediario() {
+	public Text getIdIntermediario() {
 		return idIntermediario;
 	}
 
-	public void setIdIntermediario(FormField<String> idIntermediario) {
+	public void setIdIntermediario(Text idIntermediario) {
 		this.idIntermediario = idIntermediario;
 	}
 
-	public FormField<String> getIdStazioneIntermediario() {
+	public Text getIdStazioneIntermediario() {
 		return idStazioneIntermediario;
 	}
 
-	public void setIdStazioneIntermediario(FormField<String> idStazioneIntermediario) {
+	public void setIdStazioneIntermediario(Text idStazioneIntermediario) {
 		this.idStazioneIntermediario = idStazioneIntermediario;
 	}
 
-	public FormField<String> getNome() {
+	public Text getNome() {
 		return nome;
 	}
 
-	public void setNome(FormField<String> nome) {
+	public void setNome(Text nome) {
 		this.nome = nome;
 	}
 	

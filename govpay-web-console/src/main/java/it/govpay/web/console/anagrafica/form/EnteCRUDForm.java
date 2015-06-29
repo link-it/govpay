@@ -24,6 +24,7 @@ package it.govpay.web.console.anagrafica.form;
 import it.govpay.ejb.core.model.EnteCreditoreModel;
 import it.govpay.ejb.core.model.EnteCreditoreModel.EnumStato;
 import it.govpay.web.console.anagrafica.bean.EnteBean;
+import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
 import java.util.regex.Matcher;
@@ -33,15 +34,15 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseForm;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.BooleanField;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.form.Form;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseForm;
+import org.openspcoop2.generic_project.web.input.BooleanCheckBox;
+import org.openspcoop2.generic_project.web.input.Text;
 
 @Named("enteForm")
-public class EnteCRUDForm extends BaseForm implements Serializable{
+public class EnteCRUDForm extends BaseForm implements Form,Serializable{
 
 
 	/**
@@ -49,18 +50,18 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L; 
 
-	private FormField<String> idEnteCreditore; 
-	private FormField<String> identificativoUnivoco;
-	private FormField<String> idFiscale; 
-	private FormField<String> denominazione; 
-	private FormField<String> indirizzo;
-	private FormField<String> civico;
-	private FormField<String> localita;
-	private FormField<String> cap;
-	private FormField<String> provincia;
-	private FormField<String> idDominio;
-	private BooleanField abilitaNodoPagamento;
-	private BooleanField stato;
+	private Text idEnteCreditore; 
+	private Text identificativoUnivoco;
+	private Text idFiscale; 
+	private Text denominazione; 
+	private Text indirizzo;
+	private Text civico;
+	private Text localita;
+	private Text cap;
+	private Text provincia;
+	private Text idDominio;
+	private BooleanCheckBox abilitaNodoPagamento;
+	private BooleanCheckBox stato;
 	
 	public static final String PROVINCIA_PATTERN = "[a-zA-Z]{2}";
 	public static final String CAP_PATTERN = "[0-9]{5}";
@@ -70,7 +71,10 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 
 
 	public EnteCRUDForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
 	/**
@@ -127,88 +131,88 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 	}
 
 	@Override
-	protected void init() {
+	public void init() throws FactoryException{
 		
 		this.provinciaPattern = Pattern.compile(PROVINCIA_PATTERN);
 		this.capPattern = Pattern.compile(CAP_PATTERN);
 
 		this.setClosable(false);
-		this.setIdForm("formEnte");
+		this.setId("formEnte");
 		this.setNomeForm(null); 
 
-		this.idEnteCreditore = new TextField();
+		this.idEnteCreditore = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idEnteCreditore.setRequired(true);
-		this.idEnteCreditore.setLabel(Utils.getMessageFromResourceBundle("ente.idEnteCreditore"));
+		this.idEnteCreditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.idEnteCreditore"));
 		this.idEnteCreditore.setName("idEnteCreditore");
 		this.idEnteCreditore.setValue(null);
 
-		this.identificativoUnivoco = new TextField();
+		this.identificativoUnivoco = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.identificativoUnivoco.setRequired(true);
-		this.identificativoUnivoco.setLabel(Utils.getMessageFromResourceBundle("ente.identificativoUnivoco"));
+		this.identificativoUnivoco.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.identificativoUnivoco"));
 		this.identificativoUnivoco.setName("identificativoUnivoco");
 		this.identificativoUnivoco.setValue(null);
 
-		this.idFiscale = new TextField();
+		this.idFiscale = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idFiscale.setRequired(true);
-		this.idFiscale.setLabel(Utils.getMessageFromResourceBundle("ente.idFiscale"));
+		this.idFiscale.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.idFiscale"));
 		this.idFiscale.setName("idFiscale");
 		this.idFiscale.setValue(null);
 
-		this.denominazione = new TextField();
+		this.denominazione = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.denominazione.setRequired(true);
-		this.denominazione.setLabel(Utils.getMessageFromResourceBundle("ente.denominazione"));
+		this.denominazione.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.denominazione"));
 		this.denominazione.setName("denominazione");
 		this.denominazione.setValue(null);
 
-		this.indirizzo = new TextField();
+		this.indirizzo = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.indirizzo.setRequired(false);
-		this.indirizzo.setLabel(Utils.getMessageFromResourceBundle("ente.indirizzo"));
+		this.indirizzo.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.indirizzo"));
 		this.indirizzo.setName("indirizzo");
 		this.indirizzo.setValue(null);
 		
-		this.civico = new TextField();
+		this.civico = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.civico.setRequired(false);
-		this.civico.setLabel(Utils.getMessageFromResourceBundle("ente.civico"));
+		this.civico.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.civico"));
 		this.civico.setName("civico");
 		this.civico.setValue(null);
 
-		this.localita = new TextField();
+		this.localita = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.localita.setRequired(false);
-		this.localita.setLabel(Utils.getMessageFromResourceBundle("ente.localita"));
+		this.localita.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.localita"));
 		this.localita.setName("localita");
 		this.localita.setValue(null);
 		
-		this.cap = new TextField();
+		this.cap = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.cap.setRequired(false);
-		this.cap.setLabel(Utils.getMessageFromResourceBundle("ente.cap"));
+		this.cap.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.cap"));
 		this.cap.setName("cap");
 		this.cap.setValue(null);
 
 
-		this.provincia = new TextField();
+		this.provincia = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.provincia.setRequired(false);
-		this.provincia.setLabel(Utils.getMessageFromResourceBundle("ente.provincia"));
+		this.provincia.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.provincia"));
 		this.provincia.setName("provincia");
 		this.provincia.setValue(null);
 
-		this.stato = new BooleanField();
+		this.stato = this.getWebGenericProjectFactory().getInputFieldFactory().createBooleanCheckBox();
 		this.stato.setRequired(false);
-		this.stato.setLabel(Utils.getMessageFromResourceBundle("ente.attivo"));
+		this.stato.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.attivo"));
 		this.stato.setName("statoEnte");
 		this.stato.setValue(null);
 
-		this.abilitaNodoPagamento = new BooleanField();
+		this.abilitaNodoPagamento = this.getWebGenericProjectFactory().getInputFieldFactory().createBooleanCheckBox();
 		this.abilitaNodoPagamento.setRequired(false);
-		this.abilitaNodoPagamento.setLabel(Utils.getMessageFromResourceBundle("ente.abilitaNodoPagamento"));
+		this.abilitaNodoPagamento.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.abilitaNodoPagamento"));
 		this.abilitaNodoPagamento.setName("abilitaNodoPagamento");
 		this.abilitaNodoPagamento.setValue(null);
-//		this.abilitaNodoPagamento.setFieldsToUpdate(this.getIdForm() + "_formPnl");
+//		this.abilitaNodoPagamento.setFieldsToUpdate(this.getId() + "_formPnl");
 //		this.abilitaNodoPagamento.setForm(this);
 		
-		this.idDominio = new TextField();
+		this.idDominio = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idDominio.setRequired(true);
 		this.idDominio.setRendered(false);
-		this.idDominio.setLabel(Utils.getMessageFromResourceBundle("ente.idDominio"));
+		this.idDominio.setLabel(Utils.getInstance().getMessageFromResourceBundle("ente.idDominio"));
 		this.idDominio.setName("idDominio");
 		this.idDominio.setValue(null);
 
@@ -233,26 +237,26 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 	public String valida(){
 //		String _value = this.idEnteCreditore.getValue();
 //		if(StringUtils.isEmpty(_value))
-//			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.idEnteCreditore.getLabel());
+//			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.idEnteCreditore.getLabel());
 
 		String _value = this.identificativoUnivoco.getValue();
 		if(StringUtils.isEmpty(_value))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.identificativoUnivoco.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.identificativoUnivoco.getLabel());
 
 		_value = this.idFiscale.getValue();
 		if(StringUtils.isEmpty(_value))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.idFiscale.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.idFiscale.getLabel());
 
 		_value = this.denominazione.getValue();
 		if(StringUtils.isEmpty(_value))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.denominazione.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.denominazione.getLabel());
 
 //		SelectItem idIntPAValue = this.idIntermediarioPA.getValue();
 //		if(idIntPAValue!= null){
 //			String _idIntPAValue = idIntPAValue.getValue();
 //
 //			if(_idIntPAValue.equals(CostantiForm.NON_SELEZIONATO))
-//				return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.idIntermediarioPA.getLabel());
+//				return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.idIntermediarioPA.getLabel());
 //		}
 		
 		_value = this.provincia.getValue();
@@ -260,7 +264,7 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 			Matcher matcher = this.provinciaPattern.matcher(_value);
 			
 			if(!matcher.matches())
-				return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO, this.provincia.getLabel());
+				return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO, this.provincia.getLabel());
 		}
 		
 		_value = this.cap.getValue();
@@ -268,12 +272,12 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 			Matcher matcher = this.capPattern.matcher(_value);
 			
 			if(!matcher.matches())
-				return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO, this.cap.getLabel());
+				return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO, this.cap.getLabel());
 			
 			// Se ho settato il CAP devo indicare anche la localita'
 			_value = this.localita.getValue();
 			if(StringUtils.isEmpty(_value))
-				return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.localita.getLabel());	
+				return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.localita.getLabel());	
 		}
 		
 		_value = this.civico.getValue();
@@ -282,7 +286,7 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 			// Se ho settato il civico devo indicare anche l'indirizzo
 			_value = this.indirizzo.getValue();
 			if(StringUtils.isEmpty(_value))
-				return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.indirizzo.getLabel());
+				return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.indirizzo.getLabel());
 		}
 		
 
@@ -312,87 +316,87 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 		return enteCreditore;
 	}
 
-	public FormField<String> getIdEnteCreditore() {
+	public Text getIdEnteCreditore() {
 		return this.idEnteCreditore;
 	}
 
-	public void setIdEnteCreditore(FormField<String> idEnteCreditore) {
+	public void setIdEnteCreditore(Text idEnteCreditore) {
 		this.idEnteCreditore = idEnteCreditore;
 	}
 
-	public FormField<String> getIdentificativoUnivoco() {
+	public Text getIdentificativoUnivoco() {
 		return this.identificativoUnivoco;
 	}
 
-	public void setIdentificativoUnivoco(FormField<String> identificativoUnivoco) {
+	public void setIdentificativoUnivoco(Text identificativoUnivoco) {
 		this.identificativoUnivoco = identificativoUnivoco;
 	}
 
-	public FormField<String> getIdFiscale() {
+	public Text getIdFiscale() {
 		return this.idFiscale;
 	}
 
-	public void setIdFiscale(FormField<String> idFiscale) {
+	public void setIdFiscale(Text idFiscale) {
 		this.idFiscale = idFiscale;
 	}
 
-	public FormField<String> getDenominazione() {
+	public Text getDenominazione() {
 		return this.denominazione;
 	}
 
-	public void setDenominazione(FormField<String> denominazione) {
+	public void setDenominazione(Text denominazione) {
 		this.denominazione = denominazione;
 	}
 
-	public FormField<String> getIndirizzo() {
+	public Text getIndirizzo() {
 		return this.indirizzo;
 	}
 
-	public void setIndirizzo(FormField<String> indirizzo) {
+	public void setIndirizzo(Text indirizzo) {
 		this.indirizzo = indirizzo;
 	}
 	
-	public FormField<String> getCivico() {
+	public Text getCivico() {
 		return this.civico;
 	}
 
-	public void setCivico(FormField<String> civico) {
+	public void setCivico(Text civico) {
 		this.civico = civico;
 	}
 
-	public FormField<String> getLocalita() {
+	public Text getLocalita() {
 		return this.localita;
 	}
 
-	public void setLocalita(FormField<String> localita) {
+	public void setLocalita(Text localita) {
 		this.localita = localita;
 	}
 	
-	public FormField<String> getCap() {
+	public Text getCap() {
 		return this.cap;
 	}
 
-	public void setCap(FormField<String> cap) {
+	public void setCap(Text cap) {
 		this.cap = cap;
 	}
 
-	public FormField<String> getProvincia() {
+	public Text getProvincia() {
 		return this.provincia;
 	}
 
-	public void setProvincia(FormField<String> provincia) {
+	public void setProvincia(Text provincia) {
 		this.provincia = provincia;
 	}
 
-	public BooleanField getStato() {
+	public BooleanCheckBox getStato() {
 		return stato;
 	}
 
-	public void setStato(BooleanField stato) {
+	public void setStato(BooleanCheckBox stato) {
 		this.stato = stato;
 	}
 
-	public FormField<String> getIdDominio() {
+	public Text getIdDominio() {
 		boolean rendered = this.abilitaNodoPagamento.getValue() != null ? this.abilitaNodoPagamento.getValue().booleanValue() : false;
 		
 		this.idDominio.setRendered(rendered);
@@ -400,15 +404,15 @@ public class EnteCRUDForm extends BaseForm implements Serializable{
 		return idDominio;
 	}
 
-	public void setIdDominio(FormField<String> idDominio) {
+	public void setIdDominio(Text idDominio) {
 		this.idDominio = idDominio;
 	}
 
-	public BooleanField getAbilitaNodoPagamento() {
+	public BooleanCheckBox getAbilitaNodoPagamento() {
 		return abilitaNodoPagamento;
 	}
 
-	public void setAbilitaNodoPagamento(BooleanField abilitaNodoPagamento) {
+	public void setAbilitaNodoPagamento(BooleanCheckBox abilitaNodoPagamento) {
 		this.abilitaNodoPagamento = abilitaNodoPagamento;
 	}
 

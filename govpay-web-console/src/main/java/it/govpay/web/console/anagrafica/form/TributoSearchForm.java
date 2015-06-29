@@ -21,28 +21,30 @@
  */
 package it.govpay.web.console.anagrafica.form;
 
+import it.govpay.web.console.utils.Utils;
+
 import java.io.Serializable;
 
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseSearchForm;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.form.SearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.input.Text;
 
-public class TributoSearchForm extends BaseSearchForm implements Serializable{
+public class TributoSearchForm extends BaseSearchForm implements SearchForm,Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	private FormField<String> idEnteCreditore;
+	private Text idEnteCreditore;
 
 	@Override
-	protected void init() {
+	public void init() throws FactoryException{
 		
-		this.idEnteCreditore = new TextField();
+		this.idEnteCreditore = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idEnteCreditore.setRequired(true);
-		this.idEnteCreditore.setLabel(Utils.getMessageFromResourceBundle("tributo.idEnteCreditore"));
+		this.idEnteCreditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.idEnteCreditore"));
 		this.idEnteCreditore.setName("idEnteCreditore");
 		this.idEnteCreditore.setValue(null);
 		
@@ -57,11 +59,11 @@ public class TributoSearchForm extends BaseSearchForm implements Serializable{
 		this.idEnteCreditore.reset();
 	}
 
-	public FormField<String> getIdEnteCreditore() {
+	public Text getIdEnteCreditore() {
 		return idEnteCreditore;
 	}
 
-	public void setIdEnteCreditore(FormField<String> idEnteCreditore) {
+	public void setIdEnteCreditore(Text idEnteCreditore) {
 		this.idEnteCreditore = idEnteCreditore;
 	}
 

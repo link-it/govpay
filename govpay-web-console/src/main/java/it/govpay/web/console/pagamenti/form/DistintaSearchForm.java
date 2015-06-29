@@ -33,15 +33,16 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 
-import org.openspcoop2.generic_project.web.form.BaseSearchForm;
-import org.openspcoop2.generic_project.web.form.field.DateField;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.SelectItem;
-import org.openspcoop2.generic_project.web.form.field.SelectListField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.form.SearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem;
+import org.openspcoop2.generic_project.web.input.DateTime;
+import org.openspcoop2.generic_project.web.input.SelectList;
+import org.openspcoop2.generic_project.web.input.Text;
 
 @Named("distintaSearchForm") @SessionScoped
-public class DistintaSearchForm extends BaseSearchForm implements Serializable{
+public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Serializable{
 
 	/**
 	 * 
@@ -51,11 +52,11 @@ public class DistintaSearchForm extends BaseSearchForm implements Serializable{
 	public static final String DATA_PERIODO_ULTIMI_TRE_MESI = "2";
 	public static final String DATA_PERIODO_ULTIMO_MESE = "1";
 	public static final String DATA_PERIODO_ULTIMA_SETTIMANA = "0";
-	private FormField<SelectItem> dataPeriodo = null;
-	private FormField<Date> data = null;
-	private FormField<SelectItem> statoDistinta = null;
-	private FormField<String> cfVersanteODebitore = null;
-	private FormField<String> cfEnteCreditore = null;
+	private SelectList<SelectItem> dataPeriodo = null;
+	private DateTime data = null;
+	private SelectList<SelectItem> statoDistinta = null;
+	private Text cfVersanteODebitore = null;
+	private Text cfEnteCreditore = null;
 	
 	// lista degli id degli enti che vengono gestiti dall'operatore loggato
 	private List<String> identificativiEnteCreditore = null;
@@ -65,55 +66,57 @@ public class DistintaSearchForm extends BaseSearchForm implements Serializable{
 	public DistintaSearchForm(){
 		this.setPageSize(10);
 		
-		init();
-		
-		reset();
+		try {
+			init();
+			reset();
+		} catch (FactoryException e) {
+		}
 	}
 	
 	@Override
-	protected void init() {
+	public void init()  throws FactoryException{
 		// Properties del form
-		this.setIdForm("formDistinta");
+		this.setId("formDistinta");
 		this.setNomeForm("Ricerca Distinte Pagamento");
 		this.setClosable(true);
 		this.setRendered(true); 
 		
 		this.identificativiEnteCreditore = Utils.getListaIdFiscaliEnteCreditoreGestitiDallOperatore();
 		
-		this.dataPeriodo = new SelectListField();
+		this.dataPeriodo = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.dataPeriodo.setName("dataPeriodo");
 		this.dataPeriodo.setDefaultValue(new SelectItem(DATA_PERIODO_ULTIMI_TRE_MESI,
-				Utils.getMessageFromResourceBundle("distinta.search.data.ultimiTreMesi")));
-		this.dataPeriodo.setLabel(Utils.getMessageFromResourceBundle("distinta.search.data"));
-		this.dataPeriodo.setFieldsToUpdate(this.getIdForm() + "_formPnl");
+				Utils.getInstance().getMessageFromResourceBundle("distinta.search.data.ultimiTreMesi")));
+		this.dataPeriodo.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.data"));
+		this.dataPeriodo.setFieldsToUpdate(this.getId() + "_formPnl");
 		this.dataPeriodo.setForm(this);
 
-		this.data = new DateField();
+		this.data = this.getWebGenericProjectFactory().getInputFieldFactory().createDateTime();
 		this.data.setName("data");
 		this.data.setDefaultValue(null);
 		this.data.setDefaultValue2(null);
 		this.data.setInterval(true);
-		this.data.setLabel(Utils.getMessageFromResourceBundle("distinta.search.data.personalizzato"));
+		this.data.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.data.personalizzato"));
 		
 		_setPeriodo();
 		
-		this.cfVersanteODebitore = new TextField();
+		this.cfVersanteODebitore = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		//this.cfVersanteODebitore.setType("textWithSuggestion");
 		this.cfVersanteODebitore.setName("cfVersanteODebitore");
 		this.cfVersanteODebitore.setDefaultValue(null);
-		this.cfVersanteODebitore.setLabel(Utils.getMessageFromResourceBundle("distinta.search.cfVersanteODebitore"));
+		this.cfVersanteODebitore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.cfVersanteODebitore"));
 		//this.cfVersanteODebitore.setAutoComplete(true);
 		//	this.cfVersanteODebitore.setEnableManualInput(true);
 		//this.cfVersanteODebitore.setFieldsToUpdate(this.getIdForm() + "_formPnl");
 		//this.cfVersanteODebitore.setForm(this);
 		
-		this.statoDistinta = new SelectListField();
+		this.statoDistinta = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.statoDistinta.setName("statoDistinta");
 		this.statoDistinta.setValue(null);
-		this.statoDistinta.setLabel(Utils.getMessageFromResourceBundle("distinta.search.statoDistinta"));
+		this.statoDistinta.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.statoDistinta"));
 		
-		this.cfEnteCreditore = new TextField();
-		this.cfEnteCreditore.setLabel(Utils.getMessageFromResourceBundle("distinta.search.cfEnteCreditore"));
+		this.cfEnteCreditore = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.cfEnteCreditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.cfEnteCreditore"));
 		this.cfEnteCreditore.setName("cfEnteCreditore");
 		this.cfEnteCreditore.setDefaultValue(null);
 	}
@@ -197,15 +200,15 @@ public class DistintaSearchForm extends BaseSearchForm implements Serializable{
 		this.getData().setValue2(dataFine);
 	}
 
-	public FormField<SelectItem> getDataPeriodo() {
+	public SelectList<SelectItem> getDataPeriodo() {
 		return dataPeriodo;
 	}
 
-	public void setDataPeriodo(FormField<SelectItem> dataPeriodo) {
+	public void setDataPeriodo(SelectList<SelectItem> dataPeriodo) {
 		this.dataPeriodo = dataPeriodo;
 	}
 
-	public FormField<Date> getData() {
+	public DateTime getData() {
 		
 		boolean rendered = (this.getDataPeriodo().getValue() != null && this.getDataPeriodo().getValue().getValue()
 				.equals(DATA_PERIODO_PERSONALIZZATO)); 
@@ -215,23 +218,23 @@ public class DistintaSearchForm extends BaseSearchForm implements Serializable{
 		return data;
 	}
 
-	public void setData(FormField<Date> data) {
+	public void setData(DateTime data) {
 		this.data = data;
 	}
 
-	public FormField<SelectItem> getStatoDistinta() {
+	public SelectList<SelectItem> getStatoDistinta() {
 		return statoDistinta;
 	}
 
-	public void setStatoDistinta(FormField<SelectItem> statoDistinta) {
+	public void setStatoDistinta(SelectList<SelectItem> statoDistinta) {
 		this.statoDistinta = statoDistinta;
 	}
 
-	public FormField<String> getCfVersanteODebitore() {
+	public Text getCfVersanteODebitore() {
 		return cfVersanteODebitore;
 	}
 
-	public void setCfVersanteODebitore(FormField<String> cfVersanteODebitore) {
+	public void setCfVersanteODebitore(Text cfVersanteODebitore) {
 		this.cfVersanteODebitore = cfVersanteODebitore;
 	}
 
@@ -255,11 +258,11 @@ public class DistintaSearchForm extends BaseSearchForm implements Serializable{
 		//do something
 	}
 
-	public FormField<String> getCfEnteCreditore() {
+	public Text getCfEnteCreditore() {
 		return cfEnteCreditore;
 	}
 
-	public void setCfEnteCreditore(FormField<String> cfEnteCreditore) {
+	public void setCfEnteCreditore(Text cfEnteCreditore) {
 		this.cfEnteCreditore = cfEnteCreditore;
 	}
 

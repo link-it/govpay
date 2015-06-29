@@ -57,8 +57,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.SelectItem;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem;
+import org.openspcoop2.generic_project.web.input.DateTime;
+import org.openspcoop2.generic_project.web.input.SelectList;
 import org.openspcoop2.generic_project.web.service.BaseService;
 
 @Named("distintaService") @Singleton
@@ -320,7 +321,7 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 		log.debug("IDEnteCreditore["+form.getIdentificativiEnteCreditore()+"]");
 
 		// stato
-		FormField<SelectItem> stato = form.getStatoDistinta();
+		SelectList<SelectItem> stato = form.getStatoDistinta();
 		String periodo = stato.getValue() != null ? stato.getValue().getValue() : CostantiForm.NON_SELEZIONATO;
 
 		if(!StringUtils.isEmpty(periodo) && !periodo.equals(CostantiForm.NON_SELEZIONATO)){
@@ -333,8 +334,8 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 
 
 	private void impostaDate(DistintaSearchForm form,DistintaFilter filtro) {
-		FormField<SelectItem> dataPeriodo = form.getDataPeriodo();
-		FormField<Date> data = form.getData();
+		SelectList<SelectItem> dataPeriodo = form.getDataPeriodo();
+		DateTime data = form.getData();
 
 		Date dataInizio = data.getValue();
 		Date dataFine = data.getValue2();
@@ -395,6 +396,11 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 			log.debug("Data Fine["+dataFine+"]");
 			filtro.setDataFine(dataFine);
 		}
+	}
+
+	@Override
+	public boolean exists(DistintaBean arg0) throws ServiceException {
+		return false;
 	}
 
 

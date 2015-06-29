@@ -47,28 +47,21 @@ import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.core.MessageUtils;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.BaseListView;
+import org.openspcoop2.generic_project.web.impl.jsf1.utils.MessageUtils;
 import org.openspcoop2.generic_project.web.iservice.IBaseService;
-import org.openspcoop2.generic_project.web.mbean.BaseMBean;
 
 @Named("enteMBean")  @ConversationScoped
-public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> implements Serializable{
+public class EnteMBean extends BaseListView<EnteBean, Long, EnteSearchForm,EnteCRUDForm,EnteCreditoreModel> implements Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Inject  
-	private transient Logger log;
-
 	//	private OperatoreModel loggedUtente = null;
-
-	@Inject @Named("enteForm")
-	private EnteCRUDForm form = null;
 
 	@Inject @Named("intNdpService")
 	private IIntermediarioNdpService intNdpService;
@@ -78,7 +71,7 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 
 	private boolean showForm = false;
 
-	private String selectedId = null;
+	private String selectedIdEnte = null;
 
 	private ScadenzarioMBean scadenzarioMBean = null;
 
@@ -90,15 +83,20 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 	private String azione = null;
 
 	private List<SelectItem> listaStati;
+	
+	public EnteMBean(){
+		super(org.apache.log4j.Logger.getLogger(EnteMBean.class));
+	}
 
 	@PostConstruct
 	private void _EnteMBean(){
+		
 		this.log.debug("Init EnteMBean completato."); 
 
 		//		this.loggedUtente = Utils.getLoggedUtente();
 
 		this.scadenzarioMBean = new ScadenzarioMBean();
-		this.scadenzarioMBean.setLog(this.log);
+	//	this.scadenzarioMBean.setLog(this.log);
 		this.scadenzarioMBean.setService(this.scadenzarioService);
 		this.scadenzarioMBean.setEnteService((IEnteService) this.service);
 		this.scadenzarioMBean.setNdpService(this.intNdpService); 
@@ -108,6 +106,7 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 		this.showForm = false;
 		this.azione = null;
 		this.selectedId = null;
+		this.selectedIdEnte = null;
 		this.form.setRendered(this.showForm);
 
 	}
@@ -128,12 +127,14 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 	@Override
 	public void setSelectedElement(EnteBean selectedElement) {
 		super.setSelectedElement(selectedElement);
-
 		this.showForm = false;
 		this.form.setRendered(this.showForm);
 		this.azione = null;
-
-
+	}
+	
+	@Override @Inject @Named("enteForm")
+	public void setForm(EnteCRUDForm form) {
+		this.form = form;
 	}
 
 	public String menuAction(){
@@ -143,6 +144,7 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 		this.showForm = false;
 		this.azione = null;
 		this.selectedId = null;
+		this.selectedIdEnte = null;
 		this.setSelectedElement(null); 
 		this.form.setRendered(this.showForm);
 
@@ -163,7 +165,7 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 		String msg = this.form.valida();
 
 		if(msg!= null){
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("ente.form.erroreValidazione")+": " + msg);
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("ente.form.erroreValidazione")+": " + msg);
 			return null;
 		}
 
@@ -177,8 +179,8 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 				EnteBean oldInt = ((IEnteService) this.service).findByIdFiscale(this.form.getIdFiscale().getValue());
 
 				if(oldInt!= null){
-					MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("ente.form.erroreValidazione") +
-							": " +Utils.getMessageWithParamsFromResourceBundle("ente.form.enteEsistente",this.form.getIdEnteCreditore().getValue()));
+					MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("ente.form.erroreValidazione") +
+							": " +Utils.getInstance().getMessageWithParamsFromResourceBundle("ente.form.enteEsistente",this.form.getIdEnteCreditore().getValue()));
 					return null;
 				}
 
@@ -205,14 +207,14 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 			bean.setDTO(newEnte);
 
 			((IEnteService)this.service).store(oldId,bean, dominioEnte);
-			MessageUtils.addInfoMsg(Utils.getMessageFromResourceBundle("ente.form.salvataggioOk"));
-			this.setSelectedId(bean.getIdEnteCreditore().getValue()); 
+			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("ente.form.salvataggioOk"));
+			this.setSelectedIdEnte(bean.getIdEnteCreditore().getValue()); 
 			this.setSelectedElement(bean);
 
 			//			return null;//"invia";
 		}catch(Exception e){
 			log.error("Si e' verificato un errore durante il salvataggio dell'ente: " + e.getMessage(), e);
-			MessageUtils.addErrorMsg(Utils.getMessageFromResourceBundle("ente.form.erroreGenerico"));
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("ente.form.erroreGenerico"));
 			return null;
 		}
 		return "listaEnti?faces-redirect=true";
@@ -262,6 +264,7 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 		super.addNewListener(ae);
 		this.selectedElement = null;
 		this.selectedId = null;
+		this.selectedIdEnte = null;
 		this.azione = "add";
 		this.showForm = true;
 		this.form.setRendered(this.showForm);
@@ -294,14 +297,14 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 
 
 
-	public String getSelectedId() {
-		return selectedId;
+	public String getSelectedIdEnte() {
+		return selectedIdEnte;
 	}
 
-	public void setSelectedId(String selectedId) {
-		this.selectedId = selectedId;
+	public void setSelectedIdEnte(String selectedId) {
+		this.selectedIdEnte = selectedId;
 
-		if(this.selectedId != null){
+		if(this.selectedIdEnte != null){
 			try {
 				EnteBean findById = ((IEnteService)this.service).findById(selectedId);
 				this.setSelectedElement(findById);
@@ -341,22 +344,14 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 		return "listaEnti?faces-redirect=true";
 	}
 
-	public EnteCRUDForm getForm() {
-		return form;
-	}
-
-	public void setForm(EnteCRUDForm form) {
-		this.form = form;
-	}
-
 	public List<SelectItem> getListaStati(){
 		if(this.listaStati == null){
 			this.listaStati = new ArrayList<SelectItem>();
 			this.listaStati.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStato.A.name(),
-							org.openspcoop2.generic_project.web.core.Utils.getMessageFromResourceBundle("commons.label.attivo"))));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStato.A.name(),
+							 Utils.getInstance().getMessageFromResourceBundle("commons.label.attivo"))));
 			this.listaStati.add(new SelectItem(
-					new org.openspcoop2.generic_project.web.form.field.SelectItem(EnumStato.D.name(),org.openspcoop2.generic_project.web.core.Utils.getMessageFromResourceBundle("commons.label.nonAttivo"))));
+					new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(EnumStato.D.name(), Utils.getInstance().getMessageFromResourceBundle("commons.label.nonAttivo"))));
 		}
 
 		return this.listaStati;
@@ -365,7 +360,7 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 	public List<SelectItem> getListaIdIntermediari(){
 		List<SelectItem> lista = new ArrayList<SelectItem>();
 		lista.add(new SelectItem(
-				new org.openspcoop2.generic_project.web.form.field.SelectItem(
+				new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(
 						CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)));
 
 		try {
@@ -376,7 +371,7 @@ public class EnteMBean extends BaseMBean<EnteBean, Long, EnteSearchForm> impleme
 					String id = intermediarioNdpBean.getIdIntermediarioPA().getValue();
 					String label = intermediarioNdpBean.getNomeSoggettoSPC().getValue();
 					lista.add(new SelectItem(
-							new org.openspcoop2.generic_project.web.form.field.SelectItem(id,label + " (" + id + ")")));
+							new org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem(id,label + " (" + id + ")")));
 				}
 			}
 		} catch (ServiceException e) {

@@ -35,7 +35,7 @@ import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
 
-public class Utils extends org.openspcoop2.generic_project.web.core.Utils{
+public class Utils extends org.openspcoop2.generic_project.web.impl.jsf1.utils.Utils{
 
 	public static OperatoreModel getLoggedUtente() {
 		FacesContext fc = FacesContext.getCurrentInstance();

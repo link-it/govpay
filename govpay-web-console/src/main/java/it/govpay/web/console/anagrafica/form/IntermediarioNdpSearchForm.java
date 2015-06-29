@@ -31,48 +31,50 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 
-import org.openspcoop2.generic_project.web.form.BaseSearchForm;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.SelectItem;
-import org.openspcoop2.generic_project.web.form.field.TextField;
-
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.form.SearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem;
+import org.openspcoop2.generic_project.web.input.Text;
 
 @Named("intNdpSearchForm") @SessionScoped
-public class IntermediarioNdpSearchForm extends BaseSearchForm implements Serializable{
+public class IntermediarioNdpSearchForm extends BaseSearchForm implements SearchForm,Serializable{
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private FormField<String> idIntermediario = null;
+	private Text idIntermediario = null;
 
-	private FormField<String> idEnteCreditore = null;
+	private Text idEnteCreditore = null;
 
 	public IntermediarioNdpSearchForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 	
 	@Override
-	protected void init() {
+	public void init() throws FactoryException{
 
 		// Properties del form
-		this.setIdForm("formIntermediariNdp");
+		this.setId("formIntermediariNdp");
 		this.setNomeForm("Ricerca Intermediari Nodo dei pagamenti");
 		this.setClosable(false);
 
 		// Init dei FormField
-		this.idIntermediario = new TextField();
-		this.idIntermediario.setType("textWithSuggestion");
+		this.idIntermediario = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idIntermediario.setName("idIntermediario");
 		this.idIntermediario.setDefaultValue(null);
-		this.idIntermediario.setLabel(Utils.getMessageFromResourceBundle("intermediariNdp.search.idIntermediario"));
+		this.idIntermediario.setLabel(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.search.idIntermediario"));
 		this.idIntermediario.setAutoComplete(true);
 		this.idIntermediario.setEnableManualInput(true);
-		this.idIntermediario.setFieldsToUpdate(this.getIdForm() + "_formPnl");
+		this.idIntermediario.setFieldsToUpdate(this.getId() + "_formPnl");
 		this.idIntermediario.setForm(this);
 
-		this.idEnteCreditore = new TextField();
+		this.idEnteCreditore = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idEnteCreditore.setName("idEnteCreditore");
 		this.idEnteCreditore.setDefaultValue(null);
 
@@ -85,12 +87,12 @@ public class IntermediarioNdpSearchForm extends BaseSearchForm implements Serial
 		resetParametriPaginazione();
 	}
 
-	public FormField<String> getIdIntermediario() {
+	public Text getIdIntermediario() {
 		return idIntermediario;
 	}
 
 
-	public void setIdIntermediario(FormField<String> idIntermediario) {
+	public void setIdIntermediario(Text idIntermediario) {
 		this.idIntermediario = idIntermediario;
 	}
 
@@ -103,12 +105,12 @@ public class IntermediarioNdpSearchForm extends BaseSearchForm implements Serial
 	}
 
 
-	public FormField<String> getIdEnteCreditore() {
+	public Text getIdEnteCreditore() {
 		return idEnteCreditore;
 	}
 
 
-	public void setIdEnteCreditore(FormField<String> idEnteCreditore) {
+	public void setIdEnteCreditore(Text idEnteCreditore) {
 		this.idEnteCreditore = idEnteCreditore;
 	}
 

@@ -21,7 +21,9 @@
  */
 package it.govpay.web.console.anagrafica.datamodel;
 
+import it.govpay.ejb.core.model.EnteCreditoreModel;
 import it.govpay.web.console.anagrafica.bean.EnteBean;
+import it.govpay.web.console.anagrafica.form.EnteSearchForm;
 import it.govpay.web.console.anagrafica.iservice.IEnteService;
 
 import java.io.IOException;
@@ -41,10 +43,10 @@ import org.ajax4jsf.model.Range;
 import org.ajax4jsf.model.SequenceRange;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.web.datamodel.BaseDataModel;
+import org.openspcoop2.generic_project.web.impl.jsf1.datamodel.ParameterizedDataModel;
 
 @Named("enteDM") @RequestScoped 
-public class EnteDM extends BaseDataModel<Long, EnteBean, IEnteService>{
+public class EnteDM extends ParameterizedDataModel<Long, EnteBean, IEnteService, EnteCreditoreModel,EnteSearchForm>{
 
 	/**
 	 * 
@@ -153,6 +155,4 @@ public class EnteDM extends BaseDataModel<Long, EnteBean, IEnteService>{
 			return t;
 		}
 	}
-	
-
 }

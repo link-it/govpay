@@ -21,16 +21,17 @@
  */
 package it.govpay.web.console.anagrafica.form;
 
-import java.io.Serializable;
+import java.io.Serializable; 
 
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
-import org.openspcoop2.generic_project.web.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.form.SearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseSearchForm;
 
 
 @Named("stazioneSearchForm") @SessionScoped
-public class StazioneSearchForm  extends BaseSearchForm implements Serializable{
+public class StazioneSearchForm  extends BaseSearchForm implements SearchForm,Serializable{
 
 	/**
 	 * 
@@ -38,15 +39,11 @@ public class StazioneSearchForm  extends BaseSearchForm implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	protected void init() {
-		// TODO Auto-generated method stub
-		
+	public void init() {
 	}
 
 	@Override
 	public void reset() {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

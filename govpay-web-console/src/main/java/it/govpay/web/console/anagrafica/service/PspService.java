@@ -59,7 +59,7 @@ public class PspService extends BaseService<PspSearchForm> implements IPspServic
 
 	@Inject
 	AnagraficaEJB anagraficaEjb;
-	
+
 	@Inject
 	AnagraficaDominioEJB anagraficaDominioEjb;
 
@@ -96,14 +96,14 @@ public class PspService extends BaseService<PspSearchForm> implements IPspServic
 			ThreadContext.put("ccp", null);
 
 			List<GatewayPagamentoModel> listaPsp = anagraficaEjb.findAllGatewayPagamento();
-			
+
 			List<PspModel> pspModels = new ArrayList<PspModel>();
-			
+
 			if(listaPsp != null && listaPsp.size() > 0){
 				for (GatewayPagamentoModel psp : listaPsp) {
-					
+
 					PspModel newPspModel = new PspModel();
-					
+
 					CanaleModel canale = newPspModel.new CanaleModel();
 					canale.setDescrizione(psp.getDescrizione());
 					canale.setDisponibilita(psp.getDisponibilitaServizio());
@@ -114,10 +114,10 @@ public class PspService extends BaseService<PspSearchForm> implements IPspServic
 					canale.setAbilitato(psp.getStato().equals(EnumStato.ATTIVO));
 					canale.setCommissioni(psp.getImportoCommissioneMassima());
 					canale.setInformazioni(psp.getUrlInformazioniCanale());
-					
+
 					// Marker per vedere se ho aggiunto il canale ad un psp gia' presente
 					boolean added = false;
-					
+
 					for(PspModel pspModel : pspModels) {
 						if(pspModel.getRagioneSociale().equals(psp.getDescrizioneGateway())) {
 							pspModel.getTipiVersamentoGestiti().add(psp.getModalitaPagamento());
@@ -125,7 +125,7 @@ public class PspService extends BaseService<PspSearchForm> implements IPspServic
 							added = true;
 						}
 					}
-					
+
 					if(!added) {
 						// Il Psp non era in lista, lo aggiungo nuovo
 						newPspModel.setRagioneSociale(psp.getDescrizioneGateway());
@@ -136,9 +136,9 @@ public class PspService extends BaseService<PspSearchForm> implements IPspServic
 						newPspModel.setInformazioni(psp.getUrlInformazioniPsp());
 						pspModels.add(newPspModel);
 					}
-					
+
 				}
-				
+
 				for (PspModel pspModel : pspModels) {
 					PspBean bean = new PspBean();
 					bean.setDTO(pspModel);
@@ -177,10 +177,14 @@ public class PspService extends BaseService<PspSearchForm> implements IPspServic
 				List<ScadenzarioModel> scadenzari = anagraficaEjb.getScadenzari(ente.getIdEnteCreditore());
 				for(ScadenzarioModel scadenzario : scadenzari) {
 					DominioEnteModel dominioEnte = anagraficaDominioEjb.getDominioEnte(ente.getIdEnteCreditore(), scadenzario.getIdStazione());
-				
-					List<GatewayPagamentoModel> listaPspScadenzario = pspCtrl.chiediListaPsp(dominioEnte);
-					for(GatewayPagamentoModel psp : listaPspScadenzario) {
-						if(!listaPsp.contains(psp)) listaPsp.add(psp);
+
+					try{
+						List<GatewayPagamentoModel> listaPspScadenzario = pspCtrl.chiediListaPsp(dominioEnte);
+						for(GatewayPagamentoModel psp : listaPspScadenzario) {
+							if(!listaPsp.contains(psp)) listaPsp.add(psp);
+						}
+					}catch(Exception e){
+						log.error("Si e' verificato un errore durante l'aggiornamento della lista PSP per il Dominio: Ente ["+ente.getIdEnteCreditore()+"] Stazione["+scadenzario.getIdStazione()+"]: "+ e.getMessage(), e);
 					}
 				}
 			}
@@ -189,5 +193,15 @@ public class PspService extends BaseService<PspSearchForm> implements IPspServic
 			log.error("Si e' verificato un errore durante l'aggiornamento della lista PSP: "+ e.getMessage(), e);
 			throw new ServiceException(e);
 		}
+	}
+
+	@Override
+	public List<PspBean> findAll(PspSearchForm arg0) throws ServiceException {
+		return null;
+	}
+
+	@Override
+	public boolean exists(PspBean arg0) throws ServiceException {
+		return false;
 	}
 }

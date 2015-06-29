@@ -25,24 +25,24 @@ import it.govpay.web.console.pagamenti.mbean.EventiMBean;
 import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.web.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.DateField;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.SelectItem;
-import org.openspcoop2.generic_project.web.form.field.SelectListField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.form.SearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseSearchForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem;
+import org.openspcoop2.generic_project.web.input.DateTime;
+import org.openspcoop2.generic_project.web.input.SelectList;
+import org.openspcoop2.generic_project.web.input.Text;
 
 
 @Named("eventiSearchForm") @SessionScoped
-public class EventiSearchForm  extends BaseSearchForm implements Cloneable,Serializable
+public class EventiSearchForm  extends BaseSearchForm implements SearchForm,Cloneable,Serializable
 {
 
 	
@@ -51,62 +51,62 @@ public class EventiSearchForm  extends BaseSearchForm implements Cloneable,Seria
 	 */
 	private static final long serialVersionUID = 1L; 
 	
-	private FormField<Date> data = null;
-	private FormField<String> dominio = null;
-	private FormField<String> iuv = null;
-	private FormField<SelectItem> categoria = null;
-	private FormField<SelectItem> tipo = null;
-	private FormField<SelectItem> sottoTipo = null;
-	private FormField<String> ccp = null;
+	private DateTime data = null;
+	private Text dominio = null;
+	private Text iuv = null;
+	private SelectList<SelectItem> categoria = null;
+	private SelectList<SelectItem> tipo = null;
+	private SelectList<SelectItem> sottoTipo = null;
+	private Text ccp = null;
 	
 	private Boolean filtroSet = true;
 	private EventiMBean mBean = null ;
 	
 	@PostConstruct
 	@Override 
-	protected void init() {
+	public void init() throws FactoryException{
 		// Properties del form
-		this.setIdForm("formEventi");
+		this.setId("formEventi");
 		this.setNomeForm("Ricerca Eventi");
 		this.setClosable(true);
 		this.setRendered(true); 
 		
-		this.data = new DateField();
+		this.data = this.getWebGenericProjectFactory().getInputFieldFactory().createDateTime();
 		this.data.setName("data");
 		this.data.setDefaultValue(null);
 		this.data.setDefaultValue2(null);
 		this.data.setInterval(true);
-		this.data.setLabel(Utils.getMessageFromResourceBundle("eventi.search.data"));
+		this.data.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.data"));
 		
-		this.dominio = new TextField();
-		this.dominio.setLabel(Utils.getMessageFromResourceBundle("eventi.search.dominio"));
+		this.dominio = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.dominio.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.dominio"));
 		this.dominio.setName("dominio");
 		this.dominio.setDefaultValue(null);
 		
-		this.iuv = new TextField();
-		this.iuv.setLabel(Utils.getMessageFromResourceBundle("eventi.search.iuv"));
+		this.iuv = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.iuv.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.iuv"));
 		this.iuv.setName("iuv");
 		this.iuv.setDefaultValue(null);
 		
-		this.ccp = new TextField();
-		this.ccp.setLabel(Utils.getMessageFromResourceBundle("eventi.search.ccp"));
+		this.ccp = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.ccp.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.ccp"));
 		this.ccp.setName("ccp");
 		this.ccp.setDefaultValue(null);
 		
-		this.categoria = new SelectListField();
+		this.categoria = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.categoria.setName("categoria");
 		this.categoria.setValue(null);
-		this.categoria.setLabel(Utils.getMessageFromResourceBundle("eventi.search.categoria"));
+		this.categoria.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.categoria"));
 		
-		this.tipo = new SelectListField();
+		this.tipo = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.tipo.setName("tipo");
 		this.tipo.setValue(null);
-		this.tipo.setLabel(Utils.getMessageFromResourceBundle("eventi.search.tipo"));
+		this.tipo.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.tipo"));
 		
-		this.sottoTipo = new SelectListField();
+		this.sottoTipo = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.sottoTipo.setName("sottoTipo");
 		this.sottoTipo.setValue(null);
-		this.sottoTipo.setLabel(Utils.getMessageFromResourceBundle("eventi.search.sottoTipo"));
+		this.sottoTipo.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.sottoTipo"));
 		
 	}
 	
@@ -183,85 +183,85 @@ public class EventiSearchForm  extends BaseSearchForm implements Cloneable,Seria
 
 
 
-	public FormField<Date> getData() {
+	public DateTime getData() {
 		return data;
 	}
 
 
 
-	public void setData(FormField<Date> data) {
+	public void setData(DateTime data) {
 		this.data = data;
 	}
 
 
 
-	public FormField<String> getDominio() {
+	public Text getDominio() {
 		return dominio;
 	}
 
 
 
-	public void setDominio(FormField<String> dominio) {
+	public void setDominio(Text dominio) {
 		this.dominio = dominio;
 	}
 
 
 
-	public FormField<String> getIuv() {
+	public Text getIuv() {
 		return iuv;
 	}
 
 
 
-	public void setIuv(FormField<String> iuv) {
+	public void setIuv(Text iuv) {
 		this.iuv = iuv;
 	}
 
 
 
-	public FormField<SelectItem> getCategoria() {
+	public SelectList<SelectItem> getCategoria() {
 		return categoria;
 	}
 
 
 
-	public void setCategoria(FormField<SelectItem> categoria) {
+	public void setCategoria(SelectList<SelectItem> categoria) {
 		this.categoria = categoria;
 	}
 
 
 
-	public FormField<SelectItem> getTipo() {
+	public SelectList<SelectItem> getTipo() {
 		return tipo;
 	}
 
 
 
-	public void setTipo(FormField<SelectItem> tipo) {
+	public void setTipo(SelectList<SelectItem> tipo) {
 		this.tipo = tipo;
 	}
 
 
 
-	public FormField<SelectItem> getSottoTipo() {
+	public SelectList<SelectItem> getSottoTipo() {
 		return sottoTipo;
 	}
 
 
 
-	public void setSottoTipo(FormField<SelectItem> sottoTipo) {
+	public void setSottoTipo(SelectList<SelectItem> sottoTipo) {
 		this.sottoTipo = sottoTipo;
 	}
 
 
 
-	public FormField<String> getCcp() {
+	public Text getCcp() {
 		return ccp;
 	}
 
 
 
-	public void setCcp(FormField<String> ccp) {
+	public void setCcp(Text ccp) {
 		this.ccp = ccp;
 	}
 

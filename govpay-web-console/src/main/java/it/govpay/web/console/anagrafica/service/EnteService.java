@@ -336,4 +336,9 @@ public class EnteService extends BaseService<EnteSearchForm> implements IEnteSer
 		return dE;
 	}
 
+	@Override
+	public boolean exists(EnteBean arg0) throws ServiceException {
+		return false;
+	}
+
 }

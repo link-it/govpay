@@ -251,4 +251,15 @@ public class EventiService extends BaseService<EventiSearchForm> implements IEve
 
 		return filtro;
 	}
+
+	@Override
+	public List<EventoBean> findAll(EventiSearchForm arg0)
+			throws ServiceException {
+		return null;
+	}
+
+	@Override
+	public boolean exists(EventoBean arg0) throws ServiceException {
+		return false;
+	}
 }

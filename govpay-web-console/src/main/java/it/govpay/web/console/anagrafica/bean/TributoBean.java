@@ -21,84 +21,88 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
+
 import it.govpay.ejb.core.model.TributoModel;
 import it.govpay.ejb.core.model.TributoModel.EnumStatoTributo;
+import it.govpay.web.console.utils.Utils;
 
-import org.openspcoop2.generic_project.web.bean.BaseBean;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.presentation.field.OutputField;
-import org.openspcoop2.generic_project.web.presentation.field.OutputGroup;
-import org.openspcoop2.generic_project.web.presentation.field.OutputText;
-
-public class TributoBean extends BaseBean<TributoModel, Long>{
+public class TributoBean extends BaseBean<TributoModel, Long> implements IBean<TributoModel, Long>{ 
 
 	/**
 	 * Identificativo della categoria del tributo
 	 * (e.g. PrestazioniSanitarie)
 	 */
-	private OutputField<String> idTributo; 
+	private Text idTributo; 
 
 	/**
 	 * Chiave fisica dell'ente creditore che gestisce il tributo
 	 */
-	private OutputField<String> idEnteCreditore;
+	private Text idEnteCreditore;
 
 	/**
 	 * Codice del sistema informativo locale dell'ente creditore, applicazione o sottosistema che gestisce il tributo.
 	 */
-	private OutputField<String> idSistema; 
+	private Text idSistema; 
 
 	/**
 	 * Codice specifico del tipo debito noto all'ente creditore:
 	  e.g. TICKET_SANITARIO_CUP
 	 */
-	private OutputField<String> codiceTributo; 
+	private Text codiceTributo; 
 
-	private OutputField<String> descrizione;
+	private Text descrizione;
 
-	private OutputField<String> stato;
+	private Text stato;
 	
-	private OutputField<String> ibanAccredito;
+	private Text ibanAccredito;
 
 	private OutputGroup fieldsDatiGenerali = null;
 	private Long id = null;
 
 	public TributoBean (){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
 
-	private void init(){
-		this.idEnteCreditore = new OutputText();
-		this.idEnteCreditore.setLabel(Utils.getMessageFromResourceBundle("tributo.idEnteCreditore"));
+	private void init() throws FactoryException{
+		this.idEnteCreditore = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idEnteCreditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.idEnteCreditore"));
 		this.idEnteCreditore.setName("tr_idEnteCreditore");
 
-		this.idTributo = new OutputText();
-		this.idTributo.setLabel(Utils.getMessageFromResourceBundle("tributo.idTributo"));
+		this.idTributo = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idTributo.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.idTributo"));
 		this.idTributo.setName("tr_idTributo");
 
-		this.codiceTributo = new OutputText();
-		this.codiceTributo.setLabel(Utils.getMessageFromResourceBundle("tributo.codice"));
+		this.codiceTributo = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.codiceTributo.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.codice"));
 		this.codiceTributo.setName("tr_codiceTributo");
 
-		this.descrizione = new OutputText();
-		this.descrizione.setLabel(Utils.getMessageFromResourceBundle("tributo.descrizione"));
+		this.descrizione = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.descrizione.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.descrizione"));
 		this.descrizione.setName("tr_descrizione");
 
-		this.idSistema = new OutputText();
-		this.idSistema.setLabel(Utils.getMessageFromResourceBundle("tributo.idSistema"));
+		this.idSistema = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.idSistema.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.idSistema"));
 		this.idSistema.setName("tr_idSistema");
 		
-		this.ibanAccredito = new OutputText();
-		this.ibanAccredito.setLabel(Utils.getMessageFromResourceBundle("tributo.ibanAccredito"));
+		this.ibanAccredito = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.ibanAccredito.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.ibanAccredito"));
 		this.ibanAccredito.setName("tr_ibanAccredito");
 
-		this.stato = new OutputText();
-		this.stato.setLabel(Utils.getMessageFromResourceBundle("tributo.stato"));
+		this.stato = this.getWebGenericProjectFactory().getOutputFieldFactory().createText();
+		this.stato.setLabel(Utils.getInstance().getMessageFromResourceBundle("tributo.stato"));
 		this.stato.setName("tr_stato");
 
-		this.fieldsDatiGenerali = new OutputGroup();
-		this.fieldsDatiGenerali.setIdGroup("datiGeneraliTributo");
+		this.fieldsDatiGenerali = this.getWebGenericProjectFactory().getOutputFieldFactory().createOutputGroup();
+		this.fieldsDatiGenerali.setId("datiGeneraliTributo");
 		this.fieldsDatiGenerali.setColumns(4);
 		this.fieldsDatiGenerali.setRendered(true);
 		this.fieldsDatiGenerali.setStyleClass("beanTable"); 
@@ -123,8 +127,8 @@ public class TributoBean extends BaseBean<TributoModel, Long>{
 		this.idSistema.setValue(this.getDTO().getIdSistema());
 		this.ibanAccredito.setValue(this.getDTO().getIbanAccredito());
 		
-		String stato = this.getDTO().getStato().equals(EnumStatoTributo.A) ? Utils.getMessageFromResourceBundle("commons.label.attivo") : 
-			Utils.getMessageFromResourceBundle("commons.label.nonAttivo");
+		String stato = this.getDTO().getStato().equals(EnumStatoTributo.A) ? Utils.getInstance().getMessageFromResourceBundle("commons.label.attivo") : 
+			Utils.getInstance().getMessageFromResourceBundle("commons.label.nonAttivo");
 		this.stato.setValue(stato);
 	}
 
@@ -137,52 +141,52 @@ public class TributoBean extends BaseBean<TributoModel, Long>{
 	}
 
 
-	public OutputField<String> getIdTributo() {
+	public Text getIdTributo() {
 		return idTributo;
 	}
 
 
-	public void setIdTributo(OutputField<String> idTributo) {
+	public void setIdTributo(Text idTributo) {
 		this.idTributo = idTributo;
 	}
 
 
-	public OutputField<String> getIdEnteCreditore() {
+	public Text getIdEnteCreditore() {
 		return idEnteCreditore;
 	}
 
 
-	public void setIdEnteCreditore(OutputField<String> idEnteCreditore) {
+	public void setIdEnteCreditore(Text idEnteCreditore) {
 		this.idEnteCreditore = idEnteCreditore;
 	}
 
 
-	public OutputField<String> getIdSistema() {
+	public Text getIdSistema() {
 		return idSistema;
 	}
 
 
-	public void setIdSistema(OutputField<String> idSistema) {
+	public void setIdSistema(Text idSistema) {
 		this.idSistema = idSistema;
 	}
 
 
-	public OutputField<String> getCodiceTributo() {
+	public Text getCodiceTributo() {
 		return codiceTributo;
 	}
 
 
-	public void setCodiceTributo(OutputField<String> codiceTributo) {
+	public void setCodiceTributo(Text codiceTributo) {
 		this.codiceTributo = codiceTributo;
 	}
 
 
-	public OutputField<String> getDescrizione() {
+	public Text getDescrizione() {
 		return descrizione;
 	}
 
 
-	public void setDescrizione(OutputField<String> descrizione) {
+	public void setDescrizione(Text descrizione) {
 		this.descrizione = descrizione;
 	}
 
@@ -197,22 +201,22 @@ public class TributoBean extends BaseBean<TributoModel, Long>{
 	}
 
 
-	public OutputField<String> getStato() {
+	public Text getStato() {
 		return stato;
 	}
 
 
-	public void setStato(OutputField<String> stato) {
+	public void setStato(Text stato) {
 		this.stato = stato;
 	}
 
 
-	public OutputField<String> getIbanAccredito() {
+	public Text getIbanAccredito() {
 		return ibanAccredito;
 	}
 
 
-	public void setIbanAccredito(OutputField<String> ibanAccredito) {
+	public void setIbanAccredito(Text ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 	}
 	

@@ -24,6 +24,7 @@ package it.govpay.web.console.anagrafica.form;
 import it.govpay.web.console.anagrafica.bean.ScadenzarioBean;
 import it.govpay.web.console.anagrafica.mbean.ScadenzarioMBean;
 import it.govpay.web.console.anagrafica.model.ScadenzarioModel;
+import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
 
@@ -31,16 +32,17 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseForm;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.SelectItem;
-import org.openspcoop2.generic_project.web.form.field.SelectListField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.form.Form;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseForm;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.SelectItem;
+import org.openspcoop2.generic_project.web.impl.jsf1.input.impl.SelectListImpl;
+import org.openspcoop2.generic_project.web.input.SelectList;
+import org.openspcoop2.generic_project.web.input.Text;
 
 @Named("scadenzarioForm")
-public class ScadenzarioForm extends BaseForm implements Serializable{
+public class ScadenzarioForm extends BaseForm implements Form,Serializable{
 
 
 	/**
@@ -48,11 +50,11 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public FormField<String> getIdEnte() {
+	public Text getIdEnte() {
 		return idEnte;
 	}
 
-	public void setIdEnte(FormField<String> idEnte) {
+	public void setIdEnte(Text idEnte) {
 		this.idEnte = idEnte;
 	}
 
@@ -64,10 +66,10 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 		this.connettoreVerifica = connettoreVerifica;
 	}
 
-	private FormField<String> nome;
-	private FormField<String> idEnte;
-	private SelectListField idIntermediarioPA;
-	private SelectListField stazione;
+	private Text nome;
+	private Text idEnte;
+	private SelectList<SelectItem> idIntermediarioPA;
+	private SelectList<SelectItem> stazione;
 
 	private ConnettoreForm connettoreNotifica;
 	private ConnettoreForm connettoreVerifica;
@@ -75,40 +77,44 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 	private ScadenzarioMBean mbean = null;
 
 	public ScadenzarioForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
 	@Override
-	protected void init() {
+	public void init() throws FactoryException {
 
 		this.setClosable(false);
-		this.setIdForm("formScadenzario");
+		this.setId("formScadenzario");
 		this.setNomeForm(null); 
 
-		this.nome = new TextField();
+		this.nome = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.nome.setRequired(true);
-		this.nome.setLabel(Utils.getMessageFromResourceBundle("scadenzario.nome"));
+		this.nome.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.nome"));
 		this.nome.setName("scad_nome");
 		this.nome.setValue(null);
 
-		this.idEnte = new TextField();
+		this.idEnte = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idEnte.setName("scad_idEnte");
 		this.idEnte.setValue(null);
 		this.idEnte.setRequired(true);
 		this.idEnte.setRendered(false);
 		this.idEnte.setLabel("scadenzario.idEnte");
 
-		this.idIntermediarioPA = new SelectListField();
+		this.idIntermediarioPA = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.idIntermediarioPA.setRequired(true);
-		this.idIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("scadenzario.idIntermediarioPA"));
+		this.idIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.idIntermediarioPA"));
 		this.idIntermediarioPA.setName("scad_idIntermediarioPA");
 		this.idIntermediarioPA.setDisabled(true);
-		this.idIntermediarioPA.setFieldsToUpdate(this.getIdForm() + "_formPnl");
+		this.idIntermediarioPA.setFieldsToUpdate(this.getId() + "_formPnl");
 		this.idIntermediarioPA.setForm(this);
+		this.idIntermediarioPA.setValue(null);
 
-		this.stazione = new SelectListField();
+		this.stazione = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.stazione.setRequired(true);
-		this.stazione.setLabel(Utils.getMessageFromResourceBundle("scadenzario.stazione"));
+		this.stazione.setLabel(Utils.getInstance().getMessageFromResourceBundle("scadenzario.stazione"));
 		this.stazione.setName("scad_stazione");
 		this.stazione.setValue(null);
 
@@ -155,8 +161,8 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 			this.idEnte.setDefaultValue(null);
 			this.idIntermediarioPA.setDefaultValue(null);
 			this.stazione.setDefaultValue(null);
-			//			this.idIntermediarioPA.setDefaultValue(new SelectItem(CostantiForm.NON_SELEZIONATO,CostantiForm.NON_SELEZIONATO));
-			//			this.stazione.setDefaultValue(new SelectItem(CostantiForm.NON_SELEZIONATO,CostantiForm.NON_SELEZIONATO));
+						this.idIntermediarioPA.setDefaultValue(new SelectItem(CostantiForm.NON_SELEZIONATO,CostantiForm.NON_SELEZIONATO));
+						this.stazione.setDefaultValue(new SelectItem(CostantiForm.NON_SELEZIONATO,CostantiForm.NON_SELEZIONATO));
 			this.connettoreNotifica.setValues(null);
 			this.connettoreVerifica.setValues(null);
 		}
@@ -169,24 +175,24 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 	}
 
 
-	public FormField<String> getNome() {
+	public Text getNome() {
 		return nome;
 	}
 
-	public void setNome(FormField<String> nome) {
+	public void setNome(Text nome) {
 		this.nome = nome;
 	}
 
 
-	public SelectListField getIdIntermediarioPA() {
+	public SelectList<SelectItem> getIdIntermediarioPA() {
 		return idIntermediarioPA;
 	}
 
-	public void setIdIntermediarioPA(SelectListField idIntermediarioPA) {
+	public void setIdIntermediarioPA(SelectList<SelectItem> idIntermediarioPA) {
 		this.idIntermediarioPA = idIntermediarioPA;
 	}
 
-	public SelectListField getStazione() {
+	public SelectList<SelectItem> getStazione() {
 		SelectItem value = this.idIntermediarioPA.getValue();
 
 		boolean rendered = false;
@@ -200,7 +206,7 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 		return stazione;
 	}
 
-	public void setStazione(SelectListField stazione) {
+	public void setStazione(SelectList<SelectItem> stazione) {
 		this.stazione = stazione;
 	}
 
@@ -237,7 +243,7 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 	public String valida(){
 		String _nomeSoggettoSPC = this.nome.getValue();
 		if(StringUtils.isEmpty(_nomeSoggettoSPC))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.nome.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.nome.getLabel());
 
 
 		SelectItem idIntermediario = this.idIntermediarioPA.getValue();
@@ -246,7 +252,7 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 		if(idIntermediario!= null){
 			idInt = idIntermediario.getValue();
 			if(StringUtils.isEmpty(idInt) || idInt.equals(CostantiForm.NON_SELEZIONATO))
-				return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.idIntermediarioPA.getLabel());
+				return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.idIntermediarioPA.getLabel());
 		}
 
 		SelectItem staz = this.stazione.getValue();
@@ -256,7 +262,7 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 			st = staz.getValue();
 		}	  
 		if(StringUtils.isEmpty(st) || st.equals(CostantiForm.NON_SELEZIONATO))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.stazione.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.SELECT_VALORE_NON_VALIDO, this.stazione.getLabel());
 
 		String msg = this.connettoreNotifica.valida();
 		if(msg!= null)
@@ -282,7 +288,7 @@ public class ScadenzarioForm extends BaseForm implements Serializable{
 		}
 
 		if((value2 == null || (value2!=null && !value2.equals(CostantiForm.NON_SELEZIONATO)))){
-			this.stazione.setElencoSelectItems(this.mbean.getListaStazioni(value2));
+			((SelectListImpl) this.stazione).setElencoSelectItems(this.mbean.getListaStazioni(value2)); 
 			this.stazione.setValue(new SelectItem(CostantiForm.NON_SELEZIONATO, CostantiForm.NON_SELEZIONATO)); 
 		}
 	}

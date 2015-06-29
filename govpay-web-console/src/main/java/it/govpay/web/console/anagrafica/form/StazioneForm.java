@@ -24,6 +24,7 @@ package it.govpay.web.console.anagrafica.form;
 import it.govpay.ejb.ndp.model.StazioneModel;
 import it.govpay.web.console.anagrafica.bean.StazioneBean;
 import it.govpay.web.console.anagrafica.mbean.StazioneMBean;
+import it.govpay.web.console.utils.Utils;
 
 import java.io.Serializable;
 import java.util.regex.Matcher;
@@ -32,14 +33,14 @@ import java.util.regex.Pattern;
 import javax.inject.Named;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.web.core.Utils;
-import org.openspcoop2.generic_project.web.form.BaseForm;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.form.CostantiForm;
-import org.openspcoop2.generic_project.web.form.field.FormField;
-import org.openspcoop2.generic_project.web.form.field.TextField;
+import org.openspcoop2.generic_project.web.form.Form;
+import org.openspcoop2.generic_project.web.impl.jsf1.form.BaseForm;
+import org.openspcoop2.generic_project.web.input.Text;
 
 @Named("stazioneForm")
-public class StazioneForm extends BaseForm implements Serializable{
+public class StazioneForm extends BaseForm implements Form,Serializable{
 
 	/**
 	 * 
@@ -50,45 +51,48 @@ public class StazioneForm extends BaseForm implements Serializable{
 
 	private Pattern codicePattern;
 
-	private FormField<String> idIntermediarioPA;
-	private FormField<String> idIntermediarioStazionePA;
-	private FormField<String> codice;
-	private FormField<String> password;
+	private Text idIntermediarioPA;
+	private Text idIntermediarioStazionePA;
+	private Text codice;
+	private Text password;
 
 	private StazioneMBean mBean = null;
 
 	public StazioneForm(){
-		init();
+		try {
+			init();
+		} catch (FactoryException e) {
+		}
 	}
 
 	@Override
-	protected void init() {
+	public void init() throws FactoryException {
 
 		this.codicePattern = Pattern.compile(CODICE_PATTERN);
 
-		this.idIntermediarioPA = new TextField();
+		this.idIntermediarioPA = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idIntermediarioPA.setRequired(true);
-		this.idIntermediarioPA.setLabel(Utils.getMessageFromResourceBundle("stazione.idIntermediarioPA"));
+		this.idIntermediarioPA.setLabel(Utils.getInstance().getMessageFromResourceBundle("stazione.idIntermediarioPA"));
 		this.idIntermediarioPA.setName("staz_idIntermediarioPA");
 		this.idIntermediarioPA.setDisabled(true);
 		this.idIntermediarioPA.setValue(null);
 		
-		this.idIntermediarioStazionePA = new TextField();
+		this.idIntermediarioStazionePA = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.idIntermediarioStazionePA.setRequired(true);
-		this.idIntermediarioStazionePA.setLabel(Utils.getMessageFromResourceBundle("stazione.form.idIntermediarioStazionePA"));
+		this.idIntermediarioStazionePA.setLabel(Utils.getInstance().getMessageFromResourceBundle("stazione.form.idIntermediarioStazionePA"));
 		this.idIntermediarioStazionePA.setName("staz_idIntermediarioStazionePA");
 		this.idIntermediarioStazionePA.setDisabled(true);
 		this.idIntermediarioStazionePA.setValue(null);
 
-		this.codice = new TextField();
+		this.codice = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.codice.setRequired(true);
-		this.codice.setLabel(Utils.getMessageFromResourceBundle("stazione.codice"));
+		this.codice.setLabel(Utils.getInstance().getMessageFromResourceBundle("stazione.stazione"));
 		this.codice.setName("staz_codice");
 		this.codice.setValue(null);
 		
-		this.password = new TextField();
+		this.password = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.password.setRequired(true);
-		this.password.setLabel(Utils.getMessageFromResourceBundle("stazione.password"));
+		this.password.setLabel(Utils.getInstance().getMessageFromResourceBundle("stazione.password"));
 		this.password.setName("staz_password");
 		this.password.setValue(null);
 	}
@@ -150,45 +154,45 @@ public class StazioneForm extends BaseForm implements Serializable{
 		// valido password
 		String _password = this.password.getValue();
 		if(StringUtils.isEmpty(_password))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.password.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.password.getLabel());
 		
 		// valido Codice
 		String _codice = this.codice.getValue();
 
 		// Id intermediario valido, validazione codice
 		if(StringUtils.isEmpty(_codice))
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.codice.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.FIELD_NON_PUO_ESSERE_VUOTO, this.codice.getLabel());
 
 		Matcher matcher = this.codicePattern.matcher(this.codice.getValue());
 		if(!matcher.matches())
-			return Utils.getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO , this.codice.getLabel());
+			return Utils.getInstance().getMessageWithParamsFromCommonsResourceBundle(CostantiForm.INPUT_VALORE_NON_VALIDO , this.codice.getLabel());
 
 
 		return null;
 	}
 
-	public FormField<String> getIdIntermediarioPA() {
+	public Text getIdIntermediarioPA() {
 		return idIntermediarioPA;
 	}
 
-	public void setIdIntermediarioPA(FormField<String> idIntermediarioPA) {
+	public void setIdIntermediarioPA(Text idIntermediarioPA) {
 		this.idIntermediarioPA = idIntermediarioPA;
 	}
 
-	public FormField<String> getIdIntermediarioStazionePA() {
+	public Text getIdIntermediarioStazionePA() {
 		return idIntermediarioStazionePA;
 	}
 
 	public void setIdIntermediarioStazionePA(
-			FormField<String> idIntermediarioStazionePA) {
+			Text idIntermediarioStazionePA) {
 		this.idIntermediarioStazionePA = idIntermediarioStazionePA;
 	}
 
-	public FormField<String> getCodice() {
+	public Text getCodice() {
 		return codice;
 	}
 
-	public void setCodice(FormField<String> codice) {
+	public void setCodice(Text codice) {
 		this.codice = codice;
 	}
 
@@ -199,11 +203,11 @@ public class StazioneForm extends BaseForm implements Serializable{
 	public void setMbean(StazioneMBean mBean) {
 		this.mBean = mBean;
 	}
-	public FormField<String> getPassword() {
+	public Text getPassword() {
 		return password;
 	}
 
-	public void setPassword(FormField<String> password) {
+	public void setPassword(Text password) {
 		this.password = password;
 	}
 }

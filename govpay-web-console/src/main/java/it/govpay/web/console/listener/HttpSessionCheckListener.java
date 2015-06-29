@@ -27,7 +27,7 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.web.mbean.LoginBean;
+import org.openspcoop2.generic_project.web.impl.jsf1.mbean.LoginBean;
 
 public class HttpSessionCheckListener implements HttpSessionListener {
 
