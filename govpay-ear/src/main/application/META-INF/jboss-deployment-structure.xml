@@ -1,4 +1,5 @@
-<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.1">
+<jboss-deployment-structure> 
+<!-- xmlns="urn:jboss:deployment-structure:1.1" -->
 	<deployment>
 		<dependencies>
 			<module name="javax.faces.api" slot="main" export="true" />

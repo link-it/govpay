@@ -230,8 +230,18 @@
 												<op2web:fieldset
 													legend="#{msg['scadenzario.connettore.notifiche.fieldset']}"
 													collapsible="false" closed="false" rendered="#{true}">
-													<op2web:outputGroup
-														group="#{scadenzarioMBean.selectedElement.connettoreNotifica.fieldsDatiGenerali}" />
+													
+													<c:set var="group" value="#{scadenzarioMBean.selectedElement.connettoreNotifica.fieldsDatiGenerali}" />
+													<h:panelGrid id="panelGroupOut_#{group.id}" styleClass="#{group.styleClass}"
+																columnClasses="#{group.columnClasses}" 
+																rendered="#{group.rendered}" columns="#{group.columns}">
+											
+														<c:forEach items="#{group.fields}" var="field">
+															<c:if test="#{field.rendered}">
+																<op2web:output field="#{field}" insideGroup="true" />
+															</c:if>
+														</c:forEach>
+													</h:panelGrid>
 
 													<br />
 													<op2web:outputGroup
@@ -246,8 +256,18 @@
 												<op2web:fieldset
 													legend="#{msg['scadenzario.connettore.pagamentiAttesa.fieldset']}"
 													collapsible="false" closed="false" rendered="#{true}">
-													<op2web:outputGroup
-														group="#{scadenzarioMBean.selectedElement.connettoreVerifica.fieldsDatiGenerali}" />
+												 
+													<c:set var="group2" value="#{scadenzarioMBean.selectedElement.connettoreVerifica.fieldsDatiGenerali}" />
+													<h:panelGrid id="panelGroupOut_#{group2.id}" styleClass="#{group2.styleClass}"
+																columnClasses="#{group2.columnClasses}" 
+																rendered="#{group2.rendered}" columns="#{group2.columns}">
+											
+														<c:forEach items="#{group2.fields}" var="field2">
+															<c:if test="#{field2.rendered}">
+																<op2web:output field="#{field2}" insideGroup="true" />
+															</c:if>
+														</c:forEach>
+													</h:panelGrid>
 
 													<br />
 													<op2web:outputGroup
