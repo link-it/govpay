@@ -131,6 +131,7 @@
 			<xs:element name="statoPagamento" type="statoPagamento" />
 			<xs:element name="importoTotalePagato" type="xs:decimal" />
 			<xs:element name="datiSingoloPagamento" type="datiSingoloPagamento" maxOccurs="5" />
+			<xs:element name="rt" type="xs:base64Binary" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 
@@ -217,6 +218,7 @@
 			<xs:element name="statoPagamento" type="statoPagamento" />
 			<xs:element name="importoTotalePagato" type="xs:decimal" />
 			<xs:element name="datiSingoloPagamento" type="datiSingoloPagamento" nillable="true" minOccurs="0" maxOccurs="5" />
+			<xs:element name="rt" type="xs:base64Binary" minOccurs="0"/>
 			<xs:element name="urlPagamento" type="xs:string" minOccurs="0" />
 		</xs:sequence>
 	</xs:complexType>

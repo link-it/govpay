@@ -29,7 +29,10 @@ import it.govpay.ejb.core.model.ScadenzarioModel;
 import it.govpay.ejb.core.utils.rs.EjbUtils;
 import it.govpay.ejb.core.utils.rs.client.NotificaClient;
 import it.govpay.ejb.core.utils.rs.client.ScadenzarioRemotoClient;
+import it.govpay.ejb.ndp.ejb.DocumentiEJB;
+import it.govpay.ejb.ndp.model.impl.RTModel;
 import it.govpay.rs.Pagamento;
+import it.govpay.rs.VerificaPagamento;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -47,6 +50,9 @@ public class ScadenzarioEJB {
 	
 	@Inject
 	RevocaDistintaEJB revocaDistintaEjb;
+	
+	@Inject
+	DocumentiEJB documentiEjb;
 	
 	public Pagamento recuperaPagamento(EnteCreditoreModel ente, ScadenzarioModel scadenzario, String iuv) throws GovPayException {
 		
@@ -73,7 +79,10 @@ public class ScadenzarioEJB {
 		}
 		
 		try {
-			client.notificaVerificaPagamento(EjbUtils.toWebVerificaPagamento(distintaEjb.getEsitoPagamentoDistinta(distinta.getIdDistinta())));
+			VerificaPagamento verificaPagamento = EjbUtils.toWebVerificaPagamento(distintaEjb.getEsitoPagamentoDistinta(distinta.getIdDistinta()));
+			RTModel rtModel = documentiEjb.recuperaRT(distinta.getIdentificativoFiscaleCreditore(), distinta.getIuv(), distinta.getCodTransazionePsp());
+			if(rtModel != null) verificaPagamento.setRt(rtModel.getBytes());
+			client.notificaVerificaPagamento(verificaPagamento);
 			log.info("Pagamento con IUV " + distinta.getIuv() + " e CCP" + distinta.getCodTransazionePsp() + " notificato con successo.");
 		} catch (Exception e) {
 			log.error("Errore durante la notifica del pagamento con IUV " + distinta.getIuv() + " e CCP" + distinta.getCodTransazionePsp() + ": " + e);

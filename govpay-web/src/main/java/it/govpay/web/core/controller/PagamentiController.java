@@ -39,6 +39,8 @@ import it.govpay.ejb.ndp.controller.RptController;
 import it.govpay.ejb.ndp.controller.RrController;
 import it.govpay.ejb.ndp.controller.RtController;
 import it.govpay.ejb.ndp.controller.RptController.DatiStatoRPT;
+import it.govpay.ejb.ndp.ejb.DocumentiEJB;
+import it.govpay.ejb.ndp.model.impl.RTModel;
 import it.govpay.ejb.ndp.util.exception.GovPayNdpException;
 import it.govpay.rs.RichiestaPagamento;
 import it.govpay.rs.VerificaPagamento;
@@ -65,6 +67,9 @@ public class PagamentiController {
 	
 	@Inject
 	ScadenzarioEJB scadenzarioEjb;
+	
+	@Inject
+	DocumentiEJB documentiEjb;
 
 	@Inject
 	AnagraficaEJB anagraficaEjb;
@@ -248,6 +253,8 @@ public class PagamentiController {
 		}
 		EsitoPagamentoDistinta esitoPagamentoDistinta = distintaEjb.getEsitoPagamentoDistinta(distinta.getIdDistinta());
 		VerificaPagamento verificaPagamento = EjbUtils.toWebVerificaPagamento(esitoPagamentoDistinta);
+		RTModel rtModel = documentiEjb.recuperaRT(distinta.getIdentificativoFiscaleCreditore(), distinta.getIuv(), distinta.getCodTransazionePsp());
+		if(rtModel != null) verificaPagamento.setRt(rtModel.getBytes());
 		verificaPagamento.setUrlPagamento(paymentUrl);
 		//TODO: [SR] Chiarire
 		return verificaPagamento;
