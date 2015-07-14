@@ -57,11 +57,11 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 	// Usato per visualizzare il form di invio
 	private boolean showForm = false;
 
-	private Long selectedId = null;
-
 	private String selectedPagamentoId = null;
 
 	private PagamentoBean selectedPagamento = null;
+	
+	private String selectedIdDistinta = null;
 
 	@Inject @Named("govpayConversationManager")
 	GovPayWebConsoleConversationManager conversationManager;
@@ -87,6 +87,7 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 		this.metadataPagamento = new PagamentoBean();
 		this.showForm = false;
 		this.selectedId = null;
+		this.selectedIdDistinta = null;
 		this.selectedPagamentoId = null;
 		this.selectedPagamento = null;
 
@@ -123,6 +124,7 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 		
 		this.showForm = false;
 		this.selectedId = null;
+		this.selectedIdDistinta = null;
 		this.selectedPagamentoId = null;
 		this.selectedPagamento = null;
 		this.selectedElement = null;
@@ -152,12 +154,16 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 	}
 
 	public String dettaglio(){
-		if(this.selectedId != null){
+		if(this.selectedIdDistinta != null){
 			try {
-				DistintaBean findById =  this.service.findById(selectedId);
+				this.selectedId = new Long(this.selectedIdDistinta);
+				
+				DistintaBean findById =  this.service.findById(this.selectedId);
 				this.setSelectedElement(findById);
 			} catch (ServiceException e) {
 				this.log.error("Si e' verificato un errore durante la lettura della distinta: " + e.getMessage(), e); 
+			} catch(Exception e){
+				this.log.error("Si e' verificato un errore durante la lettura della distinta: " + e.getMessage(), e);
 			}
 		}
 
@@ -195,6 +201,7 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 		this.selectedElement = null;
 		this.selectedPagamento = null;
 		this.selectedId = null;
+		this.selectedIdDistinta = null;
 		this.selectedPagamentoId = null;
 		this.showForm = true;
 	}
@@ -281,13 +288,13 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 		return lst;
 	}
 
-	public Long getSelectedId() {
-		return selectedId;
-	}
-
-	public void setSelectedId(Long selectedId) {
-		this.selectedId = selectedId;
-	}
+//	public Long getSelectedId() {
+//		return selectedId;
+//	}
+//
+//	public void setSelectedId(Long selectedId) {
+//		this.selectedId = selectedId;
+//	}
 
 	public PagamentoBean getMetadataPagamento() {
 		return metadataPagamento;
@@ -319,5 +326,13 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 
 	public void setShowForm(boolean showForm) {
 		this.showForm = showForm;
+	}
+
+	public String getSelectedIdDistinta() {
+		return selectedIdDistinta;
+	}
+
+	public void setSelectedIdDistinta(String selectedIdDistinta) {
+		this.selectedIdDistinta = selectedIdDistinta;
 	}
 }

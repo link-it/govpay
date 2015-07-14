@@ -161,6 +161,16 @@
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+		<servlet>
+		<servlet-name>eventiexporter</servlet-name>
+		<servlet-class>it.govpay.web.console.pagamenti.gde.exporter.EventiExporter</servlet-class>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>eventiexporter</servlet-name>
+		<url-pattern>/eventiexporter</url-pattern>
+	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>

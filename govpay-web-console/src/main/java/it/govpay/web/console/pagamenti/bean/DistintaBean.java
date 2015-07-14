@@ -492,7 +492,8 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> implements IBean
 
 		ec.responseReset(); 
 		ec.setResponseContentType("text/plain");
-		ec.setResponseHeader("Content-Disposition", "attachment; filename=\"rpt.xml\""); // The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
+		String filename = "rpt_" + this.getCreditore().getValue() + "_" + this.getIuv().getValue() + ".xml";
+		ec.setResponseHeader("Content-Disposition", "attachment; filename=\""+filename +"\""); // The Save As popup magic is done here. You can give it any file name you want, this only won't work in MSIE, it will use current request URL as file name instead.
 		ec.addResponseHeader("Cache-Control", "no-cache");
 		ec.setResponseStatus(200);
 		ec.setResponseBufferSize(1024);
@@ -526,8 +527,9 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> implements IBean
 		response.reset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
 		//	    response.setContentType("text/csv"); // Check http://www.w3schools.com/media/media_mimeref.asp for all types. Use if necessary ServletContext#getMimeType() for auto-detection based on filename.
 		//response.setContentLength(contentLength); // Set it with the file size. This header is optional. It will work if it's omitted, but the download progress will be unknown.
-		response.setContentType("text/plain");					
-		response.setHeader("Content-Disposition", "attachment; rt.txt");
+		response.setContentType("text/plain");	
+		String filename = "rt_" + this.getCreditore().getValue() + "_" + this.getIuv().getValue() + ".xml";
+		response.setHeader("Content-Disposition", "attachment; filename=\""+filename +"\"");
 		response.addHeader("Cache-Control", "no-cache");
 		response.setStatus(200);
 		response.setBufferSize(1024);

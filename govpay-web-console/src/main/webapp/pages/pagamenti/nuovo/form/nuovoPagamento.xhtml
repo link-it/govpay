@@ -82,7 +82,7 @@
 								<span class="buttonrow">
 									<a4j:commandButton id="generaIuv"  
 										value="#{msg['nuovopagamento.button.generaIuv']}"
-										reRender="mainct,menuct,formNuovoPagamento_formPnl" status="mainStatus"
+										reRender="mainct,formNuovoPagamento_formPnl" status="mainStatus"
 										styleClass="buttonrow icon-login" ajaxSingle="true" 
 										action="#{nuovoPagamentoMBean.form.pagamento.generaIuv}">
 									</a4j:commandButton>
@@ -132,7 +132,7 @@
 						</a4j:commandButton>
 
 						<a4j:commandButton id="reset"
-							value="#{msg['commons.button.reset']}" reRender="mainct,menuct"
+							value="#{msg['commons.button.reset']}" reRender="mainct"
 							status="mainStatus" styleClass="icon-delete"
 							action="#{nuovoPagamentoMBean.reset}">
 						</a4j:commandButton>

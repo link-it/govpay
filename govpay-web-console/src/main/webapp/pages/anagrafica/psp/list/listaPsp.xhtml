@@ -138,7 +138,7 @@
 										<h:panelGroup>
 											<a4j:commandLink id="dettaglioCanale_btn"
 												action="#{canaleMBean.dettaglio}" status="mainStatus"
-												reRender="mainct,menuct" ajaxSingle="true">
+												reRender="mainct" ajaxSingle="true">
 												<f:setPropertyActionListener value="#{item}"
 														target="#{canaleMBean.selectedElement}" />
 												<h:graphicImage value="/images/magnifier.png" width="16"
@@ -177,7 +177,7 @@
 									<a4j:commandButton id="aggiornaCanale"
 										value="#{msg['commons.button.modifica']}"
 										styleClass="icon-edit" status="mainStatus"
-										action="#{canaleMBean.modifica}" reRender="mainct,menuct">
+										action="#{canaleMBean.modifica}" reRender="mainct">
 									</a4j:commandButton>
 
 								</div>
@@ -205,14 +205,14 @@
 						<div class="buttonrow">
 							<a4j:commandButton id="invia"
 								value="#{msg['commons.button.invia']}" styleClass="icon-save"
-								reRender="mainct,menuct" status="mainStatus"
+								reRender="mainct" status="mainStatus"
 								action="#{canaleMBean.invia}">
 							</a4j:commandButton>
 
 							<a4j:commandButton id="annulla"
 								value="#{msg['commons.button.annulla']}" status="mainStatus"
 								styleClass="icon-delete" action="#{canaleMBean.annulla}"
-								reRender="mainct,menuct">
+								reRender="mainct">
 							</a4j:commandButton>
 						</div>
 					</ui:define>

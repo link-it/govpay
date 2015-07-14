@@ -20,11 +20,15 @@
 		</ul>
 	</ui:define>
 	<ui:define name="body">
-	<script type="text/javascript">
-			function selectRiga(elem){
-				jQuery(elem).parent().parent().addClass('rigaSelezionata');
+		<script type="text/javascript">
+            jQuery(document).ready(evidenziaSelezionati);
+
+			function evidenziaSelezionati(){
+
+				selezionaRiga('h_selDistId', 'iuv');
+				selezionaRiga('h_selPagId', 'identificativoPagamento');
 			}
-		</script>
+        </script>
 		<a4j:keepAlive beanName="distintaMBean" ajaxOnly="true" />
 		<rich:panel styleClass="noborder">
 			<c:if test="#{empty rowsToDisplay}">
@@ -33,7 +37,7 @@
 
 			<a4j:outputPanel id="panelContainer" ajaxRendered="false">
 				<h:form>
-
+					<input type="hidden" name="h_selDistId" value="#{not empty distintaMBean.selectedIdDistinta ? distintaMBean.selectedElement.iuv.value : ''}" />
 					<c:set var="distintaMetadata" value="#{distintaMBean.metadata}" />
 
 					<op2web:dataTable value="#{distintaDM}" id="distintaTable"
@@ -81,9 +85,9 @@
 								<a4j:commandLink id="dettaglio_btn"
 									action="#{distintaMBean.dettaglio}" status="mainStatus" oncomplete="selectRiga(this);"
 									reRender="dettaglioPanel1" ajaxSingle="true">
-									<a4j:actionparam name="selectedId"
-										value="#{item.idDistinta.value}"
-										assignTo="#{distintaMBean.selectedId}" />
+									<a4j:actionparam name="selectedIdDistinta"
+										value="#{item.id}"
+										assignTo="#{distintaMBean.selectedIdDistinta}" />
 									<h:graphicImage value="/images/magnifier.png" width="16"
 										height="16" title="#{msg['commons.button.dettaglioTitle']}" />
 								</a4j:commandLink>
@@ -136,7 +140,7 @@
 										<h:outputText id="outNoListaPagamento"
 											value="#{msg['distinta.dettaglio.listaPagamenti.nodata']}"
 											rendered="#{empty listaPagamenti}" />
-
+										<input type="hidden" name="h_selPagId" value="#{not empty distintaMBean.selectedPagamentoId ? distintaMBean.selectedPagamento.identificativoPagamento.value : ''}" />
 										<op2web:simpleTable id="tabellaPagamento"
 											value="#{listaPagamenti}"
 											rendered="#{not empty listaPagamenti}">
@@ -226,9 +230,9 @@
 										<h:commandLink
 											action="#{distintaMBean.selectedElement.downloadRpt}"
 											styleClass="buttonNoRed" id="visualizzaRptLink"
-											rendered="#{not empty linkRpt.link}">
-											<h:graphicImage value="/images/${linkRpt.icon}" width="16"
-												height="16" title="#{linkXml.iconTitle}" />
+											rendered="#{not empty linkRpt.href}">
+											<h:graphicImage value="/images/${linkRpt.image}" width="16"
+												height="16" title="#{linkXml.title}" />
 											<h:outputText value="#{linkRpt.label}" />
 										</h:commandLink>
 
@@ -239,10 +243,10 @@
 										<h:commandLink
 											action="#{distintaMBean.selectedElement.downloadRt}"
 											styleClass="buttonNoRed" id="visualizzaRtLink"
-											rendered="#{not empty linkRt.link}">
+											rendered="#{not empty linkRt.href}">
 
-											<h:graphicImage value="/images/${linkRt.icon}" width="16"
-												height="16" title="#{linkRt.iconTitle}" />
+											<h:graphicImage value="/images/${linkRt.image}" width="16"
+												height="16" title="#{linkRt.title}" />
 											<h:outputText value="#{linkRt.label}" />
 
 										</h:commandLink>
@@ -298,12 +302,12 @@
 						<div class="buttonrow">
 							<a4j:commandButton id="filtraButton"
 								value="#{msg['commons.button.filtra']}"
-								styleClass="icon-refresh" reRender="mainct,menuct"
+								styleClass="icon-refresh" reRender="mainct"
 								status="mainStatus" action="#{distintaMBean.filtra}">
 							</a4j:commandButton>
 
 							<a4j:commandButton id="pulisciButton"
-								value="#{msg['commons.button.reset']}" reRender="mainct,menuct"
+								value="#{msg['commons.button.reset']}" reRender="mainct"
 								status="mainStatus" styleClass="icon-delete"
 								action="#{distintaMBean.resetFiltro}">
 							</a4j:commandButton>

@@ -76,7 +76,7 @@
 									<h:panelGroup>
 										<a4j:commandLink id="dettaglio_btn"
 											action="#{enteMBean.dettaglio}" status="mainStatus"
-											reRender="mainct,menuct" ajaxSingle="true">
+											reRender="mainct" ajaxSingle="true">
 											<a4j:actionparam name="selectedId"
 												value="#{item.idEnteCreditore.value}"
 												assignTo="#{enteMBean.selectedIdEnte}" />
@@ -126,7 +126,7 @@
 									<a4j:commandButton id="aggiorna"
 										value="#{msg['commons.button.modifica']}"
 										styleClass="icon-edit" status="mainStatus"
-										action="#{enteMBean.modifica}" reRender="mainct,menuct">
+										action="#{enteMBean.modifica}" reRender="mainct">
 									</a4j:commandButton>
 								</div>
 							</h:form>
@@ -179,7 +179,7 @@
 															<h:panelGroup>
 																<a4j:commandLink id="dettaglioScadenzario_btn"
 																	action="#{scadenzarioMBean.dettaglio}"
-																	status="mainStatus" reRender="mainct,menuct"
+																	status="mainStatus" reRender="mainct"
 																	ajaxSingle="true">
 																	<a4j:actionparam name="selectedIdEnte"
 																		value="#{item.idEnte.value}"
@@ -284,7 +284,7 @@
 															value="#{msg['commons.button.modifica']}"
 															styleClass="icon-edit" status="mainStatus"
 															action="#{scadenzarioMBean.modifica}"
-															reRender="mainct,menuct">
+															reRender="mainct">
 														</a4j:commandButton>
 													</div>
 												</h:form>
@@ -456,7 +456,7 @@
 										<ui:define name="buttons">
 												<a4j:commandButton id="inviaScadenzario"
 													value="#{msg['commons.button.invia']}"
-													styleClass="icon-save" reRender="mainct,menuct"
+													styleClass="icon-save" reRender="mainct"
 													status="mainStatus" action="#{scadenzarioMBean.invia}">
 												</a4j:commandButton>
 
@@ -464,7 +464,7 @@
 													value="#{msg['commons.button.annulla']}"
 													status="mainStatus" styleClass="icon-delete"
 													action="#{scadenzarioMBean.annulla}"
-													reRender="mainct,menuct">
+													reRender="mainct">
 												</a4j:commandButton>
 										</ui:define>
 
@@ -514,7 +514,7 @@
 											<h:panelGroup>
 												<a4j:commandLink id="dettaglioTributo_btn"
 													action="#{tributoMBean.dettaglio}" status="mainStatus"
-													reRender="mainct,menuct" ajaxSingle="true">
+													reRender="mainct" ajaxSingle="true">
 													<a4j:actionparam name="selectedId"
 														value="#{item.codiceTributo.value}"
 														assignTo="#{tributoMBean.selectedId}" />
@@ -562,7 +562,7 @@
 									<a4j:commandButton id="aggiornatributo"
 										value="#{msg['commons.button.modifica']}"
 										styleClass="icon-edit" status="mainStatus"
-										action="#{tributoMBean.modifica}" reRender="mainct,menuct">
+										action="#{tributoMBean.modifica}" reRender="mainct">
 									</a4j:commandButton>
 								</div>
 							</h:form>
@@ -601,14 +601,14 @@
 						<div class="buttonrow">
 							<a4j:commandButton id="inviaTributo"
 								value="#{msg['commons.button.invia']}" styleClass="icon-save"
-								reRender="mainct,menuct" status="mainStatus"
+								reRender="mainct" status="mainStatus"
 								action="#{tributoMBean.invia}">
 							</a4j:commandButton>
 
 							<a4j:commandButton id="annullaTributo"
 								value="#{msg['commons.button.annulla']}" status="mainStatus"
 								styleClass="icon-delete" action="#{tributoMBean.annulla}"
-								reRender="mainct,menuct">
+								reRender="mainct">
 							</a4j:commandButton>
 						</div>
 					</ui:define>
@@ -672,14 +672,14 @@
 					<div class="buttonrow">
 						<a4j:commandButton id="invia"
 							value="#{msg['commons.button.invia']}" styleClass="icon-save"
-							reRender="mainct,menuct" status="mainStatus"
+							reRender="mainct" status="mainStatus"
 							action="#{enteMBean.invia}">
 						</a4j:commandButton>
 
 						<a4j:commandButton id="annulla"
 							value="#{msg['commons.button.annulla']}" status="mainStatus"
 							styleClass="icon-delete" action="#{enteMBean.annulla}"
-							reRender="mainct,menuct">
+							reRender="mainct">
 						</a4j:commandButton>
 					</div>
 				</ui:define>

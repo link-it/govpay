@@ -30,7 +30,6 @@ import it.govpay.web.console.utils.Utils;
 import org.openspcoop2.generic_project.web.bean.IBean;
 import org.openspcoop2.generic_project.web.factory.FactoryException;
 import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
-import org.openspcoop2.generic_project.web.output.OutputField;
 import org.openspcoop2.generic_project.web.output.OutputGroup;
 import org.openspcoop2.generic_project.web.output.Text;
 
