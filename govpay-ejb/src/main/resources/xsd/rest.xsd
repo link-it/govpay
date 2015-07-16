@@ -78,6 +78,15 @@
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>
+	
+	<xs:element name="richiestaPagamentoResponse">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="pspRedirect" type="xs:boolean" />
+				<xs:element name="redirectUrl" type="xs:anyURI" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 
 	<xs:element name="verificaPagamento" type="verificaPagamento" />
 
@@ -193,7 +202,13 @@
 
 	<xs:complexType name="datiSingoloVersamento">
 		<xs:sequence>
-			<xs:element name="iusv" type="xs:string" />
+			<xs:element name="iusv">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="35" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
 			<xs:element name="importoSingoloVersamento" type="xs:decimal" />
 			<xs:element name="ibanAccredito" type="ibanIdentifier" />
 			<xs:element name="causaleVersamento" type="xs:string" />

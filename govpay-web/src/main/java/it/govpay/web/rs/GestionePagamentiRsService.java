@@ -39,11 +39,12 @@ import it.govpay.web.core.controller.GatewayController;
 import it.govpay.web.core.controller.PagamentiController;
 import it.govpay.rs.Pagamento;
 import it.govpay.rs.RichiestaPagamento;
+import it.govpay.rs.RichiestaPagamentoResponse;
 import it.govpay.rs.VerificaPagamento;
 import it.govpay.web.utils.UrlUtils;
 
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -79,8 +80,7 @@ public class GestionePagamentiRsService {
 
 	@POST
 	@Path("/nuovoPagamento")
-	@Consumes(MediaType.APPLICATION_XML)
-	public Response richiediPagamento(RichiestaPagamento richiestaPagamento) throws GovPayException {
+	public Response richiediPagamento(RichiestaPagamento richiestaPagamento, @DefaultValue("true") @QueryParam(value = "redirect") Boolean redirect) throws GovPayException {
 		ThreadContext.put("proc", "NuovoPagamento");
 		/**
 		 * DA RIMUOVERE QUANDO LA VALIDAZIONE FUNZIONA CORRETTAMENTE
@@ -129,13 +129,27 @@ public class GestionePagamentiRsService {
 					log.warn("La RedirectURL della richiesta non e' una URL valida. Verra' utilizzato il valore di default.");
 				}
 			} 
+			
+			RichiestaPagamentoResponse richiestaPagamentoResponse = new RichiestaPagamentoResponse();
 
 			if(pspUrl==null) {
-				return Response.seeOther(backUrl.toURI()).build();
+				if(redirect) {
+					return Response.seeOther(backUrl.toURI()).build();
+				} else {
+					richiestaPagamentoResponse.setPspRedirect(false);
+					richiestaPagamentoResponse.setRedirectUrl(backUrl.toExternalForm());
+					return Response.ok(richiestaPagamentoResponse).build();
+				}
 			} else {
 				String idSession = UrlUtils.getParameterValue("idSession", pspUrl);
 				RedirectCache.put(idSession, backUrl);
-				return Response.seeOther(pspUrl.toURI()).build();
+				if(redirect) {
+					return Response.seeOther(pspUrl.toURI()).build();
+				} else {
+					richiestaPagamentoResponse.setPspRedirect(true);
+					richiestaPagamentoResponse.setRedirectUrl(pspUrl.toExternalForm());
+					return Response.ok(pspUrl.toURI()).build();
+				}
 			}
 		} catch (GovPayException e) {
 			throw e;

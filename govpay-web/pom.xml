@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>1.0b3</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>govpay-web</artifactId>
@@ -16,19 +16,10 @@
 
 	<dependencies>
 
-<!--
- 		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<scope>provided</scope>
-			<exclusions>per compilazione da eclipse, si evita linkage error
-        		<exclusion>
-            		<groupId>*</groupId>
-            		<artifactId>*</artifactId>
-        		</exclusion>
-    		</exclusions>			
-		</dependency>
- -->
+		<!-- <dependency> <groupId>org.jboss.resteasy</groupId> <artifactId>resteasy-jaxrs</artifactId> 
+			<scope>provided</scope> <exclusions>per compilazione da eclipse, si evita 
+			linkage error <exclusion> <groupId>*</groupId> <artifactId>*</artifactId> 
+			</exclusion> </exclusions> </dependency> -->
 		<!-- Dependency on the EJB module so we can use it's services if needed -->
 		<dependency>
 			<groupId>it.govpay</groupId>
@@ -45,13 +36,13 @@
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-core</artifactId>
-            <scope>provided</scope>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -95,7 +86,53 @@
 							<Class-Path>properties/</Class-Path>
 						</manifestEntries>
 					</archive>
-    				<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+					<packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>com.sun.jersey.contribs</groupId>
+				<artifactId>maven-wadl-plugin</artifactId>
+				<version>1.17</version>
+				<executions>
+					<execution>
+						<id>generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+						<phase>${javadoc-phase}</phase>
+					</execution>
+				</executions>
+				<configuration>
+					<wadlFile>${project.build.outputDirectory}/application.wadl
+					</wadlFile>
+					<formatWadlFile>true</formatWadlFile>
+					<baseUri>http://[host]/govpay/rs</baseUri>
+					<packagesResourceConfig>
+						<param>it.govpay.web.rs</param>
+					</packagesResourceConfig>
+					<wadlGenerators>
+						<wadlGeneratorDescription>
+							<className>com.sun.jersey.server.wadl.generators.WadlGeneratorApplicationDoc
+							</className>
+							<properties>
+								<property>
+									<name>applicationDocsFile</name>
+									<value>${basedir}/src/main/doc/application-doc.xml</value>
+								</property>
+							</properties>
+						</wadlGeneratorDescription>
+						<wadlGeneratorDescription>
+							<className>com.sun.jersey.server.wadl.generators.WadlGeneratorGrammarsSupport
+							</className>
+							<properties>
+								<property>
+									<name>grammarsFile</name>
+									<value>${basedir}/src/main/doc/application-grammars.xml</value>
+								</property>
+							</properties>
+						</wadlGeneratorDescription>
+					</wadlGenerators>
 				</configuration>
 			</plugin>
 		</plugins>
