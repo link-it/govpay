@@ -6,8 +6,8 @@
 			<module name="com.sun.jsf-impl" slot="main" export="true" />
 		</dependencies>
 	</deployment>
-	<sub-deployment name="govpay-web-console-1.0b3.war">
+	<sub-deployment name="govpay-web-console-${project.version}.war">
 	</sub-deployment>
-	<sub-deployment name="govpay-web-1.0b3.war">
+	<sub-deployment name="govpay-web-${project.version}.war">
 	</sub-deployment>
 </jboss-deployment-structure>
