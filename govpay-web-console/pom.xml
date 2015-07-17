@@ -16,7 +16,7 @@
 
 	<properties>
 		<richfaces.version>3.3.4.Final</richfaces.version>
-		<openspcoop2.version>2.2.1-SNAPSHOT</openspcoop2.version>
+		<openspcoop2.version>2.2.1</openspcoop2.version>
 	</properties>
 
 	<dependencies>
