@@ -82,15 +82,15 @@
 						<!-- Link dettagli -->
 						<rich:column>
 							<h:panelGroup>
-								<a4j:commandLink id="dettaglio_btn"
-									action="#{distintaMBean.dettaglio}" status="mainStatus" oncomplete="selectRiga(this);"
-									reRender="dettaglioPanel1" ajaxSingle="true">
+								<h:commandLink id="dettaglio_btn" actionListener="#{distintaMBean.dettaglioListener}"   oncomplete="selectRiga(this);">
+									<a4j:support status="mainStatus" event="onclick" immediate="true"
+									reRender="dettaglioPanel1"  limitToList="true"   />
 									<a4j:actionparam name="selectedIdDistinta"
 										value="#{item.id}"
 										assignTo="#{distintaMBean.selectedIdDistinta}" />
 									<h:graphicImage value="/images/magnifier.png" width="16"
 										height="16" title="#{msg['commons.button.dettaglioTitle']}" />
-								</a4j:commandLink>
+								</h:commandLink>
 							</h:panelGroup>
 						</rich:column>
 

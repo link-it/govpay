@@ -65,6 +65,7 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 
 	public DistintaSearchForm(){
 		this.setPageSize(10);
+		this.setLimit(getPageSize());
 		
 		try {
 			init();
@@ -124,6 +125,7 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 	@Override
 	public void reset() {
 		resetParametriPaginazione();
+		this.setLimit(getPageSize()); 
 
 		// reset search fields
 		this.cfEnteCreditore.reset();

@@ -167,7 +167,10 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 			}
 		}
 
-		return "listaDistinte?faces-redirect=true";
+		return "listaDistinte";//?faces-redirect=true";
+	}
+	
+	public void dettaglioListener(ActionEvent evt){
 	}
 
 	public String dettaglioPagamento(){
@@ -288,14 +291,6 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 		return lst;
 	}
 
-//	public Long getSelectedId() {
-//		return selectedId;
-//	}
-//
-//	public void setSelectedId(Long selectedId) {
-//		this.selectedId = selectedId;
-//	}
-
 	public PagamentoBean getMetadataPagamento() {
 		return metadataPagamento;
 	}
@@ -334,5 +329,18 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 
 	public void setSelectedIdDistinta(String selectedIdDistinta) {
 		this.selectedIdDistinta = selectedIdDistinta;
+		
+		if(this.selectedIdDistinta != null){
+			try {
+				this.selectedId = new Long(this.selectedIdDistinta);
+				
+				DistintaBean findById =  this.service.findById(this.selectedId);
+				this.setSelectedElement(findById);
+			} catch (ServiceException e) {
+				this.log.error("Si e' verificato un errore durante la lettura della distinta: " + e.getMessage(), e); 
+			} catch(Exception e){
+				this.log.error("Si e' verificato un errore durante la lettura della distinta: " + e.getMessage(), e);
+			}
+		}
 	}
 }

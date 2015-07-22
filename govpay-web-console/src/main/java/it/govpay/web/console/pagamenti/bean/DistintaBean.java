@@ -204,6 +204,7 @@ public class DistintaBean extends BaseBean<DistintaModel, Long> implements IBean
 		this.data = this.getWebGenericProjectFactory().getOutputFieldFactory().createDateTime();
 		this.data.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.data"));
 		this.data.setName("data");
+		this.data.setPattern("dd/MM/yyyy HH:mm:ss");
 
 		this.importoTotale = this.getWebGenericProjectFactory().getOutputFieldFactory().createNumber();
 		this.importoTotale.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.importoDovuto"));
