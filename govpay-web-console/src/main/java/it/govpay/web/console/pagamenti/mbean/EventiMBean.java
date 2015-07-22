@@ -112,6 +112,8 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 		this.search.reset();
 		((EventiSearchForm)this.search).setFiltroSet("true");
 		
+		this.tipoExport = null;
+		
 		return "listaEventi";
 	}
 	

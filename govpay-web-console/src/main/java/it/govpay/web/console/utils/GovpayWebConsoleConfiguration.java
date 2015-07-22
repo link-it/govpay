@@ -32,8 +32,6 @@ public class GovpayWebConsoleConfiguration extends ConfigurationUtils {
 	private static String filePropName = "govpay-web-console.properties";
 	private static URL defaultBackUrl;
 	
-	private static boolean showSimulazione = false;
-	
 	private static GovpayWebConsoleConfiguration instance;
 	
 	public static void newInstance() throws GovPayException {
@@ -54,16 +52,10 @@ public class GovpayWebConsoleConfiguration extends ConfigurationUtils {
 		} catch (Exception e) {
 			throw new GovPayException(GovPayExceptionEnum.ERRORE_CONFIGURAZIONE, "Il valore della proprieta govpay.web.console.backUrl non e' una URL valida.", e);
 		}
-		showSimulazione = getBooleanValue("govpay.web.console.showSimulazione", false);
 		instance = this;
 	}
     
 	public static URL getDefaultBackUrl(){
 		return defaultBackUrl;
 	}
-
-	public static boolean isShowSimulazione() {
-		return showSimulazione;
-	}
-	
 }
