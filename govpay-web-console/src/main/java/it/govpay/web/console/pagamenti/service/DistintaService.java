@@ -305,7 +305,7 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 		log.debug("Offset["+start+"], Limit["+limit+"]");
 
 		//Imposto le date
-		impostaDate(form, filtro);
+	//	impostaDate(form, filtro);
 
 
 		// cfentecreditore
