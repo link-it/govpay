@@ -51,6 +51,7 @@ public class GovPayWebConsoleConversationManager implements Serializable{
 	public static final String CONNETTORE_CID = "6";
 	public static final String ESITO_CID = "7";
 	
+	public static final long TIMEOUT_CONVERSATION = 86400000;
 
 	@Inject  
 	private transient Logger log;	
@@ -86,6 +87,9 @@ public class GovPayWebConsoleConversationManager implements Serializable{
 	public void startConversation(String cid, Conversation conversation){
 		log.debug("Start Conversation ["+cid+"], controllo stato Conversation ["+conversation.getId()+"]");
 		
+		conversation.setTimeout(TIMEOUT_CONVERSATION); 
+		log.debug("Conversation Timeout["+conversation.getTimeout()+"]");
+		
 		List<String> idToRemove = new ArrayList<String>();
 		
 		for (int i = 0 ; i <  this.conversations.size() ; i++) {
@@ -106,6 +110,8 @@ public class GovPayWebConsoleConversationManager implements Serializable{
 				
 		if(conversation.isTransient()){
 			conversation.begin();
+		
+//			conversation.setTimeout(TIMEOUT_CONVERSATION);
 			String id = conversation.getId();
 			this.addConversation(id); 
 		}
