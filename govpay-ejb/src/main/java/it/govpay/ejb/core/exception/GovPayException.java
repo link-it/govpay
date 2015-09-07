@@ -38,7 +38,8 @@ public class GovPayException extends Exception {
 		ERRORE_NDP ("KOGP0009"), // L'invocazione del Nodo dei Pagamenti ha ritornato un errore applicativo (descrizione popolata con ${faultCode}: ${faultString} 
 		ERRORE_NDP_WEB ("KOGP0010"),// L'invocazione del Nodo dei Pagamenti ha avuto un errore di connessione (exception valorizzata)
 		ERRORE_ENTE_WEB ("KOGP0011"),// L'invocazione dei servizi dell'Ente (notifica o verifica) ha ritornato un errore 
-		STORNO_NON_CONSENTITO ("KOGP0012"); // Lo storno per il pagamento richiesto non puo' essere richiesto. motivazione in descrizione.
+		STORNO_NON_CONSENTITO ("KOGP0012"), // Lo storno per il pagamento richiesto non puo' essere richiesto. motivazione in descrizione.
+		IUSV_DUPLICATO ("KOGP0014");// Uno degli IUSV inviati e' stato gia' pagato e' in corso;
 		private String errorCode;
 
 		GovPayExceptionEnum(String errorCode) {

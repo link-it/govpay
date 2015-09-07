@@ -103,8 +103,9 @@ public class DistintaEJB {
 		
 		// 1. Verifica che gli IUV utilizzati siano disponibili
 		// Lo devo fare qua e non in validazione perche deve essere transazionale.
-		log.debug("Verifica dell'univocita' degli IUV");
+		log.debug("Verifica dell'univocita' degli IUV e pagabilita degli IUSV");
 		List<String> iuvs = new ArrayList<String>();
+		List<String> iusvs = new ArrayList<String>();
 		for(it.govpay.rs.Pagamento pagamento : richiestaPagamento.getPagamentis()){
 			DatiVersamento datiVersamento = pagamento.getDatiVersamento();
 			if(iuvs.contains(datiVersamento.getIuv())) {
@@ -116,6 +117,21 @@ public class DistintaEJB {
 			}
 			
 			iuvs.add(datiVersamento.getIuv());
+			
+			List<DatiSingoloVersamento> singoliVersamenti = datiVersamento.getDatiSingoloVersamentos();
+			for(DatiSingoloVersamento singoloVersamento : singoliVersamenti) {
+				String key =  pagamento.getIdentificativoBeneficiario() + datiVersamento.getTipoDebito() + singoloVersamento.getIusv();
+				if(iusvs.contains(key)) {
+					throw new GovPayException(GovPayExceptionEnum.IUSV_DUPLICATO, "La richiesta contiene due versamenti con lo stesso IUSV: " + singoloVersamento.getIusv() + ".");
+				}
+				
+				if (isIusvPagabile(pagamento.getIdentificativoBeneficiario(), datiVersamento.getTipoDebito(), singoloVersamento.getIusv())) {
+					throw new GovPayException(GovPayExceptionEnum.IUSV_DUPLICATO, "Lo IUSV " + singoloVersamento.getIusv() + " risulta pagato o in corso.");
+				}
+				iuvs.add(key);
+			}
+			
+			
 		}
 
 		// Per ciascun pagamento
@@ -235,6 +251,7 @@ public class DistintaEJB {
 
 	}
 	
+
 	/**
 	 * Crea una nuova distinta (EnumStatoOperazione IN_CORSO). Una volta creata imposta nell'oggetto Distinta l'idDistinta assegnato.
 	 * 
@@ -673,6 +690,12 @@ public class DistintaEJB {
 		return !distinte.isEmpty();
 		
 	}
+	
+	private boolean isIusvPagabile(String identificativoBeneficiario, String tipoDebito, String iusv) {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 
 
 	private void appendConstraintDistinta(StringBuilder qlStringBuilder, Map<String, Object> parmetersMap, DistintaFilter filtro) {
