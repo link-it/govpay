@@ -21,7 +21,7 @@
 	<ui:define name="body">
 		<a4j:keepAlive beanName="eventiMBean" ajaxOnly="true" />
 		
-		<op2web:form formBean="#{eventiMBean.search}">
+		<op2web:form formBean="#{eventiMBean.search}" rendered="false">
 			<!-- DATA  -->
 			<op2web:formField field="#{eventiMBean.search.data}" />
 			<!-- Dominio  -->
