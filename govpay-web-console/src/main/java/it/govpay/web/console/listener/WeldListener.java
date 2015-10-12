@@ -43,20 +43,25 @@ public class WeldListener implements  ServletRequestListener, Serializable {
 
 
 			if(conversation == null){
-				conversation = conversationContext.getCurrentConversation();
+				try{
+					conversation = conversationContext.getCurrentConversation();
+				}
+				catch(IllegalStateException ie){
+					conversation = null;
+				}
 			}
 
 			if(conversation != null){
-				
+
 				if(!conversationContext.isActive()) {
 					conversationContext.activate(cid);
 				}
-				
+
 				log.debug("Conversation Status: Expired ["+isExpired(conversation)+"]");
 
 				conversation.touch();
 
-//				conversationContext.invalidate();
+				//				conversationContext.invalidate();
 				if(conversationContext.isActive()) {
 					// Only deactivate the context if one is already active, otherwise we get Exceptions
 					conversationContext.deactivate();
@@ -78,8 +83,8 @@ public class WeldListener implements  ServletRequestListener, Serializable {
 	private static Instance<Context> instance() {
 		return Container.instance().deploymentManager().instance().select(Context.class);
 	}
-	
-    private static boolean isExpired(ManagedConversation conversation) {
-        return System.currentTimeMillis() > (conversation.getLastUsed() + conversation.getTimeout());
-    }
+
+	private static boolean isExpired(ManagedConversation conversation) {
+		return System.currentTimeMillis() > (conversation.getLastUsed() + conversation.getTimeout());
+	}
 }
