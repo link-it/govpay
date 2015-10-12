@@ -51,7 +51,7 @@ public class GovPayWebConsoleConversationManager implements Serializable{
 	public static final String CONNETTORE_CID = "6";
 	public static final String ESITO_CID = "7";
 	
-	public static final long TIMEOUT_CONVERSATION = 86400000;
+	public static final long TIMEOUT_CONVERSATION = 600000;// 86400000;
 
 	@Inject  
 	private transient Logger log;	
