@@ -21,6 +21,9 @@
  */
 package it.govpay.web.console;
 
+import java.awt.GraphicsEnvironment;
+import java.util.Arrays;
+
 import it.govpay.ejb.core.exception.GovPayException;
 import it.govpay.ejb.core.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.ejb.core.utils.rs.JaxbUtils;
@@ -36,6 +39,9 @@ import org.apache.logging.log4j.Logger;
 @Startup
 @Singleton
 public class GovPayWebConsoleStartup {
+	static{
+		 System.setProperty("java.awt.headless", "true");
+	}
 
 	@Inject  
 	private transient Logger log;
@@ -57,6 +63,11 @@ public class GovPayWebConsoleStartup {
 			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Impossibile inizializzare il Marshaller", e);
 		}
 
+		log.debug("Check Graphics Environment: is HeadeLess ["+java.awt.GraphicsEnvironment.isHeadless()+"]");
+		
+		log.debug("Elenco Nomi Font disponibili: " + Arrays.asList(GraphicsEnvironment
+                .getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
+		
 		log.info("WebConsole: Start Completato" );
 	}
 }

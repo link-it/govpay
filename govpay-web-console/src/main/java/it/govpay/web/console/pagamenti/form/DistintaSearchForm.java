@@ -62,6 +62,8 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 	private List<String> identificativiEnteCreditore = null;
 	
 	private DistintaMBean mBean = null ;
+	
+	private Text iuv = null;
 
 	public DistintaSearchForm(){
 		this.setPageSize(10);
@@ -78,7 +80,7 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 	public void init()  throws FactoryException{
 		// Properties del form
 		this.setId("formDistinta");
-		this.setNomeForm("Ricerca Distinte Pagamento");
+		this.setNomeForm("Filtri di Ricerca");
 		this.setClosable(true);
 		this.setRendered(true); 
 		
@@ -91,6 +93,7 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 		this.dataPeriodo.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.data"));
 		this.dataPeriodo.setFieldsToUpdate(this.getId() + "_formPnl");
 		this.dataPeriodo.setForm(this);
+		this.dataPeriodo.setRendered(false);
 
 		this.data = this.getWebGenericProjectFactory().getInputFieldFactory().createDateTime();
 		this.data.setName("data");
@@ -98,6 +101,7 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 		this.data.setDefaultValue2(null);
 		this.data.setInterval(true);
 		this.data.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.data.personalizzato"));
+		this.data.setRendered(false);
 		
 		_setPeriodo();
 		
@@ -106,6 +110,7 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 		this.cfVersanteODebitore.setName("cfVersanteODebitore");
 		this.cfVersanteODebitore.setDefaultValue(null);
 		this.cfVersanteODebitore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.cfVersanteODebitore"));
+		this.cfVersanteODebitore.setRendered(false);
 		//this.cfVersanteODebitore.setAutoComplete(true);
 		//	this.cfVersanteODebitore.setEnableManualInput(true);
 		//this.cfVersanteODebitore.setFieldsToUpdate(this.getIdForm() + "_formPnl");
@@ -115,11 +120,19 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 		this.statoDistinta.setName("statoDistinta");
 		this.statoDistinta.setValue(null);
 		this.statoDistinta.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.statoDistinta"));
+		this.statoDistinta.setRendered(false);
 		
 		this.cfEnteCreditore = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.cfEnteCreditore.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.cfEnteCreditore"));
 		this.cfEnteCreditore.setName("cfEnteCreditore");
 		this.cfEnteCreditore.setDefaultValue(null);
+		this.cfEnteCreditore.setRendered(false);
+		
+		this.iuv = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
+		this.iuv.setLabel(Utils.getInstance().getMessageFromResourceBundle("distinta.search.iuv"));
+		this.iuv.setName("search_iuv");
+		this.iuv.setDefaultValue(null);
+		
 	}
 
 	@Override
@@ -133,6 +146,7 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 		this.statoDistinta.reset();
 		this.dataPeriodo.reset();
 		this.data.reset();
+		this.iuv.reset();
 		_setPeriodo();
 		
 	}
@@ -275,6 +289,14 @@ public class DistintaSearchForm extends BaseSearchForm implements SearchForm, Se
 	public void setIdentificativiEnteCreditore(
 			List<String> identificativiEnteCreditore) {
 		this.identificativiEnteCreditore = identificativiEnteCreditore;
+	}
+
+	public Text getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(Text iuv) {
+		this.iuv = iuv;
 	}
 	
 	

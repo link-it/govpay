@@ -114,6 +114,13 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 	}
 
 	public String filtra(){
+		this.search.setNewSearch(true); 
+		this.showForm = false;
+		this.selectedId = null;
+		this.selectedIdDistinta = null;
+		this.selectedPagamentoId = null;
+		this.selectedPagamento = null;
+		this.selectedElement = null;
 		return "listaDistinte?faces-redirect=true";
 	}
 
@@ -141,6 +148,14 @@ public class DistintaMBean extends BaseMBean<DistintaBean, Long, DistintaSearchF
 
 	public String resetFiltro(){
 		this.search.reset();
+		this.search.reset();
+		
+		this.showForm = false;
+		this.selectedId = null;
+		this.selectedIdDistinta = null;
+		this.selectedPagamentoId = null;
+		this.selectedPagamento = null;
+		this.selectedElement = null;
 
 		return "listaDistinte?faces-redirect=true";
 	}

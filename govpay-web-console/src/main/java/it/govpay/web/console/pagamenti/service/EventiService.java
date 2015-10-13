@@ -248,6 +248,9 @@ public class EventiService extends BaseService<EventiSearchForm> implements IEve
 
 		filtro.setOffset(start);
 		filtro.setLimit(limit);
+		
+		// IUV
+		filtro.setIuv(this.form.getIuv().getValue()); 
 
 		return filtro;
 	}

@@ -99,6 +99,7 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 	}
 	
 	public String filtra(){
+		this.search.setNewSearch(true); 
 		return "listaEventi?faces-redirect=true";
 	}
 	

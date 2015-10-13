@@ -31,6 +31,39 @@
         </script>
 		<a4j:keepAlive beanName="distintaMBean" ajaxOnly="true" />
 		<rich:panel styleClass="noborder">
+			<op2web:form formBean="#{distintaMBean.search}">
+
+						<op2web:formField field="#{distintaMBean.search.dataPeriodo}" />
+
+						<op2web:formField field="#{distintaMBean.search.data}" />
+
+						<op2web:formField
+							field="#{distintaMBean.search.cfVersanteODebitore}" />
+
+						<op2web:formField field="#{distintaMBean.search.cfEnteCreditore}" />
+
+						<op2web:formField field="#{distintaMBean.search.statoDistinta}" />
+						
+						<op2web:formField field="#{distintaMBean.search.iuv}" />
+
+					<ui:define name="buttons">
+						<a4j:commandButton id="filtraButton"
+							value="#{msg['commons.button.filtra']}"
+							styleClass="icon-refresh" reRender="mainct"
+							status="mainStatus" action="#{distintaMBean.filtra}">
+						</a4j:commandButton>
+
+						<a4j:commandButton id="pulisciButton"
+							value="#{msg['commons.button.reset']}" reRender="mainct"
+							status="mainStatus" styleClass="icon-delete"
+							action="#{distintaMBean.resetFiltro}">
+						</a4j:commandButton>
+					</ui:define>
+
+				</op2web:form>
+			<br />
+			<br />
+		
 			<c:if test="#{empty rowsToDisplay}">
 				<c:set var="rowsToDisplay" value="#{distintaMBean.search.pageSize}" />
 			</c:if>
@@ -267,60 +300,6 @@
 
 		</rich:panel>
 
-
-
-		<rich:modalPanel id="searchDistintePanel" autosized="true" width="550"
-			height="250" style="overflow:auto;" showWhenRendered="false">
-			<f:facet name="header">
-				<h:outputText value="#{msg['commons.label.impostaFiltri']}" />
-			</f:facet>
-			<f:facet name="controls">
-				<h:panelGroup id="panelChiudi2">
-					<a href="#"
-						onclick="Richfaces.hideModalPanel('searchDistintePanel');">#{msg['commons.label.chiudi']}</a>
-				</h:panelGroup>
-			</f:facet>
-			<div class="form-container">
-				<op2web:form formBean="#{distintaMBean.search}">
-
-					<op2web:fieldset legend="#{msg['distinta.label.ricerca']}"
-						rendered="#{true}" collapsible="false" closed="false">
-
-						<op2web:formField field="#{distintaMBean.search.dataPeriodo}" />
-
-						<op2web:formField field="#{distintaMBean.search.data}" />
-
-						<op2web:formField
-							field="#{distintaMBean.search.cfVersanteODebitore}" />
-
-						<op2web:formField field="#{distintaMBean.search.cfEnteCreditore}" />
-
-						<op2web:formField field="#{distintaMBean.search.statoDistinta}" />
-
-					</op2web:fieldset>
-					<ui:define name="buttons">
-						<div class="buttonrow">
-							<a4j:commandButton id="filtraButton"
-								value="#{msg['commons.button.filtra']}"
-								styleClass="icon-refresh" reRender="mainct"
-								status="mainStatus" action="#{distintaMBean.filtra}">
-							</a4j:commandButton>
-
-							<a4j:commandButton id="pulisciButton"
-								value="#{msg['commons.button.reset']}" reRender="mainct"
-								status="mainStatus" styleClass="icon-delete"
-								action="#{distintaMBean.resetFiltro}">
-							</a4j:commandButton>
-						</div>
-					</ui:define>
-
-				</op2web:form>
-			</div>
-
-
-		</rich:modalPanel>
-
 	</ui:define>
-
 
 </ui:composition>

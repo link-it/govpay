@@ -329,6 +329,9 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 			EnumStatoDistinta statoD = EnumStatoDistinta.valueOf(periodo);
 			filtro.setStato(statoD);
 		}
+		
+		filtro.setIuv(form.getIuv().getValue()); 
+		log.debug("IDEnteCreditore["+form.getIuv()+"]");
 
 		return filtro;
 	}
