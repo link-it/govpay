@@ -125,10 +125,10 @@ public class DistintaEJB {
 					throw new GovPayException(GovPayExceptionEnum.IUSV_DUPLICATO, "La richiesta contiene due versamenti con lo stesso IUSV: " + singoloVersamento.getIusv() + ".");
 				}
 				
-				if (isIusvPagabile(pagamento.getIdentificativoBeneficiario(), datiVersamento.getTipoDebito(), singoloVersamento.getIusv())) {
+				if (!isIusvPagabile(pagamento.getIdentificativoBeneficiario(), datiVersamento.getTipoDebito(), singoloVersamento.getIusv())) {
 					throw new GovPayException(GovPayExceptionEnum.IUSV_DUPLICATO, "Lo IUSV " + singoloVersamento.getIusv() + " risulta pagato o in corso.");
 				}
-				iuvs.add(key);
+				iusvs.add(key);
 			}
 			
 			
@@ -676,7 +676,7 @@ public class DistintaEJB {
 	 */
 	public boolean existIuv(String idFiscaleCreditore, String iuv, String ccp) {
 		
-		String qlString = "select d from DistintaPagamento d where d.identificativoFiscaleCreditore = :idFiscaleCreditore and d.iuv in :iuv";
+		String qlString = "select d from DistintaPagamento d where d.identificativoFiscaleCreditore = :idFiscaleCreditore and d.iuv = :iuv";
 		if(ccp != null) 
 			qlString = qlString + " and d.codTransazionePSP = :ccp";
 		
@@ -691,9 +691,30 @@ public class DistintaEJB {
 		
 	}
 	
-	private boolean isIusvPagabile(String identificativoBeneficiario, String tipoDebito, String iusv) {
-		// TODO Auto-generated method stub
-		return true;
+	private boolean isIusvPagabile(String identificativoBeneficiario, String tipoDebito, String iusv) throws GovPayException {
+		
+		EnteCreditoreModel creditore = null;
+		try{
+			creditore = anagraficaEjb.getCreditoreByIdLogico(identificativoBeneficiario);
+		} catch (Exception e) {
+			log.error("Errore durante il recupero del creditore [" + identificativoBeneficiario + "]", e);
+			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+		}
+
+		String qlString = "select count(*) from Pendenza p "
+				+ "where p.tributoEnte.idEnte = :idEnte "
+				+ "and p.tributoEnte.cdTrbEnte = :cdTrbEnte "
+				+ "and p.idPendenzaente = :idPendenzaente "
+				+ "and p.tsAnnullamentoMillis = 0";
+		
+		Query query = entityManager.createQuery(qlString);
+
+		query.setParameter("idEnte", creditore.getIdEnteCreditore());
+		query.setParameter("cdTrbEnte", tipoDebito);
+		query.setParameter("idPendenzaente", iusv);
+		
+		Long count = (Long)query.getSingleResult();
+		return count.intValue() == 0;
 	}
 
 
