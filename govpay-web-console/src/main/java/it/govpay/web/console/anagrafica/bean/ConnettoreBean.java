@@ -21,17 +21,17 @@
  */
 package it.govpay.web.console.anagrafica.bean;
 
-import org.openspcoop2.generic_project.web.bean.IBean;
-import org.openspcoop2.generic_project.web.factory.FactoryException;
-import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
-import org.openspcoop2.generic_project.web.output.OutputGroup;
-import org.openspcoop2.generic_project.web.output.Text;
-
 import it.govpay.ejb.core.model.ConnettoreModel;
 import it.govpay.ejb.core.model.ConnettoreModel.EnumAuthType;
 import it.govpay.ejb.core.model.ConnettoreModel.EnumSslType;
 import it.govpay.ejb.core.model.ConnettorePddModel;
 import it.govpay.web.console.utils.Utils;
+
+import org.openspcoop2.generic_project.web.bean.IBean;
+import org.openspcoop2.generic_project.web.factory.FactoryException;
+import org.openspcoop2.generic_project.web.impl.jsf1.bean.BaseBean;
+import org.openspcoop2.generic_project.web.output.OutputGroup;
+import org.openspcoop2.generic_project.web.output.Text;
 
 public class ConnettoreBean extends BaseBean<ConnettoreModel, String> implements IBean<ConnettoreModel, String>{ 
 
@@ -72,13 +72,15 @@ public class ConnettoreBean extends BaseBean<ConnettoreModel, String> implements
 	}
 
 	public ConnettoreBean(String connettoreId){
+		
+		
 		if(connettoreId != null)
 			this.connettoreId  = connettoreId;
 		try{
 			init();
 		}catch(FactoryException e) {
 
-		}
+		} 
 	}
 
 	private void init() throws FactoryException {
@@ -180,6 +182,7 @@ public class ConnettoreBean extends BaseBean<ConnettoreModel, String> implements
 		this.fieldsAuthSsl.setStyleClass("beanTable"); 
 		this.fieldsAuthSsl.setColumnClasses("labelAllineataDx,valueAllineataSx");//,labelAllineataDx,valueAllineataSx");
 
+//		System.out.println(("[" + this.toString() + "] [" + this.connettoreId + "] Init"));
 	}
 
 	@Override
@@ -226,8 +229,14 @@ public class ConnettoreBean extends BaseBean<ConnettoreModel, String> implements
 			if(this.isConnettorePdd){
 				this.azioneInUrl.setValue(((ConnettorePddModel) this.getDTO()).isAzioneInUrl() ? Utils.getInstance().getMessageFromResourceBundle("commons.label.SI") : Utils.getInstance().getMessageFromResourceBundle("commons.label.NO"));
 				this.azioneInUrl.setRendered(true);
-			}else
+				this.abilitato.setRendered(false);
+			}else {
 				this.azioneInUrl.setRendered(false);
+				this.abilitato.setRendered(true);
+			}
+			
+			this.url.setRendered(true);
+			this.autenticazione.setRendered(true);
 
 			this.autenticazione.setValue(tipoAuthString);
 
@@ -251,14 +260,24 @@ public class ConnettoreBean extends BaseBean<ConnettoreModel, String> implements
 			this.sslTsLocation.setValue(this.getDTO().getSslTsLocation());
 			this.sslTsPasswd.setValue(this.getDTO().getSslTsPasswd());
 			this.sslType.setValue(this.getDTO().getSslType());
+			
+			
+			
 		} else {
 
 			this.fieldsAuthSsl.getFields().clear();
 			this.fieldsAuthHttp.getFields().clear();
-			this.fieldsDatiGenerali.getFields().clear();
-			this.fieldsDatiGenerali.addField(this.abilitato);
+			
+			this.abilitato.setRendered(true);
+			this.url.setRendered(false);
+			this.azioneInUrl.setRendered(false);
+			this.autenticazione.setRendered(false);
+			
+//			this.fieldsDatiGenerali.getFields().clear();
+//			this.fieldsDatiGenerali.addField(this.abilitato);
 		}
 
+//		System.out.println(("[" + this.toString() + "] [" + this.connettoreId + "] After setDTO Size["+this.fieldsDatiGenerali.getFields().size()+"]")); 
 	}
 
 	public boolean isConnettorePdd() {
@@ -277,17 +296,28 @@ public class ConnettoreBean extends BaseBean<ConnettoreModel, String> implements
 		this.isConnettorePdd = isConnettorePdd;
 
 		if(this.isConnettorePdd){
-			this.fieldsDatiGenerali.getFields().clear();
-			this.fieldsDatiGenerali.addField(this.url);
-			this.fieldsDatiGenerali.addField(this.azioneInUrl);
-			this.fieldsDatiGenerali.addField(this.autenticazione);
+			//this.fieldsDatiGenerali.getFields().clear();
+			this.abilitato.setRendered(false);
+			this.url.setRendered(true);
+			this.azioneInUrl.setRendered(true);
+			this.autenticazione.setRendered(true);
+			
+//			this.fieldsDatiGenerali.addField(this.url);
+//			this.fieldsDatiGenerali.addField(this.azioneInUrl);
+//			this.fieldsDatiGenerali.addField(this.autenticazione);
 		}else{
-			this.fieldsDatiGenerali.getFields().clear();
-			this.fieldsDatiGenerali.addField(this.abilitato);
-
-			this.fieldsDatiGenerali.addField(this.url);
-			this.fieldsDatiGenerali.addField(this.autenticazione);
+			this.abilitato.setRendered(true);
+			this.url.setRendered(true);
+			this.azioneInUrl.setRendered(false);
+			this.autenticazione.setRendered(true);
+			
+//			this.fieldsDatiGenerali.getFields().clear();
+//			this.fieldsDatiGenerali.addField(this.abilitato);
+//			this.fieldsDatiGenerali.addField(this.url);
+//			this.fieldsDatiGenerali.addField(this.autenticazione);
 		}
+		
+//		System.out.println(("[" + this.toString() + "] [" + this.connettoreId + "] After setConnettorePdd Size["+this.fieldsDatiGenerali.getFields().size()+"]"));
 	}
 
 	public Text getAutenticazione() {
@@ -403,6 +433,13 @@ public class ConnettoreBean extends BaseBean<ConnettoreModel, String> implements
 	}
 
 	public OutputGroup getFieldsDatiGenerali() {
+		
+//		System.out.println(("GETFIELDS [" + this.toString() + "] [" + this.connettoreId + "] Size["+this.fieldsDatiGenerali.getFields().size()+"]")); 
+//		for (OutputField<?> field : this.fieldsDatiGenerali.getFields()) {
+//			System.out.println(("Field [" + field.getName() + "] Rendered ["+field.isRendered()+"] Value ["+field.getValue()+"]"));	
+//		}
+		 
+		
 		return fieldsDatiGenerali;
 	}
 

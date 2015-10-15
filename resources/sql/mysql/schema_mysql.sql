@@ -203,7 +203,7 @@ CREATE TABLE `cfg_commissione_pagamento` (
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_CFG_TIPO_COMMISSIONE` FOREIGN KEY (`ID_CFG_TIPO_COMMISSIONE`) REFERENCES `cfg_tipo_commissione` (`ID`)  ,
   CONSTRAINT `FK_CFG_GATEWAY_PAGAMENTO_1` FOREIGN KEY (`ID_CFG_GATEWAY_PAGAMENTO`) REFERENCES `cfg_gateway_pagamento` (`ID`)  
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- TABELLE DI PROFILAZIONE
@@ -1032,7 +1032,7 @@ CREATE TABLE `esportazioni` (
   `TS_AGGIORNAMENTO` datetime DEFAULT NULL,
   `VERSION` int(11) NOT NULL,
   PRIMARY KEY (`ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 
@@ -1128,7 +1128,7 @@ CREATE TABLE gde_infospcoop
 	-- fk/pk columns
 	-- fk/pk keys constraints
 	CONSTRAINT pk_gde_infospcoop PRIMARY KEY (id_egov)
-)ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+)ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 --
 -- Table structure for table gde_eventi 

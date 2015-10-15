@@ -68,7 +68,12 @@ public class NotificaTimer {
 			log.info("Spedizione delle Notifiche");
 			
 			List<ScadenzarioModel> scadenzari = anagraficaEjb.getScadenzari(ente.getIdEnteCreditore());
+			
 			for(ScadenzarioModel scadenzario : scadenzari) {
+				if(scadenzario.getConnettoreNotifica() == null) {
+					log.warn("Lo scadenzario " + scadenzario.getDescrizione() + " non ha un connettore per le notifiche configurato.");
+					continue;
+				}
 				try {
 					pagamentiCtrl.inviaNotifiche(ente.getIdEnteCreditore(), scadenzario);
 				} catch (GovPayException e) {

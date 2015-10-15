@@ -67,7 +67,7 @@ public class EventiSearchForm  extends BaseSearchForm implements SearchForm,Clon
 	public void init() throws FactoryException{
 		// Properties del form
 		this.setId("formEventi");
-		this.setNomeForm("Ricerca Eventi");
+		this.setNomeForm("Filtri di Ricerca");
 		this.setClosable(true);
 		this.setRendered(true); 
 		
@@ -77,11 +77,13 @@ public class EventiSearchForm  extends BaseSearchForm implements SearchForm,Clon
 		this.data.setDefaultValue2(null);
 		this.data.setInterval(true);
 		this.data.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.data"));
+		this.data.setRendered(false); 
 		
 		this.dominio = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.dominio.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.dominio"));
 		this.dominio.setName("dominio");
 		this.dominio.setDefaultValue(null);
+		this.dominio.setRendered(false); 
 		
 		this.iuv = this.getWebGenericProjectFactory().getInputFieldFactory().createText();
 		this.iuv.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.iuv"));
@@ -92,21 +94,26 @@ public class EventiSearchForm  extends BaseSearchForm implements SearchForm,Clon
 		this.ccp.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.ccp"));
 		this.ccp.setName("ccp");
 		this.ccp.setDefaultValue(null);
+		this.ccp.setRendered(false); 
 		
 		this.categoria = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.categoria.setName("categoria");
 		this.categoria.setValue(null);
 		this.categoria.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.categoria"));
+		this.categoria.setRendered(false); 
 		
 		this.tipo = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.tipo.setName("tipo");
 		this.tipo.setValue(null);
 		this.tipo.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.tipo"));
+		this.tipo.setRendered(false); 
 		
 		this.sottoTipo = this.getWebGenericProjectFactory().getInputFieldFactory().createSelectList();
 		this.sottoTipo.setName("sottoTipo");
 		this.sottoTipo.setValue(null);
 		this.sottoTipo.setLabel(Utils.getInstance().getMessageFromResourceBundle("eventi.search.sottoTipo"));
+		this.sottoTipo.setRendered(false); 
+		
 		
 	}
 	

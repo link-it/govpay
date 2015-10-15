@@ -66,10 +66,10 @@ public class GovPayExceptionMapper implements ExceptionMapper<GovPayException>{
     	case ERRORE_ENTE_WEB:
     	case ENTE_NON_TROVATO:
     	case STORNO_NON_CONSENTITO:
+    	case IUV_NON_TROVATO:
     		errore.setCodiceErrore(e.getTipoException().name());
 		break;
     	case ERRORE_INTERNO:
-    	case IUV_NON_TROVATO:
     		errore.setCodiceErrore(GovPayExceptionEnum.ERRORE_INTERNO.name());
     	break;	
     	case ERRORE_NDP:

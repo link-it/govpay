@@ -51,14 +51,6 @@
 			<to-view-id>/pages/pagamenti/tracking/list/listaTracking.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>nuovoPagamento</from-outcome>
-			<to-view-id>/pages/pagamenti/nuovo/form/nuovoPagamento.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>esito</from-outcome>
-			<to-view-id>/pages/pagamenti/nuovo/form/esito.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
 			<from-outcome>listaPsp</from-outcome>
 			<to-view-id>/pages/anagrafica/psp/list/listaPsp.xhtml</to-view-id>
 		</navigation-case>
@@ -77,10 +69,6 @@
 		<navigation-case>
 			<from-outcome>intermediaroNdp</from-outcome>
 			<to-view-id>/pages/anagrafica/intermediarindp/form/intermediarioNdp.xhtml</to-view-id>
-		</navigation-case>
-		<navigation-case>
-			<from-outcome>scadenzarioRemoto</from-outcome>
-			<to-view-id>/pages/simulazione/scadenzarioremoto/list/scadenzarioRemoto.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-outcome>logout</from-outcome>

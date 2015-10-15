@@ -36,6 +36,7 @@
 			href="#{facesContext.externalContext.request.contextPath}/css/icons.css"
 			rel="stylesheet" type="text/css" />
 		<script type="text/javascript" src="#{facesContext.externalContext.request.contextPath}/scripts/jquery.collapsible.js"></script>
+		<script type="text/javascript" src="#{facesContext.externalContext.request.contextPath}/scripts/jquery.sticky.js"></script>
 		<script type="text/javascript">
 	       A4J.AJAX.onExpired = function(loc, expiredMsg){
 				return loc;
@@ -115,6 +116,8 @@
 					if(jQuery.browser.version=="6.0")
 						jQuery("a[id*='iconLink']").addClass('iconLink');
 				}
+
+				jQuery("[id$='menuct']").sticky({topSpacing:10});
 			 });
 		</script>
 		<h:panelGrid  style="width:100%;">
@@ -130,26 +133,34 @@
 				</rich:layoutPanel>
 
 				<rich:layoutPanel id="body" position="center" >
-					<a4j:outputPanel id="errorsPlaceHolder" ajaxRendered="true">
-							<h:panelGroup layout="block" styleClass="#{facesContext.maximumSeverity.ordinal>=2 ? 'errors' : 'info'}" rendered="#{not empty facesContext.maximumSeverity}">
+					<a4j:outputPanel id="errorsPlaceHolder" ajaxRendered="true" layout="block" styleClass="errorsPlaceHolder">
+						<script type="text/javascript">
+							function runEffect(elem) {
+					            jQuery("#errorsPlaceHolder").fadeOut(2000).hide();
+			        		};
+
+							 jQuery(document).ready(function() {
+								jQuery("#pgErrorsPlaceHolder").click(function() {
+							        runEffect(this);
+							        return false;
+						        });
+
+								window.setTimeout(function() {  
+									jQuery("#errorsPlaceHolder").fadeOut(2000).hide();
+					             }, 5000);  		        
+							 });
+						</script>
+						<h:panelGroup layout="block" styleClass="#{facesContext.maximumSeverity.ordinal>=2 ? 'errors' : 'info'}" rendered="#{not empty facesContext.maximumSeverity}" id="pgErrorsPlaceHolder">
 							<h:panelGroup rendered="#{facesContext.maximumSeverity.ordinal>=2}">
 								<p>
-									<em> <h:outputText
-											value="#{msg['homepage.logged.msgError']}:" />
+									<em> 
+										<h:outputText value="#{msg['homepage.logged.msgError']}" />
 									</em>
 								</p>
 							</h:panelGroup>
 							<rich:spacer height="7px" />
 							<rich:messages id="errorMessages">
-								<f:facet name="errorMarker">
-									<h:graphicImage value="/images/msgerror.png" alt="Error"/>
-								</f:facet>
-								<f:facet name="infoMarker">
-									<h:graphicImage value="/images/msginfo.png" alt="Info"/>
-								</f:facet>
-								<f:facet name="warnMarker">
-									<h:graphicImage value="/images/msgwarn.png" alt="Warning"/>
-								</f:facet>
+								
 							</rich:messages>
 						</h:panelGroup>
 					</a4j:outputPanel>

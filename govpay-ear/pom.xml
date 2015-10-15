@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>1.0b3</version>
+		<version>1.0-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>govpay-ear</artifactId>
@@ -61,6 +61,12 @@
 	</dependencies>
 
 	<build>
+		<resources>
+		  <resource>
+		    <directory>src/main/application</directory>
+		    <filtering>true</filtering>
+		  </resource>
+		</resources>
 	
 		<finalName>govpay</finalName>
 		
@@ -96,8 +102,8 @@
 				<groupId>org.jboss.as.plugins</groupId>
 				<artifactId>jboss-as-maven-plugin</artifactId>
 				<configuration>
-        	        		<hostname>localhost</hostname>
-				        <port>9999</port>
+        	        <hostname>localhost</hostname>
+				    <port>9999</port>
 					<skip>false</skip>
 				</configuration>
 			</plugin>

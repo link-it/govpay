@@ -40,7 +40,13 @@
 	
 	<xs:complexType name="DatiSingoloVersamento">
 		<xs:sequence>
-			<xs:element name="iusv" type="xs:string" />
+			<xs:element name="iusv">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="35" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
 			<xs:element name="importoSingoloVersamento" type="xs:decimal" />
 			<xs:element name="ibanAccredito" type="IbanIdentifier" />
 			<xs:element name="causaleVersamento" type="xs:string" />

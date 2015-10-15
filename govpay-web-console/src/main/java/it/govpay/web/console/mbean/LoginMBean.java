@@ -24,7 +24,6 @@ package it.govpay.web.console.mbean;
 import it.govpay.ejb.core.model.OperatoreModel;
 import it.govpay.web.console.GovPayWebConsoleConversationManager;
 import it.govpay.web.console.facade.LoginFacade;
-import it.govpay.web.console.utils.GovpayWebConsoleConfiguration;
 
 import java.io.Serializable;
 
@@ -130,9 +129,5 @@ public class LoginMBean extends LoginBean implements Serializable{
 
 	public void setLoggedUtente(OperatoreModel loggedUtente) {
 		this.loggedOperatore = loggedUtente;
-	}
-	
-	public boolean isShowSimulazione() {
-		return GovpayWebConsoleConfiguration.isShowSimulazione();
 	}
 }

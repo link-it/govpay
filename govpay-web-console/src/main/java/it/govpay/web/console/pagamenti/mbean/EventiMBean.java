@@ -73,7 +73,7 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 	
 	private String tipoExport = null;
 	
-	private Long selectedId = null;
+	private String selectedIdEvento = null;
 	
 	public EventiMBean (){
 		super(org.apache.log4j.Logger.getLogger(EventiMBean.class)); 
@@ -95,9 +95,11 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 		this.search = search;
 		this.selectedElement = null;
 		this.selectedId = null;
+		this.selectedIdEvento = null;
 	}
 	
 	public String filtra(){
+		this.search.setNewSearch(true); 
 		return "listaEventi?faces-redirect=true";
 	}
 	
@@ -110,6 +112,8 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 		
 		this.search.reset();
 		((EventiSearchForm)this.search).setFiltroSet("true");
+		
+		this.tipoExport = null;
 		
 		return "listaEventi";
 	}
@@ -266,19 +270,19 @@ public class EventiMBean extends BaseMBean<EventoBean,Long, EventiSearchForm> im
 		this.tipoExport = tipoExport;
 	}
 
-	public Long getSelectedId() {
-		return selectedId;
+	public String getSelectedIdEvento() {
+		return selectedIdEvento;
 	}
 
-	public void setSelectedId(Long selectedId) {
-		this.log.debug("Selected Id ["+selectedId+"]");
-				
-		this.selectedId = selectedId;
+	public void setSelectedIdEvento(String selectedIdEvento) {
+		this.selectedIdEvento = selectedIdEvento;
 		
-		if(selectedId!= null){
+		this.log.debug("Selected Id ["+selectedIdEvento+"]");
+		
+		if(selectedIdEvento!= null){
 			try {
-				EventoBean findById = this.service.findById(selectedId);
-				
+				this.selectedId = new Long(this.selectedIdEvento);
+				EventoBean findById = this.service.findById(this.selectedId);
 				this.setSelectedElement(findById); 
 			} catch (ServiceException e) {
 				log.error("Errore durante la lettura dell'evento con Id ["+this.selectedId+"]: "+ e.getMessage(), e); 

@@ -305,7 +305,8 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 		log.debug("Offset["+start+"], Limit["+limit+"]");
 
 		//Imposto le date
-		impostaDate(form, filtro);
+		//impostaDate(form, filtro);
+		log.debug("Imposta date [DISABILITATO]");
 
 
 		// cfentecreditore
@@ -328,6 +329,9 @@ public class DistintaService extends BaseService<DistintaSearchForm> implements 
 			EnumStatoDistinta statoD = EnumStatoDistinta.valueOf(periodo);
 			filtro.setStato(statoD);
 		}
+		
+		filtro.setIuv(form.getIuv().getValue()); 
+		log.debug("IDEnteCreditore["+form.getIuv()+"]");
 
 		return filtro;
 	}

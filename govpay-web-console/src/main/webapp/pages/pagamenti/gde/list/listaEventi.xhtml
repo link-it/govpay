@@ -21,9 +21,9 @@
 	<ui:define name="body">
 		<a4j:keepAlive beanName="eventiMBean" ajaxOnly="true" />
 		
-		<op2web:form formBean="#{eventiMBean.search}">
+		<op2web:form formBean="#{eventiMBean.search}" rendered="true">
 			<!-- DATA  -->
-			<op2web:formField field="#{eventiMBean.search.data}" />
+			<op2web:formField field="#{eventiMBean.search.data}"  />
 			<!-- Dominio  -->
 			<op2web:formField field="#{eventiMBean.search.dominio}" />
 			<!-- IUV -->
@@ -38,17 +38,15 @@
 			<op2web:formField field="#{eventiMBean.search.sottoTipo}" />
 		
 			<ui:define name="buttons">
-				<div class="buttonrow">
-					<a4j:commandButton id="filtraButton" value="#{msg['commons.button.filtra']}"
-						styleClass="icon-refresh" reRender="mainct,menuct"
-						status="mainStatus" action="#{eventiMBean.filtra}">
-					</a4j:commandButton>
+				<a4j:commandButton id="filtraButton" value="#{msg['commons.button.filtra']}"
+					styleClass="icon-refresh" reRender="mainct,panelContainer"
+					status="mainStatus" action="#{eventiMBean.filtra}">
+				</a4j:commandButton>
 
-					<a4j:commandButton id="pulisciButton" value="#{msg['commons.button.reset']}"
-						reRender="mainct,menuct" status="mainStatus"
-						styleClass="icon-delete" action="#{eventiMBean.resetFiltro}">
-					</a4j:commandButton>
-				</div>	
+				<a4j:commandButton id="pulisciButton" value="#{msg['commons.button.reset']}"
+					reRender="mainct" status="mainStatus"
+					styleClass="icon-delete" action="#{eventiMBean.resetFiltro}">
+				</a4j:commandButton>
 			</ui:define>
 		</op2web:form>
 		<br />
@@ -90,7 +88,7 @@
 						<h:panelGroup>
 							<a4j:commandLink id="dettaglio_btn" action="dettaglioEvento"
 								ajaxSingle="true">
-									<a4j:actionparam assignTo="#{eventiMBean.selectedId}" name="selectedId" value="#{item.DTO.id}" />
+									<a4j:actionparam assignTo="#{eventiMBean.selectedIdEvento}" name="selectedIdEvento" value="#{item.DTO.id}" />
 								<h:graphicImage value="/images/sh/magnifier.png" width="16"
 									height="16" title="#{msg['commons.button.dettaglioTitle']}" />
 							</a4j:commandLink>

@@ -30,7 +30,7 @@
 			<rich:panelMenu expandMode="none" mode="server">
 				<rich:panelMenuGroup label="#{msg['menu.group.pagamenti']}"
 					expanded="true">
-					<rich:panelMenuItem id="menuLinkp1" reRender="menuct,mainct"
+					<rich:panelMenuItem id="menuLinkp1" reRender="mainct"
 						label="#{msg['menu.group.pagamenti.eseguiti']}"
 						action="#{distintaMBean.menuAction}" />
 				</rich:panelMenuGroup>
@@ -43,17 +43,6 @@
 						action="listaTracking" />
 					<rich:panelMenuItem id="menuLinkp4"
 						label="#{msg['menu.group.monitoraggio.gde']}" action="#{eventiMBean.menuAction}" />
-				</rich:panelMenuGroup>
-			</rich:panelMenu>
-			<rich:panelMenu expandMode="none" mode="server" rendered="#{loginBean.showSimulazione}">
-				<rich:panelMenuGroup label="#{msg['menu.group.simulazione']}"
-					expanded="true">
-					<rich:panelMenuItem id="menuLinkNuovoPag"
-						label="#{msg['menu.group.simulazione.nuovo']}"
-						action="#{nuovoPagamentoMBean.menuAction}" />
-						<rich:panelMenuItem id="menuLinkScadRemoto"
-						label="#{msg['menu.group.simulazione.scadenzarioRemoto']}"
-						action="#{scadenzarioRemotoMBean.menuAction}" />
 				</rich:panelMenuGroup>
 			</rich:panelMenu>
 		</rich:panel>

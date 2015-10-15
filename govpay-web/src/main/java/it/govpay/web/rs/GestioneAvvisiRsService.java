@@ -54,7 +54,7 @@ public class GestioneAvvisiRsService {
 	
 	@POST
 	@Path("/nuovoAvviso")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces({MediaType.APPLICATION_OCTET_STREAM, "application/pdf"})
 	public Response generaAvviso(RichiestaAvviso richiestaAvviso) throws GovPayException {
 		ThreadContext.put("proc", "GeneraAvviso");
 		ThreadContext.put("dom", richiestaAvviso.getIdentificativoBeneficiario());

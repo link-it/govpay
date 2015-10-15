@@ -143,7 +143,7 @@ extends BaseListView<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm,Inte
 		String msg = this.form.valida();
 
 		if(msg!= null){
-			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.erroreValidazione")+": " + msg);
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.form.erroreValidazione")+": " + msg);
 			return null;
 		}
 
@@ -154,8 +154,8 @@ extends BaseListView<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm,Inte
 				IntermediarioNdpBean oldInt = ((IIntermediarioNdpService) this.service).findById(this.form.getIdIntermediarioPA().getValue());
 
 				if(oldInt!= null){
-					MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.erroreValidazione") +
-							": " +Utils.getInstance().getMessageWithParamsFromResourceBundle("intermediario.form.intermediarioEsistente",this.form.getIdIntermediarioPA().getValue()));
+					MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.form.erroreValidazione") +
+							": " +Utils.getInstance().getMessageWithParamsFromResourceBundle("intermediariNdp.form.intermediarioEsistente",this.form.getIdIntermediarioPA().getValue()));
 					return null;
 				}
 			} else {
@@ -167,14 +167,14 @@ extends BaseListView<IntermediarioNdpBean, Long, IntermediarioNdpSearchForm,Inte
 			bean.setDTO(newDip);
 
 			((IIntermediarioNdpService)this.service).store(oldId,bean);
-			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.salvataggioOk"));
+			MessageUtils.addInfoMsg(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.form.salvataggioOk"));
 			
 			this.setSelectedElement(bean);
 
 //			return null;//"invia";
 		}catch(Exception e){
 			log.error("Si e' verificato un errore durante il salvataggio dell'intermediario: " + e.getMessage(), e);
-			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediario.form.erroreGenerico"));
+			MessageUtils.addErrorMsg(Utils.getInstance().getMessageFromResourceBundle("intermediariNdp.form.erroreGenerico"));
 //			return null;
 		}
 		return "listaIntermediariNdp?faces-redirect=true";

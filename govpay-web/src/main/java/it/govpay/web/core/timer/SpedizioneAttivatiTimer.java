@@ -47,19 +47,17 @@ public class SpedizioneAttivatiTimer {
 	@Inject  
 	private transient Logger log;
 
-	@Schedule(hour="*", minute="*/1", persistent=false)
+	@Schedule(hour="*", minute="*", second="*/5", persistent=false)
 	public void doWork(){
 		ThreadContext.put("proc", "SpedizioneAttivati");
     	ThreadContext.put("dom", null);
     	ThreadContext.put("iuv", null);
     	ThreadContext.put("ccp", null);
-		//log.info("Attivazione SpedizioneAttivatiTimer.");
 
 		// Per ciascun ente
 		List<EnteCreditoreModel> enti = anagraficaEjb.getEntiCreditori();
 
 		for(EnteCreditoreModel ente : enti) {
-			//log.info("Gestione pagamenti attivati per il creditore " + ente.getDenominazione() + " ("+ ente.getIdEnteCreditore() + ")");
 			try {
 				rptCtrl.spedizioneAttivati(ente);
 			} catch (GovPayException e) {

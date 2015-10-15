@@ -21,23 +21,21 @@
  */
 package it.govpay.web.console.pagamenti.gde.exporter;
 
-import it.govpay.web.console.pagamenti.form.EventiSearchForm;
 import it.govpay.web.console.pagamenti.iservice.IEventiService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 /****
  * 
@@ -60,14 +58,17 @@ public class EventiExporter extends HttpServlet{
 	 * 
 	 */
 	private static final long serialVersionUID = 1314905657194691373L;
-	private static Logger log = LogManager.getLogger(EventiExporter.class);
+	@Inject
+	private Logger log;
 
+	@Inject @Named("eventiService")
+	private IEventiService service; 
 	
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		
-		log.debug("TEST");
+		log.debug("Eventi Exporter Start...");
 	}
 
 	@Override
@@ -87,19 +88,13 @@ public class EventiExporter extends HttpServlet{
 	private void processRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException,IOException{
 		try{
 
-			ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
+//			ApplicationContext context = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
 
-			IEventiService service = (IEventiService)context.getBean("eventiService");
+//			  service = (IEventiService)context.getBean("eventiService");
 
-			EventiSearchForm sfInSession =
-
-					(EventiSearchForm)context.getBean("searchFormEventi");
-			EventiSearchForm searchForm = 
-					(EventiSearchForm)sfInSession.clone();
-
-
-
-			service.setForm(searchForm);
+//			EventiSearchForm sfInSession = 	(EventiSearchForm)context.getBean("searchFormEventi");
+//			EventiSearchForm searchForm = (EventiSearchForm)sfInSession.clone();
+//			service.setForm(searchForm);
 
 			// Then we have to get the Response where to write our file
 			HttpServletResponse response = resp;
@@ -141,10 +136,10 @@ public class EventiExporter extends HttpServlet{
 
 
 		}catch(IOException se){
-			EventiExporter.log.error(se,se);
+			this.log.error(se,se);
 			throw se;
 		} catch(Exception e){
-			EventiExporter.log.error(e,e);
+			this.log.error(e,e);
 			throw new ServletException(e);
 		}
 	}

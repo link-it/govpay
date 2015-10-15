@@ -105,6 +105,9 @@
 	<listener>
 		<listener-class>com.sun.faces.config.ConfigureListener</listener-class>
 	</listener>
+	<listener>
+		<listener-class>it.govpay.web.console.listener.WeldListener</listener-class>
+	</listener>
 
 
 
@@ -161,6 +164,16 @@
 		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+		<servlet>
+		<servlet-name>eventiexporter</servlet-name>
+		<servlet-class>it.govpay.web.console.pagamenti.gde.exporter.EventiExporter</servlet-class>
+	</servlet>
+
+
+	<servlet-mapping>
+		<servlet-name>eventiexporter</servlet-name>
+		<url-pattern>/eventiexporter</url-pattern>
+	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>Faces Servlet</servlet-name>
@@ -174,15 +187,15 @@
 
 <error-page>
     <exception-type>javax.servlet.ServletException</exception-type>
-    <location>/pages/error.jsf</location>
+    <location>/pages/error.jsf?nocid=true</location>
 </error-page>
 <error-page>
     <exception-type>org.jboss.weld.context.NonexistentConversationException</exception-type>
-    <location>/pages/pagamenti/eseguiti/list/listaDistinte.xhtml?nocid=true</location>
+    <location>/pages/pagamenti/eseguiti/list/listaDistinte.jsf?nocid=true</location>
 </error-page>
 <error-page>
     <exception-type>javax.enterprise.context.NonexistentConversationException</exception-type>
-    <location>/pages/pagamenti/eseguiti/list/listaDistinte.xhtml?nocid=true</location>
+    <location>/pages/pagamenti/eseguiti/list/listaDistinte.jsf?nocid=true</location>
 </error-page>
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
