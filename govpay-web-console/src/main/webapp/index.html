@@ -1,0 +1,312 @@
+<!doctype html>
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<html lang="">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="GovPay 2.0"/>
+    <title>GovPay 2.0 RC1</title>
+    <!-- Place favicon.ico in the `app/` directory -->
+
+    <!-- Chrome for Android theme color -->
+    <meta name="theme-color" content="#2E3AA1">
+
+    <!-- Web Application Manifest -->
+    <link rel="manifest" href="manifest.json">
+
+    <!-- Tile color for Win8 -->
+    <meta name="msapplication-TileColor" content="#3372DF">
+
+    <!-- Add to homescreen for Chrome on Android -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="PSK">
+    <link rel="icon" sizes="192x192" href="images/touch/chrome-touch-icon-192x192.png">
+
+    <!-- Add to homescreen for Safari on iOS -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="GovPay 2.0">
+    <link rel="apple-touch-icon" href="images/touch/apple-touch-icon.png">
+
+    <!-- Tile icon for Win8 (144x144) -->
+    <meta name="msapplication-TileImage" content="images/touch/ms-touch-icon-144x144-precomposed.png">
+
+    <!-- build:css styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild-->
+
+    <!-- CSS LINK-->
+    <link rel="stylesheet" href="styles/link.css">
+
+    <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <!-- endbuild -->
+
+    <!-- will be replaced with elements/elements.vulcanized.html -->
+    <link rel="import" href="elements/elements.html">
+    <!-- endreplace-->
+
+    <!-- For shared styles, shared-styles.html import in elements.html -->
+    <style is="custom-style" include="shared-styles"></style>
+
+</head>
+
+<body unresolved class="fullbleed layout vertical">
+<span id="browser-sync-binding"></span>
+<template is="dom-bind" id="app">
+    <link-edit-intermediario id="lei" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+                             on-reload-item="_reloadItem"></link-edit-intermediario>
+    <edit-dominio id="editDominio" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+                  on-reload-item="_reloadItem"></edit-dominio>
+    <edit-ente id="editEnte" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+               on-reload-item="_reloadItem"></edit-ente>
+    <edit-applicazione id="editApplicazione" modal entry-animation="scale-up-animation"
+                       exit-animation="scale-down-animation" on-reload-item="_reloadItem"></edit-applicazione>
+    <edit-tributo id="editTributo" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+                  on-reload-item="_reloadItem"></edit-tributo>
+    <iron-ajax auto="false"
+               id="govpayconnprofilo"
+               url="{{govpayUrlOperatore}}"
+               params=""
+               handle-as="json"
+               on-response="_visualizzaInformazioniProfilo"
+               on-error="_visualizzaErroreGetProfilo">
+    </iron-ajax>
+
+    <paper-drawer-panel id="paperDrawerPanel">
+        <!-- Drawer Scroll Header Panel -->
+        <paper-scroll-header-panel drawer fixed>
+
+            <!-- Drawer Toolbar -->
+            <paper-toolbar id="drawerToolbar">
+                <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'profilo')]]">
+                    <paper-icon-item>
+                        <iron-image class="avatar" src="images/link.png" item-icon sizing="cover"></iron-image>
+                        <div>[[profiloCorrente.principal]]</div>
+                            <paper-menu-button   horizontal-align="left" id="profiloOperatoreMenu">
+                                <paper-icon-button icon="icons:arrow-drop-down" class="dropdown-trigger"></paper-icon-button>
+                                <paper-menu class="dropdown-content" attr-for-selected="action">
+                                    <!-- <paper-item action="Preferenze">Preferenze</paper-item> -->
+                                    <a href="[[govpayUrlLogout]]">Logout</a>
+                                </paper-menu>
+                            </paper-menu-button>
+                    </paper-icon-item>
+                </template>
+            </paper-toolbar>
+
+            <!-- Drawer Content -->
+            <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
+                <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'pagamenti')]]">
+                    <paper-submenu>
+                        <paper-item class="menu-trigger">Pagamenti</paper-item>
+                        <paper-menu class="menu-content">
+                            <paper-item>
+                                <a data-route="pagamenti" href="/pagamenti" comp="listaPagamenti"
+                                   on-tap="onDataRouteClick">Pagamenti</a>
+                            </paper-item>
+                            <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'rendicontazioni')]]">
+                                <paper-item>
+                                    <a data-route="rendicontazioni" href="/rendicontazioni" comp="listaRendicontazioni"
+                                       on-tap="onDataRouteClick">Rendicontazioni</a>
+                                </paper-item>
+                            </template>
+                            <paper-item>
+                                <a data-route="eventi" href="/eventi" comp="listaEventi" on-tap="onDataRouteClick">Giornale
+                                    degli Eventi</a>
+                            </paper-item>
+                        </paper-menu>
+                    </paper-submenu>
+                </template>
+                <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'anagraficaNdp')]]">
+                    <paper-submenu>
+                        <paper-item class="menu-trigger">Anagrafica NdP</paper-item>
+                        <paper-menu class="menu-content">
+                            <paper-item>
+                                <a data-route="intermediari" href="/intermediari" comp="lci"
+                                   on-tap="onDataRouteClick">Intemediari</a>
+                            </paper-item>
+                            <paper-item>
+                                <a data-route="domini" href="/domini" comp="configurazioneDomini"
+                                   on-tap="onDataRouteClick">Domini</a>
+                            </paper-item>
+                            <paper-item>
+                                <a data-route="psp" href="/psp" comp="configurazionePsp"
+                                   on-tap="onDataRouteClick">Psp</a>
+                            </paper-item>
+                        </paper-menu>
+                    </paper-submenu>
+                </template>
+                <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'anagraficaCreditore')]]">
+                    <paper-submenu>
+                        <paper-item class="menu-trigger">Anagrafica Creditore</paper-item>
+                        <paper-menu class="menu-content">
+                            <paper-item>
+                                <a data-route="enti" href="/enti" comp="configurazioneEnti" on-tap="onDataRouteClick">Enti</a>
+                            </paper-item>
+                            <paper-item>
+                                <a data-route="tributi" href="/tributi" comp="configurazioneTributi"
+                                   on-tap="onDataRouteClick">Tributi</a>
+                            </paper-item>
+                            <paper-item>
+                                <a data-route="applicazioni" href="/applicazioni" comp="configurazioneApplicazioni"
+                                   on-tap="onDataRouteClick">Applicazioni</a>
+                            </paper-item>
+                            <!--
+                            <paper-item>
+                              <a data-route="contact" href="/operatori" comp="listaOperatori" on-tap="onDataRouteClick">Operatori</a>
+                            </paper-item>
+
+                            -->
+                        </paper-menu>
+                    </paper-submenu>
+                </template>
+                <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'operazioni')]]">
+                    <paper-submenu>
+                        <paper-item class="menu-trigger">Operazioni</paper-item>
+                        <paper-menu class="menu-content">
+                            <paper-item>
+                                <a data-route="eventi" href="/operazioni" comp="listaOperazioni"
+                                   on-tap="onDataRouteClick">Operazioni</a>
+                            </paper-item>
+                        </paper-menu>
+                    </paper-submenu>
+                </template>
+            </paper-menu>
+            <!--</paper-menu>-->
+        </paper-scroll-header-panel>
+
+        <!-- Main Area -->
+        <paper-scroll-header-panel main condenses keep-condensed-header>
+
+            <!-- Main Toolbar -->
+            <paper-toolbar id="mainToolbar">
+                <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle
+                                   hidden$="[[!isFirstPage]]"></paper-icon-button>
+                <paper-icon-button id="arrow-back" icon="arrow-back" hidden$="[[isFirstPage]]"
+                                   on-tap="_goBack"></paper-icon-button>
+                <span class="flex"></span>
+
+                <!-- Toolbar icons -->
+                <template is="dom-if" if="[[isEditSection]]">
+                    <paper-icon-button id="new" icon="add" hidden$="[[!isFirstPage]]"
+                                       on-tap="_nuovoElemento"></paper-icon-button>
+                    <paper-icon-button id="new" icon="create" hidden$="[[isFirstPage]]"
+                                       on-tap="_modificaElemento"></paper-icon-button>
+                    <!--paper-icon-button id="new" icon="notification:do-not-disturb" hidden$="[[isFirstPage]]" on-tap="_disabilitaIntermediario"></paper-icon-button-->
+                </template>
+
+                <!-- Application name -->
+                <div class="middle middle-container center horizontal layout">
+                    <div class="app-name">GovPay Enterprise v2.0.RC1</div>
+                </div>
+
+                <!-- Application sub title -->
+                <!-- <div class="bottom bottom-container center horizontal layout">
+                  <div class="bottom-title paper-font-subhead">v2.0.m1</div>
+                </div> -->
+
+            </paper-toolbar>
+
+            <!-- Main Content -->
+            <div class="content">
+                <iron-pages attr-for-selected="data-route" selected="{{route}}">
+
+                    <section data-route="intermediari">
+                        <link-configurazione-intermediari id="lci"
+                                                          on-changed-page="_changedPage"></link-configurazione-intermediari>
+                    </section>
+
+                    <section data-route="domini">
+                        <configurazione-domini id="configurazioneDomini"
+                                               on-changed-page="_changedPage"></configurazione-domini>
+                    </section>
+
+                    <section data-route="psp">
+                        <configurazione-psp id="configurazionePsp" on-changed-page="_changedPage"></configurazione-psp>
+                    </section>
+
+                    <section data-route="enti">
+                        <configurazione-enti id="configurazioneEnti"
+                                             on-changed-page="_changedPage"></configurazione-enti>
+                    </section>
+
+                    <section data-route="applicazioni">
+                        <configurazione-applicazioni id="configurazioneApplicazioni"
+                                                     on-changed-page="_changedPage"></configurazione-applicazioni>
+                    </section>
+
+                    <section data-route="tributi">
+                        <configurazione-tributi id="configurazioneTributi"
+                                                on-changed-page="_changedPage"></configurazione-tributi>
+                    </section>
+
+                    <!--            <section data-route="operatori">operatore</section> -->
+
+                    <section data-route="pagamenti">
+                        <consultazione-pagamenti id="listaPagamenti"
+                                                 on-changed-page="_changedPage"></consultazione-pagamenti>
+                    </section>
+
+                    <section data-route="eventi">
+                        <consultazione-eventi id="listaEventi" on-changed-page="_changedPage"></consultazione-eventi>
+                    </section>
+
+                    <section data-route="rendicontazioni">
+                        <consultazione-rendicontazioni id="listaRendicontazioni"
+                                                       on-changed-page="_changedPage"></consultazione-rendicontazioni>
+                    </section>
+
+                    <section data-route="operazioni">
+                        <lista-operazioni id="listaOperazioni" on-changed-page="_changedPage"></lista-operazioni>
+                    </section>
+
+                    <section data-route="error">
+                        <error-page id="errorPage" on-changed-page="_changedPage"></error-page>
+                    </section>
+                    <section data-route="nonAutorizzato">
+                        <non-autorizzato-page id="nonAutorizzatoPage"
+                                              on-changed-page="_changedPage"></non-autorizzato-page>
+                    </section>
+                </iron-pages>
+
+            </div>
+        </paper-scroll-header-panel>
+    </paper-drawer-panel>
+
+    <paper-toast id="messaggiUtente" text="" duration="7000"></paper-toast>
+    <!-- Uncomment next block to enable Service Worker support (1/2) -->
+    <!--
+    <paper-toast id="caching-complete"
+                 duration="6000"
+                 text="Caching complete! This app will work offline.">
+    </paper-toast>
+
+    <platinum-sw-register auto-register
+                          clients-claim
+                          skip-waiting
+                          on-service-worker-installed="displayInstalledToast">
+      <platinum-sw-cache default-cache-strategy="fastest"
+                         cache-config-file="cache-config.json">
+      </platinum-sw-cache>
+    </platinum-sw-register>
+    -->
+
+</template>
+
+<!-- build:js scripts/app.js -->
+<script src="scripts/app.js"></script>
+<!-- endbuild-->
+</body>
+
+</html>

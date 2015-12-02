@@ -1,0 +1,355 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="ajax-pick-list">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+            .headMaterial {
+            padding: 20px;
+            margin-bottom: 10px;
+            }
+            .fullwidth{
+            width: 100%;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   url="[[sourceListUrl]]"
+                   params="{{selectListParams}}"
+                   handle-as="json"
+                   last-response="{{selectListResponse}}"
+                   lastError="{{selectListErrorResponse}}">
+        </iron-ajax>
+        <div class="titleCard layout vertical" id="pickListBox">
+            <span>[[label]]</span>
+            <span class="gap"></span>
+
+            <div class="titleCard layout horizontal" id="pickListBoxBody">
+                <div id="sourceListDiv" class="content layout vertical">
+                    <h4>[[sourceLabel]]</h4>
+
+                    <div class="horizontal-section">
+                        <paper-listbox multi selectedItems="{{selectedSourceItem}}">
+                            <template is="dom-repeat" items="[[selectListResponse.response]]" as="item">
+                                <paper-item draggable="true" on-tap="_selectSourceOption" valore="[[_getProperty(item,sourceOptionValue)]]">
+                                    [[_getProperty(item,sourceOptionLabel)]]
+                                </paper-item>
+                            </template>
+                        </paper-listbox>
+                    </div>
+                </div>
+
+                <div id="commandDiv" class="content layout vertical">
+                    <h4>&nbsp;</h4>
+
+                    <div class="content layout vertical">
+                        <paper-icon-button icon="av:skip-next" on-tap="_addToTarget" disabled$="[[!addAbilitato]]"></paper-icon-button>
+                        <paper-icon-button icon="av:fast-forward" on-tap="_addAllToTarget" disabled$="[[!addAllAbilitato]]"></paper-icon-button>
+                        <paper-icon-button icon="av:skip-previous" on-tap="_removeFromTarget" disabled$="[[!removeAbilitato]]"></paper-icon-button>
+                        <paper-icon-button icon="av:fast-rewind" on-tap="_removeAllFromTarget" disabled$="[[!removeAllAbilitato]]"></paper-icon-button>
+                    </div>
+                </div>
+
+
+                <div id="targetListDiv" class="content layout vertical">
+                    <h4>[[targetLabel]]</h4>
+
+                    <div class="horizontal-section">
+                        <paper-listbox multi selectedItems="{{selectedTargetItem}}">
+                            <template is="dom-repeat" items="[[targetList]]" as="item">
+                                <paper-item on-tap="_selectTargetOption" valore="[[_getProperty(item,targetOptionValue)]]">
+                                    [[_getProperty(item,targetOptionLabel)]]
+                                </paper-item>
+                            </template>
+                        </paper-listbox>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+    Polymer({
+        is: 'ajax-pick-list',
+
+        properties: {
+            sourceOptionValue: {type : String , value: ''},
+            sourceOptionLabel: {type : String , value: ''},
+            targetOptionValue: {type : String , value: ''},
+            targetOptionLabel: {type : String , value: ''},
+            label: {type : String, value: '' },
+            sourceLabel: {type : String, value: '' },
+            targetLabel: {type : String, value: '' },
+            targetList: { type: Array, value: [] , observer: '_checkTargetList'},
+            selectListResponse: { type: Object, value: null , observer: '_checkAjaxResponse'},
+            selectedSourceItem: {type: Array, value: []},
+            selectedTargetItem: {type: Array, value: []},
+            sourceListUrl: {type : String , value: ''},
+           selectListParams: { type: Object, value: function (){ return  {  } }, notify: true  },
+
+           addAbilitato: {type : Boolean, value: false },
+           addAllAbilitato: {type : Boolean, value: false },
+           removeAbilitato: {type : Boolean, value: false },
+           removeAllAbilitato: {type : Boolean, value: false }
+        },
+
+        _getProperty: function(itemCorrente, nomeProperty){
+            if(itemCorrente){
+                var val = itemCorrente[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+         _selectSourceOption : function (event){
+           var target = event.model.item;
+           var idx = event.model.index;
+
+           if(target){
+                var add = true;
+                var found;
+                for(var i = 0 ; i < this.selectedSourceItem.length; i++){
+                    if(this.selectedSourceItem[i].id == target.id){
+
+                       found = i;
+                        add = false;
+                        break;
+                    }
+                }
+
+                if(add){
+                    this.push('selectedSourceItem',target);
+                } else {
+                    var tmp = [];
+                    for(var i = 0 ; i < this.selectedSourceItem.length; i++){
+                       if(i != found){
+                            tmp.push(this.selectedSourceItem[i]);
+                       }
+                    }
+
+                    this.selectedSourceItem = [];
+
+                    for(var i = 0 ; i < tmp.length; i++){
+                       this.push('selectedSourceItem',tmp[i]);
+                    }
+                }
+
+                if(this.selectedSourceItem.length > 0)
+                    this.addAbilitato = true;
+                else
+                    this.addAbilitato = false;
+           }
+        },
+        _selectTargetOption : function (e){
+           var target = event.model.item;
+           var idx = event.model.index;
+
+           if(target){
+                var add = true;
+                var found;
+                for(var i = 0 ; i < this.selectedTargetItem.length; i++){
+                    if(this.selectedTargetItem[i].id == target.id){
+
+                       found = i;
+                        add = false;
+                        break;
+                    }
+                }
+
+                if(add){
+                    this.push('selectedTargetItem',target);
+                } else {
+                    var tmp = [];
+                    for(var i = 0 ; i < this.selectedTargetItem.length; i++){
+                       if(i != found){
+                            tmp.push(this.selectedTargetItem[i]);
+                       }
+                    }
+
+                    this.selectedTargetItem = [];
+
+                    for(var i = 0 ; i < tmp.length; i++){
+                       this.push('selectedTargetItem',tmp[i]);
+                    }
+                }
+
+                if(this.selectedTargetItem.length > 0)
+                    this.removeAbilitato = true;
+                else
+                    this.removeAbilitato = false;
+            }
+        },
+
+        _checkTargetList: function(nuovo){
+            if (nuovo){
+                 if(nuovo.length > 0){
+                     this.removeAllAbilitato = true;
+                 } else
+                    this.removeAllAbilitato = false;
+                 } else {
+            }
+           },
+        _checkAjaxResponse: function(nuovo){
+            if (nuovo){
+                 if (nuovo.response)
+                      if(nuovo.response.length > 0){
+                        this.addAllAbilitato = true;
+                    } else
+                        this.addAllAbilitato = false;
+                    } else {
+           }
+       },
+        ready: function() {
+          // console.log(this.sourceListUrl);
+        },
+
+        _addToTarget: function(event) {
+            if(this.selectedSourceItem.length > 0){
+                var toMove = []; var toStay = [];
+
+                for(var i = 0 ; i < this.selectListResponse.response.length; i++){
+                    var sorgente = this.selectListResponse.response[i];
+                    for(var j = 0 ; j < this.selectedSourceItem.length; j++){
+                         var selezionato = this.selectedSourceItem[j];
+
+                        if(sorgente.id == selezionato.id)
+                            toMove.push(sorgente);
+                        else
+                            toStay.push(sorgente);
+                    }
+                }
+
+                this.selectedSourceItem = [];
+
+                for(var i = 0 ; i < toMove.length; i++){
+                    var selezionato = toMove[i];
+                       this.push('targetList',selezionato);
+                }
+
+                for(var i=this.selectListResponse.response.length -1 ; i >= 0 ; i --)
+                    this.pop('selectListResponse.response',i);
+
+                for(var i = 0 ; i < toStay.length; i++){
+                    var selezionato = toStay[i];
+                       this.push('selectListResponse.response',selezionato);
+                }
+
+                this.addAbilitato = false;
+
+                // ho copiato tutti gli elementi
+                if(this.selectListResponse.response.length == 0){
+                    this.addAllAbilitato = false;
+                }
+
+                if(this.targetList.length > 0){
+                    this.removeAllAbilitato = true;
+                }
+            }
+
+             this.fire('change-item', {tributiSelezionti: this.targetList});
+        },
+        _addAllToTarget: function(e) {
+            if(this.selectListResponse.response.length > 0){
+                for(var i = 0 ; i < this.selectListResponse.response.length; i++){
+                       var selezionato = this.selectListResponse.response[i];
+                       this.push('targetList',selezionato);
+                }
+
+                for(var i=this.selectListResponse.response.length -1 ; i >= 0 ; i --)
+                    this.pop('selectListResponse.response',i);
+
+                // ho copiato tutti gli elementi
+                if(this.selectListResponse.response.length == 0){
+                    this.addAllAbilitato = false;
+                    this.addAbilitato = false;
+                }
+
+                 this.selectedSourceItem = [];
+
+                if(this.targetList.length > 0){
+                    this.removeAllAbilitato = true;
+                }
+            }
+             this.fire('change-item', {tributiSelezionti: this.targetList});
+        },
+        _removeFromTarget: function(e) {
+              if(this.selectedTargetItem.length > 0){
+                var toMove = []; var toStay = [];
+
+                for(var i = 0 ; i < this.targetList.length; i++){
+                    var sorgente = this.targetList[i];
+                    for(var j = 0 ; j < this.selectedTargetItem.length; j++){
+                         var selezionato = this.selectedTargetItem[j];
+
+                        if(sorgente.id == selezionato.id)
+                            toMove.push(sorgente);
+                        else
+                            toStay.push(sorgente);
+                    }
+                }
+
+                this.selectedTargetItem = [];
+
+                for(var i = 0 ; i < toMove.length; i++){
+                    var selezionato = toMove[i];
+                       this.push('selectListResponse.response',selezionato);
+                }
+
+                for(var i=this.targetList.length -1 ; i >= 0 ; i --)
+                    this.pop('targetList',i);
+
+                for(var i = 0 ; i < toStay.length; i++){
+                    var selezionato = toStay[i];
+                       this.push('targetList',selezionato);
+                }
+
+                this.removeAbilitato = false;
+
+                // ho copiato tutti gli elementi
+                if(this.targetList.length == 0){
+                    this.removeAllAbilitato = false;
+                }
+
+                if(this.selectListResponse.response.length > 0){
+                    this.addAllAbilitato = true;
+                }
+            }
+
+             this.fire('change-item', {tributiSelezionti: this.targetList});
+        },
+        _removeAllFromTarget: function(e) {
+              if(this.targetList.length > 0){
+                for(var i = 0 ; i < this.targetList.length; i++){
+                       var selezionato = this.targetList[i];
+                       this.push('selectListResponse.response',selezionato);
+                }
+
+                for(var i=this.targetList.length -1 ; i >= 0 ; i --)
+                    this.pop('targetList',i);
+
+                // ho copiato tutti gli elementi
+                if(this.targetList.length == 0){
+                    this.removeAllAbilitato = false;
+                    this.removeAbilitato = false;
+                }
+
+                this.selectedTargetItem = [];
+                if(this.selectListResponse.response.length > 0){
+                    this.addAllAbilitato = true;
+                }
+            }
+             this.fire('change-item', {tributiSelezionti: this.targetList});
+        },
+        printStatus: function (action){
+            console.log('Action: ' + action);
+            console.log('SourceList: ' + this.selectListResponse.response);
+            console.log('SourceList Selezionati: ' + this.selectedSourceItem);
+            console.log('TargetList: ' + this.targetList);
+            console.log('TargetList Selezionati: ' + this.selectedTargetItem);
+        }
+    });
+
+
+
+
+    </script>
+</dom-module>

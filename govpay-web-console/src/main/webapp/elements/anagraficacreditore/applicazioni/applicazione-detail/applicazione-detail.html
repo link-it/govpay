@@ -1,0 +1,208 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="applicazione-detail">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+        </style>
+        <h2>Applicazione [[applicazioneCorrente.applicazione.codApplicazione]]
+            <iron-icon icon="notification:do-not-disturb" style="color: red"
+                       hidden$="[[applicazioneCorrente.applicazione.abilitato]]"></iron-icon>
+        </h2>
+        <p>Stazione <span>[[applicazioneCorrente.stazione.codStazione]]</span></p>
+        <p>Principal <span>[[applicazioneCorrente.applicazione.principal]]</span></p>
+        <p>Versione <span>[[applicazioneCorrente.applicazione.versione]]</span></p>
+        <p>Policy Rispedizione <span>[[applicazioneCorrente.applicazione.policyRispedizione]]</span></p>
+        <paper-card class="fullCardWidth">
+            <paper-tabs selected="{{selectedTab}}">
+                <paper-tab>Tributi</paper-tab>
+                <paper-tab>Connettore Esito</paper-tab>
+                <paper-tab>Connettore Verifica</paper-tab>
+            </paper-tabs>
+            <iron-pages selected="{{selectedTab}}">
+                <div class="card-content">
+                    <div class="card-content div-table">
+                        <paper-item>
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-header-row">
+                                    <div class="div-table-col"><span>Codice Tributo</span></div>
+                                    <div class="div-table-col"><span>Descrizione</span></div>
+                                    <div class="div-table-col"><span>Iban</span></div>
+                                    <div class="div-table-col-com"><span></span></div>
+
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                        <iron-list id="elencoIban" items="[[applicazioneCorrente.tributi]]" as="item">
+                            <template>
+                                <paper-item disabled$="[[!item.abilitato]]">
+                                    <paper-item-body>
+                                        <div class="horizontal layout div-table-row">
+                                            <div class="div-table-col"><span>[[item.codTributo]]</span></div>
+                                            <div class="div-table-col"><span>[[item.descrizione]]</span></div>
+                                            <div class="div-table-col"><span>[[item.codIban]]</span></div>
+                                            <div class="div-table-col-com">
+                                                <iron-icon icon="notification:do-not-disturb" style="color: red"
+                                                           hidden$="[[item.abilitato]]"></iron-icon>
+                                            </div>
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+                <!-- Connettore Esito -->
+                <div class="card-content">
+                    <p>URL: <span>[[applicazioneCorrente.applicazione.connettoreEsito.url]]</span></p>
+
+                    <p>Auth: <span>[[_getTipoAutenticazioneConnettoreEsito(applicazioneCorrente.applicazione.connettoreEsito)]]</span></p>
+                    <template is="dom-if" if="[[conEsitoMostraSezioneHttpBasic]]">
+                        <p>Username: <span>[[applicazioneCorrente.applicazione.connettoreEsito.httpUser]]</span></p>
+
+                        <p>Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.httpPassw]]</span></p>
+                    </template>
+                    <template is="dom-if" if="[[conEsitoMostraSezioneSSL]]">
+                        <p>Tipo SSL: <span>[[applicazioneCorrente.applicazione.connettoreEsito.tipoSsl]]</span></p>
+
+                        <p>KeyStore Type: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsType]]</span></p>
+
+                        <p>KeyStore Location: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsLocation]]</span></p>
+
+                        <p>KeyStore Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsPasswd]]</span></p>
+
+                        <p>PrivateKey Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslPKeyPasswd]]</span></p>
+
+                        <p>TrustStore Type: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsType]]</span></p>
+
+                        <p>TrustStore Location: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsLocation]]</span></p>
+
+                        <p>TrustStore Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsPasswd]]</span></p>
+
+                        <p>SSL Type: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslType]]</span></p>
+                    </template>
+                </div>
+                <!-- Connettore Verifica -->
+                <div class="card-content">
+                    <p>URL: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.url]]</span></p>
+
+                    <p>Auth: <span>[[_getTipoAutenticazioneConnettoreVerifica(applicazioneCorrente.applicazione.connettoreVerifica)]]</span></p>
+                    <template is="dom-if" if="[[conVerificaMostraSezioneHttpBasic]]">
+                        <p>Username: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.httpUser]]</span></p>
+
+                        <p>Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.httpPassw]]</span></p>
+                    </template>
+                    <template is="dom-if" if="[[conVerificaMostraSezioneSSL]]">
+                        <p>Tipo SSL: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.tipoSsl]]</span></p>
+
+                        <p>KeyStore Type: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsType]]</span></p>
+
+                        <p>KeyStore Location: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsLocation]]</span></p>
+
+                        <p>KeyStore Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsPasswd]]</span></p>
+
+                        <p>PrivateKey Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslPKeyPasswd]]</span></p>
+
+                        <p>TrustStore Type: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsType]]</span></p>
+
+                        <p>TrustStore Location: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsLocation]]</span></p>
+
+                        <p>TrustStore Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsPasswd]]</span></p>
+
+                        <p>SSL Type: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslType]]</span></p>
+                    </template>
+                </div>
+
+
+            </iron-pages>
+        </paper-card>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'applicazione-detail',
+
+      properties: {
+        applicazioneCorrente: {
+          type: Object,
+          value: null
+        },
+         conEsitoMostraSezioneHttpBasic: {
+            type: Boolean, value : false
+        },
+          conEsitoMostraSezioneSSL: {
+            type: Boolean, value : false
+        },
+         conVerificaMostraSezioneHttpBasic: {
+            type: Boolean, value : false
+        },
+          conVerificaMostraSezioneSSL: {
+            type: Boolean, value : false
+        }
+      },
+      _getTipoAutenticazioneConnettoreEsito: function (connettore){
+          if(connettore){
+             var tipo = connettore.tipoAutenticazione;
+
+             if(tipo == 'NONE'){
+                this.conEsitoMostraSezioneHttpBasic = false;
+                this.conEsitoMostraSezioneSSL = false;
+                return 'Nessuna';
+            } else if(tipo == 'SSL'){
+                this.conEsitoMostraSezioneHttpBasic = false;
+                this.conEsitoMostraSezioneSSL = true;
+                return 'SSL';
+            } else {
+                this.conEsitoMostraSezioneHttpBasic = true;
+                this.conEsitoMostraSezioneSSL = false;
+                return 'HTTPBasic';
+            }
+          }
+
+          return '--';
+      },
+        _getTipoAutenticazioneConnettoreVerifica: function (connettore){
+          if(connettore){
+             var tipo = connettore.tipoAutenticazione;
+
+             if(tipo == 'NONE'){
+                this.conVerificaMostraSezioneHttpBasic = false;
+                this.conVerificaMostraSezioneSSL = false;
+                return 'Nessuna';
+            } else if(tipo == 'SSL'){
+                this.conVerificaMostraSezioneHttpBasic = false;
+                this.conVerificaMostraSezioneSSL = true;
+                return 'SSL';
+            } else {
+                this.conVerificaMostraSezioneHttpBasic = true;
+                this.conVerificaMostraSezioneSSL = false;
+                return 'HTTPBasic';
+            }
+          }
+
+          return '--';
+      }
+
+    });
+  })();
+
+    </script>
+</dom-module>

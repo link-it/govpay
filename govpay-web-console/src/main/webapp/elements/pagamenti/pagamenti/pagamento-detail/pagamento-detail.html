@@ -1,0 +1,631 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="pagamento-detail">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+            .blue {
+            color: var(--paper-light-blue-300);
+            }
+            .red {
+            color: var(--paper-red-300);
+            }
+            .orange {
+            color: var(--paper-amber-300);
+            }
+            .green {
+            color: var(--paper-green-300);
+            }
+
+            .div-table-row:hover .shortText::after {
+            content: ' [+]';
+            color: gray;
+            }
+            .div-table-row.expanded:hover .shortText::after {
+            content: '';
+            }
+            .div-table-row .longText {
+
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded .longText {
+            display: block;
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded:hover .longText::after {
+            content: ' [–]';
+            }
+      .shortText, .longText {
+        font-size: 14px;
+      }
+      .longText {
+        color: gray;
+        display: none !important;
+      }
+            .width250 {
+            width: 250px;
+            }
+            .width200 {
+            width: 200px;
+            }
+            .width100 {
+            width: 100px;
+            }
+        </style>
+        <paper-card heading="[[_getTitoloSezione(pagamentoCorrente)]]" class="fullCardWidth">
+            <div class="card-content">
+                <p>Stato:  <span>[[_getStatoPagamento(pagamentoCorrente)]]</span></p>
+                <p>Stato Rendicontazione: <span>[[_getStatoRendicontazionePagamento(pagamentoCorrente)]]</span></p>
+                <p>Dominio: <span>[[_getPropertyVersamento(pagamentoCorrente,'codDominio')]]</span></p>
+                <p>Applicazione: <span>[[_getPropertyApplicazione(pagamentoCorrente,'codApplicazione')]]</span></p>
+
+                <p>IUV: <span>[[_getPropertyVersamento(pagamentoCorrente,'iuv')]]</span></p>
+
+                <p>CCP: <span>[[_getCCP(pagamentoCorrente)]]</span></p>
+
+                <p>Beneficiario: <span>[[_getPropertyEnte(pagamentoCorrente,'codEnte')]]</span>
+                    <paper-icon-button icon="add" on-tap="_visualizzaDettaglioBeneficiario"></paper-icon-button>
+                </p>
+                <p>Debitore: <span>[[_getDebitore(pagamentoCorrente)]]</span>
+                    <paper-icon-button icon="add" on-tap="_visualizzaDettaglioDebitore"></paper-icon-button>
+                </p>
+                <template is="dom-if" if="[[_getVersante(pagamentoCorrente) != '']]">
+                    <p>Versante: <span>[[_getVersante(pagamentoCorrente)]]</span>
+                        <paper-icon-button icon="add" on-tap="_visualizzaDettaglioVersante"></paper-icon-button>
+                    </p>
+                </template>
+                <p>Importo: <span>[[_getPropertyVersamento(pagamentoCorrente,'importoTotale')]]</span> &euro;</p>
+            </div>
+
+            <paper-material class="headMaterial" id="informazioniAggintive" elevation="2">
+                <paper-tabs selected="{{selectedTab}}">
+                    <paper-tab>Singoli Importi</paper-tab>
+                    <paper-tab>Psp</paper-tab>
+                    <paper-tab>RPT</paper-tab>
+                    <paper-tab>RT</paper-tab>
+                    <paper-tab>Eventi</paper-tab>
+                    <paper-tab>Diagnostici</paper-tab>
+                    <paper-tab>Notifiche A2A</paper-tab>
+                    <paper-tab>Notifiche Mail</paper-tab>
+                </paper-tabs>
+
+                <iron-pages selected="{{selectedTab}}">
+                    <div class="card-content div-table">
+                        <paper-item>
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-header-row">
+                                    <div class="div-table-col"><span>CodPendenzaEnte</span></div>
+                                    <div class="div-table-col"><span>Causale</span></div>
+                                    <div class="div-table-col"><span>Importo</span></div>
+                                    <div class="div-table-col"><span>Stato</span></div>
+                                    <div class="div-table-col-com"></div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                        <iron-list id="elencoSingoliVersamenti" items="{{_getListaSingoliVersamenti(pagamentoCorrente)}}" as="item">
+                            <template>
+                                <paper-item  on-tap="_selectVersamento">
+                                    <paper-item-body>
+                                        <div class$="[[getClassForItem(item, item.expanded)]]"  >
+                                            <div class="div-table-col"><span>[[item.versamento.codSingoloVersamentoEnte]]</span></div>
+                                            <div class="div-table-col"><span>[[item.versamento.causaleVersamento]]</span></div>
+                                            <div class="div-table-col"><span>[[item.versamento.importoSingoloVersamento]] &euro;</span> </div>
+                                            <div class="div-table-col"><span>[[item.versamento.statoSingoloVersamento]]</span></div>
+                                            <div class="div-table-col-com shortText"></div>
+                                        </div>
+                                        <div class="horizontal layout div-table-row longText">
+                                            cccc
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </iron-list>
+                    </div>
+
+                    <div class="card-content">
+                        <p>Ragione Sociale: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
+
+                        <p>Id Psp: <span>[[_getPropertyPsp(pagamentoCorrente,'codPsp')]]</span></p>
+
+                        <p>Storno: <span>[[_getPropertyPsp(pagamentoCorrente,'stornoGestito')]]</span></p>
+
+                        <p>Bollo Telematico: <span>[[_getPropertyPsp(pagamentoCorrente,'bolloGestito')]]</span></p>
+
+                        <p>Id Canale: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
+
+                        <p>Tipo Versamento: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
+
+                        <p>Modello Pagamento: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
+
+                        <p>RedirectUrl: <span>[[_getPropertyRpt(pagamentoCorrente,'pspRedirectURL')]]</span></p>
+
+                        <p>IdSession: <span>[[_getPropertyRpt(pagamentoCorrente,'codSessione')]]</span></p>
+                    </div>
+
+                    <div class="card-content">
+                        <p>Id Intermediario: <span>[[_getPropertyRpt(pagamentoCorrente,'ragioneSociale')]]</span></p>
+
+                        <p>Id Stazione: <span>[[_getPropertyRpt(pagamentoCorrente,'idStazione')]]</span></p>
+
+                        <p>Id Dominio: <span>[[_getPropertyRpt(pagamentoCorrente,'ragioneSociale')]]</span></p>
+
+                        <p>Id Messaggio: <span>[[_getPropertyRpt(pagamentoCorrente,'codMsgRichiesta')]]</span></p>
+
+                        <p>Stato: <span>[[_getPropertyRpt(pagamentoCorrente,'statoRpt')]]</span></p>
+
+                        <p>Data Spedizione: <span>[[_getPropertyRpt(pagamentoCorrente,'ragioneSociale')]]</span></p>
+
+                        <paper-button class="downloadButton" on-tap="downloadRpt">
+                            <iron-icon icon="file-download"></iron-icon>
+                            Download
+                        </paper-button>
+
+                    </div>
+                    <div class="card-content">
+                        <p>Id Messaggio: <span>[[_getPropertyRt(pagamentoCorrente,'codMsgRicevuta')]]</span></p>
+
+                        <p>Firma: <span>[[_getPropertyRpt(pagamentoCorrente,'firmaRichiesta')]]</span></p>
+
+                        <p>Esito: <span>[[_getPropertyRt(pagamentoCorrente,'esitoPagamento')]]</span></p>
+
+                        <p>Totale Pagato: <span>[[_getPropertyRt(pagamentoCorrente,'importoTotalePagato')]]</span></p>
+
+                        <p>Stato: <span>[[_getPropertyRt(pagamentoCorrente,'stato')]]</span></p>
+
+                        <p>Data Ricezione: <span>[[_getPropertyRt(pagamentoCorrente,'dataOraMsgRicevuta')]]</span></p>
+
+                        <paper-button class="downloadButton" on-tap="downloadRt">
+                            <iron-icon icon="file-download"></iron-icon>
+                            Download
+                        </paper-button>
+                    </div>
+
+                    <div class="card-content">
+                        <div class="card-content div-table">
+                            <paper-item>
+                                <paper-item-body>
+                                    <div class="horizontal layout div-table-header-row">
+                                        <div class="div-table-col width200"><span>Data</span></div>
+                                        <div class="div-table-col width200"><span>Categoria</span></div>
+                                        <div class="div-table-col width200"><span>Tipo</span></div>
+                                        <div class="div-table-col width200"><span>Sottotipo</span></div>
+                                        <div class="div-table-col width200"><span>Esito</span></div>
+
+                                    </div>
+                                </paper-item-body>
+                            </paper-item>
+                            <iron-list id="elencoIban" items="[[_getProperty(pagamentoCorrente,'eventi')]]" as="item">
+                                <template>
+                                    <paper-item>
+                                        <paper-item-body>
+                                            <div class="horizontal layout div-table-row">
+                                                <div class="div-table-col width200"><span>[[_getDataFieldAsString(item,'dataOraEvento')]]</span></div>
+                                                <div class="div-table-col width200"><span>[[item.categoriaEvento]]</span></div>
+                                                <div class="div-table-col width200"><span>[[item.tipoEvento]]</span></div>
+                                                <div class="div-table-col width200"><span>[[_getSottotipo(item)]]</span></div>
+                                                <div class="div-table-col width200"><span>[[item.esito]]</span></div>
+                                            </div>
+                                        </paper-item-body>
+                                    </paper-item>
+                                </template>
+                            </iron-list>
+                        </div>
+                    </div>
+                    <div class="card-content">Diagnostici</div>
+                    <div class="card-content">
+                        <div class="card-content div-table">
+                            <paper-item>
+                                <paper-item-body>
+                                    <div class="horizontal layout div-table-header-row">
+                                        <div class="div-table-col"><span>Stato Spedizione</span></div>
+                                        <div class="div-table-col"><span>Numero Tentativi</span></div>
+                                        <div class="div-table-col"><span>Data Creazione</span></div>
+                                        <div class="div-table-col"><span>Data Ultima Spedizione</span></div>
+                                    </div>
+                                </paper-item-body>
+                            </paper-item>
+                            <iron-list id="elencoIban" items="[[_getProperty(pagamentoCorrente,'esiti')]]" as="item">
+                                <template>
+                                    <paper-item>
+                                        <paper-item-body>
+                                            <div class="horizontal layout div-table-row">
+                                                <div class="div-table-col"><span>[[item.statoSpedizione]]</span></div>
+                                                <div class="div-table-col"><span>[[item.tentativiSpedizione]]</span></div>
+                                                <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraCreazione')]]</span></div>
+                                                <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraUltimaSpedizione')]]</span></div>
+                                            </div>
+                                        </paper-item-body>
+                                    </paper-item>
+                                </template>
+                            </iron-list>
+                        </div>
+                    </div>
+                    <div class="card-content">Notifiche Mail</div>
+
+                </iron-pages>
+
+            </paper-material>
+        </paper-card>
+
+
+        <paper-dialog id="dettaglioAnagraficaDialog" modal>
+            <p>[[dettaglioAnagrafica]]</p>
+
+            <div class="buttons">
+                <paper-button dialog-confirm autofocus>Chiudi</paper-button>
+            </div>
+        </paper-dialog>
+    </template>
+
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'pagamento-detail',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Dettaglio Pagamento'
+          },
+          pagamentoCorrente: {
+            type: Object,
+            value: null
+          },
+          selectedTab: {
+            type: Object,
+            value: 0
+          },
+          dettaglioAnagrafica: {
+            type: String,
+            value: ''
+          },
+          singoliVersamenti: {
+            type: Array
+          }
+        },
+
+        ready: function() {
+          //   console.log('ready function...');
+        },
+
+        _selectVersamento: function (e){
+            var list = this.$.elencoSingoliVersamenti;
+            var index = e.model.index;
+            var isExpanded = list.items[index].expanded;
+            console.log(isExpanded);
+            list.set('singoliVersamenti.' + index + '.expanded', !isExpanded);
+            list.updateSizeForItem(e.model.index);
+        },
+        getClassForItem: function(item, expanded) {
+          return expanded ? 'horizontal layout div-table-row expanded' : 'horizontal layout div-table-row';
+        },
+        _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+        _getListaSingoliVersamenti: function(pagamentoCorrente){
+            if(this.singoliVersamenti)
+                return this.singoliVersamenti;
+            else{
+                var tmp = this._getPropertyVersamento(pagamentoCorrente,'singoliVersamenti');
+                 if(tmp){
+                    this.singoliVersamenti = [];
+
+                     for(var v in tmp){
+                            this.singoliVersamenti.push({'expanded': false, 'versamento': tmp[v]});
+                     }
+                }
+
+               return this.singoliVersamenti;
+            }
+        },
+
+         _getPropertyVersamento: function(pagamentoCorrente, nomeProperty){
+            var pag = this._getVersamento(pagamentoCorrente);
+            if(pag){
+                var val = pag[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+        _getVersamento: function(pagamentoCorrente) {
+           var versamento = this._getProperty(pagamentoCorrente,'versamento');
+
+           if(versamento)
+             return versamento;
+
+            return {};
+        },
+         _getPropertyEnte: function(pagamentoCorrente, nomeProperty){
+            var ente = this._getEnte(pagamentoCorrente);
+            if(ente){
+                var val = ente[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+        _getEnte: function(pagamentoCorrente) {
+           var ente = this._getProperty(pagamentoCorrente,'ente');
+
+           if(ente)
+             return ente;
+
+            return {};
+        },
+
+         _getPropertyApplicazione: function(pagamentoCorrente, nomeProperty){
+            var applicazione = this._getApplicazione(pagamentoCorrente);
+            if(applicazione){
+                var val = applicazione[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+        _getApplicazione: function(pagamentoCorrente) {
+           var applicazione = this._getProperty(pagamentoCorrente,'applicazione');
+
+           if(applicazione)
+             return applicazione;
+
+            return {};
+        },
+
+        _getPropertyPsp: function(pagamentoCorrente, nomeProperty){
+            var psp = this._getProperty(pagamentoCorrente,'psp');
+
+            if(psp){
+                var val = psp[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+        _getPropertyRpt: function(pagamentoCorrente, nomeProperty){
+            var rpt = this._getProperty(pagamentoCorrente,'rpt');
+
+            if(rpt){
+                var val = rpt[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+         _getPropertyRt: function(pagamentoCorrente, nomeProperty){
+            var rt = this._getProperty(pagamentoCorrente,'rt');
+
+            if(rt){
+                var val = rt[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+        _getTitoloSezione: function (pagamentoCorrente){
+            var pag = this._getVersamento(pagamentoCorrente);
+            if(pag)
+                return 'Pagamento ' + pag.iuv ;
+
+        },
+
+        _getCCP: function (pagamentoCorrente){
+            var pag = this._getVersamento(pagamentoCorrente);
+            if(pag){
+                var rpt = this._getProperty(pagamentoCorrente, 'rpt');
+
+                if(rpt)
+                    return rpt.ccp;
+            }
+
+            return 'N/A';
+        },
+
+         _getDebitore: function (pagamentoCorrente){
+            var pag = this._getVersamento(pagamentoCorrente);
+            if(pag){
+                var anagraficaDebitore = this._getProperty(pag, 'anagraficaDebitore');
+
+                if(anagraficaDebitore){
+                    return anagraficaDebitore.ragioneSociale + ' ' + anagraficaDebitore.codUnivoco;
+                }
+            }
+
+            return 'N/A';
+        },
+         _getVersante: function (pagamentoCorrente){
+            var pag = this._getVersamento(pagamentoCorrente);
+            if(pag){
+                var anagraficaVersante = this._getProperty(pag, 'anagraficaVersante');
+
+                if(anagraficaVersante){
+                    return anagraficaVersante.ragioneSociale + ' ' + anagraficaVersante.codUnivoco;
+                }
+            }
+
+            return '';
+        },
+
+        _getStatoRendicontazionePagamento: function(pagamentoCorrente) {
+         var pag = this._getVersamento(pagamentoCorrente);
+          var statoRendicontazione = '';
+
+            if(pag)
+              statoRendicontazione = pag.statoRendicontazione;
+
+          if(statoRendicontazione == 'NON_RENDICONTATO'){
+            return 'Non Rendicontato';
+          } else if(statoRendicontazione == 'RENDICONTATO'){
+            return 'Rendicontato';
+          } else if(statoRendicontazione == 'RENDICONTATO_PARZIALE'){
+            return 'Rendicontato Parziale';
+          }
+
+          return 'Non Rendicontato';
+        },
+
+         _getStatoPagamento: function(pagamentoCorrente) {
+         var pag = this._getVersamento(pagamentoCorrente);
+            var stato = '';
+
+            if(pag)
+              stato = pag.stato;
+
+          if(stato == 'PAGAMENTO_ESEGUITO'){
+            return 'Pagamento Eseguito';
+          } else if(stato == 'IN_ATTESA'){
+            return 'In Attesa';
+          } else if(stato == 'FALLITO'){
+            return 'Fallito';
+          } else if(stato == 'IN_CORSO'){
+            return 'In Corso';
+          } else if(stato == 'AUTORIZZATO_DIFFERITO'){
+            return 'Autorizzato Differito';
+          } else if(stato == 'PAGAMENTO_NON_ESEGUITO'){
+            return 'Pagamento non Eseguito';
+          } else if(stato == 'PAGAMENTO_PARZIALMENTE_ESEGUITO'){
+              return 'Pagamento Parzialmente Eseguito';
+          }  else if(stato == 'DECORRENZA_TERMINI_PARZIALE'){
+              return 'Decorrenza Termini Parziale';
+          }  else if(stato == 'DECORRENZA_TERMINI'){
+              return 'Decorrenza Termini';
+          }  else if(stato == 'AUTORIZZATO_IMMEDIATO'){
+              return 'Autorizzato Immediato';
+          }
+
+          return '';
+        },
+
+        downloadRpt: function (){
+
+        },
+
+        downloadRt: function (){
+
+        },
+
+        _visualizzaDettaglioBeneficiario: function(e) {
+            var dialog = document.getElementById('dettaglioAnagraficaDialog');
+            if (dialog) {
+                var ente = this._getProperty(this.pagamentoCorrente,'ente');
+            if(ente){
+                var anagrafica = this._getProperty(ente, 'anagraficaEnte');
+                if(anagrafica){
+                    var text = anagrafica.ragioneSociale + ' ' + anagrafica.codUnivoco;
+
+                    var indirizzo;
+
+                     if(anagrafica.indirizzo)
+                       indirizzo = anagrafica.indirizzo + ' ';
+
+                     if(anagrafica.civico)
+                       indirizzo += anagrafica.civico + ' ';
+
+                     if(anagrafica.cap)
+                       indirizzo+= anagrafica.cap + ' ';
+
+                     if(anagrafica.localita)
+                       indirizzo += anagrafica.localita;
+
+                     if(anagrafica.provincia)
+                       indirizzo += ' (' + anagrafica.provincia + ') ';
+
+                     if(anagrafica.nazione)
+                       indirizzo += anagrafica.nazione;
+
+                       text += ' ';
+                       text += indirizzo || '';
+                       this.dettaglioAnagrafica = text;
+                       dialog.open();
+                  }
+                }
+            }
+        },
+
+        _visualizzaDettaglioDebitore: function(e) {
+            var dialog = document.getElementById('dettaglioAnagraficaDialog');
+            if (dialog) {
+             var pag = this._getVersamento(this.pagamentoCorrente);
+            if(pag){
+                var debitore = this._getProperty(pag, 'anagraficaDebitore');
+                if(debitore){
+                    var text = debitore.ragioneSociale + ' ' + debitore.codUnivoco;
+                     var indirizzo = debitore.indirizzo + ' ' + debitore.civico + ' ' + debitore.cap + ' '
+                          + debitore.localita + ' (' + debitore.provincia + ') ' + debitore.nazione;
+                         text += ' ';
+                         text += indirizzo;
+                          this.dettaglioAnagrafica = text;
+                       dialog.open();
+                  }
+                }
+            }
+       },
+        _visualizzaDettaglioVersante: function(e) {
+          var dialog = document.getElementById('dettaglioAnagraficaDialog');
+            if (dialog) {
+             var pag = this._getVersamento(this.pagamentoCorrente);
+            if(pag){
+                var debitore = this._getProperty(pag, 'anagraficaDebitore');
+                if(debitore){
+                    var text = debitore.ragioneSociale + ' ' + debitore.codUnivoco;
+                     var indirizzo = debitore.indirizzo + ' ' + debitore.civico + ' ' + debitore.cap + ' '
+                          + debitore.localita + ' (' + debitore.provincia + ') ' + debitore.nazione;
+                         text += ' ';
+                         text += indirizzo;
+                          this.dettaglioAnagrafica = text;
+                       dialog.open();
+                  }
+                }
+            }
+        },
+
+        _getSottotipo: function(oggetto){
+            if(oggetto){
+                var val = oggetto['sottotipoEvento'];
+
+                if(val == 'req')
+                    return 'Richiesta';
+                else
+                    return 'Risposta';
+            }
+            return '';
+        },
+
+        _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+      });
+    })();
+
+
+
+
+
+
+
+    </script>
+
+</dom-module>

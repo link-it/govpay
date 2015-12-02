@@ -1,0 +1,279 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="lista-rendicontazioni">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            @apply(--paper-font-common-base);
+
+            display: block;
+            font-family: sans-serif;
+            }
+            .headMaterial {
+            padding: 20px;
+            margin-bottom: 10px;
+            }
+
+            .searchButton {
+            background-color: blue;
+            color: white;
+            }
+            .resetButton {
+            background-color: white;
+            color: red;
+            }
+
+            paper-button.colorful {
+            color: #4285f4;
+            }
+            paper-button[raised].colorful {
+            background: #4285f4;
+            color: #fff;
+            }
+
+
+            #itemsList {
+            @apply(--layout-flex);
+            }
+
+            .item {
+            @apply(--layout-horizontal);
+            cursor: pointer;
+            padding: 16px 22px;
+            border-bottom: 1px solid #DDD;
+            }
+
+            .item:focus,
+            .item.selected:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+            .item.selected:not(:focus) {
+            background-color: var(--google-grey-100);
+            }
+
+            paper-item {
+            white-space: nowrap;
+            cursor: pointer;
+            position: relative;
+            }
+
+            paper-item:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+
+            paper-item:hover {
+            background-color: #ccc;
+            }
+
+            .width250 {
+                width: 250px;
+            }
+            .width200 {
+            width: 200px;
+            }
+            .width100 {
+            width: 100px;
+            }
+        </style>
+        <!-- Connettore govpay -->
+        <iron-ajax auto="false" id="govpayPagConn"
+                   url="[[govpayUrl]]"
+                   params="{{searchParams}}"
+                   handle-as="json"
+                   last-response="{{ajaxResponse}}"
+                   lastError="{{ajaxError}}"
+                ></iron-ajax>
+        <paper-material elevation="1">
+            <h4 class="page-title">[[titoloSezione]]</h4>
+
+            <!-- Search -->
+            <search-rendicontazioni titolo="Filtri Ricerca">
+                <paper-dropdown-menu label="Stato" style="width: 100%;" class="inputs">
+                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoInput}}">
+                        <paper-item valore="">Qualsiasi</paper-item>
+                        <paper-item valore="ACQUISITA">Acquisita</paper-item>
+                        <paper-item valore="ACCETTATA">Accettata</paper-item>
+                        <paper-item valore="RIFIUTATA">Rifiutata</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+                <ajax-select-list label="Psp" select-list-url="{{govpayPspUrl}}" class="inputs" all-mode="true" option-valore-all=""
+                                  option-value="[[pspOptionValue]]" option-label="[[pspOptionLabel]]" on-select-option="_selectPsp"
+                                  selected-item="{{codPspInput}}"></ajax-select-list>
+                <paper-input bind-value="{{annoRifInput}}" class="flex inputs" label="Anno Riferimento" type="number"
+                             autocomplete="off"></paper-input>
+                <div class="buttons">
+                    <paper-button class="colorful custom" raised  on-tap="filtraRisultati">Search</paper-button>
+                    <paper-button class="resetButton custom" raised on-tap="resetFiltro">Reset</paper-button>
+                </div>
+            </search-rendicontazioni>
+
+            <!-- Risultati  -->
+            <!-- Lista -->
+            <div class="card-content div-table">
+                <paper-item>
+                    <paper-item-body>
+                        <div class="horizontal layout div-table-header-row">
+                            <div class="div-table-col"><span>Data Flusso</span></div>
+                            <div class="div-table-col width200"><span>Psp</span></div>
+                            <div class="div-table-col width200"><span>Anno Riferimento</span></div>
+                            <div class="div-table-col width200"><span>Numero Pagamenti</span></div>
+                            <div class="div-table-col width100"><span>Importo</span></div>
+                            <div class="div-table-col width100"><span>Stato</span></div>
+                        </div>
+                    </paper-item-body>
+                </paper-item>
+                <iron-list id="itemsList" items="[[ajaxResponse.response]]" selected-item="{{selectedRendicontazioneItem}}"
+                           selection-enabled as="item">
+                    <template>
+                        <paper-item on-tap="_selectRendicontazione">
+                            <paper-item-body>
+                                <div>
+                                    <div tabindex="0" class="horizontal layout div-table-row">
+                                        <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraFlusso')]]</span></div>
+                                        <div class="div-table-col width200"><span>[[item.codPsp]]</span></div>
+                                        <div class="div-table-col width200"><span>[[item.annoRiferimento]]</span></div>
+                                        <div class="div-table-col width200"><span>[[item.numeroPagamenti]]</span></div>
+                                        <div class="div-table-col width100"><span>[[item.importoTotalePagamenti]] &euro;</  span></div>
+                                        <div class="div-table-col width100"><span>[[item.stato]]</span></div>
+                                    </div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                    </template>
+                </iron-list>
+            </div>
+
+            <!--div id="buttons" class="buttons">
+              <paper-button  raised class="custom"><iron-icon icon="delete"></iron-icon>Elimina</paper-button>
+            </div -->
+        </paper-material>
+    </template>
+
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'lista-rendicontazioni',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Rendicontazioni'
+          },
+          govpayUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/rendicontazioni/';
+                return '';
+                } },
+          govpayPspUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/psp/';
+                 return '';
+                 } },
+          searchParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          },
+          offsetRisultatiInput: { type: String, value: '0' },
+          numeroRisultatiInput: { type: String, value: '25' },
+          statoInput: { type: String, value: '' },
+          annoRifInput: { type: Number, value: null},
+          codPspInput: { type: String, value: 'Qualsiasi' },
+          pspOptionValue: {type : String , value: 'codPsp'},
+          pspOptionLabel: {type : String , value: 'codPsp'},
+          dataInizioInput: { type: Date, value: null }
+        },
+        init: function (){
+            this.govpayUrl = govpayUrl + '/rs/dars/rendicontazioni/';
+            this.govpayPspUrl = govpayUrl + '/rs/dars/psp/';
+        },
+        filtraRisultati: function (){
+            var pspVal = this.codPspInput;
+            if(pspVal == 'Qualsiasi')
+                pspVal = '';
+
+            var annoRif = this.annoRifInput;
+            //console.log(annoRif);
+            if(annoRif == null || annoRif == '')
+                annoRif = 0;
+
+            this.searchParams =  {
+                'limit' : this.numeroRisultatiInput,
+                'offset' : this.offsetRisultatiInput,
+                'stato' : this.statoInput,
+                'annoRiferimento' : annoRif,
+                'codPsp' : pspVal
+             };
+        },
+        resetFiltro: function (){
+             this.statoInput = '';
+              this.codPspInput = 'Qualsiasi';
+              this.annoRifInput = '';
+
+            this.searchParams =  {
+                'limit' : this.numeroRisultatiInput,
+                'offset' : this.offsetRisultatiInput
+            };
+        },
+
+        onKeyPress: function(e) {
+            if (e.keyCode == 13) { // Enter
+                //var connettore = document.querySelector('#govpayPagConn');
+                var pspVal = this.codPspInput;
+                if(pspVal == 'Qualsiasi')
+                    pspVal = '';
+
+                var annoRif = this.annoRifInput;
+                if(annoRif == null || annoRif == '')
+                    annoRif = 0;
+
+                this.searchParams =  {
+                    'limit' : this.numeroRisultatiInput,
+                    'offset' : this.offsetRisultatiInput,
+                    'stato' : this.statoInput,
+                    'annoRiferimento' : annoRif,
+                    'codPsp' : pspVal
+                };
+            }
+        },
+
+        ready: function() {
+        },
+         _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+                _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        },
+        _selectRendicontazione : function (event){
+           var target = event.model.item;
+           this.fire('select-item', {rendicontazioneCorrente: target});
+        },
+         _selectPsp:  function(event){
+            this.codPspInput = event.detail.itemCorrente[this.pspOptionValue];
+            console.log('Psp: ' + this.codPspInput);
+        },
+      });
+    })();
+
+
+    </script>
+
+</dom-module>

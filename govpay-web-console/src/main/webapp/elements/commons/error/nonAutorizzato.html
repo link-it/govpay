@@ -1,0 +1,118 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="non-autorizzato-page">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+            .blue {
+            color: var(--paper-light-blue-300);
+            }
+            .red {
+            color: var(--paper-red-300);
+            }
+            .orange {
+            color: var(--paper-amber-300);
+            }
+            .green {
+            color: var(--paper-green-300);
+            }
+
+            .div-table-row:hover .shortText::after {
+            content: ' [+]';
+            color: gray;
+            }
+            .div-table-row.expanded:hover .shortText::after {
+            content: '';
+            }
+            .div-table-row .longText {
+
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded .longText {
+            display: block;
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded:hover .longText::after {
+            content: ' [–]';
+            }
+            .shortText, .longText {
+            font-size: 14px;
+            }
+            .longText {
+            color: gray;
+            display: none !important;
+            }
+        </style>
+        <paper-card heading="[[_getTitoloSezione(erroreCorrente)]]" class="fullCardWidth">
+            <div class="card-content">
+                Non si dispone dell'autorizzazioni per visualizzare la sezione selezionata.
+
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'non-autorizzato-page',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Non Autorizzato'
+          },
+          erroreCorrente: {
+            type: Object,
+            value: null
+          }
+        },
+
+        ready: function() {
+          //   console.log('ready function...');
+        },
+         _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+        _getTitoloSezione: function (erroreCorrente){
+            return this.titoloSezione;
+        },
+
+        setErrore: function (erroreCorrente){
+            this.erroreCorrente = erroreCorrente;
+        },
+
+
+        _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+      });
+    })();
+    </script>
+
+</dom-module>

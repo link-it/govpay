@@ -1,0 +1,129 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="evento-detail">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+            .blue {
+            color: var(--paper-light-blue-300);
+            }
+            .red {
+            color: var(--paper-red-300);
+            }
+            .orange {
+            color: var(--paper-amber-300);
+            }
+            .green {
+            color: var(--paper-green-300);
+            }
+
+            .div-table-row:hover .shortText::after {
+            content: ' [+]';
+            color: gray;
+            }
+            .div-table-row.expanded:hover .shortText::after {
+            content: '';
+            }
+            .div-table-row .longText {
+
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded .longText {
+            display: block;
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded:hover .longText::after {
+            content: ' [–]';
+            }
+      .shortText, .longText {
+        font-size: 14px;
+      }
+      .longText {
+        color: gray;
+        display: none !important;
+      }
+        </style>
+        <paper-card heading="[[_getTitoloSezione(eventoCorrente)]]" class="fullCardWidth">
+            <div class="card-content">
+                <p>Data: <span>[[_getDataFieldAsString(eventoCorrente,'dataOraEvento')]]</span></p>
+                <p>Esito: <span>[[_getProperty(eventoCorrente,'esito')]]</span></p>
+                <p>Dominio: <span>[[_getProperty(eventoCorrente,'codDominio')]]</span></p>
+                <p>Stazione: <span>[[_getProperty(eventoCorrente,'codStazione')]]</span></p>
+                <p>IUV: <span>[[_getProperty(eventoCorrente,'iuv')]]</span></p>
+                <p>CCP: <span>[[_getProperty(eventoCorrente,'ccp')]]</span></p>
+                <p>Applicazione: <span>[[_getProperty(eventoCorrente,'codApplicazione')]]</span></p>
+                <p>Psp: <span>[[_getProperty(eventoCorrente,'codPsp')]]</span></p>
+                <p>Canale: <span>[[_getProperty(eventoCorrente,'canalePagamento')]]</span></p>
+                <p>Tipo Versamento: <span>[[_getProperty(eventoCorrente,'tipoVersamento')]]</span></p>
+                <p>Componente: <span>[[_getProperty(eventoCorrente,'componente')]]</span></p>
+                <p>Categoria: <span>[[_getProperty(eventoCorrente,'categoriaEvento')]]</span></p>
+                <p>Tipo: <span>[[_getProperty(eventoCorrente,'tipoEvento')]]</span></p>
+                <p>Sottotipo: <span>[[_getProperty(eventoCorrente,'sottotipoEvento')]]</span></p>
+                <p>Fruitore: <span>[[_getProperty(eventoCorrente,'codFruitore')]]</span></p>
+                <p>Erogatore: <span>[[_getProperty(eventoCorrente,'codErogatore')]]</span></p>
+                <p>Altri Parametri: <span>[[_getProperty(eventoCorrente,'altriParametri')]]</span></p>
+            </div>
+        </paper-card>
+    </template>
+
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'evento-detail',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Dettaglio Evento'
+          },
+          eventoCorrente: {
+            type: Object,
+            value: null
+          }
+        },
+
+        ready: function() {
+          //   console.log('ready function...');
+        },
+         _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+        _getTitoloSezione: function (eventoCorrente){
+            return this.titoloSezione;
+        },
+
+
+        _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+      });
+    })();
+    </script>
+
+</dom-module>

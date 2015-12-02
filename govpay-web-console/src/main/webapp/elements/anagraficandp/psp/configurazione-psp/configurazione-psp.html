@@ -1,0 +1,94 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="configurazione-psp">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   id="dettagliopsp"
+                   url="{{govpayUrl}}"
+                   params="{{detailParams}}"
+                   handle-as="json"
+                   last-response="{{dettaglioPspCorrente}}"
+                   lastError="{{ajaxErrorPsp}}">
+        </iron-ajax>
+        <neon-animated-pages id="pspPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <neon-animatable>
+                <lista-psp id="lista" on-select-item="_selectPsp"></lista-psp>
+            </neon-animatable>
+            <neon-animatable>
+                <psp-detail psp-corrente="{{dettaglioPspCorrente.response}}"></psp-detail>
+            </neon-animatable>
+        </neon-animated-pages>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'configurazione-psp',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        },
+       govpayUrl: { type: String, value: function (){
+
+            //var id= ''; if(this.pspCorrente) id = this.pspCorrente.id; return govpayUrl + '/rs/dars/psp/'+ id;
+            return '';
+            } },
+
+        pspCorrente: {
+          type: Object,
+          value: null
+        },
+        dettaglioPspCorrente: {
+          type: Object,
+          value: null
+        },
+        detailParams: {
+            type: Object, value: function (){ return  {  } }, notify: true
+          }
+      },
+       init: function() {
+            this.entryAnimation = '';
+            this.exitAnimation = '';
+            this.selected = 0;
+            this.$.pspPages.cancelAnimation();
+            this.$.lista.filtraRisultati();
+        },
+
+      _selectPsp: function(event){
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.pspCorrente = event.detail.psp;
+        this.govpayUrl = govpayUrl + '/rs/dars/psp/'+ this.pspCorrente.id;
+        this.selected = 1;
+        this.fire('changed-page', this.selected);
+      },
+
+      selectPrevPage: function(){
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+        this.selected = 0;
+        this.$.lista.filtraRisultati();
+        this.fire('changed-page', this.selected);
+      }
+    });
+  })();
+  </script>
+</dom-module>

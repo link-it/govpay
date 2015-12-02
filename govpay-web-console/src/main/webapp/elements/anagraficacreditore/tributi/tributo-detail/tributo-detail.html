@@ -1,0 +1,88 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="tributo-detail">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+        </style>
+        <h2>Tributo [[tributoCorrente.tributo.codTributo]]
+            <iron-icon icon="notification:do-not-disturb" style="color: red"
+                       hidden$="[[tributoCorrente.tributo.abilitato]]"></iron-icon>
+        </h2>
+        <paper-material class="headMaterial" id="connettore" elevation="2">
+            <div class="card-content">
+                <p>Descrizione <span>[[tributoCorrente.tributo.descrizione]]</span></p>
+
+                <p>Ente <span>[[tributoCorrente.ente.codEnte]]</span></p>
+
+                <p>Tipo Contabilit&agrave; <span>[[tributoCorrente.tributo.tipoContabilita]]</span></p>
+
+                <p>Codice Contabilit&agrave; <span>[[tributoCorrente.tributo.codContabilita]]</span></p>
+            </div>
+            <span class="gap"></span>
+            <paper-material class="headMaterial" id="connettore" elevation="2">
+                <h4>Informazioni Accredito</h4>
+
+                <div class="card-content">
+                    <p>Codice IBAN: <span>[[tributoCorrente.ibanAccredito.codIban]]</span></p>
+                    <p>Codice BIC Accredito: <span>[[tributoCorrente.ibanAccredito.codBicAccredito]]</span></p>
+                    <p>Coddic IBAN Appoggio: <span>[[tributoCorrente.ibanAccredito.codIbanAppoggio]]</span></p>
+                    <p>Codice BIC Appoggio: <span>[[tributoCorrente.ibanAccredito.codBicAppoggio]]</span></p>
+                    <p>Id Seller Bank: <span>[[tributoCorrente.ibanAccredito.idSellerBank]]</span></p>
+                    <p>Id Negozio: <span>[[tributoCorrente.ibanAccredito.idNegozio]]</span></p>
+                    <p>Postale: <span>[[_getPostale(tributoCorrente.ibanAccredito)]]</span></p>
+                </div>
+            </paper-material>
+        </paper-material>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'tributo-detail',
+
+      properties: {
+        tributoCorrente: {
+          type: Object,
+          value: null
+        }
+      },
+       _getPostale: function(ibanObj){
+            var valore = this._getProperty(ibanObj, 'postale') || false;
+
+            if(valore)
+                return 'Si';
+            else
+                return 'No';
+      },
+      _getProperty: function(elemento, nomeProperty){
+            if(elemento){
+                var val = elemento[nomeProperty];
+                return val;
+            }
+            return '';
+        }
+    });
+  })();
+
+
+
+    </script>
+</dom-module>

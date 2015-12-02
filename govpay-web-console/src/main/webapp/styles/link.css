@@ -1,0 +1,48 @@
+ .div-table{
+    padding: 2px;
+    display:table;
+    width:auto;
+    border:1px solid #666666;
+    border-spacing:5px;/*cellspacing:poor IE support for this*/
+}
+.div-table-header-row{
+    display: table-header-group;
+    width:auto;
+    clear:both;
+    font-weight: bold;
+    border-bottom: solid 1px #000;
+    text-align:center;
+}
+.div-table-row{
+    display:table-row;
+    width:auto;
+    clear:both;
+    border-bottom: 1px solid #000;
+}
+.div-table-col{
+    float:left;/*fix for buggy browsers*/
+    display:table-column;
+    width: 300px;
+    margin-left: 30px;
+    margin-right: 20px;
+}
+.div-table-col-com{
+    float:left;/*fix for buggy browsers*/
+    display:table-column;
+    width: 30px;
+}
+
+.headMaterial {
+    padding: 20px;
+    margin-bottom: 10px;
+}
+
+.width250 {
+    width: 250px;
+}
+.width200 {
+    width: 200px;
+}
+.width100 {
+    width: 100px;
+}

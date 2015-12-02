@@ -1,0 +1,304 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="edit-ente">
+    <template>
+        <style>
+            @media (min-width: 600px) {
+            :host {
+            display: block;
+            width: 70%;
+            height: 70%;
+            overflow: auto !important;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            @media (max-width: 600px) {
+            :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            paper-menu-button {
+            padding-left: 0!important;
+            }
+
+            .content {
+            padding: 24px;
+            overflow: auto;
+            }
+
+            .titleCard {
+            margin-top: 16px;
+            }
+
+            paper-card {
+            padding: 16px;
+            margin-bottom: 16px;
+            }
+
+            .gap {
+            width: 24px;
+            }
+        </style>
+        <iron-ajax auto="false" verbose="true"
+                   id="connettoresalvataggioEnte"
+                   url="{{govpayUrl}}"
+                   params="{{actionParams}}"
+                   method="{{actionMethod}}"
+                   handle-as="json"
+                   content-type="application/json"
+                   body="{{enteCorrente.ente}}"
+                   debounce-duration="3000"
+                   last-response="{{esitoSalvataggioEnte}}"
+                   last-error="{{ajaxErrorSalvataggioEnte}}"
+                   on-response="_visualizzaEsitoSalvataggio"
+                   on-error="_visualizzaMessaggioErrore">
+        </iron-ajax>
+        <paper-header-panel>
+            <div class="paper-header">
+                <paper-toolbar>
+                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
+                    <span class="title">[[titolo]]</span>
+                    <paper-icon-button icon="check" on-tap="_salvaEnte"></paper-icon-button>
+                </paper-toolbar>
+            </div>
+            <div class="content layout vertical">
+                <paper-card>
+                    <paper-toggle-button class="flex" checked="{{enteCorrente.ente.attivo}}">Abilitato</paper-toggle-button>
+                    <paper-input class="flex" value="{{enteCorrente.ente.codEnte}}" label="Cod Ente" disabled$="[[!isAdd]]" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input class="flex" value="{{anagrafica.ragioneSociale}}" label="Ragione Sociale" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input class="flex" value="{{anagrafica.codUnivoco}}" label="Codice Univoco" required></paper-input>
+                    <span class="gap"></span>
+                    <ajax-select-list label="Dominio" select-list-url="{{govpayDominiUrl}}"
+                                      option-value="id" option-label="codDominio" on-select-option="_selectDominio"
+                                      selected-item="{{idDominio}}"></ajax-select-list>
+                    <span class="gap"></span>
+                    <paper-input label="Indirizzo" value="{{anagrafica.indirizzo}}" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Civico" value="{{anagrafica.civico}}" required type="number"></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="CAP" value="{{anagrafica.cap}}" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Localit&agrave;" value="{{anagrafica.localita}}" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Provincia" value="{{anagrafica.provincia}}" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Nazione" value="{{anagrafica.nazione}}" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Email" value="{{anagrafica.email}}" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Telefono" value="{{anagrafica.telefono}}" required type="number" ></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Cellulare" value="{{anagrafica.cellulare}}" required type="number"></paper-input>
+                    <span class="gap"></span>
+                    <paper-input label="Fax" value="{{anagrafica.fax}}" required type="number"></paper-input>
+                    <span class="gap"></span>
+                </paper-card>
+            </div>
+        </paper-header-panel>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'edit-ente',
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      _onNeonAnimationFinish: function() {
+        if (this.opened) {
+          this._finishRenderOpened();
+        } else {
+          this._finishRenderClosed();
+        }
+      },
+      _renderOpened: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.open();
+        }
+        this.playAnimation('entry');
+        this.modified=false;
+        this.govpayDominiUrl =  govpayUrl + '/rs/dars/domini/';
+      },
+      _renderClosed: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.close();
+        }
+        this.playAnimation('exit');
+      },
+
+      properties: {
+        enteCorrente: {
+          type: Object,
+          value: null,
+          observer: '_checkData'
+        },
+         govpayUrl: { type: String, value: function (){
+            //return govpayUrl + '/rs/dars/enti/';
+                return '';
+            } },
+         govpayDominiUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/domini/';
+                return '';
+                } },
+        anagrafica: {
+            type: Object,
+            value: null
+        },
+        isAdd: {
+            type: Boolean, value : false
+        },
+        actionMethod: {
+            type: String, value : 'GET'
+        },
+        lastActionMethod: {
+            type: String, value : 'GET'
+        },
+        actionParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          },
+       idDominio: {
+            type: String, value : '0'
+        }
+      },
+      _selectDominio:  function(event){
+            this.idDominio = event.detail.itemCorrente.id;
+            //console.log(event.detail.itemCorrente);
+        },
+      _closeDialog: function(){
+        this.close();
+      },
+       _salvaEnte: function(){
+        this.enteCorrente.ente.anagraficaEnte = this.anagrafica;
+        this.enteCorrente.ente.idDominio = this.idDominio;
+
+        this.govpayUrl = govpayUrl + '/rs/dars/enti/';
+        if(!this.isAdd){
+           this.actionMethod = 'PUT';
+           this.lastActionMethod = 'PUT';
+         }else{
+            this.actionMethod = 'POST';
+            this.lastActionMethod = 'POST';
+         }
+
+         this.$.connettoresalvataggioEnte.generateRequest();
+
+         this.actionMethod = 'GET';
+         this.close();
+
+      },
+
+
+       _checkData: function(nuovo){
+
+        if (nuovo){
+          this.titolo = 'Modifica Ente: ' + nuovo.ente.codEnte;
+          this.isAdd = false;
+            this.anagrafica = this.enteCorrente.ente.anagraficaEnte;
+            this.idDominio = this.enteCorrente.ente.idDominio;
+
+        } else {
+          this.enteCorrente = { 'ente' : { 'anagraficaEnte': {}, 'idDominio': '0'}};
+          this.anagrafica = { 'ragioneSociale' : '', 'codUnivoco': ''};
+          this.idDominio = '0';
+          this.titolo = 'Nuovo Ente';
+          this.isAdd = true;
+        }
+      },
+
+      _setTitolo: function(event){
+        if (event.currentTarget.value!==''){
+          this.titolo = event.currentTarget.value;
+        } else {
+          this.titolo = 'Nuovo Ente';
+        }
+      } ,
+       _visualizzaEsitoSalvataggio: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                if(this.lastActionMethod != 'GET'){
+                    if(this.esitoSalvataggioEnte){
+                        var esitoOperazione = this.esitoSalvataggioEnte.esitoOperazione;
+                        var codOperazione = this.esitoSalvataggioEnte.codOperazione;
+                        var id = this.esitoSalvataggioEnte.response || '';
+                        var messaggio= '';
+
+                        console.log(esitoOperazione);
+                        if(esitoOperazione == 'ESEGUITA'){
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Ente completato con successo. Id Operazione: ' + codOperazione + '.';
+                                this.enteCorrente.ente.id = id;
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Ente completato con successo. Id Operazione: ' + codOperazione + '.';
+                            }
+                        } else {
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Ente non completato.';
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Ente non completato.';
+                            }
+                        }
+
+                        messaggi.text = messaggio;
+                    }else {
+                        messaggi.text = 'Operazione Eseguita';
+                    }
+                    messaggi.show();
+                    this.lastActionMethod = this.actionMethod;
+                    this.fire('reload-item', {elementoModificato: this.enteCorrente});
+                }
+            }
+      },
+      _visualizzaMessaggioErrore: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
+                this.lastActionMethod = this.actionMethod;
+                messaggi.show();
+            }
+      }
+    });
+  })();
+
+
+    </script>
+</dom-module>

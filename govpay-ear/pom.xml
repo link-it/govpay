@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>govpay</artifactId>
+		<groupId>it.govpay</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>govpay-ear</artifactId>
+	<packaging>ear</packaging>
+	<name>GovPAY EAR module</name>
+
+	<profiles>
+		<profile>
+			<id>extProps</id>
+			<properties>
+				<resourceToExclude>properties/*</resourceToExclude>
+			</properties>
+		</profile>
+		<profile>
+			<id>intProps</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<resourceToExclude></resourceToExclude>
+			</properties>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<!-- Depend on the ejb module and war so that we can package them -->
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-web</artifactId>
+			<type>war</type>
+		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-web</artifactId>
+			<version>${project.version}</version><!--$NO-MVN-MAN-VER$ -->
+			<type>pom</type>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/application</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+
+		<finalName>govpay</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-ear-plugin</artifactId>
+				<version>2.9.1</version>
+				<configuration>
+					<filtering>true</filtering>
+					<filters>
+						<filter>${basedir}/../resources/filters/${env}.filter.properties</filter>
+					</filters>
+					<defaultLibBundleDir>lib</defaultLibBundleDir>
+					<earSourceExcludes>${resourceToExclude}</earSourceExcludes>
+					<skinnyWars>true</skinnyWars>
+					<modules>
+						<webModule>
+							<groupId>it.govpay</groupId>
+							<artifactId>govpay-web</artifactId>
+							<contextRoot>/govpay</contextRoot>
+						</webModule>
+					</modules>
+                	<libraryDirectoryMode>EMPTY</libraryDirectoryMode>
+                	<version>6</version>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jboss.as.plugins</groupId>
+				<artifactId>jboss-as-maven-plugin</artifactId>
+				<configuration>
+					<hostname>localhost</hostname>
+					<port>9999</port>
+					<skip>false</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

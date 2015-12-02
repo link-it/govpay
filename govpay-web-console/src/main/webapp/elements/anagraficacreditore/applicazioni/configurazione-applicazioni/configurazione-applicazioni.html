@@ -1,0 +1,115 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="configurazione-applicazioni">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   id="dettaglioapplicazione"
+                   url="{{govpayUrl}}"
+                   params="{{detailParams}}"
+                   handle-as="json"
+                   last-response="{{dettaglioApplicazioneCorrente}}"
+                   lastError="{{ajaxErrorApplicazione}}">
+        </iron-ajax>
+        <neon-animated-pages id="applicazioniPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <neon-animatable>
+                <lista-applicazioni id="lista" on-select-item="_selectApplicazione"></lista-applicazioni>
+            </neon-animatable>
+            <neon-animatable>
+                <applicazione-detail applicazione-corrente="{{dettaglioApplicazioneCorrente.response}}"></applicazione-detail>
+            </neon-animatable>
+        </neon-animated-pages>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'configurazione-applicazioni',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        },
+        govpayUrl: { type: String, value: function (){
+            //var id= ''; if(this.applicazioneCorrente) id = this.applicazioneCorrente.id; return govpayUrl + '/rs/dars/applicazioni/'+ id;
+            return '';
+            } },
+
+        applicazioneCorrente: {
+          type: Object,
+          value: null
+        },
+        dettaglioApplicazioneCorrente: {
+          type: Object,
+          value: null
+        },
+        detailParams: {
+            type: Object, value: function (){ return  {} }, notify: true
+          }
+      },
+       init: function() {
+            this.entryAnimation = '';
+            this.exitAnimation = '';
+            this.selected = 0;
+            this.$.applicazioniPages.cancelAnimation();
+            this.$.lista.filtraRisultati();
+        },
+
+      _selectApplicazione: function(event){
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.applicazioneCorrente = event.detail.applicazione;
+        this.govpayUrl = govpayUrl + '/rs/dars/applicazioni/'+ this.applicazioneCorrente.id;
+        this.selected = 1;
+        this.fire('changed-page', this.selected);
+      },
+
+
+      _reloadApplicazione: function(elementoModificato){
+          if(elementoModificato){
+              var id = elementoModificato.applicazione.id || 0;
+              console.log('Reload Elemento Id: ' + id);
+              if(id >0 ){
+
+              if(this.applicazioneCorrente){
+                    this.applicazioneCorrente.id = id;
+                } else {
+                    this.applicazioneCorrente = { 'id' : id};
+                }
+                this.govpayUrl = govpayUrl + '/rs/dars/applicazioni/'+ this.applicazioneCorrente.id;
+                this.$.dettaglioapplicazione.generateRequest();
+                if(this.selected == 0){
+                    this.$.lista.filtraRisultati();
+                }
+              }
+          }
+      },
+
+      selectPrevPage: function(){
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+        this.selected = 0;
+        this.$.lista.filtraRisultati();
+        this.fire('changed-page', this.selected);
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

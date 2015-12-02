@@ -1,0 +1,522 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="edit-dominio">
+    <template>
+        <style>
+            @media (min-width: 600px) {
+            :host {
+            display: block;
+            width: 70%;
+            height: 70%;
+            overflow: auto !important;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            @media (max-width: 600px) {
+            :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            paper-menu-button {
+            padding-left: 0!important;
+            }
+
+            .content {
+            padding: 24px;
+            overflow: auto;
+            }
+
+            .titleCard {
+            margin-top: 16px;
+            }
+
+            paper-card {
+            padding: 16px;
+            margin-bottom: 16px;
+            }
+
+            .gap {
+            width: 24px;
+            }
+        </style>
+        <iron-ajax auto="false" verbose="true"
+                   id="connettoresalvataggioDominio"
+                   url="{{govpayUrl}}"
+                   params="{{actionParams}}"
+                   method="{{actionMethod}}"
+                   handle-as="json"
+                   content-type="application/json"
+                   body="{{dominioCorrente}}"
+                   debounce-duration="3000"
+                   last-response="{{esitoSalvataggioDominio}}"
+                   last-error="{{ajaxErrorSalvataggioDominio}}"
+                   on-response="_visualizzaEsitoSalvataggio"
+                   on-error="_visualizzaMessaggioErrore">
+        </iron-ajax>
+        <paper-header-panel>
+            <div class="paper-header">
+                <paper-toolbar>
+                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
+                    <span class="title">[[titolo]]</span>
+                    <paper-icon-button icon="check" on-tap="_salvaDominio"></paper-icon-button>
+                </paper-toolbar>
+            </div>
+            <div class="content layout vertical">
+                <paper-card>
+                    <paper-toggle-button class="flex"
+                                         checked="{{dominioCorrente.abilitato}}">Abilitato
+                    </paper-toggle-button>
+                    <paper-input class="flex" disabled$="[[!isAdd]]"
+                                 value="{{dominioCorrente.codDominio}}"
+                                 label="Cod Dominio"
+                                 required></paper-input>
+                    <paper-input class="flex"
+                                 value="{{dominioCorrente.ragioneSociale}}"
+                                 label="Ragione Sociale"
+                                 required></paper-input>
+                    <paper-input class="flex"
+                                 value="{{dominioCorrente.gln}}"
+                                 label="Global Location Number"
+                                 required></paper-input>
+                    <!-- <paper-input class="flex"
+                                 value="{{dominioCorrente.pluginClass}}"
+                                 label="Plugin Class"
+                                 required></paper-input> -->
+                    <ajax-select-list label="Stazione" select-list-url="{{govpayStazioniUrl}}"
+                                        option-value="id" option-label="codStazione" on-select-option="_selectStazione"
+                                      selected-item="{{idStazione}}"></ajax-select-list>
+
+                </paper-card>
+                <paper-card>
+                    <div class="titleCard layout horizontal" id="comandiIban">Iban Accredito
+                        <div class="flex"></div>
+                        <paper-icon-button icon="add" on-tap="_addIbanAccredito"></paper-icon-button>
+                    </div>
+                    <div class="layout vertical" id="listaStazioni">
+                        <template is="dom-repeat" items="{{listaIBAN}}">
+                            <div class="layout horizontal">
+                                <input type="hidden" value="{{item.id}}"/>
+                                <paper-input label="Codice Iban" value="{{item.codIban}}"  required disabled$="[[!_isAddIbanAccredito(item)]]"></paper-input>
+                                <span class="gap"></span>
+                                <paper-toggle-button class="self-center" checked="{{item.attivatoObep}}">Attivo</paper-toggle-button>
+                                <span class="gap"></span>
+                                <paper-toggle-button class="self-center" checked="{{item.abilitato}}">Abilitato</paper-toggle-button>
+                                <span class="gap"></span>
+                            </div>
+                        </template>
+                    </div>
+                </paper-card>
+                <paper-card>
+                    <div class="titleCard layout horizontal" id="comandiIban">Disponibilit&agrave;
+                        <div class="flex"></div>
+                        <paper-icon-button icon="add" on-tap="_addDisponibilita"></paper-icon-button>
+                    </div>
+                    <div class="layout vertical" id="listaDisponibilita">
+                        <template is="dom-repeat" items="{{listaDisponibilita}}">
+                            <div class="layout horizontal">
+                                <input type="hidden" value="{{item.id}}"/>
+                                <input type="hidden" value="{{item.tipoDisponibilita}}"/>
+                                <paper-dropdown-menu label="Tipo Periodo" style="width: 100%">
+                                    <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                                selected="{{item.tipoPeriodo}}">
+                                        <paper-item valore="GIORNALIERA">Giornaliera</paper-item>
+                                        <paper-item valore="SETTIMANALE">Settimanale</paper-item>
+                                        <paper-item valore="MENSILE">Mensile</paper-item>
+                                        <paper-item valore="ANNUALE">Annuale</paper-item>
+                                    </paper-menu>
+                                </paper-dropdown-menu>
+                                <span class="gap"></span>
+                                <paper-input label="Giorno" value="{{item.giorno}}"  required></paper-input>
+                                <span class="gap"></span>
+                                <paper-input label="Periodo da" value="{{item.fasceOrarieLst.0.da}}"  required></paper-input>
+                                <span class="gap"></span>
+                                <paper-input label="a" value="{{item.fasceOrarieLst.0.a}}"  required></paper-input>
+                                <span class="gap"></span>
+                            </div>
+                        </template>
+                    </div>
+                </paper-card>
+                <paper-card>
+                    <div class="titleCard layout horizontal" id="comandiIban">Indisponibilit&agrave;
+                        <div class="flex"></div>
+                        <paper-icon-button icon="add" on-tap="_addIndisponibilita"></paper-icon-button>
+                    </div>
+                    <div class="layout vertical" id="listaIndisponibilita">
+                        <template is="dom-repeat" items="{{listaIndisponibilita}}">
+                            <div class="layout horizontal">
+                                <input type="hidden" value="{{item.id}}"/>
+                                <input type="hidden" value="{{item.tipoDisponibilita}}"/>
+                                <paper-dropdown-menu label="Tipo Periodo" style="width: 100%">
+                                    <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                                selected="{{item.tipoPeriodo}}">
+                                        <paper-item valore="GIORNALIERA">Giornaliera</paper-item>
+                                        <paper-item valore="SETTIMANALE">Settimanale</paper-item>
+                                        <paper-item valore="MENSILE">Mensile</paper-item>
+                                        <paper-item valore="ANNUALE">Annuale</paper-item>
+                                    </paper-menu>
+                                </paper-dropdown-menu>
+                                <span class="gap"></span>
+                                <paper-input label="Giorno" value="{{item.giorno}}"  required></paper-input>
+                                <span class="gap"></span>
+                                <paper-input label="Periodo da" value="{{item.fasceOrarieLst.0.da}}"  required></paper-input>
+                                <span class="gap"></span>
+                                <paper-input label="a" value="{{item.fasceOrarieLst.0.a}}"  required></paper-input>
+                                <span class="gap"></span>
+                            </div>
+                        </template>
+                    </div>
+                </paper-card>
+            </div>
+        </paper-header-panel>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'edit-dominio',
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      _onNeonAnimationFinish: function() {
+        if (this.opened) {
+          this._finishRenderOpened();
+        } else {
+          this._finishRenderClosed();
+        }
+      },
+      _renderOpened: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.open();
+        }
+        this.playAnimation('entry');
+        this.modified=false;
+
+        this.govpayStazioniUrl = govpayUrl + '/rs/dars/stazioni/';
+      },
+      _renderClosed: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.close();
+        }
+        this.playAnimation('exit');
+      },
+
+      properties: {
+
+        dominioCorrente: {
+          type: Object,
+          value: null,
+          observer: '_checkData'
+        },
+          govpayUrl: { type: String, value: function (){
+            //return govpayUrl + '/rs/dars/domini/';
+             return '';
+            } },
+          govpayStazioniUrl: { type: String, value: function (){
+            //return govpayUrl + '/rs/dars/stazioni/';
+             return '';
+          } },
+        isAdd: {
+            type: Boolean, value : false
+        },
+        actionMethod: {
+            type: String, value : 'GET'
+        },
+        lastActionMethod: {
+            type: String, value : 'GET'
+        },
+        actionParams: {
+            type: Object, value: function (){ return  {  } }, notify: true
+          },
+        listaIBAN: {
+          type: Array,
+          value: [1]
+        },
+         listaDisponibilita: {
+          type: Array,
+          value: [1]
+        },
+        listaIndisponibilita: {
+          type: Array,
+          value: [1]
+        },
+        listaControparti: {
+          type: Array,
+          value: [1]
+        },
+        idStazione: {
+            type: String, value : '0'
+        }
+      },
+
+      _closeDialog: function(){
+        this.close();
+      },
+       _salvaDominio: function(){
+        this.dominioCorrente.ibanAccredito = this.listaIBAN;
+        this.dominioCorrente.disponibilita = this._convertiDisponibilitaInDate(this.listaDisponibilita);
+        this.dominioCorrente.indisponibilita = this._convertiDisponibilitaInDate(this.listaIndisponibilita);
+        this.dominioCorrente.controparti = this.listaControparti;
+        this.dominioCorrente.idStazione = this.idStazione;
+
+        this.govpayUrl =  govpayUrl + '/rs/dars/domini/';
+       if(!this.isAdd){
+           this.actionMethod = 'PUT';
+           this.lastActionMethod = 'PUT';
+         }else{
+            this.actionMethod = 'POST';
+            this.lastActionMethod = 'POST';
+         }
+
+         this.$.connettoresalvataggioDominio.generateRequest();
+
+         this.actionMethod = 'GET';
+         this.close();
+
+      },
+
+
+      _selectStazione:  function(event){
+            this.idStazione = event.detail.itemCorrente.id;
+        },
+
+      _addIbanAccredito: function(){
+        var nuovoIBAN = {id :'0', codIban : '' , attivatoObep: false, abilitato: false};
+        this.push('listaIBAN', nuovoIBAN);
+      },
+
+      _addIndisponibilita: function(){
+        var nuovoIndisponibilita = {id :'0', tipoPeriodo : 'SETTIMANALE' , fasceOrarieLst: [{da : 0 , a : 0}], giorno: '' , tipoDisponibilita: 'INDISPONIBILE'};
+        this.push('listaIndisponibilita', nuovoIndisponibilita);
+      },
+
+      _addDisponibilita: function(){
+        var nuovoDisponibilita = {id :'0', tipoPeriodo : 'SETTIMANALE' , fasceOrarieLst: [{da : 0 , a : 0}], giorno: '' , tipoDisponibilita: 'DISPONIBILE'};
+        this.push('listaDisponibilita', nuovoDisponibilita);
+      },
+
+        _isAddIbanAccredito: function(item){
+         if(item.id > 0)
+            return false;
+
+        return true;
+      },
+
+       _checkData: function(nuovo){
+
+        if (nuovo){
+          this.titolo = 'Modifica Dominio: ' + nuovo.codDominio;
+          this.isAdd = false;
+            this.listaIBAN = this.dominioCorrente.ibanAccredito;
+            this.idStazione = this.dominioCorrente.idStazione;
+            this.listaDisponibilita =  this._convertiDisponibilitaInStringa(this.dominioCorrente.disponibilita);
+            this.listaIndisponibilita = this._convertiDisponibilitaInStringa(this.dominioCorrente.indisponibilita);
+            this.listaControparti = this.dominioCorrente.controparti  ;
+
+        } else {
+          this.dominioCorrente = {ibanAccredito: [], idStazione :'0' , disponibilita: [], indisponibilita: [], controparti: [] , gln : '' , pluginClass : ''};
+          this.listaIBAN = [];
+          this.listaDisponibilita =  [];
+          this.listaIndisponibilita = [];
+          this.listaControparti = [];
+
+          this.idStazione = '0';
+          this.titolo = 'Nuovo Dominio';
+          this.isAdd = true;
+
+        }
+      },
+       _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+      _getFieldPeriodo: function (fascia, field){
+            var toRet = '';
+            if(fascia)
+             //   for(var i = 0; i < fasceOrarieLst.length; i++){
+               //   var fascia = fasceOrarieLst[i];
+                        toRet = this._getDataFieldAsString(fascia, field, 'HH:mm:ss');
+
+               //}
+
+            return toRet;
+      },
+
+      _getDataFieldAsString: function(item,field, format) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,format);
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        },
+
+      _setTitolo: function(event){
+        if (event.currentTarget.value!==''){
+          this.titolo = event.currentTarget.value;
+        } else {
+          this.titolo = 'Nuovo Dominio';
+        }
+      } ,
+     _visualizzaEsitoSalvataggio: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                if(this.lastActionMethod != 'GET'){
+                    if(this.esitoSalvataggioDominio){
+                        var esitoOperazione = this.esitoSalvataggioDominio.esitoOperazione;
+                        var codOperazione = this.esitoSalvataggioDominio.codOperazione;
+                        var id = this.esitoSalvataggioDominio.response || '';
+                        var messaggio= '';
+
+                        if(esitoOperazione == 'ESEGUITA'){
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Dominio completato con successo. Id Operazione: ' + codOperazione + '.';
+                                this.dominioCorrente.id = id;
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Dominio completato con successo. Id Operazione: ' + codOperazione + '.';
+                            }
+                        } else {
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Dominio non completato.';
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Dominio non completato.';
+                            }
+                        }
+
+                        messaggi.text = messaggio;
+                    }else {
+                        messaggi.text = 'Operazione Eseguita';
+                    }
+                    messaggi.show();
+                    this.lastActionMethod = this.actionMethod;
+                    this.fire('reload-item', {elementoModificato: this.dominioCorrente});
+                }
+            }
+      },
+      _visualizzaMessaggioErrore: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
+                this.lastActionMethod = this.actionMethod;
+                messaggi.show();
+            }
+      },
+
+       _convertiDisponibilitaInDate: function(listaFormatoStringa) {
+            var listaFormatoDate = [];
+            console.log(listaFormatoStringa);
+            if(listaFormatoStringa){
+                for(var i = 0; i < listaFormatoStringa.length; i++){
+                    //{"id":6,"tipoPeriodo":"SETTIMANALE","fasceOrarieLst":[{"da":0,"a":0}],"giorno":"giovedi","tipoDisponibilita":"DISPONIBILE"}
+                    var elemento = listaFormatoStringa[i];
+                    var fasceOrarie = elemento.fasceOrarieLst;
+                    var id = elemento.id;
+                    var tipoPeriodo = elemento.tipoPeriodo;
+                    var giorno = elemento.giorno;
+                    var tipoDisponibilita = elemento.tipoDisponibilita;
+
+                    var destFasceOrarieList = [];
+                    for(var j =0; j < fasceOrarie.length ; j++){
+
+                        var fascia = fasceOrarie[j];
+                        var da = moment.duration(moment(fascia.da, 'HH:mm:ss')).asMilliseconds();
+                        var a = moment.duration(moment(fascia.a, 'HH:mm:ss')).asMilliseconds();
+
+                        destFasceOrarieList.push({'da':da , 'a': a});
+                    }
+                    var nuovoElemento = {'id' : id, 'tipoPeriodo' : tipoPeriodo,
+                                            'giorno' : giorno, 'tipoDisponibilita': tipoDisponibilita,
+                                             'fasceOrarieLst' : destFasceOrarieList};
+
+                    listaFormatoDate.push(nuovoElemento);
+                }
+            }
+            console.log(listaFormatoDate);
+            return listaFormatoDate;
+        },
+         _convertiDisponibilitaInStringa: function(listaFormatoDate) {
+            var listaFormatoStringa = [];
+            console.log(listaFormatoDate);
+            if(listaFormatoDate){
+                 for(var i = 0; i < listaFormatoDate.length; i++){
+                    //{"id":6,"tipoPeriodo":"SETTIMANALE","fasceOrarieLst":[{"da":0,"a":0}],"giorno":"giovedi","tipoDisponibilita":"DISPONIBILE"}
+                    var elemento = listaFormatoDate[i];
+
+
+                    var fasceOrarie = elemento.fasceOrarieLst;
+                    var id = elemento.id;
+                    var tipoPeriodo = elemento.tipoPeriodo;
+                    var giorno = elemento.giorno;
+                    var tipoDisponibilita = elemento.tipoDisponibilita;
+
+                    var destFasceOrarieList = [];
+                    for(var j =0; j < fasceOrarie.length ; j++){
+
+                        var fascia = fasceOrarie[j];
+                        var da = moment(fascia.da).format('HH:mm:ss');
+                        var a = moment(fascia.a).format('HH:mm:ss');
+
+                        destFasceOrarieList.push({'da':da , 'a': a});
+                    }
+                    var nuovoElemento = {'id' : id, 'tipoPeriodo' : tipoPeriodo,
+                                            'giorno' : giorno, 'tipoDisponibilita': tipoDisponibilita,
+                                             'fasceOrarieLst' : destFasceOrarieList};
+
+
+                    listaFormatoStringa.push(nuovoElemento);
+                }
+            }
+            console.log(listaFormatoStringa);
+            return listaFormatoStringa;
+        }
+    });
+  })();
+
+    </script>
+</dom-module>

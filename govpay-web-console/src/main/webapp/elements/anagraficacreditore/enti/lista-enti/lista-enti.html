@@ -1,0 +1,157 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="lista-enti">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+            .disabilitato {
+            color: #ccc;
+            }
+
+            #itemsEntiList {
+            @apply(--layout-flex);
+            }
+
+            .item {
+            @apply(--layout-horizontal);
+            cursor: pointer;
+            padding: 16px 22px;
+            border-bottom: 1px solid #DDD;
+            }
+
+            .item:focus,
+            .item.selected:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+            .item.selected:not(:focus) {
+            background-color: var(--google-grey-100);
+            }
+
+            paper-item {
+            white-space: nowrap;
+            cursor: pointer;
+            position: relative;
+            }
+
+            paper-item:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+
+            paper-item:hover {
+            background-color: #ccc;
+            }
+
+        </style>
+        <iron-ajax auto="false" id="connettoreEnti"
+                   url="[[govpayUrl]]"
+                   params="{{searchParams}}"
+                   handle-as="json"
+                   last-response="{{ajaxResponseEnti}}"
+                   lastError="{{ajaxError}}"
+                ></iron-ajax>
+
+        <paper-material elevation="1">
+            <h4 class="page-title">[[titoloSezione]]</h4>
+
+        <paper-input bind-value="{{filtro}}" hidden="true"
+                     on-bind-value-changed="_refreshList"
+                     class="flex"
+                     label="Filtra Enti"></paper-input>
+
+            <div class="card-content div-table">
+                <paper-item>
+                    <paper-item-body>
+                        <div class="horizontal layout div-table-header-row">
+                            <div class="div-table-col"><span>Cod Ente</span></div>
+                            <div class="div-table-col"><span>Ragione Sociale</span></div>
+                            <div class="div-table-col"><span>Dominio</span></div>
+                            <div class="div-table-col-com"><span></span></div>
+                        </div>
+                    </paper-item-body>
+                </paper-item>
+                <template is="dom-repeat" items="[[ajaxResponseEnti.response]]" filter="_filtraEnti">
+                        <paper-item on-tap="_selectEnte">
+                            <paper-item-body>
+                                <div>
+                                    <div tabindex="0" class="horizontal layout div-table-row">
+                                        <div class="div-table-col"><span>[[item.codEnte]]</span></div>
+                                        <div class="div-table-col"><span>[[item.ragioneSociale]]</span></div>
+                                        <div class="div-table-col"><span>[[item.dominio]]</span></div>
+                                        <div class="div-table-col-com"><span><iron-icon
+                                                icon="notification:do-not-disturb" style="color: red"
+                                                hidden$="[[item.abilitato]]"></iron-icon></span></div>
+                                    </div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                    </template>
+            </div>
+            </paper-material>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'lista-enti',
+
+      properties: {
+      titoloSezione: {
+            type: String,
+            value: 'Enti'
+          },
+          govpayUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/enti/';
+                return '';
+                } },
+        searchParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+        },
+        dataProvider: {
+          type: Array,
+          value: []
+        }
+      },
+
+      _filtraEnti: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+          if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
+        }
+        return mostra;
+      },
+
+      _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+      filtraRisultati: function (){
+         this.govpayUrl = govpayUrl + '/rs/dars/enti/';
+         this.$.connettoreEnti.generateRequest();
+      },
+
+      _selectEnte: function(event){
+        var target = event.model.item;
+        this.fire('select-item', {ente: target});
+      }
+    });
+  })();
+  </script>
+</dom-module>

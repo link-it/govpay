@@ -1,0 +1,82 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="ente-detail">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+        </style>
+        <h2>Ente [[enteCorrente.ente.codEnte]]
+            <iron-icon icon="notification:do-not-disturb" style="color: red"
+                       hidden$="[[enteCorrente.ente.attivo]]"></iron-icon>
+        </h2>
+        <p>Ragione Sociale <span>[[enteCorrente.ente.anagraficaEnte.ragioneSociale]]</span></p>
+        <p>Codice Univoco <span>[[enteCorrente.ente.anagraficaEnte.codUnivoco]]</span></p>
+        <p>Indirizzo <span>[[_getIndirizzoEnte(enteCorrente.ente.anagraficaEnte)]]</span></p>
+        <p>Telefono <span>[[enteCorrente.ente.anagraficaEnte.telefono]]</span></p>
+        <p>Cellulare <span>[[enteCorrente.ente.anagraficaEnte.cellulare]]</span></p>
+        <p>Fax <span>[[enteCorrente.ente.anagraficaEnte.fax]]</span></p>
+        <p>Email <span>[[enteCorrente.ente.anagraficaEnte.email]]</span></p>
+        <p>Dominio <span>[[enteCorrente.dominio.codDominio]]</span></p>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'ente-detail',
+
+      properties: {
+        enteCorrente: {
+          type: Object,
+          value: null
+        }
+      },
+      _getIndirizzoEnte: function(anagrafica) {
+
+        if(anagrafica){
+         var indirizzo;
+
+         if(anagrafica.indirizzo)
+           indirizzo = anagrafica.indirizzo + ' ';
+
+         if(anagrafica.civico)
+           indirizzo += anagrafica.civico + ' ';
+
+         if(anagrafica.cap)
+           indirizzo+= anagrafica.cap + ' ';
+
+         if(anagrafica.localita)
+           indirizzo += anagrafica.localita;
+
+         if(anagrafica.provincia)
+           indirizzo += ' (' + anagrafica.provincia + ') ';
+
+         if(anagrafica.nazione)
+           indirizzo += anagrafica.nazione;
+
+         return indirizzo || '';
+         }
+
+         return '';
+       },
+    });
+  })();
+
+    </script>
+</dom-module>

@@ -1,0 +1,333 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="edit-tributo">
+    <template>
+        <style>
+            @media (min-width: 600px) {
+            :host {
+            display: block;
+            width: 70%;
+            height: 70%;
+            overflow: auto !important;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            @media (max-width: 600px) {
+            :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            paper-menu-button {
+            padding-left: 0!important;
+            }
+
+            .content {
+            padding: 24px;
+            overflow: auto;
+            }
+
+            .titleCard {
+            margin-top: 16px;
+            }
+
+            paper-card {
+            padding: 16px;
+            margin-bottom: 16px;
+            }
+
+            .gap {
+            width: 24px;
+            }
+        </style>
+        <iron-ajax auto="false" verbose="true"
+                   id="connettoresalvataggioTributo"
+                   url="{{govpayUrl}}"
+                   params="{{actionParams}}"
+                   method="{{actionMethod}}"
+                   handle-as="json"
+                   content-type="application/json"
+                   body="{{tributoCorrente.tributo}}"
+                   debounce-duration="3000"
+                   last-response="{{esitoSalvataggioTributo}}"
+                   last-error="{{ajaxErrorSalvataggioTributo}}"
+                   on-response="_visualizzaEsitoSalvataggio"
+                   on-error="_visualizzaMessaggioErrore">
+        </iron-ajax>
+        <paper-header-panel>
+            <div class="paper-header">
+                <paper-toolbar>
+                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
+                    <span class="title">[[titolo]]</span>
+                    <paper-icon-button icon="check" on-tap="_salvaTributo"></paper-icon-button>
+                </paper-toolbar>
+            </div>
+            <div class="content layout vertical">
+                <paper-toggle-button class="flex" checked="{{tributoCorrente.tributo.abilitato}}">Abilitato</paper-toggle-button>
+                <paper-input class="flex" disabled$="[[!isAdd]]" value="{{tributoCorrente.tributo.codTributo}}" label="Cod Tributo" required></paper-input>
+                <span class="gap"></span>
+                <paper-input class="flex" value="{{tributoCorrente.tributo.descrizione}}" label="Descrizione" required></paper-input>
+                <span class="gap"></span>
+                <ajax-select-list label="Ente" select-list-url="{{govpayEntiUrl}}"
+                                  option-value="id" option-label="codEnte" on-select-option="_selectEnte"
+                                  selected-item="{{idEnte}}"></ajax-select-list>
+                <span class="gap"></span>
+                <template is="dom-if" if="{{mostraSelectIBAN}}">
+                <ajax-select-list label="IBAN" select-list-url="{{govpayIBANUrl}}"
+                                  select-list-params="{{ibanSelectListParams}}"
+                                  option-value="id" option-label="codIban" on-select-option="_selectIBAN"
+                                  selected-item="{{idIBAN}}"></ajax-select-list>
+                <span class="gap"></span>
+                    </template>
+                <paper-dropdown-menu label="Tipo Contabilit&agrave;" style="width: 100%;" class="inputs">
+                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{tributoCorrente.tributo.tipoContabilita}}">
+                        <paper-item valore="CAPITOLO">Capitolo</paper-item>
+                        <paper-item valore="SPECIALE">Speciale</paper-item>
+                        <paper-item valore="SIOPE">Siope</paper-item>
+                        <paper-item valore="ALTRO">Altro</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+                <span class="gap"></span>
+                <paper-input class="flex" value="{{tributoCorrente.tributo.codContabilita}}" label="Codice Contabilit&agrave;" required></paper-input>
+                <span class="gap"></span>
+            </div>
+        </paper-header-panel>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'edit-tributo',
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      _onNeonAnimationFinish: function() {
+        if (this.opened) {
+          this._finishRenderOpened();
+        } else {
+          this._finishRenderClosed();
+        }
+      },
+      _renderOpened: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.open();
+        }
+        this.playAnimation('entry');
+        this.modified=false;
+        this.govpayEntiUrl = govpayUrl + '/rs/dars/enti/';
+        this.govpayIBANUrl = govpayUrl + '/rs/dars/domini/ibanaccredito/';
+      },
+      _renderClosed: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.close();
+        }
+        this.playAnimation('exit');
+      },
+
+      properties: {
+        tributoCorrente: {
+          type: Object,
+          value: null,
+          observer: '_checkData'
+        },
+         govpayUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/tributi/';
+                return '';
+            } },
+         govpayEntiUrl: { type: String, value: function (){
+            //return govpayUrl + '/rs/dars/enti/';
+                return '';
+            } },
+         govpayIBANUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/domini/ibanaccredito/';
+                return '';
+                } },
+        isAdd: {
+            type: Boolean, value : false
+        },
+        actionMethod: {
+            type: String, value : 'GET'
+        },
+        lastActionMethod: {
+            type: String, value : 'GET'
+        },
+        actionParams: {
+            type: Object, value: function (){ return  {  } }, notify: true
+        },
+         ibanSelectListParams: {
+            type: Object, value: function (){
+             if(this.idEnte)
+                return  {  'idEnte': this.idEnte}
+                 else
+                 return  {  'idEnte': '0'}
+
+             }, notify: true
+        },
+        idEnte: {
+            type: String, value : '0',
+            observer: '_checkParametriIban'
+        },
+        idIBAN: {
+           type: String, value : '0'
+        },
+        mostraSelectIBAN: {
+            type: Boolean, value : false
+        }
+
+      },
+
+      _closeDialog: function(){
+        this.close();
+      },
+       _salvaTributo: function(){
+            this.tributoCorrente.tributo.idEnte = this.idEnte;
+            this.tributoCorrente.tributo.ibanAccredito = this.idIBAN;
+
+            this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
+
+        if(!this.isAdd){
+           this.actionMethod = 'PUT';
+           this.lastActionMethod = 'PUT';
+         }else{
+            this.actionMethod = 'POST';
+            this.lastActionMethod = 'POST';
+         }
+
+         this.$.connettoresalvataggioTributo.generateRequest();
+
+         this.actionMethod = 'GET';
+         this.close();
+
+      },
+        _selectEnte:  function(event){
+            this.idEnte = event.detail.itemCorrente.id;
+            this.idIBAN = '0';
+            //console.log(event.detail.itemCorrente);
+        },
+        _selectIBAN:  function(event){
+            this.idIBAN = event.detail.itemCorrente.id;
+        },
+
+       _checkData: function(nuovo){
+
+        if (nuovo){
+          this.titolo = 'Modifica Tributo: ' + nuovo.tributo.codTributo;
+          this.isAdd = false;
+          this.idEnte = this.tributoCorrente.tributo.idEnte;
+          this.idIBAN = this.tributoCorrente.tributo.ibanAccredito;
+
+
+        } else {
+          this.tributoCorrente = {
+           ibanAccredito: {}, ente : {},
+           tributo: {idEnte : '0', ibanAccredito: '0', codTributo : '', descrizione: '', tipoContabilita: 'CAPITOLO' , codContabilita: '' }};
+          this.idEnte = this.tributoCorrente.tributo.idEnte;
+          this.idIBAN = this.tributoCorrente.tributo.ibanAccredito;
+          this.titolo = 'Nuovo Tributo';
+          this.isAdd = true;
+        }
+      },
+      _checkParametriIban: function(nuovo){
+            if (nuovo){
+                 this.ibanSelectListParams = {  'idEnte': nuovo} ;
+            } else {
+            this.ibanSelectListParams = {  'idEnte': '0'} ;
+            }
+
+            if(this.ibanSelectListParams.idEnte > 0)
+                this.mostraSelectIBAN = true;
+                else
+                this.mostraSelectIBAN = false;
+      },
+
+      _setTitolo: function(event){
+        if (event.currentTarget.value!==''){
+          this.titolo = event.currentTarget.value;
+        } else {
+          this.titolo = 'Nuovo Tributo';
+        }
+      } ,
+        _visualizzaEsitoSalvataggio: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                if(this.lastActionMethod != 'GET'){
+                    if(this.esitoSalvataggioTributo){
+                        var esitoOperazione = this.esitoSalvataggioTributo.esitoOperazione;
+                        var codOperazione = this.esitoSalvataggioTributo.codOperazione;
+                        var id = this.esitoSalvataggioTributo.response || '';
+                        var messaggio= '';
+
+                        if(esitoOperazione == 'ESEGUITA'){
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Tributo completato con successo. Id Operazione: ' + codOperazione + '.';
+                                this.tributoCorrente.tributo.id = id;
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Tributo completato con successo. Id Operazione: ' + codOperazione + '.';
+                            }
+                        } else {
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Tributo non completato.';
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Tributo non completato.';
+                            }
+                        }
+
+                        messaggi.text = messaggio;
+                    }else {
+                        messaggi.text = 'Operazione Eseguita';
+                    }
+                    messaggi.show();
+                    this.lastActionMethod = this.actionMethod;
+                    this.fire('reload-item', {elementoModificato: this.tributoCorrente});
+                }
+            }
+      },
+      _visualizzaMessaggioErrore: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
+                this.lastActionMethod = this.actionMethod;
+                messaggi.show();
+            }
+      }
+    });
+  })();
+  </script>
+</dom-module>

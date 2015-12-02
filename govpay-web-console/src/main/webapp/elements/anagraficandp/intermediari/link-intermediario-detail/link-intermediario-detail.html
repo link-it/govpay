@@ -1,0 +1,144 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="link-intermediario-detail">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+
+            paper-item:hover {
+            background-color: #ccc;
+            }
+        </style>
+        <h2>Intermediario [[intermediarioCorrente.codIntermediario]]
+            <iron-icon icon="notification:do-not-disturb" style="color: red"
+                       hidden$="[[intermediarioCorrente.abilitato]]"></iron-icon>
+        </h2>
+        <p>Denominazione <span>[[intermediarioCorrente.denominazione]]</span></p>
+
+        <paper-material class="headMaterial" id="connettore" elevation="2">
+            <h4>Connettore PdD</h4>
+
+            <div class="card-content">
+                <p>URL: <span>[[intermediarioCorrente.connettorePdd.url]]</span></p>
+
+                <p>Auth: <span>[[_getTipoAutenticazione(intermediarioCorrente.connettorePdd)]]</span></p>
+                <template is="dom-if" if="[[mostraSezioneHttpBasic]]">
+                    <p>Username: <span>[[intermediarioCorrente.connettorePdd.httpUser]]</span></p>
+
+                    <p>Password: <span>[[intermediarioCorrente.connettorePdd.httpPassw]]</span></p>
+                </template>
+                <template is="dom-if" if="[[mostraSezioneSSL]]">
+                    <p>Tipo SSL: <span>[[intermediarioCorrente.connettorePdd.tipoSsl]]</span></p>
+
+                    <p>KeyStore Type: <span>[[intermediarioCorrente.connettorePdd.sslKsType]]</span></p>
+
+                    <p>KeyStore Location: <span>[[intermediarioCorrente.connettorePdd.sslKsLocation]]</span></p>
+
+                    <p>KeyStore Password: <span>[[intermediarioCorrente.connettorePdd.sslKsPasswd]]</span></p>
+
+                    <p>PrivateKey Password: <span>[[intermediarioCorrente.connettorePdd.sslPKeyPasswd]]</span></p>
+
+                    <p>TrustStore Type: <span>[[intermediarioCorrente.connettorePdd.sslTsType]]</span></p>
+
+                    <p>TrustStore Location: <span>[[intermediarioCorrente.connettorePdd.sslTsLocation]]</span></p>
+
+                    <p>TrustStore Password: <span>[[intermediarioCorrente.connettorePdd.sslTsPasswd]]</span></p>
+
+                    <p>SSL Type: <span>[[intermediarioCorrente.connettorePdd.sslType]]</span></p>
+                </template>
+            </div>
+        </paper-material>
+        <paper-material class="headMaterial" id="stazioni" elevation="2">
+            <h4>Stazioni</h4>
+
+            <div class="card-content div-table">
+                <paper-item>
+                    <paper-item-body>
+                        <div class="horizontal layout div-table-header-row">
+                            <div class="div-table-col"><span>Id Stazione</span></div>
+                            <div class="div-table-col"><span>Password</span></div>
+                            <div class="div-table-col-com"></div>
+                        </div>
+                    </paper-item-body>
+                </paper-item>
+                <iron-list id="elencoStazioni" items="[[intermediarioCorrente.stazioni]]" as="item">
+                    <template>
+                        <paper-item disabled$="[[!item.abilitato]]">
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-row">
+                                    <div class="div-table-col"><span>[[item.codStazione]]</span></div>
+                                    <div class="div-table-col"><span>[[item.password]]</span></div>
+                                    <div class="div-table-col-com">
+                                        <iron-icon icon="notification:do-not-disturb" style="color: red"
+                                                   hidden$="[[item.abilitato]]"></iron-icon>
+                                    </div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                    </template>
+                </iron-list>
+            </div>
+        </paper-material>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-intermediario-detail',
+
+      properties: {
+        intermediarioCorrente: {
+          type: Object,
+          value: null
+        },
+         mostraSezioneHttpBasic: {
+            type: Boolean, value : false
+        },
+          mostraSezioneSSL: {
+            type: Boolean, value : false
+        }
+      },
+
+      _getTipoAutenticazione: function (connettore){
+          if(connettore){
+             var tipo = connettore.tipoAutenticazione;
+
+             if(tipo == 'NONE'){
+                this.mostraSezioneHttpBasic = false;
+                this.mostraSezioneSSL = false;
+                return 'Nessuna';
+            } else if(tipo == 'SSL'){
+                this.mostraSezioneHttpBasic = false;
+                this.mostraSezioneSSL = true;
+                return 'SSL';
+            } else {
+                this.mostraSezioneHttpBasic = true;
+                this.mostraSezioneSSL = false;
+                return 'HTTPBasic';
+            }
+          }
+
+          return '--';
+      }
+    });
+  })();
+
+    </script>
+</dom-module>

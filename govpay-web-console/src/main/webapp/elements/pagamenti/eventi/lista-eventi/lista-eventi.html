@@ -1,0 +1,332 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="lista-eventi">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            @apply(--paper-font-common-base);
+
+            display: block;
+            font-family: sans-serif;
+            }
+            .headMaterial {
+            padding: 20px;
+            margin-bottom: 10px;
+            }
+
+            .searchButton {
+            background-color: blue;
+            color: white;
+            }
+            .resetButton {
+            background-color: white;
+            color: red;
+            }
+
+            paper-button.colorful {
+            color: #4285f4;
+            }
+            paper-button[raised].colorful {
+            background: #4285f4;
+            color: #fff;
+            }
+
+
+            #itemsList {
+            @apply(--layout-flex);
+            }
+
+            .item {
+            @apply(--layout-horizontal);
+            cursor: pointer;
+            padding: 16px 22px;
+            border-bottom: 1px solid #DDD;
+            }
+
+            .item:focus,
+            .item.selected:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+            .item.selected:not(:focus) {
+            background-color: var(--google-grey-100);
+            }
+
+            paper-item {
+            white-space: nowrap;
+            cursor: pointer;
+            position: relative;
+            }
+
+            paper-item:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+
+            paper-item:hover {
+            background-color: #ccc;
+            }
+
+            .width250 {
+                width: 250px;
+            }
+            .width200 {
+            width: 200px;
+            }
+            .width100 {
+            width: 100px;
+            }
+        </style>
+        <!-- Connettore govpay -->
+        <iron-ajax auto="false" id="govpayPagConn"
+                   url="[[govpayUrl]]"
+                   params="{{searchParams}}"
+                   handle-as="json"
+                   last-response="{{ajaxResponse}}"
+                   lastError="{{ajaxError}}"
+                ></iron-ajax>
+        <paper-material elevation="1">
+            <h4 class="page-title">[[titoloSezione]]</h4>
+
+            <!-- Search -->
+            <search-eventi titolo="Filtri Ricerca">
+                <date-picker label="Data Inizio" value="{{dataInizioInput}}" prevent-invalid-input="true" allowed-pattern="YYYY-MM-DD HH:mm:ss" class=""></date-picker>
+                <date-picker label="Data Fine" value="{{dataFineInput}}" prevent-invalid-input="true" allowed-pattern="YYYY-MM-DD HH:mm:ss" class=""></date-picker>
+                <paper-dropdown-menu label="Categoria" style="width: 100%;" class="inputs">
+                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{categoriaInput}}">
+                        <paper-item valore="">Qualsiasi</paper-item>
+                        <paper-item valore="INTERNO">Interno</paper-item>
+                        <paper-item valore="INTERFACCIA">Interfaccia</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu label="Tipo" style="width: 100%;" class="inputs">
+                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{tipoInput}}">
+                        <paper-item valore="">Qualsiasi</paper-item>
+                        <paper-item valore="nodoInviaRPT">nodoInviaRPT</paper-item>
+                        <paper-item valore="nodoInviaCarrelloRPT">nodoInviaCarrelloRPT</paper-item>
+                        <paper-item valore="nodoChiediStatoRPT">nodoChiediStatoRPT</paper-item>
+                        <paper-item valore="nodoChiediListaPendentiRPT">nodoChiediListaPendentiRPT</paper-item>
+                        <paper-item valore="paaInviaRT">paaInviaRT</paper-item>
+                        <paper-item valore="nodoChiediCopiaRT">nodoChiediCopiaRT</paper-item>
+                        <paper-item valore="paaVerificaRPT">paaVerificaRPT</paper-item>
+                        <paper-item valore="paaAttivaRPT">paaAttivaRPT</paper-item>
+                        <paper-item valore="nodoChiediInformativaPSP">nodoChiediInformativaPSP</paper-item>
+                        <paper-item valore="nodoInviaRichiestaStorno">nodoInviaRichiestaStorno</paper-item>
+                        <paper-item valore="nodoInviaEsitoStorno">nodoInviaEsitoStorno</paper-item>
+                        <paper-item valore="nodoChiediElencoFlussiRendicontazione">nodoChiediElencoFlussiRendicontazione</paper-item>
+                        <paper-item valore="nodoChiediFlussoRendicontazione">nodoChiediFlussoRendicontazione</paper-item>
+                        <paper-item valore="nodoChiediElencoQuadraturePA">nodoChiediElencoQuadraturePA</paper-item>
+                        <paper-item valore="nodoChiediQuadraturaPA">nodoChiediQuadraturaPA</paper-item>
+                        <paper-item valore="SCONOSCIUTO">Sconosciuto</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu label="Sottotipo" style="width: 100%;" class="inputs">
+                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{sottotipoInput}}">
+                        <paper-item valore="">Qualsiasi</paper-item>
+                        <paper-item valore="req">Richiesta</paper-item>
+                        <paper-item valore="rsp">Risposta</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+                <ajax-select-list label="Dominio" select-list-url="{{govpayDominiUrl}}" class="inputs" all-mode="true" option-valore-all=""
+                                  option-value="[[dominioOptionValue]]" option-label="[[dominioOptionLabel]]" on-select-option="_selectDominio"
+                                  selected-item="{{codDominioInput}}"></ajax-select-list>
+
+                <paper-input bind-value="{{iuvInput}}" class="flex inputs" label="Iuv" on-keyup="onKeyPress" autocomplete="off"></paper-input>
+
+                <div class="buttons">
+                    <paper-button class="colorful custom" raised  on-tap="filtraRisultati">Search</paper-button>
+                    <paper-button class="resetButton custom" raised on-tap="resetFiltro">Reset</paper-button>
+                </div>
+            </search-eventi>
+
+            <!-- Risultati  -->
+            <!-- Lista -->
+            <div class="card-content div-table">
+                <paper-item>
+                    <paper-item-body>
+                        <div class="horizontal layout div-table-header-row">
+                            <div class="div-table-col width200"><span>Data Registrazione</span></div>
+                            <div class="div-table-col width100"><span>Dominio</span></div>
+                            <div class="div-table-col width200"><span>IUV</span></div>
+                            <div class="div-table-col width100"><span>CCP</span></div>
+                            <div class="div-table-col width100"><span>Categoria</span></div>
+                            <div class="div-table-col width100"><span>Tipo</span></div>
+                            <div class="div-table-col width100"><span>Sottotipo</span></div>
+                            <div class="div-table-col width100"><span>Esito</span></div>
+                        </div>
+                    </paper-item-body>
+                </paper-item>
+                <iron-list id="itemsList" items="[[ajaxResponse.response]]" selected-item="{{selectedEventoItem}}"
+                           selection-enabled as="item">
+                    <template>
+                        <paper-item on-tap="_selectEvento">
+                            <paper-item-body>
+                                <div>
+                                    <div tabindex="0" class="horizontal layout div-table-row">
+                                        <div class="div-table-col width200"><span>[[_getDataFieldAsString(item,'dataRegistrazione')]]</span></div>
+                                        <div class="div-table-col width100"><span>[[item.dominio]]</span></div>
+                                        <div class="div-table-col width200"><span>[[item.iuv]]</span></div>
+                                        <div class="div-table-col width100"><span>[[item.ccp]]</span></div>
+                                        <div class="div-table-col width100"><span>[[item.categoria]]</span></div>
+                                        <div class="div-table-col width100"><span>[[item.tipo]]</span></div>
+                                        <div class="div-table-col width100"><span>[[_getSottotipo(item)]]</span></div>
+                                        <div class="div-table-col width100"><span>[[item.esito]]</span></div>
+                                    </div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                    </template>
+                </iron-list>
+            </div>
+
+            <!--div id="buttons" class="buttons">
+              <paper-button  raised class="custom"><iron-icon icon="delete"></iron-icon>Elimina</paper-button>
+            </div -->
+        </paper-material>
+    </template>
+
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'lista-eventi',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Giornale degli Eventi'
+          },
+          govpayUrl: { type: String, value: function (){
+             // return govpayUrl + '/rs/dars/eventi/';
+             return '';
+             } },
+          govpayDominiUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/domini/';
+                return '';
+                } },
+          searchParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          },
+          dominioOptionValue: {type : String , value: 'codDominio'},
+          dominioOptionLabel: {type : String , value: 'codDominio'},
+          offsetRisultatiInput: { type: String, value: '0' },
+          numeroRisultatiInput: { type: String, value: '25' },
+          iuvInput: { type: String, value: '' },
+          codDominioInput: { type: String, value: 'Qualsiasi' },
+          sottotipoInput: { type: String, value: '' },
+          tipoInput: { type: String, value: '' },
+          categoriaInput: { type: String, value: '' },
+          dataInizioInput: { type: Date, value: function (){ return new Date();} , notify: true },
+          dataFineInput: { type: Date, value: function (){ return new Date();} , notify: true }
+        },
+
+        init: function (){
+            this.govpayUrl = govpayUrl + '/rs/dars/eventi/';
+            this.govpayDominiUrl = govpayUrl + '/rs/dars/domini/';
+        },
+        filtraRisultati: function (){
+
+
+             var dominioVal = this.codDominioInput;
+            if(dominioVal == 'Qualsiasi')
+                dominioVal = '';
+
+            this.searchParams =  {
+                    'limit' : this.numeroRisultatiInput,
+                    'offset' : this.offsetRisultatiInput,
+                    'iuv' : this.iuvInput,
+                    'categoria' : this.categoriaInput,
+                    'tipo' : this.tipoInput,
+                    'sottotipo' : this.sottotipoInput,
+                    //'dataInizio' : this.dataInizioInput,
+                    //'dataFine' : this.dataFineInput,
+                    'codDomino' : dominioVal
+                    };
+        },
+        resetFiltro: function (){
+            this.iuvInput = '';
+            this.sottotipoInput = '';
+            this.tipoInput = '';
+            this.categoriaInput = '';
+            this.codDominioInput = 'Qualsiasi';
+
+
+            this.searchParams =  {
+                'limit' : this.numeroRisultatiInput,
+                'offset' : this.offsetRisultatiInput
+                };
+        },
+
+        onKeyPress: function(e) {
+            if (e.keyCode == 13) { // Enter
+                //var connettore = document.querySelector('#govpayPagConn');
+                var dominioVal = this.codDominioInput;
+                if(dominioVal == 'Qualsiasi')
+                    dominioVal = '';
+
+            this.searchParams =  {
+                'limit' : this.numeroRisultatiInput,
+                'offset' : this.offsetRisultatiInput,
+                'iuv' : this.iuvInput,
+                'categoria' : this.categoriaInput,
+                'tipo' : this.tipoInput,
+                'sottotipo' : this.sottotipoInput,
+                'codDomino' : dominioVal
+                };
+            }
+        },
+
+         _selectDominio:  function(event){
+            this.codDominioInput = event.detail.itemCorrente[this.dominioOptionValue];
+            console.log('Dominio: ' + this.codDominioInput);
+        },
+
+        ready: function() {
+            this.dataInizioInput = new Date();
+            this.dataFineInput = new Date();
+        },
+         _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+        _getSottotipo: function(oggetto){
+            if(oggetto){
+                var val = oggetto['sottotipo'];
+
+                if(val == 'req')
+                    return 'Richiesta';
+                else
+                    return 'Risposta';
+            }
+            return '';
+        },
+        _selectEvento : function (event){
+           var target = event.model.item;
+           this.fire('select-item', {eventoCorrente: target});
+        },
+        _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+
+      });
+    })();
+
+
+    </script>
+</dom-module>

@@ -1,0 +1,216 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="dominio-detail">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+        </style>
+        <h2>Dominio [[dominioCorrente.codDominio]]
+            <iron-icon icon="notification:do-not-disturb" style="color: red"
+                       hidden$="[[dominioCorrente.abilitato]]"></iron-icon>
+        </h2>
+        <p>Ragione Sociale <span>[[dominioCorrente.ragioneSociale]]</span></p>
+        <p>Stazione <span>[[dominioCorrente.stazione.codStazione]]</span></p>
+        <p>Global Location Number <span>[[dominioCorrente.gln]]</span></p>
+        <!--<p>Plugin Class<span>[[dominioCorrente.pluginClass]]</span></p> -->
+        <paper-card class="fullCardWidth">
+            <paper-tabs selected="{{selectedTab}}">
+                <paper-tab>Iban Accredito</paper-tab>
+                <paper-tab>Disponibilit&agrave;</paper-tab>
+                <paper-tab>Indisponibilit&agrave;</paper-tab>
+                <paper-tab>Tabelle Controparti</paper-tab>
+            </paper-tabs>
+            <iron-pages selected="{{selectedTab}}">
+                <div class="card-content">
+                    <div class="card-content div-table">
+                        <paper-item>
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-header-row">
+                                    <div class="div-table-col"><span>Iban</span></div>
+                                    <div class="div-table-col"><span>Attivato</span></div>
+                                    <div class="div-table-col"><span>Abilitato</span></div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                        <iron-list id="elencoIban" items="[[dominioCorrente.ibanAccredito]]" as="item">
+                            <template>
+                                <paper-item disabled$="[[!item.abilitato]]">
+                                    <paper-item-body>
+                                        <div class="horizontal layout div-table-row">
+                                            <div class="div-table-col"><span>[[item.codIban]]</span></div>
+                                            <div class="div-table-col">
+                                                <iron-icon icon="check-circle" style="color: green"
+                                                           hidden$="[[!item.attivato]]"></iron-icon>
+                                                <iron-icon icon="notification:do-not-disturb" style="color: red"
+                                                           hidden$="[[item.attivato]]"></iron-icon>
+                                            </div>
+                                            <div class="div-table-col">
+                                                <iron-icon icon="notification:do-not-disturb" style="color: red"
+                                                           hidden$="[[item.abilitato]]"></iron-icon>
+                                            </div>
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-content div-table">
+                        <paper-item>
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-header-row">
+                                    <div class="div-table-col"><span>Tipo Periodo</span></div>
+                                    <div class="div-table-col"><span>Giorno</span></div>
+                                    <div class="div-table-col"><span>Fascia Oraria</span></div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                        <iron-list id="elencoDisponibilita" items="[[dominioCorrente.disponibilita]]" as="item">
+                            <template>
+                                <paper-item>
+                                    <paper-item-body>
+                                        <div class="horizontal layout div-table-row">
+                                            <div class="div-table-col"><span>[[item.tipoPeriodo]]</span></div>
+                                            <div class="div-table-col"><span>[[item.giorno]]</span></div>
+                                            <div class="div-table-col"><span>[[_getPeriodo(item.fasceOrarieLst)]]</span></div>
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-content div-table">
+                        <paper-item>
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-header-row">
+                                    <div class="div-table-col"><span>Tipo Periodo</span></div>
+                                    <div class="div-table-col"><span>Giorno</span></div>
+                                    <div class="div-table-col"><span>Fascia Oraria</span></div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                        <iron-list id="elencoIndisponibilita" items="[[dominioCorrente.indisponibilita]]" as="item">
+                            <template>
+                                <paper-item>
+                                    <paper-item-body>
+                                        <div class="horizontal layout div-table-row">
+                                            <div class="div-table-col"><span>[[item.tipoPeriodo]]</span></div>
+                                            <div class="div-table-col"><span>[[item.giorno]]</span></div>
+                                            <div class="div-table-col"><span>[[_getPeriodo(item.fasceOrarieLst)]]</span></div>
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="card-content div-table">
+                        <paper-item>
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-header-row">
+                                    <div class="div-table-col"><span>Data Generazione</span></div>
+                                    <div class="div-table-col"><span>Data Inizio Validit&agrave;</span></div>
+                                    <div class="div-table-col"><span>Codice Flusso</span></div>
+                                    <div class="div-table-col-com"><span></span></div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                        <iron-list id="elencoControparti" items="[[dominioCorrente.controparti]]" as="item">
+                            <template>
+                                <paper-item>
+                                    <paper-item-body>
+                                        <div class="horizontal layout div-table-row">
+                                            <div class="div-table-col"><span>[[item.dataGenerazione]]</span></div>
+                                            <div class="div-table-col"><span>[[item.dataInizioValidita]]</span></div>
+                                            <div class="div-table-col"><span>[[item.codFlusso]]</span></div>
+                                            <div class="div-table-col-com">
+                                                <iron-icon icon="file-download"></iron-icon>
+                                            </div>
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+            </iron-pages>
+        </paper-card>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'dominio-detail',
+
+      properties: {
+        dominioCorrente: {
+          type: Object,
+          value: null
+        }
+      },
+       _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+      _getPeriodo: function (fasceOrarieLst){
+            var toRet = '';
+            if(fasceOrarieLst)
+                for(var i = 0; i < fasceOrarieLst.length; i++){
+                    var fascia = fasceOrarieLst[i];
+                    var da = this._getDataFieldAsString(fascia, 'da', 'HH:mm:ss');
+                    var a = this._getDataFieldAsString(fascia, 'a', 'HH:mm:ss');
+
+                    if(toRet.length > 0)
+                        toRet += ' ; ';
+
+                    toRet += da + ' - ' + a ;
+                }
+
+            return toRet;
+      },
+      _getDataFieldAsString: function(item,field, format) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,format);
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+
+
+    });
+  })();
+
+    </script>
+</dom-module>

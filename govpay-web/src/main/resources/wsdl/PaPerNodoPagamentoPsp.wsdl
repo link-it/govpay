@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Questo WSDL rappresenta l'interfaccia esposta dalla PAA per la verifica 
+	dei pagamenti in attesa. -->
+<wsdl:definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ppt="http://ws.pagamenti.telematici.gov/"
+	xmlns:ppthead="http://ws.pagamenti.telematici.gov/ppthead" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciCCP"
+	xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" 
+	name="PPT"
+	targetNamespace="http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciCCP"
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	jaxb:version="2.0">
+	<wsdl:types>
+		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
+			<xsd:simpleType name="stText35">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="35" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:element name="intestazionePPT">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="identificativoIntermediarioPA" type="ppthead:stText35" />
+						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35" />
+						<xsd:element name="identificativoDominio" type="ppthead:stText35" />
+						<xsd:element name="identificativoUnivocoVersamento" type="ppthead:stText35" />
+						<xsd:element name="codiceContestoPagamento" type="ppthead:stText35" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>
+
+		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/">
+			<xsd:annotation>
+				<xsd:appinfo>
+					<jaxb:schemaBindings>
+						<jaxb:package name="it.gov.digitpa.schemas._2011.ws.psp" />
+					</jaxb:schemaBindings>
+				</xsd:appinfo>
+			</xsd:annotation>
+
+			<xsd:import schemaLocation="../xsd/Merge.xsd" namespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" />
+
+			<xsd:simpleType name="stText35">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="35" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			<!-- Wrapper Elements -->
+			<xsd:element name="paaVerificaRPT" type="ppt:paaVerificaRPT" />
+			<xsd:element name="paaVerificaRPTRisposta" type="ppt:paaVerificaRPTRisposta" />
+			<xsd:element name="paaAttivaRPT" type="ppt:paaAttivaRPT" />
+			<xsd:element name="paaAttivaRPTRisposta" type="ppt:paaAttivaRPTRisposta" />
+			<!-- Element Definition -->
+			<xsd:complexType name="paaTipoDatiPagamentoPA">
+				<xsd:sequence>
+					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="bicAccredito" type="pay_i:stBICIdentifier" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="enteBeneficiario" type="pay_i:ctEnteBeneficiario" minOccurs="0" maxOccurs="1">
+					</xsd:element>
+					<xsd:element name="credenzialiPagatore" type="pay_i:stText35" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="causaleVersamento" type="pay_i:stText140" minOccurs="1">
+					</xsd:element>
+					<!-- xsd:element name="datiSpecificiRiscossione" type="pay_i:stDatiSpecificiRiscossione" minOccurs="1">
+					</xsd:element -->
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="paaTipoDatiPagamentoPSP">
+				<xsd:sequence>
+					<xsd:element name="importoSingoloVersamento" type="pay_i:stImporto" minOccurs="1">
+					</xsd:element>
+					<xsd:element name="ibanAppoggio" type="pay_i:stIBANIdentifier" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="bicAppoggio" type="pay_i:stBICIdentifier" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="soggettoVersante" type="pay_i:ctSoggettoVersante" minOccurs="0"></xsd:element>
+							<!-- TODO: Da valutare -->
+					<xsd:element name="ibanAddebito" type="pay_i:stIBANIdentifier" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="bicAddebito" type="pay_i:stBICIdentifier" minOccurs="0">
+					</xsd:element>
+					<xsd:element name="soggettoPagatore" type="pay_i:ctSoggettoPagatore" minOccurs="0"></xsd:element>
+				</xsd:sequence>
+
+			</xsd:complexType>
+
+
+			<xsd:complexType name="paaVerificaRPT">
+				<xsd:sequence>
+					<xsd:element name="identificativoPSP" type="ppt:stText35" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paaVerificaRPTRisposta">
+				<xsd:sequence>
+					<xsd:element name="paaVerificaRPTRisposta" type="ppt:esitoVerificaRPT" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="esitoVerificaRPT">
+				<xsd:complexContent>
+					<xsd:extension base="ppt:risposta">
+						<xsd:sequence>
+							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+							<xsd:element name="datiPagamentoPA" type="ppt:paaTipoDatiPagamentoPA" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+			<xsd:complexType name="paaAttivaRPT">
+				<xsd:sequence>
+					<xsd:element name="identificativoPSP" type="ppt:stText35" />
+					<xsd:element name="datiPagamentoPSP" type="ppt:paaTipoDatiPagamentoPSP" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="paaAttivaRPTRisposta">
+				<xsd:sequence>
+					<xsd:element name="paaAttivaRPTRisposta" type="ppt:esitoAttivaRPT" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="esitoAttivaRPT">
+				<xsd:complexContent>
+					<xsd:extension base="ppt:risposta">
+						<xsd:sequence>
+							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+							<xsd:element name="datiPagamentoPA" type="ppt:paaTipoDatiPagamentoPA" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+			<xsd:complexType name="risposta">
+				<xsd:sequence>
+					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+			<xsd:complexType name="faultBean">
+				<xsd:sequence>
+					<xsd:element name="faultCode" type="xsd:string" />
+					<xsd:element name="faultString" type="xsd:string" />
+					<xsd:element name="id" type="xsd:string" />
+					<xsd:element name="description" type="xsd:string" minOccurs="0" />
+					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+		</xsd:schema>
+	</wsdl:types>
+	<wsdl:message name="paaVerificaRPT">
+		<wsdl:part name="bodyrichiesta" element="ppt:paaVerificaRPT" />
+		<wsdl:part name="header" element="ppthead:intestazionePPT" />
+	</wsdl:message>
+	<wsdl:message name="paaVerificaRPTRisposta">
+		<wsdl:part name="bodyrisposta" element="ppt:paaVerificaRPTRisposta" />
+	</wsdl:message>
+	<wsdl:message name="paaAttivaRPT">
+		<wsdl:part name="bodyrichiesta" element="ppt:paaAttivaRPT" />
+		<wsdl:part name="header" element="ppthead:intestazionePPT" />
+	</wsdl:message>
+	<wsdl:message name="paaAttivaRPTRisposta">
+		<wsdl:part name="bodyrisposta" element="ppt:paaAttivaRPTRisposta" />
+	</wsdl:message>
+	<wsdl:portType name="PagamentiTelematiciCCP">
+		<wsdl:operation name="paaVerificaRPT">
+			<wsdl:input message="tns:paaVerificaRPT" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRichiesta" />
+			<wsdl:output message="tns:paaVerificaRPTRisposta" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaVerificaRPTRisposta" />
+		</wsdl:operation>
+		<wsdl:operation name="paaAttivaRPT">
+			<wsdl:input message="tns:paaAttivaRPT" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaAttivaRPTRichiesta" />
+			<wsdl:output message="tns:paaAttivaRPTRisposta" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/paaAttivaRPTRisposta" />
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="PagamentiTelematiciCCPbinding" type="tns:PagamentiTelematiciCCP">
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<wsdl:operation name="paaAttivaRPT">
+			<soap:operation soapAction="paaAttivaRPT" />
+			<wsdl:input>
+				<soap:body parts="bodyrichiesta" use="literal" />
+				<soap:header message="tns:paaAttivaRPT" part="header" use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="paaVerificaRPT">
+			<soap:operation soapAction="paaVerificaRPT" />
+			<wsdl:input>
+				<soap:body parts="bodyrichiesta" use="literal" />
+				<soap:header message="tns:paaVerificaRPT" part="header" use="literal" />
+			</wsdl:input>
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="PagamentiTelematiciCCPservice">
+		<wsdl:port name="PPTPort" binding="tns:PagamentiTelematiciCCPbinding">
+			<soap:address location="http://NodoPagamentiSPC.spcoop.gov.it/" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

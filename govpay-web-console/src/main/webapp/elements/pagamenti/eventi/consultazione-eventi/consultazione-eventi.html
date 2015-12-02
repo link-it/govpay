@@ -1,0 +1,96 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="consultazione-eventi">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   id="govpaypagconndettaglio"
+                   url="{{govpayUrl}}"
+                   params="{{detailParams}}"
+                   handle-as="json"
+                   last-response="{{dettaglioEventoCorrente}}"
+                   lastError="{{ajaxErrorEvento}}">
+        </iron-ajax>
+        <neon-animated-pages id="eventiPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <neon-animatable>
+                <lista-eventi id="lista" on-select-item="_selectEvento"></lista-eventi>
+            </neon-animatable>
+            <neon-animatable>
+                <evento-detail evento-corrente="[[dettaglioEventoCorrente.response]]"></evento-detail>
+            </neon-animatable>
+        </neon-animated-pages>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'consultazione-eventi',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        },
+        govpayUrl: { type: String, value: function (){
+                //var id= ''; if(this.eventoCorrente) id = this.eventoCorrente.id; return govpayUrl + '/rs/dars/eventi/'+ id;
+                return '';
+                } },
+        eventoCorrente: {
+          type: Object,
+          value: null
+        },
+        dettaglioEventoCorrente: {
+          type: Object,
+          value: null
+        },
+        detailParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          }
+      },
+       init: function() {
+            this.entryAnimation = '';
+            this.exitAnimation = '';
+            this.selected = 0;
+            this.$.eventiPages.cancelAnimation();
+            this.$.lista.init();
+            this.$.lista.filtraRisultati();
+        },
+
+      _selectEvento: function(event){
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.eventoCorrente = event.detail.eventoCorrente;
+        this.govpayUrl = govpayUrl + '/rs/dars/eventi/'+ this.eventoCorrente.id;
+
+       // this.dettaglioEventoCorrente = this.ajaxResponseEvento;
+        //console.log(this.dettaglioEventoCorrente);
+        this.selected = 1;
+        this.fire('changed-page', this.selected);
+      },
+
+      selectPrevPage: function(){
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+        this.selected = 0;
+        this.$.lista.filtraRisultati();
+        this.fire('changed-page', this.selected);
+      }
+    });
+  })();
+  </script>
+</dom-module>

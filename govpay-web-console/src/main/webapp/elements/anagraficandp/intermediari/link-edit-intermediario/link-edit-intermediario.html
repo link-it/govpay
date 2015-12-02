@@ -1,0 +1,390 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="link-edit-intermediario">
+    <template>
+        <style>
+            @media (min-width: 600px) {
+            :host {
+            display: block;
+            width: 70%;
+            height: 70%;
+            overflow: auto !important;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            @media (max-width: 600px) {
+            :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            paper-menu-button {
+            padding-left: 0!important;
+            }
+
+            .content {
+            padding: 24px;
+            overflow: auto;
+            }
+
+            .titleCard {
+            margin-top: 16px;
+            }
+
+            paper-card {
+            padding: 16px;
+            margin-bottom: 16px;
+            }
+
+            .gap {
+            width: 24px;
+            }
+
+            .nascondi{
+            display: none;
+            }
+
+            .mostra {
+            display: block;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   id="connettoresalvataggio"
+                   url="{{govpayUrl}}"
+                   params="{{actionParams}}"
+                   method="{{actionMethod}}"
+                   handle-as="json"
+                   content-type="application/json"
+                   body="{{intermediarioCorrente}}"
+                   debounce-duration="3000"
+                   last-response="{{esitoSalvataggioIntermediario}}"
+                   last-error="{{ajaxErrorSalvataggioIntermediario}}"
+                   on-response="_visualizzaEsitoSalvataggio"
+                   on-error="_visualizzaMessaggioErrore">
+        </iron-ajax>
+        <paper-header-panel>
+            <div class="paper-header">
+                <paper-toolbar>
+                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
+                    <span class="title">[[titolo]]</span>
+                    <paper-icon-button icon="check" on-tap="_salvaIntermediario"></paper-icon-button>
+                </paper-toolbar>
+            </div>
+            <div class="content layout vertical">
+                <paper-card>
+                    <paper-toggle-button class="flex"
+                                         checked="{{intermediarioCorrente.abilitato}}">Abilitato
+                    </paper-toggle-button>
+                    <paper-input class="flex" disabled$="[[!isAdd]]"
+                                 value="{{intermediarioCorrente.codIntermediario}}"
+                                 label="Id intermediario"
+                                 required></paper-input>
+                    <paper-input class="flex"
+                                 value="{{intermediarioCorrente.denominazione}}"
+                                 label="Denominazione"
+                                 required></paper-input>
+                </paper-card>
+                <paper-card>
+                    <div class="titleCard">Connettore PdD o PdDE</div>
+                    <paper-input label="URL" value="{{intermediarioCorrente.connettorePdd.url}}" required></paper-input>
+                    <paper-dropdown-menu label="Auth" style="width: 100%">
+                        <paper-menu class="dropdown-content" attr-for-selected="valore" on-iron-select="_tipoAutenticazioneSelected"
+                                    id="tipoAuthMenu"          selected="{{intermediarioCorrente.connettorePdd.tipoAutenticazione}}">
+                            <paper-item valore="NONE">Nessuna</paper-item>
+                            <paper-item valore="HTTPBasic">Http Basic</paper-item>
+                            <paper-item valore="SSL">SSL</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>
+                    <!-- Sezione HttpBasic -->
+                    <template is="dom-if" if="{{mostraSezioneHttpBasic}}">
+                        <div class="content layout vertical" id="sezHttp">
+                            <paper-input label="Username"
+                                         value="{{intermediarioCorrente.connettorePdd.httpUser}}"
+                                         required></paper-input>
+                            <paper-input label="Password"
+                                         value="{{intermediarioCorrente.connettorePdd.httpPassw}}"
+                                         required></paper-input>
+                        </div>
+                    </template>
+
+                    <!-- Sezione SSL -->
+                    <template is="dom-if" if="{{mostraSezioneSSL}}">
+                        <div class="content layout vertical" id="sezSsl">
+                            <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
+                                <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                            selected="{{intermediarioCorrente.connettorePdd.tipoSsl}}">
+                                    <paper-item valore="CLIENT">Client</paper-item>
+                                    <paper-item valore="SERVER">Server</paper-item>
+                                </paper-menu>
+                            </paper-dropdown-menu>
+                            <paper-input label="KeyStore Type"
+                                         value="{{intermediarioCorrente.connettorePdd.sslKsType}}"
+                                         required></paper-input>
+                            <paper-input label="KeyStore Location"
+                                         value="{{intermediarioCorrente.connettorePdd.sslKsLocation}}"
+                                         required></paper-input>
+                            <paper-input label="KeyStore Password"
+                                         value="{{intermediarioCorrente.connettorePdd.sslKsPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="PrivateKey Password"
+                                         value="{{intermediarioCorrente.connettorePdd.sslPKeyPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Type"
+                                         value="{{intermediarioCorrente.connettorePdd.sslTsType}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Location"
+                                         value="{{intermediarioCorrente.connettorePdd.sslTsLocation}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Password"
+                                         value="{{intermediarioCorrente.connettorePdd.sslTsPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="SSL Type"
+                                         value="{{intermediarioCorrente.connettorePdd.sslType}}"
+                                         required></paper-input>
+                        </div>
+                    </template>
+                </paper-card>
+                <paper-card>
+                    <div class="titleCard layout horizontal" id="comandiStazioni">Stazioni
+                        <div class="flex"></div>
+                        <paper-icon-button icon="add" on-tap="_addStazione"></paper-icon-button>
+                    </div>
+                    <div class="layout vertical" id="listaStazioni">
+                        <template is="dom-repeat" items="{{stazioni}}">
+                            <div class="layout horizontal">
+                                <input type="hidden" value="{{item.id}}"/>
+                                <paper-input label="ID" value="{{item.codStazione}}" required disabled$="[[!_isAddStazione(item)]]"></paper-input>
+                                <span class="gap"></span>
+                                <paper-input label="Password" value="{{item.password}}" class="flex" required></paper-input>
+                                <span class="gap"></span>
+                                <paper-toggle-button class="self-center" checked="{{item.abilitato}}">Abilitato</paper-toggle-button>
+                                <span class="gap"></span>
+                            </div>
+                        </template>
+                    </div>
+                </paper-card>
+            </div>
+        </paper-header-panel>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-edit-intermediario',
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      _onNeonAnimationFinish: function() {
+        if (this.opened) {
+          this._finishRenderOpened();
+        } else {
+          this._finishRenderClosed();
+        }
+      },
+      _renderOpened: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.open();
+        }
+        this.playAnimation('entry');
+        this.modified=false;
+      },
+      _renderClosed: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.close();
+        }
+        this.playAnimation('exit');
+      },
+
+      properties: {
+        intermediarioCorrente: {
+          type: Object,
+          value: null,
+          observer: '_checkData'
+        },
+        govpayUrl: { type: String, value: function (){
+         //return govpayUrl + '/rs/dars/intermediari/';
+          return '';
+        } },
+        isAdd: {
+            type: Boolean, value : false
+        },
+
+        actionMethod: {
+            type: String, value : 'GET'
+        },
+        lastActionMethod: {
+            type: String, value : 'GET'
+        },
+        actionParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+        },
+          mostraSezioneHttpBasic: {
+            type: Boolean, value : false
+        },
+          mostraSezioneSSL: {
+            type: Boolean, value : false
+        },
+        stazioni: {
+          type: Array,
+          value: [1]
+        }
+      },
+
+      _tipoAutenticazioneSelected: function (event,item){
+            var selected = this.$.tipoAuthMenu.selected;
+            
+            if(selected == 'NONE'){
+                this.mostraSezioneHttpBasic = false;
+                this.mostraSezioneSSL = false;
+            } else if(selected == 'SSL'){
+                this.mostraSezioneHttpBasic = false;
+                this.mostraSezioneSSL = true;
+            } else {
+                this.mostraSezioneHttpBasic = true;
+                this.mostraSezioneSSL = false;
+            }
+      },
+ 
+      _closeDialog: function(){
+        this.fire('reload-item', {elementoModificato: this.intermediarioCorrente});
+        this.close();
+      },
+       _salvaIntermediario: function(){
+            this.intermediarioCorrente.stazioni = this.stazioni;
+            this.govpayUrl = govpayUrl + '/rs/dars/intermediari/';
+
+         if(!this.isAdd){
+           this.actionMethod = 'PUT';
+           this.lastActionMethod = 'PUT';
+         }else{
+            this.actionMethod = 'POST';
+            this.lastActionMethod = 'POST';
+         }
+
+         this.$.connettoresalvataggio.generateRequest();
+
+         this.actionMethod = 'GET';
+         this.close();
+      },
+
+      _addStazione: function(){
+        var nuovaStazione = {id :'0', codStazione : '' , password:'', abilitato: false};
+        this.push('stazioni',nuovaStazione);
+      },
+
+    _isAddStazione: function(item){
+        if(item.id > 0)
+            return false;
+
+        return true;
+      },
+
+      _checkData: function(nuovo){
+
+        if (nuovo){
+          this.titolo = 'Modifica Intermediario: ' + nuovo.codIntermediario;
+          this.isAdd = false;
+          this.stazioni = this.intermediarioCorrente.stazioni;
+
+        } else {
+          this.stazioni = [];
+          this.intermediarioCorrente = {connettorePdd: {  tipoAutenticazione : 'NONE'}, stazioni: []};
+          this.titolo = 'Nuovo intermediario';
+          this.isAdd = true;
+        }
+      },
+
+      _setTitolo: function(event){
+        if (event.currentTarget.value!==''){
+          this.titolo = event.currentTarget.value;
+        } else {
+          this.titolo = 'Nuovo intermediario';
+        }
+      } ,
+
+      _visualizzaEsitoSalvataggio: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                if(this.lastActionMethod != 'GET'){
+                    if(this.esitoSalvataggioIntermediario){
+                        var esitoOperazione = this.esitoSalvataggioIntermediario.esitoOperazione;
+                        var codOperazione = this.esitoSalvataggioIntermediario.codOperazione;
+                        var id = this.esitoSalvataggioIntermediario.response || '';
+                        var messaggio= '';
+
+                        if(esitoOperazione == 'ESEGUITA'){
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Intermediario completato con successo. Id Operazione: ' + codOperazione + '.';
+                                this.intermediarioCorrente.id = id;
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Intermediario completato con successo. Id Operazione: ' + codOperazione + '.';
+                            }
+                        } else {
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Intermediario non completato.';
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Intermediario non completato.';
+                            }
+                        }
+
+                        messaggi.text = messaggio;
+                    }else {
+                        messaggi.text = 'Operazione Eseguita';
+                    }
+                    messaggi.show();
+                    this.lastActionMethod = this.actionMethod;
+                    this.fire('reload-item', {elementoModificato: this.intermediarioCorrente});
+                }
+            }
+      },
+      _visualizzaMessaggioErrore: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
+                this.lastActionMethod = this.actionMethod;
+                messaggi.show();
+            }
+      }
+    });
+  })();
+
+
+    </script>
+</dom-module>

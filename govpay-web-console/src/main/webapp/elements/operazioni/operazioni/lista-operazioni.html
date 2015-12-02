@@ -1,0 +1,219 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="lista-operazioni">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            @apply(--paper-font-common-base);
+
+            display: block;
+            font-family: sans-serif;
+            }
+            .headMaterial {
+            padding: 20px;
+            margin-bottom: 10px;
+            }
+
+            .searchButton {
+                background-color: blue;
+                color: white;
+            }
+
+            .refreshButton {
+                background-color: white;
+                color: black;
+            }
+
+            paper-card {
+                width: 100%;
+                margin-bottom: 25px;
+            }
+
+
+            paper-button {
+                margin-bottom: 10px;
+                margin-top: 10px;
+            }
+            paper-button.colorful {
+               color: #4285f4;
+            }
+            paper-button[raised].colorful {
+               background: #4285f4;
+               color: #fff;
+            }
+
+        </style>
+        <iron-ajax auto="false"
+                   id="connettoreOperazioni"
+                   url="{{govpayUrl}}"
+                   params="{{actionParams}}"
+                   method="{{actionMethod}}"
+                   handle-as="json"
+                   content-type="application/json"
+                   last-response="{{esitoOperazione}}"
+                   last-error="{{ajaxErrorOperazione}}"
+                   on-response="_visualizzaEsitoOperazione"
+                   on-error="_visualizzaMessaggioErrore">
+        </iron-ajax>
+        <paper-material elevation="1">
+            <h4 class="page-title">[[titoloSezione]]</h4>
+            <div class="content layout vertical">
+
+                <paper-card heading="Elenco Psp">
+                    <div class="card-content">
+                       Aggiorna l'elenco dei Psp.
+                    </div>
+                    <div class="card-actions">
+                        <paper-button icon="add" on-tap="_aggiornaElencoPsp" class="colorful custom" raised>
+                            <iron-icon icon="refresh"></iron-icon> Aggiorna</paper-button>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Rpt">
+                    <div class="card-content">
+                        Verifica l'esistenza di Rpt.
+                    </div>
+                    <div class="card-actions">
+                        <paper-button icon="add" on-tap="_recuperaRpt" class="colorful custom" raised>Recupera Rpt Pendenti</paper-button>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Rendicontazioni">
+                    <div class="card-content">
+                        Acquisisce i flussi di rendicontazione.
+                    </div>
+                    <div class="card-actions">
+                        <paper-button icon="add" on-tap="_acquisisciRendicontazioni" class="colorful custom" raised>Acquisizione</paper-button>
+                    </div>
+                </paper-card>
+
+                <paper-card heading="Cache">
+                    <div class="card-content">
+                       Reset della Cache.
+                    </div>
+                    <div class="card-actions">
+                        <paper-button icon="add" on-tap="_resetCache" class="colorful custom" raised>
+                            <iron-icon icon="cached"></iron-icon> Reset Cache</paper-button>
+                    </div>
+                </paper-card>
+
+            </div>
+            </paper-material>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'lista-operazioni',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        },
+        titoloSezione: {
+            type: String,
+            value: 'Operazioni'
+          },
+        govpayUrl: { type: String, value: function (){ return  '' ;} },
+        govpayBaseUrl: { type: String, value: function (){ return govpayUrl + '/rs/dars/operazioni/'; } },
+        operazioneCorrente: {
+          type: Object,
+          value: ''
+        },
+        operazioneCorrenteOk: {
+          type: Object,
+          value: null
+        },
+        operazioneCorrenteKo: {
+          type: Object,
+          value: null
+        },
+        actionParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          },
+        actionMethod: {
+            type: String, value : 'GET'
+        }
+      },
+       init: function() {
+          // per ora non faccio nulla
+        },
+        _aggiornaElencoPsp:  function(event){
+            this.operazioneCorrenteOk = 'Aggiornamento dell\'elenco Psp completato con successo.';
+            this.operazioneCorrenteKo = 'Aggiornamento dell\'elenco Psp non completato.';
+            this.operazioneCorrente = 'aggiornaPsp';
+            this.govpayUrl = this.govpayBaseUrl + 'aggiornaPsp';
+        },
+        _recuperaRpt:  function(event){
+            this.operazioneCorrenteOk = 'Recupero RPT pendenti completato con successo.';
+            this.operazioneCorrenteKo = 'Recupero RPT pendenti non completato.';
+            this.operazioneCorrente = 'recuperoRpt';
+            this.govpayUrl = this.govpayBaseUrl + 'recuperoRptPendenti';
+        },
+        _acquisisciRendicontazioni:  function(event){
+            this.operazioneCorrenteOk = 'Acquisizione delle Rendicontazioni completata con successo.';
+            this.operazioneCorrenteKo = 'Acquisizione delle Rendicontazioni non completata.';
+            this.operazioneCorrente = 'acquisisciRendicontazioni';
+            this.govpayUrl = this.govpayBaseUrl + 'acquisizioneRendicontazioni';
+        },
+        _resetCache:  function(event){
+            this.operazioneCorrenteOk = 'Reset della Cache completato con successo.';
+            this.operazioneCorrenteKo = 'Reset della Cache non completato.';
+            this.operazioneCorrente = 'resetCache';
+            this.govpayUrl = this.govpayBaseUrl + 'resetCache';
+        },
+         _visualizzaEsitoOperazione: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                if(this.operazioneCorrente != ''){
+                    if(this.esitoOperazione){
+                        var esitoOperazione = this.esitoOperazione.esitoOperazione;
+                        var codOperazione = this.esitoOperazione.codOperazione;
+                        var dettaglioEsito = this.esitoOperazione.dettaglioEsito;
+
+                        var messaggio= '';
+
+                        if(esitoOperazione == 'ESEGUITA'){
+                                messaggio = this.operazioneCorrenteOk + ' Id Operazione: ' + codOperazione + '.';
+                        } else {
+                                messaggio = this.operazioneCorrenteKo + ' ' + dettaglioEsito + '.';
+                        }
+
+                        messaggi.text = messaggio;
+                    }else {
+                        messaggi.text = 'Operazione Eseguita';
+                    }
+                    messaggi.show();
+
+                    this.operazioneCorrenteKo = '';
+                    this.operazioneCorrenteOk = '';
+                    this.operazioneCorrente = '';
+                    this.govpayUrl = '';
+                }
+            }
+      },
+      _visualizzaMessaggioErrore: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
+                this.lastActionMethod = this.actionMethod;
+                messaggi.show();
+            }
+      }
+    });
+  })();
+  </script>
+</dom-module>

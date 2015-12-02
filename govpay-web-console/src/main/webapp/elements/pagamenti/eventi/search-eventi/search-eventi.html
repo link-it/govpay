@@ -1,0 +1,31 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="search-eventi">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      .headMaterial {
+        padding: 20px;
+      margin-bottom: 10px;
+      }
+    </style>
+    <paper-material class="headMaterial">
+        <div class="page-title">[[titolo]]</div>
+        <content select=".inputs"></content>
+      <br/>
+        <content select=".buttons"></content>
+    </paper-material>
+  </template>
+  <script>
+    Polymer({
+        is: 'search-eventi',
+
+        properties: {
+           searchParams: { type: Array, value: []
+          }
+        }
+    });
+    </script>
+</dom-module>

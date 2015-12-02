@@ -1,0 +1,188 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="rendicontazione-detail">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+
+            .fullCardWidth {
+            width: 100%;
+            }
+            .blue {
+            color: var(--paper-light-blue-300);
+            }
+            .red {
+            color: var(--paper-red-300);
+            }
+            .orange {
+            color: var(--paper-amber-300);
+            }
+            .green {
+            color: var(--paper-green-300);
+            }
+
+            .div-table-row:hover .shortText::after {
+            content: ' [+]';
+            color: gray;
+            }
+            .div-table-row.expanded:hover .shortText::after {
+            content: '';
+            }
+            .div-table-row .longText {
+
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded .longText {
+            display: block;
+            border-bottom: solid 1px #000;
+            }
+            .div-table-row.expanded:hover .longText::after {
+            content: ' [–]';
+            }
+      .shortText, .longText {
+        font-size: 14px;
+      }
+      .longText {
+        color: gray;
+        display: none !important;
+      }
+        </style>
+        <paper-card heading="[[_getTitoloSezione(rendicontazioneCorrente.fr)]]" class="fullCardWidth">
+            <div class="card-content">
+                <p>Iur: <span>[[_getProperty(rendicontazioneCorrente.fr,'iur')]]</span></p>
+                <p>Codice Flusso: <span>[[_getProperty(rendicontazioneCorrente.fr,'codFlusso')]]</span></p>
+                <p>Data Flusso: <span>[[_getDataFieldAsString(rendicontazioneCorrente.fr,'dataOraFlusso')]]</span></p>
+                <p>Anno Riferimento: <span>[[_getProperty(rendicontazioneCorrente.fr,'annoRiferimento')]]</span></p>
+                <p>Psp: <span>[[_getProperty(rendicontazioneCorrente.psp,'codPsp')]]</span></p>
+                <p>Data Regolamento: <span>[[_getDataFieldAsString(rendicontazioneCorrente.fr,'dataRegolamento')]]</span></p>
+                <p>Numero Pagamenti: <span>[[_getProperty(rendicontazioneCorrente.fr,'numeroPagamenti')]]</span></p>
+                <p>Importo Totale Pagamenti: <span>[[_getProperty(rendicontazioneCorrente.fr,'importoTotalePagamenti')]] &euro;</span></p>
+                <p>Stato: <span>[[_getProperty(rendicontazioneCorrente.fr,'stato')]]</span></p>
+                <p>Descrizione Stato: <span>[[_getProperty(rendicontazioneCorrente.fr,'descrizioneStato')]]</span></p>
+            </div>
+
+            <paper-material class="headMaterial" id="rendicontazioniList" elevation="2">
+                <h4>Singole Rendicontazioni</h4>
+
+                <div class="card-content div-table">
+                    <paper-item>
+                        <paper-item-body>
+                            <div class="horizontal layout div-table-header-row">
+                                <div class="div-table-col width200"><span>IUR</span></div>
+                                <div class="div-table-col width200"><span>IUV</span></div>
+                                <div class="div-table-col width200"><span>Singolo Importo</span></div>
+                                <div class="div-table-col width200"><span>Esito</span></div>
+                                <div class="div-table-col"><span>Data Esito</span></div>
+                                <div class="div-table-col-com"></div>
+                            </div>
+                        </paper-item-body>
+                    </paper-item>
+                    <iron-list id="elencoSingoleRendicontazioni" items="{{_getListaSingoleRendicontazioni(rendicontazioneCorrente.fr)}}" as="item">
+                        <template>
+                            <paper-item  on-tap="_selectSingolaRendicontazione">
+                                <paper-item-body>
+                                    <div class$="[[getClassForItem(item, item.expanded)]]">
+                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.iur]]</span></div>
+                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.iuv]]</span></div>
+                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.singoloImporto]] &euro;</span> </div>
+                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.codiceEsito]]</span></div>
+                                        <div class="div-table-col"><span>[[_getDataFieldAsString(item.singolaRendicontazione, 'dataEsito')]]</span></div>
+                                        <div class="div-table-col-com shortText"></div>
+                                    </div>
+                                    <div class="horizontal layout div-table-row longText">
+                                        cccc
+                                    </div>
+                                </paper-item-body>
+                            </paper-item>
+                        </template>
+                    </iron-list>
+                </div>
+            </paper-material>
+        </paper-card>
+    </template>
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'rendicontazione-detail',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Dettaglio Rendicontazione'
+          },
+          rendicontazioneCorrente: {
+            type: Object,
+            value: null
+          },
+          singoleRendicontazioni: {
+            type: Array
+          }
+        },
+
+        ready: function() {
+          //   console.log('ready function...');
+        },
+         _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+          _getListaSingoleRendicontazioni: function(rendicontazioneCorrente){
+            if(this.singoleRendicontazioni)
+                return this.singoleRendicontazioni;
+            else{
+                var tmp = this._getProperty(rendicontazioneCorrente,'singolaRendicontazioneList');
+                 if(tmp){
+                    this.singoleRendicontazioni = [];
+
+                     for(var v in tmp){
+                            this.singoleRendicontazioni.push({'expanded': false, 'singolaRendicontazione': tmp[v]});
+                     }
+                }
+
+               return this.singoleRendicontazioni;
+            }
+        },
+         _selectSingolaRendicontazione: function (e){
+            var list = this.$.elencoSingoleRendicontazioni;
+            var index = e.model.index;
+            var isExpanded = list.items[index].expanded;
+          //  console.log(isExpanded);
+            list.set('singoleRendicontazioni.' + index + '.expanded', !isExpanded);
+            list.updateSizeForItem(e.model.index);
+        },
+         getClassForItem: function(item, expanded) {
+          return expanded ? 'horizontal layout div-table-row expanded' : 'horizontal layout div-table-row';
+        },
+
+        _getTitoloSezione: function (rendicontazioneCorrente){
+            return this.titoloSezione;
+        },
+
+          _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+      });
+    })();
+    </script>
+
+</dom-module>

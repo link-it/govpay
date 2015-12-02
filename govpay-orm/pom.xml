@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<artifactId>govpay</artifactId>
+		<groupId>it.govpay</groupId>
+		<version>2.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>govpay-orm</artifactId>
+	<packaging>jar</packaging>
+
+	<name>GovPAY ORM</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-1.2-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openspcoop2</groupId>
+			<artifactId>openspcoop2_generic-project</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.openspcoop2</groupId>
+			<artifactId>openspcoop2_utils</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.jcs</groupId>
+			<artifactId>jcs</artifactId>
+			<exclusions>
+			        <exclusion>  <!-- declare the exclusion here -->
+		         		<groupId>commons-logging</groupId>
+				        <artifactId>commons-logging</artifactId>
+		        	</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>concurrent</groupId>
+			<artifactId>concurrent</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<classifier>jdk15</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-jackson-provider</artifactId>
+			<version>2.3.2.Final</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>${database.groupId}</groupId>
+			<artifactId>${database.artifactId}</artifactId>
+			<version>${database.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>catalina</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<filters>
+		      <filter>${basedir}/../resources/filters/${env}.filter.properties</filter>
+		</filters>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+			</testResource>
+			<testResource>
+				<directory>../resources/sql/2.0</directory>
+				<filtering>true</filtering>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.18.1</version>
+				<configuration>
+					<suiteXmlFiles>
+						<suiteXmlFile>src/test/resources/testing.xml</suiteXmlFile>
+					</suiteXmlFiles>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.2</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<repositories>
+		<repository>
+			<id>openspcoop2-releases</id>
+			<url>http://maven.openspcoop.org/content/repositories/public/</url>
+		</repository>
+		<repository>
+			<id>openspcoop2-snapshot</id>
+			<url>http://maven.openspcoop.org/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+	<profiles>
+		<profile>
+			<id>my-test-plugins</id>
+			<activation>
+				<property>
+					<name>buildDB</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>sql-maven-plugin</artifactId>
+						<version>1.5</version>
+						<dependencies>
+							<dependency>
+								<groupId>${database.groupId}</groupId>
+								<artifactId>${database.artifactId}</artifactId>
+								<version>${database.version}</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<driver>${database.class}</driver>
+							<username>${database.username}</username>
+							<password>${database.password}</password>
+							<url>${database.url}</url>
+							<autocommit>true</autocommit>
+						</configuration>
+						<executions>
+							<execution>
+								<id>drop-tables</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<srcFiles>
+										<srcFile>../resources/sql/2.0/${it.govpay.orm.databaseType}/drop.sql</srcFile>
+									</srcFiles>
+									<onError>continue</onError>
+								</configuration>
+							</execution>
+							<execution>
+								<id>create-schema</id>
+								<phase>test-compile</phase>
+								<goals>
+									<goal>execute</goal>
+								</goals>
+								<configuration>
+									<autocommit>true</autocommit>
+									<srcFiles>
+										<srcFile>../resources/sql/2.0/${it.govpay.orm.databaseType}/gov_pay.sql</srcFile>
+									</srcFiles>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>

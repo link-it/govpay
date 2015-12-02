@@ -1,0 +1,519 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="edit-applicazione">
+    <template>
+        <style>
+            @media (min-width: 600px) {
+            :host {
+            display: block;
+            width: 70%;
+            height: 70%;
+            overflow: auto !important;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            @media (max-width: 600px) {
+            :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            paper-menu-button {
+            padding-left: 0!important;
+            }
+
+            .content {
+            padding: 24px;
+            overflow: auto;
+            }
+
+            .titleCard {
+            margin-top: 16px;
+            }
+
+            paper-card {
+            padding: 16px;
+            margin-bottom: 16px;
+            }
+
+            .gap {
+            width: 24px;
+            }
+        </style>
+        <iron-ajax auto="false" verbose="true"
+                   id="connettoresalvataggioApplicazione"
+                   url="{{govpayUrl}}"
+                   params="{{actionParams}}"
+                   method="{{actionMethod}}"
+                   handle-as="json"
+                   content-type="application/json"
+                   body="{{applicazioneCorrente}}"
+                   debounce-duration="3000"
+                   last-response="{{esitoSalvataggioApplicazione}}"
+                   last-error="{{ajaxErrorSalvataggioApplicazione}}"
+                   on-response="_visualizzaEsitoSalvataggio"
+                   on-error="_visualizzaMessaggioErrore">
+        </iron-ajax>
+        <paper-header-panel>
+            <div class="paper-header">
+                <paper-toolbar>
+                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
+                    <span class="title">[[titolo]]</span>
+                    <paper-icon-button icon="check" on-tap="_salvaApplicazione"></paper-icon-button>
+                </paper-toolbar>
+            </div>
+
+            <div class="content layout vertical">
+                <paper-card>
+                    <paper-toggle-button class="flex" checked="{{applicazioneCorrente.applicazione.abilitato}}">
+                        Abilitato
+                    </paper-toggle-button>
+                    <paper-input class="flex" disabled$="[[!isAdd]]"
+                                 value="{{applicazioneCorrente.applicazione.codApplicazione}}"
+                                 label="Codice Applicazione" required></paper-input>
+                    <span class="gap"></span>
+                    <paper-input class="flex" value="{{applicazioneCorrente.applicazione.principal}}" label="Principal"
+                                 required></paper-input>
+                    <span class="gap"></span>
+                    <paper-dropdown-menu label="Versione" style="width: 100%">
+                        <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                    selected="{{applicazioneCorrente.applicazione.versione}}">
+                            <paper-item valore="GPv1">GPv1</paper-item>
+                            <paper-item valore="GPv2">GPv2</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>
+                    <paper-input class="flex" value="{{applicazioneCorrente.applicazione.policyRispedizione}}"
+                                 label="Policy Rispedizione" required></paper-input>
+                    <span class="gap"></span>
+                    <ajax-select-list label="Stazione"
+                                      select-list-url="{{govpayStazioniUrl}}"
+                                      option-value="id" option-label="codStazione" on-select-option="_selectStazione"
+                                      selected-item="{{idStazione}}"></ajax-select-list>
+                    <span class="gap"></span>
+
+                </paper-card>
+
+                <paper-card>
+                    <ajax-pick-list label="Tributi" source-list-url="{{govpayTributiUrl}}" target-list="{{tributi}}"
+                                      select-list-params="{{tributiListParams}}" source-label="Tributi Disponibili" target-label="Tributi Selezionati"
+                                      source-option-value="id" source-option-label="codTributo" on-change-item="_updateTributi"
+                                    target-option-value="id" target-option-label="codTributo">
+
+                    </ajax-pick-list>
+                    <span class="gap"></span>
+
+
+                </paper-card>
+
+
+                <paper-card>
+                    <div class="titleCard">Connettore Esito</div>
+                    <paper-input label="URL" value="{{applicazioneCorrente.applicazione.connettoreEsito.url}}"
+                                 required></paper-input>
+                    <paper-toggle-button class="flex"
+                                         checked="{{applicazioneCorrente.applicazione.connettoreEsito.azioneInUrl}}">
+                        Azione in URL
+                    </paper-toggle-button>
+                    <paper-dropdown-menu label="Auth" style="width: 100%">
+                        <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                    on-iron-select="_tipoAutenticazioneConnEsitoSelected"
+                                    id="tipoAuthConnEsitoMenu"
+                                    selected="{{applicazioneCorrente.applicazione.connettoreEsito.tipoAutenticazione}}">
+                            <paper-item valore="NONE">Nessuna</paper-item>
+                            <paper-item valore="HTTPBasic">Http Basic</paper-item>
+                            <paper-item valore="SSL">SSL</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>
+                    <!-- Sezione HttpBasic -->
+                    <template is="dom-if" if="{{mostraSezioneHttpBasicConnEsito}}">
+                        <div class="content layout vertical" id="sezHttp">
+                            <paper-input label="Username"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.httpUser}}"
+                                         required></paper-input>
+                            <paper-input label="Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.httpPassw}}"
+                                         required></paper-input>
+                        </div>
+                    </template>
+
+                    <!-- Sezione SSL -->
+                    <template is="dom-if" if="{{mostraSezioneSSLConnEsito}}">
+                        <div class="content layout vertical" id="sezSsl">
+                            <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
+                                <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                            selected="{{applicazioneCorrente.applicazione.connettoreEsito.tipoSsl}}">
+                                    <paper-item valore="CLIENT">Client</paper-item>
+                                    <paper-item valore="SERVER">Server</paper-item>
+                                </paper-menu>
+                            </paper-dropdown-menu>
+                            <paper-input label="KeyStore Type"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslKsType}}"
+                                         required></paper-input>
+                            <paper-input label="KeyStore Location"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslKsLocation}}"
+                                         required></paper-input>
+                            <paper-input label="KeyStore Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslKsPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="PrivateKey Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslPKeyPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Type"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslTsType}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Location"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslTsLocation}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslTsPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="SSL Type"
+                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslType}}"
+                                         required></paper-input>
+                        </div>
+                    </template>
+                </paper-card>
+
+                <paper-card>
+                    <div class="titleCard">Connettore Verifica</div>
+                    <paper-input label="URL" value="{{applicazioneCorrente.applicazione.connettoreVerifica.url}}"
+                                 required></paper-input>
+                    <paper-toggle-button class="flex"
+                                         checked="{{applicazioneCorrente.applicazione.connettoreVerifica.azioneInUrl}}">
+                        Azione in URL
+                    </paper-toggle-button>
+                    <paper-dropdown-menu label="Auth" style="width: 100%">
+                        <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                    on-iron-select="_tipoAutenticazioneConnVerificaSelected"
+                                    id="tipoAuthConnVerificaMenu"
+                                    selected="{{applicazioneCorrente.applicazione.connettoreVerifica.tipoAutenticazione}}">
+                            <paper-item valore="NONE">Nessuna</paper-item>
+                            <paper-item valore="HTTPBasic">Http Basic</paper-item>
+                            <paper-item valore="SSL">SSL</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>
+                    <!-- Sezione HttpBasic -->
+                    <template is="dom-if" if="{{mostraSezioneHttpBasicConnVerifica}}">
+                        <div class="content layout vertical" id="sezHttp">
+                            <paper-input label="Username"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.httpUser}}"
+                                         required></paper-input>
+                            <paper-input label="Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.httpPassw}}"
+                                         required></paper-input>
+                        </div>
+                    </template>
+
+                    <!-- Sezione SSL -->
+                    <template is="dom-if" if="{{mostraSezioneSSLConnVerifica}}">
+                        <div class="content layout vertical" id="sezSsl">
+                            <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
+                                <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                            selected="{{applicazioneCorrente.applicazione.connettoreVerifica.tipoSsl}}">
+                                    <paper-item valore="CLIENT">Client</paper-item>
+                                    <paper-item valore="SERVER">Server</paper-item>
+                                </paper-menu>
+                            </paper-dropdown-menu>
+                            <paper-input label="KeyStore Type"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslKsType}}"
+                                         required></paper-input>
+                            <paper-input label="KeyStore Location"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslKsLocation}}"
+                                         required></paper-input>
+                            <paper-input label="KeyStore Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslKsPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="PrivateKey Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslPKeyPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Type"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslTsType}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Location"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslTsLocation}}"
+                                         required></paper-input>
+                            <paper-input label="TrustStore Password"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslTsPasswd}}"
+                                         required></paper-input>
+                            <paper-input label="SSL Type"
+                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslType}}"
+                                         required></paper-input>
+                        </div>
+                    </template>
+                </paper-card>
+            </div>
+
+        </paper-header-panel>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'edit-applicazione',
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      _onNeonAnimationFinish: function() {
+        if (this.opened) {
+          this._finishRenderOpened();
+        } else {
+          this._finishRenderClosed();
+        }
+      },
+      _renderOpened: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.open();
+        }
+        this.playAnimation('entry');
+        this.modified=false;
+        this.govpayStazioniUrl = govpayUrl + '/rs/dars/stazioni/';
+       // this.govpayTributiUrl = govpayUrl + '/rs/dars/applicazioni/0/tributi/';
+      },
+      _renderClosed: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.close();
+        }
+        this.playAnimation('exit');
+      },
+
+      properties: {
+        tributi: {
+          type: Array,
+          value: [1]
+        },
+        govpayUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/applicazioni/';
+                return '';
+            } },
+        govpayStazioniUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/stazioni/';
+                    return '';
+                } },
+        govpayTributiUrl: { type: String, value: function (){
+                //return govpayUrl + '/rs/dars/applicazioni/0/tributi/';
+                return '';
+                } },
+        applicazioneCorrente: {
+          type: Object,
+          value: null,
+          observer: '_checkData'
+        },
+        isAdd: {
+            type: Boolean, value : false
+        },
+        actionMethod: {
+            type: String, value : 'GET'
+        },
+        lastActionMethod: {
+            type: String, value : 'GET'
+        },
+        actionParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          },
+        mostraSezioneHttpBasicConnVerifica: {
+            type: Boolean, value : false
+        },
+        mostraSezioneSSLConnVerifica: {
+            type: Boolean, value : false
+        },
+        mostraSezioneHttpBasicConnEsito: {
+            type: Boolean, value : false
+        },
+        mostraSezioneSSLConnEsito: {
+            type: Boolean, value : false
+        },
+        idStazione: {
+            type: String, value : '0',
+            observer: '_checkParametriTributi'
+        },
+        tributiListParams: {
+            type: Object, value: function (){
+             if(this.idEnte)
+                return  { 'idStazione': this.idStazione}
+                 else
+                 return  { 'idStazione': '0'}
+
+             }, notify: true
+        }
+      },
+        _tipoAutenticazioneConnEsitoSelected: function (event,item){
+            var selected = this.$.tipoAuthConnEsitoMenu.selected;
+
+            if(selected == 'NONE'){
+                this.mostraSezioneHttpBasicConnEsito = false;
+                this.mostraSezioneSSLConnEsito = false;
+            } else if(selected == 'SSL'){
+                this.mostraSezioneHttpBasicConnEsito = false;
+                this.mostraSezioneSSLConnEsito = true;
+            } else {
+                this.mostraSezioneHttpBasicConnEsito = true;
+                this.mostraSezioneSSLConnEsito = false;
+            }
+      },
+        _tipoAutenticazioneConnVerificaSelected: function (event,item){
+            var selected = this.$.tipoAuthConnVerificaMenu.selected;
+
+            if(selected == 'NONE'){
+                this.mostraSezioneHttpBasicConnVerifica = false;
+                this.mostraSezioneSSLConnVerifica = false;
+            } else if(selected == 'SSL'){
+                this.mostraSezioneHttpBasicConnVerifica = false;
+                this.mostraSezioneSSLConnVerifica = true;
+            } else {
+                this.mostraSezioneHttpBasicConnVerifica = true;
+                this.mostraSezioneSSLConnVerifica = false;
+            }
+      },
+      _closeDialog: function(){
+        this.fire('reload-item', {elementoModificato: this.applicazioneCorrente});
+        this.close();
+      },
+       _salvaApplicazione: function(){
+            this.applicazioneCorrente.applicazione.idStazione =       this.idStazione ;
+
+          this.govpayUrl =  govpayUrl + '/rs/dars/applicazioni/';
+      if(!this.isAdd){
+           this.actionMethod = 'PUT';
+           this.lastActionMethod = 'PUT';
+         }else{
+            this.actionMethod = 'POST';
+            this.lastActionMethod = 'POST';
+         }
+
+         this.$.connettoresalvataggioApplicazione.generateRequest();
+         this.actionMethod = 'GET';
+         this.close();
+      },
+
+       _checkData: function(nuovo){
+
+        if (nuovo){
+          this.titolo = 'Modifica Applicazione: ' + nuovo.applicazione.codApplicazione;
+          this.idStazione = this.applicazioneCorrente.applicazione.idStazione;
+          this.tributi = this.applicazioneCorrente.tributi;
+          this.isAdd = false;
+        } else {
+
+          this.applicazioneCorrente = {applicazione : { idTributi : [] , idStazione : '0', id: '0' }, tributi: []};
+          this.idStazione = this.applicazioneCorrente.applicazione.idStazione;
+          this.tributi = this.applicazioneCorrente.tributi;
+          this.titolo = 'Nuova Applicazione';
+          this.isAdd = true;
+        }
+        // console.log(this.applicazioneCorrente.applicazione.id);
+
+      },
+
+      _setTitolo: function(event){
+        if (event.currentTarget.value!==''){
+          this.titolo = event.currentTarget.value;
+        } else {
+          this.titolo = 'Nuova Applicazione';
+        }
+      } ,
+      _selectStazione:  function(event){
+        this.govpayTributiUrl = govpayUrl + '/rs/dars/applicazioni/' + this.applicazioneCorrente.applicazione.id + '/tributi/';
+        this.idStazione = event.detail.itemCorrente.id;
+      },
+      _checkParametriTributi: function(nuovo){
+         if (nuovo){
+             this.tributiListParams = {  'idStazione': nuovo} ;
+         } else {
+             this.tributiListParams = { 'idStazione': '0'} ;
+         }
+
+      },
+      _updateTributi:  function(event){
+        var tributiSelezionati = event.detail.tributiSelezionti;
+        this.applicazioneCorrente.applicazione.idTributi = [];
+
+        for(var t in tributiSelezionati){
+            var tributo = tributiSelezionati[t];
+            this.push('applicazioneCorrente.applicazione.idTributi',tributo.id);
+        }
+      },
+      _visualizzaEsitoSalvataggio: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                if(this.lastActionMethod != 'GET'){
+                    if(this.esitoSalvataggioApplicazione){
+                        var esitoOperazione = this.esitoSalvataggioApplicazione.esitoOperazione;
+                        var codOperazione = this.esitoSalvataggioApplicazione.codOperazione;
+                        var id = this.esitoSalvataggioApplicazione.response || '';
+                        var messaggio= '';
+
+                        if(esitoOperazione == 'ESEGUITA'){
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Applicazione completato con successo. Id Operazione: ' + codOperazione + '.';
+                                this.applicazioneCorrente.applicazione.id = id;
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Applicazione completato con successo. Id Operazione: ' + codOperazione + '.';
+                            }
+                        } else {
+                            // Creazione
+                            if(this.lastActionMethod == 'POST'){
+                                messaggio = 'Inserimento Applicazione non completato.';
+                            }else {
+                                //Aggiornamento
+                                messaggio = 'Aggiornamento Applicazione non completato.';
+                            }
+                        }
+
+                        messaggi.text = messaggio;
+                    }else {
+                        messaggi.text = 'Operazione Eseguita';
+                    }
+                    messaggi.show();
+                    this.lastActionMethod = this.actionMethod;
+                    this.fire('reload-item', {elementoModificato: this.applicazioneCorrente});
+                }
+            }
+      },
+      _visualizzaMessaggioErrore: function(event){
+         var messaggi = document.querySelector('#messaggiUtente');
+            if(messaggi){
+                messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
+                this.lastActionMethod = this.actionMethod;
+                messaggi.show();
+            }
+      }
+    });
+  })();
+
+    </script>
+</dom-module>

@@ -1,0 +1,322 @@
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="lista-pagamenti">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            @apply(--paper-font-common-base);
+
+            display: block;
+            font-family: sans-serif;
+            }
+            .headMaterial {
+            padding: 20px;
+            margin-bottom: 10px;
+            }
+
+            .searchButton {
+            background-color: blue;
+            color: white;
+            }
+            .resetButton {
+            background-color: white;
+            color: red;
+            }
+
+            paper-button.colorful {
+            color: #4285f4;
+            }
+            paper-button[raised].colorful {
+            background: #4285f4;
+            color: #fff;
+            }
+
+
+            #itemsList {
+            @apply(--layout-flex);
+            }
+
+            .item {
+            @apply(--layout-horizontal);
+            cursor: pointer;
+            padding: 16px 22px;
+            border-bottom: 1px solid #DDD;
+            }
+
+            .item:focus,
+            .item.selected:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+            .item.selected:not(:focus) {
+            background-color: var(--google-grey-100);
+            }
+
+            paper-item {
+            white-space: nowrap;
+            cursor: pointer;
+            position: relative;
+            }
+
+            paper-item:focus {
+            outline: 0;
+            background-color: #ddd;
+            }
+
+            paper-item:hover {
+            background-color: #ccc;
+            }
+
+            .width250 {
+                width: 250px;
+            }
+            .width200 {
+            width: 200px;
+            }
+        </style>
+        <!-- Connettore govpay -->
+        <iron-ajax auto="false" id="govpayPagConn"
+                   url="[[govpayUrl]]"
+                   params="{{searchParams}}"
+                   handle-as="json"
+                   last-response="{{ajaxResponse}}"
+                   lastError="{{ajaxError}}"
+                ></iron-ajax>
+        <paper-material elevation="1">
+            <h4 class="page-title">[[titoloSezione]]</h4>
+
+            <!-- Search -->
+            <search-pagamenti titolo="Filtri Ricerca">
+                <paper-dropdown-menu label="Stato Pagamento" style="width: 100%;" class="inputs">
+                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoPagamentoInput}}">
+                        <paper-item valore="">Qualsiasi</paper-item>
+                        <paper-item valore="PAGAMENTO_ESEGUITO">Pagamento Eseguito</paper-item>
+                        <paper-item valore="PAGAMENTO_NON_ESEGUITO">Pagamento non Eseguito</paper-item>
+                        <paper-item valore="PAGAMENTO_PARZIALMENTE_ESEGUITO">Pagamento parzialmente Eseguito
+                        </paper-item>
+                        <paper-item valore="FALLITO">Fallito</paper-item>
+                        <paper-item valore="IN_ATTESA">In Attesa</paper-item>
+                        <paper-item valore="AUTORIZZATO_IMMEDIATO">Autorizzato Immediato</paper-item>
+                        <paper-item valore="AUTORIZZATO_DIFFERITO">Autorizzato Differito</paper-item>
+                        <paper-item valore="DECORRENZA_TERMINI">Decorrenza Termini</paper-item>
+                        <paper-item valore="DECORRENZA_TERMINI_PARZIALE">Decorrenza Termini Parziale</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu label="Stato Rendicontazione" style="width: 100%;" class="inputs">
+                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoRendicontazioneInput}}">
+                        <paper-item valore="">Qualsiasi</paper-item>
+                        <paper-item valore="NON_RENDICONTATO">Non Rendicontato</paper-item>
+                        <paper-item valore="RENDICONTATO">Rendicontato</paper-item>
+                        <paper-item valore="RENDICONTATO_PARZIALE">Rendicontato Parziale</paper-item>
+                    </paper-menu>
+                </paper-dropdown-menu>
+                <ajax-select-list label="Ente" select-list-url="{{govpayEntiUrl}}" class="inputs" all-mode="true" option-valore-all=""
+                                  option-value="[[enteOptionValue]]" option-label="[[enteOptionLabel]]" on-select-option="_selectEnte"
+                                  selected-item="{{codEnteInput}}"></ajax-select-list>
+                <paper-input bind-value="{{iuvInput}}" class="flex inputs" label="Iuv" on-keyup="onKeyPress"
+                             autocomplete="off"></paper-input>
+                <div class="buttons">
+                    <paper-button class="colorful custom" raised  on-tap="filtraRisultati">Search</paper-button>
+                    <paper-button class="resetButton custom" raised on-tap="resetFiltro">Reset</paper-button>
+                </div>
+            </search-pagamenti>
+
+            <!-- Risultati  -->
+            <!-- Lista -->
+            <div class="card-content div-table">
+                <paper-item>
+                    <paper-item-body>
+                        <div class="horizontal layout div-table-header-row">
+                            <div class="div-table-col width200"><span>Ente</span></div>
+                            <div class="div-table-col width250"><span>IUV</span></div>
+                            <div class="div-table-col width250"><span>Stato</span></div>
+                            <div class="div-table-col width200"><span>Stato Rendicontazione</span></div>
+                            <div class="div-table-col width250"><span>Ultimo Aggiornamento</span></div>
+                        </div>
+                    </paper-item-body>
+                </paper-item>
+                <iron-list id="itemsList" items="[[ajaxResponse.response]]" selected-item="{{selectedPagamentoItem}}"
+                           selection-enabled as="item">
+                    <template>
+                        <paper-item on-tap="_selectPagamento">
+                            <paper-item-body>
+                                <div>
+                                    <div tabindex="0" class="horizontal layout div-table-row">
+                                        <div class="div-table-col width200"><span>[[item.ente]]</span></div>
+                                        <div class="div-table-col width250"><span>[[item.iuv]]</span></div>
+                                        <div class="div-table-col width250"><span>[[_getStatoPagamento(item)]]</span></div>
+                                        <div class="div-table-col width200"><span>[[_getStatoRendicontazionePagamento(item)]]</span></div>
+                                        <div class="div-table-col width250"><span>[[_getDataUltimoAggiornamento(item)]]</span></div>
+                                    </div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                    </template>
+                </iron-list>
+            </div>
+        </paper-material>
+    </template>
+
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'lista-pagamenti',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Pagamenti'
+          },
+          govpayUrl: { type: String, value: function (){
+            //   return govpayUrl + '/rs/dars/pagamenti/';
+                return '';
+            } },
+           govpayEntiUrl: { type: String, value: function (){
+                // return govpayUrl + '/rs/dars/enti/';
+                return '';
+                } },
+          searchParams: {
+            type: Object, value: function (){ return  {  } }, notify: true
+          },
+          enteOptionValue: {type : String , value: 'codEnte'},
+          enteOptionLabel: {type : String , value: 'codEnte'},
+          offsetRisultatiInput: { type: String, value: '0' },
+          numeroRisultatiInput: { type: String, value: '25' },
+          iuvInput: { type: String, value: '' },
+          codEnteInput: { type: String, value: 'Qualsiasi' },
+          statoPagamentoInput: { type: String, value: '' },
+          statoRendicontazioneInput: { type: String, value: '' },
+          dataInizioInput: { type: Date, value: function (){ return new Date();} , notify: true }
+        },
+        init: function (){
+            this.govpayUrl = govpayUrl + '/rs/dars/pagamenti/';
+            this.govpayEntiUrl = govpayUrl + '/rs/dars/enti/';
+           // document.querySelector('itemsList').fire('iron-resize');
+        },
+        filtraRisultati: function (){
+            var enteVal = this.codEnteInput;
+            if(enteVal == 'Qualsiasi')
+                enteVal = '';
+
+
+            this.searchParams =  {
+
+                    'limit' : this.numeroRisultatiInput,
+                    'offset' : this.offsetRisultatiInput,
+                    'statoPagamento' : this.statoPagamentoInput,
+                    'statoRendicontazione' : this.statoRendicontazioneInput,
+                    'iuv' : this.iuvInput,
+                     'codEnte' : enteVal
+                    };
+        },
+        resetFiltro: function (){
+             this.statoPagamentoInput = '';
+             this.statoRendicontazioneInput = '';
+             this.iuvInput = '';
+             this.codEnteInput = 'Qualsiasi';
+
+            this.searchParams =  {
+
+                'limit' : this.numeroRisultatiInput,
+                'offset' : this.offsetRisultatiInput
+                };
+        },
+
+        onKeyPress: function(e) {
+            if (e.keyCode == 13) { // Enter
+               var enteVal = this.codEnteInput;
+                 if(enteVal == 'Qualsiasi')
+                 enteVal = '';
+
+                  this.searchParams =  {
+
+                'limit' : this.numeroRisultatiInput,
+                'offset' : this.offsetRisultatiInput,
+                'iuv' : this.iuvInput,
+                'codEnte' : this.codEnteInput,
+                'statoRendicontazione' : this.statoRendicontazioneInput,
+                'statoPagamento' : enteVal
+                };
+            }
+        },
+
+        ready: function() {
+                document.addEventListener("scroll", function () {
+                // fire iron-resize event to trigger redraw of iron-list
+                document.querySelector('itemsList').fire('iron-resize');
+            });
+        },
+        _selectEnte:  function(event){
+            this.codEnteInput = event.detail.itemCorrente[this.enteOptionValue];
+            console.log('Ente: ' + this.codEnteInput);
+        },
+
+        _getDataUltimoAggiornamento: function(item) {
+            var data = item.dataOraUltimoAggiornamento;
+            if(data){
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+            }
+
+            return '';
+        },
+
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        },
+        _getStatoPagamento: function(item) {
+          var stato = item.stato;
+
+          if(stato == 'PAGAMENTO_ESEGUITO'){
+            return 'Pagamento Eseguito';
+          } else if(stato == 'IN_ATTESA'){
+            return 'In Attesa';
+          } else if(stato == 'FALLITO'){
+            return 'Fallito';
+          } else if(stato == 'IN_CORSO'){
+            return 'In Corso';
+          } else if(stato == 'AUTORIZZATO_DIFFERITO'){
+            return 'Autorizzato Differito';
+          } else if(stato == 'PAGAMENTO_NON_ESEGUITO'){
+            return 'Pagamento non Eseguito';
+          } else if(stato == 'PAGAMENTO_PARZIALMENTE_ESEGUITO'){
+              return 'Pagamento Parzialmente Eseguito';
+          }  else if(stato == 'DECORRENZA_TERMINI_PARZIALE'){
+              return 'Decorrenza Termini Parziale';
+          }  else if(stato == 'DECORRENZA_TERMINI'){
+              return 'Decorrenza Termini';
+          }  else if(stato == 'AUTORIZZATO_IMMEDIATO'){
+              return 'Autorizzato Immediato';
+          }
+
+          return '';
+        },
+        _getStatoRendicontazionePagamento: function(item) {
+          var statoRendicontazione = item.statoRendicontazione;
+
+          if(statoRendicontazione == 'NON_RENDICONTATO'){
+            return 'Non Rendicontato';
+          } else if(statoRendicontazione == 'RENDICONTATO'){
+            return 'Rendicontato';
+          } else if(statoRendicontazione == 'RENDICONTATO_PARZIALE'){
+            return 'Rendicontato Parziale';
+          }
+
+          return 'Non Rendicontato';
+        },
+
+        _selectPagamento : function (event){
+           var target = event.model.item;
+           console.log(target);
+           this.fire('select-item', {pagamentoCorrente: target});
+        }
+      });
+    })();
+
+
+    </script>
+
+</dom-module>

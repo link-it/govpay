@@ -1,0 +1,99 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="ajax-select-list">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+            .headMaterial {
+            padding: 20px;
+            margin-bottom: 10px;
+            }
+            .fullwidth{
+                width: 100%;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   url="[[selectListUrl]]"
+                   params="{{selectListParams}}"
+                   handle-as="json"
+                   last-response="{{selectListResponse}}"
+                   lastError="{{selectListErrorResponse}}">
+        </iron-ajax>
+        <paper-dropdown-menu label="[[label]]" class="fullwidth">
+            <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{selectedItem}}">
+                <template is="dom-repeat" items="[[_getListaOptions(selectListResponse.response)]]" as="item">
+                    <paper-item on-tap="_selectOption" valore="[[_getProperty(item,optionValue)]]">[[_getProperty(item,optionLabel)]]</paper-item>
+                </template>
+            </paper-menu>
+        </paper-dropdown-menu>
+    </template>
+    <script>
+    Polymer({
+        is: 'ajax-select-list',
+
+        properties: {
+            allMode: {type : Boolean, value: false },
+            optionValoreAll: {type : Object , value: ''},
+            optionLabelAll: {type : String , value: 'Qualsiasi'},
+            optionValue: {type : String , value: ''},
+            optionLabel: {type : String , value: ''},
+            label: {type : String, value: '' },
+            selectedItem: {type: Object, value: null},
+            selectListUrl: {type : String , value: ''},
+           selectListParams: { type: Object, value: function (){ return  { } }, notify: true  } ,
+            listaOptions: { type: Array }
+        },
+
+        _getProperty: function(itemCorrente, nomeProperty){
+            if(itemCorrente){
+                var val = itemCorrente[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+        _getOptionAll : function (){
+            var vN = this.optionValue;
+            var vL = this.optionValoreAll;
+            var lN = this.optionLabel;
+            var lL = this.optionLabelAll;
+
+            var target = {} ;
+            target[vN] = vL;
+            target[lN] = lL;
+
+            return target;
+        },
+        _getListaOptions: function(listaOriginale){
+            if(this.listaOptions)
+                return this.listaOptions;
+            else{
+                var tmp = listaOriginale;
+                 if(tmp){
+                    this.listaOptions = [];
+
+                    if(this.allMode){
+                        this.listaOptions.push(this._getOptionAll());
+                    }
+
+                     for(var v in tmp){
+                            this.listaOptions.push(tmp[v]);
+                     }
+                }
+
+               return this.listaOptions;
+            }
+        },
+         _selectOption : function (e){
+           var target = event.model.item;
+          // console.log(target);
+           this.fire('select-option', {itemCorrente: target});
+        },
+
+        ready: function() {
+          // console.log(this.selectListUrl);
+        }
+    });
+    </script>
+</dom-module>
