@@ -47,6 +47,8 @@ public class HttpSessionCheckListener implements HttpSessionListener {
 			
 			if(session != null)
 				session.invalidate();
+			
+			
 		}catch (Exception ex) {
 			log.error("errore durante le operazioni di clean-up della sessione: ",ex);
 		}

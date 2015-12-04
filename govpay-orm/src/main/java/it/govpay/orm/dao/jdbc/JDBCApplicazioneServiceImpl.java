@@ -72,24 +72,6 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _stazione
-		Long id_stazione = null;
-		it.govpay.orm.IdStazione idLogic_stazione = null;
-		idLogic_stazione = applicazione.getIdStazione();
-		if(idLogic_stazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findTableId(idLogic_stazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_stazione = idLogic_stazione.getId();
-				if(id_stazione==null || id_stazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-
 		// Object applicazione
 		sqlQueryObjectInsert.addInsertTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model()));
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_APPLICAZIONE,false),"?");
@@ -99,7 +81,6 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().POLICY_RISPEDIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_stazione","?");
 
 		// Insert applicazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getApplicazioneFetch().getKeyGeneratorObject(Applicazione.model());
@@ -110,8 +91,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getVersione(),Applicazione.model().VERSIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getPolicyRispedizione(),Applicazione.model().POLICY_RISPEDIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreEsito(),Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreVerifica(),Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreVerifica(),Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType())
 		);
 		applicazione.setId(id);
 
@@ -195,24 +175,6 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _applicazione_stazione
-		Long id_applicazione_stazione = null;
-		it.govpay.orm.IdStazione idLogic_applicazione_stazione = null;
-		idLogic_applicazione_stazione = applicazione.getIdStazione();
-		if(idLogic_applicazione_stazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_applicazione_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findTableId(idLogic_applicazione_stazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_applicazione_stazione = idLogic_applicazione_stazione.getId();
-				if(id_applicazione_stazione==null || id_applicazione_stazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-
 		// Object applicazione
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model()));
@@ -232,12 +194,6 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreEsito(), Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreVerifica(), Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()));
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_applicazione.add(new JDBCObject(id_applicazione_stazione, Long.class));
-		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_applicazione.add(new JDBCObject(tableId, Long.class));
 

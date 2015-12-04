@@ -54,8 +54,9 @@ public class Operatori extends BaseRsService {
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse getRuoliOperatore() throws GovPayException {
-		initLogger("operatori");
-		
+		initLogger("getRuoliOperatore");
+		log.info("Ricevuta richiesta");
+
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
 
@@ -81,6 +82,7 @@ public class Operatori extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 		
 	}
@@ -90,8 +92,9 @@ public class Operatori extends BaseRsService {
 	@Path("/user")
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse getOperatore() throws GovPayException {
-		initLogger("operatori");
-		
+		initLogger("getOperatore");
+		log.info("Ricevuta richiesta");
+
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
 
@@ -117,6 +120,7 @@ public class Operatori extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 		
 	}

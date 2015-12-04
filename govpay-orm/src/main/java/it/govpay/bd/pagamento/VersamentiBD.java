@@ -57,6 +57,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
+import org.openspcoop2.utils.id.serial.InfoStatistics;
 
 public class VersamentiBD extends BasicBD {
 
@@ -501,8 +502,10 @@ public class VersamentiBD extends BasicBD {
 	 * @throws ServiceException
 	 */
 	private long getNextPrgIuv(String codDominio, TipoIUV type) throws ServiceException {
+		InfoStatistics infoStat = null;
 		try {
-			org.openspcoop2.utils.id.serial.IDSerialGenerator serialGenerator = new org.openspcoop2.utils.id.serial.IDSerialGenerator();
+			infoStat = new InfoStatistics();
+			org.openspcoop2.utils.id.serial.IDSerialGenerator serialGenerator = new org.openspcoop2.utils.id.serial.IDSerialGenerator(infoStat);
 			org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter params = new org.openspcoop2.utils.id.serial.IDSerialGeneratorParameter("GovPay");
 			params.setTipo(IDSerialGeneratorType.NUMERIC);
 			params.setWrap(false);
@@ -510,6 +513,11 @@ public class VersamentiBD extends BasicBD {
 			java.sql.Connection con = this.getConnection();
 			return serialGenerator.buildIDAsNumber(params, con, this.getServiceManager().getJdbcProperties().getDatabase(), log);
 		} catch (UtilsException e) {
+			log.error("Numero di errori 'access serializable': "+infoStat.getErrorSerializableAccess());
+			for (int i=0; i<infoStat.getExceptionOccurs().size(); i++) {
+				Throwable t = infoStat.getExceptionOccurs().get(i);
+				log.error("Errore-"+(i+1)+" (occurs:"+infoStat.getNumber(t)+"): "+t.getMessage());
+			}
 			throw new ServiceException(e);
 		}
 	}

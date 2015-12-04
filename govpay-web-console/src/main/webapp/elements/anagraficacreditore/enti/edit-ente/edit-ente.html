@@ -92,7 +92,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
             <div class="content layout vertical">
                 <paper-card>
-                    <paper-toggle-button class="flex" checked="{{enteCorrente.ente.attivo}}">Abilitato</paper-toggle-button>
+                    <paper-toggle-button class="flex" checked="{{enteCorrente.ente.attivo}}">
+                        <span>{{_getAbilitatoLabel(enteCorrente.ente.attivo)}}</span>
+                    </paper-toggle-button>
                     <paper-input class="flex" value="{{enteCorrente.ente.codEnte}}" label="Cod Ente" disabled$="[[!isAdd]]" required></paper-input>
                     <span class="gap"></span>
                     <paper-input class="flex" value="{{anagrafica.ragioneSociale}}" label="Ragione Sociale" required></paper-input>
@@ -222,7 +224,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          this.close();
 
       },
-
+    _getAbilitatoLabel: function (abilitato){
+        if(abilitato) return 'Abilitato'; else return 'Disabilitato';
+      },
 
        _checkData: function(nuovo){
 
@@ -233,7 +237,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.idDominio = this.enteCorrente.ente.idDominio;
 
         } else {
-          this.enteCorrente = { 'ente' : { 'anagraficaEnte': {}, 'idDominio': '0'}};
+          this.enteCorrente = { 'ente' : { attivo: true, 'anagraficaEnte': {}, 'idDominio': '0'}};
           this.anagrafica = { 'ragioneSociale' : '', 'codUnivoco': ''};
           this.idDominio = '0';
           this.titolo = 'Nuovo Ente';
@@ -288,13 +292,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
       },
-      _visualizzaMessaggioErrore: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
-                this.lastActionMethod = this.actionMethod;
-                messaggi.show();
-            }
+    _visualizzaMessaggioErrore: function(event){
+         this.lastActionMethod = this.actionMethod;
+         this.fire('dars-error', {error: event.detail});
       }
     });
   })();

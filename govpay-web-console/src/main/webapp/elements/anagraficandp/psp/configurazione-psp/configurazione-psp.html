@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    params="{{detailParams}}"
                    handle-as="json"
                    last-response="{{dettaglioPspCorrente}}"
-                   lastError="{{ajaxErrorPsp}}">
+                   lastError="{{ajaxErrorPsp}}" on-error="_erroreDars">
         </iron-ajax>
         <neon-animated-pages id="pspPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
             <neon-animatable>
@@ -79,6 +79,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.govpayUrl = govpayUrl + '/rs/dars/psp/'+ this.pspCorrente.id;
         this.selected = 1;
         this.fire('changed-page', this.selected);
+      },
+
+      _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
       },
 
       selectPrevPage: function(){

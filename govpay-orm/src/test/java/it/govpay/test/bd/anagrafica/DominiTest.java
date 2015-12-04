@@ -30,6 +30,7 @@ import it.govpay.bd.model.Disponibilita.TipoPeriodo;
 import it.govpay.bd.model.Dominio;
 import it.govpay.test.BasicTest;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -63,8 +64,10 @@ public class DominiTest extends BasicTest {
 		
 		List<Periodo> fasceOrarieLst = new ArrayList<Periodo>();
 		Periodo periodo = new Periodo();
-		periodo.setA(calendar.getTime());
-		periodo.setDa(calendar.getTime());
+		SimpleDateFormat hourFormat = new SimpleDateFormat("hh:mm:ss");
+
+		periodo.setA(hourFormat.format(calendar.getTime()));
+		periodo.setDa(hourFormat.format(calendar.getTime()));
 		fasceOrarieLst.add(periodo);
 		e.setFasceOrarieLst(fasceOrarieLst);
 		e.setGiorno("giorno");

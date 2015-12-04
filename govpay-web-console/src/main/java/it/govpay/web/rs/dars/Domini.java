@@ -72,11 +72,12 @@ public class Domini extends BaseRsService{
 			@QueryParam(value = "codStazione") String codStazione,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("domini");
+		initLogger("findDomini");
 
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] codStazione["+codStazione+"] offset["+offset+"] limit["+limit+"]");
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
-		darsResponse.setCodOperazione(ThreadContext.get("op"));//this.codOperazione);
+		darsResponse.setCodOperazione(ThreadContext.get("op"));
 
 		try {
 			try {
@@ -133,6 +134,7 @@ public class Domini extends BaseRsService{
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -142,7 +144,9 @@ public class Domini extends BaseRsService{
 	public DarsResponse get(
 			@QueryParam(value = "operatore") String principalOperatore,
 			@PathParam("id") long id) throws GovPayException {
-		initLogger("domini");
+		initLogger("getDominio");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] id["+id+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -176,6 +180,7 @@ public class Domini extends BaseRsService{
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -185,7 +190,9 @@ public class Domini extends BaseRsService{
 	public DarsResponse update(
 			@QueryParam(value = "operatore") String principalOperatore,
 			DominioExt dominio) throws GovPayException {
-		initLogger("domini");
+		initLogger("updateDomini");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] dominio["+dominio+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -219,6 +226,7 @@ public class Domini extends BaseRsService{
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -228,7 +236,9 @@ public class Domini extends BaseRsService{
 	public DarsResponse insert(
 			@QueryParam(value = "operatore") String principalOperatore,
 			DominioExt dominio) throws GovPayException {
-		initLogger("domini");
+		initLogger("createDomini");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] dominio["+dominio+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -262,6 +272,7 @@ public class Domini extends BaseRsService{
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -277,7 +288,8 @@ public class Domini extends BaseRsService{
 			@QueryParam(value = "operatore") String principalOperatore,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("domini");
+		initLogger("getIbanAccreditoByDominio");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] offset["+offset+"] limit["+limit+"]");
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -309,6 +321,7 @@ public class Domini extends BaseRsService{
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -323,11 +336,12 @@ public class Domini extends BaseRsService{
 			@QueryParam(value = "idEnte") long idEnte,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("domini");
+		initLogger("findIbanAccredito");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] codDominio["+codDominio+"] codEnte["+codEnte+"] idEnte["+idEnte+"]  offset["+offset+"] limit["+limit+"]");
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
-		darsResponse.setCodOperazione(ThreadContext.get("op"));//this.codOperazione);
+		darsResponse.setCodOperazione(ThreadContext.get("op"));
 
 		try {
 			try {
@@ -371,11 +385,8 @@ public class Domini extends BaseRsService{
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
-
-
-
-
 
 }

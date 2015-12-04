@@ -62,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    params="{{searchParams}}"
                    handle-as="json"
                    last-response="{{ajaxResponseApplicazioni}}"
-                   lastError="{{ajaxError}}"
+                   lastError="{{ajaxError}}" on-error="_erroreDars" on-response="_responseDars"
                 ></iron-ajax>
 
         <paper-material elevation="1">
@@ -78,7 +78,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-item-body>
                         <div class="horizontal layout div-table-header-row">
                             <div class="div-table-col"><span>Codice Applicazione</span></div>
-                            <div class="div-table-col"><span>Stazione</span></div>
                             <div class="div-table-col-com"><span></span></div>
                         </div>
                     </paper-item-body>
@@ -89,7 +88,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <div>
                                     <div tabindex="0" class="horizontal layout div-table-row">
                                         <div class="div-table-col"><span>[[item.codApplicazione]]</span></div>
-                                        <div class="div-table-col"><span>[[item.stazione]]</span></div>
                                         <div class="div-table-col-com"><span><iron-icon
                                                 icon="notification:do-not-disturb" style="color: red"
                                                 hidden$="[[item.abilitato]]"></iron-icon></span></div>
@@ -143,6 +141,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       filtraRisultati: function (){
             this.govpayUrl = govpayUrl + '/rs/dars/applicazioni/';
            this.$.connettoreApplicazioni.generateRequest();
+      },
+
+      _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
+      _responseDars : function(event){
+        var responseNonValida = false;
+
+        var url = event.detail.url || '';
+
+        if(url != ''){
+            var responseCode = event.detail.status;
+            // il response code e' buono
+            if(responseCode >= 200 && responseCode <= 299){
+                //analizzo la risposta
+                var response = event.detail.response;
+
+                if(response){
+                    var esitoOperazione = response.esitoOperazione;
+
+                    if(esitoOperazione = '' || esitoOperazione != 'ESEGUITA')
+                        responseNonValida= true;
+                } else {
+                    //questa response non puo' essere null
+                    responseNonValida= true;
+                }
+            }else {
+                // ricevuto un errore;
+                responseNonValida= true;
+            }
+
+            if(responseNonValida)
+                this.fire('dars-error', {error: event.detail});
+
+            }
       },
 
       _selectApplicazione: function(event){

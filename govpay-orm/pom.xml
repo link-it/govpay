@@ -135,6 +135,7 @@
 					</suiteXmlFiles>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -215,6 +216,19 @@
 									</srcFiles>
 								</configuration>
 							</execution>
+                                                        <execution>
+                                                                <id>insert-data</id>
+                                                                <phase>test-compile</phase>
+                                                                <goals>
+                                                                        <goal>execute</goal>
+                                                                </goals>
+                                                                <configuration>
+                                                                        <autocommit>true</autocommit>
+                                                                        <srcFiles>
+                                                                                <srcFile>../resources/sql/2.0/${it.govpay.orm.databaseType}/gov_pay_init.sql</srcFile>
+                                                                        </srcFiles>
+                                                                </configuration>
+                                                        </execution>
 						</executions>
 					</plugin>
 				</plugins>

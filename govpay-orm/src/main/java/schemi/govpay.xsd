@@ -499,9 +499,6 @@
 	<xsd:complexType name="Applicazione">
 		
 		<xsd:sequence>
-			<xsd:element name="idStazione" type="id-stazione">
-				
-			</xsd:element>
 			<xsd:element name="codApplicazione" type="xsd:string"/>
 			<xsd:element name="principal" type="xsd:string"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>

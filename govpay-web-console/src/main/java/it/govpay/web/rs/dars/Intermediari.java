@@ -67,7 +67,8 @@ public class Intermediari extends BaseRsService {
 			@QueryParam(value = "operatore") String principalOperatore,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("intermediari");
+		initLogger("findIntermediari");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] offset["+offset+"] limit["+limit+"]");
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -109,6 +110,7 @@ public class Intermediari extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -118,7 +120,9 @@ public class Intermediari extends BaseRsService {
 	public DarsResponse get(
 			@QueryParam(value = "operatore") String principalOperatore,
 			@PathParam("id") long id) throws GovPayException {
-		initLogger("intermediari");
+		initLogger("getIntermediari");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] id["+id+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -156,6 +160,7 @@ public class Intermediari extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -165,7 +170,9 @@ public class Intermediari extends BaseRsService {
 	public DarsResponse update(
 			@QueryParam(value = "operatore") String principalOperatore,
 			IntermediarioExt intermediario) throws GovPayException {
-		initLogger("intermediari");
+		initLogger("updateIntermediari");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] intermediario["+intermediario+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -213,6 +220,7 @@ public class Intermediari extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -222,7 +230,9 @@ public class Intermediari extends BaseRsService {
 	public DarsResponse insert(
 			@QueryParam(value = "operatore") String principalOperatore,
 			IntermediarioExt intermediario) throws GovPayException {
-		initLogger("intermediari");
+		initLogger("insertIntermediari");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] intermediario["+intermediario+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -266,6 +276,7 @@ public class Intermediari extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -278,7 +289,8 @@ public class Intermediari extends BaseRsService {
 			@PathParam("id") long id,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("intermediari");
+		initLogger("findStazioniByIntermediario");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] idIntermediario["+id+"] offset["+offset+"] limit["+limit+"]");
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -316,6 +328,7 @@ public class Intermediari extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 }

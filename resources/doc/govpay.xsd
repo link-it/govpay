@@ -864,16 +864,6 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idStazione" type="id-stazione">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Stazione"
-								object-type="Stazione" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="codApplicazione" type="xsd:string" />
 			<xsd:element name="principal" type="xsd:string" />
 			<xsd:element name="abilitato" type="xsd:boolean" />

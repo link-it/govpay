@@ -42,7 +42,6 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	
 		super();
 	
-		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new Field("idStazione",it.govpay.orm.IdStazione.class,"Applicazione",Applicazione.class));
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Applicazione",Applicazione.class);
@@ -58,7 +57,6 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	
 		super(father);
 	
-		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new ComplexField(father,"idStazione",it.govpay.orm.IdStazione.class,"Applicazione",Applicazione.class));
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Applicazione",Applicazione.class);
@@ -72,8 +70,6 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	
 	
 
-	public it.govpay.orm.model.IdStazioneModel ID_STAZIONE = null;
-	 
 	public IField COD_APPLICAZIONE = null;
 	 
 	public IField PRINCIPAL = null;

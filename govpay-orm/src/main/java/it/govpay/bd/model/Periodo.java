@@ -1,25 +1,24 @@
 package it.govpay.bd.model;
 
-import java.util.Date;
 
 
 public class Periodo extends BasicModel {
 	private static final long serialVersionUID = 1L;
-	private Date da;
-	private Date a;
+	private String da;
+	private String a;
 	
 	public Periodo(){}
 	
-	public Date getDa() {
+	public String getDa() {
 		return da;
 	}
-	public void setDa(Date da) {
+	public void setDa(String da) {
 		this.da = da;
 	}
-	public Date getA() {
+	public String getA() {
 		return a;
 	}
-	public void setA(Date a) {
+	public void setA(String a) {
 		this.a = a;
 	}
 	
@@ -32,6 +31,12 @@ public class Periodo extends BasicModel {
 			return false;
 		}
 		
-		return da.getTime() == periodo.getDa().getTime() && a.getTime() == periodo.getA().getTime(); 
+		return da.equals(periodo.getDa()) && a.equals(periodo.getA()); 
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return da + "-" + a;
 	}
 }

@@ -336,8 +336,9 @@ public class BasicTest {
 
 		List<Periodo> fasceOrarieLst = new ArrayList<Periodo>();
 		Periodo periodo =  new Periodo();
-		periodo.setA(calendar.getTime());
-		periodo.setDa(calendar.getTime());
+		SimpleDateFormat hourFormat = new SimpleDateFormat("hh:mm:ss");
+		periodo.setA(hourFormat.format(calendar.getTime()));
+		periodo.setDa(hourFormat.format(calendar.getTime()));
 		fasceOrarieLst.add(periodo);
 		e.setFasceOrarieLst(fasceOrarieLst);
 		e.setGiorno("giorno");
@@ -490,7 +491,6 @@ public class BasicTest {
 		applicazioneAA.setVersione(Versione.GPv1);
 		applicazioneAA.setAbilitato(true);
 		applicazioneAA.setCodApplicazione("CodApplicazioneAA1");
-		applicazioneAA.setIdStazione(stazione.getId());
 		Connettore connettoreEsito = new Connettore();
 		connettoreEsito.setTipoAutenticazione(EnumAuthType.NONE);
 		connettoreEsito.setUrl("http://localhost:6789");
@@ -511,7 +511,6 @@ public class BasicTest {
 		applicazioneAB.setVersione(Versione.GPv2);
 		applicazioneAB.setAbilitato(true);
 		applicazioneAB.setCodApplicazione("CodapplicazioneAA2");
-		applicazioneAB.setIdStazione(stazione.getId());
 		connettoreEsito = new Connettore();
 		connettoreEsito.setAzioneInUrl(false);
 		connettoreEsito.setTipoAutenticazione(EnumAuthType.HTTPBasic);
@@ -536,7 +535,6 @@ public class BasicTest {
 		applicazioneBB.setVersione(Versione.GPv1);
 		applicazioneBB.setAbilitato(true);
 		applicazioneBB.setCodApplicazione("CodapplicazioneBB");
-		applicazioneBB.setIdStazione(stazione.getId());
 		connettoreEsito = new Connettore();
 		connettoreEsito.setAzioneInUrl(false);
 		connettoreEsito.setTipoAutenticazione(EnumAuthType.HTTPBasic);

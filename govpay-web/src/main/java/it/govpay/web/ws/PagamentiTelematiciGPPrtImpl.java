@@ -32,6 +32,7 @@ import it.govpay.bd.model.Portale;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rt;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Psp.ModelloPagamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Psp.Canale;
@@ -176,7 +177,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
 			return esitoOperazione;
 		} finally {
-			bd.closeConnection();
+			if(bd != null) bd.closeConnection();
 		}
 	}
 	
@@ -277,7 +278,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
 			return esitoOperazione;
 		} finally {
-			bd.closeConnection();
+			if(bd != null) bd.closeConnection();
 		}
 	}
 
@@ -337,17 +338,25 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
 				} 
 				
+				Stazione stazione = null;
+				try {
+					stazione = AnagraficaManager.getStazione(bd, dominio.getIdStazione());
+				} catch (NotFoundException e){
+					log.error("Stazione [idStazione: " + dominio.getIdStazione() + "] associato al dominio [codDominio: " + dominio.getCodDominio() + " non censito in Anagrafica Stazioni.");
+					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+				} 
+				
 				Pagamenti pagamenti = new Pagamenti(bd);
-			
+				
 				String iuv = pagamento.getIuv();
 				if(iuv == null) {
 					switch (pagamento.getTipoIuv()) {
 					case IUV_INIZIATIVA_ENTE:
-						iuv = pagamenti.generaIuv(applicazione.getId(), dominio.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+						iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 						break;
-		
+
 					case IUV_INIZIATIVA_PSP:
-						iuv = pagamenti.generaIuv(applicazione.getId(), dominio.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
+						iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
 						break;
 					}
 					log.info("Assegnato al Pagamento in Attesa lo IUV [" + iuv + "]");
@@ -388,7 +397,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
 			return esitoOperazione;
 		} finally {
-			bd.closeConnection();
+			if(bd != null) bd.closeConnection();
 		}
 	}
 }

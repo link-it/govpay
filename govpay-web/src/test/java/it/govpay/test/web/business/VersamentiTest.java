@@ -52,7 +52,7 @@ public class VersamentiTest extends BasicTest {
 	public void generaIuvISO() throws Exception {
 		setupAnagrafica();
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 		Assert.assertTrue(iuv != null && !iuv.isEmpty(), "L'Iuv generato e' vuoto");
 		Assert.assertTrue(IuvUtils.checkISO11640(iuv), "L'Iuv generato non e' ISO11640");
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -64,7 +64,7 @@ public class VersamentiTest extends BasicTest {
 	public void generaIuvNumerico() throws Exception {
 		setupAnagrafica();
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
 		Assert.assertTrue(iuv != null && !iuv.isEmpty(), "L'Iuv generato e' vuoto");
 		try {
 			Long.parseLong(iuv);
@@ -81,7 +81,7 @@ public class VersamentiTest extends BasicTest {
 	@Test(dependsOnMethods= {"generaIuvISO"})
 	public void inserisciPagamento() throws Exception {
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 		
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -128,7 +128,7 @@ public class VersamentiTest extends BasicTest {
 	@Test(dependsOnMethods= {"inserisciPagamento"})
 	public void erroreAutorizzazioneIuv() throws Exception {
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAB.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAB.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 		
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -175,7 +175,7 @@ public class VersamentiTest extends BasicTest {
 	@Test(dependsOnMethods= {"inserisciPagamento"})
 	public void erroreAutorizzazioneTipoDebito() throws Exception {
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 		
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -225,7 +225,7 @@ public class VersamentiTest extends BasicTest {
 	public void aggiornaPagamento() throws Exception {
 		
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 		
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -278,7 +278,7 @@ public class VersamentiTest extends BasicTest {
 	public void annullaPagamento() throws Exception {
 		
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 		
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();

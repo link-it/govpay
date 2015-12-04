@@ -338,12 +338,10 @@ CREATE TABLE applicazioni
 	cod_connettore_verifica VARCHAR(255),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_stazione NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
 	CONSTRAINT unique_applicazioni_2 UNIQUE (principal),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_applicazioni_1 FOREIGN KEY (id_stazione) REFERENCES stazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 );
 

@@ -19,7 +19,7 @@
                    params="{{selectListParams}}"
                    handle-as="json"
                    last-response="{{selectListResponse}}"
-                   lastError="{{selectListErrorResponse}}">
+                   lastError="{{selectListErrorResponse}}" on-error="_erroreDars">
         </iron-ajax>
         <paper-dropdown-menu label="[[label]]" class="fullwidth">
             <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{selectedItem}}">
@@ -66,9 +66,10 @@
             return target;
         },
         _getListaOptions: function(listaOriginale){
-            if(this.listaOptions)
-                return this.listaOptions;
-            else{
+           // console.log(this.listaOptions);
+           // if(this.listaOptions)
+           //     return this.listaOptions;
+           // else{
                 var tmp = listaOriginale;
                  if(tmp){
                     this.listaOptions = [];
@@ -83,13 +84,16 @@
                 }
 
                return this.listaOptions;
-            }
+          //  }
         },
          _selectOption : function (e){
            var target = event.model.item;
           // console.log(target);
            this.fire('select-option', {itemCorrente: target});
         },
+        _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
 
         ready: function() {
           // console.log(this.selectListUrl);

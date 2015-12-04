@@ -20,6 +20,7 @@
  */
 package it.govpay.utils;
 
+import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingolaRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
@@ -58,6 +59,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -73,6 +75,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -84,7 +87,7 @@ public class JaxbUtils {
 
 	// uso locale "ENGLISH" perche il separatore decimale deve essere il "."
 	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
-	private static JAXBContext jaxbContext;
+	private static JAXBContext jaxbContext, jaxbContextIntestazioneCarrelloPPT;
 	private static Schema RPT_RT_schema, RS_V1_schema;
 	private static XMLOutputFactory xof;
 
@@ -93,7 +96,8 @@ public class JaxbUtils {
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/Merge.xsd"))); 
 			RS_V1_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RestScadenzario_v1.xsd")));
-			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:it.govpay.rs:it.govpay.servizi.pa");
+			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.rs:it.govpay.servizi.pa");
+			jaxbContextIntestazioneCarrelloPPT = JAXBContext.newInstance(IntestazioneCarrelloPPT.class);
 			xof = XMLOutputFactory.newFactory();
 		}
 	}
@@ -109,6 +113,7 @@ public class JaxbUtils {
 	public static byte[] toByte(CtRichiestaPagamentoTelematico rpt) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new ObjectFactory().createRPT(rpt), baos);
 		return baos.toByteArray();
@@ -117,6 +122,7 @@ public class JaxbUtils {
 	public static byte[] toByte(RichiestaPagamento richiestaPagamento) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(richiestaPagamento, baos);
@@ -131,6 +137,7 @@ public class JaxbUtils {
         	baos = new ByteArrayOutputStream();
 	        xsw = xof.createXMLStreamWriter(baos);
 	        Marshaller marshaller = jaxbContext.createMarshaller();
+	        marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 	        marshaller.setListener(new DisclaimerMarshaller(xsw, GovPayConfiguration.newInstance().getSourceCodeDisclaimer()));
 	        marshaller.marshal(informativa, xsw);
 			return baos.toByteArray();
@@ -151,6 +158,7 @@ public class JaxbUtils {
         	baos = new ByteArrayOutputStream();
 	        xsw = xof.createXMLStreamWriter(baos);
 	        Marshaller marshaller = jaxbContext.createMarshaller();
+	        marshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 	        marshaller.setListener(new DisclaimerMarshaller(xsw, GovPayConfiguration.newInstance().getSourceCodeDisclaimer()));
 	        JAXBElement<CtInformativaContoAccredito> jbElement = new JAXBElement<CtInformativaContoAccredito> (new QName("ctInformativaContoAccredito"), CtInformativaContoAccredito.class, informativa);
 	        marshaller.marshal(jbElement, xsw);
@@ -167,6 +175,7 @@ public class JaxbUtils {
 	public static byte[] toByte(CtRichiestaRevoca rr) throws JAXBException, SAXException  {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new ObjectFactory().createRR(rr), baos);
 		return baos.toByteArray();
@@ -175,6 +184,7 @@ public class JaxbUtils {
 	public static byte[] toByte(CtRicevutaTelematica rt) throws JAXBException, SAXException  {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(new ObjectFactory().createRT(rt), baos);
 		return baos.toByteArray();
@@ -182,16 +192,38 @@ public class JaxbUtils {
 	
 	public static byte[] toByte(VerificaPagamento verifica) throws JAXBException {
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(verifica, baos);
 		return baos.toByteArray();
 	}
 	
-	public static void marshal(JAXBElement<?> jaxb, OutputStream os) throws JAXBException, SAXException {
+	public static void marshal(Object jaxb, OutputStream os) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		jaxbMarshaller.marshal(jaxb, os);
+	}
+	
+	public static void marshalIntestazioneCarrelloPPT(IntestazioneCarrelloPPT jaxb, OutputStream os) throws JAXBException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbContextIntestazioneCarrelloPPT.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.marshal(jaxb, os);
+	}
+	
+	public static void marshal(JAXBElement<?> jaxb, StringWriter sw) throws JAXBException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.marshal(jaxb, sw);
+	}
+	
+	public static Object unmarshal(XMLStreamReader xsr) throws JAXBException, SAXException {
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		return jaxbUnmarshaller.unmarshal(xsr);
 	}
     
 	public static CtRichiestaPagamentoTelematico toRPT(byte[] rpt) throws JAXBException, SAXException {
@@ -400,5 +432,7 @@ public class JaxbUtils {
         jaxbMarshaller.marshal(req, baos);
 		return baos.toByteArray();
 	}
+
+	
 
 }

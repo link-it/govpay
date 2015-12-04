@@ -55,6 +55,7 @@ public class Operazioni extends BaseRsService {
 	public DarsResponse aggiornamentoRegistroPsp(@QueryParam(value = "operatore") String principalOperatore) throws GovPayException {
 
 		initLogger("DARSAggiornamentoRegistroPsp");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"]");
 
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -79,6 +80,7 @@ public class Operazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -87,6 +89,7 @@ public class Operazioni extends BaseRsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse recuperoRptPendenti(@QueryParam(value = "operatore") String principalOperatore) throws GovPayException {
 		initLogger("DARSRecuperoRptPendenti");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"]");
 
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -112,6 +115,7 @@ public class Operazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -120,6 +124,7 @@ public class Operazioni extends BaseRsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse acquisizioneRendicontazioni(@QueryParam(value = "operatore") String principalOperatore) throws GovPayException {
 		initLogger("DARSAcquisizioneRendicontazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"]");
 
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -144,6 +149,7 @@ public class Operazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -152,6 +158,7 @@ public class Operazioni extends BaseRsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse resetCache(@QueryParam(value = "operatore") String principalOperatore) throws GovPayException {
 		initLogger("DARSResetCache");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"]");
 
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -175,6 +182,7 @@ public class Operazioni extends BaseRsService {
 		} finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 }

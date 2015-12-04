@@ -67,8 +67,9 @@ public class Stazioni extends BaseRsService {
 			@QueryParam(value = "idIntermediario") long idIntermediario,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("stazioni");
-
+		initLogger("findStazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] codIntermediario["+codIntermediario+"]"
+				+ " idIntermediario["+idIntermediario+"] offset["+offset+"] limit["+limit+"]");
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -119,6 +120,7 @@ public class Stazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -128,8 +130,8 @@ public class Stazioni extends BaseRsService {
 	public DarsResponse update(
 			@QueryParam(value = "operatore") String principalOperatore,
 			Stazione stazione) throws GovPayException {
-		initLogger("stazioni");
-
+		initLogger("updateStazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] stazione["+stazione+"]");
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -142,6 +144,7 @@ public class Stazioni extends BaseRsService {
 			}
 			
 		this.checkOperatoreAdmin(bd);
+		stazione.setApplicationCode(getApplicationCode(stazione.getCodStazione()));
 
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			stazioniBD.updateStazione(stazione);
@@ -163,6 +166,7 @@ public class Stazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -172,7 +176,8 @@ public class Stazioni extends BaseRsService {
 	public DarsResponse insert(
 			@QueryParam(value = "operatore") String principalOperatore,
 			Stazione stazione) throws GovPayException {
-		initLogger("stazioni");
+		initLogger("insertStazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] stazione["+stazione+"]");
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -186,7 +191,8 @@ public class Stazioni extends BaseRsService {
 			}
 			
 		this.checkOperatoreAdmin(bd);
-
+		stazione.setApplicationCode(getApplicationCode(stazione.getCodStazione()));
+		
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			stazioniBD.insertStazione(stazione);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
@@ -207,7 +213,20 @@ public class Stazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
+	}
+	
+	private static int getApplicationCode(String codStazione) throws Exception {
+		if(codStazione == null) throw new Exception("Impossibile ricavare il codApplicazione dal codStazione: codStazione nullo");
+		if(codStazione.length() < 2) throw new Exception("Impossibile ricavare il codApplicazione dal codStazione ["+codStazione+"]: codStazione di lunghezza ["+codStazione.length()+"] inferiore a 2");
+		
+		String codApplString = codStazione.substring(codStazione.length() - 2);
+		try {
+			return Integer.parseInt(codApplString);
+		} catch(NumberFormatException e) {
+			 throw new Exception("Impossibile ricavare il codApplicazione dal codStazione ["+codStazione+"]: ultimi due caratteri del codStazione ["+codApplString+"] non corrispondono ad un intero");
+		} 
 	}
 }
 

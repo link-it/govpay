@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.util.List;
 
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Stazione;
 
 public class ApplicazioneExt implements Serializable{
 
@@ -33,24 +32,14 @@ public class ApplicazioneExt implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private Stazione stazione;
 	private List<ListaTributiEntry> tributi;
 	private Applicazione applicazione;
 	
 	public ApplicazioneExt(){}
 	
-	public ApplicazioneExt(Applicazione applicazione,Stazione stazione, List<ListaTributiEntry> tributi){
+	public ApplicazioneExt(Applicazione applicazione, List<ListaTributiEntry> tributi){
 		this.setApplicazione(applicazione);
-		this.setStazione(stazione);
 		this.setTributi(tributi);
-	}
-
-	public Stazione getStazione() {
-		return stazione;
-	}
-
-	public void setStazione(Stazione stazione) {
-		this.stazione = stazione;
 	}
 
 	public List<ListaTributiEntry> getTributi() {

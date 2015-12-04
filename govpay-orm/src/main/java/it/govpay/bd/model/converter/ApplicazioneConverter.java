@@ -23,7 +23,6 @@ package it.govpay.bd.model.converter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Applicazione.Versione;
 import it.govpay.orm.ApplicazioneTributo;
-import it.govpay.orm.IdStazione;
 import it.govpay.orm.IdTributo;
 
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class ApplicazioneConverter {
 		Applicazione dto = new Applicazione();
 		dto.setId(vo.getId());
 		dto.setCodApplicazione(vo.getCodApplicazione());
-		dto.setIdStazione(vo.getIdStazione().getId());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setVersione(Versione.valueOf(vo.getVersione()));
 		dto.setPolicyRispedizione(vo.getPolicyRispedizione());
@@ -64,9 +62,6 @@ public class ApplicazioneConverter {
 		it.govpay.orm.Applicazione vo = new it.govpay.orm.Applicazione();
 		vo.setId(dto.getId());
 		vo.setCodApplicazione(dto.getCodApplicazione());
-		IdStazione idStazione = new IdStazione();
-		idStazione.setId(dto.getIdStazione());
-		vo.setIdStazione(idStazione);
 		vo.setAbilitato(dto.isAbilitato());
 		
 		if(dto.getConnettoreEsito()!= null) {

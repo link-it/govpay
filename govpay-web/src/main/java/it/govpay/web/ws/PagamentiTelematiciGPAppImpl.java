@@ -27,6 +27,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Ente;
 import it.govpay.bd.model.Iuv;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD.TipoIUV;
 import it.govpay.business.Autorizzazione;
@@ -103,15 +104,23 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
 			} 
 			
+			Stazione stazione = null;
+			try {
+				stazione = AnagraficaManager.getStazione(bd, dominio.getIdStazione());
+			} catch (NotFoundException e){
+				log.error("Stazione [idStazione: " + dominio.getIdStazione() + "] associato al dominio [codDominio: " + dominio.getCodDominio() + " non censito in Anagrafica Stazioni.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
+			
 			String iuv = null;
-			Pagamenti pagamentiInAttesa = new Pagamenti(bd);
+			Pagamenti pagamenti = new Pagamenti(bd);
 			switch (bodyrichiesta.getTipoIuv()) {
 			case IUV_INIZIATIVA_ENTE:
-				iuv = pagamentiInAttesa.generaIuv(applicazione.getId(), dominio.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+				iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 				break;
 
 			case IUV_INIZIATIVA_PSP:
-				iuv = pagamentiInAttesa.generaIuv(applicazione.getId(), dominio.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
+				iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
 				break;
 			}
 			
@@ -176,17 +185,25 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
 			} 
 			
-			Pagamenti pagamentiInAttesa = new Pagamenti(bd);
+			Stazione stazione = null;
+			try {
+				stazione = AnagraficaManager.getStazione(bd, dominio.getIdStazione());
+			} catch (NotFoundException e){
+				log.error("Stazione [idStazione: " + dominio.getIdStazione() + "] associato al dominio [codDominio: " + dominio.getCodDominio() + " non censito in Anagrafica Stazioni.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
+			
+			Pagamenti pagamenti = new Pagamenti(bd);
 		
 			String iuv = bodyrichiesta.getIuv();
 			if(iuv == null) {
 				switch (bodyrichiesta.getTipoIuv()) {
 				case IUV_INIZIATIVA_ENTE:
-					iuv = pagamentiInAttesa.generaIuv(applicazione.getId(), dominio.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+					iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 					break;
-	
+
 				case IUV_INIZIATIVA_PSP:
-					iuv = pagamentiInAttesa.generaIuv(applicazione.getId(), dominio.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
+					iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
 					break;
 				}
 				log.info("Assegnato al Pagamento in Attesa lo IUV [" + iuv + "]");
@@ -194,7 +211,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			Versamento versamento = PagamentiTelematiciGPUtil.toVersamento(bodyrichiesta, ente, dominio, applicazione, iuv, bd);
 			
-			pagamentiInAttesa.caricaPagamento(versamento);
+			pagamenti.caricaPagamento(versamento);
 			
 			esitoOperazione.setCodEsito(CodEsito.OK);
 			IdPagamento idPagamento = new IdPagamento();
@@ -219,7 +236,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			log.error("Errore durante il caricamento del versamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
 			return esitoOperazione;
 		} finally {
-			bd.closeConnection();
+			if(bd != null) bd.closeConnection();
 		}
 	}
 	
@@ -276,7 +293,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			log.error("Errore durante la cancellazione del versamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
 			return esitoOperazione;
 		} finally {
-			bd.closeConnection();
+			if(bd != null) bd.closeConnection();
 		}
 	}
 

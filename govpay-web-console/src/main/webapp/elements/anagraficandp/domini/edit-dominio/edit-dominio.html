@@ -93,7 +93,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="content layout vertical">
                 <paper-card>
                     <paper-toggle-button class="flex"
-                                         checked="{{dominioCorrente.abilitato}}">Abilitato
+                                         checked="{{dominioCorrente.abilitato}}">
+                        <span>{{_getAbilitatoLabel(dominioCorrente.abilitato)}}</span>
                     </paper-toggle-button>
                     <paper-input class="flex" disabled$="[[!isAdd]]"
                                  value="{{dominioCorrente.codDominio}}"
@@ -121,15 +122,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <div class="flex"></div>
                         <paper-icon-button icon="add" on-tap="_addIbanAccredito"></paper-icon-button>
                     </div>
-                    <div class="layout vertical" id="listaStazioni">
+                    <div class="layout vertical" id="listaIbanAccredito">
                         <template is="dom-repeat" items="{{listaIBAN}}">
                             <div class="layout horizontal">
                                 <input type="hidden" value="{{item.id}}"/>
                                 <paper-input label="Codice Iban" value="{{item.codIban}}"  required disabled$="[[!_isAddIbanAccredito(item)]]"></paper-input>
                                 <span class="gap"></span>
-                                <paper-toggle-button class="self-center" checked="{{item.attivatoObep}}">Attivo</paper-toggle-button>
+                                <paper-toggle-button class="self-center" checked="{{item.attivatoObep}}">
+                                    <span>{{_getAttivoLabel(item.attivatoObep)}}</span>
+                                </paper-toggle-button>
                                 <span class="gap"></span>
-                                <paper-toggle-button class="self-center" checked="{{item.abilitato}}">Abilitato</paper-toggle-button>
+                                <paper-toggle-button class="self-center" checked="{{item.abilitato}}">
+                                    <span>{{_getAbilitatoLabel(item.abilitato)}}</span>
+                                </paper-toggle-button>
                                 <span class="gap"></span>
                             </div>
                         </template>
@@ -157,9 +162,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <span class="gap"></span>
                                 <paper-input label="Giorno" value="{{item.giorno}}"  required></paper-input>
                                 <span class="gap"></span>
-                                <paper-input label="Periodo da" value="{{item.fasceOrarieLst.0.da}}"  required></paper-input>
+                                <paper-input label="Periodo da" value="{{item.fasceOrarieLst.0.da}}"  placeholder="hh:mm:ss" required></paper-input>
                                 <span class="gap"></span>
-                                <paper-input label="a" value="{{item.fasceOrarieLst.0.a}}"  required></paper-input>
+                                <paper-input label="a" value="{{item.fasceOrarieLst.0.a}}" placeholder="hh:mm:ss"  required></paper-input>
                                 <span class="gap"></span>
                             </div>
                         </template>
@@ -187,9 +192,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <span class="gap"></span>
                                 <paper-input label="Giorno" value="{{item.giorno}}"  required></paper-input>
                                 <span class="gap"></span>
-                                <paper-input label="Periodo da" value="{{item.fasceOrarieLst.0.da}}"  required></paper-input>
+                                <paper-input label="Periodo da" value="{{item.fasceOrarieLst.0.da}}" placeholder="hh:mm:ss" required></paper-input>
                                 <span class="gap"></span>
-                                <paper-input label="a" value="{{item.fasceOrarieLst.0.a}}"  required></paper-input>
+                                <paper-input label="a" value="{{item.fasceOrarieLst.0.a}}" placeholder="hh:mm:ss" required></paper-input>
                                 <span class="gap"></span>
                             </div>
                         </template>
@@ -287,8 +292,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
        _salvaDominio: function(){
         this.dominioCorrente.ibanAccredito = this.listaIBAN;
-        this.dominioCorrente.disponibilita = this._convertiDisponibilitaInDate(this.listaDisponibilita);
-        this.dominioCorrente.indisponibilita = this._convertiDisponibilitaInDate(this.listaIndisponibilita);
+        this.dominioCorrente.disponibilita = this.listaDisponibilita;
+        this.dominioCorrente.indisponibilita = this.listaIndisponibilita;
         this.dominioCorrente.controparti = this.listaControparti;
         this.dominioCorrente.idStazione = this.idStazione;
 
@@ -314,17 +319,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
 
       _addIbanAccredito: function(){
-        var nuovoIBAN = {id :'0', codIban : '' , attivatoObep: false, abilitato: false};
+        var nuovoIBAN = {id :'0', codIban : '' , attivatoObep: false, abilitato: true};
         this.push('listaIBAN', nuovoIBAN);
       },
 
       _addIndisponibilita: function(){
-        var nuovoIndisponibilita = {id :'0', tipoPeriodo : 'SETTIMANALE' , fasceOrarieLst: [{da : 0 , a : 0}], giorno: '' , tipoDisponibilita: 'INDISPONIBILE'};
+        var nuovoIndisponibilita = {id :'0', tipoPeriodo : 'SETTIMANALE' , fasceOrarieLst: [{da : '' , a : ''}], giorno: '' , tipoDisponibilita: 'INDISPONIBILE'};
         this.push('listaIndisponibilita', nuovoIndisponibilita);
       },
 
       _addDisponibilita: function(){
-        var nuovoDisponibilita = {id :'0', tipoPeriodo : 'SETTIMANALE' , fasceOrarieLst: [{da : 0 , a : 0}], giorno: '' , tipoDisponibilita: 'DISPONIBILE'};
+        var nuovoDisponibilita = {id :'0', tipoPeriodo : 'SETTIMANALE' , fasceOrarieLst: [{da : '' , a : ''}], giorno: '' , tipoDisponibilita: 'DISPONIBILE'};
         this.push('listaDisponibilita', nuovoDisponibilita);
       },
 
@@ -342,12 +347,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.isAdd = false;
             this.listaIBAN = this.dominioCorrente.ibanAccredito;
             this.idStazione = this.dominioCorrente.idStazione;
-            this.listaDisponibilita =  this._convertiDisponibilitaInStringa(this.dominioCorrente.disponibilita);
-            this.listaIndisponibilita = this._convertiDisponibilitaInStringa(this.dominioCorrente.indisponibilita);
+            this.listaDisponibilita = this.dominioCorrente.disponibilita;
+            this.listaIndisponibilita = this.dominioCorrente.indisponibilita;
             this.listaControparti = this.dominioCorrente.controparti  ;
 
         } else {
-          this.dominioCorrente = {ibanAccredito: [], idStazione :'0' , disponibilita: [], indisponibilita: [], controparti: [] , gln : '' , pluginClass : ''};
+          this.dominioCorrente = {abilitato : true, ibanAccredito: [], idStazione :'0' , disponibilita: [], indisponibilita: [], controparti: [] , gln : '' , pluginClass : ''};
           this.listaIBAN = [];
           this.listaDisponibilita =  [];
           this.listaIndisponibilita = [];
@@ -440,81 +445,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
       },
       _visualizzaMessaggioErrore: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-                messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
-                this.lastActionMethod = this.actionMethod;
-                messaggi.show();
-            }
+         this.lastActionMethod = this.actionMethod;
+         this.fire('dars-error', {error: event.detail});
       },
-
-       _convertiDisponibilitaInDate: function(listaFormatoStringa) {
-            var listaFormatoDate = [];
-            console.log(listaFormatoStringa);
-            if(listaFormatoStringa){
-                for(var i = 0; i < listaFormatoStringa.length; i++){
-                    //{"id":6,"tipoPeriodo":"SETTIMANALE","fasceOrarieLst":[{"da":0,"a":0}],"giorno":"giovedi","tipoDisponibilita":"DISPONIBILE"}
-                    var elemento = listaFormatoStringa[i];
-                    var fasceOrarie = elemento.fasceOrarieLst;
-                    var id = elemento.id;
-                    var tipoPeriodo = elemento.tipoPeriodo;
-                    var giorno = elemento.giorno;
-                    var tipoDisponibilita = elemento.tipoDisponibilita;
-
-                    var destFasceOrarieList = [];
-                    for(var j =0; j < fasceOrarie.length ; j++){
-
-                        var fascia = fasceOrarie[j];
-                        var da = moment.duration(moment(fascia.da, 'HH:mm:ss')).asMilliseconds();
-                        var a = moment.duration(moment(fascia.a, 'HH:mm:ss')).asMilliseconds();
-
-                        destFasceOrarieList.push({'da':da , 'a': a});
-                    }
-                    var nuovoElemento = {'id' : id, 'tipoPeriodo' : tipoPeriodo,
-                                            'giorno' : giorno, 'tipoDisponibilita': tipoDisponibilita,
-                                             'fasceOrarieLst' : destFasceOrarieList};
-
-                    listaFormatoDate.push(nuovoElemento);
-                }
-            }
-            console.log(listaFormatoDate);
-            return listaFormatoDate;
-        },
-         _convertiDisponibilitaInStringa: function(listaFormatoDate) {
-            var listaFormatoStringa = [];
-            console.log(listaFormatoDate);
-            if(listaFormatoDate){
-                 for(var i = 0; i < listaFormatoDate.length; i++){
-                    //{"id":6,"tipoPeriodo":"SETTIMANALE","fasceOrarieLst":[{"da":0,"a":0}],"giorno":"giovedi","tipoDisponibilita":"DISPONIBILE"}
-                    var elemento = listaFormatoDate[i];
-
-
-                    var fasceOrarie = elemento.fasceOrarieLst;
-                    var id = elemento.id;
-                    var tipoPeriodo = elemento.tipoPeriodo;
-                    var giorno = elemento.giorno;
-                    var tipoDisponibilita = elemento.tipoDisponibilita;
-
-                    var destFasceOrarieList = [];
-                    for(var j =0; j < fasceOrarie.length ; j++){
-
-                        var fascia = fasceOrarie[j];
-                        var da = moment(fascia.da).format('HH:mm:ss');
-                        var a = moment(fascia.a).format('HH:mm:ss');
-
-                        destFasceOrarieList.push({'da':da , 'a': a});
-                    }
-                    var nuovoElemento = {'id' : id, 'tipoPeriodo' : tipoPeriodo,
-                                            'giorno' : giorno, 'tipoDisponibilita': tipoDisponibilita,
-                                             'fasceOrarieLst' : destFasceOrarieList};
-
-
-                    listaFormatoStringa.push(nuovoElemento);
-                }
-            }
-            console.log(listaFormatoStringa);
-            return listaFormatoStringa;
-        }
+      _getAbilitatoLabel: function (abilitato){
+        if(abilitato) return 'Abilitato'; else return 'Disabilitato';
+      },
+     _getAttivoLabel: function (attivo){
+        if(attivo) return 'Attivo'; else return 'Non Attivo';
+      }
     });
   })();
 

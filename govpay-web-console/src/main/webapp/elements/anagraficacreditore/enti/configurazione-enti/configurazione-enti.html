@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    params="{{detailParams}}"
                    handle-as="json"
                    last-response="{{dettaglioEnteCorrente}}"
-                   lastError="{{ajaxErrorEnte}}">
+                   lastError="{{ajaxErrorEnte}}" on-error="_erroreDars">
         </iron-ajax>
         <neon-animated-pages id="entiPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
             <neon-animatable>
@@ -98,6 +98,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
               }
           }
+      },
+
+      _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
       },
 
       selectPrevPage: function(){

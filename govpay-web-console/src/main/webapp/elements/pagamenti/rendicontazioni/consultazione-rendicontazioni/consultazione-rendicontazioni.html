@@ -23,7 +23,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    params="{{detailParams}}"
                    handle-as="json"
                    last-response="{{dettaglioRendicontazioneCorrente}}"
-                   lastError="{{ajaxErrorRendicontazione}}">
+                   lastError="{{ajaxErrorRendicontazione}}"
+                   on-error="_erroreDars">
         </iron-ajax>
         <neon-animated-pages id="rendicontazioniPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
             <neon-animatable>
@@ -82,7 +83,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.selected = 1;
         this.fire('changed-page', this.selected);
       },
-
+        _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
       selectPrevPage: function(){
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';

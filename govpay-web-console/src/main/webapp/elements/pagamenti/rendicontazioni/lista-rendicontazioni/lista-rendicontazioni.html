@@ -84,7 +84,7 @@
                    params="{{searchParams}}"
                    handle-as="json"
                    last-response="{{ajaxResponse}}"
-                   lastError="{{ajaxError}}"
+                   lastError="{{ajaxError}}" on-error="_erroreDars" on-response="_responseDars"
                 ></iron-ajax>
         <paper-material elevation="1">
             <h4 class="page-title">[[titoloSezione]]</h4>
@@ -266,9 +266,43 @@
            var target = event.model.item;
            this.fire('select-item', {rendicontazioneCorrente: target});
         },
+        _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
+      _responseDars : function(event){
+        var responseNonValida = false;
+
+        var url = event.detail.url || '';
+
+        if(url != ''){
+            var responseCode = event.detail.status;
+            // il response code e' buono
+            if(responseCode >= 200 && responseCode <= 299){
+                //analizzo la risposta
+                var response = event.detail.response;
+
+                if(response){
+                    var esitoOperazione = response.esitoOperazione;
+
+                    if(esitoOperazione = '' || esitoOperazione != 'ESEGUITA')
+                        responseNonValida= true;
+                } else {
+                    //questa response non puo' essere null
+                    responseNonValida= true;
+                }
+            }else {
+                // ricevuto un errore;
+                responseNonValida= true;
+            }
+
+            if(responseNonValida)
+                this.fire('dars-error', {error: event.detail});
+
+            }
+      },
          _selectPsp:  function(event){
             this.codPspInput = event.detail.itemCorrente[this.pspOptionValue];
-            console.log('Psp: ' + this.codPspInput);
+          //  console.log('Psp: ' + this.codPspInput);
         },
       });
     })();

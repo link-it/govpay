@@ -88,7 +88,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    last-response="{{esitoSalvataggioIntermediario}}"
                    last-error="{{ajaxErrorSalvataggioIntermediario}}"
                    on-response="_visualizzaEsitoSalvataggio"
-                   on-error="_visualizzaMessaggioErrore">
+                   on-error="_visualizzaMessaggioErrore" >
         </iron-ajax>
         <paper-header-panel>
             <div class="paper-header">
@@ -101,7 +101,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="content layout vertical">
                 <paper-card>
                     <paper-toggle-button class="flex"
-                                         checked="{{intermediarioCorrente.abilitato}}">Abilitato
+                                         checked="{{intermediarioCorrente.abilitato}}">
+                        <span>{{_getAbilitatoLabel(intermediarioCorrente.abilitato)}}</span>
                     </paper-toggle-button>
                     <paper-input class="flex" disabled$="[[!isAdd]]"
                                  value="{{intermediarioCorrente.codIntermediario}}"
@@ -129,9 +130,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <paper-input label="Username"
                                          value="{{intermediarioCorrente.connettorePdd.httpUser}}"
                                          required></paper-input>
-                            <paper-input label="Password"
-                                         value="{{intermediarioCorrente.connettorePdd.httpPassw}}"
-                                         required></paper-input>
+                            <paper-input-container class="flex" required>
+                                <label>Password</label>
+                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.httpPassw}}">
+                            </paper-input-container>
                         </div>
                     </template>
 
@@ -151,21 +153,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <paper-input label="KeyStore Location"
                                          value="{{intermediarioCorrente.connettorePdd.sslKsLocation}}"
                                          required></paper-input>
-                            <paper-input label="KeyStore Password"
-                                         value="{{intermediarioCorrente.connettorePdd.sslKsPasswd}}"
-                                         required></paper-input>
-                            <paper-input label="PrivateKey Password"
-                                         value="{{intermediarioCorrente.connettorePdd.sslPKeyPasswd}}"
-                                         required></paper-input>
+                            <paper-input-container class="flex" required>
+                                <label>KeyStore Password</label>
+                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.sslKsPasswd}}">
+                            </paper-input-container>
+                            <paper-input-container class="flex" required>
+                                <label>PrivateKey Password</label>
+                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.sslPKeyPasswd}}">
+                            </paper-input-container>
                             <paper-input label="TrustStore Type"
                                          value="{{intermediarioCorrente.connettorePdd.sslTsType}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Location"
                                          value="{{intermediarioCorrente.connettorePdd.sslTsLocation}}"
                                          required></paper-input>
-                            <paper-input label="TrustStore Password"
-                                         value="{{intermediarioCorrente.connettorePdd.sslTsPasswd}}"
-                                         required></paper-input>
+                            <paper-input-container class="flex" required>
+                                <label>TrustStore Password</label>
+                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.sslTsPasswd}}">
+                            </paper-input-container>
                             <paper-input label="SSL Type"
                                          value="{{intermediarioCorrente.connettorePdd.sslType}}"
                                          required></paper-input>
@@ -183,9 +188,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <input type="hidden" value="{{item.id}}"/>
                                 <paper-input label="ID" value="{{item.codStazione}}" required disabled$="[[!_isAddStazione(item)]]"></paper-input>
                                 <span class="gap"></span>
-                                <paper-input label="Password" value="{{item.password}}" class="flex" required></paper-input>
+                                <paper-input-container class="flex" required>
+                                    <label>Password</label>
+                                    <input is="iron-input" type="password" bind-value="{{item.password}}">
+                                </paper-input-container>
                                 <span class="gap"></span>
-                                <paper-toggle-button class="self-center" checked="{{item.abilitato}}">Abilitato</paper-toggle-button>
+                                <paper-toggle-button class="self-center" checked="{{item.abilitato}}">
+                                    <span>{{_getAbilitatoLabel(item.abilitato)}}</span>
+                                </paper-toggle-button>
                                 <span class="gap"></span>
                             </div>
                         </template>
@@ -301,7 +311,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _addStazione: function(){
-        var nuovaStazione = {id :'0', codStazione : '' , password:'', abilitato: false};
+        var nuovaStazione = {id :'0', codStazione : '' , password:'', abilitato: true};
         this.push('stazioni',nuovaStazione);
       },
 
@@ -321,7 +331,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         } else {
           this.stazioni = [];
-          this.intermediarioCorrente = {connettorePdd: {  tipoAutenticazione : 'NONE'}, stazioni: []};
+          this.intermediarioCorrente = {abilitato: true, connettorePdd: {  tipoAutenticazione : 'NONE'}, stazioni: []};
           this.titolo = 'Nuovo intermediario';
           this.isAdd = true;
         }
@@ -348,19 +358,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         if(esitoOperazione == 'ESEGUITA'){
                             // Creazione
                             if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Intermediario completato con successo. Id Operazione: ' + codOperazione + '.';
+                                messaggio = 'Inserimento Intermediario completato con successo. Codice Operazione: ' + codOperazione + '.';
                                 this.intermediarioCorrente.id = id;
                             }else {
                                 //Aggiornamento
-                                messaggio = 'Aggiornamento Intermediario completato con successo. Id Operazione: ' + codOperazione + '.';
+                                messaggio = 'Aggiornamento Intermediario completato con successo. Codice Operazione: ' + codOperazione + '.';
                             }
                         } else {
                             // Creazione
                             if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Intermediario non completato.';
+                                messaggio = 'Inserimento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
                             }else {
                                 //Aggiornamento
-                                messaggio = 'Aggiornamento Intermediario non completato.';
+                                messaggio = 'Aggiornamento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
                             }
                         }
 
@@ -374,13 +384,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
       },
+
+      _getAbilitatoLabel: function (abilitato){
+        if(abilitato) return 'Abilitato'; else return 'Disabilitato';
+      },
       _visualizzaMessaggioErrore: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
-                this.lastActionMethod = this.actionMethod;
-                messaggi.show();
-            }
+         this.lastActionMethod = this.actionMethod;
+         this.fire('dars-error', {error: event.detail});
       }
     });
   })();

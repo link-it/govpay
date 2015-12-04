@@ -26,6 +26,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Iuv;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.VersamentiBD.TipoIUV;
 import it.govpay.business.Pagamenti;
 import it.govpay.exception.GovPayException;
@@ -93,9 +94,17 @@ public class GestioneIuvRsService extends BaseRsService {
 				log.error("Dominio [codDominio: " + identificativoBeneficiario + "] non censito in Anagrafica Domini.");
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
 			} 
+			
+			Stazione stazione = null;
+			try {
+				stazione = AnagraficaManager.getStazione(bd, dominio.getIdStazione());
+			} catch (Exception e){
+				log.error("Stazione [idStazione: " + dominio.getIdStazione() + "] associato al dominio [codDominio: " + dominio.getCodDominio() + " non censito in Anagrafica Stazioni.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
 
 			Pagamenti pagamentiInAttesa = new Pagamenti(bd);
-			String iuv = pagamentiInAttesa.generaIuv(applicazione.getId(), dominio.getCodDominio(), tipoIuv, Iuv.AUX_DIGIT);
+			String iuv = pagamentiInAttesa.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), tipoIuv, Iuv.AUX_DIGIT);
 
 			log.info("Generato IUV [" + iuv + "]");
 			return iuv;

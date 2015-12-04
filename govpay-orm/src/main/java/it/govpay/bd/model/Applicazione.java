@@ -28,7 +28,6 @@ public class Applicazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String codApplicazione;
-	private long idStazione;
 	private String principal;
 	private Versione versione;
 	private String policyRispedizione;
@@ -97,16 +96,9 @@ public class Applicazione extends BasicModel {
 			equals(idTributi, applicazione.getIdTributi()) &&
 			equals(versione, applicazione.getVersione()) &&
 			equals(policyRispedizione, applicazione.getPolicyRispedizione()) &&
-			idStazione == applicazione.getIdStazione() &&
 			abilitato==applicazione.isAbilitato();
 		
 		return equal;
-	}
-	public long getIdStazione() {
-		return idStazione;
-	}
-	public void setIdStazione(long idStazione) {
-		this.idStazione = idStazione;
 	}
 	public String getPolicyRispedizione() {
 		return policyRispedizione;

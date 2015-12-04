@@ -67,7 +67,10 @@ public class Pagamenti extends BaseRsService {
 			@QueryParam(value = "iuv") String iuv,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("pagamenti");
+		initLogger("listaEntryPagamenti");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] operatore["+principalOperatore+"] statoPagamento["+statoPagamento
+				+ "] statoRendicontazione["+statoRendicontazione+"] codEnte["+codEnte+"] iuv["+iuv+"] offset["+offset+"] limit["+limit+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -132,6 +135,7 @@ public class Pagamenti extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -141,7 +145,9 @@ public class Pagamenti extends BaseRsService {
 	public DarsResponse versamento(
 			@QueryParam(value = "operatore") String principalOperatore,
 			@PathParam("id") long id) throws GovPayException {
-		initLogger("pagamenti");
+		initLogger("getPagamenti");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] id["+id+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -206,6 +212,7 @@ public class Pagamenti extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 }

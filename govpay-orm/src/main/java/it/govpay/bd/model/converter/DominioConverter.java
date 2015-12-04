@@ -27,8 +27,10 @@ import it.govpay.bd.model.Disponibilita.TipoPeriodo;
 import it.govpay.bd.model.Dominio;
 import it.govpay.orm.IdStazione;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -39,8 +41,8 @@ public class DominioConverter {
 	private static final String FASCIA_FIELD_SEPARATOR = ",";
 
 	private static final SimpleDateFormat hourFormat = new SimpleDateFormat("hh:mm:ss");
-	
-	
+
+
 	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst) throws ServiceException {
 		List<Dominio> lstDTO = new ArrayList<Dominio>();
 		if(anagraficaLst != null && !anagraficaLst.isEmpty()) {
@@ -65,7 +67,7 @@ public class DominioConverter {
 		return dto;
 	}
 
-	public static it.govpay.orm.Dominio toVO(Dominio dto) {
+	public static it.govpay.orm.Dominio toVO(Dominio dto) throws ServiceException {
 		it.govpay.orm.Dominio vo = new it.govpay.orm.Dominio();
 		vo.setId(dto.getId());
 		vo.setCodDominio(dto.getCodDominio());
@@ -73,7 +75,7 @@ public class DominioConverter {
 		vo.setGln(dto.getGln());
 		vo.setPluginClass(dto.getPluginClass());
 		vo.setAbilitato(dto.isAbilitato());
-		
+
 		IdStazione idStazione = new IdStazione();
 		idStazione.setId(dto.getIdStazione());
 		vo.setIdStazione(idStazione);
@@ -81,7 +83,7 @@ public class DominioConverter {
 		return vo;
 	}
 
-	public static List<it.govpay.orm.Disponibilita> toVOList(List<Disponibilita> lstVO) {
+	public static List<it.govpay.orm.Disponibilita> toVOList(List<Disponibilita> lstVO) throws ServiceException {
 		List<it.govpay.orm.Disponibilita> lstDTO = new ArrayList<it.govpay.orm.Disponibilita>();
 		if(lstVO != null && !lstVO.isEmpty()) {
 			for(Disponibilita anagrafica: lstVO){
@@ -92,7 +94,7 @@ public class DominioConverter {
 
 	}
 
-	public static it.govpay.orm.Disponibilita toVO(Disponibilita dto) {
+	public static it.govpay.orm.Disponibilita toVO(Disponibilita dto) throws ServiceException {
 		it.govpay.orm.Disponibilita vo = new it.govpay.orm.Disponibilita();
 		vo.setId(dto.getId());
 		vo.setTipoPeriodo(dto.getTipoPeriodo().toString());
@@ -103,7 +105,7 @@ public class DominioConverter {
 				if(sb.length() > 0) {
 					sb.append(FASCIA_SEPARATOR);
 				}
-				sb.append(hourFormat.format(fascia.getDa())).append(FASCIA_FIELD_SEPARATOR).append(hourFormat.format(fascia.getA()));
+				sb.append(fromFasciaOraria(fascia));
 			}
 			vo.setFasceOrarie(sb.toString());
 		}
@@ -124,7 +126,7 @@ public class DominioConverter {
 
 	public static Disponibilita toDTO(it.govpay.orm.Disponibilita vo) throws ServiceException {
 		Disponibilita dto = new Disponibilita();
-		
+
 		dto.setId(vo.getId());
 		dto.setTipoPeriodo(TipoPeriodo.valueOf(vo.getTipoPeriodo()));
 		dto.setGiorno(vo.getGiorno());
@@ -133,24 +135,65 @@ public class DominioConverter {
 		List<Periodo> periodoLst = new ArrayList<Periodo>();
 		for (int i = 0; i < fasce.length; i++) {
 			String[] fascia = fasce[i].split(FASCIA_FIELD_SEPARATOR);
-			if(fascia.length != 2) {
-				throw new ServiceException("Fasce orarie non correttamente salvate");
-			}
-			try {
-				Periodo periodo =   new Periodo();
-				periodo.setDa(hourFormat.parse(fascia[0]));
-				periodo.setA(hourFormat.parse(fascia[1]));
-				periodoLst.add(periodo);
-			} catch(Exception e) {
-				throw new ServiceException("Fasce orarie non correttamente salvate");
-			}
+			Periodo periodo = toFasciaOraria(fascia);
+			periodoLst.add(periodo);
 		}
 		dto.setFasceOrarieLst(periodoLst);
-		
+
 		dto.setTipoDisponibilita(TipoDisponibilita.valueOf(vo.getTipoDisponibilita()));
 
 		return dto;
 
+	}
+	
+	private static String fromFasciaOraria(Periodo periodo) throws ServiceException {
+		
+		if(periodo == null) throw new ServiceException("Fascia oraria nulla"); 
+		if(periodo.getDa()== null) throw new ServiceException("Fascia oraria ["+periodo+"] non corretta. Parametro Da nullo"); 
+		if(periodo.getA()== null) throw new ServiceException("Fascia oraria ["+periodo+"] non corretta. Parametro A nullo"); 
+		Date da = null;
+		try{
+			da = hourFormat.parse(periodo.getDa());
+		} catch(ParseException e) {
+			throw new ServiceException("Fascia oraria ["+periodo+"] non corretta. Parametro Da ["+periodo.getDa()+"] errato");
+		}
+		Date a = null;
+		try{
+			a = hourFormat.parse(periodo.getA());
+		} catch(ParseException e) {
+			throw new ServiceException("Fascia oraria ["+periodo+"] non corretta. Parametro A ["+periodo.getA()+"] errato");
+		}
+		
+		if(da.after(a)) throw new ServiceException("Periodo non corretto: il parametro Da ["+periodo.getDa()+"] deve essere antecedente al parametro A ["+periodo.getA()+"]");
+
+		return periodo.getDa() + FASCIA_FIELD_SEPARATOR + periodo.getA();
+	}
+
+	private static Periodo toFasciaOraria(String[] fascia) throws ServiceException {
+		if(fascia.length != 2) {
+			throw new ServiceException("Periodo ["+fascia+"] non correttamente salvato");
+		}
+		Periodo periodo = new Periodo();
+		
+		Date da = null;
+		try{
+			da = hourFormat.parse(fascia[0]);
+			periodo.setDa(fascia[0]);
+		} catch(ParseException e) {
+			throw new ServiceException("Fascia oraria ["+fascia[0]+"] non correttamente salvata. Dovrebbe essere nel formato ["+hourFormat.toPattern()+"]");
+		}
+		
+		Date a = null;
+		try{
+			a = hourFormat.parse(fascia[1]);
+			periodo.setA(fascia[1]);
+		} catch(ParseException e) {
+			throw new ServiceException("Fascia oraria ["+fascia[1]+"] non correttamente salvata. Dovrebbe essere nel formato ["+hourFormat.toPattern()+"]");
+		}
+		
+		if(da.after(a)) throw new ServiceException("Periodo non corretto: il parametro Da ["+fascia[0]+"] deve essere antecedente al parametro A ["+fascia[1]+"]");
+		
+		return periodo;
 	}
 
 

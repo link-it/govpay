@@ -56,11 +56,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                             <div class="div-table-col"><span>[[item.codIban]]</span></div>
                                             <div class="div-table-col">
                                                 <iron-icon icon="check-circle" style="color: green"
-                                                           hidden$="[[!item.attivato]]"></iron-icon>
+                                                           hidden$="[[!item.attivatoObep]]"></iron-icon>
                                                 <iron-icon icon="notification:do-not-disturb" style="color: red"
-                                                           hidden$="[[item.attivato]]"></iron-icon>
+                                                           hidden$="[[item.attivatoObep]]"></iron-icon>
                                             </div>
                                             <div class="div-table-col">
+                                                <iron-icon icon="check-circle" style="color: green"
+                                                           hidden$="[[!item.abilitato]]"></iron-icon>
                                                 <iron-icon icon="notification:do-not-disturb" style="color: red"
                                                            hidden$="[[item.abilitato]]"></iron-icon>
                                             </div>
@@ -182,8 +184,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if(fasceOrarieLst)
                 for(var i = 0; i < fasceOrarieLst.length; i++){
                     var fascia = fasceOrarieLst[i];
-                    var da = this._getDataFieldAsString(fascia, 'da', 'HH:mm:ss');
-                    var a = this._getDataFieldAsString(fascia, 'a', 'HH:mm:ss');
+
+                    var da = fascia.da ; //this._getDataFieldAsString(fascia, 'da', 'HH:mm:ss');
+                    var a = fascia.a; // this._getDataFieldAsString(fascia, 'a', 'HH:mm:ss');
 
                     if(toRet.length > 0)
                         toRet += ' ; ';

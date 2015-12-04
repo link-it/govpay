@@ -1,4 +1,4 @@
-<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
 
 
 <dom-module id="error-page">
@@ -51,12 +51,24 @@
             display: none !important;
             }
         </style>
-        <paper-card heading="[[_getTitoloSezione(erroreCorrente)]]" class="fullCardWidth">
-            <div class="card-content">
-                 <span>Si e' verificato un errore: [[erroreCorrente.messaggio]]</span>
+        <paper-material elevation="1">
+            <paper-card heading="[[_getTitoloSezione(erroreCorrente)]]" class="fullCardWidth">
+                <div class="card-content">
+                    <p><span>[[_getIntestazioneErrore(erroreCorrente)]]</span></p>
+                </div>
+            </paper-card>
+            <paper-card class="fullCardWidth" hidden>
+                <div class="card-content" >
+                    <paper-button toggles on-tap="_mostraDettaglio" raised>
+                        <span>{{_getLabel(mostraDettaglio)}}</span>
+                    </paper-button>
 
-            </div>
-        </paper-card>
+                    <div class="card-content" hidden$="{{mostraDettaglio}}">
+                        <p><span>[[_getDettaglioErrore(erroreCorrente)]]</span></p>
+                    </div>
+                </div>
+            </paper-card>
+        </paper-material>
     </template>
 
     <script>
@@ -74,6 +86,14 @@
           erroreCorrente: {
             type: Object,
             value: null
+          },
+          erroreCorrente: {
+            type: Object,
+            value: null
+          },
+            mostraDettaglio: {
+            type: Boolean,
+            value: true
           }
         },
 
@@ -92,11 +112,79 @@
             return 'Attenzione';
             //return this.titoloSezione;
         },
-
-        setErrore: function (erroreCorrente){
-            this.erroreCorrente = erroreCorrente;
+        _getLabel: function (mostraDettaglio){
+            if(mostraDettaglio)
+                return 'Mostra Dettaglio';
+            else
+                return 'Nascondi Dettaglio';
         },
 
+        _mostraDettaglio: function(event){
+            this.mostraDettaglio = !this.mostraDettaglio;
+        },
+        setErrore: function (erroreCorrente){
+            this.erroreCorrente = erroreCorrente;
+            this.eventCorrente = erroreCorrente.event;
+            this.mostraDettaglio = true;
+        },
+
+          _getIntestazioneErrore: function (erroreCorrente){
+            if(erroreCorrente){
+                var rc = this._getResponseCode(erroreCorrente);
+
+                if(rc){
+                    if(rc == 405){
+                        return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+                    } else {
+                        // OK
+                    }
+                }
+            }
+
+            return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+        },
+          _getDettaglioErrore: function (erroreCorrente){
+            if(erroreCorrente){
+                var rc = this._getResponseCode(erroreCorrente);
+
+                if(rc){
+                    if(rc == 405){
+                        return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+                    } else {
+                        // OK
+                    }
+                }
+            }
+
+            return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+        },
+
+          _getResponseCode: function (erroreCorrente){
+            if(erroreCorrente){
+                var event= erroreCorrente.event;
+                if(event){
+                    var detail = event.detail;
+                    if(detail)
+                        if(detail.error)
+                            if(detail.error.request)
+                                return detail.error.request.status;
+                }
+            }
+
+            return '';
+        },
+
+          _getResponseStatus: function (erroreCorrente){
+            if(erroreCorrente){
+                var event= erroreCorrente.event;
+                if(event){
+                    var detail = event.detail.error.request.statusText;
+                    return detail;
+                }
+            }
+
+            return '';
+        },
 
         _getDataFieldAsString: function(item,field) {
             var data = this._getProperty(item,field);
@@ -114,6 +202,8 @@
         }
       });
     })();
+
+
     </script>
 
 </dom-module>

@@ -91,7 +91,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-toolbar>
             </div>
             <div class="content layout vertical">
-                <paper-toggle-button class="flex" checked="{{tributoCorrente.tributo.abilitato}}">Abilitato</paper-toggle-button>
+                <paper-toggle-button class="flex" checked="{{tributoCorrente.tributo.abilitato}}">
+                    <span>{{_getAbilitatoLabel(tributoCorrente.tributo.abilitato)}}</span></paper-toggle-button>
                 <paper-input class="flex" disabled$="[[!isAdd]]" value="{{tributoCorrente.tributo.codTributo}}" label="Cod Tributo" required></paper-input>
                 <span class="gap"></span>
                 <paper-input class="flex" value="{{tributoCorrente.tributo.descrizione}}" label="Descrizione" required></paper-input>
@@ -148,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.playAnimation('entry');
         this.modified=false;
         this.govpayEntiUrl = govpayUrl + '/rs/dars/enti/';
-        this.govpayIBANUrl = govpayUrl + '/rs/dars/domini/ibanaccredito/';
+      //  this.govpayIBANUrl = govpayUrl + '/rs/dars/domini/ibanaccredito/';
       },
       _renderClosed: function() {
         if (this.withBackdrop) {
@@ -172,8 +173,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return '';
             } },
          govpayIBANUrl: { type: String, value: function (){
-                //return govpayUrl + '/rs/dars/domini/ibanaccredito/';
-                return '';
+                return govpayUrl + '/rs/dars/domini/ibanaccredito/';
+                //return '';
                 } },
         isAdd: {
             type: Boolean, value : false
@@ -235,11 +236,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         _selectEnte:  function(event){
             this.idEnte = event.detail.itemCorrente.id;
             this.idIBAN = '0';
-            //console.log(event.detail.itemCorrente);
         },
         _selectIBAN:  function(event){
             this.idIBAN = event.detail.itemCorrente.id;
         },
+        _getAbilitatoLabel: function (abilitato){
+        if(abilitato) return 'Abilitato'; else return 'Disabilitato';
+      },
 
        _checkData: function(nuovo){
 
@@ -253,7 +256,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           this.tributoCorrente = {
            ibanAccredito: {}, ente : {},
-           tributo: {idEnte : '0', ibanAccredito: '0', codTributo : '', descrizione: '', tipoContabilita: 'CAPITOLO' , codContabilita: '' }};
+           tributo: {abilitato: true, idEnte : '0', ibanAccredito: '0', codTributo : '', descrizione: '', tipoContabilita: 'CAPITOLO' , codContabilita: '' }};
           this.idEnte = this.tributoCorrente.tributo.idEnte;
           this.idIBAN = this.tributoCorrente.tributo.ibanAccredito;
           this.titolo = 'Nuovo Tributo';
@@ -267,9 +270,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.ibanSelectListParams = {  'idEnte': '0'} ;
             }
 
-            if(this.ibanSelectListParams.idEnte > 0)
+            if(this.ibanSelectListParams.idEnte > 0){
                 this.mostraSelectIBAN = true;
-                else
+                      }else
                 this.mostraSelectIBAN = false;
       },
 
@@ -320,12 +323,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
       },
       _visualizzaMessaggioErrore: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
-                this.lastActionMethod = this.actionMethod;
-                messaggi.show();
-            }
+         this.lastActionMethod = this.actionMethod;
+         this.fire('dars-error', {error: event.detail});
       }
     });
   })();

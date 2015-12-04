@@ -363,7 +363,6 @@
   </mapping>
   <mapping name="Applicazione" class="it.govpay.orm.Applicazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idStazione" field="idStazione" usage="required" map-as="_IdStazione_Type"/>
     <value name="codApplicazione" field="codApplicazione" usage="required"/>
     <value name="principal" field="principal" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>

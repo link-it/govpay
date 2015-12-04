@@ -153,12 +153,22 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 
 	public void updateDominioExt(DominioExt dominio) throws NotFoundException, ServiceException {
 		super.updateDominio(DominioConverter.toDTO(dominio));
+		if(dominio.getIbanAccredito() != null) {
+			for(IbanAccredito iban: dominio.getIbanAccredito()) {
+				iban.setIdDominio(dominio.getId());
+				try {
+					this.ibanAccreditoBD.updateIbanAccredito(iban);
+				} catch(NotFoundException e) {
+					this.ibanAccreditoBD.insertIbanAccredito(iban);
+				}
+				
+			}
+		}
 		
 	}
 	
 	public void updateDominio(Dominio dominio) throws NotFoundException, ServiceException {
 		super.updateDominio(dominio);
-		
 	}
 
 	public void insertDominioExt(DominioExt dominio) throws ServiceException{

@@ -43,6 +43,8 @@ import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.utils.JaxbUtils;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -155,6 +157,8 @@ public class TabellaControparti {
 	} 
 	
 	private InformativaControparte getInformativaControparte(Dominio dominio, List<IbanAccredito> lstIban, Date inizioValidita) {
+		
+		SimpleDateFormat hourFormat = new SimpleDateFormat("hh:mm:ss");
 		InformativaControparte informativaControparte = new InformativaControparte();
 		informativaControparte.setDataInizioValidita(inizioValidita);
 		informativaControparte.setDataPubblicazione(new Date());
@@ -186,10 +190,12 @@ public class TabellaControparti {
 
 				if(disponibilita.getFasceOrarieLst() != null && !disponibilita.getFasceOrarieLst().isEmpty()) {
 					for(Periodo fascia: disponibilita.getFasceOrarieLst()) {
-						CtFasciaOraria fasciaOraria = new CtFasciaOraria();
-						fasciaOraria.setDa(fascia.getDa());
-						fasciaOraria.setA(fascia.getA());
-						erogazione.getFasciaOrarias().add(fasciaOraria);
+						try {
+							CtFasciaOraria fasciaOraria = new CtFasciaOraria();
+							fasciaOraria.setDa(hourFormat.parse(fascia.getDa()));
+							fasciaOraria.setA(hourFormat.parse(fascia.getA()));
+							erogazione.getFasciaOrarias().add(fasciaOraria);
+						} catch(ParseException e) {}
 					}
 				}
 				

@@ -72,7 +72,9 @@ public class Enti extends BaseRsService {
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
 
-		initLogger("enti");
+		initLogger("findEnti");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] codDominio["+codDominio+"] offset["+offset+"] limit["+limit+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -126,6 +128,7 @@ public class Enti extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -135,7 +138,9 @@ public class Enti extends BaseRsService {
 	public DarsResponse get(
 			@QueryParam(value = "operatore") String principalOperatore,
 			@PathParam("id") long id) throws GovPayException {
-		initLogger("enti");
+		initLogger("getEnti");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] id["+id+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -169,6 +174,7 @@ public class Enti extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -178,7 +184,9 @@ public class Enti extends BaseRsService {
 	public DarsResponse update(
 			@QueryParam(value = "operatore") String principalOperatore,
 			Ente ente) throws GovPayException {
-		initLogger("enti");
+		initLogger("updateEnti");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] ente["+ente+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -211,6 +219,7 @@ public class Enti extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -220,7 +229,9 @@ public class Enti extends BaseRsService {
 	public DarsResponse insert(
 			@QueryParam(value = "operatore") String principalOperatore,
 			Ente ente) throws GovPayException {
-		initLogger("enti");
+		initLogger("insertEnti");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] ente["+ente+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -255,6 +266,7 @@ public class Enti extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 }

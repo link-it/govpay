@@ -32,7 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <p>Denominazione <span>[[intermediarioCorrente.denominazione]]</span></p>
 
         <paper-material class="headMaterial" id="connettore" elevation="2">
-            <h4>Connettore PdD</h4>
+            <h4>Connettore PdD o PdDE</h4>
 
             <div class="card-content">
                 <p>URL: <span>[[intermediarioCorrente.connettorePdd.url]]</span></p>
@@ -72,7 +72,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-item-body>
                         <div class="horizontal layout div-table-header-row">
                             <div class="div-table-col"><span>Id Stazione</span></div>
-                            <div class="div-table-col"><span>Password</span></div>
                             <div class="div-table-col-com"></div>
                         </div>
                     </paper-item-body>
@@ -83,7 +82,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <paper-item-body>
                                 <div class="horizontal layout div-table-row">
                                     <div class="div-table-col"><span>[[item.codStazione]]</span></div>
-                                    <div class="div-table-col"><span>[[item.password]]</span></div>
+
                                     <div class="div-table-col-com">
                                         <iron-icon icon="notification:do-not-disturb" style="color: red"
                                                    hidden$="[[item.abilitato]]"></iron-icon>

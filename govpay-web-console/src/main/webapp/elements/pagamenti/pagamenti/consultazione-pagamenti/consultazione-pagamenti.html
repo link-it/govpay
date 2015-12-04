@@ -87,6 +87,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.fire('changed-page', this.selected);
       },
 
+      _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
+
       selectPrevPage: function(){
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';

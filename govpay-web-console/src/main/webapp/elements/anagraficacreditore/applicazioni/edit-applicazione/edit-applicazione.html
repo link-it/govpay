@@ -94,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="content layout vertical">
                 <paper-card>
                     <paper-toggle-button class="flex" checked="{{applicazioneCorrente.applicazione.abilitato}}">
-                        Abilitato
+                        <span>{{_getAbilitatoLabel(applicazioneCorrente.applicazione.abilitato)}}</span>
                     </paper-toggle-button>
                     <paper-input class="flex" disabled$="[[!isAdd]]"
                                  value="{{applicazioneCorrente.applicazione.codApplicazione}}"
@@ -110,20 +110,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <paper-item valore="GPv2">GPv2</paper-item>
                         </paper-menu>
                     </paper-dropdown-menu>
-                    <paper-input class="flex" value="{{applicazioneCorrente.applicazione.policyRispedizione}}"
+                    <paper-input class="flex" value="{{applicazioneCorrente.applicazione.policyRispedizione}}" hidden
                                  label="Policy Rispedizione" required></paper-input>
                     <span class="gap"></span>
-                    <ajax-select-list label="Stazione"
-                                      select-list-url="{{govpayStazioniUrl}}"
-                                      option-value="id" option-label="codStazione" on-select-option="_selectStazione"
-                                      selected-item="{{idStazione}}"></ajax-select-list>
-                    <span class="gap"></span>
-
                 </paper-card>
 
                 <paper-card>
                     <ajax-pick-list label="Tributi" source-list-url="{{govpayTributiUrl}}" target-list="{{tributi}}"
-                                      select-list-params="{{tributiListParams}}" source-label="Tributi Disponibili" target-label="Tributi Selezionati"
+                                       source-label="Tributi Disponibili" target-label="Tributi Selezionati"
                                       source-option-value="id" source-option-label="codTributo" on-change-item="_updateTributi"
                                     target-option-value="id" target-option-label="codTributo">
 
@@ -299,8 +293,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         this.playAnimation('entry');
         this.modified=false;
-        this.govpayStazioniUrl = govpayUrl + '/rs/dars/stazioni/';
-       // this.govpayTributiUrl = govpayUrl + '/rs/dars/applicazioni/0/tributi/';
+       this.govpayTributiUrl = govpayUrl + '/rs/dars/tributi/';
       },
       _renderClosed: function() {
         if (this.withBackdrop) {
@@ -318,12 +311,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 //return govpayUrl + '/rs/dars/applicazioni/';
                 return '';
             } },
-        govpayStazioniUrl: { type: String, value: function (){
-                //return govpayUrl + '/rs/dars/stazioni/';
-                    return '';
-                } },
         govpayTributiUrl: { type: String, value: function (){
-                //return govpayUrl + '/rs/dars/applicazioni/0/tributi/';
                 return '';
                 } },
         applicazioneCorrente: {
@@ -354,19 +342,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         mostraSezioneSSLConnEsito: {
             type: Boolean, value : false
-        },
-        idStazione: {
-            type: String, value : '0',
-            observer: '_checkParametriTributi'
-        },
-        tributiListParams: {
-            type: Object, value: function (){
-             if(this.idEnte)
-                return  { 'idStazione': this.idStazione}
-                 else
-                 return  { 'idStazione': '0'}
-
-             }, notify: true
         }
       },
         _tipoAutenticazioneConnEsitoSelected: function (event,item){
@@ -402,8 +377,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
        _salvaApplicazione: function(){
-            this.applicazioneCorrente.applicazione.idStazione =       this.idStazione ;
-
           this.govpayUrl =  govpayUrl + '/rs/dars/applicazioni/';
       if(!this.isAdd){
            this.actionMethod = 'PUT';
@@ -417,18 +390,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          this.actionMethod = 'GET';
          this.close();
       },
+      _getAbilitatoLabel: function (abilitato){
+        if(abilitato) return 'Abilitato'; else return 'Disabilitato';
+      },
 
        _checkData: function(nuovo){
 
         if (nuovo){
           this.titolo = 'Modifica Applicazione: ' + nuovo.applicazione.codApplicazione;
-          this.idStazione = this.applicazioneCorrente.applicazione.idStazione;
           this.tributi = this.applicazioneCorrente.tributi;
           this.isAdd = false;
         } else {
 
-          this.applicazioneCorrente = {applicazione : { idTributi : [] , idStazione : '0', id: '0' }, tributi: []};
-          this.idStazione = this.applicazioneCorrente.applicazione.idStazione;
+          this.applicazioneCorrente = {applicazione : { abilitato: true, idTributi : [] ,  id: '0' }, tributi: []};
           this.tributi = this.applicazioneCorrente.tributi;
           this.titolo = 'Nuova Applicazione';
           this.isAdd = true;
@@ -444,18 +418,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.titolo = 'Nuova Applicazione';
         }
       } ,
-      _selectStazione:  function(event){
-        this.govpayTributiUrl = govpayUrl + '/rs/dars/applicazioni/' + this.applicazioneCorrente.applicazione.id + '/tributi/';
-        this.idStazione = event.detail.itemCorrente.id;
-      },
-      _checkParametriTributi: function(nuovo){
-         if (nuovo){
-             this.tributiListParams = {  'idStazione': nuovo} ;
-         } else {
-             this.tributiListParams = { 'idStazione': '0'} ;
-         }
 
-      },
       _updateTributi:  function(event){
         var tributiSelezionati = event.detail.tributiSelezionti;
         this.applicazioneCorrente.applicazione.idTributi = [];
@@ -504,13 +467,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
       },
-      _visualizzaMessaggioErrore: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-                messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
-                this.lastActionMethod = this.actionMethod;
-                messaggi.show();
-            }
+       _visualizzaMessaggioErrore: function(event){
+         this.lastActionMethod = this.actionMethod;
+         this.fire('dars-error', {error: event.detail});
       }
     });
   })();

@@ -51,7 +51,6 @@ public class ApplicazioniTest extends BasicTest {
 		Applicazione applicazione = new Applicazione();
 		applicazione.setAbilitato(true);
 		applicazione.setCodApplicazione("CodApplicazione");
-		applicazione.setIdStazione(stazione.getId());
 		applicazione.setVersione(Versione.GPv1);
 		applicazione.setPolicyRispedizione("it.govpay.test.Policy");
 		Connettore connettoreEsito = new Connettore();
@@ -99,7 +98,6 @@ public class ApplicazioniTest extends BasicTest {
 		Applicazione applicazione = new Applicazione();
 		applicazione.setAbilitato(true);
 		applicazione.setCodApplicazione("CodApplicazione");
-		applicazione.setIdStazione(stazione.getId());
 		applicazione.setVersione(Versione.GPv2);
 		Connettore connettoreEsito = new Connettore();
 		connettoreEsito.setAzioneInUrl(true);
@@ -156,7 +154,6 @@ public class ApplicazioniTest extends BasicTest {
 		Applicazione applicazione = new Applicazione();
 		applicazione.setAbilitato(true);
 		applicazione.setCodApplicazione("CodApplicazione2");
-		applicazione.setIdStazione(stazione.getId());
 		applicazione.setVersione(Versione.GPv1);
 		Connettore connettoreEsito = new Connettore();
 		connettoreEsito.setAzioneInUrl(false);

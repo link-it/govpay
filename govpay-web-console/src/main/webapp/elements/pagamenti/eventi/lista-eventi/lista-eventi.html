@@ -74,6 +74,9 @@
             .width200 {
             width: 200px;
             }
+            .width150 {
+            width: 150px;
+            }
             .width100 {
             width: 100px;
             }
@@ -84,7 +87,7 @@
                    params="{{searchParams}}"
                    handle-as="json"
                    last-response="{{ajaxResponse}}"
-                   lastError="{{ajaxError}}"
+                   lastError="{{ajaxError}}" on-error="_erroreDars" on-response="_responseDars"
                 ></iron-ajax>
         <paper-material elevation="1">
             <h4 class="page-title">[[titoloSezione]]</h4>
@@ -146,7 +149,7 @@
                 <paper-item>
                     <paper-item-body>
                         <div class="horizontal layout div-table-header-row">
-                            <div class="div-table-col width200"><span>Data Registrazione</span></div>
+                            <div class="div-table-col width150"><span>Data Registrazione</span></div>
                             <div class="div-table-col width100"><span>Dominio</span></div>
                             <div class="div-table-col width200"><span>IUV</span></div>
                             <div class="div-table-col width100"><span>CCP</span></div>
@@ -164,7 +167,7 @@
                             <paper-item-body>
                                 <div>
                                     <div tabindex="0" class="horizontal layout div-table-row">
-                                        <div class="div-table-col width200"><span>[[_getDataFieldAsString(item,'dataRegistrazione')]]</span></div>
+                                        <div class="div-table-col width150"><span>[[_getDataFieldAsString(item,'dataRegistrazione')]]</span></div>
                                         <div class="div-table-col width100"><span>[[item.dominio]]</span></div>
                                         <div class="div-table-col width200"><span>[[item.iuv]]</span></div>
                                         <div class="div-table-col width100"><span>[[item.ccp]]</span></div>
@@ -320,6 +323,41 @@
 
             return '';
         },
+        _responseDars : function(event){
+        var responseNonValida = false;
+
+        var url = event.detail.url || '';
+
+        if(url != ''){
+            var responseCode = event.detail.status;
+            // il response code e' buono
+            if(responseCode >= 200 && responseCode <= 299){
+                //analizzo la risposta
+                var response = event.detail.response;
+
+                if(response){
+                    var esitoOperazione = response.esitoOperazione;
+
+                    if(esitoOperazione = '' || esitoOperazione != 'ESEGUITA')
+                        responseNonValida= true;
+                } else {
+                    //questa response non puo' essere null
+                    responseNonValida= true;
+                }
+            }else {
+                // ricevuto un errore;
+                responseNonValida= true;
+            }
+
+            if(responseNonValida)
+                this.fire('dars-error', {error: event.detail});
+
+            }
+      },
+
+        _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
          _dateFormat : function(date, format) {
             return moment(date).format(format);
         }

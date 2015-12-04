@@ -173,24 +173,12 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 
 			fields.add(Applicazione.model().COD_CONNETTORE_ESITO);
 			fields.add(Applicazione.model().COD_CONNETTORE_VERIFICA);
-			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getApplicazioneFieldConverter().toTable(Applicazione.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 
 				Applicazione applicazione = (Applicazione)this.getApplicazioneFetch().fetch(jdbcProperties.getDatabase(), Applicazione.model(), map);
-
-				Long idStazione = (Long)map.remove("id_stazione");
-				
-				it.govpay.orm.IdStazione id_applicazione_stazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_applicazione_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findId(idStazione, false);
-				}else{
-					id_applicazione_stazione = new it.govpay.orm.IdStazione();
-				}
-				id_applicazione_stazione.setId(idStazione);
-				applicazione.setIdStazione(id_applicazione_stazione);
 
 				// Object applicazione_applicazioneTributo
 				ISQLQueryObject sqlQueryObjectGet_applicazione_applicazioneTributo = sqlQueryObject.newSQLQueryObject();
@@ -503,10 +491,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdStazione()!=null && 
-				imgSaved.getIdStazione()!=null){
-			obj.getIdStazione().setId(imgSaved.getIdStazione().getId());
-		}
 		if(obj.getApplicazioneTributoList()!=null){
 			List<it.govpay.orm.ApplicazioneTributo> listObj_ = obj.getApplicazioneTributoList();
 			for(it.govpay.orm.ApplicazioneTributo itemObj_ : listObj_){
@@ -595,12 +579,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 
-		if(expression.inUseModel(Applicazione.model().ID_STAZIONE,false)){
-			String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model());
-			String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().ID_STAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_stazione="+tableName2+".id");
-		}
-
 		if(expression.inUseModel(Applicazione.model().APPLICAZIONE_TRIBUTO,false)){
 			String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model());
 			String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO);
@@ -667,11 +645,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 						new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model()))
 						));
 
-		// Applicazione.model().ID_STAZIONE
-		mapTableToPKColumn.put(converter.toTable(Applicazione.model().ID_STAZIONE),
-				utilities.newList(
-						new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model().ID_STAZIONE))
-						));
 
 		// Applicazione.model().APPLICAZIONE_TRIBUTO
 		mapTableToPKColumn.put(converter.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO),

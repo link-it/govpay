@@ -19,7 +19,7 @@
                    params="{{selectListParams}}"
                    handle-as="json"
                    last-response="{{selectListResponse}}"
-                   lastError="{{selectListErrorResponse}}">
+                   lastError="{{selectListErrorResponse}}" on-error="_erroreDars">
         </iron-ajax>
         <div class="titleCard layout vertical" id="pickListBox">
             <span>[[label]]</span>
@@ -339,6 +339,10 @@
             }
              this.fire('change-item', {tributiSelezionti: this.targetList});
         },
+
+        _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
         printStatus: function (action){
             console.log('Action: ' + action);
             console.log('SourceList: ' + this.selectListResponse.response);

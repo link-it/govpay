@@ -63,7 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    params="{{searchParams}}"
                    handle-as="json"
                    last-response="{{ajaxResponseIntermediari}}"
-                   lastError="{{ajaxError}}"
+                   lastError="{{ajaxError}}" on-response="_responseDars" on-error="_erroreDars"
                 ></iron-ajax>
 
         <paper-material elevation="1">
@@ -145,6 +145,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _refreshList: function(){
        // this.dataProvider = this.dataProvider.slice(0);
+      },
+
+      _responseDars : function(event){
+        var responseNonValida = false;
+
+        var url = event.detail.url || '';
+
+        if(url != ''){
+            var responseCode = event.detail.status;
+            // il response code e' buono
+            if(responseCode >= 200 && responseCode <= 299){
+                //analizzo la risposta
+                var response = event.detail.response;
+
+                if(response){
+                    var esitoOperazione = response.esitoOperazione;
+
+                    if(esitoOperazione = '' || esitoOperazione != 'ESEGUITA')
+                        responseNonValida= true;
+                } else {
+                    //questa response non puo' essere null
+                    responseNonValida= true;
+                }
+            }else {
+                // ricevuto un errore;
+                responseNonValida= true;
+            }
+
+            if(responseNonValida)
+                this.fire('dars-error', {error: event.detail});
+
+            }
+      },
+      _erroreDars : function(event){
+         //console.log('Ricevuta risposta dars Error:');
+         //console.log(event);
+         this.fire('dars-error', {error: event.detail});
       },
 
       _selectIntermediario: function(event){

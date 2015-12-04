@@ -90,7 +90,10 @@ public class Eventi extends BaseRsService {
 			@QueryParam(value = "iuv") String iuv,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("eventi");
+		initLogger("listaEntryEventi");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] esito["+esito+"] codDominio["+codDominio+"] categoria["+categoria+"]"
+				+ " tipo["+tipo+"] sottotipo["+sottotipo+"] iuv["+iuv+"] offset["+offset+"] limit["+limit+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -157,6 +160,7 @@ public class Eventi extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 	
@@ -166,7 +170,9 @@ public class Eventi extends BaseRsService {
 	public DarsResponse evento(
 			@QueryParam(value = "operatore") String principalOperatore,
 			@PathParam("id") long id) throws GovPayException {
-		initLogger("eventi");
+		initLogger("getEventi");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] id["+id+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -222,6 +228,7 @@ public class Eventi extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 }

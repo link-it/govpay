@@ -24,14 +24,10 @@ import java.io.Serializable;
 
 public class ListaApplicazioniEntry implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private long id;
 	private String codApplicazione;
-	private String stazione;
 	private boolean abilitato;
 	
 	public long getId() {
@@ -45,12 +41,6 @@ public class ListaApplicazioniEntry implements Serializable {
 	}
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
-	}
-	public String getStazione() {
-		return stazione;
-	}
-	public void setStazione(String stazione) {
-		this.stazione = stazione;
 	}
 	public boolean isAbilitato() {
 		return abilitato;

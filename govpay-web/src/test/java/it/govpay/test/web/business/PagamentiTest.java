@@ -73,7 +73,7 @@ public class PagamentiTest extends BasicTest {
 		Psp psp = pspBD.getPsp("GovPAYPsp1");
 
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(),dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -179,7 +179,7 @@ public class PagamentiTest extends BasicTest {
 		Psp psp = pspBD.getPsp("GovPAYPsp1");
 
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -260,7 +260,7 @@ public class PagamentiTest extends BasicTest {
 		Psp psp = pspBD.getPsp("GovPAYPsp1");
 
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -350,7 +350,7 @@ public class PagamentiTest extends BasicTest {
 		Psp psp = pspBD.getPsp("GovPAYPsp1");
 
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -438,7 +438,7 @@ public class PagamentiTest extends BasicTest {
 		Psp psp = pspBD.getPsp("GovPAYPsp1");
 
 		Pagamenti versamenti = new Pagamenti(bd);
-		String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+		String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 
 		Versamento versamento = new Versamento();
 		Anagrafica anagraficaDebitore = new Anagrafica();
@@ -520,7 +520,7 @@ public class PagamentiTest extends BasicTest {
 		Pagamenti versamenti = new Pagamenti(bd);
 
 		{
-			String iuv = versamenti.generaIuv(applicazioneAA.getId(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+			String iuv = versamenti.generaIuv(applicazioneAA.getId(), stazione.getApplicationCode(), dominioA.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 			Versamento versamento = new Versamento();
 			Anagrafica anagraficaDebitore = new Anagrafica();
 			anagraficaDebitore.setCodUnivoco("CodUnivocoDebitore");
@@ -558,7 +558,7 @@ public class PagamentiTest extends BasicTest {
 		}
 
 		{
-			String iuv = versamenti.generaIuv(applicazioneBB.getId(), dominioB.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
+			String iuv = versamenti.generaIuv(applicazioneBB.getId(), stazione.getApplicationCode(), dominioB.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
 			Versamento versamento = new Versamento();
 			Anagrafica anagraficaDebitore = new Anagrafica();
 			anagraficaDebitore.setCodUnivoco("CodUnivocoDebitore");

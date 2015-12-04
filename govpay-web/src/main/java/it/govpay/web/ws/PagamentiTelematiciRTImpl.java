@@ -106,8 +106,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			risposta.setPaaInviaRTRisposta(esito);
 			return risposta;
 		} finally {
-			if(bd != null)
-				bd.closeConnection();
+			if(bd != null) bd.closeConnection();
 		}
 		
 		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "][" + ccp + "]");

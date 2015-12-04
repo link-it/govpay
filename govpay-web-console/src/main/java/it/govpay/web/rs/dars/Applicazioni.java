@@ -67,10 +67,10 @@ public class Applicazioni extends BaseRsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse find(
 			@QueryParam(value = "operatore") String principalOperatore,
-			@QueryParam(value = "codStazione") String codStazione,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("applicazioni");
+		initLogger("findApplicazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] offset["+offset+"] limit["+limit+"]");
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -88,7 +88,6 @@ public class Applicazioni extends BaseRsService {
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
-			filter.setCodStazione(codStazione);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -112,6 +111,7 @@ public class Applicazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -121,7 +121,9 @@ public class Applicazioni extends BaseRsService {
 	public DarsResponse get(
 			@QueryParam(value = "operatore") String principalOperatore,
 			@PathParam("id") long id) throws GovPayException {
-		initLogger("applicazioni");
+		initLogger("getApplicazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] id["+id+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -154,6 +156,7 @@ public class Applicazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -163,7 +166,8 @@ public class Applicazioni extends BaseRsService {
 	public DarsResponse update(
 			@QueryParam(value = "operatore") String principalOperatore,
 			ApplicazioneExt applicazione) throws GovPayException {
-		initLogger("applicazioni");
+		initLogger("updateApplicazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] applicazione["+applicazione+"]");
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -196,6 +200,7 @@ public class Applicazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -205,7 +210,9 @@ public class Applicazioni extends BaseRsService {
 	public DarsResponse insert(
 			@QueryParam(value = "operatore") String principalOperatore,
 			ApplicazioneExt applicazione) throws GovPayException {
-		initLogger("applicazioni");
+		initLogger("insertAplicazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] applicazione["+applicazione+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -241,6 +248,7 @@ public class Applicazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 	
@@ -254,7 +262,8 @@ public class Applicazioni extends BaseRsService {
 			@QueryParam(value = "idStazione") long idStazione,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("tributi");
+		initLogger("findTributi");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] codEnte["+codEnte+"] idStazione["+idStazione+"]  offset["+offset+"] limit["+limit+"]");
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -314,6 +323,7 @@ public class Applicazioni extends BaseRsService {
 			if(bd != null) bd.closeConnection();
 		}
 
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 }

@@ -117,24 +117,19 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Pagamenti extends BasicBD {
 
-	private BasicBD basicBD;
-
 	public Pagamenti(BasicBD basicBD) {
 		super(basicBD);
-		this.basicBD = basicBD;
 	}
 
 	Logger log = LogManager.getLogger();
 
-	public String generaIuv(long idApplicazione, String codDominio, TipoIUV type, int auxDigit) throws GovPayException {
-
+	
+	public String generaIuv(long idApplicazione, int application_code, String codDominio, TipoIUV type, int auxDigit) throws GovPayException {
 		log.info("Generazione IUV [idApplicazione: " + idApplicazione + "][CodDominio: " + codDominio + "][IuvType: " + type + "]");
 		try {
-			Applicazione applicazione = AnagraficaManager.getApplicazione(basicBD, idApplicazione);
-			Stazione stazione = AnagraficaManager.getStazione(basicBD, applicazione.getIdStazione());
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			setAutoCommit(false);
-			Iuv iuv = versamentiBD.generaIuv(idApplicazione, auxDigit, stazione.getApplicationCode(), codDominio,  type);
+			Iuv iuv = versamentiBD.generaIuv(idApplicazione, auxDigit, application_code, codDominio,  type);
 			commit();
 			log.info("Generato iuv " + iuv.getIuv());
 			return iuv.getIuv();
@@ -144,8 +139,7 @@ public class Pagamenti extends BasicBD {
 			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 		} 
 	}
-
-
+	
 	/**
 	 * Aggiorna o inserisce un pagamento nel repository dei pagamenti in attesa.
 	 * 
@@ -454,7 +448,7 @@ public class Pagamenti extends BasicBD {
 				rptBD = new RptBD(this);
 
 				// ERRORE DI RETE. Non so se la RPT e' stata effettivamente consegnata.
-				log.error("Errore di rete nella spedizione del carrello RPT [codCarrello: "+ codCarrello + "]: " + e);
+				log.error("Errore di rete nella spedizione del carrello RPT [codCarrello: "+ codCarrello + "]: " + e,e);
 				// Imposto lo stato in errore invio e lo lascio aggiornare al batch di controllo.
 
 				String pspBackURL = null;

@@ -66,13 +66,15 @@ public class Rendicontazioni extends BaseRsService {
 			@QueryParam(value = "codPsp") String codPsp,
 			@QueryParam(value = "offset") @DefaultValue(value="0") int offset,
 			@QueryParam(value = "limit") @DefaultValue(value="25") int limit) throws GovPayException {
-		initLogger("rendicontazioni");
+		initLogger("findRendicontazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] stato["+stato+"] annoRiferimento["+annoRiferimento+"]"
+				+ " codFlusso["+codFlusso+"] codPsp["+codPsp+"] offset["+offset+"] offset["+offset+"]");
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
 		
-		try {
+		try {		
 			try {
 				bd = BasicBD.getInstance();
 			} catch (Exception e) {
@@ -106,6 +108,7 @@ public class Rendicontazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -115,7 +118,9 @@ public class Rendicontazioni extends BaseRsService {
 	public DarsResponse get(
 			@QueryParam(value = "operatore") String principalOperatore,
 			@PathParam("id") long id) throws GovPayException {
-		initLogger("rendicontazioni");
+		initLogger("getRendicontazioni");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] id["+id+"]");
+
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -141,6 +146,7 @@ public class Rendicontazioni extends BaseRsService {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
+		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 }

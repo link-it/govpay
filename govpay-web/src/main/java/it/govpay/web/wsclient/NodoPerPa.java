@@ -20,14 +20,18 @@
  */
 package it.govpay.web.wsclient;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import javax.xml.ws.Binding;
-import javax.xml.ws.BindingProvider;
-import javax.xml.ws.handler.Handler;
+import javax.net.ssl.HttpsURLConnection;
+import javax.xml.bind.JAXBElement;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -53,8 +57,6 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStorno;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStornoRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.ObjectFactory;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoElementoListaRPT;
-import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPT;
-import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Psp.Canale;
@@ -63,56 +65,88 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.utils.NdpUtils;
-import it.govpay.web.handler.EventLoggingHandler;
-import it.govpay.web.handler.MessageLoggingHandler;
+import it.govpay.utils.SOAPUtils;
 
 public class NodoPerPa extends BasicClient {
 
 	private static ObjectFactory objectFactory;
-	private static PagamentiTelematiciRPTservice service;
 	private boolean isConnettoreServizioRPTAzioneInUrl;
 	private Logger log;
-	private PagamentiTelematiciRPT port;
 
 	public NodoPerPa(Intermediario intermediario) throws GovPayException {
 		super(intermediario);
 		
-		if(service == null || objectFactory == null || log == null){
+		if(objectFactory == null || log == null){
 			objectFactory = new ObjectFactory();
 			log = LogManager.getLogger();
-			service = new PagamentiTelematiciRPTservice();
 		}
-		
-		this.isConnettoreServizioRPTAzioneInUrl = intermediario.getConnettorePdd().isAzioneInUrl();
-		port = service.getPagamentiTelematiciRPTPort();
-
-		if(ishttpBasicEnabled) {
-			((BindingProvider)port).getRequestContext().put(BindingProvider.USERNAME_PROPERTY, httpBasicUser);
-			((BindingProvider)port).getRequestContext().put(BindingProvider.PASSWORD_PROPERTY, httpBasicPassword);
-		} 
-
-		if(isSslEnabled){
-			((BindingProvider) port).getRequestContext().put("com.sun.xml.internal.ws.transport.https.client.SSLSocketFactory", sslContext.getSocketFactory() );
-		}
-		
-		@SuppressWarnings("rawtypes")
-		List<Handler> handlerChain = new ArrayList<Handler>();
-		handlerChain.add( new MessageLoggingHandler());
-		handlerChain.add(new EventLoggingHandler(true));
-		Binding binding = ( ( BindingProvider )port ).getBinding();
-		binding.setHandlerChain(handlerChain);
+//		@SuppressWarnings("rawtypes")
+//		List<Handler> handlerChain = new ArrayList<Handler>();
+//		handlerChain.add( new MessageLoggingHandler());
+//		handlerChain.add(new EventLoggingHandler(true));
+//		Binding binding = ( ( BindingProvider )port ).getBinding();
+//		binding.setHandlerChain(handlerChain);
 	}
-
-	public PagamentiTelematiciRPT configuraClient(String azione) throws GovPayException {
-		String urlString = url.toExternalForm();
-		if(this.isConnettoreServizioRPTAzioneInUrl) {
-			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
-			((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, urlString.concat(azione));
-		} else {
-			((BindingProvider)port).getRequestContext().put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, urlString);
-		}
-		return port;
+	
+	public Object send(String azione, JAXBElement<?> body, Object header) throws GovPayException {
 		
+		// Creazione Connessione
+		int responseCode;
+		HttpURLConnection connection = null;
+		try { 
+			
+			String urlString = url.toExternalForm();
+			if(this.isConnettoreServizioRPTAzioneInUrl) {
+				if(!urlString.endsWith("/")) urlString = urlString.concat("/");
+				try {
+					url = new URL(urlString.concat(azione));
+				} catch (MalformedURLException e) {
+					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Errore nella costruzione della URL di invocazione del Nodo dei Pagamenti [url: " + urlString.concat(azione) + "]");
+				}
+			} 
+			
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setDoOutput(true);
+			connection.setRequestProperty("SOAPAction", azione);
+			connection.setRequestMethod("POST");
+			
+			// Imposta Contesto SSL se attivo
+			if(sslContext != null){
+				HttpsURLConnection httpsConn = (HttpsURLConnection) connection;
+				httpsConn.setSSLSocketFactory(sslContext.getSocketFactory());
+				HostNameVerifierDisabled disabilitato = new HostNameVerifierDisabled();
+				httpsConn.setHostnameVerifier(disabilitato);
+			}
+			
+			// Imposta l'autenticazione HTTP Basic se attiva
+			if(ishttpBasicEnabled) {
+				Base64 base = new Base64();
+				String encoding = new String(base.encode((httpBasicUser + ":" + httpBasicPassword).getBytes()));
+				connection.setRequestProperty("Authorization", "Basic " + encoding);
+			}
+			
+			connection.getOutputStream().write(SOAPUtils.toMessage(body, header));
+			responseCode = connection.getResponseCode();
+		} catch (Exception e) {
+			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Errore nell'invocazione del Nodo dei Pagamenti.", e);
+		}
+		if(responseCode < 300) {
+			try {
+				return SOAPUtils.toJaxb(connection.getInputStream());
+			} catch (Exception e) {
+				log.error("Messaggio di risposta non valido: " + e);
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Impossibile acquisire la risposta del Nodo dei Pagamenti.", e);
+			}
+		} else {
+			log.error("Errore nell'invocazione del Nodo dei Pagamenti: [HTTP Response Code " + responseCode + "]");
+			try {
+				if(log.getLevel().isMoreSpecificThan(Level.DEBUG));
+					log.debug("HTTP Response message: " + new String(IOUtils.toByteArray(connection.getErrorStream())));
+			} catch (IOException e) {
+				log.error("Impossibile serializzare l'ErrorStream della risposta: " + e);
+			}
+			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Errore nell'invocazione del Nodo dei Pagamenti: [HTTP Response Code " + responseCode + "]");
+		}
 	}
 
 	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Canale canale, Rpt rpt, NodoInviaRPT inviaRPT) throws GovPayException {
@@ -132,14 +166,8 @@ public class NodoPerPa extends BasicClient {
 				stazione.getCodStazione(), 
 				canale.getCodCanale(), null, "nodoInviaRPT", intermediario.getDenominazione());
 
-		PagamentiTelematiciRPT port = configuraClient("nodoInviaRPT");
-		NodoInviaRPTRisposta nodoInviaRisposta;
-		try {
-			nodoInviaRisposta = port.nodoInviaRPT(inviaRPT, intestazione);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoInviaRisposta;
+		Object response = send("nodoInviaRPT", objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
+		return (NodoInviaRPTRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPT(Intermediario intermediario, Stazione stazione, Canale canale, NodoInviaCarrelloRPT inviaCarrelloRPT, String codCarrello) throws GovPayException {
@@ -169,14 +197,8 @@ public class NodoPerPa extends BasicClient {
 				stazione.getCodStazione(), 
 				canale.getCodCanale(), null, "nodoInviaCarrelloRPT", intermediario.getDenominazione());
 
-		PagamentiTelematiciRPT port = configuraClient("nodoInviaCarrelloRPT");
-		NodoInviaCarrelloRPTRisposta nodoInviaCarrelloRPTRisposta;
-		try {
-			nodoInviaCarrelloRPTRisposta = port.nodoInviaCarrelloRPT(inviaCarrelloRPT, intestazione);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoInviaCarrelloRPTRisposta;
+		Object response = send("nodoInviaCarrelloRPT", objectFactory.createNodoInviaCarrelloRPT(inviaCarrelloRPT), intestazione);
+		return (NodoInviaCarrelloRPTRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoChiediInformativaPSPRisposta nodoChiediInformativaPSP(NodoChiediInformativaPSP nodoChiediInformativaPSP, String nomeSoggetto) throws GovPayException {
@@ -187,14 +209,8 @@ public class NodoPerPa extends BasicClient {
 				null, 
 				nodoChiediInformativaPSP.getIdentificativoStazioneIntermediarioPA(), 
 				null, null, "nodoChiediInformativaPSP", nomeSoggetto);
-		PagamentiTelematiciRPT port = configuraClient("nodoChiediInformativaPSP");
-		NodoChiediInformativaPSPRisposta nodoChiediInformativaPSPRisposta;
-		try {
-			nodoChiediInformativaPSPRisposta = port.nodoChiediInformativaPSP(nodoChiediInformativaPSP);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoChiediInformativaPSPRisposta;
+		Object response = send("nodoChiediInformativaPSP", objectFactory.createNodoChiediInformativaPSP(nodoChiediInformativaPSP), null);
+		return (NodoChiediInformativaPSPRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoChiediStatoRPTRisposta nodoChiediStatoRpt(NodoChiediStatoRPT nodoChiediStatoRPT, String nomeSoggetto) throws GovPayException {
@@ -205,14 +221,8 @@ public class NodoPerPa extends BasicClient {
 				null, 
 				nodoChiediStatoRPT.getIdentificativoStazioneIntermediarioPA(), 
 				null, null, "nodoChiediStatoRPT", nomeSoggetto);
-		PagamentiTelematiciRPT port = configuraClient("nodoChiediStatoRPT");
-		NodoChiediStatoRPTRisposta nodoChiediStatoRPTRisposta;
-		try {
-			nodoChiediStatoRPTRisposta = port.nodoChiediStatoRPT(nodoChiediStatoRPT);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, e.getMessage(), e);
-		}
-		return nodoChiediStatoRPTRisposta;
+		Object response = send("nodoChiediStatoRPT", objectFactory.createNodoChiediStatoRPT(nodoChiediStatoRPT), null);
+		return (NodoChiediStatoRPTRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoChiediCopiaRTRisposta nodoChiediCopiaRT(NodoChiediCopiaRT nodoChiediCopiaRT, String nomeSoggetto) throws GovPayException {
@@ -223,14 +233,8 @@ public class NodoPerPa extends BasicClient {
 				null, 
 				nodoChiediCopiaRT.getIdentificativoStazioneIntermediarioPA(), 
 				null, null, "nodoChiediCopiaRT", nomeSoggetto);
-		PagamentiTelematiciRPT port = configuraClient("nodoChiediCopiaRT");
-		NodoChiediCopiaRTRisposta nodoChiediCopiaRTRisposta;
-		try {
-			nodoChiediCopiaRTRisposta = port.nodoChiediCopiaRT(nodoChiediCopiaRT);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoChiediCopiaRTRisposta;
+		Object response = send("nodoChiediCopiaRT", objectFactory.createNodoChiediCopiaRT(nodoChiediCopiaRT), null);
+		return (NodoChiediCopiaRTRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPT(NodoChiediListaPendentiRPT nodoChiediListaPendentiRPT, String nomeSoggetto) throws GovPayException {
@@ -241,14 +245,8 @@ public class NodoPerPa extends BasicClient {
 				null, 
 				nodoChiediListaPendentiRPT.getIdentificativoStazioneIntermediarioPA(), 
 				null, null, "nodoChiediListaPendentiRPT", nomeSoggetto);
-		PagamentiTelematiciRPT port = configuraClient("nodoChiediListaPendentiRPT");
-		NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPTRisposta;
-		try {
-			nodoChiediListaPendentiRPTRisposta = port.nodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoChiediListaPendentiRPTRisposta;
+		Object response = send("nodoChiediListaPendentiRPT", objectFactory.createNodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT), null);
+		return (NodoChiediListaPendentiRPTRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno(NodoInviaRichiestaStorno nodoInviaRichiestaStorno, String nomeSoggetto) throws GovPayException {
@@ -259,14 +257,8 @@ public class NodoPerPa extends BasicClient {
 				null, 
 				nodoInviaRichiestaStorno.getIdentificativoStazioneIntermediarioPA(), 
 				null, null, "nodoInviaRichiestaStorno", nomeSoggetto);
-		PagamentiTelematiciRPT port = configuraClient("nodoInviaRichiestaStorno");
-		NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStornoRisposta;
-		try {
-			nodoInviaRichiestaStornoRisposta = port.nodoInviaRichiestaStorno(nodoInviaRichiestaStorno);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoInviaRichiestaStornoRisposta;
+		Object response = send("nodoInviaRichiestaStorno", objectFactory.createNodoInviaRichiestaStorno(nodoInviaRichiestaStorno), null);
+		return (NodoInviaRichiestaStornoRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione, String nomeSoggetto) throws GovPayException {
@@ -277,14 +269,8 @@ public class NodoPerPa extends BasicClient {
 				null, 
 				nodoChiediElencoFlussiRendicontazione.getIdentificativoStazioneIntermediarioPA(), 
 				null, null, "nodoChiediElencoFlussiRendicontazione", nomeSoggetto);
-		PagamentiTelematiciRPT port = configuraClient("nodoChiediElencoFlussiRendicontazione");
-		NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazioneRisposta;
-		try {
-			nodoChiediElencoFlussiRendicontazioneRisposta = port.nodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoChiediElencoFlussiRendicontazioneRisposta;
+		Object response = send("nodoChiediElencoFlussiRendicontazione", objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
+		return (NodoChiediElencoFlussiRendicontazioneRisposta) ((JAXBElement<?>)response).getValue();
 	}
 
 	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione, String nomeSoggetto) throws GovPayException {
@@ -295,13 +281,7 @@ public class NodoPerPa extends BasicClient {
 				null, 
 				null, 
 				null, null, "nodoChiediFlussoRendicontazione", nomeSoggetto);
-		PagamentiTelematiciRPT port = configuraClient("nodoChiediFlussoRendicontazione");
-		NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazioneRisposta;
-		try {
-			nodoChiediFlussoRendicontazioneRisposta = port.nodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione);
-		} catch (Exception e) {
-			throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP_WEB, "Riscontrata eccezione nell'invocazione del servizio PagamentiTelematiciRPT", e);
-		}
-		return nodoChiediFlussoRendicontazioneRisposta;
+		Object response = send("nodoChiediFlussoRendicontazione", objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
+		return (NodoChiediFlussoRendicontazioneRisposta) ((JAXBElement<?>)response).getValue();
 	}
 }

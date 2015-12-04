@@ -38,7 +38,6 @@ import java.util.List;
  * <pre>
  * &lt;complexType name="Applicazione">
  * 		&lt;sequence>
- * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codApplicazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
@@ -61,7 +60,6 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Applicazione", 
   propOrder = {
-  	"idStazione",
   	"codApplicazione",
   	"principal",
   	"abilitato",
@@ -91,14 +89,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 		this.id=id;
 	else
 		this.id=new Long(-1);
-  }
-
-  public IdStazione getIdStazione() {
-    return this.idStazione;
-  }
-
-  public void setIdStazione(IdStazione idStazione) {
-    this.idStazione = idStazione;
   }
 
   public java.lang.String getCodApplicazione() {
@@ -203,9 +193,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 	  return it.govpay.orm.Applicazione.modelStaticInstance;
   }
 
-
-  @XmlElement(name="idStazione",required=true,nillable=false)
-  protected IdStazione idStazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codApplicazione",required=true,nillable=false)

@@ -68,13 +68,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Applicazione.model().ID_STAZIONE.COD_STAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_stazione";
-			}else{
-				return "cod_stazione";
-			}
-		}
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_applicazione";
@@ -151,9 +144,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Applicazione.model().ID_STAZIONE.COD_STAZIONE)){
-			return this.toTable(Applicazione.model().ID_STAZIONE, returnAlias);
-		}
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
@@ -196,9 +186,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Applicazione.model())){
 			return "applicazioni";
-		}
-		if(model.equals(Applicazione.model().ID_STAZIONE)){
-			return "stazioni";
 		}
 		if(model.equals(Applicazione.model().APPLICAZIONE_TRIBUTO)){
 			return "applicazioni_tributi";

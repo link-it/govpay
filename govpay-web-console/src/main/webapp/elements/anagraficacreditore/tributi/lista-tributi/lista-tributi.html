@@ -62,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    params="{{searchParams}}"
                    handle-as="json"
                    last-response="{{ajaxResponseTributi}}"
-                   lastError="{{ajaxError}}"
+                   lastError="{{ajaxError}}" on-error="_erroreDars" on-response="_responseDars"
                 ></iron-ajax>
 
         <paper-material elevation="1">
@@ -145,6 +145,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       filtraRisultati: function (){
        this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
            this.$.connettoreTributi.generateRequest();
+      },
+
+      _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
+
+      _responseDars : function(event){
+        var responseNonValida = false;
+
+        var url = event.detail.url || '';
+
+        if(url != ''){
+            var responseCode = event.detail.status;
+            // il response code e' buono
+            if(responseCode >= 200 && responseCode <= 299){
+                //analizzo la risposta
+                var response = event.detail.response;
+
+                if(response){
+                    var esitoOperazione = response.esitoOperazione;
+
+                    if(esitoOperazione = '' || esitoOperazione != 'ESEGUITA')
+                        responseNonValida= true;
+                } else {
+                    //questa response non puo' essere null
+                    responseNonValida= true;
+                }
+            }else {
+                // ricevuto un errore;
+                responseNonValida= true;
+            }
+
+            if(responseNonValida)
+                this.fire('dars-error', {error: event.detail});
+
+            }
       },
 
       _selectTributo: function(event){

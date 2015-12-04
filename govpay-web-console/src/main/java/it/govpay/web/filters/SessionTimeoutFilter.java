@@ -2,7 +2,9 @@ package it.govpay.web.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -34,6 +36,7 @@ public class SessionTimeoutFilter implements Filter {
 	private String loginErrorPage = "public/loginError.html";
 	private List<String> excludedPages = null;
 	Logger log = LogManager.getLogger();
+	private Map<String, String> utentiLoggati = null;
 
 	@Override
 	public void destroy() {
@@ -42,6 +45,7 @@ public class SessionTimeoutFilter implements Filter {
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 		this.excludedPages = new ArrayList<String>();
+		this.utentiLoggati = new HashMap<String, String>();
 	}
 
 	@Override
@@ -51,10 +55,22 @@ public class SessionTimeoutFilter implements Filter {
 		if ((request instanceof HttpServletRequest) && (response instanceof HttpServletResponse)) {
 			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+			
+			String requestPath = httpServletRequest.getRequestURI();
+			log.debug("Richiesta risorsa: " + requestPath);
+			
+			String principal = null;
+			if(httpServletRequest.getUserPrincipal()!=null){
+				principal =  httpServletRequest.getUserPrincipal().getName();
+			}
+			
+			log.debug("Utente: " + principal);
 
 			// is session expire control required for this request?
 			if (isSessionControlRequiredForThisResource(httpServletRequest)) {
 				HttpSession sessione = httpServletRequest.getSession(false);
+				
+				log.debug("Session: " + (sessione != null ? sessione.getId() : "Null"));
 
 				// is session invalid?
 				if (isSessionInvalid(httpServletRequest)) {					

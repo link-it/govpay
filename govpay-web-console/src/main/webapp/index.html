@@ -65,15 +65,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <body unresolved class="fullbleed layout vertical">
 <span id="browser-sync-binding"></span>
 <template is="dom-bind" id="app">
-    <link-edit-intermediario id="lei" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+    <link-edit-intermediario id="lei" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation" on-dars-error="darsError"
                              on-reload-item="_reloadItem"></link-edit-intermediario>
-    <edit-dominio id="editDominio" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+    <edit-dominio id="editDominio" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation" on-dars-error="darsError"
                   on-reload-item="_reloadItem"></edit-dominio>
-    <edit-ente id="editEnte" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+    <edit-ente id="editEnte" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation" on-dars-error="darsError"
                on-reload-item="_reloadItem"></edit-ente>
-    <edit-applicazione id="editApplicazione" modal entry-animation="scale-up-animation"
+    <edit-applicazione id="editApplicazione" modal entry-animation="scale-up-animation" on-dars-error="darsError"
                        exit-animation="scale-down-animation" on-reload-item="_reloadItem"></edit-applicazione>
-    <edit-tributo id="editTributo" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation"
+    <edit-tributo id="editTributo" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation" on-dars-error="darsError"
                   on-reload-item="_reloadItem"></edit-tributo>
     <iron-ajax auto="false"
                id="govpayconnprofilo"
@@ -133,16 +133,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-item class="menu-trigger">Anagrafica NdP</paper-item>
                         <paper-menu class="menu-content">
                             <paper-item>
+                                <a data-route="psp" href="/psp" comp="configurazionePsp"
+                                   on-tap="onDataRouteClick">Psp</a>
+                            </paper-item>
+                            <paper-item>
                                 <a data-route="intermediari" href="/intermediari" comp="lci"
                                    on-tap="onDataRouteClick">Intemediari</a>
                             </paper-item>
                             <paper-item>
                                 <a data-route="domini" href="/domini" comp="configurazioneDomini"
                                    on-tap="onDataRouteClick">Domini</a>
-                            </paper-item>
-                            <paper-item>
-                                <a data-route="psp" href="/psp" comp="configurazionePsp"
-                                   on-tap="onDataRouteClick">Psp</a>
                             </paper-item>
                         </paper-menu>
                     </paper-submenu>
@@ -223,38 +223,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
                     <section data-route="intermediari">
-                        <link-configurazione-intermediari id="lci"
+                        <link-configurazione-intermediari id="lci" on-dars-error="darsError"
                                                           on-changed-page="_changedPage"></link-configurazione-intermediari>
                     </section>
 
                     <section data-route="domini">
-                        <configurazione-domini id="configurazioneDomini"
+                        <configurazione-domini id="configurazioneDomini" on-dars-error="darsError"
                                                on-changed-page="_changedPage"></configurazione-domini>
                     </section>
 
                     <section data-route="psp">
-                        <configurazione-psp id="configurazionePsp" on-changed-page="_changedPage"></configurazione-psp>
+                        <configurazione-psp id="configurazionePsp" on-changed-page="_changedPage" on-dars-error="darsError"></configurazione-psp>
                     </section>
 
                     <section data-route="enti">
-                        <configurazione-enti id="configurazioneEnti"
+                        <configurazione-enti id="configurazioneEnti" on-dars-error="darsError"
                                              on-changed-page="_changedPage"></configurazione-enti>
                     </section>
 
                     <section data-route="applicazioni">
-                        <configurazione-applicazioni id="configurazioneApplicazioni"
+                        <configurazione-applicazioni id="configurazioneApplicazioni" on-dars-error="darsError"
                                                      on-changed-page="_changedPage"></configurazione-applicazioni>
                     </section>
 
                     <section data-route="tributi">
-                        <configurazione-tributi id="configurazioneTributi"
+                        <configurazione-tributi id="configurazioneTributi" on-dars-error="darsError"
                                                 on-changed-page="_changedPage"></configurazione-tributi>
                     </section>
 
                     <!--            <section data-route="operatori">operatore</section> -->
 
                     <section data-route="pagamenti">
-                        <consultazione-pagamenti id="listaPagamenti"
+                        <consultazione-pagamenti id="listaPagamenti" on-dars-error="darsError"
                                                  on-changed-page="_changedPage"></consultazione-pagamenti>
                     </section>
 
@@ -263,7 +263,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </section>
 
                     <section data-route="rendicontazioni">
-                        <consultazione-rendicontazioni id="listaRendicontazioni"
+                        <consultazione-rendicontazioni id="listaRendicontazioni" on-dars-error="darsError"
                                                        on-changed-page="_changedPage"></consultazione-rendicontazioni>
                     </section>
 
@@ -271,12 +271,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <lista-operazioni id="listaOperazioni" on-changed-page="_changedPage"></lista-operazioni>
                     </section>
 
-                    <section data-route="error">
+                    <section data-route="error-page">
                         <error-page id="errorPage" on-changed-page="_changedPage"></error-page>
                     </section>
-                    <section data-route="nonAutorizzato">
-                        <non-autorizzato-page id="nonAutorizzatoPage"
-                                              on-changed-page="_changedPage"></non-autorizzato-page>
+                    <section data-route="nonautorizzato">
+                        <non-autorizzato-page id="nonAutorizzatoPage" on-changed-page="_changedPage"></non-autorizzato-page>
                     </section>
                 </iron-pages>
 
