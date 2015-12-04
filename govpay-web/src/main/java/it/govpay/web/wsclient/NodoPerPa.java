@@ -132,7 +132,12 @@ public class NodoPerPa extends BasicClient {
 		}
 		if(responseCode < 300) {
 			try {
-				return SOAPUtils.toJaxb(connection.getInputStream());
+				JAXBElement<?> ele = SOAPUtils.toJaxb(connection.getInputStream());
+				if(ele == null) {
+					throw new GovPayException(GovPayExceptionEnum.ERRORE_NDP, "Il Nodo dei Pagamenti ha ritornato un messaggio vuoto.");
+				} else {
+					return ele;
+				}
 			} catch (Exception e) {
 				log.error("Messaggio di risposta non valido: " + e);
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Impossibile acquisire la risposta del Nodo dei Pagamenti.", e);
