@@ -165,24 +165,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_checkData'
         },
          govpayUrl: { type: String, value: function (){
-                //return govpayUrl + '/rs/dars/tributi/';
-                return '';
+                return null;
             } },
          govpayEntiUrl: { type: String, value: function (){
-            //return govpayUrl + '/rs/dars/enti/';
-                return '';
+             return null;
             } },
          govpayIBANUrl: { type: String, value: function (){
-                return govpayUrl + '/rs/dars/domini/ibanaccredito/';
-                //return '';
+                return null;
                 } },
         isAdd: {
             type: Boolean, value : false
         },
         actionMethod: {
-            type: String, value : 'GET'
-        },
-        lastActionMethod: {
             type: String, value : 'GET'
         },
         actionParams: {
@@ -213,25 +207,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _closeDialog: function(){
         this.close();
       },
-       _salvaTributo: function(){
-            this.tributoCorrente.tributo.idEnte = this.idEnte;
-            this.tributoCorrente.tributo.ibanAccredito = this.idIBAN;
+      _salvaTributo: function(){
+          this.tributoCorrente.tributo.idEnte = this.idEnte;
+          this.tributoCorrente.tributo.ibanAccredito = this.idIBAN;
 
-            this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
-
-        if(!this.isAdd){
+          if(!this.isAdd){
            this.actionMethod = 'PUT';
-           this.lastActionMethod = 'PUT';
          }else{
             this.actionMethod = 'POST';
-            this.lastActionMethod = 'POST';
          }
 
+         this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
          this.$.connettoresalvataggioTributo.generateRequest();
-
-         this.actionMethod = 'GET';
-         this.close();
-
+         this.govpayUrl = null;
       },
         _selectEnte:  function(event){
             this.idEnte = event.detail.itemCorrente.id;
@@ -270,10 +258,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.ibanSelectListParams = {  'idEnte': '0'} ;
             }
 
+            this.govpayIBANUrl = null;
+
             if(this.ibanSelectListParams.idEnte > 0){
                 this.mostraSelectIBAN = true;
-                      }else
+                 this.govpayIBANUrl = govpayUrl + '/rs/dars/domini/ibanaccredito/';
+                      }else{
                 this.mostraSelectIBAN = false;
+                 this.govpayIBANUrl = null;
+                }
+
       },
 
       _setTitolo: function(event){
@@ -283,44 +277,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.titolo = 'Nuovo Tributo';
         }
       } ,
-        _visualizzaEsitoSalvataggio: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-                if(this.lastActionMethod != 'GET'){
-                    if(this.esitoSalvataggioTributo){
-                        var esitoOperazione = this.esitoSalvataggioTributo.esitoOperazione;
-                        var codOperazione = this.esitoSalvataggioTributo.codOperazione;
-                        var id = this.esitoSalvataggioTributo.response || '';
-                        var messaggio= '';
+       _visualizzaEsitoSalvataggio: function(event){
+        var response = event.detail;
+        console.log(event);
+        if(response){
+            var darsResponse = response.response;
 
-                        if(esitoOperazione == 'ESEGUITA'){
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Tributo completato con successo. Id Operazione: ' + codOperazione + '.';
-                                this.tributoCorrente.tributo.id = id;
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Tributo completato con successo. Id Operazione: ' + codOperazione + '.';
-                            }
-                        } else {
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Tributo non completato.';
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Tributo non completato.';
-                            }
-                        }
+            if(darsResponse) {
+                var esitoOperazione = darsResponse.esitoOperazione;
+                var codOperazione = darsResponse.codOperazione;
+                var id = darsResponse.response || '';
+                var messaggio= '';
 
-                        messaggi.text = messaggio;
+                if(esitoOperazione == 'ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Tributo completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        this.tributoCorrente.tributo.id = id;
                     }else {
-                        messaggi.text = 'Operazione Eseguita';
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Tributo completato con successo. Codice Operazione: ' + codOperazione + '.';
                     }
-                    messaggi.show();
-                    this.lastActionMethod = this.actionMethod;
+
+                    this.close();
                     this.fire('reload-item', {elementoModificato: this.tributoCorrente});
+                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Tributo non completato. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Tributo non completato. Codice Operazione: ' + codOperazione + '.';
+                    }
+                } else {
+                    // ERRORE
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Si e\' verificato un errore durante l\'inserimento del Tributo. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento del Tributo. Codice Operazione: ' + codOperazione + '.';
+                    }
+                }
+                var messaggi = document.querySelector('#messaggiUtente');
+                if(messaggi){
+                    if(messaggio){
+                        messaggi.text = messaggio;
+                        messaggi.show();
+                    }
                 }
             }
+         }
       },
       _visualizzaMessaggioErrore: function(event){
          this.lastActionMethod = this.actionMethod;

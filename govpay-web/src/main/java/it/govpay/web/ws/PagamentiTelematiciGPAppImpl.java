@@ -44,7 +44,7 @@ import it.govpay.servizi.pa.GpGeneraIUV;
 import it.govpay.servizi.pa.IdPagamento;
 import it.govpay.servizi.pa.PagamentiTelematiciGPApp;
 import it.govpay.servizi.pa.Pagamento;
-import it.govpay.web.ws.utils.PagamentiTelematiciGPUtil;
+import it.govpay.web.adapter.PagamentiTelematiciGPUtil;
 
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
@@ -68,7 +68,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	@Resource
 	WebServiceContext wsCtxt;
 	
-	Logger log = LogManager.getLogger();
+	private static Logger log = LogManager.getLogger();
 	
 	@Override
 	public EsitoOperazione gpGeneraIUV(GpGeneraIUV bodyrichiesta) {

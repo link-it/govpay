@@ -247,20 +247,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_checkData'
         },
           govpayUrl: { type: String, value: function (){
-            //return govpayUrl + '/rs/dars/domini/';
-             return '';
+           return null;
             } },
           govpayStazioniUrl: { type: String, value: function (){
-            //return govpayUrl + '/rs/dars/stazioni/';
-             return '';
+           return null;
           } },
         isAdd: {
             type: Boolean, value : false
         },
         actionMethod: {
-            type: String, value : 'GET'
-        },
-        lastActionMethod: {
             type: String, value : 'GET'
         },
         actionParams: {
@@ -297,20 +292,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.dominioCorrente.controparti = this.listaControparti;
         this.dominioCorrente.idStazione = this.idStazione;
 
-        this.govpayUrl =  govpayUrl + '/rs/dars/domini/';
+
        if(!this.isAdd){
            this.actionMethod = 'PUT';
-           this.lastActionMethod = 'PUT';
          }else{
             this.actionMethod = 'POST';
-            this.lastActionMethod = 'POST';
          }
 
+         this.govpayUrl =  govpayUrl + '/rs/dars/domini/';
          this.$.connettoresalvataggioDominio.generateRequest();
-
-         this.actionMethod = 'GET';
-         this.close();
-
+         this.govpayUrl = null;
       },
 
 
@@ -374,12 +365,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _getFieldPeriodo: function (fascia, field){
             var toRet = '';
             if(fascia)
-             //   for(var i = 0; i < fasceOrarieLst.length; i++){
-               //   var fascia = fasceOrarieLst[i];
-                        toRet = this._getDataFieldAsString(fascia, field, 'HH:mm:ss');
-
-               //}
-
+                 toRet = this._getDataFieldAsString(fascia, field, 'HH:mm:ss');
             return toRet;
       },
 
@@ -406,43 +392,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       } ,
      _visualizzaEsitoSalvataggio: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-                if(this.lastActionMethod != 'GET'){
-                    if(this.esitoSalvataggioDominio){
-                        var esitoOperazione = this.esitoSalvataggioDominio.esitoOperazione;
-                        var codOperazione = this.esitoSalvataggioDominio.codOperazione;
-                        var id = this.esitoSalvataggioDominio.response || '';
-                        var messaggio= '';
+        var response = event.detail;
+        console.log(event);
+        if(response){
+            var darsResponse = response.response;
 
-                        if(esitoOperazione == 'ESEGUITA'){
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Dominio completato con successo. Id Operazione: ' + codOperazione + '.';
-                                this.dominioCorrente.id = id;
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Dominio completato con successo. Id Operazione: ' + codOperazione + '.';
-                            }
-                        } else {
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Dominio non completato.';
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Dominio non completato.';
-                            }
-                        }
+            if(darsResponse) {
+                var esitoOperazione = darsResponse.esitoOperazione;
+                var codOperazione = darsResponse.codOperazione;
+                var id = darsResponse.response || '';
+                var messaggio= '';
 
-                        messaggi.text = messaggio;
+                if(esitoOperazione == 'ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Dominio completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        this.dominioCorrente.id = id;
                     }else {
-                        messaggi.text = 'Operazione Eseguita';
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Dominio completato con successo. Codice Operazione: ' + codOperazione + '.';
                     }
-                    messaggi.show();
-                    this.lastActionMethod = this.actionMethod;
+
+                    this.close();
                     this.fire('reload-item', {elementoModificato: this.dominioCorrente});
+                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Dominio non completato. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Dominio non completato. Codice Operazione: ' + codOperazione + '.';
+                    }
+                } else {
+                    // ERRORE
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Si e\' verificato un errore durante l\'inserimento del Dominio. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento del Dominio. Codice Operazione: ' + codOperazione + '.';
+                    }
+                }
+                var messaggi = document.querySelector('#messaggiUtente');
+                if(messaggi){
+                    if(messaggio){
+                        messaggi.text = messaggio;
+                        messaggi.show();
+                    }
                 }
             }
+         }
       },
       _visualizzaMessaggioErrore: function(event){
          this.lastActionMethod = this.actionMethod;

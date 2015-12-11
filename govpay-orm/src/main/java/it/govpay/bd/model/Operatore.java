@@ -33,8 +33,8 @@ public class Operatore extends BasicModel {
 	private List<Long> idEnti;
 	private List<Long> idApplicazioni;
 	private String principal;
+	private String nome;
 	private ProfiloOperatore profilo;
-	private Anagrafica anagrafica;
 	private boolean abilitato;
 	
 	public Long getId() {
@@ -60,12 +60,6 @@ public class Operatore extends BasicModel {
 	}
 	public void setProfilo(ProfiloOperatore profilo) {
 		this.profilo = profilo;
-	}
-	public Anagrafica getAnagrafica() {
-		return anagrafica;
-	}
-	public void setAnagrafica(Anagrafica anagrafica) {
-		this.anagrafica = anagrafica;
 	}
 	public boolean isAbilitato() {
 		return abilitato;
@@ -110,7 +104,7 @@ public class Operatore extends BasicModel {
 				equals(getIdApplicazioni(), operatore.getIdApplicazioni()) &&
 				equals(principal, operatore.getPrincipal()) &&
 				equals(profilo, operatore.getProfilo()) &&
-				equals(anagrafica, operatore.getAnagrafica()) &&
+				equals(nome, operatore.getNome()) &&
 				abilitato == operatore.isAbilitato();
 		
 		return equal;
@@ -120,5 +114,11 @@ public class Operatore extends BasicModel {
 	}
 	public void setIdApplicazioni(List<Long> idApplicazioni) {
 		this.idApplicazioni = idApplicazioni;
+	}
+	public String getNome() {
+		return nome;
+	}
+	public void setNome(String nome) {
+		this.nome = nome;
 	}
 }

@@ -34,8 +34,8 @@ import it.govpay.orm.IUV;
 import it.govpay.orm.IdAnagrafica;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
-import it.govpay.orm.dao.IDBVersamentoServiceSearch;
-import it.govpay.orm.dao.jdbc.JDBCSingoloVersamentoServiceSearch;
+import it.govpay.orm.dao.IDBSingoloVersamentoService;
+import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.jdbc.JDBCVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
@@ -62,7 +62,7 @@ import org.openspcoop2.utils.id.serial.InfoStatistics;
 public class VersamentiBD extends BasicBD {
 
 
-	private Logger log = Logger.getLogger(VersamentiBD.class);
+	private static Logger log = Logger.getLogger(VersamentiBD.class);
 
 	public enum TipoIUV {
 		ISO11694, NUMERICO
@@ -376,34 +376,20 @@ public class VersamentiBD extends BasicBD {
 	 */
 	public void updateStatoVersamento(long idVersamento, Versamento.StatoVersamento stato) throws NotFoundException, ServiceException {
 		try {
-			if(!((IDBVersamentoServiceSearch)this.getServiceManager().getVersamentoServiceSearch()).exists(idVersamento)) {
-				throw new NotFoundException("Versamento con id ["+idVersamento+"] non trovato, impossibile aggiornarne lo stato");
-			}
-
 			UpdateField statoUpdateField = new UpdateField(it.govpay.orm.Versamento.model().STATO_VERSAMENTO, stato.toString());
-			IdVersamento id = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, true);
-			this.getServiceManager().getVersamentoService().updateFields(id, statoUpdateField);
+			((IDBVersamentoService) this.getServiceManager().getVersamentoService()).updateFields(idVersamento, statoUpdateField);
 
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
 	public void updateStatoVersamento(long idVersamento, Versamento.StatoRendicontazione stato) throws NotFoundException, ServiceException {
 		try {
-			if(!((IDBVersamentoServiceSearch)this.getServiceManager().getVersamentoServiceSearch()).exists(idVersamento)) {
-				throw new NotFoundException("Versamento con id ["+idVersamento+"] non trovato, impossibile aggiornarne lo stato");
-			}
-
 			UpdateField statoUpdateField = new UpdateField(it.govpay.orm.Versamento.model().STATO_RENDICONTAZIONE, stato.toString());
-			IdVersamento id = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idVersamento, true);
-			this.getServiceManager().getVersamentoService().updateFields(id, statoUpdateField);
+			((IDBVersamentoService) this.getServiceManager().getVersamentoService()).updateFields(idVersamento, statoUpdateField);
 
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -411,19 +397,12 @@ public class VersamentiBD extends BasicBD {
 	public void updateSingoloVersamentoRPT(long idSingoloVersamento, String ibanAccredito, String causaleVersamento, String datiSpecificiRiscossione) throws ServiceException, NotFoundException {
 		try {
 
-			IdSingoloVersamento id = null;
-			try{
-				id = ((JDBCSingoloVersamentoServiceSearch)this.getServiceManager().getSingoloVersamentoServiceSearch()).findId(idSingoloVersamento, true);
-			} catch(NotFoundException e) {
-				throw new NotFoundException("SingoloVersamento con id ["+idSingoloVersamento+"] non trovato, impossibile aggiornarlo");
-			}
-
 			UpdateField ibanUpdateField = new UpdateField(it.govpay.orm.SingoloVersamento.model().IBAN_ACCREDITO, ibanAccredito);
 			UpdateField causaleUpdateField = new UpdateField(it.govpay.orm.SingoloVersamento.model().CAUSALE_VERSAMENTO, causaleVersamento);
 			UpdateField datiSpecificiUpdateField = new UpdateField(it.govpay.orm.SingoloVersamento.model().DATI_SPECIFICI_RISCOSSIONE, datiSpecificiRiscossione);
 
 
-			this.getServiceManager().getSingoloVersamentoService().updateFields(id, ibanUpdateField, causaleUpdateField, datiSpecificiUpdateField);
+			((IDBSingoloVersamentoService) this.getServiceManager().getSingoloVersamentoService()).updateFields(idSingoloVersamento, ibanUpdateField, causaleUpdateField, datiSpecificiUpdateField);
 
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -433,18 +412,11 @@ public class VersamentiBD extends BasicBD {
 	public void updateSingoloVersamentoRT(long idSingoloVersamento, String esito, Date dataEsito, String iur, StatoSingoloVersamento statoSingoloVersamento) throws ServiceException, NotFoundException {
 		try {
 
-			IdSingoloVersamento id = null;
-			try{
-				id = ((JDBCSingoloVersamentoServiceSearch)this.getServiceManager().getSingoloVersamentoServiceSearch()).findId(idSingoloVersamento, true);
-			} catch(NotFoundException e) {
-				throw new NotFoundException("SingoloVersamento con id ["+idSingoloVersamento+"] non trovato, impossibile aggiornarlo");
-			}
-
 			UpdateField ibanUpdateField = new UpdateField(it.govpay.orm.SingoloVersamento.model().ESITO_SINGOLO_PAGAMENTO, esito);
 			UpdateField causaleUpdateField = new UpdateField(it.govpay.orm.SingoloVersamento.model().DATA_ESITO_SINGOLO_PAGAMENTO, dataEsito);
 			UpdateField datiSpecificiUpdateField = new UpdateField(it.govpay.orm.SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO, statoSingoloVersamento.name());
 
-			this.getServiceManager().getSingoloVersamentoService().updateFields(id, ibanUpdateField, causaleUpdateField, datiSpecificiUpdateField);
+			((IDBSingoloVersamentoService) this.getServiceManager().getSingoloVersamentoService()).updateFields(idSingoloVersamento, ibanUpdateField, causaleUpdateField, datiSpecificiUpdateField);
 
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -454,16 +426,9 @@ public class VersamentiBD extends BasicBD {
 	public void updateStatoSingoloVersamento(long idSingoloVersamento, StatoSingoloVersamento statoSingoloVersamento) throws ServiceException, NotFoundException {
 		try {
 
-			IdSingoloVersamento id = null;
-			try{
-				id = ((JDBCSingoloVersamentoServiceSearch)this.getServiceManager().getSingoloVersamentoServiceSearch()).findId(idSingoloVersamento, true);
-			} catch(NotFoundException e) {
-				throw new NotFoundException("SingoloVersamento con id ["+idSingoloVersamento+"] non trovato, impossibile aggiornarlo");
-			}
-
 			UpdateField datiSpecificiUpdateField = new UpdateField(it.govpay.orm.SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO, statoSingoloVersamento.name());
 
-			this.getServiceManager().getSingoloVersamentoService().updateFields(id, datiSpecificiUpdateField);
+			((IDBSingoloVersamentoService) this.getServiceManager().getSingoloVersamentoService()).updateFields(idSingoloVersamento, datiSpecificiUpdateField);
 
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+	<handler-chain>
+		<handler>
+			<handler-name>it.govpay.web.handler.MessageLoggingHandler</handler-name>
+			<handler-class>it.govpay.web.handler.MessageLoggingHandler</handler-class>
+		</handler>
+		<handler>
+			<handler-name>it.govpay.web.handler.LoggerSetupHandler</handler-name>
+			<handler-class>it.govpay.web.handler.LoggerSetupHandler</handler-class>
+		</handler>
+		<handler>
+			<handler-name>it.govpay.web.handler.EventLoggingHandler</handler-name>
+			<handler-class>it.govpay.web.handler.EventLoggingHandler</handler-class>
+		</handler>
+	</handler-chain>
+</handler-chains>

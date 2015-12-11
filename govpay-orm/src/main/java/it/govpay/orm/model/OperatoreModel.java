@@ -42,8 +42,8 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 	
 		super();
 	
-		this.ID_ANAGRAFICA = new it.govpay.orm.model.IdAnagraficaModel(new Field("idAnagrafica",it.govpay.orm.IdAnagrafica.class,"Operatore",Operatore.class));
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Operatore",Operatore.class);
+		this.NOME = new Field("nome",java.lang.String.class,"Operatore",Operatore.class);
 		this.PROFILO = new Field("profilo",java.lang.String.class,"Operatore",Operatore.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Operatore",Operatore.class);
 		this.OPERATORE_ENTE = new it.govpay.orm.model.OperatoreEnteModel(new Field("OperatoreEnte",it.govpay.orm.OperatoreEnte.class,"Operatore",Operatore.class));
@@ -55,8 +55,8 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 	
 		super(father);
 	
-		this.ID_ANAGRAFICA = new it.govpay.orm.model.IdAnagraficaModel(new ComplexField(father,"idAnagrafica",it.govpay.orm.IdAnagrafica.class,"Operatore",Operatore.class));
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Operatore",Operatore.class);
+		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"Operatore",Operatore.class);
 		this.PROFILO = new ComplexField(father,"profilo",java.lang.String.class,"Operatore",Operatore.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Operatore",Operatore.class);
 		this.OPERATORE_ENTE = new it.govpay.orm.model.OperatoreEnteModel(new ComplexField(father,"OperatoreEnte",it.govpay.orm.OperatoreEnte.class,"Operatore",Operatore.class));
@@ -66,9 +66,9 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 	
 	
 
-	public it.govpay.orm.model.IdAnagraficaModel ID_ANAGRAFICA = null;
-	 
 	public IField PRINCIPAL = null;
+	 
+	public IField NOME = null;
 	 
 	public IField PROFILO = null;
 	 

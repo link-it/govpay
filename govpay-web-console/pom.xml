@@ -21,7 +21,7 @@
 
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-orm</artifactId>
+			<artifactId>govpay-bi</artifactId>
 			<type>jar</type>
 		</dependency>
 

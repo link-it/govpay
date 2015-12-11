@@ -39,7 +39,6 @@ import java.util.List;
  * &lt;complexType name="Portale">
  * 		&lt;sequence>
  * 			&lt;element name="codPortale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="defaultCallbackURL" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
@@ -59,7 +58,6 @@ import java.util.List;
 @XmlType(name = "Portale", 
   propOrder = {
   	"codPortale",
-  	"idStazione",
   	"defaultCallbackURL",
   	"principal",
   	"abilitato",
@@ -93,14 +91,6 @@ public class Portale extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   public void setCodPortale(java.lang.String codPortale) {
     this.codPortale = codPortale;
-  }
-
-  public IdStazione getIdStazione() {
-    return this.idStazione;
-  }
-
-  public void setIdStazione(IdStazione idStazione) {
-    this.idStazione = idStazione;
   }
 
   public java.lang.String getDefaultCallbackURL() {
@@ -177,9 +167,6 @@ public class Portale extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codPortale",required=true,nillable=false)
   protected java.lang.String codPortale;
-
-  @XmlElement(name="idStazione",required=true,nillable=false)
-  protected IdStazione idStazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="defaultCallbackURL",required=true,nillable=false)

@@ -168,7 +168,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(Operatore.model().PRINCIPAL);
 			fields.add(Operatore.model().PROFILO);
 			fields.add(Operatore.model().ABILITATO);
-			fields.add(new CustomField("id_anagrafica", Long.class, "id_anagrafica", this.getOperatoreFieldConverter().toTable(Operatore.model())));
+			fields.add(Operatore.model().NOME);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -176,18 +176,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 			for(Map<String, Object> map: returnMap) {
-
-				Long idAnagrafica = (Long) map.remove("id_anagrafica");
 				Operatore operatore = (Operatore)this.getOperatoreFetch().fetch(jdbcProperties.getDatabase(), Operatore.model(), map);
-
-				it.govpay.orm.IdAnagrafica id_operatore_anagrafica = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_operatore_anagrafica = ((JDBCAnagraficaServiceSearch)(this.getServiceManager().getAnagraficaServiceSearch())).findId(idAnagrafica, false);
-				}else{
-					id_operatore_anagrafica = new it.govpay.orm.IdAnagrafica();
-				}
-				id_operatore_anagrafica.setId(idAnagrafica);
-				operatore.setIdAnagrafica(id_operatore_anagrafica);
 				operatore.setOperatoreEnteList(this.getOperatoreEnteByOperatore(jdbcUtilities, jdbcProperties, log, connection, sqlQueryObject, operatore.getId(), idMappingResolutionBehaviour));
 				operatore.setOperatoreApplicazioneList(this.getOperatoreApplicazioneByOperatore(jdbcUtilities, jdbcProperties, log, connection, sqlQueryObject, operatore.getId(), idMappingResolutionBehaviour));
 
@@ -474,10 +463,6 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdAnagrafica()!=null && 
-				imgSaved.getIdAnagrafica()!=null){
-			obj.getIdAnagrafica().setId(imgSaved.getIdAnagrafica().getId());
-		}
 		if(obj.getOperatoreEnteList()!=null){
 			List<it.govpay.orm.OperatoreEnte> listObj_ = obj.getOperatoreEnteList();
 			for(it.govpay.orm.OperatoreEnte itemObj_ : listObj_){
@@ -669,11 +654,6 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		if(expression.inUseModel(Operatore.model().ID_ANAGRAFICA,false)){
-			String tableName1 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model());
-			String tableName2 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().ID_ANAGRAFICA);
-			sqlQueryObject.addWhereCondition(tableName1+".id_anagrafica="+tableName2+".id");
-		}
 
 		if(expression.inUseModel(Operatore.model().OPERATORE_ENTE,false)){
 			String tableName1 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model());
@@ -719,11 +699,6 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model()))
 			));
 
-		// Operatore.model().ID_ANAGRAFICA
-		mapTableToPKColumn.put(converter.toTable(Operatore.model().ID_ANAGRAFICA),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().ID_ANAGRAFICA))
-			));
 
 		// Operatore.model().OPERATORE_ENTE
 		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_ENTE),

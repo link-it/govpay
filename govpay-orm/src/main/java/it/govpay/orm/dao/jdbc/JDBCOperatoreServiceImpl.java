@@ -73,38 +73,22 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _anagrafica
-		Long id_anagrafica = null;
-		it.govpay.orm.IdAnagrafica idLogic_anagrafica = null;
-		idLogic_anagrafica = operatore.getIdAnagrafica();
-		if(idLogic_anagrafica!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_anagrafica = ((JDBCAnagraficaServiceSearch)(this.getServiceManager().getAnagraficaServiceSearch())).findTableId(idLogic_anagrafica, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_anagrafica = idLogic_anagrafica.getId();
-				if(id_anagrafica==null || id_anagrafica<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 
 		// Object operatore
 		sqlQueryObjectInsert.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
 		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PROFILO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ABILITATO,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_anagrafica","?");
 
 		// Insert operatore
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getPrincipal(),Operatore.model().PRINCIPAL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getNome(),Operatore.model().NOME.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getProfilo(),Operatore.model().PROFILO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getAbilitato(),Operatore.model().ABILITATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_anagrafica,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operatore.getAbilitato(),Operatore.model().ABILITATO.getFieldType())
 		);
 		operatore.setId(id);
 
@@ -223,22 +207,6 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _operatore_anagrafica
-		Long id_operatore_anagrafica = null;
-		it.govpay.orm.IdAnagrafica idLogic_operatore_anagrafica = null;
-		idLogic_operatore_anagrafica = operatore.getIdAnagrafica();
-		if(idLogic_operatore_anagrafica!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_operatore_anagrafica = ((JDBCAnagraficaServiceSearch)(this.getServiceManager().getAnagraficaServiceSearch())).findTableId(idLogic_operatore_anagrafica, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_operatore_anagrafica = idLogic_operatore_anagrafica.getId();
-				if(id_operatore_anagrafica==null || id_operatore_anagrafica<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 
 		// Object operatore
@@ -248,16 +216,12 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_operatore = new java.util.ArrayList<JDBCObject>();
 		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,false), "?");
 		lstObjects_operatore.add(new JDBCObject(operatore.getPrincipal(), Operatore.model().PRINCIPAL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,false), "?");
+		lstObjects_operatore.add(new JDBCObject(operatore.getNome(), Operatore.model().NOME.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PROFILO,false), "?");
 		lstObjects_operatore.add(new JDBCObject(operatore.getProfilo(), Operatore.model().PROFILO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ABILITATO,false), "?");
 		lstObjects_operatore.add(new JDBCObject(operatore.getAbilitato(), Operatore.model().ABILITATO.getFieldType()));
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_anagrafica","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_operatore.add(new JDBCObject(id_operatore_anagrafica, Long.class));
-		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_operatore.add(new JDBCObject(tableId, Long.class));
 

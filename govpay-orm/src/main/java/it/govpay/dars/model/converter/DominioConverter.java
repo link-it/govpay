@@ -20,6 +20,7 @@
  */
 package it.govpay.dars.model.converter;
 
+import it.govpay.bd.model.ContoAccredito;
 import it.govpay.bd.model.Disponibilita;
 import it.govpay.bd.model.Disponibilita.TipoDisponibilita;
 import it.govpay.bd.model.Dominio;
@@ -60,7 +61,7 @@ public class DominioConverter {
 		return dto;
 	}
 
-	public static DominioExt toDominioExt(Dominio dominioDTO, Stazione stazione, List<TabellaControparti> tabelleControparti, List<IbanAccredito> ibanAccredito) {
+	public static DominioExt toDominioExt(Dominio dominioDTO, Stazione stazione, List<TabellaControparti> tabelleControparti, List<ContoAccredito> contiAccredito, List<IbanAccredito> ibanAccredito) {
 		DominioExt dominio = new DominioExt();
 		
 		dominio.setId(dominioDTO.getId());
@@ -85,6 +86,7 @@ public class DominioConverter {
 		dominio.setStazione(stazione);
 		dominio.setControparti(tabelleControparti);
 		dominio.setIbanAccredito(ibanAccredito);
+		dominio.setContiAccredito(contiAccredito);
 		
 		return dominio;
 	}

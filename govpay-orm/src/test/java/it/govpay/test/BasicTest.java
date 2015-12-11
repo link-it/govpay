@@ -28,6 +28,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.EntiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
+import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.PortaliBD;
 import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.anagrafica.StazioniBD;
@@ -40,6 +41,8 @@ import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Connettore.EnumAuthType;
 import it.govpay.bd.model.Connettore.EnumSslType;
 import it.govpay.bd.model.Disponibilita;
+import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.Periodo;
 import it.govpay.bd.model.Disponibilita.TipoDisponibilita;
 import it.govpay.bd.model.Disponibilita.TipoPeriodo;
@@ -122,6 +125,7 @@ public class BasicTest {
 	protected Rt rt;
 	protected Rr rr;
 	protected IbanAccredito ibanAccredito;
+	protected Operatore operatore;
 
 	@BeforeSuite
 	public static void setUpDataSource() throws Exception {
@@ -202,6 +206,7 @@ public class BasicTest {
 		eventoFinale = null;
 		sla = null;
 		ibanAccredito = null;
+		operatore = null;
 	}
 
 	protected void setupPsp() throws Exception {
@@ -281,7 +286,7 @@ public class BasicTest {
 		if(intermediario != null) return;
 		IntermediariBD intermediariBD = new IntermediariBD(bd);
 		intermediario = new Intermediario();
-		intermediario.setCodIntermediario("111111111113");
+		intermediario.setCodIntermediario("11111111113");
 		intermediario.setDenominazione("Denominazione");
 		Connettore connettorePdd = new Connettore();
 		connettorePdd.setAzioneInUrl(false);
@@ -570,7 +575,6 @@ public class BasicTest {
 		List<Long> applicazioni = new ArrayList<Long>();
 		applicazioni.add(applicazioneAA.getId());
 		portale.setIdApplicazioni(applicazioni);
-		portale.setIdStazione(stazione.getId());
 		portale.setPrincipal("Principal");
 		PortaliBD portaliBD = new PortaliBD(bd);
 		portaliBD.insertPortale(portale);
@@ -768,6 +772,22 @@ public class BasicTest {
 		rrBD.insertRr(rr, xml);
 
 	}
+	
+	protected void setupOperatore() throws Exception {
+		if(operatore != null) return;
+
+		operatore = new Operatore();
+		operatore.setAbilitato(true);
+		Anagrafica anagrafica = new Anagrafica();
+		anagrafica.setCodUnivoco("CodUnivocoOperatore");
+		anagrafica.setRagioneSociale("Operatore");
+		operatore.setNome("Nome Cognome");
+		operatore.setPrincipal("admin");
+		operatore.setProfilo(ProfiloOperatore.ADMIN);
+		OperatoriBD operatoriBD = new OperatoriBD(bd);
+		operatoriBD.insertOperatore(operatore);
+
+	}
 
 	protected void setupAnagrafica() throws Exception {
 		setupIntermediario();
@@ -778,6 +798,7 @@ public class BasicTest {
 		setupApplicazioni();
 		setupPortali();
 		setupPsp();
+		setupOperatore();
 	}
 
 	protected static BasicBD bd; 

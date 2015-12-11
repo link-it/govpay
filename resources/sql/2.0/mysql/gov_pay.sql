@@ -235,15 +235,14 @@ CREATE INDEX index_applicazioni_2 ON applicazioni (principal);
 CREATE TABLE operatori
 (
 	principal VARCHAR(255) NOT NULL,
+	nome VARCHAR(255) NOT NULL,
 	profilo VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_anagrafica BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_operatori_1 UNIQUE (principal),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_1 FOREIGN KEY (id_anagrafica) REFERENCES anagrafiche(id) ON DELETE CASCADE,
 	CONSTRAINT pk_operatori PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -308,12 +307,10 @@ CREATE TABLE portali
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_stazione BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
 	CONSTRAINT unique_portali_2 UNIQUE (principal),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_portali_1 FOREIGN KEY (id_stazione) REFERENCES stazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_portali PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
@@ -916,6 +913,6 @@ CREATE TABLE id_messaggio_relativo
 	ora_registrazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
 	-- fk/pk columns
 	-- fk/pk keys constraints
-	CONSTRAINT pk_id_messaggio_relativo PRIMARY KEY (COUNTER,PROTOCOLLO,INFO_ASSOCIATA)
+	CONSTRAINT pk_id_messaggio_relativo PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

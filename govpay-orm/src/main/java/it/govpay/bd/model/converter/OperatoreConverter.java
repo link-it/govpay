@@ -48,7 +48,7 @@ public class OperatoreConverter {
 		Operatore dto = new Operatore();
 		dto.setId(vo.getId());
 		dto.setPrincipal(vo.getPrincipal());
-		
+		dto.setNome(vo.getNome());
 		dto.setProfilo(ProfiloOperatore.toEnum(vo.getProfilo()));
 		dto.setAbilitato(vo.isAbilitato());
 		if(vo.getOperatoreEnteList() != null && !vo.getOperatoreEnteList().isEmpty()) {
@@ -74,6 +74,7 @@ public class OperatoreConverter {
 		it.govpay.orm.Operatore vo = new it.govpay.orm.Operatore();
 		vo.setId(dto.getId());
 		vo.setPrincipal(dto.getPrincipal());
+		vo.setNome(dto.getNome());
 		vo.setProfilo(dto.getProfilo().getCodifica());
 		vo.setAbilitato(dto.isAbilitato());
 		if(dto.getIdEnti() != null && dto.getIdEnti().size() > 0) {

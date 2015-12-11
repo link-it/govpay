@@ -127,7 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: String,
             value: 'Operazioni'
           },
-        govpayUrl: { type: String, value: function (){ return  '' ;} },
+        govpayUrl: { type: String, value: function (){ return  null ;} },
         govpayBaseUrl: { type: String, value: function (){ return govpayUrl + '/rs/dars/operazioni/'; } },
         operazioneCorrente: {
           type: Object,
@@ -206,12 +206,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
       },
       _visualizzaMessaggioErrore: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-               messaggi.text='Impossibile completare l\'operazione, si e\' verificato un errore durante l\'invocazione dei servizi DARS.';
-                this.lastActionMethod = this.actionMethod;
-                messaggi.show();
-            }
+         this.fire('dars-error', {error: event.detail});
       }
     });
   })();

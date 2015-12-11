@@ -22,7 +22,6 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Portale;
 import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdStazione;
 import it.govpay.orm.PortaleApplicazione;
 
 import java.util.ArrayList;
@@ -45,7 +44,6 @@ public class PortaleConverter {
 		dto.setId(vo.getId());
 		dto.setCodPortale(vo.getCodPortale());
 		dto.setDefaultCallbackURL(vo.getDefaultCallbackURL());
-		dto.setIdStazione(vo.getIdStazione().getId());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setAbilitato(vo.isAbilitato());
 		
@@ -66,11 +64,6 @@ public class PortaleConverter {
 		vo.setId(dto.getId());
 		vo.setCodPortale(dto.getCodPortale());
 		vo.setDefaultCallbackURL(dto.getDefaultCallbackURL());
-		
-		IdStazione idStazione = new IdStazione();
-		idStazione.setId(dto.getIdStazione());
-		
-		vo.setIdStazione(idStazione);
 		vo.setPrincipal(dto.getPrincipal());
 		vo.setAbilitato(dto.isAbilitato());
 		

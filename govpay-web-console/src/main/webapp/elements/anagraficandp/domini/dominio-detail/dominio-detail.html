@@ -35,6 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-tab>Disponibilit&agrave;</paper-tab>
                 <paper-tab>Indisponibilit&agrave;</paper-tab>
                 <paper-tab>Tabelle Controparti</paper-tab>
+		<paper-tab>Conti Accredito</paper-tab>
             </paper-tabs>
             <iron-pages selected="{{selectedTab}}">
                 <div class="card-content">
@@ -142,9 +143,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-item>
                                     <paper-item-body>
                                         <div class="horizontal layout div-table-row">
-                                            <div class="div-table-col"><span>[[item.dataGenerazione]]</span></div>
-                                            <div class="div-table-col"><span>[[item.dataInizioValidita]]</span></div>
-                                            <div class="div-table-col"><span>[[item.codFlusso]]</span></div>
+                                            <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraPubblicazione','YYYY-MM-DD HH:mm:ss')]]</span></div>
+                                            <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraInizioValidita','YYYY-MM-DD HH:mm:ss')]]</span></div>
+                                            <div class="div-table-col"><span>[[item.idFlusso]]</span></div>
+                                            <div class="div-table-col-com">
+                                                <iron-icon icon="file-download"></iron-icon>
+                                            </div>
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+                            </template>
+                        </iron-list>
+                    </div>
+                </div>
+		<div class="card-content">
+                    <div class="card-content div-table">
+                        <paper-item>
+                            <paper-item-body>
+                                <div class="horizontal layout div-table-header-row">
+                                    <div class="div-table-col"><span>Data Generazione</span></div>
+                                    <div class="div-table-col"><span>Data Inizio Validit&agrave;</span></div>
+                                    <div class="div-table-col"><span>Codice Flusso</span></div>
+                                    <div class="div-table-col-com"><span></span></div>
+                                </div>
+                            </paper-item-body>
+                        </paper-item>
+                        <iron-list id="elencoContiAccredito" items="[[dominioCorrente.contiAccredito]]" as="item">
+                            <template>
+                                <paper-item>
+                                    <paper-item-body>
+                                        <div class="horizontal layout div-table-row">
+                                            <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraPubblicazione','YYYY-MM-DD HH:mm:ss')]]</span></div>
+                                            <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraInizioValidita','YYYY-MM-DD HH:mm:ss')]]</span></div>
+                                            <div class="div-table-col"><span>[[item.idFlusso]]</span></div>
                                             <div class="div-table-col-com">
                                                 <iron-icon icon="file-download"></iron-icon>
                                             </div>

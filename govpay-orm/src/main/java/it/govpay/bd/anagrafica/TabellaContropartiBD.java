@@ -24,6 +24,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.IFilter;
 import it.govpay.bd.model.TabellaControparti;
 import it.govpay.bd.model.converter.TabellaContropartiConverter;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTabellaControparti;
 import it.govpay.orm.dao.jdbc.JDBCTabellaContropartiServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.TabellaContropartiFieldConverter;
@@ -204,12 +205,18 @@ public class TabellaContropartiBD extends BasicBD {
 			fields.add(it.govpay.orm.TabellaControparti.model().ID_FLUSSO);
 			fields.add(it.govpay.orm.TabellaControparti.model().DATA_ORA_PUBBLICAZIONE);
 			fields.add(it.govpay.orm.TabellaControparti.model().DATA_ORA_INIZIO_VALIDITA);
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TabellaControparti.model())));
 
 			List<Map<String,Object>> select = this.getServiceManager().getTabellaContropartiServiceSearch().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
 			
 			if(select != null && !select.isEmpty()) {
 				for (Map<String, Object> map : select) {
-					tabelleControparti.add(TabellaContropartiConverter.toDTO((it.govpay.orm.TabellaControparti) fetch.fetch(this.getServiceManager().getJdbcProperties().getDatabase(), it.govpay.orm.TabellaControparti.model(), map)));
+					Long idDominioLong = (Long) map.remove("id_dominio");
+					it.govpay.orm.TabellaControparti tabellaContropartiVO = (it.govpay.orm.TabellaControparti) fetch.fetch(this.getServiceManager().getJdbcProperties().getDatabase(), it.govpay.orm.TabellaControparti.model(), map);
+					IdDominio idDominio = new IdDominio();
+					idDominio.setId(idDominioLong);
+					tabellaContropartiVO.setIdDominio(idDominio);
+					tabelleControparti.add(TabellaContropartiConverter.toDTO(tabellaContropartiVO));
 				}
 			}
 		} catch (NotImplementedException e) {

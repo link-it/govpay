@@ -1,0 +1,118 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="configurazione-portali">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   id="dettaglioportale"
+                   url="{{govpayUrl}}"
+                   params="{{detailParams}}"
+                   handle-as="json"
+                   last-response="{{dettaglioPortaleCorrente}}"
+                   lastError="{{ajaxErrorPortale}}" on-error="_erroreDars">
+        </iron-ajax>
+        <neon-animated-pages id="portaliPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <neon-animatable>
+                <lista-portali id="lista" on-select-item="_selectPortale"></lista-portali>
+            </neon-animatable>
+            <neon-animatable>
+                <portale-detail portale-corrente="{{dettaglioPortaleCorrente.response}}"></portale-detail>
+            </neon-animatable>
+        </neon-animated-pages>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'configurazione-portali',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        },
+        govpayUrl: { type: String, value: function (){
+            //var id= ''; if(this.portaleCorrente) id = this.portaleCorrente.id; return govpayUrl + '/rs/dars/portali/'+ id;
+            return null;
+            } },
+
+        portaleCorrente: {
+          type: Object,
+          value: null
+        },
+        dettaglioPortaleCorrente: {
+          type: Object,
+          value: null
+        },
+        detailParams: {
+            type: Object, value: function (){ return  {} }, notify: true
+          }
+      },
+       init: function() {
+            this.entryAnimation = 'slide-from-left-animation';
+            this.exitAnimation = 'slide-right-animation';
+            this.selected = 0;
+            this.$.lista.filtraRisultati();
+        },
+
+      _selectPortale: function(event){
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.portaleCorrente = event.detail.portale;
+        this.govpayUrl = govpayUrl + '/rs/dars/portali/'+ this.portaleCorrente.id;
+        this.selected = 1;
+        this.fire('changed-page', this.selected);
+      },
+
+
+      _reloadPortale: function(elementoModificato){
+          if(elementoModificato){
+              var id = elementoModificato.portale.id || 0;
+              console.log('Reload Elemento Id: ' + id);
+              if(id >0 ){
+
+              if(this.portaleCorrente){
+                    this.portaleCorrente.id = id;
+                } else {
+                    this.portaleCorrente = { 'id' : id};
+                }
+                this.govpayUrl = govpayUrl + '/rs/dars/portali/'+ this.portaleCorrente.id;
+                this.$.dettaglioportale.generateRequest();
+                if(this.selected == 0){
+                    this.$.lista.filtraRisultati();
+                }
+              }
+          }
+      },
+
+      _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
+
+      selectPrevPage: function(){
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+        this.selected = 0;
+        this.$.lista.filtraRisultati();
+        this.fire('changed-page', this.selected);
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

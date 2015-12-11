@@ -21,15 +21,22 @@
 package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
 import it.govpay.bd.model.ContoAccredito;
 import it.govpay.bd.model.converter.ContoAccreditoConverter;
 import it.govpay.orm.IdContoAccredito;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCContoAccreditoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.ContoAccreditoFieldConverter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.dao.IDBServiceUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -38,6 +45,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 
 public class ContiAccreditoBD extends BasicBD {
 
@@ -164,5 +172,49 @@ public class ContiAccreditoBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public long count(IFilter filter) throws ServiceException {
+		try {
+			return this.getServiceManager().getContoAccreditoServiceSearch().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<ContoAccredito> findAll(IFilter filter) throws ServiceException {
+		List<ContoAccredito> contiAccredito = new ArrayList<ContoAccredito>();
+		try {
+			
+			List<IField> fields = new ArrayList<IField>();
+			ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.getServiceManager().getContoAccreditoServiceSearch()).getFieldConverter();
+			IJDBCFetch fetch = ((IDBServiceUtilities<?>)this.getServiceManager().getContoAccreditoServiceSearch()).getFetch();
+
+			fields.add(new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.ContoAccredito.model())));
+			fields.add(it.govpay.orm.ContoAccredito.model().ID_FLUSSO);
+			fields.add(it.govpay.orm.ContoAccredito.model().DATA_ORA_PUBBLICAZIONE);
+			fields.add(it.govpay.orm.ContoAccredito.model().DATA_ORA_INIZIO_VALIDITA);
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.ContoAccredito.model())));
+
+			List<Map<String,Object>> select = this.getServiceManager().getContoAccreditoServiceSearch().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
+			
+			if(select != null && !select.isEmpty()) {
+				for (Map<String, Object> map : select) {
+					Long idDominioLong = (Long) map.remove("id_dominio");
+					it.govpay.orm.ContoAccredito contoAccreditoVO = (it.govpay.orm.ContoAccredito) fetch.fetch(this.getServiceManager().getJdbcProperties().getDatabase(), it.govpay.orm.ContoAccredito.model(), map);
+					IdDominio idDominio = new IdDominio();
+					idDominio.setId(idDominioLong);
+					contoAccreditoVO.setIdDominio(idDominio);
+					contiAccredito.add(ContoAccreditoConverter.toDTO(contoAccreditoVO));
+				}
+			}
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+		return contiAccredito;
+	}
+
 	
 }

@@ -24,7 +24,7 @@ package it.govpay.bd.model;
 /**
  * Rapppresenta un ente creditore
  */
-public class Stazione extends BasicModel {
+public class Stazione extends BasicModel implements Comparable<Stazione>{
 	private static final long serialVersionUID = 1L;
 
 	private Long id; 
@@ -101,5 +101,11 @@ public class Stazione extends BasicModel {
 	public void setApplicationCode(int applicationCode) {
 		this.applicationCode = applicationCode;
 	}
+
+	@Override
+	public int compareTo(Stazione stazione) {
+		return this.codStazione.compareTo(stazione.getCodStazione());
+	}
+
 }
 

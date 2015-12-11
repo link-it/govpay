@@ -81,10 +81,10 @@
             sourceLabel: {type : String, value: '' },
             targetLabel: {type : String, value: '' },
             targetList: { type: Array, value: [] , observer: '_checkTargetList'},
-            selectListResponse: { type: Object, value: null , observer: '_checkAjaxResponse'},
+            selectListResponse: { type: Object, value: function (){ return  {  response : []} } , observer: '_checkAjaxResponse'},
             selectedSourceItem: {type: Array, value: []},
             selectedTargetItem: {type: Array, value: []},
-            sourceListUrl: {type : String , value: ''},
+            sourceListUrl: {type : String , value: null},
            selectListParams: { type: Object, value: function (){ return  {  } }, notify: true  },
 
            addAbilitato: {type : Boolean, value: false },
@@ -101,9 +101,9 @@
             return '';
         },
          _selectSourceOption : function (event){
-           var target = event.model.item;
-           var idx = event.model.index;
-
+           var model = event.model;
+           var target = model.item;
+           var idx = model.index;
            if(target){
                 var add = true;
                 var found;
@@ -138,10 +138,12 @@
                 else
                     this.addAbilitato = false;
            }
+
         },
-        _selectTargetOption : function (e){
-           var target = event.model.item;
-           var idx = event.model.index;
+        _selectTargetOption : function (event){
+           var model = event.model;
+           var target = model.item;
+           var idx = model.index;
 
            if(target){
                 var add = true;
@@ -190,12 +192,13 @@
            },
         _checkAjaxResponse: function(nuovo){
             if (nuovo){
-                 if (nuovo.response)
+                 if (nuovo.response){
                       if(nuovo.response.length > 0){
                         this.addAllAbilitato = true;
                     } else
                         this.addAllAbilitato = false;
-                    } else {
+                }
+             } else {
            }
        },
         ready: function() {
@@ -203,6 +206,7 @@
         },
 
         _addToTarget: function(event) {
+            console.log(event);
             if(this.selectedSourceItem.length > 0){
                 var toMove = []; var toStay = [];
 
@@ -245,9 +249,10 @@
                 }
             }
 
-             this.fire('change-item', {tributiSelezionti: this.targetList});
+
+             this.fire('change-item', {elementiSelezionati: this.targetList});
         },
-        _addAllToTarget: function(e) {
+        _addAllToTarget: function(event) {
             if(this.selectListResponse.response.length > 0){
                 for(var i = 0 ; i < this.selectListResponse.response.length; i++){
                        var selezionato = this.selectListResponse.response[i];
@@ -269,9 +274,9 @@
                     this.removeAllAbilitato = true;
                 }
             }
-             this.fire('change-item', {tributiSelezionti: this.targetList});
+             this.fire('change-item', {elementiSelezionati: this.targetList});
         },
-        _removeFromTarget: function(e) {
+        _removeFromTarget: function(event) {
               if(this.selectedTargetItem.length > 0){
                 var toMove = []; var toStay = [];
 
@@ -314,9 +319,9 @@
                 }
             }
 
-             this.fire('change-item', {tributiSelezionti: this.targetList});
+             this.fire('change-item', {elementiSelezionati: this.targetList});
         },
-        _removeAllFromTarget: function(e) {
+        _removeAllFromTarget: function(event) {
               if(this.targetList.length > 0){
                 for(var i = 0 ; i < this.targetList.length; i++){
                        var selezionato = this.targetList[i];
@@ -337,7 +342,7 @@
                     this.addAllAbilitato = true;
                 }
             }
-             this.fire('change-item', {tributiSelezionti: this.targetList});
+             this.fire('change-item', {elementiSelezionati: this.targetList});
         },
 
         _erroreDars : function(event){

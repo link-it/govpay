@@ -186,7 +186,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <template is="dom-repeat" items="{{stazioni}}">
                             <div class="layout horizontal">
                                 <input type="hidden" value="{{item.id}}"/>
-                                <paper-input label="ID" value="{{item.codStazione}}" required disabled$="[[!_isAddStazione(item)]]"></paper-input>
+                                <paper-input label="ID" value="{{_getCodStazione(intermediarioCorrente.codIntermediario,item)}}" required disabled></paper-input>
+                                <span class="gap"></span>
+                                <paper-input label="Application Code" type="number" value="{{item.applicationCode}}" required disabled$="[[!_isAddStazione(item)]]"></paper-input>
                                 <span class="gap"></span>
                                 <paper-input-container class="flex" required>
                                     <label>Password</label>
@@ -245,17 +247,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_checkData'
         },
         govpayUrl: { type: String, value: function (){
-         //return govpayUrl + '/rs/dars/intermediari/';
-          return '';
+          return null;
         } },
         isAdd: {
             type: Boolean, value : false
         },
-
         actionMethod: {
-            type: String, value : 'GET'
-        },
-        lastActionMethod: {
             type: String, value : 'GET'
         },
         actionParams: {
@@ -293,33 +290,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
        _salvaIntermediario: function(){
-            this.intermediarioCorrente.stazioni = this.stazioni;
-            this.govpayUrl = govpayUrl + '/rs/dars/intermediari/';
+          console.log(this.stazioni);
+         this.intermediarioCorrente.stazioni = this.stazioni;
 
          if(!this.isAdd){
            this.actionMethod = 'PUT';
-           this.lastActionMethod = 'PUT';
          }else{
             this.actionMethod = 'POST';
-            this.lastActionMethod = 'POST';
          }
 
+         this.govpayUrl = govpayUrl + '/rs/dars/intermediari/';
          this.$.connettoresalvataggio.generateRequest();
-
-         this.actionMethod = 'GET';
-         this.close();
+         this.govpayUrl = null;
       },
 
       _addStazione: function(){
-        var nuovaStazione = {id :'0', codStazione : '' , password:'', abilitato: true};
+        var appCode = this._getNextApplicationCode(this.stazioni);
+
+        var nuovaStazione = {id :'0', codStazione : '' , applicationCode: appCode ,password:'', abilitato: true};
+        nuovaStazione.codStazione = this._getCodStazione(this.intermediarioCorrente.codIntermediario, nuovaStazione);
         this.push('stazioni',nuovaStazione);
       },
 
-    _isAddStazione: function(item){
+      _isAddStazione: function(item){
         if(item.id > 0)
             return false;
 
         return true;
+      },
+      _getNextApplicationCode: function(stazioni){
+        if(stazioni){
+            if(stazioni.length == 0)
+                return 1;
+
+            var max = 1;
+            for(var i = 0; i< stazioni.length; i++){
+                var appTmp = stazioni[i].applicationCode;
+                var appCode = parseInt(appTmp);
+
+                if(appCode > max)
+                    max = appCode;
+            }
+
+            return max + 1;
+        }
+
+        return 1;
+      },
+      _getCodStazione: function(codIntermediario, stazione){
+        if(codIntermediario)
+            if(stazione)
+                if(stazione.applicationCode){
+                    var idStaz = stazione.applicationCode;
+
+                    if(idStaz < 10)
+                        idStaz = '0' + idStaz;
+
+                    stazione.codStazione = codIntermediario + '_' + idStaz;
+                    return stazione.codStazione;
+                }
+        return '';
       },
 
       _checkData: function(nuovo){
@@ -331,7 +361,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         } else {
           this.stazioni = [];
-          this.intermediarioCorrente = {abilitato: true, connettorePdd: {  tipoAutenticazione : 'NONE'}, stazioni: []};
+          this.intermediarioCorrente = { codIntermediario: '', abilitato: true, connettorePdd: {  tipoAutenticazione : 'NONE'}, stazioni: []};
           this.titolo = 'Nuovo intermediario';
           this.isAdd = true;
         }
@@ -346,50 +376,63 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       } ,
 
       _visualizzaEsitoSalvataggio: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-                if(this.lastActionMethod != 'GET'){
-                    if(this.esitoSalvataggioIntermediario){
-                        var esitoOperazione = this.esitoSalvataggioIntermediario.esitoOperazione;
-                        var codOperazione = this.esitoSalvataggioIntermediario.codOperazione;
-                        var id = this.esitoSalvataggioIntermediario.response || '';
-                        var messaggio= '';
+        var response = event.detail;
+        console.log(event);
+        if(response){
+            var darsResponse = response.response;
 
-                        if(esitoOperazione == 'ESEGUITA'){
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Intermediario completato con successo. Codice Operazione: ' + codOperazione + '.';
-                                this.intermediarioCorrente.id = id;
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Intermediario completato con successo. Codice Operazione: ' + codOperazione + '.';
-                            }
-                        } else {
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
-                            }
-                        }
+            if(darsResponse) {
+                var esitoOperazione = darsResponse.esitoOperazione;
+                var codOperazione = darsResponse.codOperazione;
+                var id = darsResponse.response || '';
+                var messaggio= '';
 
-                        messaggi.text = messaggio;
+                if(esitoOperazione == 'ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Intermediario completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        this.intermediarioCorrente.id = id;
                     }else {
-                        messaggi.text = 'Operazione Eseguita';
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Intermediario completato con successo. Codice Operazione: ' + codOperazione + '.';
                     }
-                    messaggi.show();
-                    this.lastActionMethod = this.actionMethod;
+
+                    this.close();
                     this.fire('reload-item', {elementoModificato: this.intermediarioCorrente});
+                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
+                    }
+                } else {
+                    // ERRORE
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Si e\' verificato un errore durante l\'inserimento dell\'Intermediario. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento dell\'Intermediario. Codice Operazione: ' + codOperazione + '.';
+                    }
+                }
+                var messaggi = document.querySelector('#messaggiUtente');
+                if(messaggi){
+                    if(messaggio){
+                        messaggi.text = messaggio;
+                        messaggi.show();
+                    }
                 }
             }
+         }
       },
 
       _getAbilitatoLabel: function (abilitato){
         if(abilitato) return 'Abilitato'; else return 'Disabilitato';
       },
       _visualizzaMessaggioErrore: function(event){
-         this.lastActionMethod = this.actionMethod;
+         this.close();
          this.fire('dars-error', {error: event.detail});
       }
     });

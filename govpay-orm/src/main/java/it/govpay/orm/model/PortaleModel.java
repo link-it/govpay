@@ -43,7 +43,6 @@ public class PortaleModel extends AbstractModel<Portale> {
 		super();
 	
 		this.COD_PORTALE = new Field("codPortale",java.lang.String.class,"Portale",Portale.class);
-		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new Field("idStazione",it.govpay.orm.IdStazione.class,"Portale",Portale.class));
 		this.DEFAULT_CALLBACK_URL = new Field("defaultCallbackURL",java.lang.String.class,"Portale",Portale.class);
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Portale",Portale.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Portale",Portale.class);
@@ -56,7 +55,6 @@ public class PortaleModel extends AbstractModel<Portale> {
 		super(father);
 	
 		this.COD_PORTALE = new ComplexField(father,"codPortale",java.lang.String.class,"Portale",Portale.class);
-		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new ComplexField(father,"idStazione",it.govpay.orm.IdStazione.class,"Portale",Portale.class));
 		this.DEFAULT_CALLBACK_URL = new ComplexField(father,"defaultCallbackURL",java.lang.String.class,"Portale",Portale.class);
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Portale",Portale.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Portale",Portale.class);
@@ -67,8 +65,6 @@ public class PortaleModel extends AbstractModel<Portale> {
 	
 
 	public IField COD_PORTALE = null;
-	 
-	public it.govpay.orm.model.IdStazioneModel ID_STAZIONE = null;
 	 
 	public IField DEFAULT_CALLBACK_URL = null;
 	 

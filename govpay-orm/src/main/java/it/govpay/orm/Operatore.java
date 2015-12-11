@@ -38,8 +38,8 @@ import java.util.List;
  * <pre>
  * &lt;complexType name="Operatore">
  * 		&lt;sequence>
- * 			&lt;element name="idAnagrafica" type="{http://www.govpay.it/orm}id-anagrafica" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="nome" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="profilo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
  * 			&lt;element name="OperatoreEnte" type="{http://www.govpay.it/orm}OperatoreEnte" minOccurs="1" maxOccurs="unbounded"/>
@@ -58,8 +58,8 @@ import java.util.List;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Operatore", 
   propOrder = {
-  	"idAnagrafica",
   	"principal",
+  	"nome",
   	"profilo",
   	"abilitato",
   	"operatoreEnte",
@@ -87,20 +87,20 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
 		this.id=new Long(-1);
   }
 
-  public IdAnagrafica getIdAnagrafica() {
-    return this.idAnagrafica;
-  }
-
-  public void setIdAnagrafica(IdAnagrafica idAnagrafica) {
-    this.idAnagrafica = idAnagrafica;
-  }
-
   public java.lang.String getPrincipal() {
     return this.principal;
   }
 
   public void setPrincipal(java.lang.String principal) {
     this.principal = principal;
+  }
+
+  public java.lang.String getNome() {
+    return this.nome;
+  }
+
+  public void setNome(java.lang.String nome) {
+    this.nome = nome;
   }
 
   public java.lang.String getProfilo() {
@@ -190,12 +190,13 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
   }
 
 
-  @XmlElement(name="idAnagrafica",required=true,nillable=false)
-  protected IdAnagrafica idAnagrafica;
-
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="principal",required=true,nillable=false)
   protected java.lang.String principal;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="nome",required=true,nillable=false)
+  protected java.lang.String nome;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="profilo",required=true,nillable=false)

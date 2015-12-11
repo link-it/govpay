@@ -75,7 +75,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
      page('/operatori', scrollToTop, function() {
       app.route = 'operatori';
-      app.isEditSection = false;
+      app.isEditSection = true;
+    });
+
+    page('/portali', scrollToTop, function() {
+      app.route = 'portali';
+      app.isEditSection = true;
     });
 
     page('/operazioni', scrollToTop, function() {

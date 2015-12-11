@@ -24,6 +24,7 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.ContiAccreditoBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.TabellaContropartiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -33,6 +34,7 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.dars.model.DominioExt;
 import it.govpay.dars.model.ListaDominiEntry;
 import it.govpay.dars.model.converter.DominioConverter;
+import it.govpay.orm.ContoAccredito;
 import it.govpay.orm.TabellaControparti;
 
 import java.util.ArrayList;
@@ -51,12 +53,14 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 
 	private TabellaContropartiBD tabellaContropartiBD  = null;
+	private ContiAccreditoBD contoAccreditoBD  = null;
 	private IbanAccreditoBD ibanAccreditoBD  = null;
 
 	public DominiBD(BasicBD basicBD) {
 		super(basicBD);
 		this.tabellaContropartiBD = new TabellaContropartiBD(this);
 		this.ibanAccreditoBD = new IbanAccreditoBD(this);
+		this.contoAccreditoBD = new ContiAccreditoBD(this);
 	}
 
 	public List<ListaDominiEntry> findAllListaEntries(DominioFilter filter) throws ServiceException {
@@ -113,6 +117,8 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 			
 			//Tabelle Controparti
 			final long id = dominioDTO.getId();
+			List<it.govpay.bd.model.TabellaControparti> tabelleControparti = null;
+			{
 			AbstractFilter filter = new it.govpay.bd.AbstractFilter(this.getServiceManager().getTabellaContropartiServiceSearch()) {
 
 				@Override
@@ -139,11 +145,42 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 			
 			filterSortList.add(e);
 			filter.setFilterSortList(filterSortList);
-			List<it.govpay.bd.model.TabellaControparti> tabelleControparti = this.tabellaContropartiBD.findAll(filter);
-			
+			tabelleControparti = this.tabellaContropartiBD.findAll(filter);
+			}
+			List<it.govpay.bd.model.ContoAccredito> contiAccredito = null;
+			{
+				AbstractFilter filter = new it.govpay.bd.AbstractFilter(this.getServiceManager().getContoAccreditoServiceSearch()) {
+
+					@Override
+					public IExpression toExpression() throws ServiceException {
+						try {
+							IExpression exp = newExpression();
+							exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", this.getRootTable()), id);
+							return exp;
+						} catch (NotImplementedException e) {
+							throw new ServiceException(e);
+						} catch (ExpressionNotImplementedException e) {
+							throw new ServiceException(e);
+						} catch (ExpressionException e) {
+							throw new ServiceException(e);
+						}
+					}
+				};
+				
+				List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
+				
+				FilterSortWrapper e = new FilterSortWrapper();
+				e.setField(ContoAccredito.model().DATA_ORA_PUBBLICAZIONE);
+				e.setSortOrder(SortOrder.DESC);
+				
+				filterSortList.add(e);
+				filter.setFilterSortList(filterSortList);
+				contiAccredito = this.contoAccreditoBD.findAll(filter);
+
+			}
 			List<IbanAccredito> ibanAccredito = this.getIbanAccreditoByIdDominio(idDominio);
 			
-			return DominioConverter.toDominioExt(dominioDTO, stazione, tabelleControparti, ibanAccredito);
+			return DominioConverter.toDominioExt(dominioDTO, stazione, tabelleControparti, contiAccredito, ibanAccredito);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

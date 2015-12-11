@@ -93,26 +93,7 @@ public class BaseRsService {
 	}
 		
 	protected Operatore getOperatoreByPrincipal(BasicBD bd) throws ServiceException,WebApplicationException {
-//		String principal = "operatore";
-		
-		Operatore operatore = null;
-		
-		// Eliminare questa sezione
-			
-//		operatore = new Operatore();
-//		operatore.setPrincipal(principal);
-//		operatore.setProfilo(ProfiloOperatore.ADMIN);
-		
-		// Lista Enti
-		
-		
-		// Lista Applicazioni
-		
-		
-		// Eliminare fino a qui e scommentare l'istruzione seguente
-		operatore = getOperatoreByPrincipal(bd, getPrincipal());
-		
-		return operatore;
+		return getOperatoreByPrincipal(bd, getPrincipal());
 	}
 
 	protected Operatore getOperatoreByPrincipal(BasicBD bd, String principal) throws ServiceException,WebApplicationException{

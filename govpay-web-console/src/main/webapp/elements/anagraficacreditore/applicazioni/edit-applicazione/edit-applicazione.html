@@ -293,7 +293,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         this.playAnimation('entry');
         this.modified=false;
-       this.govpayTributiUrl = govpayUrl + '/rs/dars/tributi/';
+       this.govpayTributiUrl = govpayUrl + '/rs/dars/applicazioni/'+this.applicazioneCorrente.applicazione.id+'/tributi/';
       },
       _renderClosed: function() {
         if (this.withBackdrop) {
@@ -308,11 +308,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: [1]
         },
         govpayUrl: { type: String, value: function (){
-                //return govpayUrl + '/rs/dars/applicazioni/';
-                return '';
+                return null;
             } },
         govpayTributiUrl: { type: String, value: function (){
-                return '';
+                return null;
                 } },
         applicazioneCorrente: {
           type: Object,
@@ -323,9 +322,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean, value : false
         },
         actionMethod: {
-            type: String, value : 'GET'
-        },
-        lastActionMethod: {
             type: String, value : 'GET'
         },
         actionParams: {
@@ -377,18 +373,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
        _salvaApplicazione: function(){
-          this.govpayUrl =  govpayUrl + '/rs/dars/applicazioni/';
+
       if(!this.isAdd){
            this.actionMethod = 'PUT';
-           this.lastActionMethod = 'PUT';
          }else{
             this.actionMethod = 'POST';
-            this.lastActionMethod = 'POST';
          }
 
+         this.govpayUrl =  govpayUrl + '/rs/dars/applicazioni/';
          this.$.connettoresalvataggioApplicazione.generateRequest();
-         this.actionMethod = 'GET';
-         this.close();
+         this.govpayUrl =  null;
       },
       _getAbilitatoLabel: function (abilitato){
         if(abilitato) return 'Abilitato'; else return 'Disabilitato';
@@ -420,7 +414,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       } ,
 
       _updateTributi:  function(event){
-        var tributiSelezionati = event.detail.tributiSelezionti;
+        var tributiSelezionati = event.detail.elementiSelezionati;
         this.applicazioneCorrente.applicazione.idTributi = [];
 
         for(var t in tributiSelezionati){
@@ -428,44 +422,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.push('applicazioneCorrente.applicazione.idTributi',tributo.id);
         }
       },
-      _visualizzaEsitoSalvataggio: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-                if(this.lastActionMethod != 'GET'){
-                    if(this.esitoSalvataggioApplicazione){
-                        var esitoOperazione = this.esitoSalvataggioApplicazione.esitoOperazione;
-                        var codOperazione = this.esitoSalvataggioApplicazione.codOperazione;
-                        var id = this.esitoSalvataggioApplicazione.response || '';
-                        var messaggio= '';
+     _visualizzaEsitoSalvataggio: function(event){
+        var response = event.detail;
+        console.log(event);
+        if(response){
+            var darsResponse = response.response;
 
-                        if(esitoOperazione == 'ESEGUITA'){
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Applicazione completato con successo. Id Operazione: ' + codOperazione + '.';
-                                this.applicazioneCorrente.applicazione.id = id;
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Applicazione completato con successo. Id Operazione: ' + codOperazione + '.';
-                            }
-                        } else {
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Applicazione non completato.';
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Applicazione non completato.';
-                            }
-                        }
+            if(darsResponse) {
+                var esitoOperazione = darsResponse.esitoOperazione;
+                var codOperazione = darsResponse.codOperazione;
+                var id = darsResponse.response || '';
+                var messaggio= '';
 
-                        messaggi.text = messaggio;
+                if(esitoOperazione == 'ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Applicazione completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        this.applicazioneCorrente.applicazione.id = id;
                     }else {
-                        messaggi.text = 'Operazione Eseguita';
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Applicazione completato con successo. Codice Operazione: ' + codOperazione + '.';
                     }
-                    messaggi.show();
-                    this.lastActionMethod = this.actionMethod;
+
+                    this.close();
                     this.fire('reload-item', {elementoModificato: this.applicazioneCorrente});
+                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Applicazione non completato. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Applicazione non completato. Codice Operazione: ' + codOperazione + '.';
+                    }
+                } else {
+                    // ERRORE
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Si e\' verificato un errore durante l\'inserimento dell\'Applicazione. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento dell\'Applicazione. Codice Operazione: ' + codOperazione + '.';
+                    }
+                }
+                var messaggi = document.querySelector('#messaggiUtente');
+                if(messaggi){
+                    if(messaggio){
+                        messaggi.text = messaggio;
+                        messaggi.show();
+                    }
                 }
             }
+         }
       },
        _visualizzaMessaggioErrore: function(event){
          this.lastActionMethod = this.actionMethod;

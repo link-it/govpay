@@ -168,7 +168,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 			fields.add(Portale.model().DEFAULT_CALLBACK_URL);
 			fields.add(Portale.model().PRINCIPAL);
 			fields.add(Portale.model().ABILITATO);
-			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getPortaleFieldConverter().toTable(Portale.model())));
 	        
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 			
@@ -176,16 +175,7 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 			for(Map<String, Object> map: returnMap) {
-				Long id_stazione = (Long) map.remove("id_stazione");
 				Portale portale = (Portale)this.getPortaleFetch().fetch(jdbcProperties.getDatabase(), Portale.model(), map);
-				it.govpay.orm.IdStazione id_portale_stazione = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_portale_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findId(id_stazione, false);
-				}else{
-					id_portale_stazione = new it.govpay.orm.IdStazione();
-				}
-				id_portale_stazione.setId(id_stazione);
-				portale.setIdStazione(id_portale_stazione);
 				
 				portale.setPortaleApplicazioneList(this.getPortaleApplicazione(jdbcUtilities, jdbcProperties, log, connection, sqlQueryObject, portale.getId(), idMappingResolutionBehaviour));
 				list.add(portale);
@@ -470,10 +460,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdStazione()!=null && 
-				imgSaved.getIdStazione()!=null){
-			obj.getIdStazione().setId(imgSaved.getIdStazione().getId());
-		}
 		if(obj.getPortaleApplicazioneList()!=null){
 			List<it.govpay.orm.PortaleApplicazione> listObj_ = obj.getPortaleApplicazioneList();
 			for(it.govpay.orm.PortaleApplicazione itemObj_ : listObj_){
@@ -608,12 +594,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	
-		if(expression.inUseModel(Portale.model().ID_STAZIONE,false)){
-			String tableName1 = this.getPortaleFieldConverter().toAliasTable(Portale.model());
-			String tableName2 = this.getPortaleFieldConverter().toAliasTable(Portale.model().ID_STAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_stazione="+tableName2+".id");
-		}
-		
 		if(expression.inUseModel(Portale.model().PORTALE_APPLICAZIONE,false)){
 			String tableName1 = this.getPortaleFieldConverter().toAliasTable(Portale.model());
 			String tableName2 = this.getPortaleFieldConverter().toAliasTable(Portale.model().PORTALE_APPLICAZIONE);
@@ -661,11 +641,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 				new CustomField("id", Long.class, "id", converter.toTable(Portale.model()))
 			));
 
-		// Portale.model().ID_STAZIONE
-		mapTableToPKColumn.put(converter.toTable(Portale.model().ID_STAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Portale.model().ID_STAZIONE))
-			));
 
 		// Portale.model().PORTALE_APPLICAZIONE
 		mapTableToPKColumn.put(converter.toTable(Portale.model().PORTALE_APPLICAZIONE),

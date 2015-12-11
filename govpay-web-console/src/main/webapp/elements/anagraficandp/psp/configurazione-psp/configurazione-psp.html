@@ -47,9 +47,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: 0
         },
        govpayUrl: { type: String, value: function (){
-
-            //var id= ''; if(this.pspCorrente) id = this.pspCorrente.id; return govpayUrl + '/rs/dars/psp/'+ id;
-            return '';
+            return null;
             } },
 
         pspCorrente: {
@@ -65,10 +63,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
       },
        init: function() {
-            this.entryAnimation = '';
-            this.exitAnimation = '';
+            this.entryAnimation = 'slide-from-left-animation';
+            this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
-            this.$.pspPages.cancelAnimation();
             this.$.lista.filtraRisultati();
         },
 

@@ -328,7 +328,6 @@
   <mapping name="Portale" class="it.govpay.orm.Portale">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codPortale" field="codPortale" usage="required"/>
-    <structure name="idStazione" field="idStazione" usage="required" map-as="_IdStazione_Type"/>
     <value name="defaultCallbackURL" field="defaultCallbackURL" usage="required"/>
     <value name="principal" field="principal" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
@@ -403,8 +402,8 @@
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idAnagrafica" field="idAnagrafica" usage="required" map-as="_IdAnagrafica_Type"/>
     <value name="principal" field="principal" usage="required"/>
+    <value name="nome" field="nome" usage="required"/>
     <value name="profilo" field="profilo" usage="required"/>
     <value name="abilitato" field="abilitato" default="true" usage="required"/>
     <collection field="operatoreEnte" create-type="java.util.ArrayList">

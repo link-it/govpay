@@ -55,6 +55,7 @@ import it.govpay.dars.model.DominioExt;
 import it.govpay.dars.model.ListaDominiEntry;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
+import it.govpay.utils.DominiUtils;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
@@ -208,6 +209,8 @@ public class Domini extends BaseRsService{
 
 			DominiBD dominiBD = new DominiBD(bd);
 			dominiBD.updateDominioExt(dominio);
+			DominiUtils.updateTabellaControparti(bd, dominio.getId());
+			DominiUtils.updateContiAccredito(bd, dominio.getId());
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);//TODO discriminare tra ESEGUITA e NONESEGUITA
 
 		}catch(WebApplicationException e){
@@ -254,6 +257,8 @@ public class Domini extends BaseRsService{
 
 			DominiBD dominiBD = new DominiBD(bd);
 			dominiBD.insertDominioExt(dominio);
+			DominiUtils.updateTabellaControparti(bd, dominio.getId());
+			DominiUtils.updateContiAccredito(bd, dominio.getId());
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(dominio.getId());
 		}catch(WebApplicationException e){

@@ -23,9 +23,7 @@ package it.govpay.bd.anagrafica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.converter.AnagraficaConverter;
 import it.govpay.bd.model.converter.OperatoreConverter;
-import it.govpay.orm.IdAnagrafica;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 
@@ -93,7 +91,6 @@ public class OperatoriBD extends BasicBD {
 	
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
-		operatore.setAnagrafica(AnagraficaConverter.toDTO(this.getServiceManager().getAnagraficaServiceSearch().get(operatoreVO.getIdAnagrafica())));
 		return operatore;
 	}
 	
@@ -126,22 +123,6 @@ public class OperatoriBD extends BasicBD {
 				throw new NotFoundException("Operatore con id ["+idOperatore.toJson()+"] non trovato");
 			}
 
-			it.govpay.orm.Operatore operatoreDB = this.getServiceManager().getOperatoreServiceSearch().get(idOperatore);
-
-			operatore.getAnagrafica().setId(operatoreDB.getIdAnagrafica().getId());
-
-			it.govpay.orm.Anagrafica voAnagrafica = AnagraficaConverter.toVO(operatore.getAnagrafica());
-			IdAnagrafica idAnagrafica = this.getServiceManager().getAnagraficaServiceSearch().convertToId(voAnagrafica);
-
-			if(!this.getServiceManager().getAnagraficaServiceSearch().exists(idAnagrafica)) {
-				throw new NotFoundException("Anagrafica con id ["+idAnagrafica.toJson()+"] non trovata");
-			}
-
-			this.getServiceManager().getAnagraficaService().update(idAnagrafica, voAnagrafica);
-			
-			idAnagrafica.setId(voAnagrafica.getId());
-			vo.setIdAnagrafica(idAnagrafica);
-			
 			this.getServiceManager().getOperatoreService().update(idOperatore, vo);
 			operatore.setId(vo.getId());
 			
@@ -164,16 +145,8 @@ public class OperatoriBD extends BasicBD {
 	public void insertOperatore(Operatore operatore) throws  ServiceException{
 		try {
 
-			it.govpay.orm.Anagrafica voAnagrafica = AnagraficaConverter.toVO(operatore.getAnagrafica());
-
-			this.getServiceManager().getAnagraficaService().create(voAnagrafica);
-			
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
 
-			IdAnagrafica idAnagrafica = new IdAnagrafica();
-			idAnagrafica.setId(voAnagrafica.getId());
-			vo.setIdAnagrafica(idAnagrafica);
-			
 			this.getServiceManager().getOperatoreService().create(vo);
 			operatore.setId(vo.getId());
 

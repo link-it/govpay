@@ -61,7 +61,7 @@ public class OperatoriTest extends BasicTest {
 		anagrafica.setProvincia("Provincia");
 		anagrafica.setRagioneSociale("RagioneSociale");
 		anagrafica.setTelefono("Telefono");
-		operatore.setAnagrafica(anagrafica);
+		operatore.setNome("Nome Cognome");
 		List<Long> enti = new ArrayList<Long>();
 		enti.add(enteAA.getId());
 		operatore.setIdEnti(enti);
@@ -103,7 +103,7 @@ public class OperatoriTest extends BasicTest {
 		anagrafica.setProvincia("Provincia");
 		anagrafica.setRagioneSociale("RagioneSociale");
 		anagrafica.setTelefono("Telefono");
-		operatore.setAnagrafica(anagrafica);
+		operatore.setNome("Nome Cognome");
 
 		OperatoriBD operatoriBD = new OperatoriBD(bd);
 		operatoriBD.updateOperatore(operatore);
@@ -133,7 +133,7 @@ public class OperatoriTest extends BasicTest {
 		anagrafica.setRagioneSociale("RagioneSociale");
 		anagrafica.setTelefono("Telefono");
 		
-		operatore.setAnagrafica(anagrafica);
+		operatore.setNome("Nome Cognome");
 		List<Long> enti = new ArrayList<Long>();
 		enti.add(enteAB.getId());
 		operatore.setIdEnti(enti);

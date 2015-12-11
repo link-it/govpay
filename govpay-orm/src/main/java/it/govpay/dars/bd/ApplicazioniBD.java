@@ -46,6 +46,16 @@ public class ApplicazioniBD extends BasicBD {
 	}
 
 	public List<ListaApplicazioniEntry> findAll(ApplicazioneFilter filter) throws ServiceException {
+		return this.findAll(filter, null);
+	}
+
+	public List<ListaApplicazioniEntry> findAll(ApplicazioneFilter filter,List<Long> idApplicazioni) throws ServiceException {
+
+		if(idApplicazioni != null){
+			filter.setListaIdApplicazioni(idApplicazioni);
+		}
+
+
 		List<it.govpay.bd.model.Applicazione> lstapplicazione = this.applicazioniBD.findAll(filter);
 		List<ListaApplicazioniEntry> applicazioniLst = new ArrayList<ListaApplicazioniEntry>();
 
@@ -56,6 +66,31 @@ public class ApplicazioniBD extends BasicBD {
 			entry.setCodApplicazione(applicazioneDTO.getCodApplicazione());
 			applicazioniLst.add(entry);
 		}
+		return applicazioniLst;
+	}
+
+	public List<ListaApplicazioniEntry> findAllApplicazioniNonInLista(ApplicazioneFilter filter,List<Long> idApplicazioni) throws ServiceException {
+
+		List<it.govpay.bd.model.Applicazione> lstapplicazione = this.applicazioniBD.findAll(filter);
+		List<ListaApplicazioniEntry> applicazioniLst = new ArrayList<ListaApplicazioniEntry>();
+
+		for(it.govpay.bd.model.Applicazione applicazioneDTO: lstapplicazione) {
+			boolean add = false;
+			if(idApplicazioni != null && idApplicazioni.size() > 0){
+				if(!idApplicazioni.contains(applicazioneDTO.getId())){
+					add = true;
+				}
+			}
+
+			if(add){
+				ListaApplicazioniEntry entry = new ListaApplicazioniEntry();
+				entry.setId(applicazioneDTO.getId());
+				entry.setAbilitato(applicazioneDTO.isAbilitato());
+				entry.setCodApplicazione(applicazioneDTO.getCodApplicazione());
+				applicazioniLst.add(entry);
+			}
+		}
+
 		return applicazioniLst;
 	}
 

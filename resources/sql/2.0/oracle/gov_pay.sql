@@ -364,15 +364,14 @@ CREATE SEQUENCE seq_operatori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 CREATE TABLE operatori
 (
 	principal VARCHAR(255) NOT NULL,
+	nome VARCHAR(255) NOT NULL,
 	profilo VARCHAR(255) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_anagrafica NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_operatori_1 UNIQUE (principal),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_1 FOREIGN KEY (id_anagrafica) REFERENCES anagrafiche(id) ON DELETE CASCADE,
 	CONSTRAINT pk_operatori PRIMARY KEY (id)
 );
 
@@ -488,12 +487,10 @@ CREATE TABLE portali
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_stazione NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
 	CONSTRAINT unique_portali_2 UNIQUE (principal),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_portali_1 FOREIGN KEY (id_stazione) REFERENCES stazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_portali PRIMARY KEY (id)
 );
 
@@ -1354,7 +1351,7 @@ CREATE TABLE id_messaggio_relativo
 	ora_registrazione TIMESTAMP,
 	-- fk/pk columns
 	-- fk/pk keys constraints
-	CONSTRAINT pk_id_messaggio_relativo PRIMARY KEY (COUNTER,PROTOCOLLO,INFO_ASSOCIATA)
+	CONSTRAINT pk_id_messaggio_relativo PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
 );
 
 

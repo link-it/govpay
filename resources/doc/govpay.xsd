@@ -726,16 +726,6 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element name="codPortale" type="xsd:string" />
-			<xsd:element name="idStazione" type="id-stazione">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Stazione"
-								object-type="Stazione" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 			<xsd:element name="defaultCallbackURL" type="String512" />
 			<xsd:element name="principal" type="xsd:string" />
 			<xsd:element name="abilitato" type="xsd:boolean" />
@@ -998,7 +988,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idAnagrafica" type="id-anagrafica">
+			<!--xsd:element name="idAnagrafica" type="id-anagrafica">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1007,8 +997,9 @@
 						</linkit:generator>
 					</xsd:appinfo>
 				</xsd:annotation>
-			</xsd:element>
+			</xsd:element-->
 			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="nome" type="xsd:string"/>
 			<xsd:element name="profilo" type="xsd:string"/>
 			<xsd:element name="abilitato" type="xsd:boolean" default="true"/>
 			<xsd:element ref="OperatoreEnte" maxOccurs="unbounded" />
@@ -1967,7 +1958,6 @@
 					<linkit:interface crud="false" id="xsd:string" generate="false"/>
 					<linkit:sql-table-mapping name="ID_MESSAGGIO_RELATIVO" sequence-cycle="true">
 						<linkit:sql-table-primary-key generate-id="false">
-							<linkit:sql-table-pk-field name="counter"/>
 							<linkit:sql-table-pk-field name="protocollo"/>
 							<linkit:sql-table-pk-field name="info-associata"/>
 						</linkit:sql-table-primary-key>

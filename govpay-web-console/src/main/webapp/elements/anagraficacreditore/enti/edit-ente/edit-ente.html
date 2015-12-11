@@ -171,12 +171,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_checkData'
         },
          govpayUrl: { type: String, value: function (){
-            //return govpayUrl + '/rs/dars/enti/';
-                return '';
+           return null;
             } },
          govpayDominiUrl: { type: String, value: function (){
-                //return govpayUrl + '/rs/dars/domini/';
-                return '';
+                return null;
                 } },
         anagrafica: {
             type: Object,
@@ -186,9 +184,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean, value : false
         },
         actionMethod: {
-            type: String, value : 'GET'
-        },
-        lastActionMethod: {
             type: String, value : 'GET'
         },
         actionParams: {
@@ -209,20 +204,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.enteCorrente.ente.anagraficaEnte = this.anagrafica;
         this.enteCorrente.ente.idDominio = this.idDominio;
 
-        this.govpayUrl = govpayUrl + '/rs/dars/enti/';
+
         if(!this.isAdd){
            this.actionMethod = 'PUT';
-           this.lastActionMethod = 'PUT';
          }else{
             this.actionMethod = 'POST';
-            this.lastActionMethod = 'POST';
          }
 
+         this.govpayUrl = govpayUrl + '/rs/dars/enti/';
          this.$.connettoresalvataggioEnte.generateRequest();
-
-         this.actionMethod = 'GET';
-         this.close();
-
+        this.govpayUrl = null;
       },
     _getAbilitatoLabel: function (abilitato){
         if(abilitato) return 'Abilitato'; else return 'Disabilitato';
@@ -252,45 +243,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.titolo = 'Nuovo Ente';
         }
       } ,
-       _visualizzaEsitoSalvataggio: function(event){
-         var messaggi = document.querySelector('#messaggiUtente');
-            if(messaggi){
-                if(this.lastActionMethod != 'GET'){
-                    if(this.esitoSalvataggioEnte){
-                        var esitoOperazione = this.esitoSalvataggioEnte.esitoOperazione;
-                        var codOperazione = this.esitoSalvataggioEnte.codOperazione;
-                        var id = this.esitoSalvataggioEnte.response || '';
-                        var messaggio= '';
+      _visualizzaEsitoSalvataggio: function(event){
+        var response = event.detail;
+        console.log(event);
+        if(response){
+            var darsResponse = response.response;
 
-                        console.log(esitoOperazione);
-                        if(esitoOperazione == 'ESEGUITA'){
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Ente completato con successo. Id Operazione: ' + codOperazione + '.';
-                                this.enteCorrente.ente.id = id;
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Ente completato con successo. Id Operazione: ' + codOperazione + '.';
-                            }
-                        } else {
-                            // Creazione
-                            if(this.lastActionMethod == 'POST'){
-                                messaggio = 'Inserimento Ente non completato.';
-                            }else {
-                                //Aggiornamento
-                                messaggio = 'Aggiornamento Ente non completato.';
-                            }
-                        }
+            if(darsResponse) {
+                var esitoOperazione = darsResponse.esitoOperazione;
+                var codOperazione = darsResponse.codOperazione;
+                var id = darsResponse.response || '';
+                var messaggio= '';
 
-                        messaggi.text = messaggio;
+                if(esitoOperazione == 'ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Ente completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        this.enteCorrente.ente.id = id;
                     }else {
-                        messaggi.text = 'Operazione Eseguita';
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Ente completato con successo. Codice Operazione: ' + codOperazione + '.';
                     }
-                    messaggi.show();
-                    this.lastActionMethod = this.actionMethod;
+
+                    this.close();
                     this.fire('reload-item', {elementoModificato: this.enteCorrente});
+                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Ente non completato. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Ente non completato. Codice Operazione: ' + codOperazione + '.';
+                    }
+                } else {
+                    // ERRORE
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Si e\' verificato un errore durante l\'inserimento dell\'Ente. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento dell\'Ente. Codice Operazione: ' + codOperazione + '.';
+                    }
+                }
+                var messaggi = document.querySelector('#messaggiUtente');
+                if(messaggi){
+                    if(messaggio){
+                        messaggi.text = messaggio;
+                        messaggi.show();
+                    }
                 }
             }
+         }
       },
     _visualizzaMessaggioErrore: function(event){
          this.lastActionMethod = this.actionMethod;

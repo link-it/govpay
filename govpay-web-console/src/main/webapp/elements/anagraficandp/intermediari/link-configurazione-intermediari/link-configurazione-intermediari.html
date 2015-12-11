@@ -47,11 +47,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: 0
         },
          govpayUrl: { type: String, value:
-            function (){ var id= '';
-                  if(this.intermediarioCorrente) id = this.intermediarioCorrente.id;
-                  //return govpayUrl + '/rs/dars/intermediari/'+ id;
-
-                   return '';
+            function (){
+             return null;
                 }
           },
 
@@ -68,12 +65,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
       },
        init: function() {
-            this.entryAnimation = '';
-            this.exitAnimation = '';
+            this.entryAnimation = 'slide-from-left-animation';
+            this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
-            this.$.intermediariPages.cancelAnimation();
             this.$.lista.filtraRisultati();
-        },
+       },
 
        _ricaricaIntermediario: function(event){
           console.log(event);
@@ -101,7 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
                 this.govpayUrl = govpayUrl + '/rs/dars/intermediari/'+ this.intermediarioCorrente.id;
                 this.$.govpayintermediariconndettaglio.generateRequest();
-                 if(this.selected == 0){
+                if(this.selected == 0){
                     this.$.lista.filtraRisultati();
                 }
               }

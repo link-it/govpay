@@ -68,18 +68,18 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Operatore.model().ID_ANAGRAFICA.ID_ANAGRAFICA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_anagrafica";
-			}else{
-				return "id_anagrafica";
-			}
-		}
 		if(field.equals(Operatore.model().PRINCIPAL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".principal";
 			}else{
 				return "principal";
+			}
+		}
+		if(field.equals(Operatore.model().NOME)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".nome";
+			}else{
+				return "nome";
 			}
 		}
 		if(field.equals(Operatore.model().PROFILO)){
@@ -123,10 +123,10 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Operatore.model().ID_ANAGRAFICA.ID_ANAGRAFICA)){
-			return this.toTable(Operatore.model().ID_ANAGRAFICA, returnAlias);
-		}
 		if(field.equals(Operatore.model().PRINCIPAL)){
+			return this.toTable(Operatore.model(), returnAlias);
+		}
+		if(field.equals(Operatore.model().NOME)){
 			return this.toTable(Operatore.model(), returnAlias);
 		}
 		if(field.equals(Operatore.model().PROFILO)){
@@ -156,9 +156,6 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Operatore.model())){
 			return "operatori";
-		}
-		if(model.equals(Operatore.model().ID_ANAGRAFICA)){
-			return "anagrafiche";
 		}
 		if(model.equals(Operatore.model().OPERATORE_ENTE)){
 			return "operatori_enti";

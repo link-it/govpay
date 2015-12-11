@@ -47,7 +47,6 @@ public class PortaliTest extends BasicTest {
 		portale.setAbilitato(true);
 		portale.setCodPortale("CodPortale");
 		portale.setDefaultCallbackURL("http://defaultCallbackURL");
-		portale.setIdStazione(stazione.getId());
 		List<Long> idApplicazioni = new ArrayList<Long>();
 		idApplicazioni.add(applicazioneAA.getId());
 		idApplicazioni.add(applicazioneAB.getId());
@@ -74,7 +73,6 @@ public class PortaliTest extends BasicTest {
 		Portale portale = new Portale();
 		portale.setAbilitato(true);
 		portale.setCodPortale("CodPortale");
-		portale.setIdStazione(stazione.getId());
 		portale.setDefaultCallbackURL("http://defaultCallbackURL");
 		List<Long> idApplicazioni = new ArrayList<Long>();
 		idApplicazioni.add(applicazioneAB.getId());
@@ -98,7 +96,6 @@ public class PortaliTest extends BasicTest {
 		Portale portale = new Portale();
 		portale.setAbilitato(true);
 		portale.setCodPortale("CodPortale2");
-		portale.setIdStazione(stazione.getId());
 		portale.setDefaultCallbackURL("http://defaultCallbackURL");
 		List<Long> idApplicazioni = new ArrayList<Long>();
 		idApplicazioni.add(applicazioneAB.getId());
@@ -111,7 +108,6 @@ public class PortaliTest extends BasicTest {
 		portale.setAbilitato(true);
 		portale.setCodPortale("CodPortale3");
 		portale.setDefaultCallbackURL("http://defaultCallbackURL");
-		portale.setIdStazione(stazione.getId());
 		idApplicazioni = new ArrayList<Long>();
 		idApplicazioni.add(applicazioneBB.getId());
 		portale.setIdApplicazioni(idApplicazioni);

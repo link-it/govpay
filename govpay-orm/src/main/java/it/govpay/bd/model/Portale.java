@@ -27,7 +27,6 @@ public class Portale extends BasicModel {
 	
 	private Long id;
 	private String codPortale;
-	private long idStazione;
 	private String principal;
 	private String defaultCallbackURL;
 	private boolean abilitato;
@@ -63,12 +62,6 @@ public class Portale extends BasicModel {
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
 	}
-	public long getIdStazione() {
-		return idStazione;
-	}
-	public void setIdStazione(long idStazione) {
-		this.idStazione = idStazione;
-	}
 	public List<Long> getIdApplicazioni() {
 		return idApplicazioni;
 	}
@@ -90,7 +83,6 @@ public class Portale extends BasicModel {
 			equals(principal, portale.getPrincipal()) &&
 			equals(idApplicazioni, portale.getIdApplicazioni()) &&
 			equals(defaultCallbackURL, portale.getDefaultCallbackURL()) &&
-			idStazione == portale.getIdStazione() &&
 			abilitato==portale.isAbilitato();
 		
 		return equal;

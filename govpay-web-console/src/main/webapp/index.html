@@ -75,6 +75,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                        exit-animation="scale-down-animation" on-reload-item="_reloadItem"></edit-applicazione>
     <edit-tributo id="editTributo" modal entry-animation="scale-up-animation" exit-animation="scale-down-animation" on-dars-error="darsError"
                   on-reload-item="_reloadItem"></edit-tributo>
+    <edit-operatore id="editOperatore" modal entry-animation="scale-up-animation" on-dars-error="darsError"
+                       exit-animation="scale-down-animation" on-reload-item="_reloadItem"></edit-operatore>
+    <edit-portale id="editPortale" modal entry-animation="scale-up-animation" on-dars-error="darsError"
+                    exit-animation="scale-down-animation" on-reload-item="_reloadItem"></edit-portale>
     <iron-ajax auto="false"
                id="govpayconnprofilo"
                url="{{govpayUrlOperatore}}"
@@ -162,12 +166,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <a data-route="applicazioni" href="/applicazioni" comp="configurazioneApplicazioni"
                                    on-tap="onDataRouteClick">Applicazioni</a>
                             </paper-item>
-                            <!--
                             <paper-item>
-                              <a data-route="contact" href="/operatori" comp="listaOperatori" on-tap="onDataRouteClick">Operatori</a>
+                                <a data-route="portali" href="/portali" comp="configurazionePortali"
+                                   on-tap="onDataRouteClick">Portali</a>
                             </paper-item>
-
-                            -->
+                            <paper-item>
+                              <a data-route="contact" href="/operatori" comp="configurazioneOperatori" on-tap="onDataRouteClick">Operatori</a>
+                            </paper-item>
                         </paper-menu>
                     </paper-submenu>
                 </template>
@@ -251,7 +256,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                                 on-changed-page="_changedPage"></configurazione-tributi>
                     </section>
 
-                    <!--            <section data-route="operatori">operatore</section> -->
+                    <section data-route="operatori">
+                        <configurazione-operatori id="configurazioneOperatori" on-dars-error="darsError"
+                                                     on-changed-page="_changedPage"></configurazione-operatori>
+                    </section>
+
+                    <section data-route="portali">
+                        <configurazione-portali id="configurazionePortali" on-dars-error="darsError"
+                                                  on-changed-page="_changedPage"></configurazione-portali>
+                    </section>
 
                     <section data-route="pagamenti">
                         <consultazione-pagamenti id="listaPagamenti" on-dars-error="darsError"
@@ -283,7 +296,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-scroll-header-panel>
     </paper-drawer-panel>
 
-    <paper-toast id="messaggiUtente" text="" duration="7000"></paper-toast>
+    <paper-toast id="messaggiUtente" text="" duration="11000"></paper-toast>
     <!-- Uncomment next block to enable Service Worker support (1/2) -->
     <!--
     <paper-toast id="caching-complete"

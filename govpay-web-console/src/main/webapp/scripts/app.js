@@ -23,8 +23,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.profiloCorrente = null;
 
     app._visualizzaInformazioniProfilo  = function(event){
-        app.profiloCorrente = event.detail.response.response;
-        app.isEditSection = false;
+        var response = event.detail;
+     //   console.log(event);
+        if(response){
+            var darsResponse = response.response;
+
+            if(darsResponse) {
+                var esitoOperazione = darsResponse.esitoOperazione;
+                var codOperazione = darsResponse.codOperazione;
+                var id = darsResponse.response || '';
+                var messaggio= '';
+
+                if(esitoOperazione == 'ESEGUITA'){
+                    app.profiloCorrente = darsResponse.response;
+                    app.isEditSection = false;
+                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                    // impossibile leggere il profilo utente;
+                     window.location = '/govpayConsole/public/errore.html';
+                } else {
+                    // ERRORE
+                    // impossibile leggere il profilo utente;
+                    window.location = '/govpayConsole/public/errore.html';
+                }
+            }
+        }
     }
 
     app._visualizzaErroreGetProfilo  = function(event){
@@ -32,7 +54,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var responseCode = event.detail.request.status;
         var responseStatus = event.detail.request.statusText;
 
-        console.log('Errore get profilo: ' + responseCode);
+        //console.log('Errore get profilo: ' + responseCode);
 
         window.location = '/govpayConsole/public/nonAutorizzato.html';
 
@@ -53,13 +75,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        var responseCode = event.detail.status;
        var responseStatus = event.detail.statusText;
 
-       console.log('Dars OK: ' + responseCode);
+       //console.log('Dars OK: ' + responseCode);
     }
 
     // Gestisce il caso di errore nell'invocazione dei servizi dars
       app.darsError = function(event) {
-          console.log('Handler Generale: Ricevuto Errore');
-        console.log(event);
+       //   console.log('Handler Generale: Ricevuto Errore');
+       // console.log(event);
         app.isEditSection = false;
         app.isFirstPage = true;
         var drawerPanel = document.querySelector('#paperDrawerPanel');
@@ -77,9 +99,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // controlla se sto navigando in una sezione di edit, restituisce true se devo nasconderla
 
     app._nascondiSezione = function(profiloCorrente,nomeSezione){
-      if(nomeSezione == 'operazioni')
-        return true;
-
      if(profiloCorrente){
       if(this._isSezioneAmministratore(nomeSezione)){
             var isAdmin = this._isAdmin(profiloCorrente);
@@ -95,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   app._isSezioneAmministratore = function(posizione){
     if(posizione == 'intermediari' || posizione == 'domini' ||
-               posizione == 'enti' || posizione == 'tributi' ||
+               posizione == 'enti' || posizione == 'tributi' ||  posizione == 'portali' ||
                   posizione == 'applicazioni'  || posizione == 'operazioni' || posizione == 'anagraficaNdp'
               || posizione == 'rendicontazioni'    || posizione == 'anagraficaCreditore'){
         return true;
@@ -168,14 +187,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       drawerPanel.closeDrawer();
     }
     var componente = event.target.attributes['comp'].value;
+    var pagina = document.querySelector('#'+componente);
+    pagina.init();
 
-   // app.govpayUrlCheckSession = govpayUrl + '/logout';
-   // app.$.govpayconnchecksession.generateRequest();
-
-
-    document.querySelector('#'+componente).init();
-
-     app.isFirstPage = true;
+    app.isFirstPage = true;
+    app.isEditSection = app._isEditSection();
   };
 
   // Scroll page to top and expand header
@@ -196,8 +212,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app._isEditSection = function(){
     var posizione = app.route;
 
-    var pagina;
-    if(posizione == 'intermediari' || posizione == 'domini' ||
+    if(posizione == 'intermediari' || posizione == 'domini' || posizione == 'operatori' ||  posizione == 'portali' ||
           posizione == 'enti' || posizione == 'tributi' ||
             posizione == 'applicazioni'){
         return true;
@@ -227,6 +242,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        pagina= document.querySelector('#configurazioneApplicazioni');
     }else if(posizione == 'operatori'){
        pagina= document.querySelector('#configurazioneOperatori');
+    }else if(posizione == 'portali'){
+            pagina= document.querySelector('#configurazionePortali');
     }else if(posizione == 'eventi'){
        pagina= document.querySelector('#listaEventi');
     }else if(posizione == 'rendicontazioni'){
@@ -254,6 +271,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app._creaTributo();
         } else if(posizione == 'applicazioni'){
           app._creaApplicazione();
+        } else if(posizione == 'operatori'){
+           app._creaOperatore();
+        }else if(posizione == 'portali'){
+           app._creaPortale();
         } else {
           // do nothing
         }
@@ -273,6 +294,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           app._editaTributo();
       } else if(posizione == 'applicazioni'){
           app._editaApplicazione();
+      } else if(posizione == 'operatori'){
+         app._editaOperatore();
+      }  else if(posizione == 'portali'){
+                app._editaPortale();
       }  else {
         // do nothing
       }
@@ -302,6 +327,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        pagina._reloadApplicazione(elementoModificato);
     }else if(posizione == 'operatori'){
        pagina= document.querySelector('#configurazioneOperatori');
+       pagina._reloadOperatore(elementoModificato);
+    }else if(posizione == 'portali'){
+       pagina= document.querySelector('#configurazionePortali');
+       pagina._reloadPortale(elementoModificato);
     }else if(posizione == 'eventi'){
        pagina= document.querySelector('#listaEventi');
     }else if(posizione == 'rendicontazioni'){
@@ -398,5 +427,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           editApplicazione.open();
         };
 
+  // imposta le variabili necessarie per la creazione di un nuovo operatore
+
+    app._creaOperatore = function(){
+      var editOperatore = document.querySelector('#editOperatore');
+      editOperatore.operatoreCorrente = null;
+      editOperatore.open();
+    };
+
+  // imposta i valori attuali di un operatore  nella form di edit.
+
+    app._editaOperatore = function(){
+      var editOperatore = document.querySelector('#editOperatore');
+      var configurazioneOperatori = document.querySelector('#configurazioneOperatori');
+      editOperatore.operatoreCorrente = configurazioneOperatori.dettaglioOperatoreCorrente.response;
+      editOperatore.open();
+    };
+
+
+      // imposta le variabili necessarie per la creazione di un nuovo portale
+
+        app._creaPortale = function(){
+          var editPortale = document.querySelector('#editPortale');
+          editPortale.portaleCorrente = null;
+          editPortale.open();
+        };
+
+      // imposta i valori attuali di un portale  nella form di edit.
+
+        app._editaPortale = function(){
+          var editPortale = document.querySelector('#editPortale');
+          var configurazionePortali = document.querySelector('#configurazionePortali');
+          editPortale.portaleCorrente = configurazionePortali.dettaglioPortaleCorrente.response;
+          editPortale.open();
+        };
 
 })(document);

@@ -48,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         govpayUrl: { type: String, value: function (){
             //var id= ''; if(this.applicazioneCorrente) id = this.applicazioneCorrente.id; return govpayUrl + '/rs/dars/applicazioni/'+ id;
-            return '';
+            return null;
             } },
 
         applicazioneCorrente: {
@@ -64,10 +64,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
       },
        init: function() {
-            this.entryAnimation = '';
-            this.exitAnimation = '';
+            this.entryAnimation = 'slide-from-left-animation';
+            this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
-            this.$.applicazioniPages.cancelAnimation();
             this.$.lista.filtraRisultati();
         },
 

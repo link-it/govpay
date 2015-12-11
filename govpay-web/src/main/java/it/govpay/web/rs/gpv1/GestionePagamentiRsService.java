@@ -50,6 +50,7 @@ import it.govpay.rs.RichiestaPagamento;
 import it.govpay.rs.RichiestaPagamentoResponse;
 import it.govpay.rs.VerificaPagamento;
 import it.govpay.utils.JaxbUtils;
+import it.govpay.web.adapter.Converter;
 import it.govpay.web.rs.BaseRsService;
 
 import javax.ws.rs.DefaultValue;
@@ -68,7 +69,7 @@ import org.apache.logging.log4j.Logger;
 @Path("/pagamenti")
 public class GestionePagamentiRsService extends BaseRsService {
 
-	Logger log = LogManager.getLogger();
+	private static Logger log = LogManager.getLogger();
 	
 	@POST
 	@Path("/nuovoPagamento")

@@ -75,13 +75,6 @@ public class PortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_portale";
 			}
 		}
-		if(field.equals(Portale.model().ID_STAZIONE.COD_STAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_stazione";
-			}else{
-				return "cod_stazione";
-			}
-		}
 		if(field.equals(Portale.model().DEFAULT_CALLBACK_URL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".default_callback_url";
@@ -126,9 +119,6 @@ public class PortaleFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Portale.model().COD_PORTALE)){
 			return this.toTable(Portale.model(), returnAlias);
 		}
-		if(field.equals(Portale.model().ID_STAZIONE.COD_STAZIONE)){
-			return this.toTable(Portale.model().ID_STAZIONE, returnAlias);
-		}
 		if(field.equals(Portale.model().DEFAULT_CALLBACK_URL)){
 			return this.toTable(Portale.model(), returnAlias);
 		}
@@ -156,9 +146,6 @@ public class PortaleFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Portale.model())){
 			return "portali";
-		}
-		if(model.equals(Portale.model().ID_STAZIONE)){
-			return "stazioni";
 		}
 		if(model.equals(Portale.model().PORTALE_APPLICAZIONE)){
 			return "portali_applicazioni";

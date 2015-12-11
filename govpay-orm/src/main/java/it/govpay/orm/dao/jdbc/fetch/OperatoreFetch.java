@@ -59,6 +59,8 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setPrincipal", Operatore.model().PRINCIPAL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal", Operatore.model().PRINCIPAL.getFieldType()));
+				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "nome", Operatore.model().NOME.getFieldType()));
 				setParameter(object, "setProfilo", Operatore.model().PROFILO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "profilo", Operatore.model().PROFILO.getFieldType()));
 				setParameter(object, "setAbilitato", Operatore.model().ABILITATO.getFieldType(),
@@ -68,17 +70,13 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 			if(model.equals(Operatore.model().OPERATORE_ENTE)){
 				OperatoreEnte object = new OperatoreEnte();
 				setParameter(object, "setId", Long.class,
-						jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setIdEnte", Long.class,
-						jdbcParameterUtilities.readParameter(rs, "id_ente", Long.class));
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				return object;
 			}
 			if(model.equals(Operatore.model().OPERATORE_APPLICAZIONE)){
 				OperatoreApplicazione object = new OperatoreApplicazione();
 				setParameter(object, "setId", Long.class,
-						jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setIdApplicazione", Long.class,
-						jdbcParameterUtilities.readParameter(rs, "id_applicazione", Long.class));
+					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				return object;
 			}
 			
@@ -103,6 +101,8 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setPrincipal", Operatore.model().PRINCIPAL.getFieldType(),
 					this.getObjectFromMap(map,"principal"));
+				setParameter(object, "setNome", Operatore.model().NOME.getFieldType(),
+					this.getObjectFromMap(map,"nome"));
 				setParameter(object, "setProfilo", Operatore.model().PROFILO.getFieldType(),
 					this.getObjectFromMap(map,"profilo"));
 				setParameter(object, "setAbilitato", Operatore.model().ABILITATO.getFieldType(),

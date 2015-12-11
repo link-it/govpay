@@ -439,9 +439,6 @@
 		
 		<xsd:sequence>
 			<xsd:element name="codPortale" type="xsd:string"/>
-			<xsd:element name="idStazione" type="id-stazione">
-				
-			</xsd:element>
 			<xsd:element name="defaultCallbackURL" type="String512"/>
 			<xsd:element name="principal" type="xsd:string"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
@@ -562,10 +559,18 @@
 	<xsd:complexType name="Operatore">
 		
 		<xsd:sequence>
-			<xsd:element name="idAnagrafica" type="id-anagrafica">
-				
-			</xsd:element>
+			<!--xsd:element name="idAnagrafica" type="id-anagrafica">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Anagrafica"
+								object-type="Anagrafica" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element-->
 			<xsd:element name="principal" type="xsd:string"/>
+			<xsd:element name="nome" type="xsd:string"/>
 			<xsd:element name="profilo" type="xsd:string"/>
 			<xsd:element default="true" name="abilitato" type="xsd:boolean"/>
 			<xsd:element maxOccurs="unbounded" ref="OperatoreEnte"/>

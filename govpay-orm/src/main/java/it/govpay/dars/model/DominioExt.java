@@ -23,6 +23,7 @@ package it.govpay.dars.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.govpay.bd.model.ContoAccredito;
 import it.govpay.bd.model.Disponibilita;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
@@ -40,6 +41,7 @@ public class DominioExt extends Dominio{
 	private List<Disponibilita> indisponibilita = new ArrayList<Disponibilita>();
 	private List<IbanAccredito> ibanAccredito = new ArrayList<IbanAccredito>();
 	private List<TabellaControparti> controparti = new ArrayList<TabellaControparti>();
+	private List<ContoAccredito> contiAccredito = new ArrayList<ContoAccredito>();
 
 	public DominioExt(){}
 	
@@ -73,6 +75,14 @@ public class DominioExt extends Dominio{
 
 	public void setControparti(List<TabellaControparti> controparti) {
 		this.controparti = controparti;
+	}
+
+	public List<ContoAccredito> getContiAccredito() {
+		return contiAccredito;
+	}
+
+	public void setContiAccredito(List<ContoAccredito> contiAccredito) {
+		this.contiAccredito = contiAccredito;
 	}
 
 }

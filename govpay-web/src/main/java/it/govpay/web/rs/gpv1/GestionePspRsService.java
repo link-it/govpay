@@ -29,6 +29,7 @@ import it.govpay.bd.model.Psp.Canale;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.rs.ListaPsp;
+import it.govpay.web.adapter.Converter;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -41,7 +42,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 @Path("/psp")
 public class GestionePspRsService {
 
-	Logger log = LogManager.getLogger();
+	private static Logger log = LogManager.getLogger();
 	
 	@GET
 	@Path("/listaPsp")

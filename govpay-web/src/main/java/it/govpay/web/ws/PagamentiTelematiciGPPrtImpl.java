@@ -23,20 +23,19 @@ package it.govpay.web.ws;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Ente;
 import it.govpay.bd.model.Iuv;
 import it.govpay.bd.model.Portale;
 import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Psp.Canale;
+import it.govpay.bd.model.Psp.ModelloPagamento;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Rt;
 import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Psp.ModelloPagamento;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Psp.Canale;
-import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RtBD;
 import it.govpay.bd.pagamento.TracciatiBD;
@@ -59,7 +58,7 @@ import it.govpay.servizi.pa.GpInviaRr;
 import it.govpay.servizi.pa.IdPagamento;
 import it.govpay.servizi.pa.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.pa.Pagamento;
-import it.govpay.web.ws.utils.PagamentiTelematiciGPUtil;
+import it.govpay.web.adapter.PagamentiTelematiciGPUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +86,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	@Resource
 	WebServiceContext wsCtxt;
 	
-	Logger log = LogManager.getLogger();
+	private static Logger log = LogManager.getLogger();
 	
 	@Override
 	public GpInviaRptResponse gpInviaRpt(GpInviaRpt bodyrichiesta) {
@@ -302,7 +301,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 			log.info("Identificazione Portale avvenuta con successo [CodPortale: " + portale.getCodPortale() + "]");
 			
-			Psp psp = new PspBD(bd).getPsp(bodyrichiesta.getCanale().getCodPsp());
+			Psp psp = AnagraficaManager.getPsp(bd, bodyrichiesta.getCanale().getCodPsp());
 			
 			ModelloPagamento modello = bodyrichiesta.getPagamento().size() == 1 ? null : ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO;
 			

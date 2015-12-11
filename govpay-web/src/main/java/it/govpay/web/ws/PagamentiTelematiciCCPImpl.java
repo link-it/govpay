@@ -70,7 +70,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	@Resource
 	WebServiceContext wsCtxt;
 
-	Logger log = LogManager.getLogger(PagamentiTelematiciCCPImpl.class);
+	private static Logger log = LogManager.getLogger();
 
 	@Override
 	public PaaAttivaRPTRisposta paaAttivaRPT(PaaAttivaRPT bodyrichiesta, IntestazionePPT header) {

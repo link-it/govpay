@@ -48,7 +48,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 @Path("/pub")
 public class GestioneRedirectGw {
 
-	Logger log = LogManager.getLogger();
+	private static Logger log = LogManager.getLogger();
 
 	@Context HttpServletRequest httpServletRequest;
 

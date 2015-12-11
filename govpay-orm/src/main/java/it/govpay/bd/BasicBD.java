@@ -36,7 +36,7 @@ public class BasicBD {
 	private Connection connection;
 	private String token;
 	private boolean isClosed;
-	Logger log = Logger.getLogger(JDBCServiceManager.class);
+	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
 	
 	BasicBD father;
 	

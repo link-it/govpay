@@ -45,7 +45,7 @@ import org.apache.logging.log4j.Logger;
 @Path("/iuv")
 public class GestioneIuvRsService extends BaseRsService {
 
-	Logger log = LogManager.getLogger();
+	private static Logger log = LogManager.getLogger();
 
 	@GET
 	@Path("/generaIuv")

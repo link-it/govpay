@@ -72,22 +72,6 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _stazione
-		Long id_stazione = null;
-		it.govpay.orm.IdStazione idLogic_stazione = null;
-		idLogic_stazione = portale.getIdStazione();
-		if(idLogic_stazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findTableId(idLogic_stazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_stazione = idLogic_stazione.getId();
-				if(id_stazione==null || id_stazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 
 		// Object portale
@@ -96,7 +80,6 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPortaleFieldConverter().toColumn(Portale.model().DEFAULT_CALLBACK_URL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPortaleFieldConverter().toColumn(Portale.model().PRINCIPAL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPortaleFieldConverter().toColumn(Portale.model().ABILITATO,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_stazione","?");
 
 		// Insert portale
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getPortaleFetch().getKeyGeneratorObject(Portale.model());
@@ -104,8 +87,7 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(portale.getCodPortale(),Portale.model().COD_PORTALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(portale.getDefaultCallbackURL(),Portale.model().DEFAULT_CALLBACK_URL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(portale.getPrincipal(),Portale.model().PRINCIPAL.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(portale.getAbilitato(),Portale.model().ABILITATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(portale.getAbilitato(),Portale.model().ABILITATO.getFieldType())
 		);
 		portale.setId(id);
 
@@ -188,22 +170,6 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _portale_stazione
-		Long id_portale_stazione = null;
-		it.govpay.orm.IdStazione idLogic_portale_stazione = null;
-		idLogic_portale_stazione = portale.getIdStazione();
-		if(idLogic_portale_stazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_portale_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findTableId(idLogic_portale_stazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_portale_stazione = idLogic_portale_stazione.getId();
-				if(id_portale_stazione==null || id_portale_stazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 
 		// Object portale
@@ -219,12 +185,6 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 		lstObjects_portale.add(new JDBCObject(portale.getPrincipal(), Portale.model().PRINCIPAL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPortaleFieldConverter().toColumn(Portale.model().ABILITATO,false), "?");
 		lstObjects_portale.add(new JDBCObject(portale.getAbilitato(), Portale.model().ABILITATO.getFieldType()));
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_portale.add(new JDBCObject(id_portale_stazione, Long.class));
-		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_portale.add(new JDBCObject(tableId, Long.class));
 
