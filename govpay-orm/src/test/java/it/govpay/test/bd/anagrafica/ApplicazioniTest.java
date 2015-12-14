@@ -93,6 +93,42 @@ public class ApplicazioniTest extends BasicTest {
 		Assert.assertTrue(applicazione.equals(applicazioneLetto), "L'applicazione letto da database con Principal e' diverso da quello inserito");
 	}
 	
+	@Test(groups = {"anagrafica", "applicazione"} )
+	public void inserisciApplicazioneSenzaConnettori() throws Exception {
+		setupTributi();
+		setupStazione();
+		Applicazione applicazione = new Applicazione();
+		applicazione.setAbilitato(true);
+		applicazione.setCodApplicazione("CodApplicazioneSenzaConnettori");
+		applicazione.setVersione(Versione.GPv1);
+		applicazione.setPolicyRispedizione("it.govpay.test.Policy");
+		
+		List<Long> idTributi = new ArrayList<Long>();
+		idTributi.add(tributoAA1.getId());
+		
+		applicazione.setIdTributi(idTributi);
+		applicazione.setPrincipal("PrincipalSenzaConnettori");
+		
+		
+		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+		applicazioniBD.insertApplicazione(applicazione);
+		
+		Assert.assertTrue(applicazione.getId() != null, "L'applicazione inserita non ha l'Id valorizzato.");
+		
+		Applicazione applicazioneLetto = applicazioniBD.getApplicazione(applicazione.getCodApplicazione());
+		Assert.assertTrue(applicazione.equals(applicazioneLetto), "L'applicazione letto da database con CodApplicazione e' diverso da quello inserito");
+		
+		applicazioneLetto = applicazioniBD.getApplicazione(applicazione.getId());
+		Assert.assertTrue(applicazione.equals(applicazioneLetto), "L'applicazione letto da database con Id e' diverso da quello inserito");
+		
+		applicazioneLetto = applicazioniBD.getApplicazioneByPrincipal(applicazione.getPrincipal());
+		Assert.assertTrue(applicazione.equals(applicazioneLetto), "L'applicazione letto da database con Principal e' diverso da quello inserito");
+
+		Assert.assertNull(applicazioneLetto.getConnettoreEsito(), "Il connettore esito dovrebbe essere null");
+		Assert.assertNull(applicazioneLetto.getConnettoreVerifica(), "Il connettore verifica dovrebbe essere null");
+
+	}
+	
 	@Test(groups = {"anagrafica", "applicazione"}, dependsOnMethods = { "inserisciApplicazione" })
 	public void aggiornaApplicazione() throws Exception {
 		Applicazione applicazione = new Applicazione();
@@ -131,6 +167,51 @@ public class ApplicazioniTest extends BasicTest {
 		
 		Applicazione applicazioneLetto = applicazioniBD.getApplicazione(applicazione.getCodApplicazione());
 		Assert.assertTrue(applicazione.equals(applicazioneLetto), "L'applicazione letto da database con CodApplicazione e' diverso da quello inserito");
+	}
+	
+	@Test(groups = {"anagrafica", "applicazione"}, dependsOnMethods = { "inserisciApplicazioneSenzaConnettori" })
+	public void aggiungiConnettoreAdApplicazione() throws Exception {
+		Applicazione applicazione = new Applicazione();
+		applicazione.setAbilitato(true);
+		applicazione.setCodApplicazione("CodApplicazioneSenzaConnettori");
+		applicazione.setVersione(Versione.GPv2);
+
+		Connettore connettoreEsito = new Connettore();
+		connettoreEsito.setAzioneInUrl(true);
+		connettoreEsito.setTipoAutenticazione(EnumAuthType.SSL);
+		connettoreEsito.setTipoSsl(EnumSslType.SERVER);
+		connettoreEsito.setSslTsLocation("sslTsLocation");
+		connettoreEsito.setSslTsPasswd("sslTsPasswd");
+		connettoreEsito.setSslTsType("sslTsType");
+		
+		applicazione.setConnettoreEsito(connettoreEsito);
+		
+		Connettore connettoreVerifica = new Connettore();
+		connettoreVerifica.setAzioneInUrl(false);
+		connettoreVerifica.setTipoAutenticazione(EnumAuthType.HTTPBasic);
+		connettoreVerifica.setHttpPassw("HttpPassw");
+		connettoreVerifica.setHttpUser("HttpUser");
+		
+		applicazione.setConnettoreVerifica(connettoreVerifica);
+		
+		List<Long> idTributi = new ArrayList<Long>();
+		idTributi.add(tributoAA2.getId());
+		
+		applicazione.setIdTributi(idTributi);
+		applicazione.setPrincipal("PrincipalSenzaConnettori");
+		
+		
+		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+		applicazioniBD.updateApplicazione(applicazione);
+		
+		Assert.assertTrue(applicazione.getId() != null, "L'applicazione aggiornata non ha l'Id valorizzato.");
+		
+		Applicazione applicazioneLetto = applicazioniBD.getApplicazione(applicazione.getCodApplicazione());
+		Assert.assertTrue(applicazione.equals(applicazioneLetto), "L'applicazione letto da database con CodApplicazione e' diverso da quello inserito");
+		Assert.assertNotNull(applicazioneLetto.getConnettoreEsito(), "Il connettore esito non dovrebbe essere null");
+		Assert.assertNotNull(applicazioneLetto.getConnettoreVerifica(), "Il connettore verifica non dovrebbe essere null");
+
+
 	}
 	
 	@Test(groups = {"anagrafica", "applicazione"}, dependsOnMethods = { "aggiornaApplicazione" })

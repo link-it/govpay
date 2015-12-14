@@ -58,6 +58,20 @@ public class ApplicazioneExt implements Serializable{
 		this.applicazione = applicazione;
 	}
 	
+	@Override
+	public String toString() {
+		StringBuffer lst = new StringBuffer();
+		if(tributi != null && !tributi.isEmpty()) {
+			for(ListaTributiEntry entry: tributi) {
+				if(lst.length() > 0) {
+					lst.append(",");
+				}
+				lst.append(entry.getCodTributo());
+			}
+		}
+			
+		return "Applicazione: "+applicazione.toString() + " Lista tributi: ["+lst+"]";
+	}
 	
 
 }

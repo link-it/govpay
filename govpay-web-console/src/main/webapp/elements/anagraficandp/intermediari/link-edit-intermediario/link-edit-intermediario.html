@@ -115,10 +115,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-card>
                 <paper-card>
                     <div class="titleCard">Connettore PdD o PdDE</div>
-                    <paper-input label="URL" value="{{intermediarioCorrente.connettorePdd.url}}" required></paper-input>
+                    <paper-input label="URL" value="{{connettorePdd.url}}" required></paper-input>
                     <paper-dropdown-menu label="Auth" style="width: 100%">
                         <paper-menu class="dropdown-content" attr-for-selected="valore" on-iron-select="_tipoAutenticazioneSelected"
-                                    id="tipoAuthMenu"          selected="{{intermediarioCorrente.connettorePdd.tipoAutenticazione}}">
+                                    id="tipoAuthMenu"          selected="{{connettorePdd.tipoAutenticazione}}">
                             <paper-item valore="NONE">Nessuna</paper-item>
                             <paper-item valore="HTTPBasic">Http Basic</paper-item>
                             <paper-item valore="SSL">SSL</paper-item>
@@ -128,11 +128,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if="{{mostraSezioneHttpBasic}}">
                         <div class="content layout vertical" id="sezHttp">
                             <paper-input label="Username"
-                                         value="{{intermediarioCorrente.connettorePdd.httpUser}}"
+                                         value="{{connettorePdd.httpUser}}"
                                          required></paper-input>
                             <paper-input-container class="flex" required>
                                 <label>Password</label>
-                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.httpPassw}}">
+                                <input is="iron-input" type="password" bind-value="{{connettorePdd.httpPassw}}">
                             </paper-input-container>
                         </div>
                     </template>
@@ -142,37 +142,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <div class="content layout vertical" id="sezSsl">
                             <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
                                 <paper-menu class="dropdown-content" attr-for-selected="valore"
-                                            selected="{{intermediarioCorrente.connettorePdd.tipoSsl}}">
+                                            selected="{{connettorePdd.tipoSsl}}">
                                     <paper-item valore="CLIENT">Client</paper-item>
                                     <paper-item valore="SERVER">Server</paper-item>
                                 </paper-menu>
                             </paper-dropdown-menu>
                             <paper-input label="KeyStore Type"
-                                         value="{{intermediarioCorrente.connettorePdd.sslKsType}}"
+                                         value="{{connettorePdd.sslKsType}}"
                                          required></paper-input>
                             <paper-input label="KeyStore Location"
-                                         value="{{intermediarioCorrente.connettorePdd.sslKsLocation}}"
+                                         value="{{connettorePdd.sslKsLocation}}"
                                          required></paper-input>
                             <paper-input-container class="flex" required>
                                 <label>KeyStore Password</label>
-                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.sslKsPasswd}}">
+                                <input is="iron-input" type="password" bind-value="{{connettorePdd.sslKsPasswd}}">
                             </paper-input-container>
                             <paper-input-container class="flex" required>
                                 <label>PrivateKey Password</label>
-                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.sslPKeyPasswd}}">
+                                <input is="iron-input" type="password" bind-value="{{connettorePdd.sslPKeyPasswd}}">
                             </paper-input-container>
                             <paper-input label="TrustStore Type"
-                                         value="{{intermediarioCorrente.connettorePdd.sslTsType}}"
+                                         value="{{connettorePdd.sslTsType}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Location"
-                                         value="{{intermediarioCorrente.connettorePdd.sslTsLocation}}"
+                                         value="{{connettorePdd.sslTsLocation}}"
                                          required></paper-input>
                             <paper-input-container class="flex" required>
                                 <label>TrustStore Password</label>
-                                <input is="iron-input" type="password" bind-value="{{intermediarioCorrente.connettorePdd.sslTsPasswd}}">
+                                <input is="iron-input" type="password" bind-value="{{connettorePdd.sslTsPasswd}}">
                             </paper-input-container>
                             <paper-input label="SSL Type"
-                                         value="{{intermediarioCorrente.connettorePdd.sslType}}"
+                                         value="{{connettorePdd.sslType}}"
                                          required></paper-input>
                         </div>
                     </template>
@@ -267,6 +267,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         stazioni: {
           type: Array,
           value: [1]
+        },
+        connettorePdd: {
+          type: Object,
+          value: null
         }
       },
 
@@ -290,8 +294,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
        _salvaIntermediario: function(){
-          console.log(this.stazioni);
+      //    console.log(this.stazioni);
          this.intermediarioCorrente.stazioni = this.stazioni;
+         this.intermediarioCorrente.connettorePdd = this.connettorePdd;
 
          if(!this.isAdd){
            this.actionMethod = 'PUT';
@@ -358,10 +363,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.titolo = 'Modifica Intermediario: ' + nuovo.codIntermediario;
           this.isAdd = false;
           this.stazioni = this.intermediarioCorrente.stazioni;
+          this.connettorePdd= this.intermediarioCorrente.connettorePdd ||  {  tipoAutenticazione : 'NONE'};
 
         } else {
           this.stazioni = [];
           this.intermediarioCorrente = { codIntermediario: '', abilitato: true, connettorePdd: {  tipoAutenticazione : 'NONE'}, stazioni: []};
+          this.connettorePdd= this.intermediarioCorrente.connettorePdd ||  {  tipoAutenticazione : 'NONE'};
           this.titolo = 'Nuovo intermediario';
           this.isAdd = true;
         }

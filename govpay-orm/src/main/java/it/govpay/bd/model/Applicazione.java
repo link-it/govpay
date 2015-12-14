@@ -20,7 +20,11 @@
  */
 package it.govpay.bd.model;
 
+import it.govpay.bd.model.converter.ApplicazioneConverter;
+
 import java.util.List;
+
+import org.openspcoop2.utils.UtilsException;
 
 public class Applicazione extends BasicModel {
 	public enum Versione {GPv1, GPv2}
@@ -111,5 +115,14 @@ public class Applicazione extends BasicModel {
 	}
 	public void setVersione(Versione versione) {
 		this.versione = versione;
+	}
+	
+	@Override
+	public String toString() {
+		try {
+			return ApplicazioneConverter.toVO(this).toJson();
+		} catch (UtilsException e) {
+			return null;
+		}
 	}
 }

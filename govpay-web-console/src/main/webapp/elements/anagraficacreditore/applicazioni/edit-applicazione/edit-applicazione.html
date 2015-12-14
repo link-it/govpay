@@ -130,17 +130,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <paper-card>
                     <div class="titleCard">Connettore Esito</div>
-                    <paper-input label="URL" value="{{applicazioneCorrente.applicazione.connettoreEsito.url}}"
+                    <paper-input label="URL" value="{{connettoreEsito.url}}"
                                  required></paper-input>
-                    <paper-toggle-button class="flex"
-                                         checked="{{applicazioneCorrente.applicazione.connettoreEsito.azioneInUrl}}">
-                        Azione in URL
-                    </paper-toggle-button>
+
                     <paper-dropdown-menu label="Auth" style="width: 100%">
                         <paper-menu class="dropdown-content" attr-for-selected="valore"
                                     on-iron-select="_tipoAutenticazioneConnEsitoSelected"
                                     id="tipoAuthConnEsitoMenu"
-                                    selected="{{applicazioneCorrente.applicazione.connettoreEsito.tipoAutenticazione}}">
+                                    selected="{{connettoreEsito.tipoAutenticazione}}">
                             <paper-item valore="NONE">Nessuna</paper-item>
                             <paper-item valore="HTTPBasic">Http Basic</paper-item>
                             <paper-item valore="SSL">SSL</paper-item>
@@ -150,10 +147,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if="{{mostraSezioneHttpBasicConnEsito}}">
                         <div class="content layout vertical" id="sezHttp">
                             <paper-input label="Username"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.httpUser}}"
+                                         value="{{connettoreEsito.httpUser}}"
                                          required></paper-input>
                             <paper-input label="Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.httpPassw}}"
+                                         value="{{connettoreEsito.httpPassw}}"
                                          required></paper-input>
                         </div>
                     </template>
@@ -163,34 +160,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <div class="content layout vertical" id="sezSsl">
                             <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
                                 <paper-menu class="dropdown-content" attr-for-selected="valore"
-                                            selected="{{applicazioneCorrente.applicazione.connettoreEsito.tipoSsl}}">
+                                            selected="{{connettoreEsito.tipoSsl}}">
                                     <paper-item valore="CLIENT">Client</paper-item>
                                     <paper-item valore="SERVER">Server</paper-item>
                                 </paper-menu>
                             </paper-dropdown-menu>
                             <paper-input label="KeyStore Type"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslKsType}}"
+                                         value="{{connettoreEsito.sslKsType}}"
                                          required></paper-input>
                             <paper-input label="KeyStore Location"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslKsLocation}}"
+                                         value="{{connettoreEsito.sslKsLocation}}"
                                          required></paper-input>
                             <paper-input label="KeyStore Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslKsPasswd}}"
+                                         value="{{connettoreEsito.sslKsPasswd}}"
                                          required></paper-input>
                             <paper-input label="PrivateKey Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslPKeyPasswd}}"
+                                         value="{{connettoreEsito.sslPKeyPasswd}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Type"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslTsType}}"
+                                         value="{{connettoreEsito.sslTsType}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Location"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslTsLocation}}"
+                                         value="{{connettoreEsito.sslTsLocation}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslTsPasswd}}"
+                                         value="{{connettoreEsito.sslTsPasswd}}"
                                          required></paper-input>
                             <paper-input label="SSL Type"
-                                         value="{{applicazioneCorrente.applicazione.connettoreEsito.sslType}}"
+                                         value="{{connettoreEsito.sslType}}"
                                          required></paper-input>
                         </div>
                     </template>
@@ -198,17 +195,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <paper-card>
                     <div class="titleCard">Connettore Verifica</div>
-                    <paper-input label="URL" value="{{applicazioneCorrente.applicazione.connettoreVerifica.url}}"
+                    <paper-input label="URL" value="{{connettoreVerifica.url}}"
                                  required></paper-input>
-                    <paper-toggle-button class="flex"
-                                         checked="{{applicazioneCorrente.applicazione.connettoreVerifica.azioneInUrl}}">
-                        Azione in URL
-                    </paper-toggle-button>
+
                     <paper-dropdown-menu label="Auth" style="width: 100%">
                         <paper-menu class="dropdown-content" attr-for-selected="valore"
                                     on-iron-select="_tipoAutenticazioneConnVerificaSelected"
                                     id="tipoAuthConnVerificaMenu"
-                                    selected="{{applicazioneCorrente.applicazione.connettoreVerifica.tipoAutenticazione}}">
+                                    selected="{{connettoreVerifica.tipoAutenticazione}}">
                             <paper-item valore="NONE">Nessuna</paper-item>
                             <paper-item valore="HTTPBasic">Http Basic</paper-item>
                             <paper-item valore="SSL">SSL</paper-item>
@@ -218,10 +212,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if="{{mostraSezioneHttpBasicConnVerifica}}">
                         <div class="content layout vertical" id="sezHttp">
                             <paper-input label="Username"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.httpUser}}"
+                                         value="{{connettoreVerifica.httpUser}}"
                                          required></paper-input>
                             <paper-input label="Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.httpPassw}}"
+                                         value="{{connettoreVerifica.httpPassw}}"
                                          required></paper-input>
                         </div>
                     </template>
@@ -231,34 +225,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <div class="content layout vertical" id="sezSsl">
                             <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
                                 <paper-menu class="dropdown-content" attr-for-selected="valore"
-                                            selected="{{applicazioneCorrente.applicazione.connettoreVerifica.tipoSsl}}">
+                                            selected="{{connettoreVerifica.tipoSsl}}">
                                     <paper-item valore="CLIENT">Client</paper-item>
                                     <paper-item valore="SERVER">Server</paper-item>
                                 </paper-menu>
                             </paper-dropdown-menu>
                             <paper-input label="KeyStore Type"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslKsType}}"
+                                         value="{{connettoreVerifica.sslKsType}}"
                                          required></paper-input>
                             <paper-input label="KeyStore Location"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslKsLocation}}"
+                                         value="{{connettoreVerifica.sslKsLocation}}"
                                          required></paper-input>
                             <paper-input label="KeyStore Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslKsPasswd}}"
+                                         value="{{connettoreVerifica.sslKsPasswd}}"
                                          required></paper-input>
                             <paper-input label="PrivateKey Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslPKeyPasswd}}"
+                                         value="{{connettoreVerifica.sslPKeyPasswd}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Type"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslTsType}}"
+                                         value="{{connettoreVerifica.sslTsType}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Location"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslTsLocation}}"
+                                         value="{{connettoreVerifica.sslTsLocation}}"
                                          required></paper-input>
                             <paper-input label="TrustStore Password"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslTsPasswd}}"
+                                         value="{{connettoreVerifica.sslTsPasswd}}"
                                          required></paper-input>
                             <paper-input label="SSL Type"
-                                         value="{{applicazioneCorrente.applicazione.connettoreVerifica.sslType}}"
+                                         value="{{connettoreVerifica.sslType}}"
                                          required></paper-input>
                         </div>
                     </template>
@@ -338,8 +332,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         mostraSezioneSSLConnEsito: {
             type: Boolean, value : false
+        },
+        connettoreEsito: {
+          type: Object,
+          value: null
+        },
+
+        connettoreVerifica: {
+          type: Object,
+          value: null
         }
       },
+
         _tipoAutenticazioneConnEsitoSelected: function (event,item){
             var selected = this.$.tipoAuthConnEsitoMenu.selected;
 
@@ -374,6 +378,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
        _salvaApplicazione: function(){
 
+        this.applicazioneCorrente.applicazione.connettoreEsito = this.connettoreEsito ;
+        this.applicazioneCorrente.applicazione.connettoreVerifica = this.connettoreVerifica;
+
       if(!this.isAdd){
            this.actionMethod = 'PUT';
          }else{
@@ -393,12 +400,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (nuovo){
           this.titolo = 'Modifica Applicazione: ' + nuovo.applicazione.codApplicazione;
           this.tributi = this.applicazioneCorrente.tributi;
+          this.connettoreEsito = this.applicazioneCorrente.applicazione.connettoreEsito ||  {  tipoAutenticazione : 'NONE'};
+          this.connettoreVerifica = this.applicazioneCorrente.applicazione.connettoreVerifica ||  {  tipoAutenticazione : 'NONE'};
           this.isAdd = false;
         } else {
 
-          this.applicazioneCorrente = {applicazione : { abilitato: true, idTributi : [] ,  id: '0' }, tributi: []};
+          this.applicazioneCorrente = {applicazione : { abilitato: true, idTributi : [] ,  id: '0' ,
+            connettoreEsito: {  tipoAutenticazione : 'NONE'}, connettoreVerifica: {  tipoAutenticazione : 'NONE'} }, tributi: []};
           this.tributi = this.applicazioneCorrente.tributi;
           this.titolo = 'Nuova Applicazione';
+          this.connettoreEsito = this.applicazioneCorrente.applicazione.connettoreEsito ||  {  tipoAutenticazione : 'NONE'};
+          this.connettoreVerifica = this.applicazioneCorrente.applicazione.connettoreVerifica ||  {  tipoAutenticazione : 'NONE'};
           this.isAdd = true;
         }
         // console.log(this.applicazioneCorrente.applicazione.id);
