@@ -54,6 +54,7 @@ public class EsitoFactory {
 				break;
 			case GPv2:
 				xml = PagamentiTelematiciGPUtil.toEsitoPagamento(bd, applicazione, versamento, rpt, ctRtByte);
+				break;
 			default:
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Non implementato");
 			}
