@@ -1,10 +1,10 @@
-VERSION=v2.0.RC1
+VERSION=v2.0b1
 
 # Directory
 COPYING_FILE=../../COPYING
 SQL=../../resources/sql/2.0/
 DATASOURCE=../../resources/datasource/
-DOC=../../resources/doc/
+DOC=../../resources/doc/pdf
 GOVPAY=../../govpay-ear/target/govpay.ear
 GOVPAY_CONSOLE=../../govpay-web-console/target/govpayConsole.war
 
@@ -58,6 +58,12 @@ then
         exit 5
 fi 
 cp ${DOC}/GovPay-ManualeUtente.odt core.template/docs/
+if [ ! -e "${DOC}/GovPay-ManualeIntroduzione.pdf" ]
+then
+        echo "Manuale di Introduzione a GovPay non esistente"
+        exit 5
+fi
+cp ${DOC}/GovPay-ManualeIntroduzione.odt core.template/docs/
 if [ ! -e "${COPYING_FILE}" ]
 then
         echo "Copying file non esistente"
