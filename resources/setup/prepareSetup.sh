@@ -39,38 +39,38 @@ echo "Prepare datasource [completed]"
 
 # Prepare DOC
 echo "Prepare doc ..."
-mkdir -p core.template/docs
+mkdir -p core.template/doc
 if [ ! -e "${DOC}/GovPay-ManualeInstallazione.pdf" ]
 then
         echo "Manuale di Installazione non esistente"
         exit 3
 fi
-cp ${DOC}/GovPay-ManualeInstallazione.pdf core.template/docs/
+cp ${DOC}/GovPay-ManualeInstallazione.pdf core.template/doc/
 if [ ! -e "${DOC}/GovPay-ManualeIntegrazione.pdf" ]
 then
         echo "Manuale di Integrazione non esistente"
         exit 4
 fi 
-cp ${DOC}/GovPay-ManualeIntegrazione.pdf core.template/docs/
+cp ${DOC}/GovPay-ManualeIntegrazione.pdf core.template/doc/
 if [ ! -e "${DOC}/GovPay-ManualeUtente.pdf" ]
 then
         echo "Manuale Utente non esistente"
         exit 5
 fi 
-cp ${DOC}/GovPay-ManualeUtente.odt core.template/docs/
+cp ${DOC}/GovPay-ManualeUtente.pdf core.template/doc/
 if [ ! -e "${DOC}/GovPay-ManualeIntroduzione.pdf" ]
 then
         echo "Manuale di Introduzione a GovPay non esistente"
         exit 5
 fi
-cp ${DOC}/GovPay-ManualeIntroduzione.odt core.template/docs/
+cp ${DOC}/GovPay-ManualeIntroduzione.pdf core.template/doc/
 if [ ! -e "${COPYING_FILE}" ]
 then
         echo "Copying file non esistente"
         exit 6
 fi 
 cp ${COPYING_FILE} core.template/
-cp core.template/docs/README.txt core.template/
+mv core.template/doc/README.txt core.template/
 echo "Prepare doc [completed]"
 
 # Prepare SOFTWARE
