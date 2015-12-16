@@ -56,7 +56,7 @@ public class RilevamentiBD extends BasicBD {
 	 */
 	public Rilevamento getRilevamento(long idRilevamento) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			return RilevamentoConverter.toDTO(((JDBCRilevamentoServiceSearch)this.getServiceManager().getRilevamentoServiceSearch()).get(idRilevamento));
+			return RilevamentoConverter.toDTO(((JDBCRilevamentoServiceSearch)this.getRilevamentoService()).get(idRilevamento));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -64,9 +64,9 @@ public class RilevamentiBD extends BasicBD {
 	
 	public double getMedia(long idSla, Long idApplicazione, Date start, Date end) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IExpression exp = this.getServiceManager().getRilevamentoServiceSearch().newExpression();
+			IExpression exp = this.getRilevamentoService().newExpression();
 			
-			RilevamentoFieldConverter fieldConverter = new RilevamentoFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+			RilevamentoFieldConverter fieldConverter = new RilevamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_sla",  Long.class, "id_sla", fieldConverter.toTable(it.govpay.orm.Rilevamento.model())), idSla);
 			
 			if(idApplicazione != null && idApplicazione.longValue() > 0) {
@@ -79,7 +79,7 @@ public class RilevamentiBD extends BasicBD {
 				exp.lessEquals(it.govpay.orm.Rilevamento.model().DATA_RILEVAMENTO, end);
 			}
 			
-			Object avg = this.getServiceManager().getRilevamentoServiceSearch().aggregate(exp, new FunctionField(it.govpay.orm.Rilevamento.model().DURATA, Function.AVG_DOUBLE, "media"));
+			Object avg = this.getRilevamentoService().aggregate(exp, new FunctionField(it.govpay.orm.Rilevamento.model().DURATA, Function.AVG_DOUBLE, "media"));
 			
 			return ((Double)avg).doubleValue();
 		} catch (NotImplementedException e) {
@@ -93,9 +93,9 @@ public class RilevamentiBD extends BasicBD {
 	
 	public long countOverSoglia(long idSla, long soglia, Date start, Date end) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IExpression exp = this.getServiceManager().getRilevamentoServiceSearch().newExpression();
+			IExpression exp = this.getRilevamentoService().newExpression();
 			
-			RilevamentoFieldConverter fieldConverter = new RilevamentoFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+			RilevamentoFieldConverter fieldConverter = new RilevamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_sla",  Long.class, "id_sla", fieldConverter.toTable(it.govpay.orm.Rilevamento.model())), idSla);
 			
 			exp.greaterEquals(it.govpay.orm.Rilevamento.model().DURATA, soglia);
@@ -107,7 +107,7 @@ public class RilevamentiBD extends BasicBD {
 			}
 			
 			
-			return this.getServiceManager().getRilevamentoServiceSearch().count(exp).longValue();
+			return this.getRilevamentoService().count(exp).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
@@ -131,7 +131,7 @@ public class RilevamentiBD extends BasicBD {
 			
 			it.govpay.orm.Rilevamento vo = RilevamentoConverter.toVO(evento);
 			
-			this.getServiceManager().getRilevamentoService().create(vo);
+			this.getRilevamentoService().create(vo);
 			evento.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {

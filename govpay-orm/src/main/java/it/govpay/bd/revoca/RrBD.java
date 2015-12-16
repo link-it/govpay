@@ -62,7 +62,7 @@ public class RrBD extends BasicBD {
 	 */
 	public Rr getRr(long idRr) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			RR vo = ((JDBCRRServiceSearch)this.getServiceManager().getRRServiceSearch()).get(idRr);
+			RR vo = ((JDBCRRServiceSearch)this.getRrService()).get(idRr);
 			
 			return getDTO(vo);
 		} catch (NotImplementedException e) {
@@ -88,7 +88,7 @@ public class RrBD extends BasicBD {
 			
 			IdRr id = new IdRr();
 			id.setCodMsgRevoca(codMsgRevoca);
-			RR vo = this.getServiceManager().getRRServiceSearch().get(id);
+			RR vo = this.getRrService().get(id);
 			return getDTO(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -101,10 +101,10 @@ public class RrBD extends BasicBD {
 
 	private Rr getDTO(RR vo) throws ServiceException, ExpressionNotImplementedException, ExpressionException, NotImplementedException {
 		Rr dto = RrConverter.toDTO(vo);
-		IPaginatedExpression exp = this.getServiceManager().getSingolaRevocaServiceSearch().newPaginatedExpression();
-		SingolaRevocaFieldConverter fieldConverter = new SingolaRevocaFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+		IPaginatedExpression exp = this.getSingolaRevocaService().newPaginatedExpression();
+		SingolaRevocaFieldConverter fieldConverter = new SingolaRevocaFieldConverter(this.getJdbcProperties().getDatabaseType());
 		exp.equals(new CustomField("id_rr", Long.class, "id_rr", fieldConverter.toTable(it.govpay.orm.SingolaRevoca.model())), vo.getId());
-		List<it.govpay.orm.SingolaRevoca> lstRevoche = this.getServiceManager().getSingolaRevocaServiceSearch().findAll(exp);
+		List<it.govpay.orm.SingolaRevoca> lstRevoche = this.getSingolaRevocaService().findAll(exp);
 		if(lstRevoche != null && !lstRevoche.isEmpty()) {
 			dto.setSingolaRevocaList(SingolaRevocaConverter.toDTOList(lstRevoche));
 		}
@@ -128,7 +128,7 @@ public class RrBD extends BasicBD {
 			insertTracciato(vo, documento);
 			rr.setIdTracciatoXML(vo.getIdTracciatoXML().getId());
 
-			this.getServiceManager().getRRService().create(vo);
+			this.getRrService().create(vo);
 			rr.setId(vo.getId());
 
 			if(rr.getSingolaRevocaList() != null && !rr.getSingolaRevocaList().isEmpty()) {
@@ -137,7 +137,7 @@ public class RrBD extends BasicBD {
 					IdRr idRR = new IdRr();
 					idRR.setId(vo.getId());
 					voRevoca.setIdRR(idRR);
-					this.getServiceManager().getSingolaRevocaService().create(voRevoca);
+					this.getSingolaRevocaService().create(voRevoca);
 					singolaRevoca.setId(voRevoca.getId());
 				}
 			}
@@ -155,7 +155,7 @@ public class RrBD extends BasicBD {
 		tracciatoXML.setDataOraCreazione(new Date());
 		tracciatoXML.setXml(xml);
 
-		this.getServiceManager().getTracciatoXMLService().create(tracciatoXML);
+		this.getTracciatoXMLService().create(tracciatoXML);
 		
 		IdTracciato idTracciato = new IdTracciato();
 		idTracciato.setId(tracciatoXML.getId());

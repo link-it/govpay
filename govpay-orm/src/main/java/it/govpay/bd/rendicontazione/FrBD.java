@@ -64,7 +64,7 @@ public class FrBD extends BasicBD {
 	 */
 	public Fr getFr(long idFr) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			FR vo = ((JDBCFRServiceSearch)this.getServiceManager().getFRServiceSearch()).get(idFr);
+			FR vo = ((JDBCFRServiceSearch)this.getFrService()).get(idFr);
 			
 			return getDTO(vo);
 		} catch (NotImplementedException e) {
@@ -91,7 +91,7 @@ public class FrBD extends BasicBD {
 			IdFr id = new IdFr();
 			id.setAnnoRiferimento(annoRiferimento);
 			id.setCodFlusso(codFlusso);
-			FR vo = this.getServiceManager().getFRServiceSearch().get(id);
+			FR vo = this.getFrService().get(id);
 			return getDTO(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -104,10 +104,10 @@ public class FrBD extends BasicBD {
 
 	private Fr getDTO(FR vo) throws ServiceException, ExpressionNotImplementedException, ExpressionException, NotImplementedException {
 		Fr dto = FrConverter.toDTO(vo);
-		IPaginatedExpression exp = this.getServiceManager().getSingolaRendicontazioneServiceSearch().newPaginatedExpression();
-		SingolaRendicontazioneFieldConverter fieldConverter = new SingolaRendicontazioneFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+		IPaginatedExpression exp = this.getSingolaRendicontazioneService().newPaginatedExpression();
+		SingolaRendicontazioneFieldConverter fieldConverter = new SingolaRendicontazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
 		exp.equals(new CustomField("id_fr", Long.class, "id_fr", fieldConverter.toTable(it.govpay.orm.SingolaRendicontazione.model())), vo.getId());
-		List<it.govpay.orm.SingolaRendicontazione> lstRevoche = this.getServiceManager().getSingolaRendicontazioneServiceSearch().findAll(exp);
+		List<it.govpay.orm.SingolaRendicontazione> lstRevoche = this.getSingolaRendicontazioneService().findAll(exp);
 		if(lstRevoche != null && !lstRevoche.isEmpty()) {
 			dto.setSingolaRendicontazioneList(SingolaRendicontazioneConverter.toDTOList(lstRevoche));
 		}
@@ -130,7 +130,7 @@ public class FrBD extends BasicBD {
 			it.govpay.orm.FR vo = FrConverter.toVO(fr);
 			insertTracciato(vo, documento);
 			fr.setIdTracciatoXML(vo.getIdTracciatoXML().getId());
-			this.getServiceManager().getFRService().create(vo);
+			this.getFrService().create(vo);
 			fr.setId(vo.getId());
 
 			if(fr.getSingolaRendicontazioneList() != null && !fr.getSingolaRendicontazioneList().isEmpty()) {
@@ -140,7 +140,7 @@ public class FrBD extends BasicBD {
 					idFr.setId(vo.getId());
 					voRendicontazione.setIdFr(idFr);
 
-					this.getServiceManager().getSingolaRendicontazioneService().create(voRendicontazione);
+					this.getSingolaRendicontazioneService().create(voRendicontazione);
 					singolaRendicontazione.setId(voRendicontazione.getId());
 				}
 			}
@@ -158,7 +158,7 @@ public class FrBD extends BasicBD {
 		tracciatoXML.setDataOraCreazione(new Date());
 		tracciatoXML.setXml(xml);
 
-		this.getServiceManager().getTracciatoXMLService().create(tracciatoXML);
+		this.getTracciatoXMLService().create(tracciatoXML);
 		
 		IdTracciato idTracciato = new IdTracciato();
 		idTracciato.setId(tracciatoXML.getId());
@@ -172,7 +172,7 @@ public class FrBD extends BasicBD {
 			id.setAnnoRiferimento(annoRiferimento);
 			id.setCodFlusso(codFlusso);
 			
-			return this.getServiceManager().getFRService().exists(id);
+			return this.getFrService().exists(id);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -181,16 +181,12 @@ public class FrBD extends BasicBD {
 	}
 
 	public FrFilter newFilter() throws ServiceException {
-		try {
-			return new FrFilter(this.getServiceManager().getFRServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new FrFilter(this.getFrService());
 	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getFRServiceSearch().count(filter.toExpression()).longValue();
+			return this.getFrService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -199,7 +195,7 @@ public class FrBD extends BasicBD {
 	public List<Fr> findAll(IFilter filter) throws ServiceException {
 		try {
 			List<Fr> frLst = new ArrayList<Fr>();
-			List<it.govpay.orm.FR> frVOLst = this.getServiceManager().getFRServiceSearch().findAll(filter.toPaginatedExpression()); 
+			List<it.govpay.orm.FR> frVOLst = this.getFrService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.FR frVO: frVOLst) {
 				frLst.add(getDTO(frVO));
 			}

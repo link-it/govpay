@@ -61,12 +61,12 @@ public class PagamentiBD extends BasicBD {
 	public PagamentiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
-	
+
 	public List<ListaPagamentiEntry> findAll(VersamentoFilter filter) throws ServiceException {
 		try {
-			List<it.govpay.orm.Ente> lstenteVO = this.getServiceManager().getEnteServiceSearch().findAll(this.getServiceManager().getEnteServiceSearch().newPaginatedExpression());
+			List<it.govpay.orm.Ente> lstenteVO = this.getEnteService().findAll(this.getEnteService().newPaginatedExpression());
 			List<ListaPagamentiEntry> versamentoLst = new ArrayList<ListaPagamentiEntry>();
-			List<it.govpay.orm.Versamento> versamentoVOLst = this.getServiceManager().getVersamentoServiceSearch().findAll(filter.toPaginatedExpression()); 
+			List<it.govpay.orm.Versamento> versamentoVOLst = this.getVersamentoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Versamento versamentoVO: versamentoVOLst) {
 				ListaPagamentiEntry entry = new ListaPagamentiEntry();
 				entry.setDataOraUltimoAggiornamento(versamentoVO.getDataOraUltimoAggiornamento());
@@ -83,7 +83,7 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public Pagamento get(long idVersamento) throws ServiceException, NotFoundException {
 		Pagamento pagamento = new Pagamento();
 		VersamentiBD versamentiBD = new VersamentiBD(this);
@@ -94,15 +94,15 @@ public class PagamentiBD extends BasicBD {
 			versamento = versamentiBD.getVersamento(idVersamento);
 			Ente ente = entiBD.getEnte(versamento.getIdEnte());
 			pagamento.setEnte(ente);
-			AbstractFilter filter = new AbstractFilter(this.getServiceManager().getEventoServiceSearch()) {
-				
+			AbstractFilter filter = new AbstractFilter(this.getEventoService()) {
+
 				@Override
 				public IExpression toExpression() throws ServiceException {
 					try {
 						IExpression exp = newExpression();
 						exp.equals(it.govpay.orm.Evento.model().COD_DOMINIO, versamento.getCodDominio());
 						exp.equals(it.govpay.orm.Evento.model().IUV, versamento.getIuv());
-						
+
 						return exp;
 					} catch (ExpressionNotImplementedException e) {
 						throw new ServiceException(e);
@@ -122,36 +122,34 @@ public class PagamentiBD extends BasicBD {
 			pagamento.setEventi(eventiBD.findAll(filter));
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
 		}
 		pagamento.setVersamento(versamento);
 
-		
+
 		try {
 			RptBD rptBD = new RptBD(this);
 			Rpt rpt = rptBD.getLastRpt(idVersamento);
 			pagamento.setRpt(rpt);
-			
+
 			if(rpt.getIdCanale() != null && rpt.getIdCanale() > 0) {
 				PspBD pspBD = new PspBD(this);
 				Canale canale = pspBD.getCanale(rpt.getIdCanale());
 				pagamento.setCanale(canale);
 			}
-			
+
 			RtBD rtBD = new RtBD(this);
 			Rt rt = rtBD.getLastRt(rpt.getId());
 			pagamento.setRt(rt);
-			
+
 		} catch (NotFoundException nfe) {
-			
+
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
-		
+
 		try {
 			Rpt rpt = pagamento.getRpt();
-			
+
 			if(rpt != null && rpt.getIdPsp() > 0) {
 				PspBD pspBD = new PspBD(this);
 				Psp psp = pspBD.getPsp(rpt.getIdPsp());
@@ -160,103 +158,91 @@ public class PagamentiBD extends BasicBD {
 				pagamento.setPsp(psp);
 			}
 		} catch (NotFoundException nfe) {
-			
+
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} 
-		
+
 		try {
 			long idApplicazione = pagamento.getVersamento().getIdApplicazione();
-			
+
 			if(idApplicazione > 0) {
 				ApplicazioniBD applicazioniBD = new ApplicazioniBD(this);
 				ListaApplicazioniEntry listaApplicazioniEntry = applicazioniBD.getListaApplicazioniEntry(idApplicazione);
 				pagamento.setApplicazione(listaApplicazioniEntry);
 			}
 		} catch (NotFoundException nfe) {
-			
+
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
-		
-		try {
-			EsitiBD esitiBD = new EsitiBD(this);
-			AbstractFilter filter = new AbstractFilter(this.getServiceManager().getEsitoServiceSearch()) {
-				
-				@Override
-				public IExpression toExpression() throws ServiceException {
-					try {
-						IExpression exp = this.newExpression();
-						exp.equals(it.govpay.orm.Esito.model().COD_DOMINIO, versamento.getCodDominio());
-						exp.equals(it.govpay.orm.Esito.model().IUV, versamento.getIuv());
-						return exp;
-					} catch(ExpressionException e) {
-						throw new ServiceException(e);
-					} catch (ExpressionNotImplementedException e) {
-						throw new ServiceException(e);
-					} catch (NotImplementedException e) {
-						throw new ServiceException(e);
-					}
-					
+
+		EsitiBD esitiBD = new EsitiBD(this);
+		AbstractFilter esitiFilter = new AbstractFilter(this.getEsitoService()) {
+
+			@Override
+			public IExpression toExpression() throws ServiceException {
+				try {
+					IExpression exp = this.newExpression();
+					exp.equals(it.govpay.orm.Esito.model().COD_DOMINIO, versamento.getCodDominio());
+					exp.equals(it.govpay.orm.Esito.model().IUV, versamento.getIuv());
+					return exp;
+				} catch(ExpressionException e) {
+					throw new ServiceException(e);
+				} catch (ExpressionNotImplementedException e) {
+					throw new ServiceException(e);
+				} catch (NotImplementedException e) {
+					throw new ServiceException(e);
 				}
-			};
-			
-			List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
-			FilterSortWrapper sortWrapper = new FilterSortWrapper();
-			sortWrapper.setField(it.govpay.orm.Esito.model().DATA_ORA_CREAZIONE);
-			sortWrapper.setSortOrder(SortOrder.ASC);
-			filterSortList.add(sortWrapper);
-			filter.setFilterSortList(filterSortList);
-			List<Esito> esiti = esitiBD.findAll(filter);
-			pagamento.setEsiti(esiti);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-		
-		try {
-			MailBD mailBD = new MailBD(this);
-			AbstractFilter filter = new AbstractFilter(this.getServiceManager().getMailServiceSearch()) {
-				
-				@Override
-				public IExpression toExpression() throws ServiceException {
-					try {
-						IExpression exp = this.newExpression();
-						exp.equals(it.govpay.orm.Mail.model().ID_VERSAMENTO, versamento.getId());
-						return exp;
-					} catch(ExpressionException e) {
-						throw new ServiceException(e);
-					} catch (ExpressionNotImplementedException e) {
-						throw new ServiceException(e);
-					} catch (NotImplementedException e) {
-						throw new ServiceException(e);
-					}
-					
+
+			}
+		};
+
+		List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
+		FilterSortWrapper sortWrapper = new FilterSortWrapper();
+		sortWrapper.setField(it.govpay.orm.Esito.model().DATA_ORA_CREAZIONE);
+		sortWrapper.setSortOrder(SortOrder.ASC);
+		filterSortList.add(sortWrapper);
+		esitiFilter.setFilterSortList(filterSortList);
+		List<Esito> esiti = esitiBD.findAll(esitiFilter);
+		pagamento.setEsiti(esiti);
+
+		MailBD mailBD = new MailBD(this);
+		AbstractFilter mailFilter = new AbstractFilter(this.getMailService()) {
+
+			@Override
+			public IExpression toExpression() throws ServiceException {
+				try {
+					IExpression exp = this.newExpression();
+					exp.equals(it.govpay.orm.Mail.model().ID_VERSAMENTO, versamento.getId());
+					return exp;
+				} catch(ExpressionException e) {
+					throw new ServiceException(e);
+				} catch (ExpressionNotImplementedException e) {
+					throw new ServiceException(e);
+				} catch (NotImplementedException e) {
+					throw new ServiceException(e);
 				}
-			};
-			
-			List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
-			FilterSortWrapper sortWrapper = new FilterSortWrapper();
-			sortWrapper.setField(it.govpay.orm.Mail.model().DATA_ORA_ULTIMA_SPEDIZIONE); //TODO inserire data creazione
-			sortWrapper.setSortOrder(SortOrder.ASC);
-			filterSortList.add(sortWrapper);
-			filter.setFilterSortList(filterSortList);
-			List<Mail> esiti = mailBD.findAll(filter);
-			pagamento.setMail(esiti);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-		
-		
-		
+
+			}
+		};
+
+		List<FilterSortWrapper> mailFilterSortList = new ArrayList<FilterSortWrapper>();
+		FilterSortWrapper mailSortWrapper = new FilterSortWrapper();
+		mailSortWrapper.setField(it.govpay.orm.Mail.model().DATA_ORA_ULTIMA_SPEDIZIONE); //TODO inserire data creazione
+		mailSortWrapper.setSortOrder(SortOrder.ASC);
+		mailFilterSortList.add(mailSortWrapper);
+		mailFilter.setFilterSortList(mailFilterSortList);
+		List<Mail> mail = mailBD.findAll(mailFilter);
+		pagamento.setMail(mail);
+
+
+
 		return pagamento;
 	}
-	
+
 
 	public VersamentoFilter newFilter() throws ServiceException {
-		try {
-			return new VersamentoFilter(this.getServiceManager().getVersamentoServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new VersamentoFilter(this.getVersamentoService());
 	}
 }

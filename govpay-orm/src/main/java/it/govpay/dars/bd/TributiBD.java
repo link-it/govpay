@@ -190,7 +190,7 @@ public class TributiBD extends BasicBD{
 
 			pagExpr.in(it.govpay.orm.Ente.model().ID_DOMINIO.COD_DOMINIO, codiciDominio);
 
-			listaEnti = this.getServiceManager().getEnteServiceSearch().findAll(pagExpr);
+			listaEnti = this.getEnteService().findAll(pagExpr);
 
 			if(listaEnti == null || listaEnti.size() == 0)
 				return tributiLst;
@@ -215,7 +215,7 @@ public class TributiBD extends BasicBD{
 
 
 			List<it.govpay.orm.Tributo> lsttributoVO = 
-					this.getServiceManager().getTributoServiceSearch().findAll(paginatedExpression);
+					this.getTributoService().findAll(paginatedExpression);
 
 
 			for(it.govpay.orm.Tributo tributoVO: lsttributoVO) {

@@ -62,7 +62,7 @@ public class PortaliBD extends BasicBD {
 
 
 		try {
-			it.govpay.orm.Portale portaleVO = ((JDBCPortaleServiceSearch)this.getServiceManager().getPortaleServiceSearch()).get(id);
+			it.govpay.orm.Portale portaleVO = ((JDBCPortaleServiceSearch)this.getPortaleService()).get(id);
 			Portale ente = PortaleConverter.toDTO(portaleVO);
 			return ente;
 		} catch (NotImplementedException e) {
@@ -83,7 +83,7 @@ public class PortaliBD extends BasicBD {
 		try {
 			IdPortale id = new IdPortale();
 			id.setCodPortale(codPortale);
-			it.govpay.orm.Portale portaleVO = this.getServiceManager().getPortaleServiceSearch().get(id);
+			it.govpay.orm.Portale portaleVO = this.getPortaleService().get(id);
 			Portale ente = PortaleConverter.toDTO(portaleVO);
 			return ente;
 		} catch (NotImplementedException e) {
@@ -103,9 +103,9 @@ public class PortaliBD extends BasicBD {
 	 */
 	public Portale getPortaleByPrincipal(String principal) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IExpression exp = this.getServiceManager().getPortaleServiceSearch().newExpression();
+			IExpression exp = this.getPortaleService().newExpression();
 			exp.equals(it.govpay.orm.Portale.model().PRINCIPAL, principal);
-			it.govpay.orm.Portale portaleVO = this.getServiceManager().getPortaleServiceSearch().find(exp);
+			it.govpay.orm.Portale portaleVO = this.getPortaleService().find(exp);
 			Portale ente = PortaleConverter.toDTO(portaleVO);
 			return ente;
 		} catch (NotImplementedException e) {
@@ -127,13 +127,13 @@ public class PortaliBD extends BasicBD {
 		try {
 			
 			it.govpay.orm.Portale vo = PortaleConverter.toVO(portale);
-			IdPortale idPortale = this.getServiceManager().getPortaleServiceSearch().convertToId(vo);
+			IdPortale idPortale = this.getPortaleService().convertToId(vo);
 
-			if(!this.getServiceManager().getPortaleServiceSearch().exists(idPortale)) {
+			if(!this.getPortaleService().exists(idPortale)) {
 				throw new NotFoundException("Portale con id ["+idPortale.toJson()+"] non trovato");
 			}
 
-			this.getServiceManager().getPortaleService().update(idPortale, vo);
+			this.getPortaleService().update(idPortale, vo);
 			portale.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -155,7 +155,7 @@ public class PortaliBD extends BasicBD {
 		try {
 			it.govpay.orm.Portale vo = PortaleConverter.toVO(portale);
 			
-			this.getServiceManager().getPortaleService().create(vo);
+			this.getPortaleService().create(vo);
 			portale.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
@@ -173,16 +173,12 @@ public class PortaliBD extends BasicBD {
 	}
 	
 	public PortaleFilter newFilter() throws ServiceException {
-		try {
-			return new PortaleFilter(this.getServiceManager().getPortaleServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new PortaleFilter(this.getPortaleService());
 	}
 
 	public long count(PortaleFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getPortaleServiceSearch().count(filter.toExpression()).longValue();
+			return this.getPortaleService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -190,7 +186,7 @@ public class PortaliBD extends BasicBD {
 
 	public List<Portale> findAll(PortaleFilter filter) throws ServiceException {
 		try {
-			return PortaleConverter.toDTOList(this.getServiceManager().getPortaleServiceSearch().findAll(filter.toPaginatedExpression()));
+			return PortaleConverter.toDTOList(this.getPortaleService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

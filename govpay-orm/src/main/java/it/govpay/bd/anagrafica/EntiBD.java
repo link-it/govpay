@@ -68,9 +68,9 @@ public class EntiBD extends BasicBD {
 		long id = idEnte.longValue();
 
 		try {
-			it.govpay.orm.Ente enteVO = ((JDBCEnteServiceSearch)this.getServiceManager().getEnteServiceSearch()).get(id);
+			it.govpay.orm.Ente enteVO = ((JDBCEnteServiceSearch)this.getEnteService()).get(id);
 			Ente ente = EnteConverter.toDTO(enteVO);
-			ente.setAnagraficaEnte(AnagraficaConverter.toDTO(this.getServiceManager().getAnagraficaServiceSearch().get(enteVO.getIdAnagraficaEnte())));
+			ente.setAnagraficaEnte(AnagraficaConverter.toDTO(this.getAnagraficaService().get(enteVO.getIdAnagraficaEnte())));
 			return ente;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -84,7 +84,7 @@ public class EntiBD extends BasicBD {
 		try {
 			IdEnte id = new IdEnte();
 			id.setCodEnte(codEnte);
-			it.govpay.orm.Ente enteVO = this.getServiceManager().getEnteServiceSearch().get(id);
+			it.govpay.orm.Ente enteVO = this.getEnteService().get(id);
 			return getEnte(enteVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -93,7 +93,7 @@ public class EntiBD extends BasicBD {
 	
 	public Ente getEnte(it.govpay.orm.Ente enteVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
 		Ente ente = EnteConverter.toDTO(enteVO);
-		ente.setAnagraficaEnte(AnagraficaConverter.toDTO(this.getServiceManager().getAnagraficaServiceSearch().get(enteVO.getIdAnagraficaEnte())));
+		ente.setAnagraficaEnte(AnagraficaConverter.toDTO(this.getAnagraficaService().get(enteVO.getIdAnagraficaEnte())));
 		return ente;
 	}
 	/**
@@ -115,11 +115,11 @@ public class EntiBD extends BasicBD {
 	public List<Ente> getEnti(long idOperatore) throws ServiceException{
 		try {
 			List<Ente> lst = new ArrayList<Ente>();
-			IPaginatedExpression exp = this.getServiceManager().getEnteServiceSearch().newPaginatedExpression();
-			OperatoreFieldConverter fieldConverter = new OperatoreFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+			IPaginatedExpression exp = this.getEnteService().newPaginatedExpression();
+			OperatoreFieldConverter fieldConverter = new OperatoreFieldConverter(this.getJdbcProperties().getDatabaseType());
 
 			exp.equals(new CustomField("id_operatore", Long.class, "id_operatore", fieldConverter.toTable(it.govpay.orm.Operatore.model().OPERATORE_ENTE)), idOperatore);
-			List<it.govpay.orm.Ente> lstenteVO = this.getServiceManager().getEnteServiceSearch().findAll(exp);
+			List<it.govpay.orm.Ente> lstenteVO = this.getEnteService().findAll(exp);
 			for(it.govpay.orm.Ente enteVO: lstenteVO) {
 				lst.add(getEnte(enteVO));
 			}
@@ -147,30 +147,30 @@ public class EntiBD extends BasicBD {
 		try {
 			
 			it.govpay.orm.Ente vo = EnteConverter.toVO(ente);
-			IdEnte idEnte = this.getServiceManager().getEnteServiceSearch().convertToId(vo);
+			IdEnte idEnte = this.getEnteService().convertToId(vo);
 
-			if(!this.getServiceManager().getEnteServiceSearch().exists(idEnte)) {
+			if(!this.getEnteService().exists(idEnte)) {
 				throw new NotFoundException("Ente con id ["+idEnte.toJson()+"] non trovato");
 			}
 
-			it.govpay.orm.Ente enteDB = this.getServiceManager().getEnteServiceSearch().get(idEnte);
+			it.govpay.orm.Ente enteDB = this.getEnteService().get(idEnte);
 
 			ente.getAnagraficaEnte().setId(enteDB.getIdAnagraficaEnte().getId());
 			it.govpay.orm.Anagrafica voAnagrafica = AnagraficaConverter.toVO(ente.getAnagraficaEnte());
 			
-			IdAnagrafica idAnagrafica = this.getServiceManager().getAnagraficaServiceSearch().convertToId(voAnagrafica);
+			IdAnagrafica idAnagrafica = this.getAnagraficaService().convertToId(voAnagrafica);
 
 			
-			if(!this.getServiceManager().getAnagraficaServiceSearch().exists(idAnagrafica)) {
+			if(!this.getAnagraficaService().exists(idAnagrafica)) {
 				throw new NotFoundException("Anagrafica con id ["+idAnagrafica.toJson()+"] non trovata");
 			}
 
-			this.getServiceManager().getAnagraficaService().update(idAnagrafica, voAnagrafica);
+			this.getAnagraficaService().update(idAnagrafica, voAnagrafica);
 			
 			idAnagrafica.setId(voAnagrafica.getId());
 			vo.setIdAnagraficaEnte(idAnagrafica);
 			
-			this.getServiceManager().getEnteService().update(idEnte, vo);
+			this.getEnteService().update(idEnte, vo);
 			ente.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -191,15 +191,15 @@ public class EntiBD extends BasicBD {
 	public void insertEnte(Ente ente) throws ServiceException{
 		try {
 			it.govpay.orm.Anagrafica voAnagrafica = AnagraficaConverter.toVO(ente.getAnagraficaEnte());
-			IdAnagrafica idAnagrafica = this.getServiceManager().getAnagraficaServiceSearch().convertToId(voAnagrafica);
-			this.getServiceManager().getAnagraficaService().create(voAnagrafica);
+			IdAnagrafica idAnagrafica = this.getAnagraficaService().convertToId(voAnagrafica);
+			this.getAnagraficaService().create(voAnagrafica);
 			
 			it.govpay.orm.Ente vo = EnteConverter.toVO(ente);
 			
 			idAnagrafica.setId(voAnagrafica.getId());
 			vo.setIdAnagraficaEnte(idAnagrafica);
 
-			this.getServiceManager().getEnteService().create(vo);
+			this.getEnteService().create(vo);
 			ente.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
@@ -208,18 +208,12 @@ public class EntiBD extends BasicBD {
 	}
 
 	public EnteFilter newFilter() throws ServiceException {
-		try {
-			return new EnteFilter(this.getServiceManager().getEnteServiceSearch());
-		} catch (ServiceException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new EnteFilter(this.getEnteService());
 	}
 
 	public long count(EnteFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getEnteServiceSearch().count(filter.toExpression()).longValue();
+			return this.getEnteService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -228,7 +222,7 @@ public class EntiBD extends BasicBD {
 	public List<Ente> findAll(EnteFilter filter) throws ServiceException {
 		try {
 			List<Ente> lst = new ArrayList<Ente>();
-			List<it.govpay.orm.Ente> lstenteVO = this.getServiceManager().getEnteServiceSearch().findAll(filter.toPaginatedExpression());
+			List<it.govpay.orm.Ente> lstenteVO = this.getEnteService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Ente enteVO: lstenteVO) {
 				lst.add(getEnte(enteVO));
 			}
@@ -247,10 +241,10 @@ public class EntiBD extends BasicBD {
 	public List<Ente> getEntiByDominio(Long idDominio) throws ServiceException {
 		try {
 			List<Ente> lst = new ArrayList<Ente>();
-			IPaginatedExpression exp = this.getServiceManager().getEnteServiceSearch().newPaginatedExpression();
-			EnteFieldConverter fieldConverter = new EnteFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+			IPaginatedExpression exp = this.getEnteService().newPaginatedExpression();
+			EnteFieldConverter fieldConverter = new EnteFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Ente.model())), idDominio);
-			List<it.govpay.orm.Ente> lstenteVO = this.getServiceManager().getEnteServiceSearch().findAll(exp);
+			List<it.govpay.orm.Ente> lstenteVO = this.getEnteService().findAll(exp);
 			for(it.govpay.orm.Ente enteVO: lstenteVO) {
 				lst.add(getEnte(enteVO));
 			}

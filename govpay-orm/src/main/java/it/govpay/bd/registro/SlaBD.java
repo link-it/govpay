@@ -47,7 +47,7 @@ public class SlaBD extends BasicBD {
 	 */
 	public Sla getSLA(long idSLA) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			return SlaConverter.toDTO(((JDBCSLAServiceSearch)this.getServiceManager().getSLAServiceSearch()).get(idSLA));
+			return SlaConverter.toDTO(((JDBCSLAServiceSearch)this.getSlaService()).get(idSLA));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -67,7 +67,7 @@ public class SlaBD extends BasicBD {
 			
 			it.govpay.orm.SLA vo = SlaConverter.toVO(sla);
 			
-			this.getServiceManager().getSLAService().create(vo);
+			this.getSlaService().create(vo);
 			sla.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {

@@ -50,7 +50,7 @@ public class EventiBD extends BasicBD {
 	 */
 	public Evento getEvento(long idEvento) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			return EventoConverter.toDTO(((JDBCEventoServiceSearch)this.getServiceManager().getEventoServiceSearch()).get(idEvento));
+			return EventoConverter.toDTO(((JDBCEventoServiceSearch)this.getEventoService()).get(idEvento));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -69,7 +69,7 @@ public class EventiBD extends BasicBD {
 			
 			it.govpay.orm.Evento vo = EventoConverter.toVO(evento);
 			
-			this.getServiceManager().getEventoService().create(vo);
+			this.getEventoService().create(vo);
 			evento.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -79,16 +79,12 @@ public class EventiBD extends BasicBD {
 	}
 	
 	public EventoFilter newFilter() throws ServiceException {
-		try {
-			return new EventoFilter(this.getServiceManager().getEventoServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new EventoFilter(this.getEventoService());
 	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getEventoServiceSearch().count(filter.toExpression()).longValue();
+			return this.getEventoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -96,7 +92,7 @@ public class EventiBD extends BasicBD {
 
 	public List<Evento> findAll(IFilter filter) throws ServiceException {
 		try {
-			return EventoConverter.toDTOList(this.getServiceManager().getEventoServiceSearch().findAll(filter.toPaginatedExpression()));
+			return EventoConverter.toDTOList(this.getEventoService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

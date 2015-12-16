@@ -71,7 +71,7 @@ public class ContiAccreditoBD extends BasicBD {
 		long id = idContoAccredito.longValue();
 
 		try {
-			it.govpay.orm.ContoAccredito contoAccreditoVO = ((JDBCContoAccreditoServiceSearch)this.getServiceManager().getContoAccreditoServiceSearch()).get(id);
+			it.govpay.orm.ContoAccredito contoAccreditoVO = ((JDBCContoAccreditoServiceSearch)this.getContoAccreditoService()).get(id);
 			ContoAccredito contoAccredito = getContoAccredito(contoAccreditoVO);
 			
 			return contoAccredito;
@@ -96,14 +96,14 @@ public class ContiAccreditoBD extends BasicBD {
 	 */
 	public ContoAccredito getLastContoAccredito(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IPaginatedExpression exp = this.getServiceManager().getContoAccreditoServiceSearch().newPaginatedExpression();
+			IPaginatedExpression exp = this.getContoAccreditoService().newPaginatedExpression();
 			
-			ContoAccreditoFieldConverter converter = new ContoAccreditoFieldConverter(this.getServiceManager().getJdbcProperties().getDatabase()); 
+			ContoAccreditoFieldConverter converter = new ContoAccreditoFieldConverter(this.getJdbcProperties().getDatabase()); 
 			
 			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.ContoAccredito.model())));
 			exp.addOrder(it.govpay.orm.ContoAccredito.model().DATA_ORA_PUBBLICAZIONE, SortOrder.DESC);
 			exp.limit(1);
-			List<it.govpay.orm.ContoAccredito> lstContoAccredito = this.getServiceManager().getContoAccreditoServiceSearch().findAll(exp);
+			List<it.govpay.orm.ContoAccredito> lstContoAccredito = this.getContoAccreditoService().findAll(exp);
 			
 			if(lstContoAccredito == null || lstContoAccredito.isEmpty()) {
 				throw new NotFoundException("Nessuna ContoAccredito con idDominio ["+idDominio+"] trovata");
@@ -140,13 +140,13 @@ public class ContiAccreditoBD extends BasicBD {
 	public void updateContoAccredito(ContoAccredito contoAccredito) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.ContoAccredito vo = ContoAccreditoConverter.toVO(contoAccredito);
-			IdContoAccredito id = this.getServiceManager().getContoAccreditoServiceSearch().convertToId(vo);
+			IdContoAccredito id = this.getContoAccreditoService().convertToId(vo);
 			
-			if(!this.getServiceManager().getContoAccreditoServiceSearch().exists(id)) {
+			if(!this.getContoAccreditoService().exists(id)) {
 				throw new NotFoundException("ContoAccredito con id ["+id+"] non esiste.");
 			}
 			
-			this.getServiceManager().getContoAccreditoService().update(id, vo);
+			this.getContoAccreditoService().update(id, vo);
 			contoAccredito.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -165,7 +165,7 @@ public class ContiAccreditoBD extends BasicBD {
 	public void insertContoAccredito(ContoAccredito contoAccredito) throws ServiceException{
 		try {
 			it.govpay.orm.ContoAccredito vo = ContoAccreditoConverter.toVO(contoAccredito);
-			this.getServiceManager().getContoAccreditoService().create(vo);
+			this.getContoAccreditoService().create(vo);
 			contoAccredito.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
@@ -175,7 +175,7 @@ public class ContiAccreditoBD extends BasicBD {
 	
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getContoAccreditoServiceSearch().count(filter.toExpression()).longValue();
+			return this.getContoAccreditoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -186,8 +186,8 @@ public class ContiAccreditoBD extends BasicBD {
 		try {
 			
 			List<IField> fields = new ArrayList<IField>();
-			ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.getServiceManager().getContoAccreditoServiceSearch()).getFieldConverter();
-			IJDBCFetch fetch = ((IDBServiceUtilities<?>)this.getServiceManager().getContoAccreditoServiceSearch()).getFetch();
+			ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.getContoAccreditoService()).getFieldConverter();
+			IJDBCFetch fetch = ((IDBServiceUtilities<?>)this.getContoAccreditoService()).getFetch();
 
 			fields.add(new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.ContoAccredito.model())));
 			fields.add(it.govpay.orm.ContoAccredito.model().ID_FLUSSO);
@@ -195,12 +195,12 @@ public class ContiAccreditoBD extends BasicBD {
 			fields.add(it.govpay.orm.ContoAccredito.model().DATA_ORA_INIZIO_VALIDITA);
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.ContoAccredito.model())));
 
-			List<Map<String,Object>> select = this.getServiceManager().getContoAccreditoServiceSearch().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
+			List<Map<String,Object>> select = this.getContoAccreditoService().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
 			
 			if(select != null && !select.isEmpty()) {
 				for (Map<String, Object> map : select) {
 					Long idDominioLong = (Long) map.remove("id_dominio");
-					it.govpay.orm.ContoAccredito contoAccreditoVO = (it.govpay.orm.ContoAccredito) fetch.fetch(this.getServiceManager().getJdbcProperties().getDatabase(), it.govpay.orm.ContoAccredito.model(), map);
+					it.govpay.orm.ContoAccredito contoAccreditoVO = (it.govpay.orm.ContoAccredito) fetch.fetch(this.getJdbcProperties().getDatabase(), it.govpay.orm.ContoAccredito.model(), map);
 					IdDominio idDominio = new IdDominio();
 					idDominio.setId(idDominioLong);
 					contoAccreditoVO.setIdDominio(idDominio);

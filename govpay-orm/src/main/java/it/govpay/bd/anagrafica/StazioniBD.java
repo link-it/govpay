@@ -52,7 +52,7 @@ public class StazioniBD extends BasicBD {
 
 			it.govpay.orm.Stazione vo = StazioneConverter.toVO(stazione);
 
-			this.getServiceManager().getStazioneService().create(vo);
+			this.getStazioneService().create(vo);
 			stazione.setId(vo.getId());			
 			
 		} catch (NotImplementedException e) {
@@ -64,13 +64,13 @@ public class StazioniBD extends BasicBD {
 
 		try {
 			it.govpay.orm.Stazione vo = StazioneConverter.toVO(stazione);
-			IdStazione idStazione = this.getServiceManager().getStazioneServiceSearch().convertToId(vo);
+			IdStazione idStazione = this.getStazioneService().convertToId(vo);
 			
-			if(!this.getServiceManager().getStazioneServiceSearch().exists(idStazione)) {
+			if(!this.getStazioneService().exists(idStazione)) {
 				throw new NotFoundException("IdStazione con id ["+idStazione.toJson()+"] non trovata");
 			}
 			
-			this.getServiceManager().getStazioneService().update(idStazione, vo);
+			this.getStazioneService().update(idStazione, vo);
 			stazione.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -89,7 +89,7 @@ public class StazioniBD extends BasicBD {
 		}
 		long id = idStazione.longValue();
 		try {
-			it.govpay.orm.Stazione stazioneVO = ((JDBCStazioneServiceSearch)this.getServiceManager().getStazioneServiceSearch()).get(id);
+			it.govpay.orm.Stazione stazioneVO = ((JDBCStazioneServiceSearch)this.getStazioneService()).get(id);
 			Stazione stazione = StazioneConverter.toDTO(stazioneVO);
 			return stazione;
 		} catch (NotImplementedException e) {
@@ -103,7 +103,7 @@ public class StazioniBD extends BasicBD {
 			IdStazione idStazione = new IdStazione();
 			idStazione.setCodStazione(codStazione);
 
-			it.govpay.orm.Stazione stazioneVO = this.getServiceManager().getStazioneServiceSearch().get(idStazione);
+			it.govpay.orm.Stazione stazioneVO = this.getStazioneService().get(idStazione);
 			Stazione stazione = StazioneConverter.toDTO(stazioneVO);
 			return stazione;
 		} catch (NotImplementedException e) {
@@ -113,16 +113,12 @@ public class StazioniBD extends BasicBD {
 	}
 	
 	public StazioneFilter newFilter() throws ServiceException {
-		try {
-			return new StazioneFilter(this.getServiceManager().getStazioneServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new StazioneFilter(this.getStazioneService());
 	}
 
 	public long count(StazioneFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getStazioneServiceSearch().count(filter.toExpression()).longValue();
+			return this.getStazioneService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -130,7 +126,7 @@ public class StazioniBD extends BasicBD {
 
 	public List<Stazione> findAll(StazioneFilter filter) throws ServiceException {
 		try {
-			return StazioneConverter.toDTOList(this.getServiceManager().getStazioneServiceSearch().findAll(filter.toPaginatedExpression()));
+			return StazioneConverter.toDTOList(this.getStazioneService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -139,11 +135,11 @@ public class StazioniBD extends BasicBD {
 	// Ritorna tutte le stazioni afferenti all'intermediario indicato
 	public List<Stazione> getStazioni(long idIntermediario) throws ServiceException {
 		try {
-			StazioneFieldConverter fieldConverter = new StazioneFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+			StazioneFieldConverter fieldConverter = new StazioneFieldConverter(this.getJdbcProperties().getDatabaseType());
 
-			IPaginatedExpression exp = this.getServiceManager().getStazioneServiceSearch().newPaginatedExpression();
+			IPaginatedExpression exp = this.getStazioneService().newPaginatedExpression();
 			exp.equals(new CustomField("id_intermediario", Long.class, "id_intermediario", fieldConverter.toTable(it.govpay.orm.Stazione.model())), idIntermediario);
-			return StazioneConverter.toDTOList(this.getServiceManager().getStazioneServiceSearch().findAll(exp));
+			return StazioneConverter.toDTOList(this.getStazioneService().findAll(exp));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

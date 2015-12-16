@@ -60,7 +60,7 @@ public class IbanAccreditoBD extends BasicBD {
 		long id = idIbanAccredito.longValue();
 
 		try {
-			it.govpay.orm.IbanAccredito ibanAccreditoVO = ((JDBCIbanAccreditoServiceSearch)this.getServiceManager().getIbanAccreditoServiceSearch()).get(id);
+			it.govpay.orm.IbanAccredito ibanAccreditoVO = ((JDBCIbanAccreditoServiceSearch)this.getIbanAccreditoService()).get(id);
 			IbanAccredito ibanAccredito = getIbanAccredito(ibanAccreditoVO);
 			
 			return ibanAccredito;
@@ -88,7 +88,7 @@ public class IbanAccreditoBD extends BasicBD {
 			IdIbanAccredito id = new IdIbanAccredito();
 			id.setCodIban(codIban);
 			
-			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getServiceManager().getIbanAccreditoServiceSearch().get(id);
+			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().get(id);
 			IbanAccredito ibanAccredito = getIbanAccredito(ibanAccreditoVO);
 			
 			return ibanAccredito;
@@ -117,13 +117,13 @@ public class IbanAccreditoBD extends BasicBD {
 	public void updateIbanAccredito(IbanAccredito ibanAccredito) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
-			IdIbanAccredito id = this.getServiceManager().getIbanAccreditoServiceSearch().convertToId(vo);
+			IdIbanAccredito id = this.getIbanAccreditoService().convertToId(vo);
 			
-			if(!this.getServiceManager().getIbanAccreditoServiceSearch().exists(id)) {
+			if(!this.getIbanAccreditoService().exists(id)) {
 				throw new NotFoundException("IbanAccredito con id ["+id+"] non esiste.");
 			}
 			
-			this.getServiceManager().getIbanAccreditoService().update(id, vo);
+			this.getIbanAccreditoService().update(id, vo);
 			ibanAccredito.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -142,7 +142,7 @@ public class IbanAccreditoBD extends BasicBD {
 	public void insertIbanAccredito(IbanAccredito ibanAccredito) throws ServiceException{
 		try {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
-			this.getServiceManager().getIbanAccreditoService().create(vo);
+			this.getIbanAccreditoService().create(vo);
 			ibanAccredito.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
@@ -151,26 +151,22 @@ public class IbanAccreditoBD extends BasicBD {
 	}
 	
 	public IFilter newFilter() throws ServiceException {
-		try {
-			return new it.govpay.bd.AbstractFilter(this.getServiceManager().getIbanAccreditoServiceSearch()) {
-				
-				@Override
-				public IExpression toExpression() throws ServiceException {
-					try {
-						return newExpression();
-					} catch (NotImplementedException e) {
-						throw new ServiceException(e);
-					}
+		return new it.govpay.bd.AbstractFilter(this.getIbanAccreditoService()) {
+			
+			@Override
+			public IExpression toExpression() throws ServiceException {
+				try {
+					return newExpression();
+				} catch (NotImplementedException e) {
+					throw new ServiceException(e);
 				}
-			};
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+			}
+		};
 	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getIbanAccreditoServiceSearch().count(filter.toExpression()).longValue();
+			return this.getIbanAccreditoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -178,7 +174,7 @@ public class IbanAccreditoBD extends BasicBD {
 
 	public List<IbanAccredito> findAll(IFilter filter) throws ServiceException {
 		try {
-			return IbanAccreditoConverter.toDTOList(this.getServiceManager().getIbanAccreditoServiceSearch().findAll(filter.toPaginatedExpression()));
+			return IbanAccreditoConverter.toDTOList(this.getIbanAccreditoService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

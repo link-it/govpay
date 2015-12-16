@@ -44,7 +44,7 @@ public class RendicontazioniBD extends it.govpay.bd.rendicontazione.FrBD {
 
 	public List<ListaRendicontazioniEntry> findAll(FrFilter filter) throws ServiceException {
 		try {
-			List<it.govpay.orm.FR> lstFRVO = this.getServiceManager().getFRServiceSearch().findAll(filter.toPaginatedExpression());
+			List<it.govpay.orm.FR> lstFRVO = this.getFrService().findAll(filter.toPaginatedExpression());
 			List<ListaRendicontazioniEntry> dominiLst = new ArrayList<ListaRendicontazioniEntry>();
 			for(it.govpay.orm.FR frVO: lstFRVO) {
 				ListaRendicontazioniEntry entry = new ListaRendicontazioniEntry();

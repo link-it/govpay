@@ -65,7 +65,7 @@ public class RtBD extends BasicBD {
 	public Rt getRt(long idRt) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			
-			RT rtVO = ((JDBCRTServiceSearch)this.getServiceManager().getRTServiceSearch()).get(idRt);
+			RT rtVO = ((JDBCRTServiceSearch)this.getRtService()).get(idRt);
 			return getRT(rtVO);
 			
 		} catch (NotImplementedException e) {
@@ -89,7 +89,7 @@ public class RtBD extends BasicBD {
 			IdRt id = new IdRt();
 			id.setCodMsgRicevuta(codMsgRicevuta);
 			
-			RT rtVO = this.getServiceManager().getRTServiceSearch().get(id);
+			RT rtVO = this.getRtService().get(id);
 			return getRT(rtVO);
 			
 		} catch (NotImplementedException e) {
@@ -103,7 +103,7 @@ public class RtBD extends BasicBD {
 		Rt rpt = RtConverter.toDTO(rtVO);
 		IdAnagrafica idAnagrafica = new IdAnagrafica();
 		idAnagrafica.setId(rtVO.getIdAnagraficaAttestante().getId());
-		rpt.setAnagraficaAttestante(AnagraficaConverter.toDTO(this.getServiceManager().getAnagraficaServiceSearch().get(idAnagrafica)));
+		rpt.setAnagraficaAttestante(AnagraficaConverter.toDTO(this.getAnagraficaService().get(idAnagrafica)));
 		return rpt;
 	}
 
@@ -114,7 +114,7 @@ public class RtBD extends BasicBD {
 		tracciatoXML.setDataOraCreazione(new Date());
 		tracciatoXML.setXml(xml);
 
-		this.getServiceManager().getTracciatoXMLService().create(tracciatoXML);
+		this.getTracciatoXMLService().create(tracciatoXML);
 		
 		IdTracciato idTracciato = new IdTracciato();
 		idTracciato.setId(tracciatoXML.getId());
@@ -135,14 +135,14 @@ public class RtBD extends BasicBD {
 	public Rt getLastRt(long idRpt) throws ServiceException, NotFoundException {
 		try {
 			
-			IPaginatedExpression exp = this.getServiceManager().getRTServiceSearch().newPaginatedExpression();
-			RTFieldConverter fieldConverter = new RTFieldConverter(this.getServiceManager().getJdbcProperties().getDatabaseType());
+			IPaginatedExpression exp = this.getRtService().newPaginatedExpression();
+			RTFieldConverter fieldConverter = new RTFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_rpt", Long.class, "id_rpt", fieldConverter.toTable(it.govpay.orm.RT.model())), idRpt);
 			exp.sortOrder(SortOrder.DESC);
 			exp.addOrder(RT.model().DATA_ORA_MSG_RICEVUTA);
 			exp.offset(0);
 			exp.limit(1);
-			List<RT> rtLst = this.getServiceManager().getRTServiceSearch().findAll(exp);
+			List<RT> rtLst = this.getRtService().findAll(exp);
 			
 			if(rtLst.size() <= 0) {
 				throw new NotFoundException("Impossibile trovate un RT con id rpt["+idRpt+"]");	
@@ -181,14 +181,14 @@ public class RtBD extends BasicBD {
 			insertTracciato(rtVo, documento);
 			rt.setIdTracciatoXML(rtVo.getIdTracciato().getId());
 			Anagrafica anagraficaVo = AnagraficaConverter.toVO(rt.getAnagraficaAttestante());
-			this.getServiceManager().getAnagraficaService().create(anagraficaVo);
+			this.getAnagraficaService().create(anagraficaVo);
 			
 			IdAnagrafica idAnagraficaAttestante = new IdAnagrafica();
 			idAnagraficaAttestante.setId(anagraficaVo.getId());
 			
 			rtVo.setIdAnagraficaAttestante(idAnagraficaAttestante);
 			
-			this.getServiceManager().getRTService().create(rtVo);
+			this.getRtService().create(rtVo);
 			
 			rt.setId(rtVo.getId());
 			

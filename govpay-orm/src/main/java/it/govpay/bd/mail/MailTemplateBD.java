@@ -55,7 +55,7 @@ public class MailTemplateBD extends BasicBD {
 		long id = idMailTemplate.longValue();
 
 		try {
-			return MailTemplateConverter.toDTO(((JDBCMailTemplateServiceSearch)this.getServiceManager().getMailTemplateServiceSearch()).get(id));
+			return MailTemplateConverter.toDTO(((JDBCMailTemplateServiceSearch)this.getMailTemplateService()).get(id));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -75,7 +75,7 @@ public class MailTemplateBD extends BasicBD {
 			
 			it.govpay.orm.MailTemplate vo = MailTemplateConverter.toVO(mailTemplate);
 			
-			this.getServiceManager().getMailTemplateService().create(vo);
+			this.getMailTemplateService().create(vo);
 			mailTemplate.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -99,11 +99,11 @@ public class MailTemplateBD extends BasicBD {
 			IdMailTemplate idMailTemplate = new IdMailTemplate();
 			idMailTemplate.setIdMailTemplate(mailTemplate.getId());
 			
-			if(!this.getServiceManager().getMailTemplateServiceSearch().exists(idMailTemplate)) {
+			if(!this.getMailTemplateService().exists(idMailTemplate)) {
 				throw new NotFoundException("MailTemplate con id ["+idMailTemplate.toJson()+"] non trovata, impossibile aggiornarla.");
 			}
 			
-			this.getServiceManager().getMailTemplateService().update(idMailTemplate, MailTemplateConverter.toVO(mailTemplate));
+			this.getMailTemplateService().update(idMailTemplate, MailTemplateConverter.toVO(mailTemplate));
 			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);

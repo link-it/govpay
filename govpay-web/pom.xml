@@ -11,53 +11,17 @@
 
 	<artifactId>govpay-web</artifactId>
 	<packaging>war</packaging>
-	<name>GovPAY Web module</name>
+	<name>GovPay Web module</name>
 
 	<properties>
 		<jetty-version>8.1.16.v20140903</jetty-version>
 	</properties>
 
 	<dependencies>
-	
 		<dependency>
 			<groupId>it.govpay</groupId>
-			<artifactId>govpay-bi</artifactId>
-			<type>jar</type>
+			<artifactId>govpay-ejb</artifactId>
 		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.ejb</groupId>
-			<artifactId>jboss-ejb-api_3.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.ws.rs</groupId>
-			<artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>servlet-api</artifactId>
-			<version>2.5</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.jboss.spec.javax.xml.ws</groupId>
-			<artifactId>jboss-jaxws-api_2.2_spec</artifactId>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.2</version>
-			<scope>provided</scope>
-		</dependency>
-
-
 	</dependencies>
 
 	<build>

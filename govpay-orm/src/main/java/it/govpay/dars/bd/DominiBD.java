@@ -75,7 +75,7 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 				entry.setAbilitato(dominio.isAbilitato());
 				entry.setCodDominio(dominio.getCodDominio());
 				entry.setRagioneSociale(dominio.getRagioneSociale());
-				
+
 				Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
 				entry.setCodStazione(stazione.getCodStazione());
 
@@ -88,38 +88,37 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 			throw new ServiceException(e);
 		}  
 	}
-	
+
 	public ListaDominiEntry getListaEntryDominio(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
-		
+
 		ListaDominiEntry dominio = new ListaDominiEntry();
-		
+
 		Dominio dominioDTO = AnagraficaManager.getDominio(this, idDominio);
-		
+
 		//Stazione
 		Stazione stazione = AnagraficaManager.getStazione(this, dominioDTO.getIdStazione());
-		
+
 		dominio.setId(dominioDTO.getId());
 		dominio.setAbilitato(dominioDTO.isAbilitato());
 		dominio.setCodDominio(dominioDTO.getCodDominio());
 		dominio.setRagioneSociale(dominioDTO.getRagioneSociale());
 		dominio.setCodStazione(stazione.getCodStazione());
-		
-		
+
+
 		return dominio;
 	}
 
 	public DominioExt getDominio(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
-		try {
-			Dominio dominioDTO = AnagraficaManager.getDominio(this, idDominio);
-			
-			//Intermediario
-			Stazione stazione = AnagraficaManager.getStazione(this, dominioDTO.getIdStazione());
-			
-			//Tabelle Controparti
-			final long id = dominioDTO.getId();
-			List<it.govpay.bd.model.TabellaControparti> tabelleControparti = null;
-			{
-			AbstractFilter filter = new it.govpay.bd.AbstractFilter(this.getServiceManager().getTabellaContropartiServiceSearch()) {
+		Dominio dominioDTO = AnagraficaManager.getDominio(this, idDominio);
+
+		//Intermediario
+		Stazione stazione = AnagraficaManager.getStazione(this, dominioDTO.getIdStazione());
+
+		//Tabelle Controparti
+		final long id = dominioDTO.getId();
+		List<it.govpay.bd.model.TabellaControparti> tabelleControparti = null;
+		{
+			AbstractFilter filter = new it.govpay.bd.AbstractFilter(this.getTabellaContropartiService()) {
 
 				@Override
 				public IExpression toExpression() throws ServiceException {
@@ -136,55 +135,51 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 					}
 				}
 			};
-			
+
 			List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
-			
+
 			FilterSortWrapper e = new FilterSortWrapper();
 			e.setField(TabellaControparti.model().DATA_ORA_PUBBLICAZIONE);
 			e.setSortOrder(SortOrder.DESC);
-			
+
 			filterSortList.add(e);
 			filter.setFilterSortList(filterSortList);
 			tabelleControparti = this.tabellaContropartiBD.findAll(filter);
-			}
-			List<it.govpay.bd.model.ContoAccredito> contiAccredito = null;
-			{
-				AbstractFilter filter = new it.govpay.bd.AbstractFilter(this.getServiceManager().getContoAccreditoServiceSearch()) {
-
-					@Override
-					public IExpression toExpression() throws ServiceException {
-						try {
-							IExpression exp = newExpression();
-							exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", this.getRootTable()), id);
-							return exp;
-						} catch (NotImplementedException e) {
-							throw new ServiceException(e);
-						} catch (ExpressionNotImplementedException e) {
-							throw new ServiceException(e);
-						} catch (ExpressionException e) {
-							throw new ServiceException(e);
-						}
-					}
-				};
-				
-				List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
-				
-				FilterSortWrapper e = new FilterSortWrapper();
-				e.setField(ContoAccredito.model().DATA_ORA_PUBBLICAZIONE);
-				e.setSortOrder(SortOrder.DESC);
-				
-				filterSortList.add(e);
-				filter.setFilterSortList(filterSortList);
-				contiAccredito = this.contoAccreditoBD.findAll(filter);
-
-			}
-			List<IbanAccredito> ibanAccredito = this.getIbanAccreditoByIdDominio(idDominio);
-			
-			return DominioConverter.toDominioExt(dominioDTO, stazione, tabelleControparti, contiAccredito, ibanAccredito);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
 		}
+		List<it.govpay.bd.model.ContoAccredito> contiAccredito = null;
+		{
+			AbstractFilter filter = new it.govpay.bd.AbstractFilter(this.getContoAccreditoService()) {
 
+				@Override
+				public IExpression toExpression() throws ServiceException {
+					try {
+						IExpression exp = newExpression();
+						exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", this.getRootTable()), id);
+						return exp;
+					} catch (NotImplementedException e) {
+						throw new ServiceException(e);
+					} catch (ExpressionNotImplementedException e) {
+						throw new ServiceException(e);
+					} catch (ExpressionException e) {
+						throw new ServiceException(e);
+					}
+				}
+			};
+
+			List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
+
+			FilterSortWrapper e = new FilterSortWrapper();
+			e.setField(ContoAccredito.model().DATA_ORA_PUBBLICAZIONE);
+			e.setSortOrder(SortOrder.DESC);
+
+			filterSortList.add(e);
+			filter.setFilterSortList(filterSortList);
+			contiAccredito = this.contoAccreditoBD.findAll(filter);
+
+		}
+		List<IbanAccredito> ibanAccredito = this.getIbanAccreditoByIdDominio(idDominio);
+
+		return DominioConverter.toDominioExt(dominioDTO, stazione, tabelleControparti, contiAccredito, ibanAccredito);
 
 	}
 
@@ -198,18 +193,18 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 				} catch(NotFoundException e) {
 					this.ibanAccreditoBD.insertIbanAccredito(iban);
 				}
-				
+
 			}
 		}
-		
+
 	}
-	
+
 	public void updateDominio(Dominio dominio) throws NotFoundException, ServiceException {
 		super.updateDominio(dominio);
 	}
 
 	public void insertDominioExt(DominioExt dominio) throws ServiceException{
-		
+
 		Dominio dto = DominioConverter.toDTO(dominio);
 		super.insertDominio(dto);
 		dominio.setId(dto.getId()); 		
@@ -219,12 +214,12 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 				this.ibanAccreditoBD.insertIbanAccredito(iban);
 			}
 		}
-		
+
 	}
-	
+
 	public void insertDominio(Dominio dominio) throws ServiceException{
 		super.insertDominio(dominio);
 	}
 
-	
+
 }

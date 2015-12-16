@@ -56,7 +56,7 @@ public class ErBD extends BasicBD {
 	 */
 	public Er getEr(long idEr) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			ER vo = ((JDBCERServiceSearch)this.getServiceManager().getERServiceSearch()).get(idEr);
+			ER vo = ((JDBCERServiceSearch)this.getErService()).get(idEr);
 			
 			return getDTO(vo);
 		} catch (NotImplementedException e) {
@@ -82,7 +82,7 @@ public class ErBD extends BasicBD {
 			
 			IdEr id = new IdEr();
 			id.setCodMsgEsito(codMsgEsito);
-			ER vo = this.getServiceManager().getERServiceSearch().get(id);
+			ER vo = this.getErService().get(id);
 			return getDTO(vo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -113,7 +113,7 @@ public class ErBD extends BasicBD {
 			it.govpay.orm.ER vo = ErConverter.toVO(er);
 			insertTracciato(vo, documento);
 			er.setIdTracciatoXML(vo.getIdTracciatoXML().getId());
-			this.getServiceManager().getERService().create(vo);
+			this.getErService().create(vo);
 			er.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
@@ -129,7 +129,7 @@ public class ErBD extends BasicBD {
 		tracciatoXML.setDataOraCreazione(new Date());
 		tracciatoXML.setXml(xml);
 
-		this.getServiceManager().getTracciatoXMLService().create(tracciatoXML);
+		this.getTracciatoXMLService().create(tracciatoXML);
 		
 		IdTracciato idTracciato = new IdTracciato();
 		idTracciato.setId(tracciatoXML.getId());

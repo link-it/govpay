@@ -65,7 +65,7 @@ public class EsitiBD extends BasicBD {
 	public Esito getEsito(long idEsito) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			
-			it.govpay.orm.Esito rptVO = ((JDBCEsitoServiceSearch)this.getServiceManager().getEsitoServiceSearch()).get(idEsito);
+			it.govpay.orm.Esito rptVO = ((JDBCEsitoServiceSearch)this.getEsitoService()).get(idEsito);
 			return getEsito(rptVO);
 			
 		} catch (NotImplementedException e) {
@@ -91,7 +91,7 @@ public class EsitiBD extends BasicBD {
 		try {
 			
 			it.govpay.orm.Esito esitoVo = EsitoConverter.toVO(esito);
-			this.getServiceManager().getEsitoService().create(esitoVo);
+			this.getEsitoService().create(esitoVo);
 			
 			esito.setId(esitoVo.getId());
 			
@@ -103,7 +103,7 @@ public class EsitiBD extends BasicBD {
 
 	public boolean exists(Esito esito) throws ServiceException {
 		try {
-			return ((JDBCEsitoServiceSearch)this.getServiceManager().getEsitoServiceSearch()).exists(esito.getId());
+			return ((JDBCEsitoServiceSearch)this.getEsitoService()).exists(esito.getId());
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -123,9 +123,9 @@ public class EsitiBD extends BasicBD {
 			if(!this.exists(esito)) {
 				throw new NotFoundException("Esito con id ["+esito.getId()+"] non trovato.");
 			}
-			IdEsito idVO = ((JDBCEsitoServiceSearch)this.getServiceManager().getEsitoServiceSearch()).findId(esito.getId(), true);
+			IdEsito idVO = ((JDBCEsitoServiceSearch)this.getEsitoService()).findId(esito.getId(), true);
 
-			this.getServiceManager().getEsitoService().update(idVO, EsitoConverter.toVO(esito));
+			this.getEsitoService().update(idVO, EsitoConverter.toVO(esito));
 			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -134,58 +134,50 @@ public class EsitiBD extends BasicBD {
 	}
 	
 	public IFilter newFilter() throws ServiceException {
-		try {
-			return new EsitoFilter(this.getServiceManager().getEsitoServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new EsitoFilter(this.getEsitoService());
 	}
 
 	private IFilter newBatchSpedizioneFilter(int offset, int limit) throws ServiceException {
-		try {
-			AbstractFilter filter = new AbstractFilter(this.getServiceManager().getEsitoServiceSearch()) {
-				
-				@Override
-				public IExpression toExpression() throws ServiceException {
-					try {
-						IExpression exp = this.newExpression();
-						exp.lessEquals(it.govpay.orm.Esito.model().DATA_ORA_PROSSIMA_SPEDIZIONE, new Date());
-						IExpression exp2 = this.newExpression();
-						exp2.isNull(it.govpay.orm.Esito.model().DATA_ORA_PROSSIMA_SPEDIZIONE);
-						
-						IExpression exp3 = this.newExpression().or(exp, exp2);
-						
-						IExpression exp4 = this.newExpression();
-						exp4.equals(it.govpay.orm.Esito.model().STATO_SPEDIZIONE, Esito.StatoSpedizione.DA_SPEDIRE.toString());
-						
-						return exp4.and(exp3);
-					}catch(NotImplementedException e) {
-						throw new ServiceException(e);
-					} catch (ExpressionNotImplementedException e) {
-						throw new ServiceException(e);
-					} catch (ExpressionException e) {
-						throw new ServiceException(e);
-					}
+		AbstractFilter filter = new AbstractFilter(this.getEsitoService()) {
+			
+			@Override
+			public IExpression toExpression() throws ServiceException {
+				try {
+					IExpression exp = this.newExpression();
+					exp.lessEquals(it.govpay.orm.Esito.model().DATA_ORA_PROSSIMA_SPEDIZIONE, new Date());
+					IExpression exp2 = this.newExpression();
+					exp2.isNull(it.govpay.orm.Esito.model().DATA_ORA_PROSSIMA_SPEDIZIONE);
+					
+					IExpression exp3 = this.newExpression().or(exp, exp2);
+					
+					IExpression exp4 = this.newExpression();
+					exp4.equals(it.govpay.orm.Esito.model().STATO_SPEDIZIONE, Esito.StatoSpedizione.DA_SPEDIRE.toString());
+					
+					return exp4.and(exp3);
+				}catch(NotImplementedException e) {
+					throw new ServiceException(e);
+				} catch (ExpressionNotImplementedException e) {
+					throw new ServiceException(e);
+				} catch (ExpressionException e) {
+					throw new ServiceException(e);
 				}
-			};
+			}
+		};
 
-			filter.setOffset(offset);
-			filter.setLimit(limit);
-			List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
-			FilterSortWrapper wrapper = new FilterSortWrapper();
-			wrapper.setField(it.govpay.orm.Esito.model().DATA_ORA_PROSSIMA_SPEDIZIONE);
-			wrapper.setSortOrder(SortOrder.ASC);
-			filterSortList.add(wrapper);
-			filter.setFilterSortList(filterSortList);
-			return filter;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		filter.setOffset(offset);
+		filter.setLimit(limit);
+		List<FilterSortWrapper> filterSortList = new ArrayList<FilterSortWrapper>();
+		FilterSortWrapper wrapper = new FilterSortWrapper();
+		wrapper.setField(it.govpay.orm.Esito.model().DATA_ORA_PROSSIMA_SPEDIZIONE);
+		wrapper.setSortOrder(SortOrder.ASC);
+		filterSortList.add(wrapper);
+		filter.setFilterSortList(filterSortList);
+		return filter;
 	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getEsitoServiceSearch().count(filter.toExpression()).longValue();
+			return this.getEsitoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -194,7 +186,7 @@ public class EsitiBD extends BasicBD {
 	public List<Esito> findAll(IFilter filter) throws ServiceException {
 		try {
 			List<Esito> esitoLst = new ArrayList<Esito>();
-			List<it.govpay.orm.Esito> esitoVOLst = this.getServiceManager().getEsitoServiceSearch().findAll(filter.toPaginatedExpression()); 
+			List<it.govpay.orm.Esito> esitoVOLst = this.getEsitoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Esito esitoVO: esitoVOLst) {
 				esitoLst.add(getEsito(esitoVO));
 			}
@@ -213,14 +205,14 @@ public class EsitiBD extends BasicBD {
 		try {
 			List<EsitoBase> esitoLst = new ArrayList<EsitoBase>();
 			List<IField> fields = new ArrayList<IField>();
-			EsitoFieldConverter converter = new EsitoFieldConverter(this.getServiceManager().getJdbcProperties().getDatabase());
+			EsitoFieldConverter converter = new EsitoFieldConverter(this.getJdbcProperties().getDatabase());
 			
 			fields.add(new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Esito.model())));
 			fields.add(it.govpay.orm.Esito.model().IUV);
 			fields.add(it.govpay.orm.Esito.model().COD_DOMINIO);
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(it.govpay.orm.Esito.model())));
 			try {
-				List<Map<String, Object>> esitoVOLst = this.getServiceManager().getEsitoServiceSearch().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
+				List<Map<String, Object>> esitoVOLst = this.getEsitoService().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
 				for(Map<String, Object> map: esitoVOLst) {
 					EsitoBase esito = new EsitoBase();
 					esito.setId((Long)map.get("id"));

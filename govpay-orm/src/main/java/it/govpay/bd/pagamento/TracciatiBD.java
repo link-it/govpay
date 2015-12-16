@@ -56,7 +56,7 @@ public class TracciatiBD extends BasicBD {
 	 */
 	public byte[] getTracciato(long idTracciato) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			return ((JDBCTracciatoXMLServiceSearch)this.getServiceManager().getTracciatoXMLServiceSearch()).get(idTracciato).getXml();
+			return ((JDBCTracciatoXMLServiceSearch)this.getTracciatoXMLService()).get(idTracciato).getXml();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -73,7 +73,7 @@ public class TracciatiBD extends BasicBD {
 	 */
 	public byte[] getTracciato(TipoTracciato tipoTracciato, String codMessaggio) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IPaginatedExpression exp = this.getServiceManager().getTracciatoXMLServiceSearch().newPaginatedExpression();
+			IPaginatedExpression exp = this.getTracciatoXMLService().newPaginatedExpression();
 			exp.equals(TracciatoXML.model().COD_MESSAGGIO, codMessaggio);
 			exp.equals(TracciatoXML.model().TIPO_TRACCIATO, tipoTracciato.name());
 			exp.sortOrder(SortOrder.DESC);
@@ -82,7 +82,7 @@ public class TracciatiBD extends BasicBD {
 			exp.offset(0);
 			exp.limit(1);
 			
-			List<TracciatoXML> tracciatoLst = this.getServiceManager().getTracciatoXMLServiceSearch().findAll(exp);
+			List<TracciatoXML> tracciatoLst = this.getTracciatoXMLService().findAll(exp);
 			
 			if(tracciatoLst.size() <= 0) {
 				throw new NotFoundException("Impossibile trovate un tracciato con codice messaggio ["+codMessaggio+"] e tipo tracciato ["+tipoTracciato.name()+"]");	

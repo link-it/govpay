@@ -65,9 +65,9 @@ public class TabellaContropartiBD extends BasicBD {
 	 */
 	public TabellaControparti getTabellaControparti(long idTabellaControparti) throws NotFoundException, ServiceException, MultipleResultException {
 		try {
-			it.govpay.orm.TabellaControparti tabellaContropartiVO = ((JDBCTabellaContropartiServiceSearch)this.getServiceManager().getTabellaContropartiServiceSearch()).get(idTabellaControparti);
+			it.govpay.orm.TabellaControparti tabellaContropartiVO = ((JDBCTabellaContropartiServiceSearch)this.getTabellaContropartiService()).get(idTabellaControparti);
 			TabellaControparti tabellaControparti = getTabellaControparti(tabellaContropartiVO);
-			
+
 			return tabellaControparti;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -78,7 +78,7 @@ public class TabellaContropartiBD extends BasicBD {
 		}
 
 	}
-	
+
 	/**
 	 * Recupera l'tabellaControparti tramite l'id logico
 	 * 
@@ -90,25 +90,25 @@ public class TabellaContropartiBD extends BasicBD {
 	 */
 	public TabellaControparti getLastTabellaControparti(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			IPaginatedExpression exp = this.getServiceManager().getTabellaContropartiServiceSearch().newPaginatedExpression();
-			
-			TabellaContropartiFieldConverter converter = new TabellaContropartiFieldConverter(this.getServiceManager().getJdbcProperties().getDatabase()); 
-			
+			IPaginatedExpression exp = this.getTabellaContropartiService().newPaginatedExpression();
+
+			TabellaContropartiFieldConverter converter = new TabellaContropartiFieldConverter(this.getJdbcProperties().getDatabase()); 
+
 			exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TabellaControparti.model())));
 			exp.addOrder(it.govpay.orm.TabellaControparti.model().DATA_ORA_PUBBLICAZIONE, SortOrder.DESC);
 			exp.limit(1);
-			List<it.govpay.orm.TabellaControparti> lstTabellaControparti = this.getServiceManager().getTabellaContropartiServiceSearch().findAll(exp);
-			
+			List<it.govpay.orm.TabellaControparti> lstTabellaControparti = this.getTabellaContropartiService().findAll(exp);
+
 			if(lstTabellaControparti == null || lstTabellaControparti.isEmpty()) {
 				throw new NotFoundException("Nessuna TabellaControparti con idDominio ["+idDominio+"] trovata");
 			}
-			
+
 			if(lstTabellaControparti.size() != 1) {
 				throw new MultipleResultException("Errore nella ricerca dell'ultima TabellaControparti con idDominio ["+idDominio+"]");
 			}
-			
+
 			TabellaControparti tabellaControparti = getTabellaControparti(lstTabellaControparti.get(0));
-			
+
 			return tabellaControparti;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -120,11 +120,11 @@ public class TabellaContropartiBD extends BasicBD {
 	}
 
 	private TabellaControparti getTabellaControparti(it.govpay.orm.TabellaControparti tabellaContropartiVO) throws ServiceException,
-			NotImplementedException, ExpressionNotImplementedException,
-			ExpressionException {
+	NotImplementedException, ExpressionNotImplementedException,
+	ExpressionException {
 		return TabellaContropartiConverter.toDTO(tabellaContropartiVO);
 	}
-	
+
 	/**
 	 * Aggiorna l'tabellaControparti con i dati forniti
 	 * @param ente
@@ -134,15 +134,15 @@ public class TabellaContropartiBD extends BasicBD {
 	public void updateTabellaControparti(TabellaControparti tabellaControparti) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.TabellaControparti vo = TabellaContropartiConverter.toVO(tabellaControparti);
-			IdTabellaControparti id = this.getServiceManager().getTabellaContropartiServiceSearch().convertToId(vo);
-			
-			if(!this.getServiceManager().getTabellaContropartiServiceSearch().exists(id)) {
+			IdTabellaControparti id = this.getTabellaContropartiService().convertToId(vo);
+
+			if(!this.getTabellaContropartiService().exists(id)) {
 				throw new NotFoundException("TabellaControparti con id ["+id+"] non esiste.");
 			}
-			
-			this.getServiceManager().getTabellaContropartiService().update(id, vo);
+
+			this.getTabellaContropartiService().update(id, vo);
 			tabellaControparti.setId(vo.getId());
-			
+
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -150,7 +150,7 @@ public class TabellaContropartiBD extends BasicBD {
 		}
 
 	}
-	
+
 	/**
 	 * Crea una nuova tabellaControparti con i dati forniti
 	 * @param tabellaControparti
@@ -159,35 +159,31 @@ public class TabellaContropartiBD extends BasicBD {
 	public void insertTabellaControparti(TabellaControparti tabellaControparti) throws ServiceException{
 		try {
 			it.govpay.orm.TabellaControparti vo = TabellaContropartiConverter.toVO(tabellaControparti);
-			this.getServiceManager().getTabellaContropartiService().create(vo);
+			this.getTabellaContropartiService().create(vo);
 			tabellaControparti.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public IFilter newFilter() throws ServiceException {
-		try {
-			return new it.govpay.bd.AbstractFilter(this.getServiceManager().getTabellaContropartiServiceSearch()) {
-				
-				@Override
-				public IExpression toExpression() throws ServiceException {
-					try {
-						return newExpression();
-					} catch (NotImplementedException e) {
-						throw new ServiceException(e);
-					}
+		return new it.govpay.bd.AbstractFilter(this.getTabellaContropartiService()) {
+
+			@Override
+			public IExpression toExpression() throws ServiceException {
+				try {
+					return newExpression();
+				} catch (NotImplementedException e) {
+					throw new ServiceException(e);
 				}
-			};
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+			}
+		};
 	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getTabellaContropartiServiceSearch().count(filter.toExpression()).longValue();
+			return this.getTabellaContropartiService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -196,10 +192,10 @@ public class TabellaContropartiBD extends BasicBD {
 	public List<TabellaControparti> findAll(IFilter filter) throws ServiceException {
 		List<TabellaControparti> tabelleControparti = new ArrayList<TabellaControparti>();
 		try {
-			
+
 			List<IField> fields = new ArrayList<IField>();
-			ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.getServiceManager().getTabellaContropartiServiceSearch()).getFieldConverter();
-			IJDBCFetch fetch = ((IDBServiceUtilities<?>)this.getServiceManager().getTabellaContropartiServiceSearch()).getFetch();
+			ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.getTabellaContropartiService()).getFieldConverter();
+			IJDBCFetch fetch = ((IDBServiceUtilities<?>)this.getTabellaContropartiService()).getFetch();
 
 			fields.add(new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TabellaControparti.model())));
 			fields.add(it.govpay.orm.TabellaControparti.model().ID_FLUSSO);
@@ -207,12 +203,12 @@ public class TabellaContropartiBD extends BasicBD {
 			fields.add(it.govpay.orm.TabellaControparti.model().DATA_ORA_INIZIO_VALIDITA);
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.TabellaControparti.model())));
 
-			List<Map<String,Object>> select = this.getServiceManager().getTabellaContropartiServiceSearch().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
-			
+			List<Map<String,Object>> select = this.getTabellaContropartiService().select(filter.toPaginatedExpression(), fields.toArray(new IField[]{}));
+
 			if(select != null && !select.isEmpty()) {
 				for (Map<String, Object> map : select) {
 					Long idDominioLong = (Long) map.remove("id_dominio");
-					it.govpay.orm.TabellaControparti tabellaContropartiVO = (it.govpay.orm.TabellaControparti) fetch.fetch(this.getServiceManager().getJdbcProperties().getDatabase(), it.govpay.orm.TabellaControparti.model(), map);
+					it.govpay.orm.TabellaControparti tabellaContropartiVO = (it.govpay.orm.TabellaControparti) fetch.fetch(this.getJdbcProperties().getDatabase(), it.govpay.orm.TabellaControparti.model(), map);
 					IdDominio idDominio = new IdDominio();
 					idDominio.setId(idDominioLong);
 					tabellaContropartiVO.setIdDominio(idDominio);
@@ -229,5 +225,5 @@ public class TabellaContropartiBD extends BasicBD {
 	}
 
 
-	
+
 }

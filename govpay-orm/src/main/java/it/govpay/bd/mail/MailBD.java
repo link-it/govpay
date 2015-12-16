@@ -52,7 +52,7 @@ public class MailBD extends BasicBD {
 	 */
 	public Mail getMail(long idMail) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			return MailConverter.toDTO(((JDBCMailServiceSearch)this.getServiceManager().getMailServiceSearch()).get(idMail));
+			return MailConverter.toDTO(((JDBCMailServiceSearch)this.getMailService()).get(idMail));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -72,7 +72,7 @@ public class MailBD extends BasicBD {
 			
 			it.govpay.orm.Mail vo = MailConverter.toVO(mail);
 			
-			this.getServiceManager().getMailService().create(vo);
+			this.getMailService().create(vo);
 			mail.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -96,11 +96,11 @@ public class MailBD extends BasicBD {
 			IdMail idMail = new IdMail();
 			idMail.setIdMail(mail.getId());
 			
-			if(!this.getServiceManager().getMailServiceSearch().exists(idMail)) {
+			if(!this.getMailService().exists(idMail)) {
 				throw new NotFoundException("Mail con id ["+idMail.toJson()+"] non trovata, impossibile aggiornarla.");
 			}
 			
-			this.getServiceManager().getMailService().update(idMail, MailConverter.toVO(mail));
+			this.getMailService().update(idMail, MailConverter.toVO(mail));
 			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -113,16 +113,12 @@ public class MailBD extends BasicBD {
 	}
 	
 	public IFilter newFilter() throws ServiceException {
-		try {
-			return new MailFilter(this.getServiceManager().getMailServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new MailFilter(this.getMailService());
 	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getMailServiceSearch().count(filter.toExpression()).longValue();
+			return this.getMailService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -130,7 +126,7 @@ public class MailBD extends BasicBD {
 
 	public List<Mail> findAll(IFilter filter) throws ServiceException {
 		try {
-			return MailConverter.toDTOList(this.getServiceManager().getMailServiceSearch().findAll(filter.toPaginatedExpression()));
+			return MailConverter.toDTOList(this.getMailService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

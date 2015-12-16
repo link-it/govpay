@@ -64,7 +64,7 @@ public class TributiBD extends BasicBD {
 		long id = idTributo.longValue();
 
 		try {
-			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getServiceManager().getTributoService()).get(id));
+			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -94,7 +94,7 @@ public class TributiBD extends BasicBD {
 			idTributo.setIdEnte(logicIdEnte);
 			idTributo.setCodTributo(codTributo);
 			
-			return TributoConverter.toDTO(this.getServiceManager().getTributoService().get(idTributo));
+			return TributoConverter.toDTO(this.getTributoService().get(idTributo));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -110,11 +110,11 @@ public class TributiBD extends BasicBD {
 	public List<Tributo> getTributi(long idApplicazione) throws NotFoundException, ServiceException {
 		try {
 			
-			IPaginatedExpression exp = this.getServiceManager().getTributoServiceSearch().newPaginatedExpression();
-			ApplicazioneFieldConverter fieldConverter = new ApplicazioneFieldConverter(this.getServiceManager().getJdbcProperties().getDatabase());
+			IPaginatedExpression exp = this.getTributoService().newPaginatedExpression();
+			ApplicazioneFieldConverter fieldConverter = new ApplicazioneFieldConverter(this.getJdbcProperties().getDatabase());
 			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Applicazione.model().APPLICAZIONE_TRIBUTO)), idApplicazione);
 			
-			return TributoConverter.toDTOList(this.getServiceManager().getTributoService().findAll(exp));
+			return TributoConverter.toDTOList(this.getTributoService().findAll(exp));
 			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -136,13 +136,13 @@ public class TributiBD extends BasicBD {
 		try {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			
-			IdTributo idVO = this.getServiceManager().getTributoServiceSearch().convertToId(vo);
+			IdTributo idVO = this.getTributoService().convertToId(vo);
 			
-			if(!this.getServiceManager().getTributoServiceSearch().exists(idVO)) {
+			if(!this.getTributoService().exists(idVO)) {
 				throw new NotFoundException("Tributo con id ["+idVO.toJson()+"] non trovato.");
 			}
 			
-			this.getServiceManager().getTributoService().update(idVO, vo);
+			this.getTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -166,7 +166,7 @@ public class TributiBD extends BasicBD {
 		try {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
 			
-			this.getServiceManager().getTributoService().create(vo);
+			this.getTributoService().create(vo);
 			tributo.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
@@ -177,16 +177,12 @@ public class TributiBD extends BasicBD {
 	
 	
 	public TributoFilter newFilter() throws ServiceException {
-		try {
-			return new TributoFilter(this.getServiceManager().getTributoServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new TributoFilter(this.getTributoService());
 	}
 
 	public long count(TributoFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getTributoServiceSearch().count(filter.toExpression()).longValue();
+			return this.getTributoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -194,7 +190,7 @@ public class TributiBD extends BasicBD {
 
 	public List<Tributo> findAll(TributoFilter filter) throws ServiceException {
 		try {
-			return TributoConverter.toDTOList(this.getServiceManager().getTributoServiceSearch().findAll(filter.toPaginatedExpression()));
+			return TributoConverter.toDTOList(this.getTributoService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

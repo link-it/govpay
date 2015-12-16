@@ -47,7 +47,7 @@ public class MediaRilevamentoBD extends BasicBD {
 	 */
 	public MediaRilevamento getMediaRilevamento(long idMediaRilevamento) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
-			return MediaRilevamentoConverter.toDTO(((JDBCMediaRilevamentoServiceSearch)this.getServiceManager().getMediaRilevamentoServiceSearch()).get(idMediaRilevamento));
+			return MediaRilevamentoConverter.toDTO(((JDBCMediaRilevamentoServiceSearch)this.getMediaRilevamentoService()).get(idMediaRilevamento));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -67,7 +67,7 @@ public class MediaRilevamentoBD extends BasicBD {
 			
 			it.govpay.orm.MediaRilevamento vo = MediaRilevamentoConverter.toVO(mediaRilevamento);
 			
-			this.getServiceManager().getMediaRilevamentoService().create(vo);
+			this.getMediaRilevamentoService().create(vo);
 			mediaRilevamento.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {

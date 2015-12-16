@@ -70,9 +70,9 @@ public class PspBD extends BasicBD {
 	 */
 	public List<Psp> getPsp(boolean abilitato) throws ServiceException {
 		try {
-			IPaginatedExpression exp = this.getServiceManager().getPspServiceSearch().newPaginatedExpression();
+			IPaginatedExpression exp = this.getPspService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Psp.model().ABILITATO, abilitato);
-			return getPspList(this.getServiceManager().getPspServiceSearch().findAll(exp));
+			return getPspList(this.getPspService().findAll(exp));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -96,10 +96,10 @@ public class PspBD extends BasicBD {
 		try {
 			Psp psp = PspConverter.toDTO(pspVO);
 
-			IPaginatedExpression exp = this.getServiceManager().getCanaleService().newPaginatedExpression();
+			IPaginatedExpression exp = this.getCanaleService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Canale.model().ID_PSP.COD_PSP, psp.getCodPsp());
 			
-			List<it.govpay.orm.Canale> canali = this.getServiceManager().getCanaleService().findAll(exp);
+			List<it.govpay.orm.Canale> canali = this.getCanaleService().findAll(exp);
 			
 			if(canali != null && !canali.isEmpty()) {
 				List<Canale> canaliLst = new ArrayList<Psp.Canale>();
@@ -132,7 +132,7 @@ public class PspBD extends BasicBD {
 			IdPsp id = new IdPsp();
 			id.setCodPsp(codPsp);
 			
-			return getPsp(this.getServiceManager().getPspServiceSearch().get(id));
+			return getPsp(this.getPspService().get(id));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -153,7 +153,7 @@ public class PspBD extends BasicBD {
 
 
 		try {
-			return getPsp(((JDBCPspServiceSearch)this.getServiceManager().getPspServiceSearch()).get(id));
+			return getPsp(((JDBCPspServiceSearch)this.getPspService()).get(id));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -166,7 +166,7 @@ public class PspBD extends BasicBD {
 		
 		long id = idCanale.longValue();
 		try {
-			it.govpay.orm.Canale canale = ((IDBCanaleServiceSearch)this.getServiceManager().getCanaleServiceSearch()).get(id);
+			it.govpay.orm.Canale canale = ((IDBCanaleServiceSearch)this.getCanaleService()).get(id);
 			Psp psp = getPsp(canale.getIdPsp().getId());
 			return CanaleConverter.toDTO(canale, psp);
 		} catch (NotImplementedException e) {
@@ -192,13 +192,13 @@ public class PspBD extends BasicBD {
 			
 			it.govpay.orm.Psp vo = PspConverter.toVO(psp);
 			
-			IdPsp idVO = this.getServiceManager().getPspServiceSearch().convertToId(vo);
-			if(!this.getServiceManager().getPspServiceSearch().exists(idVO)) {
+			IdPsp idVO = this.getPspService().convertToId(vo);
+			if(!this.getPspService().exists(idVO)) {
 				throw new NotFoundException("Psp con id ["+idVO.toJson()+"] non trovato");
 			}
 			
 			//Inserisco il nuovo tracciato se e solo se il codFlusso e' cambiato
-			it.govpay.orm.Psp oldPsp = this.getServiceManager().getPspServiceSearch().get(idVO);
+			it.govpay.orm.Psp oldPsp = this.getPspService().get(idVO);
 			String codFlussoOld = oldPsp.getCodFlusso();
 			if(!psp.getCodFlusso().equals(codFlussoOld)) {
 				insertTracciato(vo, xml);				
@@ -206,19 +206,19 @@ public class PspBD extends BasicBD {
 				vo.setIdTracciato(oldPsp.getIdTracciato());
 			}
 			
-			this.getServiceManager().getPspService().update(idVO, vo);
+			this.getPspService().update(idVO, vo);
 			psp.setId(vo.getId());
 
-			IPaginatedExpression exp = this.getServiceManager().getCanaleService().newPaginatedExpression();
+			IPaginatedExpression exp = this.getCanaleService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Canale.model().ID_PSP.COD_PSP, psp.getCodPsp());
 			
-			List<it.govpay.orm.Canale> findAll = this.getServiceManager().getCanaleService().findAll(exp);
+			List<it.govpay.orm.Canale> findAll = this.getCanaleService().findAll(exp);
 			
 			if(findAll != null) {
 				for(it.govpay.orm.Canale canaleDaDisabilitare: findAll) {
 					canaleDaDisabilitare.setAbilitato(false);
-					IdCanale idCanale = this.getServiceManager().getCanaleService().convertToId(canaleDaDisabilitare);
-					this.getServiceManager().getCanaleService().update(idCanale, canaleDaDisabilitare);
+					IdCanale idCanale = this.getCanaleService().convertToId(canaleDaDisabilitare);
+					this.getCanaleService().update(idCanale, canaleDaDisabilitare);
 				}
 				
 			}
@@ -232,9 +232,9 @@ public class PspBD extends BasicBD {
 				idCanale.setTipoVersamento(canale.getTipoVersamento().getCodifica());
 				idCanale.setIdPsp(idVO);
 				try {
-					this.getServiceManager().getCanaleService().update(idCanale, canaleVO);
+					this.getCanaleService().update(idCanale, canaleVO);
 				} catch (NotFoundException e) {
-					this.getServiceManager().getCanaleService().create(canaleVO);
+					this.getCanaleService().create(canaleVO);
 				}
 				canale.setId(canaleVO.getId());
 			}
@@ -260,7 +260,7 @@ public class PspBD extends BasicBD {
 		tracciatoXML.setDataOraCreazione(new Date());
 		tracciatoXML.setXml(xml);
 
-		this.getServiceManager().getTracciatoXMLService().create(tracciatoXML);
+		this.getTracciatoXMLService().create(tracciatoXML);
 		
 		IdTracciato idTracciato = new IdTracciato();
 		idTracciato.setId(tracciatoXML.getId());
@@ -285,19 +285,19 @@ public class PspBD extends BasicBD {
 		try {
 			it.govpay.orm.Psp vo = PspConverter.toVO(psp);
 
-			IdPsp idVO = this.getServiceManager().getPspServiceSearch().convertToId(vo);
-			if(this.getServiceManager().getPspServiceSearch().exists(idVO)) {
+			IdPsp idVO = this.getPspService().convertToId(vo);
+			if(this.getPspService().exists(idVO)) {
 				throw new NotFoundException("Psp con id ["+idVO.toJson()+"] gia' esistente");
 			}
 
 			insertTracciato(vo, xml);
-			this.getServiceManager().getPspService().create(vo);
+			this.getPspService().create(vo);
 			psp.setId(vo.getId());
 			
 			for(Canale canale: psp.getCanali()) {
 				canale.setPsp(psp);
 				it.govpay.orm.Canale canaleVO = CanaleConverter.toVO(canale);
-				this.getServiceManager().getCanaleService().create(canaleVO);
+				this.getCanaleService().create(canaleVO);
 				canale.setId(canaleVO.getId());
 			}
 		} catch (NotImplementedException e) {
@@ -318,14 +318,14 @@ public class PspBD extends BasicBD {
 	 */
 	public void disablePsp(long idPsp) throws ServiceException, NotFoundException {
 		try {
-			if(!((JDBCPspServiceSearch)this.getServiceManager().getPspServiceSearch()).exists(idPsp)) {
+			if(!((JDBCPspServiceSearch)this.getPspService()).exists(idPsp)) {
 				throw new NotFoundException("Psp con id ["+idPsp+"] non trovato");
 			}
-			IdPsp idVO = ((JDBCPspServiceSearch)this.getServiceManager().getPspServiceSearch()).findId(idPsp, true);
+			IdPsp idVO = ((JDBCPspServiceSearch)this.getPspService()).findId(idPsp, true);
 			
 			UpdateField abilitatoField = new UpdateField(it.govpay.orm.Psp.model().ABILITATO, false);
 			
-			this.getServiceManager().getPspService().updateFields(idVO, abilitatoField);
+			this.getPspService().updateFields(idVO, abilitatoField);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -334,16 +334,12 @@ public class PspBD extends BasicBD {
 	}
 	
 	public PspFilter newFilter() throws ServiceException {
-		try {
-			return new PspFilter(this.getServiceManager().getPspServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new PspFilter(this.getPspService());
 	}
 
 	public long count(PspFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getPspServiceSearch().count(filter.toExpression()).longValue();
+			return this.getPspService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -351,7 +347,7 @@ public class PspBD extends BasicBD {
 
 	public List<Psp> findAll(PspFilter filter) throws ServiceException {
 		try {
-			return getPspList(this.getServiceManager().getPspServiceSearch().findAll(filter.toPaginatedExpression()));
+			return getPspList(this.getPspService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

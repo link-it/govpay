@@ -20,18 +20,17 @@
  */
 package it.govpay.dars.bd;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.registro.EventoFilter;
+import it.govpay.dars.model.ListaEventiEntry;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.registro.EventoFilter;
-import it.govpay.dars.model.ListaEventiEntry;
 
 public class EventiBD extends BasicBD {
 	
@@ -80,11 +79,7 @@ public class EventiBD extends BasicBD {
 	}
 	
 	public EventoFilter newFilter() throws ServiceException {
-		try {
-			return new EventoFilter(this.getServiceManager().getEventoServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new EventoFilter(this.getEventoService());
 	}
 	
 }

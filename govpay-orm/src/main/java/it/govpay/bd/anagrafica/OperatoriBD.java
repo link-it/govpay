@@ -61,7 +61,7 @@ public class OperatoriBD extends BasicBD {
 
 
 		try {
-			it.govpay.orm.Operatore operatoreVO = ((JDBCOperatoreServiceSearch)this.getServiceManager().getOperatoreServiceSearch()).get(id);
+			it.govpay.orm.Operatore operatoreVO = ((JDBCOperatoreServiceSearch)this.getOperatoreService()).get(id);
 			return getOperatore(operatoreVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -81,7 +81,7 @@ public class OperatoriBD extends BasicBD {
 		try {
 			IdOperatore id = new IdOperatore();
 			id.setPrincipal(principal);
-			it.govpay.orm.Operatore operatoreVO = this.getServiceManager().getOperatoreServiceSearch().get(id);
+			it.govpay.orm.Operatore operatoreVO = this.getOperatoreService().get(id);
 			return getOperatore(operatoreVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -118,12 +118,12 @@ public class OperatoriBD extends BasicBD {
 		try {
 
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
-			IdOperatore idOperatore = this.getServiceManager().getOperatoreServiceSearch().convertToId(vo);
-			if(!this.getServiceManager().getOperatoreServiceSearch().exists(idOperatore)) {
+			IdOperatore idOperatore = this.getOperatoreService().convertToId(vo);
+			if(!this.getOperatoreService().exists(idOperatore)) {
 				throw new NotFoundException("Operatore con id ["+idOperatore.toJson()+"] non trovato");
 			}
 
-			this.getServiceManager().getOperatoreService().update(idOperatore, vo);
+			this.getOperatoreService().update(idOperatore, vo);
 			operatore.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -147,7 +147,7 @@ public class OperatoriBD extends BasicBD {
 
 			it.govpay.orm.Operatore vo = OperatoreConverter.toVO(operatore);
 
-			this.getServiceManager().getOperatoreService().create(vo);
+			this.getOperatoreService().create(vo);
 			operatore.setId(vo.getId());
 
 		} catch (NotImplementedException e) {
@@ -156,16 +156,12 @@ public class OperatoriBD extends BasicBD {
 	}
 
 	public OperatoreFilter newFilter() throws ServiceException {
-		try {
-			return new OperatoreFilter(this.getServiceManager().getOperatoreServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new OperatoreFilter(this.getOperatoreService());
 	}
 
 	public long count(OperatoreFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getOperatoreServiceSearch().count(filter.toExpression()).longValue();
+			return this.getOperatoreService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -174,7 +170,7 @@ public class OperatoriBD extends BasicBD {
 	public List<Operatore> findAll(OperatoreFilter filter) throws ServiceException {
 		try {
 			List<Operatore> lst = new ArrayList<Operatore>();
-			List<it.govpay.orm.Operatore> lstVO = this.getServiceManager().getOperatoreServiceSearch().findAll(this.getServiceManager().getOperatoreServiceSearch().newPaginatedExpression());
+			List<it.govpay.orm.Operatore> lstVO = this.getOperatoreService().findAll(this.getOperatoreService().newPaginatedExpression());
 
 			for(it.govpay.orm.Operatore operatoreVO : lstVO) {
 				lst.add(getOperatore(operatoreVO));

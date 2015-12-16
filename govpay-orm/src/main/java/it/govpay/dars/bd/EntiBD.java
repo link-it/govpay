@@ -61,7 +61,7 @@ public class EntiBD extends BasicBD{
 				
 				// Ragione sociale
 				Anagrafica anagraficaEnte = enteDTO.getAnagraficaEnte();
-				//it.govpay.orm.Anagrafica anagraficaVO = this.getServiceManager().getAnagraficaServiceSearch().get(anagraficaEnte);
+				//it.govpay.orm.Anagrafica anagraficaVO = this.getAnagraficaService().get(anagraficaEnte);
 				entry.setRagioneSociale(anagraficaEnte.getRagioneSociale());
 				
 				Dominio dominio = AnagraficaManager.getDominio(this, enteDTO.getIdDominio());

@@ -62,7 +62,7 @@ public class DominiBD extends BasicBD {
 			IdDominio id = new IdDominio();
 			id.setCodDominio(codDominio);
 			
-			it.govpay.orm.Dominio dominioVO = this.getServiceManager().getDominioServiceSearch().get(id);
+			it.govpay.orm.Dominio dominioVO = this.getDominioService().get(id);
 			Dominio dominio = DominioConverter.toDTO(dominioVO);
 
 			return dominio;
@@ -88,7 +88,7 @@ public class DominiBD extends BasicBD {
 		long id = idDominio.longValue();
 		
 		try {
-			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getServiceManager().getDominioServiceSearch()).get(id);
+			it.govpay.orm.Dominio dominioVO = ((JDBCDominioServiceSearch)this.getDominioService()).get(id);
 			Dominio dominio = DominioConverter.toDTO(dominioVO);
 
 			return dominio;
@@ -108,7 +108,7 @@ public class DominiBD extends BasicBD {
 		try {
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
 			
-			this.getServiceManager().getDominioService().create(vo);
+			this.getDominioService().create(vo);
 			dominio.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -125,13 +125,13 @@ public class DominiBD extends BasicBD {
 	public void updateDominio(Dominio dominio) throws NotFoundException, ServiceException{
 		try {
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
-			IdDominio id = this.getServiceManager().getDominioServiceSearch().convertToId(vo);
+			IdDominio id = this.getDominioService().convertToId(vo);
 			
-			if(!this.getServiceManager().getDominioServiceSearch().exists(id)) {
+			if(!this.getDominioService().exists(id)) {
 				throw new NotFoundException("Dominio con id ["+id+"] non esiste.");
 			}
 			
-			this.getServiceManager().getDominioService().update(id, vo);
+			this.getDominioService().update(id, vo);
 			dominio.setId(vo.getId());
 			
 		} catch (NotImplementedException e) {
@@ -153,10 +153,10 @@ public class DominiBD extends BasicBD {
 	 */
 	public List<IbanAccredito> getIbanAccreditoByIdDominio(long idDominio) throws ServiceException {
 		try {
-			IPaginatedExpression exp = this.getServiceManager().getIbanAccreditoServiceSearch().newPaginatedExpression();
-			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getServiceManager().getJdbcProperties().getDatabase());
+			IPaginatedExpression exp = this.getIbanAccreditoService().newPaginatedExpression();
+			IbanAccreditoFieldConverter converter = new IbanAccreditoFieldConverter(this.getJdbcProperties().getDatabase());
 			exp.equals(new CustomField("id_dominio",  Long.class, "id_dominio", converter.toTable(it.govpay.orm.IbanAccredito.model())), idDominio);
-			List<it.govpay.orm.IbanAccredito> lstIban = this.getServiceManager().getIbanAccreditoServiceSearch().findAll(exp);
+			List<it.govpay.orm.IbanAccredito> lstIban = this.getIbanAccreditoService().findAll(exp);
 			
 			return IbanAccreditoConverter.toDTOList(lstIban);
 		} catch (NotImplementedException e) {
@@ -171,18 +171,12 @@ public class DominiBD extends BasicBD {
 
 	
 	public DominioFilter newFilter() throws ServiceException {
-		try {
-			return new DominioFilter(this.getServiceManager().getDominioServiceSearch());
-		} catch (ServiceException e) {
-			throw new ServiceException(e);
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new DominioFilter(this.getDominioService());
 	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getDominioServiceSearch().count(filter.toExpression()).longValue();
+			return this.getDominioService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -190,7 +184,7 @@ public class DominiBD extends BasicBD {
 
 	public List<Dominio> findAll(IFilter filter) throws ServiceException {
 		try {
-			return DominioConverter.toDTOList(this.getServiceManager().getDominioServiceSearch().findAll(filter.toPaginatedExpression()));
+			return DominioConverter.toDTOList(this.getDominioService().findAll(filter.toPaginatedExpression()));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

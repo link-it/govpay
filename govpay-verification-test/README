@@ -1,0 +1,5 @@
+Test di pagamento.
+
+Modificare il file src/test/resources/test.properties con i parametri di pagamento.
+
+Eseguire 'mvn test'

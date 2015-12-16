@@ -107,25 +107,25 @@ import org.testng.annotations.BeforeSuite;
 
 public class BasicTest {
 	protected static final int APPLICATION_CODE = 1;
-	protected SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	protected Psp psp, pspPoste;
-	protected Intermediario intermediario;
-	protected Stazione stazione;
-	protected Dominio dominioA, dominioB;
-	protected MailTemplate mailTemplateRPT, mailTemplateRT;
-	protected Ente enteAA, enteAB, enteBA;
-	protected Tributo tributoAA1, tributoAA2, tributoAB1, tributoBB1, tributoBB2;
-	protected Applicazione applicazioneAA, applicazioneAB, applicazioneBB;
-	protected Versamento versamentoAA1_1;
-	protected Rpt rptAA1_1;
-	protected Portale portale;
-	protected Evento eventoIniziale;
-	protected Evento eventoFinale;
-	protected Sla sla;
-	protected Rt rt;
-	protected Rr rr;
-	protected IbanAccredito ibanAccredito;
-	protected Operatore operatore;
+	protected static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	protected static Psp psp, pspPoste;
+	protected static Intermediario intermediario;
+	protected static Stazione stazione;
+	protected static Dominio dominioA, dominioB;
+	protected static MailTemplate mailTemplateRPT, mailTemplateRT;
+	protected static Ente enteAA, enteAB, enteBA;
+	protected static Tributo tributoAA1, tributoAA2, tributoAB1, tributoBB1, tributoBB2;
+	protected static Applicazione applicazioneAA, applicazioneAB, applicazioneBB;
+	protected static Versamento versamentoAA1_1;
+	protected static Rpt rptAA1_1;
+	protected static Portale portale;
+	protected static Evento eventoIniziale;
+	protected static Evento eventoFinale;
+	protected static Sla sla;
+	protected static Rt rt;
+	protected static Rr rr;
+	protected static IbanAccredito ibanAccredito;
+	protected static Operatore operatore;
 
 	@BeforeSuite
 	public static void setUpDataSource() throws Exception {

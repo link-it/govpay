@@ -60,11 +60,11 @@ public class IntermediariBD extends BasicBD {
 		if(idIntermediario == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		
+
 		long id = idIntermediario.longValue();
 
 		try {
-			it.govpay.orm.Intermediario intermediarioVO = ((JDBCIntermediarioServiceSearch)this.getServiceManager().getIntermediarioServiceSearch()).get(id);
+			it.govpay.orm.Intermediario intermediarioVO = ((JDBCIntermediarioServiceSearch)this.getIntermediarioService()).get(id);
 			return getIntermediario(intermediarioVO);
 
 		} catch (NotImplementedException e) {
@@ -89,8 +89,8 @@ public class IntermediariBD extends BasicBD {
 		try {
 			IdIntermediario id = new IdIntermediario();
 			id.setCodIntermediario(codIntermediario);
-			it.govpay.orm.Intermediario intermediarioVO = this.getServiceManager().getIntermediarioServiceSearch().get(id);
-			
+			it.govpay.orm.Intermediario intermediarioVO = this.getIntermediarioService().get(id);
+
 			return getIntermediario(intermediarioVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -103,19 +103,19 @@ public class IntermediariBD extends BasicBD {
 
 	public Intermediario getIntermediario(it.govpay.orm.Intermediario intermediarioVO) throws ExpressionNotImplementedException, ExpressionException, ServiceException, NotImplementedException {
 		Intermediario intermediario = IntermediarioConverter.toDTO(intermediarioVO);
-		
+
 		if(intermediarioVO.getCodConnettorePdd() != null) {
-			IPaginatedExpression exp = this.getServiceManager().getConnettoreServiceSearch().newPaginatedExpression();
+			IPaginatedExpression exp = this.getConnettoreService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediarioVO.getCodConnettorePdd());
-			
-			List<it.govpay.orm.Connettore> connettori = this.getServiceManager().getConnettoreServiceSearch().findAll(exp);
+
+			List<it.govpay.orm.Connettore> connettori = this.getConnettoreService().findAll(exp);
 			Connettore connettorePdd = ConnettoreConverter.toDTO(connettori);
 			intermediario.setConnettorePdd(connettorePdd);
 		}
 		return intermediario;
-		
+
 	}
-	
+
 	/**
 	 * Recupera la lista degli intermediari censiti sul sistema
 	 * 
@@ -133,32 +133,32 @@ public class IntermediariBD extends BasicBD {
 	 * @throws ServiceException in caso di errore DB.
 	 */
 	public void updateIntermediario(Intermediario intermediario) throws NotFoundException, ServiceException {
-		
+
 		try {
 			it.govpay.orm.Intermediario vo = IntermediarioConverter.toVO(intermediario);
-			IdIntermediario id = this.getServiceManager().getIntermediarioServiceSearch().convertToId(vo);
-			
-			if(!this.getServiceManager().getIntermediarioServiceSearch().exists(id)) {
+			IdIntermediario id = this.getIntermediarioService().convertToId(vo);
+
+			if(!this.getIntermediarioService().exists(id)) {
 				throw new NotFoundException("Intermediario con id ["+id+"] non esiste.");
 			}
-			
-			this.getServiceManager().getIntermediarioService().update(id, vo);
+
+			this.getIntermediarioService().update(id, vo);
 			intermediario.setId(vo.getId());
-			
+
 			if(intermediario.getConnettorePdd() != null) {
-				
+
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePdd());
-				
-				
-				IExpression expDelete = this.getServiceManager().getConnettoreServiceSearch().newExpression();
+
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePdd().getIdConnettore());
-				this.getServiceManager().getConnettoreService().deleteAll(expDelete);
-				
+				this.getConnettoreService().deleteAll(expDelete);
+
 				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-					this.getServiceManager().getConnettoreService().create(connettore);
+					this.getConnettoreService().create(connettore);
 				}
 			}
-			
+
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -179,24 +179,24 @@ public class IntermediariBD extends BasicBD {
 	public void insertIntermediario(Intermediario intermediario) throws ServiceException{
 		try {
 			it.govpay.orm.Intermediario vo = IntermediarioConverter.toVO(intermediario);
-			
-			this.getServiceManager().getIntermediarioService().create(vo);
+
+			this.getIntermediarioService().create(vo);
 			intermediario.setId(vo.getId());
 
 			if(intermediario.getConnettorePdd() != null) {
-				
+
 				List<it.govpay.orm.Connettore> voConnettoreLst = ConnettoreConverter.toVOList(intermediario.getConnettorePdd());
-				
-				IExpression expDelete = this.getServiceManager().getConnettoreServiceSearch().newExpression();
+
+				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, intermediario.getConnettorePdd().getIdConnettore());
-				this.getServiceManager().getConnettoreService().deleteAll(expDelete);
+				this.getConnettoreService().deleteAll(expDelete);
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreLst) {
-					
-					this.getServiceManager().getConnettoreService().create(connettore);
+
+					this.getConnettoreService().create(connettore);
 				}
 			}
-			
+
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -209,16 +209,12 @@ public class IntermediariBD extends BasicBD {
 
 
 	public IntermediarioFilter newFilter() throws ServiceException {
-		try {
-			return new IntermediarioFilter(this.getServiceManager().getIntermediarioServiceSearch());
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		return new IntermediarioFilter(this.getIntermediarioService());
 	}
 
 	public long count(IntermediarioFilter filter) throws ServiceException {
 		try {
-			return this.getServiceManager().getIntermediarioServiceSearch().count(filter.toExpression()).longValue();
+			return this.getIntermediarioService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -227,7 +223,7 @@ public class IntermediariBD extends BasicBD {
 	public List<Intermediario> findAll(IntermediarioFilter filter) throws ServiceException {
 		try {
 			List<Intermediario> lst = new ArrayList<Intermediario>();
-			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getServiceManager().getIntermediarioServiceSearch().findAll(this.getServiceManager().getIntermediarioServiceSearch().newPaginatedExpression());
+			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getIntermediarioService().findAll(this.getIntermediarioService().newPaginatedExpression());
 			for(it.govpay.orm.Intermediario intermediarioVO: lstIntermediarioVO) {
 				lst.add(getIntermediario(intermediarioVO));
 			}
