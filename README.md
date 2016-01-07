@@ -1,4 +1,4 @@
-# GovPay
+# GovPay v2.0b1
 GovPay implementa il protocollo di colloquio con il Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
 
 Di seguito un elenco delle principali funzionalità del prodotto.
@@ -15,6 +15,7 @@ Di seguito un elenco delle principali funzionalità del prodotto.
 * completa integrazione con il software di Porta di Dominio OpenSPCoop.
 * cruscotto Web di gestione e configurazione.
 
-[![Gov4J](resources/doc/gov4j.jpg)](http://www.gov4j.it) [![OpenSPCoop.org](resources/doc/openspcoop.jpg)](http://www.openspcoop.org) [![Pago@Pa](resources/doc/PagoPA.jpg)](http://archivio.digitpa.gov.it/pagopa) [![MyBank](resources/doc/LogoMyBank.jpg)](https://www.mybank.eu/it/)
-
-
+Per maggiori informazioni, consultare la documentazione del progetto:
+* [Introduzione a GovPay]:resources/doc/pdf/GovPay-ManualeIntroduzione.pdf
+* [Manuale Utente]:resources/doc/pdf/GovPay-ManualeUtente.pdf
+* [Manuale Integrazione]:resources/doc/pdf/GovPay-ManualeIntegrazione.pdf

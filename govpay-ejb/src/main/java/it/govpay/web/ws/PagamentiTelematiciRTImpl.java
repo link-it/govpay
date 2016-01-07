@@ -84,7 +84,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		BasicBD bd = null;
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 				Intermediario intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
 				NdpUtils.setThreadContextNdpParams(codDominio, iuv, ccp, null, null, header.getIdentificativoStazioneIntermediarioPA(), null, null, "paaInviaRT", intermediario.getDenominazione());
 			} catch (ServiceException e) {
@@ -143,7 +143,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_VALIDAZIONE_NDP, FaultPa.PAA_SINTASSI_XSD, e.getMessage());
 			}
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (ServiceException e) {
 				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_INTERNO, FaultPa.PAA_ERRORE_INTERNO, "Impossibile stabilire una connessione con db", e);
 			}

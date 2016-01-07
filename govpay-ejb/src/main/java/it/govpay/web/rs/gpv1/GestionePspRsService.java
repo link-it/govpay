@@ -51,7 +51,7 @@ public class GestionePspRsService {
 		BasicBD bd = null;	
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (ServiceException e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}

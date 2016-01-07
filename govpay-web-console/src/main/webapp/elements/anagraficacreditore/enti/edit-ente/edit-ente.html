@@ -253,6 +253,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var esitoOperazione = darsResponse.esitoOperazione;
                 var codOperazione = darsResponse.codOperazione;
                 var id = darsResponse.response || '';
+                var dettaglioEsito = darsResponse.dettaglioEsito;
                 var messaggio= '';
 
                 if(esitoOperazione == 'ESEGUITA'){
@@ -267,13 +268,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                     this.close();
                     this.fire('reload-item', {elementoModificato: this.enteCorrente});
-                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                } else if(esitoOperazione == 'NONESEGUITA'){
                     // Creazione
                     if(this.actionMethod == 'POST'){
-                        messaggio = 'Inserimento Ente non completato. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Inserimento Ente non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
                     }else {
                         //Aggiornamento
-                        messaggio = 'Aggiornamento Ente non completato. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Aggiornamento Ente non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
                     }
                 } else {
                     // ERRORE

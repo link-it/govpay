@@ -443,6 +443,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if(darsResponse) {
                 var esitoOperazione = darsResponse.esitoOperazione;
                 var codOperazione = darsResponse.codOperazione;
+                var dettaglioEsito = darsResponse.dettaglioEsito;
                 var id = darsResponse.response || '';
                 var messaggio= '';
 
@@ -458,13 +459,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                     this.close();
                     this.fire('reload-item', {elementoModificato: this.applicazioneCorrente});
-                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                } else if(esitoOperazione == 'NONESEGUITA'){
                     // Creazione
                     if(this.actionMethod == 'POST'){
-                        messaggio = 'Inserimento Applicazione non completato. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Inserimento Applicazione non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
                     }else {
                         //Aggiornamento
-                        messaggio = 'Aggiornamento Applicazione non completato. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Aggiornamento Applicazione non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
                     }
                 } else {
                     // ERRORE

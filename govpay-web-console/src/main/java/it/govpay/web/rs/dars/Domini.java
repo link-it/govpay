@@ -20,7 +20,12 @@
  */
 package it.govpay.web.rs.dars;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -38,17 +43,20 @@ import javax.ws.rs.core.MediaType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Disponibilita;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Ente;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.bd.model.Periodo;
 import it.govpay.dars.bd.DominiBD;
 import it.govpay.dars.bd.EntiBD;
 import it.govpay.dars.model.DominioExt;
@@ -57,6 +65,7 @@ import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.utils.DominiUtils;
 import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 
@@ -82,29 +91,22 @@ public class Domini extends BaseRsService{
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-
 			Operatore operatore = this.getOperatoreByPrincipal(bd);
-
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			filter.setCodStazione(codStazione);
-
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-
-
-
 			// Se l'utente e' operatore  puo' vedere solo i domini per cui e' associato
 			List<ListaDominiEntry> findAllListaEntries = null; 
-
 			if(!ProfiloOperatore.ADMIN.equals(operatore.getProfilo())){
 				EntiBD entiBD = new EntiBD(bd);
 				List<Long> listaIdDominiByIdEnti = entiBD.getListaIdDominiByIdEnti(operatore.getIdEnti());
@@ -114,10 +116,8 @@ public class Domini extends BaseRsService{
 				else 
 					filter.setIdDomini(listaIdDominiByIdEnti); 
 			} 
-
 			if(findAllListaEntries == null)
 				findAllListaEntries = 	dominiBD.findAllListaEntries(filter);
-
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(findAllListaEntries);
 		} catch(WebApplicationException e){
@@ -125,12 +125,10 @@ public class Domini extends BaseRsService{
 			throw e;
 		}  catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca dei domini:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -151,33 +149,26 @@ public class Domini extends BaseRsService{
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-
 			this.checkOperatoreAdmin(bd);
-
 			DominiBD dominiBD = new DominiBD(bd);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
-			darsResponse.setResponse(dominiBD.getDominio(id));
-
+			darsResponse.setResponse(dominiBD.getDominioExt(id));
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante la ricerca del dominio:" +e.getMessage() , e);
 			throw e;
-		}catch (Exception e) {
+		} catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca del dominio:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
-		}finally {
+			return darsResponse;
+		} finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
@@ -197,34 +188,34 @@ public class Domini extends BaseRsService{
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-
 			this.checkOperatoreAdmin(bd);
-
 			DominiBD dominiBD = new DominiBD(bd);
+			DominioExt oldDominio = dominiBD.getDominioExt(dominio.getId());
+			this.checkDominio(dominio, oldDominio);
 			dominiBD.updateDominioExt(dominio);
 			DominiUtils.updateTabellaControparti(bd, dominio.getId());
 			DominiUtils.updateContiAccredito(bd, dominio.getId());
-			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);//TODO discriminare tra ESEGUITA e NONESEGUITA
-
-		}catch(WebApplicationException e){
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+		} catch(ValidationException e) {
+			log.error("Riscontrato errore di validazione durante l'aggiornamento del dominio:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
+		} catch(WebApplicationException e) {
 			log.error("Riscontrato errore di autorizzazione durante 'aggiornamento del dominio:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante l'aggiornamento della dominio:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -247,33 +238,41 @@ public class Domini extends BaseRsService{
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
+			
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-
 			this.checkOperatoreAdmin(bd);
-
+			this.checkDominio(dominio, null);
 			DominiBD dominiBD = new DominiBD(bd);
+			try {
+				dominiBD.getDominio(dominio.getCodDominio());
+				throw new ValidationException("Il dominio con id [" + dominio.getCodDominio() + "] e' gia' presente in anagrafica.");
+			} catch (NotFoundException e) {
+				// Ok non esiste gia'. posso inserire
+			}
 			dominiBD.insertDominioExt(dominio);
 			DominiUtils.updateTabellaControparti(bd, dominio.getId());
 			DominiUtils.updateContiAccredito(bd, dominio.getId());
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(dominio.getId());
-		}catch(WebApplicationException e){
+		} catch(ValidationException e){
+			log.error("Riscontrato errore di validazione durante l'inserimento del dominio:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
+		} catch(WebApplicationException e) {
 			log.error("Riscontrato errore di autorizzazione durante l'inserimento del dominio:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante l'inserimento della dominio:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
-		}finally {
+			return darsResponse;
+		} finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
@@ -302,26 +301,20 @@ public class Domini extends BaseRsService{
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-
 			this.checkOperatoreAdmin(bd);
-
 			DominiBD dominiBD = new DominiBD(bd);
-
 			darsResponse.setResponse(dominiBD.getIbanAccreditoByIdDominio(idDominio));
-
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca dei domini:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
+			if(bd != null)  bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -350,28 +343,24 @@ public class Domini extends BaseRsService{
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
 
 			this.checkOperatoreAdmin(bd);
-
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = null;
 
 			if(codEnte != null){
 				Ente ente = AnagraficaManager.getEnte(bd, codEnte);
-
 				dominio = dominiBD.getDominio(ente.getIdDominio());
 			} else if(idEnte > 0){
 				Ente ente = AnagraficaManager.getEnte(bd, idEnte);
-
 				dominio = dominiBD.getDominio(ente.getIdDominio());
 			} else {
 				if(codDominio != null)
 					dominio = AnagraficaManager.getDominio(bd, codDominio);
-
 			}
 			if(dominio != null)
 				darsResponse.setResponse(dominiBD.getIbanAccreditoByIdDominio(dominio.getId()));
@@ -386,6 +375,7 @@ public class Domini extends BaseRsService{
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -394,4 +384,107 @@ public class Domini extends BaseRsService{
 		return darsResponse;
 	}
 
+	private void checkDominio(DominioExt dominio, DominioExt oldDominio) throws ValidationException {
+
+		if(dominio == null || dominio.getCodDominio() == null || dominio.getCodDominio().length() != 11) throw new ValidationException("Lunghezza del IdDominio errata. Richieste 11 cifre, trovate "+dominio.getCodDominio().length());
+		try { 
+			Long.parseLong(dominio.getCodDominio());
+		} catch (NumberFormatException e) {
+			throw new ValidationException("Formato IdDominio errato. Richieste 11 cifre, trovato "+dominio.getCodDominio());
+		}
+
+		if(dominio.getRagioneSociale() == null || dominio.getRagioneSociale().isEmpty()) throw new ValidationException("Il campo Ragione Sociale deve essere valorizzato.");
+
+		if(dominio.getGln() != null && !dominio.getGln().isEmpty()) {
+			if(dominio.getGln().length() != 13) throw new ValidationException("Lunghezza Global Location Number errata. Richieste 13 cifre, trovate "+dominio.getGln().length());
+			try { 
+				Long.parseLong(dominio.getGln());
+			} catch (NumberFormatException e) {
+				throw new ValidationException("Formato Global Location Number errato. Richieste 11 cifre, trovato "+dominio.getGln());
+			}
+		}
+	
+		if(dominio.getIdStazione() == 0) throw new ValidationException("Il campo Stazione deve essere valorizzato");
+
+		if(dominio.getIbanAccredito() != null) {
+			List<String> ibans = new ArrayList<String>();
+			for(IbanAccredito iban : dominio.getIbanAccredito()) {
+				if(iban.getCodIban() == null) throw new ValidationException("Il campo Iban deve essere valorizzato.");
+				if(iban.getCodIban().length() != 27) throw new ValidationException("La lunghezza dell'Iban di accredito deve essere di 27 caratteri, trovati " + iban.getCodIban().length() + ".");
+				if(ibans.contains(iban.getCodIban())) throw new ValidationException("L'iban [" + iban.getCodIban() + "] e' duplicato.");
+				ibans.add(iban.getCodIban());
+			}
+		}
+		checkDisponibilita(dominio.getDisponibilita());
+		checkDisponibilita(dominio.getIndisponibilita());
+		
+		if(oldDominio != null) {
+			if(!dominio.getCodDominio().equals(oldDominio.getCodDominio())) throw new ValidationException("Non e' consentito modificare l'IdDominio");
+			if(dominio.getIdStazione() != oldDominio.getIdStazione()) throw new ValidationException("Non e' consentito modificare la Stazione");
+			
+			List<IbanAccredito> ibanOld = null;
+			if(oldDominio.getIbanAccredito() != null && !oldDominio.getIbanAccredito().isEmpty()) {
+				IbanAccredito[] oldIbanArray = oldDominio.getIbanAccredito().toArray(new IbanAccredito[] {});
+				Arrays.sort(oldIbanArray);
+				ibanOld = Arrays.asList(oldIbanArray);
+			}
+			
+			List<IbanAccredito> ibanNew = null;
+			if(dominio.getIbanAccredito() != null && !dominio.getIbanAccredito().isEmpty()) {
+				IbanAccredito[] newIbanArray = dominio.getIbanAccredito().toArray(new IbanAccredito[] {});
+				Arrays.sort(newIbanArray);
+				ibanNew = Arrays.asList(newIbanArray);
+			}
+			
+			if(ibanOld != null) {
+				if(ibanNew == null) throw new ValidationException("Nessun Iban trovato in update");
+				for(IbanAccredito old: ibanOld) {
+					boolean found = false;
+					for(IbanAccredito newI: ibanNew) {
+						if(newI.getCodIban().equals(old.getCodIban())) found = true;
+					}
+					if(!found)  throw new ValidationException("Iban Accredito ["+old.getCodIban()+"] non trovato in update");
+				}
+			}
+		}
+	}
+
+	private void checkDisponibilita(List<Disponibilita> disponibilita) throws ValidationException {
+		if(disponibilita == null) return;
+		DateFormat format = new SimpleDateFormat("HH:mm:ss");
+		for(Disponibilita d : disponibilita) {
+			if(d.getTipoDisponibilita() == null) throw new ValidationException("E' obbligatorio valorizzare il campo Tipo Disponibilita di ogni periodo");
+			if(d.getTipoPeriodo() == null) throw new ValidationException("E' obbligatorio valorizzare il campo Tipo Periodo di ogni periodo");
+
+			switch (d.getTipoPeriodo()) {
+			case ANNUALE:
+				if(d.getGiorno() == null || d.getGiorno().matches("(0[123456789]|[12]\\d|3[01])-(0\\d|1[012])")) throw new ValidationException("In periodo di tipo Annuale, il campo Giorno deve essere valorizzato [dd-mm]");
+				break;
+			case GIORNALIERA:
+				if(d.getGiorno() != null && !d.getGiorno().isEmpty()) throw new ValidationException("In periodo di tipo Giornaliero, il campo Giorno non deve essere valorizzato");
+				break;
+			case MENSILE:
+				if(d.getGiorno() == null || !d.getGiorno().matches("0[123456789]|[12]\\d|3[01]")) throw new ValidationException("In periodo di tipo Mensile, il campo Giorno deve essere valorizzato [01,31]");
+				break;
+			case SETTIMANALE:
+				if(d.getGiorno() == null || !d.getGiorno().matches("lunedi|martedi|mercoledi|giovedi|venerdi|sabato|domenica")) throw new ValidationException("In periodo di tipo Settimanale, il campo Giorno deve essere valorizzato [Lunedi|Martedi|...]");
+				break;
+			}
+			
+			for(Periodo p : d.getFasceOrarieLst()) {
+				Date da, a = null;
+				try {
+					da = format.parse(p.getDa()); 
+				} catch (ParseException e) {
+					throw new ValidationException("L'orario [" + p.getDa() + "] non e' corretto. Formato atteso [hh:mm:ss].");
+				}
+				try {
+					a = format.parse(p.getA());
+				} catch (ParseException e) {
+					throw new ValidationException("L'orario [" + p.getA() + "] non e' corretto. Formato atteso [hh:mm:ss].");
+				}
+				if(da.after(a)) throw new ValidationException("L'orario di partenza di un periodo deve essere successivo a quello di terminazione.");
+			}
+		}
+	}
 }

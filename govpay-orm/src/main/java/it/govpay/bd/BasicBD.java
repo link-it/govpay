@@ -151,7 +151,7 @@ public class BasicBD {
 		father = basicBD;
 	}
 	
-	public static BasicBD getInstance() throws ServiceException {
+	public static BasicBD newInstance() throws ServiceException {
 		return new BasicBD();
 	}
 	

@@ -101,7 +101,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		try {
 			
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (ServiceException e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -197,7 +197,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		BasicBD bd = null;
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -292,7 +292,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		BasicBD bd = null;
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}

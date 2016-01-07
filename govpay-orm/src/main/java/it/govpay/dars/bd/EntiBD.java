@@ -37,7 +37,7 @@ import it.govpay.dars.model.EnteExt;
 import it.govpay.dars.model.ListaDominiEntry;
 import it.govpay.dars.model.ListaEntiEntry;
 
-public class EntiBD extends BasicBD{
+public class EntiBD extends it.govpay.bd.anagrafica.EntiBD {
 	
 	private it.govpay.bd.anagrafica.EntiBD entiBD = null;
 	private it.govpay.dars.bd.DominiBD dominiBD  = null;
@@ -48,7 +48,7 @@ public class EntiBD extends BasicBD{
 		this.dominiBD = new it.govpay.dars.bd.DominiBD(basicBD);
 	}
 	
-	public List<ListaEntiEntry> findAll(EnteFilter filter) throws ServiceException {
+	public List<ListaEntiEntry> findAllEntry(EnteFilter filter) throws ServiceException {
 		try {
 			List<it.govpay.bd.model.Ente> lstEnteDTO = entiBD.findAll(filter); 
 			List<ListaEntiEntry> entiLst = new ArrayList<ListaEntiEntry>();
@@ -94,16 +94,8 @@ public class EntiBD extends BasicBD{
 		return enteExt;
 	}
 	
-	public void updateEnte(Ente ente) throws NotFoundException, ServiceException {
-		this.entiBD.updateEnte(ente);
-	}
-	
 	public void updateEnteExt(EnteExt ente) throws NotFoundException, ServiceException {
 		this.entiBD.updateEnte(ente.getEnte());
-	}
-	
-	public void insertEnte(Ente ente) throws ServiceException{
-		this.entiBD.insertEnte(ente); 
 	}
 	
 	public void insertEnteExt(EnteExt ente) throws ServiceException{
@@ -126,7 +118,6 @@ public class EntiBD extends BasicBD{
 				try {
 					EnteExt enteExt = this.getEnteExt(idEnte);
 					long id = enteExt.getDominio().getId();
-					
 					if(!listaIdDomini.contains(id))
 						listaIdDomini.add(id);
 				} catch (NotFoundException e) {
@@ -136,7 +127,6 @@ public class EntiBD extends BasicBD{
 				}
 			}
 		}
-		
 		return listaIdDomini;
 	}
 
@@ -152,7 +142,6 @@ public class EntiBD extends BasicBD{
 				try {
 					EnteExt enteExt = this.getEnteExt(idEnte);
 					String id = enteExt.getDominio().getCodDominio();
-					
 					if(!listaIdDomini.contains(id))
 						listaIdDomini.add(id);
 				} catch (NotFoundException e) {
@@ -162,7 +151,6 @@ public class EntiBD extends BasicBD{
 				}
 			}
 		}
-		
 		return listaIdDomini;
 	}
 

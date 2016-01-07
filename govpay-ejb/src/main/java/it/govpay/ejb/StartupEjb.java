@@ -65,7 +65,7 @@ public class StartupEjb {
 		
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			new RegistroPSP(bd).aggiornaRegistro();
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito",e);
@@ -74,7 +74,7 @@ public class StartupEjb {
 		}
 		
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			new Rendicontazioni(bd).downloadRendicontazioni();
 		} catch (Exception e) {
 			log.error("Aggiornamento delle rendicontazioni fallito",e);
@@ -83,7 +83,7 @@ public class StartupEjb {
 		}
 		
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			new Pagamenti(bd).verificaRptPedenti();
 		} catch (Exception e) {
 			log.info("Acquisizione Rpt pendenti fallita", e);

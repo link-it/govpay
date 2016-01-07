@@ -152,20 +152,20 @@ public class BasicTest {
 			ic.bind("java:/govpay", dataSource);
 			ConnectionManager.initialize();
 		}
-		bd = BasicBD.getInstance();
+		bd = BasicBD.newInstance();
 		cleanUpDataBase();
 		bd.closeConnection();
 	}
 
 	@BeforeClass
 	public static void setUpBusinessDelegate() throws Exception {
-		bd = BasicBD.getInstance();
+		bd = BasicBD.newInstance();
 	}
 
 	@AfterClass
 	public static void closeConnection() throws Exception {
 		if(bd.getConnection().isClosed()) {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 		}
 		bd.closeConnection();
 	}

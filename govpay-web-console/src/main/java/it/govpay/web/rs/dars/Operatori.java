@@ -66,7 +66,6 @@ public class Operatori extends BaseRsService {
 	public Operatori(){
 			
 	}
-
 	
 	@GET
 	@Path("/")
@@ -83,7 +82,7 @@ public class Operatori extends BaseRsService {
 
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			
 			this.checkOperatoreAdmin(bd);
 			
@@ -131,7 +130,7 @@ public class Operatori extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -173,7 +172,7 @@ public class Operatori extends BaseRsService {
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 			filter.setListaIdEnti(operatore.getIdEnti());
-			listaEnti = entiBD.findAll(filter);
+			listaEnti = entiBD.findAllEntry(filter);
 		}
 				
 		List<ListaApplicazioniEntry> listaApplicazioni = null;
@@ -185,7 +184,7 @@ public class Operatori extends BaseRsService {
 			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			listaApplicazioni = applicazioniBD.findAll(filter);
+			listaApplicazioni = applicazioniBD.findAllEntry(filter);
 		}
 
 		return new OperatoreExt(operatore, listaEnti, listaApplicazioni);
@@ -205,7 +204,7 @@ public class Operatori extends BaseRsService {
 		BasicBD bd = null;
 		List<String> listaRuoli = new ArrayList<String>();
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			Operatore operatore = getOperatoreByPrincipal(bd);
 						
 			listaRuoli.add(operatore.getProfilo().getCodifica());
@@ -244,7 +243,7 @@ public class Operatori extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -301,7 +300,7 @@ public class Operatori extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -359,7 +358,7 @@ public class Operatori extends BaseRsService {
 
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			Operatore operatore = getOperatoreByPrincipal(bd);
 			
 			// Reset ID DB

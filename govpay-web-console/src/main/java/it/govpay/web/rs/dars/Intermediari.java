@@ -22,6 +22,7 @@ package it.govpay.web.rs.dars;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -80,7 +81,7 @@ public class Intermediari extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -133,7 +134,7 @@ public class Intermediari extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -185,10 +186,10 @@ public class Intermediari extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
+		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -222,7 +223,7 @@ public class Intermediari extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
 			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
 
-		}catch(WebApplicationException e){
+		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'aggiornamento dell'intermediario:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
@@ -231,10 +232,9 @@ public class Intermediari extends BaseRsService {
 			if(bd != null) 
 				bd.rollback();
 
-
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
-		}finally {
+		} finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
@@ -257,15 +257,20 @@ public class Intermediari extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
 
 			this.checkOperatoreAdmin(bd);
-
 			this.checkIntermediario(intermediario, null);
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
+			try {
+				intermediariBD.getIntermediario(intermediario.getCodIntermediario());
+				throw new ValidationException("L'intermediario con id [" + intermediario.getCodIntermediario() + "] e' gia' presente in anagrafica.");
+			} catch (Exception e) {
+				// Ok non esiste gia'. posso inserire
+			}
 			intermediariBD.insertIntermediario(intermediario);
 			Long id = intermediario.getId();
 
@@ -281,21 +286,19 @@ public class Intermediari extends BaseRsService {
 			darsResponse.setResponse(id);
 
 		} catch(ValidationException e){
-			log.error("Riscontrato errore di validazione durante l'inserimento dell'intermediario:" +e.getMessage() , e);
+			log.error("Riscontrato errore di validazione durante l'inserimento dell'intermediario:" +e.getMessage());
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
 			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
-			
-		} catch(WebApplicationException e){
+			return darsResponse;
+		} catch(WebApplicationException e) {
 			log.error("Riscontrato errore di autorizzazione durante l'inserimento dell'intermediario:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante l'inserimento dell'intermediario:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -322,7 +325,7 @@ public class Intermediari extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -356,11 +359,16 @@ public class Intermediari extends BaseRsService {
 		return darsResponse;
 	}
 	
-	public void checkIntermediario(IntermediarioExt intermediario, IntermediarioExt oldIntermediario) throws ValidationException {
+	private void checkIntermediario(IntermediarioExt intermediario, IntermediarioExt oldIntermediario) throws ValidationException {
 
-		if(intermediario == null) throw new ValidationException("Intermediario nullo");
-		if(intermediario.getCodIntermediario() == null) throw new ValidationException("CodIntermediario nullo");
-		if(intermediario.getCodIntermediario().length() != 11) throw new ValidationException("Lunghezza del CodIntermediario errata. Dovrebbe essere 11, trovato "+intermediario.getCodIntermediario().length());
+		if(intermediario == null || intermediario.getCodIntermediario() == null || intermediario.getCodIntermediario().length() != 11) throw new ValidationException("Lunghezza del IdIntermediario errata. Richieste 11 cifre, trovate "+intermediario.getCodIntermediario().length());
+		try { 
+			Long.parseLong(intermediario.getCodIntermediario());
+		} catch (NumberFormatException e) {
+			throw new ValidationException("Formato IdIntermediario errato. Richieste 11 cifre, trovato "+intermediario.getCodIntermediario());
+		}
+		
+		if(intermediario.getDenominazione() == null || intermediario.getDenominazione().isEmpty()) throw new ValidationException("Il campo Denominazione deve essere valorizzato.");
 		
 		if(intermediario.getConnettorePdd() == null)  throw new ValidationException("Connettore nullo");
 		if(intermediario.getConnettorePdd().getUrl() == null)  throw new ValidationException("URL Connettore nullo");
@@ -394,12 +402,15 @@ public class Intermediari extends BaseRsService {
 		}
 		
 		if(intermediario.getStazioni() != null) {
+			List<Integer> applicationCodes = new ArrayList<Integer>();
 			for(Stazione stazione: intermediario.getStazioni()) {
-				if(stazione.getCodStazione() == null)  throw new ValidationException("CodStazione nullo");
-				if(!stazione.getCodStazione().startsWith(intermediario.getCodIntermediario() + "_"))  throw new ValidationException("CodStazione ["+stazione.getCodStazione()+"] non valido rispetto al codIntermediario ["+intermediario.getCodIntermediario()+"]");
-				if(stazione.getCodStazione().length() != (intermediario.getCodIntermediario().length() + 3))  throw new ValidationException("CodStazione ["+stazione.getCodStazione()+"] non valido rispetto al codIntermediario ["+intermediario.getCodIntermediario()+"]");
-				if(stazione.getPassword() == null || stazione.getPassword().isEmpty())   throw new ValidationException("Password stazione nulla");
-				if(stazione.getPassword().contains(" ")) throw new ValidationException("Password stazione non valida. Carattere [ ] non ammesso");
+				if(stazione.getCodStazione() == null)  throw new ValidationException("IdStazione nullo");
+				if(stazione.getApplicationCode() > 99)  throw new ValidationException("Valore di Application Code non ammesso. Consentiti valori fino a 99.");
+				if(applicationCodes.contains(stazione.getApplicationCode())) throw new ValidationException("Non sono consentite stazioni Application Code [" + stazione.getApplicationCode() + "].");
+				applicationCodes.add(stazione.getApplicationCode());
+				if(!stazione.getCodStazione().equals(intermediario.getCodIntermediario() + "_" + String.format("%02d", stazione.getApplicationCode())))  throw new ValidationException("IdStazione non coerente rispetto agli IdIntermediario ed ApplicationCode. Atteso [" + intermediario.getCodIntermediario() + "_" + String.format("%02d", stazione.getApplicationCode()) + "], fornito [" + stazione.getCodStazione() + "]");
+				if(stazione.getPassword() == null || stazione.getPassword().isEmpty())   throw new ValidationException("E' necessario valorizzare il campo Password");
+				if(stazione.getPassword().contains(" ")) throw new ValidationException("Password non valida. Caratteri blank non ammessi");
 			}
 		}
 		
@@ -432,8 +443,6 @@ public class Intermediari extends BaseRsService {
 					if(!found)  throw new ValidationException("Stazione ["+old.getCodStazione()+"] non trovata in update");
 				}
 			}
-						
-			
 		}
 	}
 }

@@ -92,7 +92,7 @@ public class GestionePagamentiRsService extends BaseRsService {
 		BasicBD bd = null;
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -227,7 +227,7 @@ public class GestionePagamentiRsService extends BaseRsService {
 		BasicBD bd = null;
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}

@@ -46,23 +46,21 @@ import it.govpay.dars.model.ListaDominiEntry;
 import it.govpay.dars.model.ListaTributiEntry;
 import it.govpay.dars.model.TributoExt;
 
-public class TributiBD extends BasicBD{
+public class TributiBD extends it.govpay.bd.anagrafica.TributiBD{
 
-	private it.govpay.bd.anagrafica.TributiBD tributiBD = null;
 	private it.govpay.bd.anagrafica.EntiBD entiBD = null;
 	private it.govpay.dars.bd.DominiBD dominiBD = null;
 
 	public TributiBD(BasicBD basicBD) {
 		super(basicBD);
-		this.tributiBD = new it.govpay.bd.anagrafica.TributiBD(basicBD);
 		this.entiBD = new it.govpay.bd.anagrafica.EntiBD(basicBD);
 		this.dominiBD = new it.govpay.dars.bd.DominiBD(basicBD);
 	}
 
-	public List<ListaTributiEntry> findAll(TributoFilter filter) throws ServiceException {
+	public List<ListaTributiEntry> findAllEntry(TributoFilter filter) throws ServiceException {
 		try {
 			List<ListaTributiEntry> tributiLst = new ArrayList<ListaTributiEntry>();
-			List<it.govpay.bd.model.Tributo> lsttributoDTO = this.tributiBD.findAll(filter);
+			List<it.govpay.bd.model.Tributo> lsttributoDTO = findAll(filter);
 								
 			for(it.govpay.bd.model.Tributo tributoDTO: lsttributoDTO) {
 				ListaTributiEntry entry = new ListaTributiEntry();
@@ -89,24 +87,19 @@ public class TributiBD extends BasicBD{
 		}
 	}
 
-	public TributoExt getTributo(long idTributo) throws NotFoundException, MultipleResultException, ServiceException {
-		Tributo tributo =  this.tributiBD.getTributo(idTributo);
-
+	public TributoExt getTributoExt(long idTributo) throws NotFoundException, MultipleResultException, ServiceException {
+		Tributo tributo =  getTributo(idTributo);
 		TributoExt tributoExt = null;
-
 		if(tributo!= null){
 			Ente ente = AnagraficaManager.getEnte(this,tributo.getIdEnte());
 			IbanAccredito iban = AnagraficaManager.getIbanAccredito(this, tributo.getIbanAccredito());
-
 			tributoExt = new TributoExt(tributo, ente,iban);
 		}
-
 		return tributoExt;
 	}
 
 	public ListaTributiEntry getListaTributiEntry(long idTributo) throws NotFoundException, MultipleResultException, ServiceException {
-		Tributo tributo =  this.tributiBD.getTributo(idTributo);
-
+		Tributo tributo = getTributo(idTributo);
 		ListaTributiEntry entry = null;
 
 		if(tributo!= null){
@@ -124,33 +117,16 @@ public class TributiBD extends BasicBD{
 		return entry;
 	}
 
-	public void updateTributo(Tributo tributo) throws NotFoundException, ServiceException {
-		this.tributiBD.updateTributo(tributo);
-	}
-	
-	public void updateTributoExt(TributoExt tributo) throws NotFoundException, ServiceException {
-		this.tributiBD.updateTributo(tributo.getTributo());
-	}
-
-	public void insertTributo(Tributo tributo) throws ServiceException{
-		this.tributiBD.insertTributo(tributo); 
-	}
-	
-	public void insertTributoExt(TributoExt tributo) throws ServiceException{
-		this.tributiBD.insertTributo(tributo.getTributo()); 
-	}
-
-	public TributoFilter newFilter() throws ServiceException {
-		return this.tributiBD.newFilter();
+	public void insertTributo(TributoExt tributo) throws ServiceException{
+		insertTributo(tributo.getTributo()); 
 	}
 
 	public  List<ListaTributiEntry> findAllTributiByIdStazione(TributoFilter filter,List<Long> idTributi, long idStazione)  throws ServiceException{
 		List<ListaTributiEntry> tributiLst = new ArrayList<ListaTributiEntry>();
 
-
 		Stazione stazione = null;
 		try {
-			stazione = AnagraficaManager.getStazione(this.tributiBD, idStazione);
+			stazione = AnagraficaManager.getStazione(this, idStazione);
 		} catch (NotFoundException e1) {
 			return tributiLst;
 		} catch (MultipleResultException e) {
@@ -176,12 +152,8 @@ public class TributiBD extends BasicBD{
 		}
 
 		List<it.govpay.orm.Ente> listaEnti = new ArrayList<it.govpay.orm.Ente>();
-
 		EnteFilter enteFilter = this.entiBD.newFilter();
-
 		IPaginatedExpression pagExpr = enteFilter.toPaginatedExpression();
-
-
 		try {
 			List<String> codiciDominio = new ArrayList<String>();
 			for (ListaDominiEntry listaDominiEntry : listaDomini) {
@@ -202,7 +174,6 @@ public class TributiBD extends BasicBD{
 			throw new ServiceException(e);
 		}
 
-
 		try {
 			IPaginatedExpression paginatedExpression = filter.toPaginatedExpression();
 
@@ -210,13 +181,9 @@ public class TributiBD extends BasicBD{
 			for (it.govpay.orm.Ente  entry : listaEnti) {
 				codiciEnte.add(entry.getCodEnte());
 			}
-
 			pagExpr.in(it.govpay.orm.Tributo.model().ID_ENTE.COD_ENTE, codiciEnte);
-
-
 			List<it.govpay.orm.Tributo> lsttributoVO = 
 					this.getTributoService().findAll(paginatedExpression);
-
 
 			for(it.govpay.orm.Tributo tributoVO: lsttributoVO) {
 				// aggiungo solo i tributi non presenti.
@@ -228,7 +195,6 @@ public class TributiBD extends BasicBD{
 					entry.setDescrizione(tributoVO.getDescrizione());
 					entry.setCodEnte(tributoVO.getIdEnte().getCodEnte());
 					entry.setCodIban(tributoVO.getIbanAccredito().getCodIban());
-
 					tributiLst.add(entry);
 				}
 			}
@@ -240,6 +206,5 @@ public class TributiBD extends BasicBD{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
-
 	}
 }

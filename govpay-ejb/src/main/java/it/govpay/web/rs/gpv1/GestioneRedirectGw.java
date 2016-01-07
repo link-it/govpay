@@ -64,7 +64,7 @@ public class GestioneRedirectGw {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 				RptBD rptBD = new RptBD(bd);
 				rpt = rptBD.getRptByCodSessione(idSession);
 				URI uri = new URI(rpt.getCallbackURL().replace("{idSession}", idSession).replace("{esito}", esito).replace("{idDominio}", idDominio));

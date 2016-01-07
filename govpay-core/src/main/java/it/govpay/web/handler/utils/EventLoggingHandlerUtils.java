@@ -80,7 +80,7 @@ public class EventLoggingHandlerUtils {
 
 			BasicBD bd = null;
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 				EventiBD eventiBD = new EventiBD(bd);
 				bd.setAutoCommit(false);
 				for(Evento evento: lst) {
@@ -264,7 +264,7 @@ public class EventLoggingHandlerUtils {
 
 		try {
 			List<Evento> lst = createEventi(true, null);
-			BasicBD bd = BasicBD.getInstance();
+			BasicBD bd = BasicBD.newInstance();
 			EventiBD eventiBD = new EventiBD(bd);
 			for(Evento evento: lst) {
 				evento.setEsito("KO");

@@ -40,7 +40,7 @@ public class DominioConverter {
 	private static final String FASCIA_SEPARATOR = "\\|";
 	private static final String FASCIA_FIELD_SEPARATOR = ",";
 
-	private static final SimpleDateFormat hourFormat = new SimpleDateFormat("hh:mm:ss");
+	private static final SimpleDateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
 
 
 	public static List<Dominio> toDTOList(List<it.govpay.orm.Dominio> anagraficaLst) throws ServiceException {

@@ -34,31 +34,25 @@ import it.govpay.dars.model.ApplicazioneExt;
 import it.govpay.dars.model.ListaApplicazioniEntry;
 import it.govpay.dars.model.ListaTributiEntry;
 
-public class ApplicazioniBD extends BasicBD {
+public class ApplicazioniBD extends it.govpay.bd.anagrafica.ApplicazioniBD {
 
-	private it.govpay.bd.anagrafica.ApplicazioniBD applicazioniBD = null;
 	private TributiBD tributiBD = null;
 
 	public ApplicazioniBD(BasicBD basicBD) {
 		super(basicBD);
-		this.applicazioniBD = new it.govpay.bd.anagrafica.ApplicazioniBD(basicBD);
 		this.tributiBD = new TributiBD(basicBD);
 	}
 
-	public List<ListaApplicazioniEntry> findAll(ApplicazioneFilter filter) throws ServiceException {
+	public List<ListaApplicazioniEntry> findAllEntry(ApplicazioneFilter filter) throws ServiceException {
 		return this.findAll(filter, null);
 	}
 
 	public List<ListaApplicazioniEntry> findAll(ApplicazioneFilter filter,List<Long> idApplicazioni) throws ServiceException {
-
 		if(idApplicazioni != null){
 			filter.setListaIdApplicazioni(idApplicazioni);
 		}
-
-
-		List<it.govpay.bd.model.Applicazione> lstapplicazione = this.applicazioniBD.findAll(filter);
+		List<it.govpay.bd.model.Applicazione> lstapplicazione = super.findAll(filter);
 		List<ListaApplicazioniEntry> applicazioniLst = new ArrayList<ListaApplicazioniEntry>();
-
 		for(it.govpay.bd.model.Applicazione applicazioneDTO: lstapplicazione) {
 			ListaApplicazioniEntry entry = new ListaApplicazioniEntry();
 			entry.setId(applicazioneDTO.getId());
@@ -71,7 +65,7 @@ public class ApplicazioniBD extends BasicBD {
 
 	public List<ListaApplicazioniEntry> findAllApplicazioniNonInLista(ApplicazioneFilter filter,List<Long> idApplicazioni) throws ServiceException {
 
-		List<it.govpay.bd.model.Applicazione> lstapplicazione = this.applicazioniBD.findAll(filter);
+		List<it.govpay.bd.model.Applicazione> lstapplicazione = super.findAll(filter);
 		List<ListaApplicazioniEntry> applicazioniLst = new ArrayList<ListaApplicazioniEntry>();
 
 		for(it.govpay.bd.model.Applicazione applicazioneDTO: lstapplicazione) {
@@ -81,7 +75,6 @@ public class ApplicazioniBD extends BasicBD {
 					add = true;
 				}
 			}
-
 			if(add){
 				ListaApplicazioniEntry entry = new ListaApplicazioniEntry();
 				entry.setId(applicazioneDTO.getId());
@@ -90,33 +83,26 @@ public class ApplicazioniBD extends BasicBD {
 				applicazioniLst.add(entry);
 			}
 		}
-
 		return applicazioniLst;
 	}
 
-	public ApplicazioneExt getApplicazione(long idApplicazione) throws NotFoundException, MultipleResultException, ServiceException {
-		Applicazione applicazione = this.applicazioniBD.getApplicazione(idApplicazione);
-
+	public ApplicazioneExt getApplicazioneExt(long idApplicazione) throws NotFoundException, MultipleResultException, ServiceException {
+		Applicazione applicazione = super.getApplicazione(idApplicazione);
 		ApplicazioneExt applicazioneExt = new ApplicazioneExt();
-
 		applicazioneExt.setApplicazione(applicazione);
-
 		List<ListaTributiEntry> tributi = new ArrayList<ListaTributiEntry>();
 		if(applicazione.getIdTributi() != null && applicazione.getIdTributi().size() >0){
 			for (Long idTributo : applicazione.getIdTributi()) {
 				ListaTributiEntry entry = this.tributiBD.getListaTributiEntry(idTributo);
-
 				tributi.add(entry);
 			}
 		}
-
 		applicazioneExt.setTributi(tributi);
-
 		return applicazioneExt;
 	}
 
 	public ListaApplicazioniEntry getListaApplicazioniEntry(long idApplicazione) throws NotFoundException, MultipleResultException, ServiceException {
-		Applicazione applicazione = this.applicazioniBD.getApplicazione(idApplicazione);
+		Applicazione applicazione = super.getApplicazione(idApplicazione);
 		ListaApplicazioniEntry entry = new ListaApplicazioniEntry();
 		entry.setId(applicazione.getId());
 		entry.setAbilitato(applicazione.isAbilitato());
@@ -125,15 +111,10 @@ public class ApplicazioniBD extends BasicBD {
 	}
 
 	public void updateApplicazione(ApplicazioneExt applicazioneExt) throws NotFoundException, ServiceException {
-		this.applicazioniBD.updateApplicazione(applicazioneExt.getApplicazione());
+		super.updateApplicazione(applicazioneExt.getApplicazione());
 	}
 
 	public void insertApplicazione(ApplicazioneExt applicazioneExt) throws ServiceException{
-		this.applicazioniBD.insertApplicazione(applicazioneExt.getApplicazione()); 
+		super.insertApplicazione(applicazioneExt.getApplicazione()); 
 	}
-
-	public ApplicazioneFilter newFilter() throws ServiceException {
-		return this.applicazioniBD.newFilter();
-	}
-
 }

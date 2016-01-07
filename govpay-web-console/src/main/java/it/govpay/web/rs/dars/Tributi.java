@@ -30,6 +30,7 @@ import it.govpay.dars.model.TributoExt;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 
@@ -50,6 +51,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 @Path("/dars/tributi")
@@ -78,12 +80,11 @@ public class Tributi extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-		this.checkOperatoreAdmin(bd);
-
+			this.checkOperatoreAdmin(bd);
 			TributiBD tributiBD = new TributiBD(bd);
 			List<ListaTributiEntry> findAll  = new ArrayList<ListaTributiEntry>();
 			TributoFilter filter = tributiBD.newFilter();
@@ -94,25 +95,18 @@ public class Tributi extends BaseRsService {
 			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
-			findAll = tributiBD.findAll(filter);
-
+			findAll = tributiBD.findAllEntry(filter);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(findAll);
-
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante la ricerca dei tributi:" +e.getMessage() , e);
 			throw e;
 		}catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca dei tributi:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-			//			if(e instanceof GovPayException)
-			//				throw (GovPayException) e;
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -134,18 +128,15 @@ public class Tributi extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
 		this.checkOperatoreAdmin(bd);
-
 			TributiBD tributiBD = new TributiBD(bd);
-			TributoExt tributoExt = tributiBD.getTributo(id);
-
+			TributoExt tributoExt = tributiBD.getTributoExt(id);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(tributoExt);
 		}catch(WebApplicationException e){
@@ -153,15 +144,10 @@ public class Tributi extends BaseRsService {
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca del tributo:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
-			//			if(e instanceof GovPayException)
-			//				throw (GovPayException) e;
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -185,30 +171,31 @@ public class Tributi extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-
-		this.checkOperatoreAdmin(bd);
-
+			this.checkOperatoreAdmin(bd);
 			TributiBD tributiBD = new TributiBD(bd);
+			Tributo oldTributo = tributiBD.getTributo(tributo.getId());
+			this.checkTributo(tributo, oldTributo);
 			tributiBD.updateTributo(tributo); 
-			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA); //TODO discriminare tra ESEGUITA e NONESEGUITA
-			//			darsResponse.setResponse(tributoExt);
-		}catch(WebApplicationException e){
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA); 
+		} catch(ValidationException e) {
+			log.error("Riscontrato errore di validazione durante l'aggiornamento del tributo:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
+		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'aggiornamento del tributo:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante l'aggioramento del tributo:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
-
-		}finally {
+			return darsResponse;
+		} finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
@@ -224,42 +211,60 @@ public class Tributi extends BaseRsService {
 			Tributo tributo) throws GovPayException {
 		initLogger("insertTributi");
 		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] tributo["+tributo+"]");
-
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
-		this.checkOperatoreAdmin(bd);
-
+			this.checkOperatoreAdmin(bd);
+			this.checkTributo(tributo, null);
 			TributiBD tributiBD = new TributiBD(bd);
+			try {
+				tributiBD.getTributo(tributo.getIdEnte(), tributo.getCodTributo());
+				throw new ValidationException("Tributo [CodEnte: " + tributo.getIdEnte() + "] [CodTributo: " + tributo.getCodTributo() + "] gia' presente in anagrafica.");
+			} catch (NotFoundException e) {
+				// Ok non esiste gia'. posso inserire
+			}
 			tributiBD.insertTributo(tributo);
-
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(tributo.getId());
+		} catch(ValidationException e) {
+			log.error("Riscontrato errore di validazione durante l'inserimento del tributo:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'inserimento del tributo:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante l'inserimento del tributo:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
-		}finally {
+			return darsResponse;
+		} finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
 		log.info("Richiesta evasa con successo");
 		return darsResponse;
+	}
+	
+	private void checkTributo(Tributo tributo, Tributo oldTributo) throws ValidationException {
+		if(tributo == null || tributo.getCodTributo() == null || tributo.getCodTributo().isEmpty()) throw new ValidationException("Il campo Cod Tributo e' obbligatorio");
+		if(tributo == null || tributo.getDescrizione() == null || tributo.getDescrizione().isEmpty()) throw new ValidationException("Il campo Descrizione e' obbligatorio");
+		if(tributo == null || tributo.getIdEnte() == 0) throw new ValidationException("Il campo Ente e' obbligatorio");
+		if(tributo == null || tributo.getIbanAccredito() == 0 ) throw new ValidationException("Il campo Iban Accredito e' obbligatorio");
+		if(tributo == null || tributo.getTipoContabilita() == null || tributo.getDescrizione().isEmpty()) throw new ValidationException("Il campo Tipo Contabilita' e' obbligatorio");
+		if(tributo == null || tributo.getCodContabilita() == null || tributo.getCodContabilita().isEmpty()) throw new ValidationException("Il campo Cod Contabilita e' obbligatorio");
+		
+		if(oldTributo != null) {
+			if(!tributo.getCodTributo().equals(oldTributo.getCodTributo())) throw new ValidationException("Il campo Cod Tributo non e' modificabile");
+			if(tributo.getIdEnte() == oldTributo.getIdEnte()) throw new ValidationException("Il campo Ente non e' modificabile");
+		}
 	}
 }

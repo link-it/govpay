@@ -24,6 +24,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.dars.bd.ApplicazioniBD;
 import it.govpay.dars.bd.TributiBD;
 import it.govpay.dars.model.ApplicazioneExt;
@@ -32,9 +33,12 @@ import it.govpay.dars.model.ListaTributiEntry;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +56,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 @Path("/dars/applicazioni")
@@ -75,14 +80,13 @@ public class Applicazioni extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-		
+
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
 			this.checkOperatoreAdmin(bd);
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
@@ -92,21 +96,18 @@ public class Applicazioni extends BaseRsService {
 			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			List<ListaApplicazioniEntry> findAll = applicazioniBD.findAll(filter);
+			List<ListaApplicazioniEntry> findAll = applicazioniBD.findAllEntry(filter);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(findAll);
-			
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante la ricerca delle applicazioni:" +e.getMessage() , e);
 			throw e;
 		}  catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca delle applicazioni:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-			
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -127,17 +128,17 @@ public class Applicazioni extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-		
+
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
 			this.checkOperatoreAdmin(bd);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-			ApplicazioneExt applicazioneExt = applicazioniBD.getApplicazione(id);
+			ApplicazioneExt applicazioneExt = applicazioniBD.getApplicazioneExt(id);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(applicazioneExt);
 		} catch(WebApplicationException e){
@@ -145,13 +146,10 @@ public class Applicazioni extends BaseRsService {
 			throw e;
 		}  catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca dell'applicazione:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
-			
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -171,31 +169,33 @@ public class Applicazioni extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-		
+
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
 			this.checkOperatoreAdmin(bd);
-
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			ApplicazioneExt oldApplicazione = applicazioniBD.getApplicazioneExt(applicazione.getApplicazione().getId());
+			this.checkApplicazione(applicazione, oldApplicazione);
 			applicazioniBD.updateApplicazione(applicazione);
-			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);//TODO discriminare tra ESEGUITA e NONESEGUITA
-
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+		} catch(ValidationException e) {
+			log.error("Riscontrato errore di validazione durante l'aggiornamento dell'Applicazione:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'aggiornamento dell'applicazione:" +e.getMessage() , e);
 			throw e;
 		}  catch (Exception e) {
 			log.error("Riscontrato errore durante l'aggioramento dell'applicazione:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -216,34 +216,40 @@ public class Applicazioni extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-		
+
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
 			this.checkOperatoreAdmin(bd);
-
+			this.checkApplicazione(applicazione, null);
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			try {
+				applicazioniBD.getApplicazione(applicazione.getApplicazione().getCodApplicazione());
+				throw new ValidationException("Applicazione [CodApplicazione: " + applicazione.getApplicazione().getCodApplicazione() + "] gia' presente in anagrafica.");
+			} catch (NotFoundException e) {
+				// Ok non esiste gia'. posso inserire
+			}
 			applicazioniBD.insertApplicazione(applicazione);
 			Long id = applicazione.getApplicazione().getId();
-			
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(id);
-
+		} catch(ValidationException e) {
+			log.error("Riscontrato errore di validazione durante l'inserimento dell'Applicazione:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'inserimento dell'applicazione:" +e.getMessage() , e);
 			throw e;
 		}  catch (Exception e) {
 			log.error("Riscontrato errore durante l'inserimento dell'applicazione:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-			
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -251,7 +257,7 @@ public class Applicazioni extends BaseRsService {
 		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
-	
+
 	@GET
 	@Path("/{id}/tributi")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -270,13 +276,12 @@ public class Applicazioni extends BaseRsService {
 
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
-			this.checkOperatoreAdmin(bd);
 
+			this.checkOperatoreAdmin(bd);
 			TributiBD tributiBD = new TributiBD(bd);
 			List<ListaTributiEntry> findAll  = new ArrayList<ListaTributiEntry>();
 			TributoFilter filter = tributiBD.newFilter();
@@ -287,43 +292,99 @@ public class Applicazioni extends BaseRsService {
 			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
+
 			List<Long> idTributi = new ArrayList<Long>();
-			
-			if(idApplicazione > 0 ){
+			if(idApplicazione > 0 ) {
 				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-				ApplicazioneExt applicazioneExt = applicazioniBD.getApplicazione(idApplicazione);
+				ApplicazioneExt applicazioneExt = applicazioniBD.getApplicazioneExt(idApplicazione);
 				idTributi = applicazioneExt.getApplicazione().getIdTributi();
 			}
-			
 			if(idStazione  >0 ){
 				findAll = tributiBD.findAllTributiByIdStazione(filter,idTributi,idStazione);
 			}else {
-				findAll = tributiBD.findAll(filter);
+				findAll = tributiBD.findAllEntry(filter);
 			}
-
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(findAll);
-
-		} catch(WebApplicationException e){
+		} catch(WebApplicationException e) {
 			log.error("Riscontrato errore di autorizzazione durante la ricerca dei tributi:" +e.getMessage() , e);
 			throw e;
-		}  catch (Exception e) {
+		} catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca dei tributi:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-			//			if(e instanceof GovPayException)
-			//				throw (GovPayException) e;
-
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
-		}finally {
+			return darsResponse;
+		} finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-
 		log.info("Richiesta evasa con successo");
 		return darsResponse;
+	}
+
+	private void checkApplicazione(ApplicazioneExt applicazioneExt, ApplicazioneExt oldApplicazioneExt) throws ValidationException {
+		Applicazione applicazione = applicazioneExt.getApplicazione();
+		if(applicazione == null || applicazione.getCodApplicazione() == null || applicazione.getCodApplicazione().isEmpty()) throw new ValidationException("Il campo Cod Applicazione deve essere valorizzato");
+		if(applicazione.getPrincipal() == null || applicazione.getPrincipal().isEmpty()) throw new ValidationException("Il campo Principal deve essere valorizzato.");
+		if(applicazione.getVersione() == null) throw new ValidationException("Il campo Versione deve essere valorizzato.");
+
+		// Connettore Esito
+		if(applicazione.getConnettoreEsito() == null)  throw new ValidationException("Il campo Connettore Esito deve essere valorizzato");
+		if(applicazione.getConnettoreEsito().getUrl() == null)  throw new ValidationException("Il campo URL del Connettore Esito deve essere valorizzato");
+		try {
+			new URL(applicazione.getConnettoreEsito().getUrl());
+		} catch (MalformedURLException e) {
+			throw new ValidationException("URL del Connettore Esito non valida");
+		}
+		if(applicazione.getConnettoreEsito().getTipoAutenticazione() == null)  throw new ValidationException("Il campo Tipo Autenticazione del Connettore Esito deve essere valorizzato");
+		switch(applicazione.getConnettoreEsito().getTipoAutenticazione()) {
+		case HTTPBasic:
+			if(applicazione.getConnettoreEsito().getHttpUser() == null)  throw new ValidationException("Il campo Username deve essere valorizzato con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"]");
+			if(applicazione.getConnettoreEsito().getHttpPassw() == null)  throw new ValidationException("Il campo Password deve essere valorizzato con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"]");
+			break;
+		case NONE:
+			break;
+		case SSL:
+			if(applicazione.getConnettoreEsito().getSslKsType() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"] non deve avere SslKsType nullo");
+			if(applicazione.getConnettoreEsito().getSslKsLocation() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"] non deve avere SslKsLocation nullo");
+			if(applicazione.getConnettoreEsito().getSslKsPasswd() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"] non deve avere SslKsPasswd nullo");
+			if(applicazione.getConnettoreEsito().getSslTsType() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"] non deve avere SslTsType nullo");
+			if(applicazione.getConnettoreEsito().getSslTsLocation() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"] non deve avere SslTsLocation nullo");
+			if(applicazione.getConnettoreEsito().getSslTsPasswd() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"] non deve avere SslTsPasswd nullo");
+			if(applicazione.getConnettoreEsito().getSslPKeyPasswd() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"] non deve avere SslPKeyPasswd nullo");
+			break;
+		default:
+			throw new ValidationException("Il Connettore Esito ha un Tipo Autenticazione non valido: ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"]");
+		}
+
+		// Connettore Verifica
+		if(applicazione.getConnettoreVerifica() == null)  throw new ValidationException("Il campo Connettore Verifica deve essere valorizzato");
+		if(applicazione.getConnettoreVerifica().getUrl() == null)  throw new ValidationException("Il campo URL del Connettore Verifica deve essere valorizzato");
+		try {
+			new URL(applicazione.getConnettoreVerifica().getUrl());
+		} catch (MalformedURLException e) {
+			throw new ValidationException("URL del Connettore Verifica non valida");
+		}
+		if(applicazione.getConnettoreVerifica().getTipoAutenticazione() == null)  throw new ValidationException("Il campo Tipo Autenticazione del Connettore Verifica deve essere valorizzato");
+		switch(applicazione.getConnettoreVerifica().getTipoAutenticazione()) {
+		case HTTPBasic:
+			if(applicazione.getConnettoreVerifica().getHttpUser() == null)  throw new ValidationException("Il campo Username deve essere valorizzato con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"]");
+			if(applicazione.getConnettoreVerifica().getHttpPassw() == null)  throw new ValidationException("Il campo Password deve essere valorizzato con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"]");
+			break;
+		case NONE:
+			break;
+		case SSL:
+			if(applicazione.getConnettoreVerifica().getSslKsType() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"] non deve avere SslKsType nullo");
+			if(applicazione.getConnettoreVerifica().getSslKsLocation() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"] non deve avere SslKsLocation nullo");
+			if(applicazione.getConnettoreVerifica().getSslKsPasswd() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"] non deve avere SslKsPasswd nullo");
+			if(applicazione.getConnettoreVerifica().getSslTsType() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"] non deve avere SslTsType nullo");
+			if(applicazione.getConnettoreVerifica().getSslTsLocation() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"] non deve avere SslTsLocation nullo");
+			if(applicazione.getConnettoreVerifica().getSslTsPasswd() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"] non deve avere SslTsPasswd nullo");
+			if(applicazione.getConnettoreVerifica().getSslPKeyPasswd() == null)  throw new ValidationException("Connettore con TipoAutorizzazione ["+applicazione.getConnettoreVerifica().getTipoAutenticazione()+"] non deve avere SslPKeyPasswd nullo");
+			break;
+		default:
+			throw new ValidationException("Il Connettore Verifica ha un Tipo Autenticazione non valido: ["+applicazione.getConnettoreEsito().getTipoAutenticazione()+"]");
+		}
 	}
 }

@@ -26,9 +26,6 @@ import it.govpay.bd.model.Ente;
 
 public class EnteExt implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	
 	private ListaDominiEntry dominio =null;

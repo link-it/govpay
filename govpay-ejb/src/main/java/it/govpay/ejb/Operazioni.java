@@ -55,7 +55,7 @@ public class Operazioni{
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			log.info("Acquisizione rendicontazioni");
 			new Rendicontazioni(bd).downloadRendicontazioni();
 			log.info("Acquisizione rendicontazioni completata");
@@ -74,7 +74,7 @@ public class Operazioni{
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			new RegistroPSP(bd).aggiornaRegistro();
 			return true;
 		} catch (Exception e) {
@@ -91,7 +91,7 @@ public class Operazioni{
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			log.info("Recupero Rpt Pendenti");
 			new Pagamenti(bd).verificaRptPedenti();
 			log.info("Acquisizione Rpt pendenti completata");
@@ -111,7 +111,7 @@ public class Operazioni{
 		log.trace("Avvio batch SpedizioneNotificheMail");
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			new Mail(bd).notificaMail();
 			return true;
 		} catch (Exception e) {
@@ -128,7 +128,7 @@ public class Operazioni{
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 			GovPayConfiguration properties = GovPayConfiguration.newInstance();
 			log.trace("Spedizione degli esiti (max " + properties.getEsiti_limit() + " esiti)" );
 			try {

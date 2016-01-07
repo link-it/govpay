@@ -74,8 +74,10 @@ public class ApplicazioneConverter {
 			vo.setCodConnettoreVerifica(dto.getConnettoreVerifica().getIdConnettore());
 		}
 		
+		if(dto.getVersione() != null)
+			vo.setVersione(dto.getVersione().toString());
+		
 		vo.setPrincipal(dto.getPrincipal());
-		vo.setVersione(dto.getVersione().toString());
 		vo.setPolicyRispedizione(dto.getPolicyRispedizione());
 		
 		if(dto.getIdTributi() != null && !dto.getIdTributi().isEmpty()) {

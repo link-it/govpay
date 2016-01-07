@@ -68,7 +68,7 @@ public class InviaEsitoThread implements Runnable {
 		EsitiBD esitiBD = null;
 		if(esito == null) {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 				esitiBD = new EsitiBD(bd);
 				esito = esitiBD.getEsito(idEsito);
 			} catch (Exception e) {
@@ -115,7 +115,7 @@ public class InviaEsitoThread implements Runnable {
 						esito.setDataOraProssimaSpedizione(date);
 						log.info("Spedizione dell'esito [IdEsito: "+esito.getId()+"] rischedulata il " + date);
 					}
-					bd = BasicBD.getInstance();
+					bd = BasicBD.newInstance();
 					esitiBD = new EsitiBD(bd);
 					esitiBD.updateEsito(esito);
 				}

@@ -50,7 +50,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
-public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
+public class DominiBD extends it.govpay.bd.anagrafica.DominiBD {
 
 	private TabellaContropartiBD tabellaContropartiBD  = null;
 	private ContiAccreditoBD contoAccreditoBD  = null;
@@ -108,7 +108,7 @@ public class DominiBD extends it.govpay.bd.anagrafica.DominiBD{
 		return dominio;
 	}
 
-	public DominioExt getDominio(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
+	public DominioExt getDominioExt(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
 		Dominio dominioDTO = AnagraficaManager.getDominio(this, idDominio);
 
 		//Intermediario

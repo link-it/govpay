@@ -86,7 +86,7 @@ public class InviaRptThread implements Runnable {
 			risposta = client.nodoInviaRPT(intermediario, stazione, canale, rpt, inviaRPT);
 			
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				log.error("Impossibile stabilire una connessione con il database", e);
 				return;

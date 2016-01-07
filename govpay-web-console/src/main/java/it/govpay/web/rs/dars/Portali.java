@@ -78,7 +78,7 @@ public class Portali extends BaseRsService {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -130,7 +130,7 @@ public class Portali extends BaseRsService {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -172,7 +172,7 @@ public class Portali extends BaseRsService {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -217,7 +217,7 @@ public class Portali extends BaseRsService {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -267,7 +267,7 @@ public class Portali extends BaseRsService {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -296,7 +296,7 @@ public class Portali extends BaseRsService {
 					findAll = applicazioniBD.findAll(filter,idApplicazioni);
 			
 			}else {
-				findAll = applicazioniBD.findAll(filter);
+				findAll = applicazioniBD.findAllEntry(filter);
 			}
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);

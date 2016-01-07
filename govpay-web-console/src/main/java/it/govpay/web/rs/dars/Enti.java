@@ -37,6 +37,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -51,6 +52,7 @@ import it.govpay.dars.model.ListaEntiEntry;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 
@@ -81,7 +83,7 @@ public class Enti extends BaseRsService {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
@@ -104,12 +106,10 @@ public class Enti extends BaseRsService {
 				if(operatore.getIdEnti() == null || operatore.getIdEnti().isEmpty())
 					findAll = new ArrayList<ListaEntiEntry>();
 				else 
-				filter.setListaIdEnti(operatore.getIdEnti());
-				
+					filter.setListaIdEnti(operatore.getIdEnti());
 			}
-
 			if(findAll == null)
-				findAll = entiBD.findAll(filter);
+				findAll = entiBD.findAllEntry(filter);
 			
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(findAll);
@@ -124,6 +124,7 @@ public class Enti extends BaseRsService {
 			
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -144,32 +145,26 @@ public class Enti extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
-		this.checkOperatoreAdmin(bd);
-
+			this.checkOperatoreAdmin(bd);
 			EntiBD entiBD = new EntiBD(bd);
 			EnteExt enteExt = entiBD.getEnteExt(id);
-		 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(enteExt);
-		}catch(WebApplicationException e){
+		} catch(WebApplicationException e) {
 			log.error("Riscontrato errore di autorizzazione durante la ricerca dell'ente:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante la ricerca dell'ente:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-			
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -193,28 +188,30 @@ public class Enti extends BaseRsService {
 		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
-		this.checkOperatoreAdmin(bd);
-
+			this.checkOperatoreAdmin(bd);
 			EntiBD entiBD = new EntiBD(bd);
+			Ente oldEnte = entiBD.getEnte(ente.getCodEnte());
+			this.checkEnte(ente, oldEnte);
 			entiBD.updateEnte(ente);
-			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);//TODO discriminare tra ESEGUITA e NONESEGUITA
-
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+		} catch(ValidationException e) {
+			log.error("Riscontrato errore di validazione durante l'aggiornamento dell'Ente:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'aggiornamento dell'ente:" +e.getMessage() , e);
 			throw e;
 		}catch (Exception e) {
 			log.error("Riscontrato errore durante l'aggioramento dell'ente:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-			
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -235,38 +232,55 @@ public class Enti extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-		
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			
-		this.checkOperatoreAdmin(bd);
-
+			this.checkOperatoreAdmin(bd);
+			this.checkEnte(ente, null);
 			EntiBD entiBD = new EntiBD(bd);
+			try {
+				entiBD.getEnte(ente.getCodEnte());
+				throw new ValidationException("L'ente con id [" + ente.getCodEnte() + "] e' gia' presente in anagrafica.");
+			} catch (NotFoundException e) {
+				// Ok non esiste gia'. posso inserire
+			}
 			entiBD.insertEnte(ente);
 			Long id = ente.getId();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(id);
-		}catch(WebApplicationException e){
+		} catch(ValidationException e) {
+			log.error("Riscontrato errore di validazione durante l'aggiornamento dell'Ente:" +e.getMessage());
+			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			return darsResponse;
+		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'inserimento dell'ente:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
 			log.error("Riscontrato errore durante l'inserimento dell'ente:" +e.getMessage() , e);
-
-			if(bd != null) 
-				bd.rollback();
-
-			
+			if(bd != null) bd.rollback();
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return darsResponse;
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
 		log.info("Richiesta evasa con successo");
 		return darsResponse;
+	}
+	
+	private void checkEnte(Ente ente, Ente oldEnte) throws ValidationException {
+		if(ente == null || ente.getCodEnte() == null || ente.getCodEnte().isEmpty()) throw new ValidationException("Il campo Cod Ente e' obbligatorio");
+		if(ente.getAnagraficaEnte() == null || ente.getAnagraficaEnte().getRagioneSociale() == null || ente.getAnagraficaEnte().getRagioneSociale().isEmpty()) throw new ValidationException("Il campo Ragione Sociale e' obbligatorio");
+		if(ente.getAnagraficaEnte() == null || ente.getAnagraficaEnte().getCodUnivoco() == null || ente.getAnagraficaEnte().getCodUnivoco().isEmpty()) throw new ValidationException("Il campo Cod Univoco e' obbligatorio");
+		if(ente.getIdDominio() == 0) throw new ValidationException("Il campo Dominio e' obbligatorio");
+		if(oldEnte != null) {
+			if(!ente.getCodEnte().equals(oldEnte.getCodEnte())) throw new ValidationException("Il campo Cod Ente non e' modificabile");
+			if(ente.getIdDominio() == oldEnte.getIdDominio()) throw new ValidationException("Il campo Dominio non e' modificabile");
+		}
 	}
 }

@@ -58,7 +58,7 @@ public class InviaMailThread implements Runnable {
 		log.info("Spedisco la mail [IdMail: "+this.mail.getId()+"]");
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.getInstance();
+			bd = BasicBD.newInstance();
 		} catch (Exception e) {
 			log.error("Impossibile stabilire una connessione con il database", e);
 			return;

@@ -186,7 +186,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <template is="dom-repeat" items="{{stazioni}}">
                             <div class="layout horizontal">
                                 <input type="hidden" value="{{item.id}}"/>
-                                <paper-input label="ID" value="{{_getCodStazione(intermediarioCorrente.codIntermediario,item)}}" required disabled></paper-input>
+                                <paper-input label="ID" value="{{_getCodStazione(intermediarioCorrente.codIntermediario,item.applicationCode)}}" required disabled></paper-input>
                                 <span class="gap"></span>
                                 <paper-input label="Application Code" type="number" value="{{item.applicationCode}}" required disabled$="[[!_isAddStazione(item)]]"></paper-input>
                                 <span class="gap"></span>
@@ -294,6 +294,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
        _salvaIntermediario: function(){
+    	   for(var i=0; i< this.stazioni.length;i++){
+    		   var stazione = this.stazioni[i];
+    	   		stazione.codStazione = this._getCodStazione(this.intermediarioCorrente.codIntermediario, stazione.applicationCode);
+    	   }
       //    console.log(this.stazioni);
          this.intermediarioCorrente.stazioni = this.stazioni;
          this.intermediarioCorrente.connettorePdd = this.connettorePdd;
@@ -313,7 +317,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var appCode = this._getNextApplicationCode(this.stazioni);
 
         var nuovaStazione = {id :'0', codStazione : '' , applicationCode: appCode ,password:'', abilitato: true};
-        nuovaStazione.codStazione = this._getCodStazione(this.intermediarioCorrente.codIntermediario, nuovaStazione);
+        nuovaStazione.codStazione = this._getCodStazione(this.intermediarioCorrente.codIntermediario, nuovaStazione.applicationCode);
         this.push('stazioni',nuovaStazione);
       },
 
@@ -342,17 +346,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         return 1;
       },
-      _getCodStazione: function(codIntermediario, stazione){
+      _getCodStazione: function(codIntermediario, applicationCode){
         if(codIntermediario)
-            if(stazione)
-                if(stazione.applicationCode){
-                    var idStaz = stazione.applicationCode;
+                if(applicationCode){
+                    var idStaz = applicationCode;
 
                     if(idStaz < 10)
                         idStaz = '0' + idStaz;
 
-                    stazione.codStazione = codIntermediario + '_' + idStaz;
-                    return stazione.codStazione;
+                    var codStazione = codIntermediario + '_' + idStaz;
+                    return codStazione;
                 }
         return '';
       },
@@ -391,6 +394,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if(darsResponse) {
                 var esitoOperazione = darsResponse.esitoOperazione;
                 var codOperazione = darsResponse.codOperazione;
+                var dettaglioEsito = darsResponse.dettaglioEsito;
                 var id = darsResponse.response || '';
                 var messaggio= '';
 
@@ -406,13 +410,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                     this.close();
                     this.fire('reload-item', {elementoModificato: this.intermediarioCorrente});
-                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                } else if(esitoOperazione == 'NONESEGUITA'){
                     // Creazione
                     if(this.actionMethod == 'POST'){
-                        messaggio = 'Inserimento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Inserimento Intermediario non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
                     }else {
                         //Aggiornamento
-                        messaggio = 'Aggiornamento Intermediario non completato. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Aggiornamento Intermediario non completato. Codice Operazione: ' + codOperazione + '.' + dettaglioEsito;
                     }
                 } else {
                     // ERRORE

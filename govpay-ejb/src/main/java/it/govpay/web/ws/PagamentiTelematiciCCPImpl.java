@@ -87,7 +87,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 				Intermediario interm = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
 				
 				NdpUtils.setThreadContextNdpParams(codDominio, iuv, ccp, bodyrichiesta.getIdentificativoPSP(), TipoVersamento.PO.name(), codStazione, null, null, "paaAttivaRPT", interm.getDenominazione());
@@ -162,7 +162,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		BasicBD bd = null;
 		try {
 			try {
-				bd = BasicBD.getInstance();
+				bd = BasicBD.newInstance();
 				Intermediario interm = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
 				NdpUtils.setThreadContextNdpParams(codDominio, iuv, ccp, bodyrichiesta.getIdentificativoPSP(), TipoVersamento.PO.name(), codStazione, null, null, "paaVerificaRPT", interm.getDenominazione());
 			} catch (ServiceException e) {
