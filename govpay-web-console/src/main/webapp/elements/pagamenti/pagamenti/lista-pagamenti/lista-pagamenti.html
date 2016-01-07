@@ -249,7 +249,7 @@
         },
         _selectEnte:  function(event){
             this.codEnteInput = event.detail.itemCorrente[this.enteOptionValue];
-            console.log('Ente: ' + this.codEnteInput);
+           // console.log('Ente: ' + this.codEnteInput);
         },
 
         _getDataUltimoAggiornamento: function(item) {
@@ -342,7 +342,7 @@
       },
         _selectPagamento : function (event){
            var target = event.model.item;
-           console.log(target);
+          // console.log(target);
            this.fire('select-item', {pagamentoCorrente: target});
         }
       });

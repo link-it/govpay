@@ -317,12 +317,13 @@
             return '';
         },
         _getListaSingoliVersamenti: function(pagamentoCorrente){
-            if(this.singoliVersamenti)
-                return this.singoliVersamenti;
-            else{
+            //if(this.singoliVersamenti)
+            //    return this.singoliVersamenti;
+            //else{
+                  this.singoliVersamenti = [];
                 var tmp = this._getPropertyVersamento(pagamentoCorrente,'singoliVersamenti');
                  if(tmp){
-                    this.singoliVersamenti = [];
+
 
                      for(var v in tmp){
                             this.singoliVersamenti.push({'expanded': false, 'versamento': tmp[v]});
@@ -330,7 +331,7 @@
                 }
 
                return this.singoliVersamenti;
-            }
+            //}
         },
 
          _getPropertyVersamento: function(pagamentoCorrente, nomeProperty){
