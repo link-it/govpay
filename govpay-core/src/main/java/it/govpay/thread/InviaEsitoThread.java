@@ -60,6 +60,9 @@ public class InviaEsitoThread implements Runnable {
 
 	@Override
 	public void run() {
+		if(idEsito == 0 && esito == null)
+			return;
+		
 		if(context != null)
 			for(String key : context.keySet()) ThreadContext.put(key,  context.get(key));
 		

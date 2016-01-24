@@ -39,6 +39,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +50,10 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.ContiAccreditoBD;
+import it.govpay.bd.anagrafica.TabellaContropartiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.ContoAccredito;
 import it.govpay.bd.model.Disponibilita;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Ente;
@@ -57,6 +61,7 @@ import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.Periodo;
+import it.govpay.bd.model.TabellaControparti;
 import it.govpay.dars.bd.DominiBD;
 import it.govpay.dars.bd.EntiBD;
 import it.govpay.dars.model.DominioExt;
@@ -175,6 +180,92 @@ public class Domini extends BaseRsService{
 		log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
+	
+	// download di controparti
+	@GET
+	@Path("/{idDominio}/controparti/{idControparte}")
+	@Produces({MediaType.TEXT_XML})
+	public Response getControparte(@QueryParam(value = "operatore") String principalOperatore,
+			@PathParam("idDominio") long idDominio,@PathParam("idControparte") long idControparte) throws GovPayException {
+		initLogger("getControparte");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] idDominio["+idDominio+"] idControparte ["+idControparte+"]");
+		
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+		try {
+			try {
+				bd = BasicBD.newInstance();
+			} catch (Exception e) {
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+			}
+			this.checkOperatoreAdmin(bd);
+			TabellaContropartiBD contropartiBD = new TabellaContropartiBD(bd);
+
+			TabellaControparti tabellaControparti = contropartiBD.getTabellaControparti(idControparte);
+			
+			byte[] byteXml = tabellaControparti.getXml(); 
+			log.info("Richiesta evasa con successo");
+			return Response.status(200).entity(byteXml).build();
+		} catch(WebApplicationException e){
+			log.error("Riscontrato errore di autorizzazione durante la ricerca della Controparte:" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			log.error("Riscontrato errore durante la ricerca della Controparte:" +e.getMessage() , e);
+			if(bd != null) bd.rollback();
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return Response.status(200).entity(darsResponse).build();
+			
+		} finally {
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		
+	}
+	
+	@GET
+	@Path("/{idDominio}/contiaccredito/{idContoAccredito}")
+	@Produces({MediaType.TEXT_XML})
+	public Response getContoAccredito(@QueryParam(value = "operatore") String principalOperatore,
+			@PathParam("idDominio") long idDominio,@PathParam("idContoAccredito") long idContoAccredito) throws GovPayException {
+		initLogger("getContoAccredito");
+		log.info("Ricevuta richiesta: operatore["+principalOperatore+"] idDominio["+idDominio+"] idContoAccredito ["+idContoAccredito+"]");
+		
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+		try {
+			try {
+				bd = BasicBD.newInstance();
+			} catch (Exception e) {
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+			}
+			this.checkOperatoreAdmin(bd);
+			ContiAccreditoBD contoAccreditoBD = new ContiAccreditoBD(bd); 
+
+			ContoAccredito contoAccredito = contoAccreditoBD.getContoAccredito(idContoAccredito);
+			
+			byte[] byteXml = contoAccredito.getXml(); 
+			log.info("Richiesta evasa con successo");
+			return Response.status(200).entity(byteXml).build();
+		} catch(WebApplicationException e){
+			log.error("Riscontrato errore di autorizzazione durante la ricerca del ContoAccredito:" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			log.error("Riscontrato errore durante la ricerca del ContoAccredito:" +e.getMessage() , e);
+			if(bd != null) bd.rollback();
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(GovPayExceptionEnum.ERRORE_INTERNO.toString());
+			return Response.status(200).entity(darsResponse).build();
+			
+		} finally {
+			response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		
+	}
+	
 
 	@PUT
 	@Path("/")
@@ -400,7 +491,7 @@ public class Domini extends BaseRsService{
 			try { 
 				Long.parseLong(dominio.getGln());
 			} catch (NumberFormatException e) {
-				throw new ValidationException("Formato Global Location Number errato. Richieste 11 cifre, trovato "+dominio.getGln());
+				throw new ValidationException("Formato Global Location Number errato. Richieste 13 cifre, trovato "+dominio.getGln());
 			}
 		}
 	
@@ -451,14 +542,14 @@ public class Domini extends BaseRsService{
 
 	private void checkDisponibilita(List<Disponibilita> disponibilita) throws ValidationException {
 		if(disponibilita == null) return;
-		DateFormat format = new SimpleDateFormat("HH:mm:ss");
+		DateFormat format = new SimpleDateFormat("HH:mm");
 		for(Disponibilita d : disponibilita) {
 			if(d.getTipoDisponibilita() == null) throw new ValidationException("E' obbligatorio valorizzare il campo Tipo Disponibilita di ogni periodo");
 			if(d.getTipoPeriodo() == null) throw new ValidationException("E' obbligatorio valorizzare il campo Tipo Periodo di ogni periodo");
 
 			switch (d.getTipoPeriodo()) {
 			case ANNUALE:
-				if(d.getGiorno() == null || d.getGiorno().matches("(0[123456789]|[12]\\d|3[01])-(0\\d|1[012])")) throw new ValidationException("In periodo di tipo Annuale, il campo Giorno deve essere valorizzato [dd-mm]");
+				if(d.getGiorno() == null || !d.getGiorno().matches("(0[123456789]|[12]\\d|3[01])-(0\\d|1[012])")) throw new ValidationException("In periodo di tipo Annuale, il campo Giorno deve essere valorizzato [dd-mm]");
 				break;
 			case GIORNALIERA:
 				if(d.getGiorno() != null && !d.getGiorno().isEmpty()) throw new ValidationException("In periodo di tipo Giornaliero, il campo Giorno non deve essere valorizzato");
@@ -476,12 +567,12 @@ public class Domini extends BaseRsService{
 				try {
 					da = format.parse(p.getDa()); 
 				} catch (ParseException e) {
-					throw new ValidationException("L'orario [" + p.getDa() + "] non e' corretto. Formato atteso [hh:mm:ss].");
+					throw new ValidationException("L'orario [" + p.getDa() + "] non e' corretto. Formato atteso [hh:mm].");
 				}
 				try {
 					a = format.parse(p.getA());
 				} catch (ParseException e) {
-					throw new ValidationException("L'orario [" + p.getA() + "] non e' corretto. Formato atteso [hh:mm:ss].");
+					throw new ValidationException("L'orario [" + p.getA() + "] non e' corretto. Formato atteso [hh:mm].");
 				}
 				if(da.after(a)) throw new ValidationException("L'orario di partenza di un periodo deve essere successivo a quello di terminazione.");
 			}

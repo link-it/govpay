@@ -37,6 +37,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-anagrafica">
  * 		&lt;sequence>
  * 			&lt;element name="idAnagrafica" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codUnivoco" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -51,7 +52,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-anagrafica", 
   propOrder = {
-  	"idAnagrafica"
+  	"idAnagrafica",
+  	"codUnivoco"
   }
 )
 
@@ -83,6 +85,14 @@ public class IdAnagrafica extends org.openspcoop2.utils.beans.BaseBean implement
     this.idAnagrafica = idAnagrafica;
   }
 
+  public java.lang.String getCodUnivoco() {
+    return this.codUnivoco;
+  }
+
+  public void setCodUnivoco(java.lang.String codUnivoco) {
+    this.codUnivoco = codUnivoco;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -93,5 +103,9 @@ public class IdAnagrafica extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="idAnagrafica",required=true,nillable=false)
   protected long idAnagrafica;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codUnivoco",required=false,nillable=false)
+  protected java.lang.String codUnivoco;
 
 }

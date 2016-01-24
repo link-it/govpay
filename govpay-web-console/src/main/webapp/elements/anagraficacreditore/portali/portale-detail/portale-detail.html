@@ -12,51 +12,77 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="portale-detail">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
         </style>
-        <h2>Portale [[portaleCorrente.portale.codPortale]]
-            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                       hidden$="[[portaleCorrente.portale.abilitato]]"></iron-icon>
-        </h2>
-        <p>Principal: <span>[[portaleCorrente.portale.principal]]</span></p>
-        <p>Callback URL: <span>[[portaleCorrente.portale.defaultCallbackURL]]</span></p>
-        <paper-card class="fullCardWidth">
-            <div class="card-content">
-                <div class="card-content div-table">
-                    <paper-item>
-                        <paper-item-body>
-                            <div class="horizontal layout div-table-header-row">
-                                <div class="div-table-col"><span>Codice Applicazione</span></div>
-                                <div class="div-table-col-com"><span></span></div>
 
+        <div class="layout horizontal center-justified">
+            <div class="layout vertical flex">
+                <paper-tabs selected="{{selectedTab}}" noink>
+                    <paper-tab>INFORMAZIONI GENERALI</paper-tab>
+                    <paper-tab>APPLICAZIONI</paper-tab>
+                </paper-tabs>
+
+                <iron-pages selected="{{selectedTab}}">
+                    <div class="layout horizontal center-justified">
+                        <div id="itembox" class="layout vertical flex itembox restorePadding">
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+
+                                </div>
                             </div>
-                        </paper-item-body>
-                    </paper-item>
-                    <iron-list id="elencoIban" items="[[portaleCorrente.applicazioni]]" as="item">
-                        <template>
-                            <paper-item disabled$="[[!item.abilitato]]">
-                                <paper-item-body>
-                                    <div class="horizontal layout div-table-row">
-                                        <div class="div-table-col"><span>[[item.codApplicazione]]</span></div>
-                                        <div class="div-table-col-com">
-                                            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                                                       hidden$="[[item.abilitato]]"></iron-icon>
-                                        </div>
-                                    </div>
-                                </paper-item-body>
-                            </paper-item>
-                        </template>
-                    </iron-list>
-                </div>
+
+                            <paper-material elevation="0">
+                                <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                                <p class="groupItem"><span class="grouplabel">Codice: </span><span>[[portaleCorrente.portale.codPortale]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(portaleCorrente.portale.abilitato)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Principal: </span><span>[[portaleCorrente.portale.principal]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Callback URL: </span><span>[[portaleCorrente.portale.defaultCallbackURL]]</span></p>
+                            </paper-material>
+                        </div>
+                    </div>
+
+                    <div class="layout horizontal center-justified">
+                        <div id="resultbox" class="layout vertical flex restorePadding" >
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+                                    <p>Sono presenti [[portaleCorrente.applicazioni.length]] Applicazioni</p>
+                                </div>
+                                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                                </div>
+                            </div>
+
+                            <paper-material elevation="0">
+                                <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                             class="flex filtro" label="Filtro">
+                                </paper-input>
+                                <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                    <paper-checkbox item-icon></paper-checkbox>
+                                    <div class="flex selectAll">Seleziona tutto</div>
+                                </paper-icon-item>
+
+                                <template is="dom-repeat" items="[[portaleCorrente.applicazioni]]" filter="_filtraListaRisultati">
+                                    <paper-icon-item class$="[[isEven(index)]]">
+                                        <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                        <paper-item-body two-line>
+                                            <div>[[item.codApplicazione]]
+                                            </div>
+                                            <div secondary>[[_getAbilitatoAsString(item.abilitato)]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </paper-material>
+                        </div>
+                    </div>
+                </iron-pages>
             </div>
-        </paper-card>
+        </div>
     </template>
     <script>
   (function() {
@@ -69,7 +95,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         portaleCorrente: {
           type: Object,
           value: null
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+      _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
         }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
       }
     });
   })();

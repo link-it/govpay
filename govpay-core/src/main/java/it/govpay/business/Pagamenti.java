@@ -27,6 +27,8 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediCopiaRTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPTRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISP;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISPRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPT;
@@ -46,6 +48,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Ente;
 import it.govpay.bd.model.Esito;
+import it.govpay.bd.model.Esito.TipoEsito;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Iuv;
 import it.govpay.bd.model.Portale;
@@ -345,6 +348,63 @@ public class Pagamenti extends BasicBD {
 					this.commit();
 					return callbackUrl;
 				}
+			}
+		} catch (Exception e) {
+			if( e instanceof GovPayException)
+				throw (GovPayException) e;
+			log.error("Errore interno: " + e, e);
+			this.rollback();
+			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+		}
+	}
+	
+	public class SceltaWISP {
+		public Canale canale;
+		public boolean sceltaEffettuata;
+		public boolean po;
+	}
+	
+	public SceltaWISP getSceltaWISP(Dominio dominio, String keyPA, String keyWISP) throws GovPayException {
+		try {
+			Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
+			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
+			closeConnection();
+			NodoPerPa client = new NodoPerPa(intermediario);
+			NodoChiediSceltaWISP nodoChiediSceltaWISP = new NodoChiediSceltaWISP();
+			nodoChiediSceltaWISP.setIdentificativoDominio(dominio.getCodDominio());
+			nodoChiediSceltaWISP.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
+			nodoChiediSceltaWISP.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
+			nodoChiediSceltaWISP.setKeyPA(keyPA);
+			nodoChiediSceltaWISP.setKeyWISP(keyWISP);
+			nodoChiediSceltaWISP.setPassword(stazione.getPassword());
+			NodoChiediSceltaWISPRisposta risposta = client.nodoChiediSceltaWISP(nodoChiediSceltaWISP, intermediario.getDenominazione());
+			setupConnection();
+			if(risposta.getFault() != null) {
+				log.error("Ricevuto esito KO [FaultId: " + risposta.getFault().getId() + "] [FaultCode: " + risposta.getFault().getFaultCode() + "] [FaultString: " + risposta.getFault().getFaultString() + "] [FaultDescription: " +  risposta.getFault().getDescription()+ "].");
+				Rpt.FaultNodo faultCode = Rpt.FaultNodo.valueOf(Rpt.FaultNodo.class, risposta.getFault().getFaultCode());
+				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_NDP, faultCode, risposta.getFault().getFaultString() + ": " + risposta.getFault().getDescription());
+			} else {
+				SceltaWISP scelta = new SceltaWISP();
+				switch (risposta.getEffettuazioneScelta()) {
+				case SI:
+					Psp psp = AnagraficaManager.getPsp(this, risposta.getIdentificativoPSP());
+					Canale canale = psp.getCanale(risposta.getIdentificativoCanale());
+					scelta.canale = canale;
+					scelta.po = false;
+					scelta.sceltaEffettuata = true;
+					return scelta;
+				case NO:
+					scelta.canale = null;
+					scelta.po = false;
+					scelta.sceltaEffettuata = false;
+					return scelta;
+				case PO:
+					scelta.canale = null;
+					scelta.po = true;
+					scelta.sceltaEffettuata = true;
+					return scelta;
+				}
+				return scelta;
 			}
 		} catch (Exception e) {
 			if( e instanceof GovPayException)
@@ -692,7 +752,7 @@ public class Pagamenti extends BasicBD {
 			MailBD mailBD = new MailBD(this);
 			it.govpay.bd.model.Mail mail = new Mail(this).generaNotificaRT(ente, versamento, rpt, rt);
 			
-			Esito esito = EsitoFactory.newEsito(this, applicazione, versamento, rpt, rt, ctRtByte);
+			Esito esito = EsitoFactory.newEsito(this, TipoEsito.ESITO_PAGAMENTO, applicazione, versamento, rpt, rt, ctRtByte);
 			EsitiBD esiti = new EsitiBD(this);
 			
 			setAutoCommit(false);

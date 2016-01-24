@@ -12,24 +12,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="operatore-detail">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
         </style>
-        <h2>Operatore [[operatoreCorrente.operatore.principal]]
-            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                       hidden$="[[operatoreCorrente.operatore.abilitato]]"></iron-icon>
-        </h2>
-        <p>Principal: <span>[[operatoreCorrente.operatore.principal]]</span></p>
-        <p>Nome: <span>[[operatoreCorrente.operatore.nome]]</span></p>
-        <p>Profilo: <span>[[_getProfilo(operatoreCorrente.operatore.profilo)]]</span></p>
+        <div class="layout horizontal center-justified restorePadding">
+            <div class="layout vertical flex">
+                <div class="layout horizontal center-justified">
+                    <div id="itembox" class="layout vertical flex itembox">
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
 
-        <template is="dom-if" if="[[!_nascondiSezioneUfficiApplicazioni(operatoreCorrente.operatore.profilo)]]">
+                            </div>
+                        </div>
+
+                        <paper-material elevation="0">
+                            <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                            <p class="groupItem"><span class="grouplabel">Nome: </span><span>[[operatoreCorrente.operatore.nome]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(operatoreCorrente.operatore.abilitato)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Principal: </span><span>[[operatoreCorrente.operatore.principal]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Profilo: </span><span>[[_getProfilo(operatoreCorrente.operatore.profilo)]]</span></p>
+                        </paper-material>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+      <!--  <template is="dom-if" if="[[!_nascondiSezioneUfficiApplicazioni(operatoreCorrente.operatore.profilo)]]">
             <paper-card class="fullCardWidth">
                 <paper-tabs selected="{{selectedTab}}">
                     <paper-tab>Uffici</paper-tab>
@@ -97,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </div>
                 </iron-pages>
             </paper-card>
-        </template>
+        </template>-->
 
     </template>
     <script>
@@ -112,6 +125,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Object,
           value: null
         },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+      _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
+        }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
       },
         _nascondiSezioneUfficiApplicazioni : function(profilo){
             if(profilo){

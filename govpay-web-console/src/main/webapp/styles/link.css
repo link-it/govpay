@@ -1,6 +1,7 @@
  .div-table{
     padding: 2px;
-    display:table;
+    /*display:table;*/
+      display: block;
     width:auto;
     border:1px solid #666666;
     border-spacing:5px;/*cellspacing:poor IE support for this*/

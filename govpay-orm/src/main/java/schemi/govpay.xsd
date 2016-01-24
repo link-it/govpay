@@ -67,6 +67,7 @@
 	<xsd:complexType name="id-anagrafica">
 		<xsd:sequence>
 			<xsd:element name="idAnagrafica" type="xsd:long"/>
+			<xsd:element minOccurs="0" name="codUnivoco" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

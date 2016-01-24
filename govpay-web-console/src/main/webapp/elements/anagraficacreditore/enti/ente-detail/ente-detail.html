@@ -12,27 +12,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="ente-detail">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
         </style>
-        <h2>Ente [[enteCorrente.ente.codEnte]]
-            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                       hidden$="[[enteCorrente.ente.attivo]]"></iron-icon>
-        </h2>
-        <p>Ragione Sociale <span>[[enteCorrente.ente.anagraficaEnte.ragioneSociale]]</span></p>
-        <p>Codice Univoco <span>[[enteCorrente.ente.anagraficaEnte.codUnivoco]]</span></p>
-        <p>Indirizzo <span>[[_getIndirizzoEnte(enteCorrente.ente.anagraficaEnte)]]</span></p>
-        <p>Telefono <span>[[enteCorrente.ente.anagraficaEnte.telefono]]</span></p>
-        <p>Cellulare <span>[[enteCorrente.ente.anagraficaEnte.cellulare]]</span></p>
-        <p>Fax <span>[[enteCorrente.ente.anagraficaEnte.fax]]</span></p>
-        <p>Email <span>[[enteCorrente.ente.anagraficaEnte.email]]</span></p>
-        <p>Dominio <span>[[enteCorrente.dominio.codDominio]]</span></p>
+        <div class="layout horizontal center-justified restorePadding">
+            <div class="layout vertical flex">
+                <div class="layout horizontal center-justified">
+                    <div id="itembox" class="layout vertical flex itembox">
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
+
+                            </div>
+                        </div>
+
+                        <paper-material elevation="0">
+                            <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                            <p class="groupItem"><span class="grouplabel">Ufficio: </span><span>[[enteCorrente.ente.codEnte]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Dominio: </span><span>[[enteCorrente.dominio.codDominio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Ragione Sociale: </span><span>[[enteCorrente.ente.anagraficaEnte.ragioneSociale]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(enteCorrente.ente.attivo)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Indirizzo: </span><span>[[_getIndirizzoEnte(enteCorrente.ente.anagraficaEnte)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Telefono: </span><span>[[enteCorrente.ente.anagraficaEnte.telefono]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Cellulare: </span><span>[[enteCorrente.ente.anagraficaEnte.cellulare]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Fax: </span><span>[[enteCorrente.ente.anagraficaEnte.fax]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Email: </span><span>[[enteCorrente.ente.anagraficaEnte.email]]</span></p>
+
+                        </paper-material>
+                    </div>
+                </div>
+            </div>
+        </div>
     </template>
     <script>
   (function() {
@@ -45,35 +58,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         enteCorrente: {
           type: Object,
           value: null
-        }
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
       },
       _getIndirizzoEnte: function(anagrafica) {
 
-        if(anagrafica){
-         var indirizzo;
+         if(anagrafica){
+                var text = '';
 
-         if(anagrafica.indirizzo)
-           indirizzo = anagrafica.indirizzo + ' ';
+                var indirizzo;
 
-         if(anagrafica.civico)
-           indirizzo += anagrafica.civico + ' ';
+                 if(anagrafica.indirizzo)
+                   indirizzo = anagrafica.indirizzo + ' ';
 
-         if(anagrafica.cap)
-           indirizzo+= anagrafica.cap + ' ';
+                 if(anagrafica.civico)
+                   indirizzo += anagrafica.civico + ' ';
 
-         if(anagrafica.localita)
-           indirizzo += anagrafica.localita;
+                 if(anagrafica.cap)
+                   indirizzo+= anagrafica.cap + ' ';
 
-         if(anagrafica.provincia)
-           indirizzo += ' (' + anagrafica.provincia + ') ';
+                 if(anagrafica.localita)
+                   indirizzo += anagrafica.localita;
 
-         if(anagrafica.nazione)
-           indirizzo += anagrafica.nazione;
+                 if(anagrafica.provincia)
+                   indirizzo += ' (' + anagrafica.provincia + ') ';
 
-         return indirizzo || '';
-         }
+                 if(anagrafica.nazione)
+                   indirizzo += anagrafica.nazione;
 
-         return '';
+
+                   text += indirizzo || '';
+                   return text;
+
+                }
+           return '';
        },
     });
   })();

@@ -12,88 +12,100 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="link-intermediario-detail">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
             display: block;
             }
 
-            .fullCardWidth {
-            width: 100%;
-            }
 
-            paper-item:hover {
-            background-color: #ccc;
-            }
         </style>
-        <h2>Intermediario [[intermediarioCorrente.codIntermediario]]
-            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                       hidden$="[[intermediarioCorrente.abilitato]]"></iron-icon>
-        </h2>
-        <p>Denominazione <span>[[intermediarioCorrente.denominazione]]</span></p>
 
-        <paper-material class="headMaterial" id="connettore" elevation="2">
-            <h4>Connettore PdD o PdDE</h4>
+        <div class="layout horizontal center-justified">
+            <div class="layout vertical flex">
+            <paper-tabs selected="{{selectedTab}}" noink>
+                <paper-tab>INFORMAZIONI GENERALI</paper-tab>
+                <paper-tab>STAZIONI</paper-tab>
+             </paper-tabs>
 
-            <div class="card-content">
-                <p>URL: <span>[[intermediarioCorrente.connettorePdd.url]]</span></p>
+            <iron-pages selected="{{selectedTab}}">
+                <div class="layout horizontal center-justified">
+                    <div id="itembox" class="layout vertical flex itembox restorePadding">
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
 
-                <p>Auth: <span>[[_getTipoAutenticazione(intermediarioCorrente.connettorePdd)]]</span></p>
-                <template is="dom-if" if="[[mostraSezioneHttpBasic]]">
-                    <p>Username: <span>[[intermediarioCorrente.connettorePdd.httpUser]]</span></p>
-
-                    <p>Password: <span>[[intermediarioCorrente.connettorePdd.httpPassw]]</span></p>
-                </template>
-                <template is="dom-if" if="[[mostraSezioneSSL]]">
-                    <p>Tipo SSL: <span>[[intermediarioCorrente.connettorePdd.tipoSsl]]</span></p>
-
-                    <p>KeyStore Type: <span>[[intermediarioCorrente.connettorePdd.sslKsType]]</span></p>
-
-                    <p>KeyStore Location: <span>[[intermediarioCorrente.connettorePdd.sslKsLocation]]</span></p>
-
-                    <p>KeyStore Password: <span>[[intermediarioCorrente.connettorePdd.sslKsPasswd]]</span></p>
-
-                    <p>PrivateKey Password: <span>[[intermediarioCorrente.connettorePdd.sslPKeyPasswd]]</span></p>
-
-                    <p>TrustStore Type: <span>[[intermediarioCorrente.connettorePdd.sslTsType]]</span></p>
-
-                    <p>TrustStore Location: <span>[[intermediarioCorrente.connettorePdd.sslTsLocation]]</span></p>
-
-                    <p>TrustStore Password: <span>[[intermediarioCorrente.connettorePdd.sslTsPasswd]]</span></p>
-
-                    <p>SSL Type: <span>[[intermediarioCorrente.connettorePdd.sslType]]</span></p>
-                </template>
-            </div>
-        </paper-material>
-        <paper-material class="headMaterial" id="stazioni" elevation="2">
-            <h4>Stazioni</h4>
-
-            <div class="card-content div-table">
-                <paper-item>
-                    <paper-item-body>
-                        <div class="horizontal layout div-table-header-row">
-                            <div class="div-table-col"><span>Id Stazione</span></div>
-                            <div class="div-table-col-com"></div>
+                            </div>
                         </div>
-                    </paper-item-body>
-                </paper-item>
-                <iron-list id="elencoStazioni" items="[[intermediarioCorrente.stazioni]]" as="item">
-                    <template>
-                        <paper-item disabled$="[[!item.abilitato]]">
-                            <paper-item-body>
-                                <div class="horizontal layout div-table-row">
-                                    <div class="div-table-col"><span>[[item.codStazione]]</span></div>
 
-                                    <div class="div-table-col-com">
-                                        <iron-icon icon="notification:do-not-disturb" style="color: red"
-                                                   hidden$="[[item.abilitato]]"></iron-icon>
-                                    </div>
-                                </div>
-                            </paper-item-body>
-                        </paper-item>
-                    </template>
-                </iron-list>
+                        <paper-material elevation="0">
+                          <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                            <p class="groupItem"><span class="grouplabel">Identificativo: </span><span>[[intermediarioCorrente.codIntermediario]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Denominazione: </span><span>[[intermediarioCorrente.denominazione]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(intermediarioCorrente.abilitato)]]</span></p>
+                        </paper-material>
+
+                        <paper-material elevation="0">
+                            <p class="groupTitle"><span class="groupTitle">CONNETTORE PDD o PDDoE</span></p>
+
+                            <p class="groupItem"><span class="grouplabel">URL: </span><span>[[intermediarioCorrente.connettorePdd.url]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Tipo Autenticazione: </span><span>[[_getTipoAutenticazione(intermediarioCorrente.connettorePdd)]]</span></p>
+                            <template is="dom-if" if="[[mostraSezioneHttpBasic]]">
+                                <p class="groupItem"><span class="grouplabel">Username: </span><span>[[intermediarioCorrente.connettorePdd.httpUser]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Password: </span><span>[[intermediarioCorrente.connettorePdd.httpPassw]]</span></p>
+                            </template>
+                            <template is="dom-if" if="[[mostraSezioneSSL]]">
+                                <p class="groupItem"><span class="grouplabel">Tipo SSL: </span><span>[[intermediarioCorrente.connettorePdd.tipoSsl]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">KeyStore Type: </span><span>[[intermediarioCorrente.connettorePdd.sslKsType]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">KeyStore Location: </span><span>[[intermediarioCorrente.connettorePdd.sslKsLocation]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">KeyStore Password: </span><span>[[intermediarioCorrente.connettorePdd.sslKsPasswd]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">PrivateKey Password: </span><span>[[intermediarioCorrente.connettorePdd.sslPKeyPasswd]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">TrustStore Type: </span><span>[[intermediarioCorrente.connettorePdd.sslTsType]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">TrustStore Location: </span><span>[[intermediarioCorrente.connettorePdd.sslTsLocation]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">TrustStore Password: </span><span>[[intermediarioCorrente.connettorePdd.sslTsPasswd]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">SSL Type: </span><span>[[intermediarioCorrente.connettorePdd.sslType]]</span></p>
+                            </template>
+                        </paper-material>
+                    </div>
+                </div>
+
+                <div class="layout horizontal center-justified">
+                    <div id="resultbox" class="layout vertical flex restorePadding" >
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
+                                <p>Sono presenti [[intermediarioCorrente.stazioni.length]] Stazioni</p>
+                            </div>
+                            <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                                <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                            </div>
+                        </div>
+
+                        <paper-material elevation="0">
+                            <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                         class="flex filtro" label="Filtro">
+                            </paper-input>
+                            <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                <paper-checkbox item-icon></paper-checkbox>
+                                <div class="flex selectAll">Seleziona tutto</div>
+                            </paper-icon-item>
+
+                            <template is="dom-repeat" items="[[intermediarioCorrente.stazioni]]" filter="_filtraListaRisultati">
+                                <paper-icon-item class$="[[isEven(index)]]">
+                                    <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                    <paper-item-body two-line>
+                                        <div>[[item.codStazione]]
+                                        </div>
+                                        <div secondary>[[_getAbilitatoAsString(item.abilitato)]]</div>
+                                    </paper-item-body>
+                                </paper-icon-item>
+                            </template>
+                        </paper-material>
+                    </div>
+                    </div>
+            </iron-pages>
             </div>
-        </paper-material>
+        </div>
     </template>
     <script>
   (function() {
@@ -112,7 +124,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
           mostraSezioneSSL: {
             type: Boolean, value : false
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+      _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
         }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+      _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
       },
 
       _getTipoAutenticazione: function (connettore){

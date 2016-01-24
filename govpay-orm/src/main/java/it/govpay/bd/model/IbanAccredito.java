@@ -25,7 +25,7 @@ package it.govpay.bd.model;
 /**
  * Rapppresenta un ente creditore
  */
-public class IbanAccredito extends BasicModel {
+public class IbanAccredito extends BasicModel implements Comparable<IbanAccredito>{
 	private static final long serialVersionUID = 1L;
 
 	private Long id; 
@@ -133,6 +133,11 @@ public class IbanAccredito extends BasicModel {
 
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
+	}
+
+	@Override
+	public int compareTo(IbanAccredito o) {
+		return this.codIban.compareTo(o.getCodIban()); 
 	}
 
 }

@@ -122,7 +122,7 @@ public class Operazioni{
 		}
 	}
 	
-	@Schedule(hour="*", minute="*/5", persistent=true)
+	@Schedule(hour="*", minute="*/1", persistent=true)
 	public static boolean spedizioneEsiti(){
 		ThreadContext.put("cmd", "SpedizioneEsiti");
 		ThreadContext.put("op", UUID.randomUUID().toString() );

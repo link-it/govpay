@@ -5,77 +5,7 @@
         <style include="shared-styles"></style>
         <style>
             :host {
-            @apply(--paper-font-common-base);
-
             display: block;
-            font-family: sans-serif;
-            }
-            .headMaterial {
-            padding: 20px;
-            margin-bottom: 10px;
-            }
-
-            .searchButton {
-            background-color: blue;
-            color: white;
-            }
-            .resetButton {
-            background-color: white;
-            color: red;
-            }
-
-            paper-button.colorful {
-            color: #4285f4;
-            }
-            paper-button[raised].colorful {
-            background: #4285f4;
-            color: #fff;
-            }
-
-
-            #itemsList {
-            @apply(--layout-flex);
-            }
-
-            .item {
-            @apply(--layout-horizontal);
-            cursor: pointer;
-            padding: 16px 22px;
-            border-bottom: 1px solid #DDD;
-            }
-
-            .item:focus,
-            .item.selected:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-            .item.selected:not(:focus) {
-            background-color: var(--google-grey-100);
-            }
-
-            paper-item {
-            white-space: nowrap;
-            cursor: pointer;
-            position: relative;
-            }
-
-            paper-item:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-
-            paper-item:hover {
-            background-color: #ccc;
-            }
-
-            .width250 {
-                width: 250px;
-            }
-            .width200 {
-            width: 200px;
-            }
-            .width100 {
-            width: 100px;
             }
         </style>
         <!-- Connettore govpay -->
@@ -86,11 +16,16 @@
                    last-response="{{ajaxResponse}}"
                    lastError="{{ajaxError}}" on-error="_erroreDars" on-response="_responseDars"
                 ></iron-ajax>
-        <paper-material elevation="1">
-            <h4 class="page-title">[[titoloSezione]]</h4>
 
-            <!-- Search -->
-            <search-rendicontazioni titolo="Filtri Ricerca">
+        <div class="layout horizontal center-justified restorePadding">
+            <!-- Ricerca -->
+            <div id="searchbox" class="layout vertical" hidden$="false">
+                <div class="headerbox" >
+                    <p hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]">Trovati [[ajaxResponse.response.length]] risultati</p>
+                </div>
+
+                <paper-material elevation="0">
+
                 <paper-dropdown-menu label="Stato" style="width: 100%;" class="inputs">
                     <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoInput}}">
                         <paper-item valore="">Qualsiasi</paper-item>
@@ -104,31 +39,45 @@
                                   selected-item="{{codPspInput}}"></ajax-select-list>
                 <paper-input bind-value="{{annoRifInput}}" class="flex inputs" label="Anno Riferimento" type="number"
                              autocomplete="off"></paper-input>
-                <div class="buttons">
-                    <paper-button class="colorful custom" raised  on-tap="filtraRisultati">Search</paper-button>
-                    <paper-button class="resetButton custom" raised on-tap="resetFiltro">Reset</paper-button>
-                </div>
-            </search-rendicontazioni>
 
-            <!-- Risultati  -->
-            <!-- Lista -->
-            <div class="card-content div-table">
-                <paper-item>
-                    <paper-item-body>
-                        <div class="horizontal layout div-table-header-row">
-                            <div class="div-table-col"><span>Data Flusso</span></div>
-                            <div class="div-table-col width200"><span>Psp</span></div>
-                            <div class="div-table-col width200"><span>Anno Riferimento</span></div>
-                            <div class="div-table-col width200"><span>Numero Pagamenti</span></div>
-                            <div class="div-table-col width100"><span>Importo</span></div>
-                            <div class="div-table-col width100"><span>Stato</span></div>
-                        </div>
-                    </paper-item-body>
-                </paper-item>
-                <iron-list id="itemsList" items="[[ajaxResponse.response]]" selected-item="{{selectedRendicontazioneItem}}"
-                           selection-enabled as="item">
-                    <template>
-                        <paper-item on-tap="_selectRendicontazione">
+                    <div class="layout horizontal end-justified buttons">
+                        <paper-button class="green" raised on-tap="eseguiRicerca" elevation="0">Search</paper-button>
+                    </div>
+
+                </paper-material>
+            </div>
+
+            <div class="separatore"   hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]"></div>
+            <!-- Risultati -->
+            <div id="resultbox" class="layout vertical flex"  hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]">
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                </div>
+
+                <paper-material elevation="0">
+                    <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                 class="flex filtro" label="Filtro">
+                    </paper-input>
+                    <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                        <paper-checkbox item-icon></paper-checkbox>
+                        <div class="flex selectAll">Seleziona tutto</div>
+                    </paper-icon-item>
+
+                    <template is="dom-repeat" items="[[ajaxResponse.response]]" filter="_filtraListaRisultati">
+                        <paper-icon-item class$="[[isEven(index)]]" on-tap="_selectRendicontazione">
+                            <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                            <paper-item-body two-line>
+                                <div>[[_getDataFieldAsString(item,'dataOraFlusso')]]: [[item.codPsp]], Anno Rif. [[item.annoRiferimento]], [[item.stato]]</div>
+                                <div secondary>Numero Pagamenti: [[item.numeroPagamenti]], Totale: [[item.importoTotalePagamenti]] &euro;</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </paper-material>
+            </div>
+
+        </div>
+<!--                        <paper-item on-tap="_selectRendicontazione">
                             <paper-item-body>
                                 <div>
                                     <div tabindex="0" class="horizontal layout div-table-row">
@@ -141,15 +90,7 @@
                                     </div>
                                 </div>
                             </paper-item-body>
-                        </paper-item>
-                    </template>
-                </iron-list>
-            </div>
-
-            <!--div id="buttons" class="buttons">
-              <paper-button  raised class="custom"><iron-icon icon="delete"></iron-icon>Elimina</paper-button>
-            </div -->
-        </paper-material>
+                        </paper-item>-->
     </template>
 
     <script>
@@ -180,13 +121,40 @@
           codPspInput: { type: String, value: 'Qualsiasi' },
           pspOptionValue: {type : String , value: 'codPsp'},
           pspOptionLabel: {type : String , value: 'codPsp'},
-          dataInizioInput: { type: Date, value: null }
+          dataInizioInput: { type: Date, value: null },
+
+          filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
         },
         init: function (){
             this.govpayUrl = govpayUrl + '/rs/dars/rendicontazioni/';
             this.govpayPspUrl = govpayUrl + '/rs/dars/psp/';
         },
-        filtraRisultati: function (){
+        _refreshList: function(){
+
+        },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+          if  (item.codPsp.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.codFlusso.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
+        }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+        eseguiRicerca: function (){
             var pspVal = this.codPspInput;
             if(pspVal == 'Qualsiasi')
                 pspVal = '';
@@ -262,7 +230,8 @@
         },
         _selectRendicontazione : function (event){
            var target = event.model.item;
-           this.fire('select-item', {rendicontazioneCorrente: target});
+           var titoloPagina = 'Flusso: ' + this._getDataFieldAsString(target,'dataOraFlusso');
+           this.fire('select-item', {rendicontazioneCorrente: target, 'titoloPagina': titoloPagina});
         },
         _erroreDars : function(event){
          this.fire('dars-error', {error: event.detail});

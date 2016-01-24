@@ -43,6 +43,7 @@ public class IdAnagraficaModel extends AbstractModel<IdAnagrafica> {
 		super();
 	
 		this.ID_ANAGRAFICA = new Field("idAnagrafica",long.class,"id-anagrafica",IdAnagrafica.class);
+		this.COD_UNIVOCO = new Field("codUnivoco",java.lang.String.class,"id-anagrafica",IdAnagrafica.class);
 	
 	}
 	
@@ -51,12 +52,15 @@ public class IdAnagraficaModel extends AbstractModel<IdAnagrafica> {
 		super(father);
 	
 		this.ID_ANAGRAFICA = new ComplexField(father,"idAnagrafica",long.class,"id-anagrafica",IdAnagrafica.class);
+		this.COD_UNIVOCO = new ComplexField(father,"codUnivoco",java.lang.String.class,"id-anagrafica",IdAnagrafica.class);
 	
 	}
 	
 	
 
 	public IField ID_ANAGRAFICA = null;
+	 
+	public IField COD_UNIVOCO = null;
 	 
 
 	@Override

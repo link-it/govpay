@@ -22,6 +22,7 @@ package it.govpay.dars.model;
 
 import it.govpay.bd.model.Versamento.StatoRendicontazione;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class ListaPagamentiEntry {
@@ -31,6 +32,7 @@ public class ListaPagamentiEntry {
 	private String stato;
 	private String statoRendicontazione;
 	private Date dataOraUltimoAggiornamento;
+	private BigDecimal importoTotale;
 	
 	public long getId() {
 		return id;
@@ -71,5 +73,10 @@ public class ListaPagamentiEntry {
 	public void setStatoRendicontazione(String statoRendicontazione) {
 		this.statoRendicontazione = statoRendicontazione;
 	}
-
+	public BigDecimal getImportoTotale() {
+		return importoTotale;
+	}
+	public void setImportoTotale(BigDecimal importoTotale) {
+		this.importoTotale = importoTotale;
+	}
 }

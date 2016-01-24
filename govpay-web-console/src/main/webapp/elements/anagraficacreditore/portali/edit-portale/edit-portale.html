@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="edit-portale">
     <template>
+        <style include="shared-styles"></style>
         <style>
             @media (min-width: 600px) {
             :host {
@@ -23,10 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             background: var(--paper-dialog-background-color, --primary-background-color);
             color: var(--paper-dialog-color, --primary-text-color);
 
-            @apply(--layout-scroll);
-            @apply(--paper-font-body1);
-            @apply(--shadow-elevation-16dp);
-            @apply(--paper-dialog);
             }
             }
 
@@ -46,26 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             }
 
-            paper-menu-button {
-            padding-left: 0!important;
-            }
-
-            .content {
-            padding: 24px;
-            overflow: auto;
-            }
-
-            .titleCard {
-            margin-top: 16px;
-            }
-
-            paper-card {
-            padding: 16px;
-            margin-bottom: 16px;
-            }
-
-            .gap {
-            width: 24px;
+            .title {
+            margin-left: 12px !important;
             }
         </style>
         <iron-ajax auto="false" verbose="true"
@@ -82,46 +61,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    on-response="_visualizzaEsitoSalvataggio"
                    on-error="_visualizzaMessaggioErrore">
         </iron-ajax>
-        <paper-header-panel>
+        <paper-header-panel mode="standard">
             <div class="paper-header">
                 <paper-toolbar>
-                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
-                    <span class="title">[[titolo]]</span>
-                    <paper-icon-button icon="check" on-tap="_salvaPortale"></paper-icon-button>
+                    <span class="title start">[[titolo]]</span>
+                    <paper-icon-button icon="close" on-tap="_closeDialog" class="end"></paper-icon-button>
                 </paper-toolbar>
             </div>
-
-            <div class="content layout vertical">
-                <paper-card>
-                    <paper-toggle-button class="flex" checked="{{portaleCorrente.portale.abilitato}}">
-                        <span>{{_getAbilitatoLabel(portaleCorrente.portale.abilitato)}}</span>
-                    </paper-toggle-button>
+            <div class="content layout vertical flex formbox">
+                <paper-material elevation="0">
                     <paper-input class="flex" disabled$="[[!isAdd]]"
                                  value="{{portaleCorrente.portale.codPortale}}"
                                  label="Codice Portale" required></paper-input>
-                    <span class="gap"></span>
                     <paper-input class="flex" value="{{portaleCorrente.portale.principal}}" label="Principal"
                                  required></paper-input>
-                    <span class="gap"></span>
                     <paper-input class="flex" value="{{portaleCorrente.portale.defaultCallbackURL}}"
                                  label="Callback URL" required></paper-input>
-                    <span class="gap"></span>
-                </paper-card>
+                </paper-material>
 
-                <paper-card>
-                    <ajax-pick-list label="Applicazioni" source-list-url="{{govpayApplicazioniUrl}}" target-list="{{applicazioni}}"
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">APPLICAZIONI</span></p>
+                    <ajax-pick-list label="" source-list-url="{{govpayApplicazioniUrl}}" target-list="{{applicazioni}}"
                                     select-list-params="{{applicazioniActionParams}}"
-                                       source-label="Applicazioni Disponibili" target-label="Applicazioni Selezionate"
-                                      source-option-value="id" source-option-label="codApplicazione" on-change-item="_updateApplicazioni"
+                                    source-label="Applicazioni Disponibili" target-label="Applicazioni Selezionate"
+                                    source-option-value="id" source-option-label="codApplicazione"
+                                    on-change-item="_updateApplicazioni"
                                     target-option-value="id" target-option-label="codApplicazione">
 
                     </ajax-pick-list>
-                    <span class="gap"></span>
+                </paper-material>
 
+                <paper-material elevation="0">
+                    <div class="content layout horizontal">
+                        <paper-toggle-button class="green flex start-justified"
+                                             checked="{{portaleCorrente.portale.abilitato}}">
+                            <span>{{_getAbilitatoLabel(portaleCorrente.portale.abilitato)}}</span>
+                        </paper-toggle-button>
 
-                </paper-card>
+                        <paper-button class="green" raised on-tap="_salvaPortale" elevation="0">Salva
+                        </paper-button>
+                    </div>
+                </paper-material>
             </div>
-
         </paper-header-panel>
     </template>
     <script>
@@ -300,6 +281,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     });
   })();
+
 
     </script>
 </dom-module>

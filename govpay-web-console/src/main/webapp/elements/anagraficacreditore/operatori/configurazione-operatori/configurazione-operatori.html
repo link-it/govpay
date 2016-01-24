@@ -66,7 +66,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.entryAnimation = 'slide-from-left-animation';
             this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
-            this.$.lista.filtraRisultati();
+            this.$.lista.eseguiRicerca();
         },
 
       _selectOperatore: function(event){
@@ -76,6 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.govpayUrl = govpayUrl + '/rs/dars/operatori/'+ this.operatoreCorrente.id;
         this.selected = 1;
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', event.detail.titoloPagina);
       },
 
 
@@ -93,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.govpayUrl = govpayUrl + '/rs/dars/operatori/'+ this.operatoreCorrente.id;
                 this.$.dettagliooperatore.generateRequest();
                 if(this.selected == 0){
-                    this.$.lista.filtraRisultati();
+                    this.$.lista.eseguiRicerca();
                 }
               }
           }
@@ -107,8 +108,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
-        this.$.lista.filtraRisultati();
+        this.$.lista.eseguiRicerca();
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', 'Operatori');
       }
 
     });

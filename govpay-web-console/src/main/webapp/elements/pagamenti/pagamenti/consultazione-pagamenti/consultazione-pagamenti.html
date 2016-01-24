@@ -68,21 +68,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
             this.$.lista.init();
-            this.$.lista.filtraRisultati();
+            this.$.lista.eseguiRicerca();
         },
 
       _selectPagamento: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
         this.pagamentoCorrente = event.detail.pagamentoCorrente;
-
-      //  console.log(event.detail);
         this.govpayUrl = govpayUrl + '/rs/dars/pagamenti/'+ this.pagamentoCorrente.id;
-
-       // this.dettaglioPagamentoCorrente = this.ajaxResponsePagamento;
-        //console.log(this.dettaglioPagamentoCorrente);
         this.selected = 1;
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', event.detail.titoloPagina);
       },
 
       _erroreDars : function(event){
@@ -93,8 +89,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
-        this.$.lista.filtraRisultati();
+        this.$.lista.eseguiRicerca();
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', 'Pagamenti');
       }
     });
   })();

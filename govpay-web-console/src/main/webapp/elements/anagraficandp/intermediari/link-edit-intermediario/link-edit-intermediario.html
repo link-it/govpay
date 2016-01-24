@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="link-edit-intermediario">
     <template>
+        <style include="shared-styles"></style>
         <style>
             @media (min-width: 600px) {
             :host {
@@ -23,10 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             background: var(--paper-dialog-background-color, --primary-background-color);
             color: var(--paper-dialog-color, --primary-text-color);
 
-            @apply(--layout-scroll);
-            @apply(--paper-font-body1);
-            @apply(--shadow-elevation-16dp);
-            @apply(--paper-dialog);
             }
             }
 
@@ -46,34 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             }
 
-            paper-menu-button {
-            padding-left: 0!important;
-            }
-
-            .content {
-            padding: 24px;
-            overflow: auto;
-            }
-
-            .titleCard {
-            margin-top: 16px;
-            }
-
-            paper-card {
-            padding: 16px;
-            margin-bottom: 16px;
-            }
-
-            .gap {
-            width: 24px;
-            }
-
-            .nascondi{
-            display: none;
-            }
-
-            .mostra {
-            display: block;
+            .title {
+                margin-left: 12px !important;
             }
         </style>
         <iron-ajax auto="false"
@@ -88,37 +59,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    last-response="{{esitoSalvataggioIntermediario}}"
                    last-error="{{ajaxErrorSalvataggioIntermediario}}"
                    on-response="_visualizzaEsitoSalvataggio"
-                   on-error="_visualizzaMessaggioErrore" >
+                   on-error="_visualizzaMessaggioErrore">
         </iron-ajax>
-        <paper-header-panel>
+        <paper-header-panel mode="standard">
             <div class="paper-header">
                 <paper-toolbar>
-                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
-                    <span class="title">[[titolo]]</span>
-                    <paper-icon-button icon="check" on-tap="_salvaIntermediario"></paper-icon-button>
+                    <span class="title start">[[titolo]]</span>
+                    <paper-icon-button icon="close" on-tap="_closeDialog" class="end"></paper-icon-button>
                 </paper-toolbar>
             </div>
-            <div class="content layout vertical">
-                <paper-card>
-                    <paper-toggle-button class="flex"
-                                         checked="{{intermediarioCorrente.abilitato}}">
-                        <span>{{_getAbilitatoLabel(intermediarioCorrente.abilitato)}}</span>
-                    </paper-toggle-button>
-                    <paper-input class="flex" disabled$="[[!isAdd]]"
-                                 value="{{intermediarioCorrente.codIntermediario}}"
-                                 label="Id intermediario"
-                                 required></paper-input>
-                    <paper-input class="flex"
-                                 value="{{intermediarioCorrente.denominazione}}"
-                                 label="Denominazione"
-                                 required></paper-input>
-                </paper-card>
-                <paper-card>
-                    <div class="titleCard">Connettore PdD o PdDE</div>
-                    <paper-input label="URL" value="{{connettorePdd.url}}" required></paper-input>
-                    <paper-dropdown-menu label="Auth" style="width: 100%">
-                        <paper-menu class="dropdown-content" attr-for-selected="valore" on-iron-select="_tipoAutenticazioneSelected"
-                                    id="tipoAuthMenu"          selected="{{connettorePdd.tipoAutenticazione}}">
+            <div class="content layout vertical flex formbox">
+                <paper-material elevation="0">
+                    <div class="layout horizontal flex">
+
+                        <paper-input class="flex" disabled$="[[!isAdd]]" id="codIntermediarioInput"
+                                     value="{{intermediarioCorrente.codIntermediario}}" char-counter maxlength="11"
+                                     minlength="11"
+                                     label="Id intermediario"
+                                     required error-message="Codice Intermediario lungo 11 cifre obbligatorio"
+                                     allowed-pattern="[0-9]"
+                                ></paper-input>
+
+                        <div class="separatore"></div>
+
+                        <paper-input class="flex" id="descrizioneInput"
+                                     value="{{intermediarioCorrente.denominazione}}" minlength="1" maxlength="255"
+                                     label="Denominazione" error-message="Descrizione obbligatoria"
+                                     required></paper-input>
+                    </div>
+                </paper-material>
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">CONNETTORE PDD o PDDoE</span></p>
+                    <paper-input label="URL" value="{{connettorePdd.url}}" required id="urlInput"
+                                 error-message="URL obbligatoria" minlength="1" maxlength="255"
+                            ></paper-input>
+                    <paper-dropdown-menu label="Tipo Autenticazione" style="width: 100%">
+                        <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                    on-iron-select="_tipoAutenticazioneSelected"
+                                    id="tipoAuthMenu" selected="{{connettorePdd.tipoAutenticazione}}">
                             <paper-item valore="NONE">Nessuna</paper-item>
                             <paper-item valore="HTTPBasic">Http Basic</paper-item>
                             <paper-item valore="SSL">SSL</paper-item>
@@ -126,13 +104,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </paper-dropdown-menu>
                     <!-- Sezione HttpBasic -->
                     <template is="dom-if" if="{{mostraSezioneHttpBasic}}">
-                        <div class="content layout vertical" id="sezHttp">
-                            <paper-input label="Username"
-                                         value="{{connettorePdd.httpUser}}"
-                                         required></paper-input>
-                            <paper-input-container class="flex" required>
+                        <div class="layout horizontal flex" id="sezHttp">
+                            <paper-input label="Username" required id="usernameInput"
+                                         error-message="Username obbligatorio" minlength="1" maxlength="255"
+                                         value="{{connettorePdd.httpUser}}" class="flex"
+                                    ></paper-input>
+                            <div class="separatore"></div>
+                            <paper-input-container class="flex">
                                 <label>Password</label>
-                                <input is="iron-input" type="password" bind-value="{{connettorePdd.httpPassw}}">
+                                <input is="iron-input" type="password" bind-value="{{connettorePdd.httpPassw}}" required
+                                       id="passwordInput" error-message="Password obbligatoria" minlength="1"
+                                       maxlength="255">
+                                <paper-input-error>Password obbligatoria</paper-input-error>
                             </paper-input-container>
                         </div>
                     </template>
@@ -140,69 +123,115 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <!-- Sezione SSL -->
                     <template is="dom-if" if="{{mostraSezioneSSL}}">
                         <div class="content layout vertical" id="sezSsl">
-                            <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
-                                <paper-menu class="dropdown-content" attr-for-selected="valore"
-                                            selected="{{connettorePdd.tipoSsl}}">
-                                    <paper-item valore="CLIENT">Client</paper-item>
-                                    <paper-item valore="SERVER">Server</paper-item>
-                                </paper-menu>
-                            </paper-dropdown-menu>
-                            <paper-input label="KeyStore Type"
-                                         value="{{connettorePdd.sslKsType}}"
-                                         required></paper-input>
-                            <paper-input label="KeyStore Location"
-                                         value="{{connettorePdd.sslKsLocation}}"
-                                         required></paper-input>
-                            <paper-input-container class="flex" required>
-                                <label>KeyStore Password</label>
-                                <input is="iron-input" type="password" bind-value="{{connettorePdd.sslKsPasswd}}">
-                            </paper-input-container>
-                            <paper-input-container class="flex" required>
-                                <label>PrivateKey Password</label>
-                                <input is="iron-input" type="password" bind-value="{{connettorePdd.sslPKeyPasswd}}">
-                            </paper-input-container>
-                            <paper-input label="TrustStore Type"
-                                         value="{{connettorePdd.sslTsType}}"
-                                         required></paper-input>
-                            <paper-input label="TrustStore Location"
-                                         value="{{connettorePdd.sslTsLocation}}"
-                                         required></paper-input>
-                            <paper-input-container class="flex" required>
-                                <label>TrustStore Password</label>
-                                <input is="iron-input" type="password" bind-value="{{connettorePdd.sslTsPasswd}}">
-                            </paper-input-container>
-                            <paper-input label="SSL Type"
-                                         value="{{connettorePdd.sslType}}"
-                                         required></paper-input>
+                            <div class="layout horizontal flex">
+                                <paper-dropdown-menu label="Tipo SSL" style="width: 100%" class="flex">
+                                    <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                                selected="{{connettorePdd.tipoSsl}}">
+                                        <paper-item valore="CLIENT">Client</paper-item>
+                                        <paper-item valore="SERVER">Server</paper-item>
+                                    </paper-menu>
+                                </paper-dropdown-menu>
+                                <div class="separatore"></div>
+                                <paper-input label="KeyStore Type" class="flex"
+                                             value="{{connettorePdd.sslKsType}}"
+                                             required id="sslKsTypeInput" error-message="Campo obbligatorio"
+                                             minlength="1" maxlength="255"></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="KeyStore Location" class="flex"
+                                             value="{{connettorePdd.sslKsLocation}}"
+                                             required id="sslKsLocationInput" error-message="Campo obbligatorio"
+                                             minlength="1" maxlength="255"></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input-container class="flex" required id="sslKsPasswdInput"
+                                                       error-message="Campo obbligatorio" minlength="1" maxlength="255">
+                                    <label>KeyStore Password</label>
+                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslKsPasswd}}">
+                                    <paper-input-error>Campo obbligatorio</paper-input-error>
+                                </paper-input-container>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input-container class="flex" required id="sslPKeyPasswdInput"
+                                                       error-message="Campo obbligatorio" minlength="1" maxlength="255">
+                                    <label>PrivateKey Password</label>
+                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslPKeyPasswd}}">
+                                    <paper-input-error>Campo obbligatorio</paper-input-error>
+                                </paper-input-container>
+                                <div class="separatore"></div>
+                                <paper-input label="TrustStore Type" class="flex"
+                                             value="{{connettorePdd.sslTsType}}"
+                                             required id="sslTsTypeInput" error-message="Campo obbligatorio"
+                                             minlength="1" maxlength="255"></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="TrustStore Location" class="flex"
+                                             value="{{connettorePdd.sslTsLocation}}"
+                                             required id="sslTsLocationInput" error-message="Campo obbligatorio"
+                                             minlength="1" maxlength="255"></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input-container class="flex" required id="sslTsPasswdInput"
+                                                       error-message="Campo obbligatorio" minlength="1" maxlength="255">
+                                    <label>TrustStore Password</label>
+                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslTsPasswd}}">
+                                    <paper-input-error>Campo obbligatorio</paper-input-error>
+                                </paper-input-container>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="SSL Type" class="flex"
+                                             value="{{connettorePdd.sslType}}"
+                                             required id="sslTypeInput" error-message="Campo obbligatorio" minlength="1"
+                                             maxlength="255"></paper-input>
+                                <div class="separatore"></div>
+                                <div class="flex"></div>
+                            </div>
                         </div>
                     </template>
-                </paper-card>
-                <paper-card>
-                    <div class="titleCard layout horizontal" id="comandiStazioni">Stazioni
-                        <div class="flex"></div>
-                        <paper-icon-button icon="add" on-tap="_addStazione"></paper-icon-button>
+                </paper-material>
+                <paper-material elevation="0">
+                    <div class="layout horizontal flex">
+                        <p class="groupTitle start"><span class="groupTitle">STAZIONI</span></p>
+                        <paper-icon-button icon="add" on-tap="_addStazione" class="addButton end-justified"></paper-icon-button>
                     </div>
-                    <div class="layout vertical" id="listaStazioni">
+                    <div class="content layout vertical" id="listaStazioni">
                         <template is="dom-repeat" items="{{stazioni}}">
-                            <div class="layout horizontal">
+                            <div class="layout horizontal flex">
                                 <input type="hidden" value="{{item.id}}"/>
-                                <paper-input label="ID" value="{{_getCodStazione(intermediarioCorrente.codIntermediario,item.applicationCode)}}" required disabled></paper-input>
-                                <span class="gap"></span>
-                                <paper-input label="Application Code" type="number" value="{{item.applicationCode}}" required disabled$="[[!_isAddStazione(item)]]"></paper-input>
-                                <span class="gap"></span>
-                                <paper-input-container class="flex" required>
+                                <paper-input label="ID" placeholder="Id Stazione" class="flex"
+                                             value="{{_getCodStazione(intermediarioCorrente.codIntermediario,item.applicationCode)}}"
+                                             required disabled></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input label="Application Code" type="number" value="{{item.applicationCode}}"
+                                             minlength="1" maxlength="2" id="{{index}}_applicationCodeInput"
+                                             required allowed-pattern="[0-9]" min="1" max="99" class="flex"
+                                             disabled$="{{!_isAddStazione(item,index)}}"></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input-container class="flex" id="{{index}}_stazionePwdInput_container">
                                     <label>Password</label>
-                                    <input is="iron-input" type="password" bind-value="{{item.password}}">
+                                    <input is="iron-input" type="password" bind-value="{{item.password}}"
+                                           id="{{index}}_stazionePwdInput"
+                                           required error-message="Password obbligatoria" minlength="1" maxlength="255">
+                                    <paper-input-error>Password obbligatoria</paper-input-error>
                                 </paper-input-container>
-                                <span class="gap"></span>
+                                <div class="separatore"></div>
                                 <paper-toggle-button class="self-center" checked="{{item.abilitato}}">
                                     <span>{{_getAbilitatoLabel(item.abilitato)}}</span>
                                 </paper-toggle-button>
-                                <span class="gap"></span>
                             </div>
                         </template>
                     </div>
-                </paper-card>
+                </paper-material>
+
+                <paper-material elevation="0">
+                    <div class="content layout horizontal">
+                        <paper-toggle-button class="green flex start-justified"
+                                             checked="{{intermediarioCorrente.abilitato}}">
+                            <span>{{_getAbilitatoLabel(intermediarioCorrente.abilitato)}}</span>
+                        </paper-toggle-button>
+
+                        <paper-button class="green" raised on-tap="_salvaIntermediario" elevation="0">Salva
+                        </paper-button>
+                    </div>
+                </paper-material>
             </div>
         </paper-header-panel>
     </template>
@@ -294,34 +323,88 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
        _salvaIntermediario: function(){
-    	   for(var i=0; i< this.stazioni.length;i++){
-    		   var stazione = this.stazioni[i];
-    	   		stazione.codStazione = this._getCodStazione(this.intermediarioCorrente.codIntermediario, stazione.applicationCode);
-    	   }
-      //    console.log(this.stazioni);
-         this.intermediarioCorrente.stazioni = this.stazioni;
-         this.intermediarioCorrente.connettorePdd = this.connettorePdd;
+            var valido = this.validate();
 
-         if(!this.isAdd){
-           this.actionMethod = 'PUT';
-         }else{
-            this.actionMethod = 'POST';
+            if(valido){
+               for(var i=0; i< this.stazioni.length;i++){
+                   var stazione = this.stazioni[i];
+                    stazione.codStazione = this._getCodStazione(this.intermediarioCorrente.codIntermediario, stazione.applicationCode);
+               }
+          //    console.log(this.stazioni);
+                this.intermediarioCorrente.stazioni = this.stazioni;
+                this.intermediarioCorrente.connettorePdd = this.connettorePdd;
+
+                if(!this.isAdd){
+                    this.actionMethod = 'PUT';
+                 }else{
+                    this.actionMethod = 'POST';
+                 }
+
+             this.govpayUrl = govpayUrl + '/rs/dars/intermediari/';
+             this.$.connettoresalvataggio.generateRequest();
+             this.govpayUrl = null;
          }
-
-         this.govpayUrl = govpayUrl + '/rs/dars/intermediari/';
-         this.$.connettoresalvataggio.generateRequest();
-         this.govpayUrl = null;
       },
+       validate :function() {
+            var valido = document.getElementById('codIntermediarioInput').validate();
+
+            if(!valido)
+                 return valido;
+
+            valido = document.getElementById('descrizioneInput').validate();
+
+            if(!valido)
+                 return valido;
+
+            valido = document.getElementById('urlInput').validate();
+
+            if(!valido)
+                 return valido;
+
+            var selected = this.$.tipoAuthMenu.selected;
+
+            if(selected == 'NONE'){
+                // non valido gli input
+            } else if(selected == 'SSL'){
+                valido = document.getElementById('sslKsTypeInput').validate() && document.getElementById('sslKsLocationInput').validate()
+                    && document.getElementById('sslKsPasswdInput').validate() && document.getElementById('sslPKeyPasswdInput').validate()
+                    && document.getElementById('sslTsTypeInput').validate() && document.getElementById('sslTsLocationInput').validate()
+                    && document.getElementById('sslTsPasswdInput').validate() && document.getElementById('sslTypeInput').validate()
+                ;
+            } else {
+                 valido = document.getElementById('usernameInput').validate() && document.getElementById('passwordInput').validate();
+            }
+
+            if(!valido)
+                 return valido;
+
+
+            for(var i=0; i< this.stazioni.length;i++){
+                var idCodApp = i+'_applicationCodeInput';
+                var idPass = i+'_stazionePwdInput';
+
+                valido = document.getElementById(idCodApp).validate() && document.getElementById(idPass).validate();
+
+                 if(!valido)
+                     return valido;
+            }
+
+            return valido;
+        },
 
       _addStazione: function(){
         var appCode = this._getNextApplicationCode(this.stazioni);
 
+
         var nuovaStazione = {id :'0', codStazione : '' , applicationCode: appCode ,password:'', abilitato: true};
-        nuovaStazione.codStazione = this._getCodStazione(this.intermediarioCorrente.codIntermediario, nuovaStazione.applicationCode);
+        var codIntermediario = this.intermediarioCorrente.codIntermediario;
+        nuovaStazione.codStazione = this._getCodStazione2(appCode);
+        console.log(nuovaStazione.codStazione);
         this.push('stazioni',nuovaStazione);
       },
 
-      _isAddStazione: function(item){
+      _isAddStazione: function(item,index){
+        console.log('CheckIsAdd: '+index);
         if(item.id > 0)
             return false;
 
@@ -347,6 +430,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return 1;
       },
       _getCodStazione: function(codIntermediario, applicationCode){
+
+        if(codIntermediario)
+                if(applicationCode){
+                    var idStaz = applicationCode;
+
+                    if(idStaz < 10)
+                        idStaz = '0' + idStaz;
+
+                    var codStazione = codIntermediario + '_' + idStaz;
+                    return codStazione;
+                }
+        return '';
+      },
+       _getCodStazione2: function(applicationCode){
+         var codIntermediario = document.getElementById('codIntermediarioInput').value;
         if(codIntermediario)
                 if(applicationCode){
                     var idStaz = applicationCode;
@@ -448,6 +546,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     });
   })();
+
+
 
 
     </script>

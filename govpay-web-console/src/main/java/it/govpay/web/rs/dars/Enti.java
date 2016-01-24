@@ -280,7 +280,7 @@ public class Enti extends BaseRsService {
 		if(ente.getIdDominio() == 0) throw new ValidationException("Il campo Dominio e' obbligatorio");
 		if(oldEnte != null) {
 			if(!ente.getCodEnte().equals(oldEnte.getCodEnte())) throw new ValidationException("Il campo Cod Ente non e' modificabile");
-			if(ente.getIdDominio() == oldEnte.getIdDominio()) throw new ValidationException("Il campo Dominio non e' modificabile");
+			if(ente.getIdDominio() != oldEnte.getIdDominio()) throw new ValidationException("Il campo Dominio non e' modificabile");
 		}
 	}
 }

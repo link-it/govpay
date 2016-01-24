@@ -117,7 +117,7 @@ public class InviaRptThread implements Runnable {
 				log.info("Ricevuto esito " + risposta.getEsito());
 				log.info("Aggiorno lo stato della RPT [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "] in RPT_ACCETTATA_NODO.");
 				rptBD.updateStatoRpt(rpt.getId(), StatoRpt.RPT_ACCETTATA_NODO, null, null);
-				log.info("Aggiorno lo stato dei versamento in StatoVersamento.AUTORIZZATO_DIFFERITO.");
+				log.info("Aggiorno lo stato dei versamento in StatoVersamento.AUTORIZZATO.");
 				versamentiBD.updateStatoVersamento(rpt.getIdVersamento(), StatoVersamento.AUTORIZZATO);
 				bd.commit();
 				bd.closeConnection();

@@ -35,6 +35,7 @@ import it.govpay.orm.IdAnagrafica;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
+import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.jdbc.JDBCVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
@@ -155,10 +156,6 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 
-	/**
-	 * Recupera il versamento identificato da idEnte e IUV
-	 * 
-	 */
 	public Versamento getVersamento(long idApplicazione, String codVersamentoEnte) throws NotFoundException, MultipleResultException, ServiceException {
 		try {
 			IExpression exp = this.getVersamentoService().newExpression();
@@ -166,6 +163,26 @@ public class VersamentiBD extends BasicBD {
 
 			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idApplicazione);
+			it.govpay.orm.Versamento versamentoVO = this.getVersamentoService().find(exp);
+
+			return getVersamentoDTO(versamentoVO);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+
+	public Versamento getVersamentoByIuv(long idEnte, String iuv) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().IUV, iuv);
+
+			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_ente", Long.class, "id_ente", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idEnte);
 			it.govpay.orm.Versamento versamentoVO = this.getVersamentoService().find(exp);
 
 			return getVersamentoDTO(versamentoVO);
@@ -208,6 +225,22 @@ public class VersamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 
+	}
+	
+	
+	
+	public SingoloVersamento getSingoloVersamento(long idSingoloVersamento) throws ServiceException{
+		
+		try {
+			it.govpay.orm.SingoloVersamento singoloVersamentoVO = ((IDBSingoloVersamentoServiceSearch)this.getSingoloVersamentoService()).get(idSingoloVersamento);
+			return SingoloVersamentoConverter.toDTO(singoloVersamentoVO);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	/**

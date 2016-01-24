@@ -110,6 +110,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "id_anagrafica";
 			}
 		}
+		if(field.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.COD_UNIVOCO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_univoco";
+			}else{
+				return "cod_univoco";
+			}
+		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".importo_totale";
@@ -188,6 +195,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model().ID_APPLICAZIONE, returnAlias);
 		}
 		if(field.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.ID_ANAGRAFICA)){
+			return this.toTable(Versamento.model().ID_ANAGRAFICA_DEBITORE, returnAlias);
+		}
+		if(field.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.COD_UNIVOCO)){
 			return this.toTable(Versamento.model().ID_ANAGRAFICA_DEBITORE, returnAlias);
 		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){

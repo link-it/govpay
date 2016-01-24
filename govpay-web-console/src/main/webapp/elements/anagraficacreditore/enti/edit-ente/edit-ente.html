@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="edit-ente">
     <template>
+        <style include="shared-styles"></style>
         <style>
             @media (min-width: 600px) {
             :host {
@@ -23,10 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             background: var(--paper-dialog-background-color, --primary-background-color);
             color: var(--paper-dialog-color, --primary-text-color);
 
-            @apply(--layout-scroll);
-            @apply(--paper-font-body1);
-            @apply(--shadow-elevation-16dp);
-            @apply(--paper-dialog);
             }
             }
 
@@ -46,26 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             }
 
-            paper-menu-button {
-            padding-left: 0!important;
-            }
-
-            .content {
-            padding: 24px;
-            overflow: auto;
-            }
-
-            .titleCard {
-            margin-top: 16px;
-            }
-
-            paper-card {
-            padding: 16px;
-            margin-bottom: 16px;
-            }
-
-            .gap {
-            width: 24px;
+            .title {
+            margin-left: 12px !important;
             }
         </style>
         <iron-ajax auto="false" verbose="true"
@@ -82,50 +61,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    on-response="_visualizzaEsitoSalvataggio"
                    on-error="_visualizzaMessaggioErrore">
         </iron-ajax>
-        <paper-header-panel>
+        <paper-header-panel mode="standard">
             <div class="paper-header">
                 <paper-toolbar>
-                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
-                    <span class="title">[[titolo]]</span>
-                    <paper-icon-button icon="check" on-tap="_salvaEnte"></paper-icon-button>
+                    <span class="title start">[[titolo]]</span>
+                    <paper-icon-button icon="close" on-tap="_closeDialog" class="end"></paper-icon-button>
                 </paper-toolbar>
             </div>
-            <div class="content layout vertical">
-                <paper-card>
-                    <paper-toggle-button class="flex" checked="{{enteCorrente.ente.attivo}}">
-                        <span>{{_getAbilitatoLabel(enteCorrente.ente.attivo)}}</span>
-                    </paper-toggle-button>
-                    <paper-input class="flex" value="{{enteCorrente.ente.codEnte}}" label="Cod Ente" disabled$="[[!isAdd]]" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input class="flex" value="{{anagrafica.ragioneSociale}}" label="Ragione Sociale" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input class="flex" value="{{anagrafica.codUnivoco}}" label="Codice Univoco" required></paper-input>
-                    <span class="gap"></span>
-                    <ajax-select-list label="Dominio" select-list-url="{{govpayDominiUrl}}"
-                                      option-value="id" option-label="codDominio" on-select-option="_selectDominio"
-                                      selected-item="{{idDominio}}"></ajax-select-list>
-                    <span class="gap"></span>
-                    <paper-input label="Indirizzo" value="{{anagrafica.indirizzo}}" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Civico" value="{{anagrafica.civico}}" required type="number"></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="CAP" value="{{anagrafica.cap}}" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Localit&agrave;" value="{{anagrafica.localita}}" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Provincia" value="{{anagrafica.provincia}}" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Nazione" value="{{anagrafica.nazione}}" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Email" value="{{anagrafica.email}}" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Telefono" value="{{anagrafica.telefono}}" required type="number" ></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Cellulare" value="{{anagrafica.cellulare}}" required type="number"></paper-input>
-                    <span class="gap"></span>
-                    <paper-input label="Fax" value="{{anagrafica.fax}}" required type="number"></paper-input>
-                    <span class="gap"></span>
-                </paper-card>
+            <div class="content layout vertical flex formbox">
+                <paper-material elevation="0">
+                    <div class="layout horizontal flex">
+                        <paper-input class="flex" value="{{enteCorrente.ente.codEnte}}" label="Codice Ufficio" disabled$="[[!isAdd]]" required></paper-input>
+                        <div class="separatore"></div>
+                        <ajax-select-list label="Dominio" select-list-url="{{govpayDominiUrl}}" hidden$="[[!isAdd]]" class="flex"
+                                          option-value="id" option-label="codDominio" on-select-option="_selectDominio"
+                                          selected-item="{{idDominio}}"></ajax-select-list>
+                    </div>
+                    <div class="layout horizontal flex">
+                        <!--<paper-input  value="{{anagrafica.codUnivoco}}" label="Codice Univoco" required hidden></paper-input>-->
+                        <paper-input class="flex" value="{{anagrafica.ragioneSociale}}" label="Denominazione" required></paper-input>
+                    </div>
+                    <div class="layout horizontal flex">
+                        <paper-input label="Indirizzo" value="{{anagrafica.indirizzo}}" required class="flex"></paper-input>
+                        <div class="separatore"></div>
+                        <paper-input label="Civico" value="{{anagrafica.civico}}" required type="number" class="end"></paper-input>
+                    </div>
+                    <div class="layout horizontal flex">
+                        <paper-input label="CAP" value="{{anagrafica.cap}}" required class="start"></paper-input>
+                        <div class="separatore"></div>
+                        <paper-input label="Localit&agrave;" value="{{anagrafica.localita}}" required class="flex"></paper-input>
+                    </div>
+                    <div class="layout horizontal flex">
+                        <paper-input label="Provincia" value="{{anagrafica.provincia}}" required class="flex"></paper-input>
+                        <div class="separatore"></div>
+                        <paper-input label="Nazione" value="{{anagrafica.nazione}}" required class="flex"></paper-input>
+                    </div>
+
+                    <div class="layout horizontal flex">
+                        <paper-input label="Email" value="{{anagrafica.email}}" required class="flex"></paper-input>
+                        <div class="separatore"></div>
+                        <paper-input label="Telefono" value="{{anagrafica.telefono}}" required type="number" class="flex"></paper-input>
+                    </div>
+                    <div class="layout horizontal flex">
+                        <paper-input label="Cellulare" value="{{anagrafica.cellulare}}" required type="number" class="flex"></paper-input>
+                        <div class="separatore"></div>
+                        <paper-input label="Fax" value="{{anagrafica.fax}}" required type="number" class="flex"></paper-input>
+                    </div>
+                </paper-material>
+
+                <paper-material elevation="0">
+                    <div class="content layout horizontal">
+                        <paper-toggle-button class="green flex start-justified"
+                                             checked="{{enteCorrente.ente.attivo}}">
+                            <span>{{_getAbilitatoLabel(enteCorrente.ente.attivo)}}</span>
+                        </paper-toggle-button>
+
+                        <paper-button class="green" raised on-tap="_salvaEnte" elevation="0">Salva
+                        </paper-button>
+                    </div>
+                </paper-material>
             </div>
         </paper-header-panel>
     </template>
@@ -195,7 +189,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _selectDominio:  function(event){
             this.idDominio = event.detail.itemCorrente.id;
-            //console.log(event.detail.itemCorrente);
+            this.anagrafica.codUnivoco = this.idDominio;
+
+           // console.log(this.enteCorrente.ente.anagraficaEnte.codUnivoco);
         },
       _closeDialog: function(){
         this.close();
@@ -222,16 +218,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        _checkData: function(nuovo){
 
         if (nuovo){
-          this.titolo = 'Modifica Ente: ' + nuovo.ente.codEnte;
+          this.titolo = 'Modifica Ufficio: ' + nuovo.ente.codEnte;
           this.isAdd = false;
             this.anagrafica = this.enteCorrente.ente.anagraficaEnte;
             this.idDominio = this.enteCorrente.ente.idDominio;
-
         } else {
           this.enteCorrente = { 'ente' : { attivo: true, 'anagraficaEnte': {}, 'idDominio': '0'}};
           this.anagrafica = { 'ragioneSociale' : '', 'codUnivoco': ''};
           this.idDominio = '0';
-          this.titolo = 'Nuovo Ente';
+          this.titolo = 'Nuovo Ufficio';
           this.isAdd = true;
         }
       },
@@ -240,7 +235,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (event.currentTarget.value!==''){
           this.titolo = event.currentTarget.value;
         } else {
-          this.titolo = 'Nuovo Ente';
+          this.titolo = 'Nuovo Ufficio';
         }
       } ,
       _visualizzaEsitoSalvataggio: function(event){
@@ -259,11 +254,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if(esitoOperazione == 'ESEGUITA'){
                     // Creazione
                     if(this.actionMethod == 'POST'){
-                        messaggio = 'Inserimento Ente completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Inserimento Ufficio completato con successo. Codice Operazione: ' + codOperazione + '.';
                         this.enteCorrente.ente.id = id;
                     }else {
                         //Aggiornamento
-                        messaggio = 'Aggiornamento Ente completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Aggiornamento Ufficio completato con successo. Codice Operazione: ' + codOperazione + '.';
                     }
 
                     this.close();
@@ -271,19 +266,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 } else if(esitoOperazione == 'NONESEGUITA'){
                     // Creazione
                     if(this.actionMethod == 'POST'){
-                        messaggio = 'Inserimento Ente non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
+                        messaggio = 'Inserimento Ufficio non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
                     }else {
                         //Aggiornamento
-                        messaggio = 'Aggiornamento Ente non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
+                        messaggio = 'Aggiornamento Ufficio non completato. Codice Operazione: ' + codOperazione + '. ' + dettaglioEsito;
                     }
                 } else {
                     // ERRORE
                     // Creazione
                     if(this.actionMethod == 'POST'){
-                        messaggio = 'Si e\' verificato un errore durante l\'inserimento dell\'Ente. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Si e\' verificato un errore durante l\'inserimento dell\'Ufficio. Codice Operazione: ' + codOperazione + '.';
                     }else {
                         //Aggiornamento
-                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento dell\'Ente. Codice Operazione: ' + codOperazione + '.';
+                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento dell\'Ufficio. Codice Operazione: ' + codOperazione + '.';
                     }
                 }
                 var messaggi = document.querySelector('#messaggiUtente');

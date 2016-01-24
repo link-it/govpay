@@ -86,7 +86,7 @@
                return this.listaOptions;
           //  }
         },
-         _selectOption : function (e){
+         _selectOption : function (event){
            var target = event.model.item;
           // console.log(target);
            this.fire('select-option', {itemCorrente: target});
@@ -97,6 +97,11 @@
 
         ready: function() {
           // console.log(this.selectListUrl);
+        },
+
+        validate: function() {
+            //TODO capire come impostare la validazione
+          return true;
         }
     });
     </script>

@@ -25,6 +25,8 @@ import java.util.Date;
 
 public class Esito extends EsitoBase {
 	private static final long serialVersionUID = 1L;
+	
+	public enum TipoEsito {ESITO_PAGAMENTO, RENDICONTAZIONE}
 
 	public enum StatoSpedizione {DA_SPEDIRE, SPEDITO}
 	private StatoSpedizione statoSpedizione;
@@ -33,6 +35,7 @@ public class Esito extends EsitoBase {
 	private Date dataOraCreazione;
 	private Date dataOraUltimaSpedizione;
 	private Date dataOraProssimaSpedizione;
+	private TipoEsito tipo;
 	private byte[] xml;
 	
 	public StatoSpedizione getStatoSpedizione() {
@@ -112,6 +115,12 @@ public class Esito extends EsitoBase {
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+	public TipoEsito getTipo() {
+		return tipo;
+	}
+	public void setTipo(TipoEsito tipo) {
+		this.tipo = tipo;
 	}
 
 

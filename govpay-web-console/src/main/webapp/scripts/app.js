@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   app.govpayUrlOperatore = govpayUrl + '/rs/dars/operatori/user';
   app.govpayUrlLogout = govpayUrl + '/logout?logout=true';
   app.profiloCorrente = null;
+  app.titoloPagina = 'GovPay Enterprise v2.0.RC1';
 
     app._visualizzaInformazioniProfilo  = function(event){
         var response = event.detail;
@@ -135,6 +136,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return isAdmin;
         };
 
+    app._getToolbarClass = function(isFirstPage){
+        if(!isFirstPage)
+            return "medium-tall";
+
+        return "";
+  };
 
   app.displayInstalledToast = function() {
     // Check to make sure caching is actually enabled—it won't be in the dev environment.
@@ -205,6 +212,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.isFirstPage = (event.detail===0);
     app.isEditSection = app._isEditSection();
   };
+
+   app._changeTitoloPagina = function(event){
+    //if(!app.isFirstPage)
+        app.titoloPagina = event.detail;
+    };
 
 
 // controlla se sto navigando in una sezione di edit

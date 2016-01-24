@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="edit-applicazione">
     <template>
+        <style include="shared-styles"></style>
         <style>
             @media (min-width: 600px) {
             :host {
@@ -23,10 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             background: var(--paper-dialog-background-color, --primary-background-color);
             color: var(--paper-dialog-color, --primary-text-color);
 
-            @apply(--layout-scroll);
-            @apply(--paper-font-body1);
-            @apply(--shadow-elevation-16dp);
-            @apply(--paper-dialog);
             }
             }
 
@@ -46,26 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             }
 
-            paper-menu-button {
-            padding-left: 0!important;
-            }
-
-            .content {
-            padding: 24px;
-            overflow: auto;
-            }
-
-            .titleCard {
-            margin-top: 16px;
-            }
-
-            paper-card {
-            padding: 16px;
-            margin-bottom: 16px;
-            }
-
-            .gap {
-            width: 24px;
+            .title {
+            margin-left: 12px !important;
             }
         </style>
         <iron-ajax auto="false" verbose="true"
@@ -82,58 +61,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    on-response="_visualizzaEsitoSalvataggio"
                    on-error="_visualizzaMessaggioErrore">
         </iron-ajax>
-        <paper-header-panel>
+        <paper-header-panel mode="standard">
             <div class="paper-header">
                 <paper-toolbar>
-                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
-                    <span class="title">[[titolo]]</span>
-                    <paper-icon-button icon="check" on-tap="_salvaApplicazione"></paper-icon-button>
+                    <span class="title start">[[titolo]]</span>
+                    <paper-icon-button icon="close" on-tap="_closeDialog" class="end"></paper-icon-button>
                 </paper-toolbar>
             </div>
+            <div class="content layout vertical flex formbox">
+                <paper-material elevation="0">
+                    <div class="layout horizontal flex">
+                        <paper-input class="flex" disabled$="[[!isAdd]]"
+                                     value="{{applicazioneCorrente.applicazione.codApplicazione}}"
+                                     label="Codice Applicazione" required></paper-input>
+                        <div class="separatore"></div>
+                        <paper-input class="flex" value="{{applicazioneCorrente.applicazione.principal}}"
+                                     label="Principal"
+                                     required></paper-input>
 
-            <div class="content layout vertical">
-                <paper-card>
-                    <paper-toggle-button class="flex" checked="{{applicazioneCorrente.applicazione.abilitato}}">
-                        <span>{{_getAbilitatoLabel(applicazioneCorrente.applicazione.abilitato)}}</span>
-                    </paper-toggle-button>
-                    <paper-input class="flex" disabled$="[[!isAdd]]"
-                                 value="{{applicazioneCorrente.applicazione.codApplicazione}}"
-                                 label="Codice Applicazione" required></paper-input>
-                    <span class="gap"></span>
-                    <paper-input class="flex" value="{{applicazioneCorrente.applicazione.principal}}" label="Principal"
-                                 required></paper-input>
-                    <span class="gap"></span>
-                    <paper-dropdown-menu label="Versione" style="width: 100%">
-                        <paper-menu class="dropdown-content" attr-for-selected="valore"
-                                    selected="{{applicazioneCorrente.applicazione.versione}}">
-                            <paper-item valore="GPv1">GPv1</paper-item>
-                            <paper-item valore="GPv2">GPv2</paper-item>
-                        </paper-menu>
-                    </paper-dropdown-menu>
-                    <paper-input class="flex" value="{{applicazioneCorrente.applicazione.policyRispedizione}}" hidden
-                                 label="Policy Rispedizione" required></paper-input>
-                    <span class="gap"></span>
-                </paper-card>
+                        <div class="separatore"></div>
+                        <paper-dropdown-menu label="Versione"  class="end">
+                            <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                        selected="{{applicazioneCorrente.applicazione.versione}}">
+                                <paper-item valore="GPv1">GPv1</paper-item>
+                                <paper-item valore="GPv2">GPv2</paper-item>
+                            </paper-menu>
+                        </paper-dropdown-menu>
+                        <!--<paper-input class="flex" value="{{applicazioneCorrente.applicazione.policyRispedizione}}" hidden
+                                     label="Policy Rispedizione" required></paper-input>-->
+                    </div>
+                </paper-material>
 
-                <paper-card>
-                    <ajax-pick-list label="Tributi" source-list-url="{{govpayTributiUrl}}" target-list="{{tributi}}"
-                                       source-label="Tributi Disponibili" target-label="Tributi Selezionati"
-                                      source-option-value="id" source-option-label="codTributo" on-change-item="_updateTributi"
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">TRIBUTI</span></p>
+                    <ajax-pick-list label="" source-list-url="{{govpayTributiUrl}}" target-list="{{tributi}}"
+                                    source-label="Tributi Disponibili" target-label="Tributi Selezionati"
+                                    source-option-value="id" source-option-label="codTributo"
+                                    on-change-item="_updateTributi"
                                     target-option-value="id" target-option-label="codTributo">
-
                     </ajax-pick-list>
-                    <span class="gap"></span>
+                </paper-material>
 
 
-                </paper-card>
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">CONNETTORE ESITO</span></p>
 
-
-                <paper-card>
-                    <div class="titleCard">Connettore Esito</div>
                     <paper-input label="URL" value="{{connettoreEsito.url}}"
                                  required></paper-input>
 
-                    <paper-dropdown-menu label="Auth" style="width: 100%">
+                    <paper-dropdown-menu label="Tipo Autenticazione" style="width: 100%">
                         <paper-menu class="dropdown-content" attr-for-selected="valore"
                                     on-iron-select="_tipoAutenticazioneConnEsitoSelected"
                                     id="tipoAuthConnEsitoMenu"
@@ -145,60 +121,84 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </paper-dropdown-menu>
                     <!-- Sezione HttpBasic -->
                     <template is="dom-if" if="{{mostraSezioneHttpBasicConnEsito}}">
-                        <div class="content layout vertical" id="sezHttp">
-                            <paper-input label="Username"
+                        <div class="layout horizontal flex" id="sezHttp">
+                            <paper-input label="Username" class="flex"
                                          value="{{connettoreEsito.httpUser}}"
                                          required></paper-input>
-                            <paper-input label="Password"
-                                         value="{{connettoreEsito.httpPassw}}"
-                                         required></paper-input>
+                            <div class="separatore"></div>
+                            <paper-input-container class="flex">
+                                <label>Password</label>
+                                <input is="iron-input" type="password" bind-value="{{connettoreEsito.httpPassw}}"
+                                       required
+                                       id="passwordInput" error-message="Password obbligatoria" minlength="1"
+                                       maxlength="255">
+                                <paper-input-error>Password obbligatoria</paper-input-error>
+                            </paper-input-container>
                         </div>
                     </template>
 
                     <!-- Sezione SSL -->
                     <template is="dom-if" if="{{mostraSezioneSSLConnEsito}}">
                         <div class="content layout vertical" id="sezSsl">
-                            <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
-                                <paper-menu class="dropdown-content" attr-for-selected="valore"
-                                            selected="{{connettoreEsito.tipoSsl}}">
-                                    <paper-item valore="CLIENT">Client</paper-item>
-                                    <paper-item valore="SERVER">Server</paper-item>
-                                </paper-menu>
-                            </paper-dropdown-menu>
-                            <paper-input label="KeyStore Type"
-                                         value="{{connettoreEsito.sslKsType}}"
-                                         required></paper-input>
-                            <paper-input label="KeyStore Location"
-                                         value="{{connettoreEsito.sslKsLocation}}"
-                                         required></paper-input>
-                            <paper-input label="KeyStore Password"
-                                         value="{{connettoreEsito.sslKsPasswd}}"
-                                         required></paper-input>
-                            <paper-input label="PrivateKey Password"
-                                         value="{{connettoreEsito.sslPKeyPasswd}}"
-                                         required></paper-input>
-                            <paper-input label="TrustStore Type"
-                                         value="{{connettoreEsito.sslTsType}}"
-                                         required></paper-input>
-                            <paper-input label="TrustStore Location"
-                                         value="{{connettoreEsito.sslTsLocation}}"
-                                         required></paper-input>
-                            <paper-input label="TrustStore Password"
-                                         value="{{connettoreEsito.sslTsPasswd}}"
-                                         required></paper-input>
-                            <paper-input label="SSL Type"
-                                         value="{{connettoreEsito.sslType}}"
-                                         required></paper-input>
+                            <div class="layout horizontal flex">
+                                <paper-dropdown-menu label="Tipo SSL" style="width: 100%" class="flex">
+                                    <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                                selected="{{connettoreEsito.tipoSsl}}">
+                                        <paper-item valore="CLIENT">Client</paper-item>
+                                        <paper-item valore="SERVER">Server</paper-item>
+                                    </paper-menu>
+                                </paper-dropdown-menu>
+                                <div class="separatore"></div>
+                                <paper-input label="KeyStore Type" class="flex"
+                                             value="{{connettoreEsito.sslKsType}}"
+                                             required></paper-input>
+
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="KeyStore Location" class="flex"
+                                             value="{{connettoreEsito.sslKsLocation}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input label="KeyStore Password" class="flex"
+                                             value="{{connettoreEsito.sslKsPasswd}}"
+                                             required></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="PrivateKey Password" class="flex"
+                                             value="{{connettoreEsito.sslPKeyPasswd}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input label="TrustStore Type" class="flex"
+                                             value="{{connettoreEsito.sslTsType}}"
+                                             required></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="TrustStore Location" class="flex"
+                                             value="{{connettoreEsito.sslTsLocation}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input label="TrustStore Password" class="flex"
+                                             value="{{connettoreEsito.sslTsPasswd}}"
+                                             required></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="SSL Type" class="flex"
+                                             value="{{connettoreEsito.sslType}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <div class="flex"></div>
+                            </div>
                         </div>
                     </template>
-                </paper-card>
+                </paper-material>
 
-                <paper-card>
-                    <div class="titleCard">Connettore Verifica</div>
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">CONNETTORE VERIFICA</span></p>
+
                     <paper-input label="URL" value="{{connettoreVerifica.url}}"
                                  required></paper-input>
 
-                    <paper-dropdown-menu label="Auth" style="width: 100%">
+                    <paper-dropdown-menu label="Tipo Autenticazione" style="width: 100%">
                         <paper-menu class="dropdown-content" attr-for-selected="valore"
                                     on-iron-select="_tipoAutenticazioneConnVerificaSelected"
                                     id="tipoAuthConnVerificaMenu"
@@ -210,55 +210,91 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </paper-dropdown-menu>
                     <!-- Sezione HttpBasic -->
                     <template is="dom-if" if="{{mostraSezioneHttpBasicConnVerifica}}">
-                        <div class="content layout vertical" id="sezHttp">
+                        <div class="layout horizontal flex" id="sezHttp">
                             <paper-input label="Username"
                                          value="{{connettoreVerifica.httpUser}}"
                                          required></paper-input>
-                            <paper-input label="Password"
-                                         value="{{connettoreVerifica.httpPassw}}"
-                                         required></paper-input>
+                            <div class="separatore"></div>
+                            <paper-input-container class="flex">
+                                <label>Password</label>
+                                <input is="iron-input" type="password" bind-value="{{connettoreVerifica.httpPassw}}"
+                                       required
+                                       id="passwordInput" error-message="Password obbligatoria" minlength="1"
+                                       maxlength="255">
+                                <paper-input-error>Password obbligatoria</paper-input-error>
+                            </paper-input-container>
                         </div>
                     </template>
 
                     <!-- Sezione SSL -->
                     <template is="dom-if" if="{{mostraSezioneSSLConnVerifica}}">
                         <div class="content layout vertical" id="sezSsl">
-                            <paper-dropdown-menu label="Tipo SSL" style="width: 100%">
-                                <paper-menu class="dropdown-content" attr-for-selected="valore"
-                                            selected="{{connettoreVerifica.tipoSsl}}">
-                                    <paper-item valore="CLIENT">Client</paper-item>
-                                    <paper-item valore="SERVER">Server</paper-item>
-                                </paper-menu>
-                            </paper-dropdown-menu>
-                            <paper-input label="KeyStore Type"
-                                         value="{{connettoreVerifica.sslKsType}}"
-                                         required></paper-input>
-                            <paper-input label="KeyStore Location"
-                                         value="{{connettoreVerifica.sslKsLocation}}"
-                                         required></paper-input>
-                            <paper-input label="KeyStore Password"
-                                         value="{{connettoreVerifica.sslKsPasswd}}"
-                                         required></paper-input>
-                            <paper-input label="PrivateKey Password"
-                                         value="{{connettoreVerifica.sslPKeyPasswd}}"
-                                         required></paper-input>
-                            <paper-input label="TrustStore Type"
-                                         value="{{connettoreVerifica.sslTsType}}"
-                                         required></paper-input>
-                            <paper-input label="TrustStore Location"
-                                         value="{{connettoreVerifica.sslTsLocation}}"
-                                         required></paper-input>
-                            <paper-input label="TrustStore Password"
-                                         value="{{connettoreVerifica.sslTsPasswd}}"
-                                         required></paper-input>
-                            <paper-input label="SSL Type"
-                                         value="{{connettoreVerifica.sslType}}"
-                                         required></paper-input>
+                            <div class="layout horizontal flex">
+                                <paper-dropdown-menu label="Tipo SSL" style="width: 100%" class="flex">
+                                    <paper-menu class="dropdown-content" attr-for-selected="valore"
+                                                selected="{{connettoreVerifica.tipoSsl}}">
+                                        <paper-item valore="CLIENT">Client</paper-item>
+                                        <paper-item valore="SERVER">Server</paper-item>
+                                    </paper-menu>
+                                </paper-dropdown-menu>
+                                <div class="separatore"></div>
+                                <paper-input label="KeyStore Type" class="flex"
+                                             value="{{connettoreVerifica.sslKsType}}"
+                                             required></paper-input>
+
+                            </div>
+
+                            <div class="layout horizontal flex">
+                                <paper-input label="KeyStore Location" class="flex"
+                                             value="{{connettoreVerifica.sslKsLocation}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input label="KeyStore Password" class="flex"
+                                             value="{{connettoreVerifica.sslKsPasswd}}"
+                                             required></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="PrivateKey Password" class="flex"
+                                             value="{{connettoreVerifica.sslPKeyPasswd}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input label="TrustStore Type" class="flex"
+                                             value="{{connettoreVerifica.sslTsType}}"
+                                             required></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="TrustStore Location" class="flex"
+                                             value="{{connettoreVerifica.sslTsLocation}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <paper-input label="TrustStore Password" class="flex"
+                                             value="{{connettoreVerifica.sslTsPasswd}}"
+                                             required></paper-input>
+                            </div>
+                            <div class="layout horizontal flex">
+                                <paper-input label="SSL Type" class="flex"
+                                             value="{{connettoreVerifica.sslType}}"
+                                             required></paper-input>
+                                <div class="separatore"></div>
+                                <div class="flex"></div>
+                            </div>
+
                         </div>
                     </template>
-                </paper-card>
-            </div>
+                </paper-material>
 
+                <paper-material elevation="0">
+                    <div class="content layout horizontal">
+                        <paper-toggle-button class="green flex start-justified"
+                                             checked="{{applicazioneCorrente.applicazione.abilitato}}">
+                            <span>{{_getAbilitatoLabel(applicazioneCorrente.applicazione.abilitato)}}</span>
+                        </paper-toggle-button>
+
+                        <paper-button class="green" raised on-tap="_salvaApplicazione" elevation="0">Salva
+                        </paper-button>
+                    </div>
+                </paper-material>
+            </div>
         </paper-header-panel>
     </template>
     <script>
@@ -493,6 +529,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     });
   })();
+
 
     </script>
 </dom-module>

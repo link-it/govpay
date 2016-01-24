@@ -8,261 +8,206 @@
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
-            .blue {
-            color: var(--paper-light-blue-300);
-            }
-            .red {
-            color: var(--paper-red-300);
-            }
-            .orange {
-            color: var(--paper-amber-300);
-            }
-            .green {
-            color: var(--paper-green-300);
-            }
-
-            .div-table-row:hover .shortText::after {
-            content: ' [+]';
-            color: gray;
-            }
-            .div-table-row.expanded:hover .shortText::after {
-            content: '';
-            }
-            .div-table-row .longText {
-
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded .longText {
-            display: block;
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded:hover .longText::after {
-            content: ' [–]';
-            }
-      .shortText, .longText {
-        font-size: 14px;
-      }
-      .longText {
-        color: gray;
-        display: none !important;
-      }
-            .width250 {
-            width: 250px;
-            }
-            .width200 {
-            width: 200px;
-            }
-            .width100 {
-            width: 100px;
-            }
         </style>
-        <paper-card heading="[[_getTitoloSezione(pagamentoCorrente)]]" class="fullCardWidth">
-            <div class="card-content">
-                <p>Stato:  <span>[[_getStatoPagamento(pagamentoCorrente)]]</span></p>
-                <p>Stato Rendicontazione: <span>[[_getStatoRendicontazionePagamento(pagamentoCorrente)]]</span></p>
-                <p>Dominio: <span>[[_getPropertyVersamento(pagamentoCorrente,'codDominio')]]</span></p>
-                <p>Applicazione: <span>[[_getPropertyApplicazione(pagamentoCorrente,'codApplicazione')]]</span></p>
 
-                <p>IUV: <span>[[_getPropertyVersamento(pagamentoCorrente,'iuv')]]</span></p>
-
-                <p>CCP: <span>[[_getCCP(pagamentoCorrente)]]</span></p>
-
-                <p>Beneficiario: <span>[[_getPropertyEnte(pagamentoCorrente,'codEnte')]]</span>
-                    <paper-icon-button icon="add" on-tap="_visualizzaDettaglioBeneficiario"></paper-icon-button>
-                </p>
-                <p>Debitore: <span>[[_getDebitore(pagamentoCorrente)]]</span>
-                    <paper-icon-button icon="add" on-tap="_visualizzaDettaglioDebitore"></paper-icon-button>
-                </p>
-                <template is="dom-if" if="[[_getVersante(pagamentoCorrente) != '']]">
-                    <p>Versante: <span>[[_getVersante(pagamentoCorrente)]]</span>
-                        <paper-icon-button icon="add" on-tap="_visualizzaDettaglioVersante"></paper-icon-button>
-                    </p>
-                </template>
-                <p>Importo: <span>[[_getPropertyVersamento(pagamentoCorrente,'importoTotale')]]</span> &euro;</p>
-            </div>
-
-            <paper-material class="headMaterial" id="informazioniAggintive" elevation="2">
-                <paper-tabs selected="{{selectedTab}}">
-                    <paper-tab>Singoli Importi</paper-tab>
-                    <paper-tab>Psp</paper-tab>
-                    <paper-tab>RPT</paper-tab>
-                    <paper-tab>RT</paper-tab>
-                    <paper-tab>Eventi</paper-tab>
-                    <paper-tab>Diagnostici</paper-tab>
-                    <paper-tab>Notifiche A2A</paper-tab>
-                    <paper-tab>Notifiche Mail</paper-tab>
+        <div class="layout horizontal center-justified">
+            <div class="layout vertical flex">
+                <paper-tabs selected="{{selectedTab}}" noink >
+                    <paper-tab>INFORMAZIONI GENERALI</paper-tab>
+                    <paper-tab>SINGOLI IMPORTI</paper-tab>
+                    <paper-tab>EVENTI</paper-tab>
+                    <paper-tab>NOTIFICHE</paper-tab>
                 </paper-tabs>
 
                 <iron-pages selected="{{selectedTab}}">
-                    <div class="card-content div-table">
-                        <paper-item>
-                            <paper-item-body>
-                                <div class="horizontal layout div-table-header-row">
-                                    <div class="div-table-col"><span>CodPendenzaEnte</span></div>
-                                    <div class="div-table-col"><span>Causale</span></div>
-                                    <div class="div-table-col"><span>Importo</span></div>
-                                    <div class="div-table-col"><span>Stato</span></div>
-                                    <div class="div-table-col-com"></div>
+                    <div class="layout horizontal center-justified">
+                        <div id="pag-itembox" class="layout vertical flex itembox restorePadding">
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+
                                 </div>
-                            </paper-item-body>
-                        </paper-item>
-                        <iron-list id="elencoSingoliVersamenti" items="{{_getListaSingoliVersamenti(pagamentoCorrente)}}" as="item">
-                            <template>
-                                <paper-item  on-tap="_selectVersamento">
-                                    <paper-item-body>
-                                        <div class$="[[getClassForItem(item, item.expanded)]]"  >
-                                            <div class="div-table-col"><span>[[item.versamento.codSingoloVersamentoEnte]]</span></div>
-                                            <div class="div-table-col"><span>[[item.versamento.causaleVersamento]]</span></div>
-                                            <div class="div-table-col"><span>[[item.versamento.importoSingoloVersamento]] &euro;</span> </div>
-                                            <div class="div-table-col"><span>[[item.versamento.statoSingoloVersamento]]</span></div>
-                                            <div class="div-table-col-com shortText"></div>
-                                        </div>
-                                        <div class="horizontal layout div-table-row longText">
-                                            cccc
-                                        </div>
-                                    </paper-item-body>
-                                </paper-item>
-                            </template>
-                        </iron-list>
-                    </div>
+                            </div>
 
-                    <div class="card-content">
-                        <p>Ragione Sociale: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
+                            <paper-material elevation="0">
+                                <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
 
-                        <p>Id Psp: <span>[[_getPropertyPsp(pagamentoCorrente,'codPsp')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Stato: </span><span>[[_getStatoPagamento(pagamentoCorrente)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Stato Rendicontazione: </span><span>[[_getStatoRendicontazionePagamento(pagamentoCorrente)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Dominio: </span><span>[[_getPropertyVersamento(pagamentoCorrente,'codDominio')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Applicazione: </span><span>[[_getPropertyApplicazione(pagamentoCorrente,'codApplicazione')]]</span></p>
 
-                        <p>Storno: <span>[[_getPropertyPsp(pagamentoCorrente,'stornoGestito')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">IUV: </span><span>[[_getPropertyVersamento(pagamentoCorrente,'iuv')]]</span></p>
 
-                        <p>Bollo Telematico: <span>[[_getPropertyPsp(pagamentoCorrente,'bolloGestito')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">CCP: </span><span>[[_getCCP(pagamentoCorrente)]]</span></p>
 
-                        <p>Id Canale: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Beneficiario: </span><span>[[_visualizzaDettaglioBeneficiario(pagamentoCorrente)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Debitore: </span><span>[[_getDebitore(pagamentoCorrente)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Importo: </span><span>[[_getPropertyVersamento(pagamentoCorrente,'importoTotale')]]</span> &euro;</p>
+                            </paper-material>
 
-                        <p>Tipo Versamento: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
+                            <!-- RPT -->
+                            <paper-material elevation="0">
+                                <p class="groupTitle"><span class="groupTitle">RPT</span></p>
 
-                        <p>Modello Pagamento: <span>[[_getPropertyPsp(pagamentoCorrente,'ragioneSociale')]]</span></p>
-
-                        <p>RedirectUrl: <span>[[_getPropertyRpt(pagamentoCorrente,'pspRedirectURL')]]</span></p>
-
-                        <p>IdSession: <span>[[_getPropertyRpt(pagamentoCorrente,'codSessione')]]</span></p>
-                    </div>
-
-                    <div class="card-content">
-                        <p>Id Intermediario: <span>[[_getPropertyRpt(pagamentoCorrente,'ragioneSociale')]]</span></p>
-
-                        <p>Id Stazione: <span>[[_getPropertyRpt(pagamentoCorrente,'idStazione')]]</span></p>
-
-                        <p>Id Dominio: <span>[[_getPropertyRpt(pagamentoCorrente,'ragioneSociale')]]</span></p>
-
-                        <p>Id Messaggio: <span>[[_getPropertyRpt(pagamentoCorrente,'codMsgRichiesta')]]</span></p>
-
-                        <p>Stato: <span>[[_getPropertyRpt(pagamentoCorrente,'statoRpt')]]</span></p>
-
-                        <p>Data Spedizione: <span>[[_getPropertyRpt(pagamentoCorrente,'ragioneSociale')]]</span></p>
-
-                        <paper-button class="downloadButton" on-tap="downloadRpt">
-                            <iron-icon icon="file-download"></iron-icon>
-                            Download
-                        </paper-button>
-
-                    </div>
-                    <div class="card-content">
-                        <p>Id Messaggio: <span>[[_getPropertyRt(pagamentoCorrente,'codMsgRicevuta')]]</span></p>
-
-                        <p>Firma: <span>[[_getPropertyRpt(pagamentoCorrente,'firmaRichiesta')]]</span></p>
-
-                        <p>Esito: <span>[[_getPropertyRt(pagamentoCorrente,'esitoPagamento')]]</span></p>
-
-                        <p>Totale Pagato: <span>[[_getPropertyRt(pagamentoCorrente,'importoTotalePagato')]]</span></p>
-
-                        <p>Stato: <span>[[_getPropertyRt(pagamentoCorrente,'stato')]]</span></p>
-
-                        <p>Data Ricezione: <span>[[_getPropertyRt(pagamentoCorrente,'dataOraMsgRicevuta')]]</span></p>
-
-                        <paper-button class="downloadButton" on-tap="downloadRt">
-                            <iron-icon icon="file-download"></iron-icon>
-                            Download
-                        </paper-button>
-                    </div>
-
-                    <div class="card-content">
-                        <div class="card-content div-table">
-                            <paper-item>
-                                <paper-item-body>
-                                    <div class="horizontal layout div-table-header-row">
-                                        <div class="div-table-col width200"><span>Data</span></div>
-                                        <div class="div-table-col width200"><span>Categoria</span></div>
-                                        <div class="div-table-col width200"><span>Tipo</span></div>
-                                        <div class="div-table-col width200"><span>Sottotipo</span></div>
-                                        <div class="div-table-col width200"><span>Esito</span></div>
-
-                                    </div>
-                                </paper-item-body>
-                            </paper-item>
-                            <iron-list id="elencoIban" items="[[_getProperty(pagamentoCorrente,'eventi')]]" as="item">
-                                <template>
-                                    <paper-item>
-                                        <paper-item-body>
-                                            <div class="horizontal layout div-table-row">
-                                                <div class="div-table-col width200"><span>[[_getDataFieldAsString(item,'dataOraEvento')]]</span></div>
-                                                <div class="div-table-col width200"><span>[[item.categoriaEvento]]</span></div>
-                                                <div class="div-table-col width200"><span>[[item.tipoEvento]]</span></div>
-                                                <div class="div-table-col width200"><span>[[_getSottotipo(item)]]</span></div>
-                                                <div class="div-table-col width200"><span>[[item.esito]]</span></div>
-                                            </div>
-                                        </paper-item-body>
-                                    </paper-item>
+                                <p class="groupItem"><span class="grouplabel">Stato: </span><span>[[_getPropertyRpt(pagamentoCorrente,'statoRpt')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">IUV: </span><span>[[_getPropertyVersamento(pagamentoCorrente,'iuv')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">CCP: </span><span>[[_getCCP(pagamentoCorrente)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Codice Carrello: </span><span>[[_getPropertyRpt(pagamentoCorrente,'codCarrello')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Codice Sessione: </span><span>[[_getPropertyRpt(pagamentoCorrente,'codSessione')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Dominio: </span><span>[[_getPropertyVersamento(pagamentoCorrente,'codDominio')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Psp: </span><span>[[_getPropertyPsp(pagamentoCorrente,'codPsp')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Canale: </span><span>[[pagamentoCorrente.canale.codCanale]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Applicazione: </span><span>[[_getPropertyApplicazione(pagamentoCorrente,'codApplicazione')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Tipo Versamento: </span><span>[[_getPropertyRpt(pagamentoCorrente,'tipoVersamento')]]</span></p>
+                                <template is="dom-if" if="[[_getVersante(pagamentoCorrente) != '']]">
+                                    <p class="groupItem"><span class="grouplabel">Versante: </span><span>[[_getVersante(pagamentoCorrente)]]</span></p>
                                 </template>
-                            </iron-list>
+                                <p class="groupItem"><span class="grouplabel">Data Creazione: </span><span>[[_getDataFieldAsString(pagamentoCorrente.rpt,'dataOraCreazione')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Data Messaggio Richiesta: </span><span>[[_getDataFieldAsString(pagamentoCorrente.rpt,'dataOraMsgRichiesta')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Codice Messaggio Richiesta: </span><span>[[_getPropertyRpt(pagamentoCorrente,'codMsgRichiesta')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">IBAN Addebito: </span><span>[[_getPropertyRpt(pagamentoCorrente,'ibanAddebito')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Firma Richiesta: </span><span>[[_getPropertyRpt(pagamentoCorrente,'firmaRichiesta')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Autenticazione Soggetto: </span><span>[[_getPropertyRpt(pagamentoCorrente,'autenticazioneSoggetto')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Fault Code: </span><span>[[_getPropertyRpt(pagamentoCorrente,'faultCode')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Descrizione Stato: </span><span>[[_getPropertyRpt(pagamentoCorrente,'descrizioneStato')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Callback URL: </span><span>[[_getPropertyRpt(pagamentoCorrente,'callbackURL')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">PSP Redirect URL: </span><span>[[_getPropertyRpt(pagamentoCorrente,'pspRedirectURL')]]</span></p>
+
+                                <paper-button class="green" raised on-tap="downloadRpt" hidden>
+                                    <iron-icon icon="file-download"></iron-icon>
+                                    Download
+                                </paper-button>
+
+                            </paper-material>
+
+                            <!-- RT -->
+                            <paper-material elevation="0">
+                                <p class="groupTitle"><span class="groupTitle">RT</span></p>
+
+                                <p class="groupItem"><span class="grouplabel">Id Messaggio: </span><span>[[_getPropertyRt(pagamentoCorrente,'codMsgRicevuta')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Data Creazione: </span><span>[[_getDataFieldAsString(pagamentoCorrente.rt,'dataOraMsgRicevuta')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Attestante: </span><span>[[_getDettaglioAnagrafica(pagamentoCorrente.rt.anagraficaAttestante)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Esito: </span><span>[[_getPropertyRt(pagamentoCorrente,'esitoPagamento')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Totale Pagato: </span><span>[[_getPropertyRt(pagamentoCorrente,'importoTotalePagato')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Stato: </span><span>[[_getPropertyRt(pagamentoCorrente,'stato')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Descrizione Stato: </span><span>[[_getPropertyRt(pagamentoCorrente,'descrizioneStato')]]</span></p>
+
+                                <paper-button class="green" raised on-tap="downloadRt" hidden>
+                                    <iron-icon icon="file-download"></iron-icon>
+                                    Download
+                                </paper-button>
+                            </paper-material>
                         </div>
                     </div>
-                    <div class="card-content">Diagnostici</div>
-                    <div class="card-content">
-                        <div class="card-content div-table">
-                            <paper-item>
-                                <paper-item-body>
-                                    <div class="horizontal layout div-table-header-row">
-                                        <div class="div-table-col"><span>Stato Spedizione</span></div>
-                                        <div class="div-table-col"><span>Numero Tentativi</span></div>
-                                        <div class="div-table-col"><span>Data Creazione</span></div>
-                                        <div class="div-table-col"><span>Data Ultima Spedizione</span></div>
-                                    </div>
-                                </paper-item-body>
-                            </paper-item>
-                            <iron-list id="elencoIban" items="[[_getProperty(pagamentoCorrente,'esiti')]]" as="item">
-                                <template>
-                                    <paper-item>
-                                        <paper-item-body>
-                                            <div class="horizontal layout div-table-row">
-                                                <div class="div-table-col"><span>[[item.statoSpedizione]]</span></div>
-                                                <div class="div-table-col"><span>[[item.tentativiSpedizione]]</span></div>
-                                                <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraCreazione')]]</span></div>
-                                                <div class="div-table-col"><span>[[_getDataFieldAsString(item,'dataOraUltimaSpedizione')]]</span></div>
+
+                    <!-- Singoli Versamenti -->
+                    <div class="layout horizontal center-justified">
+                        <div id="vers-resultbox" class="layout vertical flex restorePadding" >
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+                                    <p>Sono presenti [[pagamentoCorrente.versamento.singoliVersamenti.length]] Versamenti</p>
+                                </div>
+                                <div id="vers-listToolbox" class="layout horizontal center end-justified headerbox">
+                                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                                </div>
+                            </div>
+
+                            <paper-material elevation="0">
+                                <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                             class="flex filtro" label="Filtro">
+                                </paper-input>
+                                <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                    <paper-checkbox item-icon></paper-checkbox>
+                                    <div class="flex selectAll">Seleziona tutto</div>
+                                </paper-icon-item>
+
+                                <template is="dom-repeat" items="[[pagamentoCorrente.versamento.singoliVersamenti]]" filter="_filtraListaRisultati">
+                                    <paper-icon-item class$="[[isEven(index)]]">
+                                        <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                        <paper-item-body two-line>
+                                            <div>IUSV: [[item.codSingoloVersamentoEnte]], Importo: [[item.importoSingoloVersamento]] &euro;, Stato: [[item.statoSingoloVersamento]]
                                             </div>
+                                            <div secondary>Causale: [[item.causaleVersamento]]</div>
                                         </paper-item-body>
-                                    </paper-item>
+                                    </paper-icon-item>
                                 </template>
-                            </iron-list>
+                            </paper-material>
                         </div>
                     </div>
-                    <div class="card-content">Notifiche Mail</div>
 
+                    <!-- Eventi -->
+                    <div class="layout horizontal center-justified">
+                        <div id="evt-resultbox" class="layout vertical flex restorePadding" >
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+                                    <p>Sono stati registrati [[pagamentoCorrente.eventi.length]] Eventi</p>
+                                </div>
+                                <div id="evt-listToolbox" class="layout horizontal center end-justified headerbox">
+                                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                                </div>
+                            </div>
+
+                            <paper-material elevation="0">
+                                <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                             class="flex filtro" label="Filtro">
+                                </paper-input>
+                                <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                    <paper-checkbox item-icon></paper-checkbox>
+                                    <div class="flex selectAll">Seleziona tutto</div>
+                                </paper-icon-item>
+
+                                <template is="dom-repeat" items="[[pagamentoCorrente.eventi]]" filter="_filtraListaRisultati">
+                                    <paper-icon-item class$="[[isEven(index)]]">
+                                        <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                        <paper-item-body two-line>
+                                            <div>[[_getDataFieldAsString(item,'dataOraEvento')]]: [[item.tipoEvento]] ( [[_getSottotipo(item)]] ) [[item.esito]]</div>
+                                            <div secondary>Dominio: [[item.codDominio]], IUV: [[item.iuv]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </paper-material>
+                        </div>
+                    </div>
+
+                    <!-- Notifiche -->
+                    <div class="layout horizontal center-justified">
+                        <div id="notif-resultbox" class="layout vertical flex restorePadding" >
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+                                    <p>Sono presenti [[pagamentoCorrente.esiti.length]] Notifiche</p>
+                                </div>
+                                <div id="notif-listToolbox" class="layout horizontal center end-justified headerbox">
+                                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                                </div>
+                            </div>
+
+                            <paper-material elevation="0">
+                                <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                             class="flex filtro" label="Filtro">
+                                </paper-input>
+                                <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                    <paper-checkbox item-icon></paper-checkbox>
+                                    <div class="flex selectAll">Seleziona tutto</div>
+                                </paper-icon-item>
+
+                                <template is="dom-repeat" items="[[pagamentoCorrente.esiti]]" filter="_filtraListaRisultati">
+                                    <paper-icon-item class$="[[isEven(index)]]">
+                                        <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                        <paper-item-body two-line>
+                                            <div>Ultima spedizione: [[_getDataFieldAsString(item,'dataOraUltimaSpedizione')]], Stato: [[item.statoSpedizione]]</div>
+                                            <div secondary>Data Creazione: [[_getDataFieldAsString(item,'dataOraCreazione')]], Numero Tentativi: [[item.tentativiSpedizione]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </paper-material>
+                        </div>
+                    </div>
                 </iron-pages>
-
-            </paper-material>
-        </paper-card>
-
-
-        <paper-dialog id="dettaglioAnagraficaDialog" modal>
-            <p>[[dettaglioAnagrafica]]</p>
-
-            <div class="buttons">
-                <paper-button dialog-confirm autofocus>Chiudi</paper-button>
             </div>
-        </paper-dialog>
+        </div>
     </template>
 
     <script>
@@ -291,24 +236,52 @@
           },
           singoliVersamenti: {
             type: Array
-          }
+          },
+           selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
         },
 
         ready: function() {
           //   console.log('ready function...');
         },
+        _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
+        }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
 
-        _selectVersamento: function (e){
-            var list = this.$.elencoSingoliVersamenti;
-            var index = e.model.index;
-            var isExpanded = list.items[index].expanded;
-            console.log(isExpanded);
-            list.set('singoliVersamenti.' + index + '.expanded', !isExpanded);
-            list.updateSizeForItem(e.model.index);
+            return 'odd';
         },
-        getClassForItem: function(item, expanded) {
-          return expanded ? 'horizontal layout div-table-row expanded' : 'horizontal layout div-table-row';
-        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+        _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
+      },
+
         _getProperty: function(oggetto, nomeProperty){
             if(oggetto){
                 var val = oggetto[nomeProperty];
@@ -316,23 +289,7 @@
             }
             return '';
         },
-        _getListaSingoliVersamenti: function(pagamentoCorrente){
-            //if(this.singoliVersamenti)
-            //    return this.singoliVersamenti;
-            //else{
-                  this.singoliVersamenti = [];
-                var tmp = this._getPropertyVersamento(pagamentoCorrente,'singoliVersamenti');
-                 if(tmp){
 
-
-                     for(var v in tmp){
-                            this.singoliVersamenti.push({'expanded': false, 'versamento': tmp[v]});
-                     }
-                }
-
-               return this.singoliVersamenti;
-            //}
-        },
 
          _getPropertyVersamento: function(pagamentoCorrente, nomeProperty){
             var pag = this._getVersamento(pagamentoCorrente);
@@ -415,13 +372,6 @@
             return '';
         },
 
-        _getTitoloSezione: function (pagamentoCorrente){
-            var pag = this._getVersamento(pagamentoCorrente);
-            if(pag)
-                return 'Pagamento ' + pag.iuv ;
-
-        },
-
         _getCCP: function (pagamentoCorrente){
             var pag = this._getVersamento(pagamentoCorrente);
             if(pag){
@@ -437,10 +387,10 @@
          _getDebitore: function (pagamentoCorrente){
             var pag = this._getVersamento(pagamentoCorrente);
             if(pag){
-                var anagraficaDebitore = this._getProperty(pag, 'anagraficaDebitore');
+                var anagrafica = this._getProperty(pag, 'anagraficaDebitore');
 
-                if(anagraficaDebitore){
-                    return anagraficaDebitore.ragioneSociale + ' ' + anagraficaDebitore.codUnivoco;
+                if(anagrafica){
+                   return this._getDettaglioAnagrafica(anagrafica);
                 }
             }
 
@@ -449,10 +399,10 @@
          _getVersante: function (pagamentoCorrente){
             var pag = this._getVersamento(pagamentoCorrente);
             if(pag){
-                var anagraficaVersante = this._getProperty(pag, 'anagraficaVersante');
+                var anagrafica = this._getProperty(pag, 'anagraficaVersante');
 
-                if(anagraficaVersante){
-                    return anagraficaVersante.ragioneSociale + ' ' + anagraficaVersante.codUnivoco;
+                if(anagrafica){
+                    return this._getDettaglioAnagrafica(anagrafica);
                 }
             }
 
@@ -517,13 +467,19 @@
 
         },
 
-        _visualizzaDettaglioBeneficiario: function(e) {
-            var dialog = document.getElementById('dettaglioAnagraficaDialog');
-            if (dialog) {
-                var ente = this._getProperty(this.pagamentoCorrente,'ente');
+        _visualizzaDettaglioBeneficiario: function(pagamentoCorrente) {
+            var ente = this._getProperty(pagamentoCorrente,'ente');
             if(ente){
                 var anagrafica = this._getProperty(ente, 'anagraficaEnte');
-                if(anagrafica){
+
+                return this._getDettaglioAnagrafica(anagrafica);
+             }
+
+             return '';
+        },
+
+        _getDettaglioAnagrafica: function(anagrafica) {
+            if(anagrafica){
                     var text = anagrafica.ragioneSociale + ' ' + anagrafica.codUnivoco;
 
                     var indirizzo;
@@ -548,50 +504,11 @@
 
                        text += ' ';
                        text += indirizzo || '';
-                       this.dettaglioAnagrafica = text;
-                       dialog.open();
-                  }
-                }
-            }
-        },
+                       return text;
 
-        _visualizzaDettaglioDebitore: function(e) {
-            var dialog = document.getElementById('dettaglioAnagraficaDialog');
-            if (dialog) {
-             var pag = this._getVersamento(this.pagamentoCorrente);
-            if(pag){
-                var debitore = this._getProperty(pag, 'anagraficaDebitore');
-                if(debitore){
-                    var text = debitore.ragioneSociale + ' ' + debitore.codUnivoco;
-                     var indirizzo = debitore.indirizzo + ' ' + debitore.civico + ' ' + debitore.cap + ' '
-                          + debitore.localita + ' (' + debitore.provincia + ') ' + debitore.nazione;
-                         text += ' ';
-                         text += indirizzo;
-                          this.dettaglioAnagrafica = text;
-                       dialog.open();
-                  }
                 }
-            }
-       },
-        _visualizzaDettaglioVersante: function(e) {
-          var dialog = document.getElementById('dettaglioAnagraficaDialog');
-            if (dialog) {
-             var pag = this._getVersamento(this.pagamentoCorrente);
-            if(pag){
-                var debitore = this._getProperty(pag, 'anagraficaDebitore');
-                if(debitore){
-                    var text = debitore.ragioneSociale + ' ' + debitore.codUnivoco;
-                     var indirizzo = debitore.indirizzo + ' ' + debitore.civico + ' ' + debitore.cap + ' '
-                          + debitore.localita + ' (' + debitore.provincia + ') ' + debitore.nazione;
-                         text += ' ';
-                         text += indirizzo;
-                          this.dettaglioAnagrafica = text;
-                       dialog.open();
-                  }
-                }
-            }
+           return '';
         },
-
         _getSottotipo: function(oggetto){
             if(oggetto){
                 var val = oggetto['sottotipoEvento'];

@@ -32,6 +32,8 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSP;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSPRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPTRisposta;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISP;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISPRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaCarrelloRPT;
@@ -307,5 +309,17 @@ public class NodoPerPa extends BasicClient {
 				null, null, "nodoChiediFlussoRendicontazione", nomeSoggetto);
 		Object response = send("nodoChiediFlussoRendicontazione", objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
 		return (NodoChiediFlussoRendicontazioneRisposta) ((JAXBElement<?>)response).getValue();
+	}
+	
+	public NodoChiediSceltaWISPRisposta nodoChiediSceltaWISP(NodoChiediSceltaWISP nodoChiediSceltaWISP, String nomeSoggetto) throws GovPayException {
+		NdpUtils.setThreadContextNdpParams(nodoChiediSceltaWISP.getIdentificativoDominio(),
+				null, 
+				null, 
+				null, 
+				null, 
+				null, 
+				null, null, "nodoChiediSceltaWISP", nomeSoggetto);
+		Object response = send("nodoChiediSceltaWISP", objectFactory.createNodoChiediSceltaWISP(nodoChiediSceltaWISP), null);
+		return (NodoChiediSceltaWISPRisposta) ((JAXBElement<?>)response).getValue();
 	}
 }

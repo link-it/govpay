@@ -75,6 +75,13 @@ public class EnteFieldConverter extends AbstractSQLFieldConverter {
 				return "id_anagrafica";
 			}
 		}
+		if(field.equals(Ente.model().ID_ANAGRAFICA_ENTE.COD_UNIVOCO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_univoco";
+			}else{
+				return "cod_univoco";
+			}
+		}
 		if(field.equals(Ente.model().COD_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_ente";
@@ -138,6 +145,9 @@ public class EnteFieldConverter extends AbstractSQLFieldConverter {
 		// the full definition of the table containing the alias
 		
 		if(field.equals(Ente.model().ID_ANAGRAFICA_ENTE.ID_ANAGRAFICA)){
+			return this.toTable(Ente.model().ID_ANAGRAFICA_ENTE, returnAlias);
+		}
+		if(field.equals(Ente.model().ID_ANAGRAFICA_ENTE.COD_UNIVOCO)){
 			return this.toTable(Ente.model().ID_ANAGRAFICA_ENTE, returnAlias);
 		}
 		if(field.equals(Ente.model().COD_ENTE)){

@@ -23,15 +23,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   :root {
     --dark-primary-color: #303F9F;
-    --default-primary-color: #3F51B5;
+    --default-primary-color: rgb(63,81,181);
     --light-primary-color: #C5CAE9;
     --text-primary-color: #ffffff; /*text/icons*/
-    --accent-color: #FF4081;
-    --primary-background-color: #ffffff;
+    --accent-color: rgb(100,221,24);
+    --primary-background-color: rgb(238,238,238);
     --primary-text-color: #212121;
     --secondary-text-color: #727272;
     --disabled-text-color: #bdbdbd;
     --divider-color: #B6B6B6;
+
+
 
     /* Components */
 
@@ -43,6 +45,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /* paper-menu */
     --paper-menu-background-color: #fff;
     --menu-link-color: #111111;
+
+    /** paper-toolbar */
+    --paper-toolbar-background: var(--default-primary-color);
+
+  --paper-toggle-button-checked-bar-color: var(--accent-color);
+  --paper-toggle-button-checked-button-color: var(--accent-color);
+  --paper-toggle-button-checked-ink-color: var(--accent-color);
   }
 
   /* General styles */
@@ -173,7 +182,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     iron-pages {
-      padding: 48px 62px;
+      padding: 0 24px;
     }
 
   }

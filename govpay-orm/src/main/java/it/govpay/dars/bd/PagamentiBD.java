@@ -44,6 +44,7 @@ import it.govpay.dars.model.ListaApplicazioniEntry;
 import it.govpay.dars.model.ListaPagamentiEntry;
 import it.govpay.dars.model.Pagamento;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +77,7 @@ public class PagamentiBD extends BasicBD {
 				entry.setIuv(versamentoVO.getCodVersamentoEnte());
 				entry.setStato(versamentoVO.getStatoVersamento());
 				entry.setStatoRendicontazione(versamentoVO.getStatoRendicontazione());
+				entry.setImportoTotale(new BigDecimal(versamentoVO.getImportoTotale())); 
 				versamentoLst.add(entry);
 			}
 			return versamentoLst;

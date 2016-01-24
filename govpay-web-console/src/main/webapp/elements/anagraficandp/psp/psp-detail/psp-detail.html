@@ -12,74 +12,79 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="psp-detail">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
-
-            paper-item {
-            white-space: nowrap;
-            cursor: pointer;
-            position: relative;
-            }
-
-            paper-item:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-
-            paper-item:hover {
-            background-color: #ccc;
-            }
         </style>
-        <h2>Psp [[pspCorrente.codPsp]]
-            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                       hidden$="[[pspCorrente.attivo]]"></iron-icon>
-        </h2>
-        <p>Ragione Sociale <span>[[pspCorrente.ragioneSociale]]</span></p>
-        <p>Codice Flusso <span>[[pspCorrente.codFlusso]]</span></p>
-        <p>Url Info <span>[[pspCorrente.urlInfo]]</span></p>
-        <p>Bollo Gestito <span><iron-icon icon="check-circle" style="color: green"
-                                            hidden$="[[!pspCorrente.bolloGestito]]"></iron-icon>
-                                                <iron-icon icon="notification:do-not-disturb" style="color: red"
-                                                           hidden$="[[pspCorrente.bolloGestito]]"></iron-icon></span></p>
-        <p>Storno Gestito <span><iron-icon icon="check-circle" style="color: green"
-                                          hidden$="[[!pspCorrente.stornoGestito]]"></iron-icon>
-                                                <iron-icon icon="notification:do-not-disturb" style="color: red"
-                                                           hidden$="[[pspCorrente.stornoGestito]]"></iron-icon></span></p>
-        <paper-material class="headMaterial" id="canali" elevation="2">
-            <h4>Canali</h4>
 
-            <div class="card-content div-table">
-                <paper-item >
-                    <paper-item-body>
-                        <div class="horizontal layout div-table-header-row">
-                            <div class="div-table-col"><span>Codice Canale</span></div>
-                            <div class="div-table-col"><span>Tipo Versamento</span></div>
-                            <div class="div-table-col"><span>Modello Pagamento</span></div>
-                        </div>
-                    </paper-item-body>
-                </paper-item>
-                <iron-list id="elencoStazioni" items="[[pspCorrente.canali]]" as="item">
-                    <template>
-                        <paper-item on-tap="_selectCanale">
-                            <paper-item-body>
-                                <div class="horizontal layout div-table-row">
-                                    <div class="div-table-col"><span>[[item.codCanale]]</span></div>
-                                    <div class="div-table-col"><span>[[item.tipoVersamento]]</span></div>
-                                    <div class="div-table-col"><span>[[item.modelloPagamento]]</span></div>
+        <div class="layout horizontal center-justified">
+            <div class="layout vertical flex">
+                <paper-tabs selected="{{selectedTab}}" noink>
+                    <paper-tab>INFORMAZIONI GENERALI</paper-tab>
+                    <paper-tab>CANALI</paper-tab>
+                </paper-tabs>
+
+                <iron-pages selected="{{selectedTab}}">
+                    <div class="layout horizontal center-justified">
+                        <div id="itembox" class="layout vertical flex itembox restorePadding">
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+
                                 </div>
-                            </paper-item-body>
-                        </paper-item>
-                    </template>
-                </iron-list>
-            </div>
-        </paper-material>
+                            </div>
 
+                            <paper-material elevation="0">
+                                <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                                <p class="groupItem"><span class="grouplabel">Codice: </span><span>[[pspCorrente.codPsp]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Ragione Sociale: </span><span>[[pspCorrente.ragioneSociale]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Codice Flusso: </span><span>[[pspCorrente.codFlusso]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">URL Info: </span><span>[[pspCorrente.urlInfo]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(pspCorrente.attivo)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Bollo Gestito: </span><span>[[_getAbilitatoSiNo(pspCorrente.bolloGestito)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Storno Gestito: </span><span>[[_getAbilitatoSiNo(pspCorrente.stornoGestito)]]</span></p>
+                            </paper-material>
+                        </div>
+                    </div>
+
+                    <div class="layout horizontal center-justified">
+                        <div id="resultbox" class="layout vertical flex restorePadding" >
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+                                    <p>Sono presenti [[pspCorrente.canali.length]] Canali</p>
+                                </div>
+                                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                                </div>
+                            </div>
+
+                            <paper-material elevation="0">
+                                <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                             class="flex filtro" label="Filtro">
+                                </paper-input>
+                                <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                    <paper-checkbox item-icon></paper-checkbox>
+                                    <div class="flex selectAll">Seleziona tutto</div>
+                                </paper-icon-item>
+
+                                <template is="dom-repeat" items="[[pspCorrente.canali]]" filter="_filtraListaRisultati">
+                                    <paper-icon-item class$="[[isEven(index)]]">
+                                        <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                        <paper-item-body two-line>
+                                            <div>Codice: [[item.codCanale]]</div>
+                                            <div secondary>Tipo Versamento: [[item.tipoVersamento]], Modello Pagamento: [[item.modelloPagamento]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </paper-material>
+                        </div>
+                    </div>
+                </iron-pages>
+            </div>
+        </div>
     </template>
     <script>
   (function() {
@@ -92,7 +97,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         pspCorrente: {
           type: Object,
           value: null
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+      _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
         }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
       }
     });
   })();

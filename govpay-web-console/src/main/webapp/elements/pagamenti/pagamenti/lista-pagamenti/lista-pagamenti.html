@@ -5,74 +5,7 @@
         <style include="shared-styles"></style>
         <style>
             :host {
-            @apply(--paper-font-common-base);
-
-            display: block;
-            font-family: sans-serif;
-            }
-            .headMaterial {
-            padding: 20px;
-            margin-bottom: 10px;
-            }
-
-            .searchButton {
-            background-color: blue;
-            color: white;
-            }
-            .resetButton {
-            background-color: white;
-            color: red;
-            }
-
-            paper-button.colorful {
-            color: #4285f4;
-            }
-            paper-button[raised].colorful {
-            background: #4285f4;
-            color: #fff;
-            }
-
-
-            #itemsList {
-            @apply(--layout-flex);
-            }
-
-            .item {
-            @apply(--layout-horizontal);
-            cursor: pointer;
-            padding: 16px 22px;
-            border-bottom: 1px solid #DDD;
-            }
-
-            .item:focus,
-            .item.selected:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-            .item.selected:not(:focus) {
-            background-color: var(--google-grey-100);
-            }
-
-            paper-item {
-            white-space: nowrap;
-            cursor: pointer;
-            position: relative;
-            }
-
-            paper-item:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-
-            paper-item:hover {
-            background-color: #ccc;
-            }
-
-            .width250 {
-                width: 250px;
-            }
-            .width200 {
-            width: 200px;
+                display: block;
             }
         </style>
         <!-- Connettore govpay -->
@@ -83,79 +16,82 @@
                    last-response="{{ajaxResponse}}" on-response="_responseDars" on-error="_erroreDars"
                    lastError="{{ajaxError}}"
                 ></iron-ajax>
-        <paper-material elevation="1">
-            <h4 class="page-title">[[titoloSezione]]</h4>
 
-            <!-- Search -->
-            <search-pagamenti titolo="Filtri Ricerca">
-                <paper-dropdown-menu label="Stato Pagamento" style="width: 100%;" class="inputs">
-                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoPagamentoInput}}">
-                        <paper-item valore="">Qualsiasi</paper-item>
-                        <paper-item valore="PAGAMENTO_ESEGUITO">Pagamento Eseguito</paper-item>
-                        <paper-item valore="PAGAMENTO_NON_ESEGUITO">Pagamento non Eseguito</paper-item>
-                        <paper-item valore="PAGAMENTO_PARZIALMENTE_ESEGUITO">Pagamento parzialmente Eseguito
-                        </paper-item>
-                        <paper-item valore="FALLITO">Fallito</paper-item>
-                        <paper-item valore="IN_ATTESA">In Attesa</paper-item>
-                        <paper-item valore="AUTORIZZATO_IMMEDIATO">Autorizzato Immediato</paper-item>
-                        <paper-item valore="AUTORIZZATO_DIFFERITO">Autorizzato Differito</paper-item>
-                        <paper-item valore="DECORRENZA_TERMINI">Decorrenza Termini</paper-item>
-                        <paper-item valore="DECORRENZA_TERMINI_PARZIALE">Decorrenza Termini Parziale</paper-item>
-                    </paper-menu>
-                </paper-dropdown-menu>
-                <paper-dropdown-menu label="Stato Rendicontazione" style="width: 100%;" class="inputs">
-                    <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoRendicontazioneInput}}">
-                        <paper-item valore="">Qualsiasi</paper-item>
-                        <paper-item valore="NON_RENDICONTATO">Non Rendicontato</paper-item>
-                        <paper-item valore="RENDICONTATO">Rendicontato</paper-item>
-                        <paper-item valore="RENDICONTATO_PARZIALE">Rendicontato Parziale</paper-item>
-                    </paper-menu>
-                </paper-dropdown-menu>
-                <ajax-select-list label="Ente" select-list-url="{{govpayEntiUrl}}" class="inputs" all-mode="true" option-valore-all=""
-                                  option-value="[[enteOptionValue]]" option-label="[[enteOptionLabel]]" on-select-option="_selectEnte"
-                                  selected-item="{{codEnteInput}}"></ajax-select-list>
-                <paper-input bind-value="{{iuvInput}}" class="flex inputs" label="Iuv" on-keyup="onKeyPress"
-                             autocomplete="off"></paper-input>
-                <div class="buttons">
-                    <paper-button class="colorful custom" raised  on-tap="filtraRisultati">Search</paper-button>
-                    <paper-button class="resetButton custom" raised on-tap="resetFiltro">Reset</paper-button>
+        <div class="layout horizontal center-justified restorePadding">
+            <!-- Ricerca -->
+            <div id="searchbox" class="layout vertical" hidden$="false">
+                <div class="headerbox" >
+                    <p hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]">Trovati [[ajaxResponse.response.length]] risultati</p>
                 </div>
-            </search-pagamenti>
 
-            <!-- Risultati  -->
-            <!-- Lista -->
-            <div class="card-content div-table">
-                <paper-item>
-                    <paper-item-body>
-                        <div class="horizontal layout div-table-header-row">
-                            <div class="div-table-col width200"><span>Ente</span></div>
-                            <div class="div-table-col width250"><span>IUV</span></div>
-                            <div class="div-table-col width250"><span>Stato</span></div>
-                            <div class="div-table-col width200"><span>Stato Rendicontazione</span></div>
-                            <div class="div-table-col width250"><span>Ultimo Aggiornamento</span></div>
-                        </div>
-                    </paper-item-body>
-                </paper-item>
-                <iron-list id="itemsList" items="[[ajaxResponse.response]]" selected-item="{{selectedPagamentoItem}}"
-                           selection-enabled as="item">
-                    <template>
-                        <paper-item on-tap="_selectPagamento">
-                            <paper-item-body>
-                                <div>
-                                    <div tabindex="0" class="horizontal layout div-table-row">
-                                        <div class="div-table-col width200"><span>[[item.ente]]</span></div>
-                                        <div class="div-table-col width250"><span>[[item.iuv]]</span></div>
-                                        <div class="div-table-col width250"><span>[[_getStatoPagamento(item)]]</span></div>
-                                        <div class="div-table-col width200"><span>[[_getStatoRendicontazionePagamento(item)]]</span></div>
-                                        <div class="div-table-col width250"><span>[[_getDataUltimoAggiornamento(item)]]</span></div>
-                                    </div>
-                                </div>
-                            </paper-item-body>
-                        </paper-item>
-                    </template>
-                </iron-list>
+                <paper-material elevation="0">
+
+                    <paper-dropdown-menu label="Stato Pagamento" style="width: 100%;" class="inputs">
+                        <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoPagamentoInput}}">
+                            <paper-item valore="">Qualsiasi</paper-item>
+                            <paper-item valore="PAGAMENTO_ESEGUITO">Pagamento Eseguito</paper-item>
+                            <paper-item valore="PAGAMENTO_NON_ESEGUITO">Pagamento non Eseguito</paper-item>
+                            <paper-item valore="PAGAMENTO_PARZIALMENTE_ESEGUITO">Pagamento parzialmente Eseguito
+                            </paper-item>
+                            <paper-item valore="FALLITO">Fallito</paper-item>
+                            <paper-item valore="IN_ATTESA">In Attesa</paper-item>
+                            <paper-item valore="AUTORIZZATO_IMMEDIATO">Autorizzato Immediato</paper-item>
+                            <paper-item valore="AUTORIZZATO_DIFFERITO">Autorizzato Differito</paper-item>
+                            <paper-item valore="DECORRENZA_TERMINI">Decorrenza Termini</paper-item>
+                            <paper-item valore="DECORRENZA_TERMINI_PARZIALE">Decorrenza Termini Parziale</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>
+                   <!-- <paper-dropdown-menu label="Stato Rendicontazione" style="width: 100%;" class="inputs">
+                        <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{statoRendicontazioneInput}}">
+                            <paper-item valore="">Qualsiasi</paper-item>
+                            <paper-item valore="NON_RENDICONTATO">Non Rendicontato</paper-item>
+                            <paper-item valore="RENDICONTATO">Rendicontato</paper-item>
+                            <paper-item valore="RENDICONTATO_PARZIALE">Rendicontato Parziale</paper-item>
+                        </paper-menu>
+                    </paper-dropdown-menu>-->
+                    <ajax-select-list label="Ufficio" select-list-url="{{govpayEntiUrl}}" class="inputs" all-mode="true" option-valore-all=""
+                                      option-value="[[enteOptionValue]]" option-label="[[enteOptionLabel]]" on-select-option="_selectEnte"
+                                      selected-item="{{codEnteInput}}"></ajax-select-list>
+                    <paper-input bind-value="{{iuvInput}}" class="flex inputs" label="Iuv" on-keyup="onKeyPress"
+                                 autocomplete="off"></paper-input>
+
+                    <div class="layout horizontal end-justified buttons">
+                        <paper-button class="green" raised on-tap="eseguiRicerca" elevation="0">Search</paper-button>
+                    </div>
+
+                </paper-material>
             </div>
-        </paper-material>
+
+            <div class="separatore"   hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]"></div>
+            <!-- Risultati -->
+            <div id="resultbox" class="layout vertical flex"  hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]">
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                </div>
+
+                <paper-material elevation="0">
+                    <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                 class="filtro flex" label="Filtro">
+                    </paper-input>
+                    <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                        <paper-checkbox item-icon></paper-checkbox>
+                        <div class="flex selectAll">Seleziona tutto</div>
+                    </paper-icon-item>
+
+                        <template is="dom-repeat" items="{{ajaxResponse.response}}" filter="_filtraListaRisultati">
+                            <paper-icon-item class$="[[isEven(index)]]" on-tap="_selectPagamento">
+                                <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                <paper-item-body two-line>
+                                    <div>IUV [[item.iuv]] per [[item.ente]] di [[item.importoTotale]] &euro;</div>
+                                    <div secondary>[[_getStatoPagamento(item)]]</div>
+                                </paper-item-body>
+                            </paper-icon-item>
+                        </template>
+                </paper-material>
+            </div>
+
+        </div>
     </template>
 
     <script>
@@ -187,14 +123,45 @@
           codEnteInput: { type: String, value: 'Qualsiasi' },
           statoPagamentoInput: { type: String, value: '' },
           statoRendicontazioneInput: { type: String, value: '' },
-          dataInizioInput: { type: Date, value: function (){ return new Date();} , notify: true }
+          dataInizioInput: { type: Date, value: function (){ return new Date();} , notify: true },
+
+            filtro: {  type: String, value: null},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+
         },
         init: function (){
             this.govpayUrl = govpayUrl + '/rs/dars/pagamenti/';
             this.govpayEntiUrl = govpayUrl + '/rs/dars/enti/';
            // document.querySelector('itemsList').fire('iron-resize');
+
+
         },
-        filtraRisultati: function (){
+        _refreshList: function(){
+
+        },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+          if  (item.iuv.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.stato.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
+        }
+        console.log('Item' + item.iuv + ' Filtro: ' + this.filtro + ' Mostra:' + mostra);
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+        eseguiRicerca: function (){
             var enteVal = this.codEnteInput;
             if(enteVal == 'Qualsiasi')
                 enteVal = '';
@@ -242,10 +209,6 @@
         },
 
         ready: function() {
-                document.addEventListener("scroll", function () {
-                // fire iron-resize event to trigger redraw of iron-list
-                document.querySelector('itemsList').fire('iron-resize');
-            });
         },
         _selectEnte:  function(event){
             this.codEnteInput = event.detail.itemCorrente[this.enteOptionValue];
@@ -342,8 +305,8 @@
       },
         _selectPagamento : function (event){
            var target = event.model.item;
-          // console.log(target);
-           this.fire('select-item', {pagamentoCorrente: target});
+           var titoloPagina = 'Pagamento: '+ target.iuv;
+           this.fire('select-item', {pagamentoCorrente: target, 'titoloPagina': titoloPagina});
         }
       });
     })();

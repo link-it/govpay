@@ -218,6 +218,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	
 	
 	private Anagrafica toOrm(CtSoggettoPagatore soggettoPagatore) {
+		if(soggettoPagatore == null) return null;
 		Anagrafica anagrafica = new Anagrafica();
 		anagrafica.setCap(soggettoPagatore.getCapPagatore());
 		anagrafica.setCivico(soggettoPagatore.getCivicoPagatore());

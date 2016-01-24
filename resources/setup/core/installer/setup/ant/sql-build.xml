@@ -11,7 +11,7 @@
 
 		<antcall target="replace_token">
 		    <param name="file" value="${file}"/>
-			<param name="token" value="@RAGIONA_SOCIALE@"/>
+			<param name="token" value="@RAGIONE_SOCIALE@"/>
 			<param name="value" value="${antinstaller_ragione_sociale}"/>
 		</antcall>
 		<antcall target="replace_token">

@@ -17,45 +17,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             :host {
             display: block;
             }
-            .disabilitato {
-            color: #ccc;
-            }
-
-            #itemsTributiList {
-            @apply(--layout-flex);
-            }
-
-            .item {
-            @apply(--layout-horizontal);
-            cursor: pointer;
-            padding: 16px 22px;
-            border-bottom: 1px solid #DDD;
-            }
-
-            .item:focus,
-            .item.selected:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-            .item.selected:not(:focus) {
-            background-color: var(--google-grey-100);
-            }
-
-            paper-item {
-            white-space: nowrap;
-            cursor: pointer;
-            position: relative;
-            }
-
-            paper-item:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-
-            paper-item:hover {
-            background-color: #ccc;
-            }
-
         </style>
         <iron-ajax auto="false" id="connettoreTributi"
                    url="[[govpayUrl]]"
@@ -65,43 +26,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    lastError="{{ajaxError}}" on-error="_erroreDars" on-response="_responseDars"
                 ></iron-ajax>
 
-        <paper-material elevation="1">
-            <h4 class="page-title">[[titoloSezione]]</h4>
+        <div class="layout horizontal center-justified restorePadding">
+            <!-- Ricerca -->
+            <div id="searchbox" class="layout vertical" hidden="true">
+                <div class="headerbox" >
+                    <p hidden$="[[_ricercaVuota(ajaxResponseTributi.response.length)]]">Trovati [[ajaxResponse.response.length]] risultati</p>
+                </div>
 
-        <paper-input bind-value="{{filtro}}" hidden="true"
-                     on-bind-value-changed="_refreshList"
-                     class="flex"
-                     label="Filtra Tributi"></paper-input>
+                <paper-material elevation="0">
+                    <div class="layout horizontal end-justified buttons">
+                        <paper-button class="green" raised on-tap="eseguiRicerca" elevation="0">Search</paper-button>
+                    </div>
 
-            <div class="card-content div-table">
-                <paper-item>
-                    <paper-item-body>
-                        <div class="horizontal layout div-table-header-row">
-                            <div class="div-table-col"><span>Codice Tributo</span></div>
-                            <div class="div-table-col"><span>Descrizione</span></div>
-                            <div class="div-table-col"><span>Ente</span></div>
-                            <div class="div-table-col-com"><span></span></div>
-                        </div>
-                    </paper-item-body>
-                </paper-item>
-                <template is="dom-repeat" items="[[ajaxResponseTributi.response]]" filter="_filtraTributi">
-                        <paper-item on-tap="_selectTributo">
-                            <paper-item-body>
-                                <div>
-                                    <div tabindex="0" class="horizontal layout div-table-row">
-                                        <div class="div-table-col"><span>[[item.codTributo]]</span></div>
-                                        <div class="div-table-col"><span>[[item.descrizione]]</span></div>
-                                        <div class="div-table-col"><span>[[item.codEnte]]</span></div>
-                                        <div class="div-table-col-com"><span><iron-icon
-                                                icon="notification:do-not-disturb" style="color: red"
-                                                hidden$="[[item.abilitato]]"></iron-icon></span></div>
-                                    </div>
-                                </div>
-                            </paper-item-body>
-                        </paper-item>
-                    </template>
+                </paper-material>
             </div>
-            </paper-material>
+
+            <div class="separatore"   hidden></div>
+            <!-- Risultati -->
+            <div id="resultbox" class="layout vertical flex">
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                </div>
+
+                <paper-material elevation="0">
+                    <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                 class="flex filtro" label="Filtro">
+                    </paper-input>
+                    <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                        <paper-checkbox item-icon></paper-checkbox>
+                        <div class="flex selectAll">Seleziona tutto</div>
+                    </paper-icon-item>
+
+                    <template is="dom-repeat" items="[[ajaxResponseTributi.response]]" filter="_filtraListaRisultati">
+                        <paper-icon-item class$="[[isEven(index)]]" on-tap="_selectTributo">
+                            <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                            <paper-item-body two-line>
+                                <div>[[item.descrizione]] ([[item.codTributo]])</div>
+                                <div secondary>[[_getAbilitatoAsString(item.abilitato)]], Ufficio: [[item.codEnte]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </paper-material>
+            </div>
+        </div>
     </template>
     <script>
   (function() {
@@ -124,24 +92,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         dataProvider: {
           type: Array,
           value: []
-        }
-      },
+        },
 
-      _filtraTributi: function(item){
+          filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+      _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
         var mostra = true;
         if (this.filtro && this.filtro!==''){
-          if  (item.codTributo.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
-              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+           if  (item.codTributo.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.descrizione.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)&&
+              (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
             mostra = false;
           }
         }
         return mostra;
       },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
 
-      _refreshList: function(){
-        this.dataProvider = this.dataProvider.slice(0);
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
       },
-      filtraRisultati: function (){
+      eseguiRicerca: function (){
        this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
            this.$.connettoreTributi.generateRequest();
       },
@@ -184,7 +171,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _selectTributo: function(event){
         var target = event.model.item;
-        this.fire('select-item', {tributo: target});
+        var titoloPagina = target.descrizione + ' (' + target.codTributo +')';
+        this.fire('select-item', {tributo: target, 'titoloPagina': titoloPagina});
       }
     });
   })();

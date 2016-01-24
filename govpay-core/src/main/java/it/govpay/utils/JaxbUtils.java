@@ -44,6 +44,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.StTipoIdentificativoUnivocoPersG;
 import it.gov.digitpa.schemas._2011.pagamenti.StTipoVersamento;
 import it.gov.digitpa.schemas._2011.psp.CtInformativaContoAccredito;
 import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
+import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
 import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
@@ -85,7 +86,7 @@ public class JaxbUtils {
 
 	// uso locale "ENGLISH" perche il separatore decimale deve essere il "."
 	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
-	private static JAXBContext jaxbContext, jaxbContextIntestazioneCarrelloPPT;
+	private static JAXBContext jaxbContext, jaxbContextCodes, jaxbContextIntestazioneCarrelloPPT;
 	private static Schema RPT_RT_schema, RS_V1_schema;
 
 	public static void init() throws JAXBException, SAXException {
@@ -94,6 +95,7 @@ public class JaxbUtils {
 			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/Merge.xsd"))); 
 			RS_V1_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RestScadenzario_v1.xsd")));
 			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.rs:it.govpay.servizi.pa");
+			jaxbContextCodes = JAXBContext.newInstance("it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr");
 			jaxbContextIntestazioneCarrelloPPT = JAXBContext.newInstance(IntestazioneCarrelloPPT.class);
 		}
 	}
@@ -413,11 +415,20 @@ public class JaxbUtils {
 	public static byte[] toByte(PaInviaEsitoPagamento req) throws JAXBException, SAXException {
 		init();
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
         jaxbMarshaller.marshal(req, baos);
 		return baos.toByteArray();
 	}
 
-	
+	public static byte[] toByte(InformazioniVersamento numeroAvviso) throws JAXBException, SAXException {
+		init();
+		Marshaller jaxbMarshaller = jaxbContextCodes.createMarshaller();
+		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
+		jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		jaxbMarshaller.marshal(numeroAvviso, baos);
+		return baos.toByteArray();
+	}
 
 }

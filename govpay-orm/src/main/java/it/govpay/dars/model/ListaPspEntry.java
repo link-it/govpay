@@ -35,6 +35,9 @@ public class ListaPspEntry implements Serializable{
 	private String codFlusso;
 	private String ragioneSociale;
 	private boolean attivo;
+	private boolean stornoGestito;
+	private boolean bolloGestito;
+	
 	public Long getId() {
 		return id;
 	}
@@ -64,6 +67,18 @@ public class ListaPspEntry implements Serializable{
 	}
 	public void setAttivo(boolean attivo) {
 		this.attivo = attivo;
+	}
+	public boolean isStornoGestito() {
+		return stornoGestito;
+	}
+	public void setStornoGestito(boolean stornoGestito) {
+		this.stornoGestito = stornoGestito;
+	}
+	public boolean isBolloGestito() {
+		return bolloGestito;
+	}
+	public void setBolloGestito(boolean bolloGestito) {
+		this.bolloGestito = bolloGestito;
 	}
 	
 	

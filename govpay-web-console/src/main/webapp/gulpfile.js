@@ -300,8 +300,10 @@ gulp.task('default', ['clean'], function (cb) {
     ['copy', 'styles'],
     'elements',
     [ 'images', 'fonts', 'html'],
-    'vulcanize','rename-index', 'remove-old-build-index' , 'remove-unused-bower-components' , 'remove-unused-elements-components'
-    , 'remove-unused-dist-files', // 'cache-config',
+    //'vulcanize',
+    'rename-index', 'remove-old-build-index' ,
+     //'remove-unused-bower-components' , 'remove-unused-elements-components'
+    //, 'remove-unused-dist-files', // 'cache-config',
     cb);
 });
 

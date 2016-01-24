@@ -12,125 +12,139 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="applicazione-detail">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
         </style>
-        <h2>Applicazione [[applicazioneCorrente.applicazione.codApplicazione]]
-            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                       hidden$="[[applicazioneCorrente.applicazione.abilitato]]"></iron-icon>
-        </h2>
-        <p>Principal <span>[[applicazioneCorrente.applicazione.principal]]</span></p>
-        <p>Versione <span>[[applicazioneCorrente.applicazione.versione]]</span></p>
-        <!-- <p>Policy Rispedizione <span>[[applicazioneCorrente.applicazione.policyRispedizione]]</span></p> -->
-        <paper-card class="fullCardWidth">
-            <paper-tabs selected="{{selectedTab}}">
-                <paper-tab>Tributi</paper-tab>
-                <paper-tab>Connettore Esito</paper-tab>
-                <paper-tab>Connettore Verifica</paper-tab>
-            </paper-tabs>
-            <iron-pages selected="{{selectedTab}}">
-                <div class="card-content">
-                    <div class="card-content div-table">
-                        <paper-item>
-                            <paper-item-body>
-                                <div class="horizontal layout div-table-header-row">
-                                    <div class="div-table-col"><span>Codice Tributo</span></div>
-                                    <div class="div-table-col"><span>Descrizione</span></div>
-                                    <div class="div-table-col"><span>Iban</span></div>
-                                    <div class="div-table-col-com"><span></span></div>
+        <div class="layout horizontal center-justified">
+            <div class="layout vertical flex">
+                <paper-tabs selected="{{selectedTab}}" noink>
+                    <paper-tab>INFORMAZIONI GENERALI</paper-tab>
+                    <paper-tab>TRIBUTI</paper-tab>
+                </paper-tabs>
+
+                <iron-pages selected="{{selectedTab}}">
+                    <div class="layout horizontal center-justified">
+                        <div id="itembox" class="layout vertical flex itembox restorePadding">
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
 
                                 </div>
-                            </paper-item-body>
-                        </paper-item>
-                        <iron-list id="elencoIban" items="[[applicazioneCorrente.tributi]]" as="item">
-                            <template>
-                                <paper-item disabled$="[[!item.abilitato]]">
-                                    <paper-item-body>
-                                        <div class="horizontal layout div-table-row">
-                                            <div class="div-table-col"><span>[[item.codTributo]]</span></div>
-                                            <div class="div-table-col"><span>[[item.descrizione]]</span></div>
-                                            <div class="div-table-col"><span>[[item.codIban]]</span></div>
-                                            <div class="div-table-col-com">
-                                                <iron-icon icon="notification:do-not-disturb" style="color: red"
-                                                           hidden$="[[item.abilitato]]"></iron-icon>
-                                            </div>
-                                        </div>
-                                    </paper-item-body>
-                                </paper-item>
-                            </template>
-                        </iron-list>
+                            </div>
+
+                            <paper-material elevation="0">
+                                <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                                <p class="groupItem"><span class="grouplabel">Codice: </span><span>[[applicazioneCorrente.applicazione.codApplicazione]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(applicazioneCorrente.applicazione.abilitato)]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Principal: </span><span>[[applicazioneCorrente.applicazione.principal]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Versione: </span><span>[[applicazioneCorrente.applicazione.versione]]</span></p>
+                            </paper-material>
+
+                            <paper-material elevation="0">
+                                <p class="groupTitle"><span class="groupTitle">CONNETTORE ESITO</span></p>
+
+                                <p class="groupItem"><span class="grouplabel">URL: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.url]]</span></p>
+
+                                <p class="groupItem"><span class="grouplabel">Tipo Autenticazione: </span><span>[[_getTipoAutenticazioneConnettoreEsito(applicazioneCorrente.applicazione.connettoreEsito)]]</span></p>
+                                <template is="dom-if" if="[[conEsitoMostraSezioneHttpBasic]]">
+                                    <p class="groupItem"><span class="grouplabel">Username: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.httpUser]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">Password: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.httpPassw]]</span></p>
+                                </template>
+                                <template is="dom-if" if="[[conEsitoMostraSezioneSSL]]">
+                                    <p class="groupItem"><span class="grouplabel">Tipo SSL: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.tipoSsl]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">KeyStore Type: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsType]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">KeyStore Location: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsLocation]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">KeyStore Password: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsPasswd]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">PrivateKey Password: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslPKeyPasswd]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">TrustStore Type: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsType]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">TrustStore Location: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsLocation]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">TrustStore Password: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsPasswd]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">SSL Type: </span><span>[[applicazioneCorrente.applicazione.connettoreEsito.sslType]]</span></p>
+                                </template>
+                            </paper-material>
+
+                            <paper-material>
+                                <p class="groupTitle"><span class="groupTitle">CONNETTORE VERIFICA</span></p>
+
+                                <p class="groupItem"><span class="grouplabel">URL: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.url]]</span></p>
+
+                                <p class="groupItem"><span class="grouplabel">Tipo Autenticazione: </span><span>[[_getTipoAutenticazioneConnettoreVerifica(applicazioneCorrente.applicazione.connettoreVerifica)]]</span></p>
+                                <template is="dom-if" if="[[conVerificaMostraSezioneHttpBasic]]">
+                                    <p class="groupItem"><span class="grouplabel">Username: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.httpUser]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">Password: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.httpPassw]]</span></p>
+                                </template>
+                                <template is="dom-if" if="[[conVerificaMostraSezioneSSL]]">
+                                    <p class="groupItem"><span class="grouplabel">Tipo SSL: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.tipoSsl]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">KeyStore Type: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsType]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">KeyStore Location: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsLocation]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">KeyStore Password: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsPasswd]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">PrivateKey Password: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslPKeyPasswd]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">TrustStore Type: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsType]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">TrustStore Location: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsLocation]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">TrustStore Password: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsPasswd]]</span></p>
+
+                                    <p class="groupItem"><span class="grouplabel">SSL Type: </span><span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslType]]</span></p>
+                                </template>
+                            </paper-material>
+                        </div>
                     </div>
-                </div>
-                <!-- Connettore Esito -->
-                <div class="card-content">
-                    <p>URL: <span>[[applicazioneCorrente.applicazione.connettoreEsito.url]]</span></p>
 
-                    <p>Auth: <span>[[_getTipoAutenticazioneConnettoreEsito(applicazioneCorrente.applicazione.connettoreEsito)]]</span></p>
-                    <template is="dom-if" if="[[conEsitoMostraSezioneHttpBasic]]">
-                        <p>Username: <span>[[applicazioneCorrente.applicazione.connettoreEsito.httpUser]]</span></p>
+                    <div class="layout horizontal center-justified">
+                        <div id="resultbox" class="layout vertical flex restorePadding" >
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+                                    <p>Sono presenti [[applicazioneCorrente.tributi.length]] Tributi</p>
+                                </div>
+                                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                                </div>
+                            </div>
 
-                        <p>Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.httpPassw]]</span></p>
-                    </template>
-                    <template is="dom-if" if="[[conEsitoMostraSezioneSSL]]">
-                        <p>Tipo SSL: <span>[[applicazioneCorrente.applicazione.connettoreEsito.tipoSsl]]</span></p>
+                            <paper-material elevation="0">
+                                <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                             class="flex filtro" label="Filtro">
+                                </paper-input>
+                                <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                    <paper-checkbox item-icon></paper-checkbox>
+                                    <div class="flex selectAll">Seleziona tutto</div>
+                                </paper-icon-item>
 
-                        <p>KeyStore Type: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsType]]</span></p>
-
-                        <p>KeyStore Location: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsLocation]]</span></p>
-
-                        <p>KeyStore Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslKsPasswd]]</span></p>
-
-                        <p>PrivateKey Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslPKeyPasswd]]</span></p>
-
-                        <p>TrustStore Type: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsType]]</span></p>
-
-                        <p>TrustStore Location: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsLocation]]</span></p>
-
-                        <p>TrustStore Password: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslTsPasswd]]</span></p>
-
-                        <p>SSL Type: <span>[[applicazioneCorrente.applicazione.connettoreEsito.sslType]]</span></p>
-                    </template>
-                </div>
-                <!-- Connettore Verifica -->
-                <div class="card-content">
-                    <p>URL: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.url]]</span></p>
-
-                    <p>Auth: <span>[[_getTipoAutenticazioneConnettoreVerifica(applicazioneCorrente.applicazione.connettoreVerifica)]]</span></p>
-                    <template is="dom-if" if="[[conVerificaMostraSezioneHttpBasic]]">
-                        <p>Username: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.httpUser]]</span></p>
-
-                        <p>Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.httpPassw]]</span></p>
-                    </template>
-                    <template is="dom-if" if="[[conVerificaMostraSezioneSSL]]">
-                        <p>Tipo SSL: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.tipoSsl]]</span></p>
-
-                        <p>KeyStore Type: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsType]]</span></p>
-
-                        <p>KeyStore Location: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsLocation]]</span></p>
-
-                        <p>KeyStore Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslKsPasswd]]</span></p>
-
-                        <p>PrivateKey Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslPKeyPasswd]]</span></p>
-
-                        <p>TrustStore Type: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsType]]</span></p>
-
-                        <p>TrustStore Location: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsLocation]]</span></p>
-
-                        <p>TrustStore Password: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslTsPasswd]]</span></p>
-
-                        <p>SSL Type: <span>[[applicazioneCorrente.applicazione.connettoreVerifica.sslType]]</span></p>
-                    </template>
-                </div>
-
-
-            </iron-pages>
-        </paper-card>
+                                <template is="dom-repeat" items="[[applicazioneCorrente.tributi]]" filter="_filtraListaRisultati">
+                                    <paper-icon-item class$="[[isEven(index)]]">
+                                        <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                        <paper-item-body two-line>
+                                            <div>[[item.descrizione]] ([[item.codTributo]])</div>
+                                            <div secondary>[[_getAbilitatoAsString(item.abilitato)]], IBAN: [[item.codIban]]</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </paper-material>
+                        </div>
+                    </div>
+                </iron-pages>
+            </div>
+        </div>
     </template>
     <script>
   (function() {
@@ -155,7 +169,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
           conVerificaMostraSezioneSSL: {
             type: Boolean, value : false
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+
+      },
+      _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
         }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
       },
       _getTipoAutenticazioneConnettoreEsito: function (connettore){
           if(connettore){

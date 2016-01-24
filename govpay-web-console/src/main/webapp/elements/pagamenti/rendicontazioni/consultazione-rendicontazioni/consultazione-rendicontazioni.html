@@ -67,7 +67,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
             this.$.lista.init();
-            this.$.lista.filtraRisultati();
+            this.$.lista.eseguiRicerca();
         },
 
       _selectRendicontazione: function(event){
@@ -75,11 +75,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.exitAnimation = 'slide-left-animation';
         this.rendicontazioneCorrente = event.detail.rendicontazioneCorrente;
         this.govpayUrl = govpayUrl + '/rs/dars/rendicontazioni/'+ this.rendicontazioneCorrente.id;
-
-       // this.dettaglioRendicontazioneCorrente = this.ajaxResponseRendicontazione;
-        //console.log(this.dettaglioRendicontazioneCorrente);
         this.selected = 1;
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', event.detail.titoloPagina);
       },
         _erroreDars : function(event){
          this.fire('dars-error', {error: event.detail});
@@ -88,8 +86,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
-        this.$.lista.filtraRisultati();
+        this.$.lista.eseguiRicerca();
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', 'Rendicontazioni');
       }
     });
   })();

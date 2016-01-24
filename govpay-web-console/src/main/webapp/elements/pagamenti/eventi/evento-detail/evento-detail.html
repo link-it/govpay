@@ -8,70 +8,42 @@
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
-            .blue {
-            color: var(--paper-light-blue-300);
-            }
-            .red {
-            color: var(--paper-red-300);
-            }
-            .orange {
-            color: var(--paper-amber-300);
-            }
-            .green {
-            color: var(--paper-green-300);
-            }
-
-            .div-table-row:hover .shortText::after {
-            content: ' [+]';
-            color: gray;
-            }
-            .div-table-row.expanded:hover .shortText::after {
-            content: '';
-            }
-            .div-table-row .longText {
-
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded .longText {
-            display: block;
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded:hover .longText::after {
-            content: ' [–]';
-            }
-      .shortText, .longText {
-        font-size: 14px;
-      }
-      .longText {
-        color: gray;
-        display: none !important;
-      }
         </style>
-        <paper-card heading="[[_getTitoloSezione(eventoCorrente)]]" class="fullCardWidth">
-            <div class="card-content">
-                <p>Data: <span>[[_getDataFieldAsString(eventoCorrente,'dataOraEvento')]]</span></p>
-                <p>Esito: <span>[[_getProperty(eventoCorrente,'esito')]]</span></p>
-                <p>Dominio: <span>[[_getProperty(eventoCorrente,'codDominio')]]</span></p>
-                <p>Stazione: <span>[[_getProperty(eventoCorrente,'codStazione')]]</span></p>
-                <p>IUV: <span>[[_getProperty(eventoCorrente,'iuv')]]</span></p>
-                <p>CCP: <span>[[_getProperty(eventoCorrente,'ccp')]]</span></p>
-                <p>Applicazione: <span>[[_getProperty(eventoCorrente,'codApplicazione')]]</span></p>
-                <p>Psp: <span>[[_getProperty(eventoCorrente,'codPsp')]]</span></p>
-                <p>Canale: <span>[[_getProperty(eventoCorrente,'canalePagamento')]]</span></p>
-                <p>Tipo Versamento: <span>[[_getProperty(eventoCorrente,'tipoVersamento')]]</span></p>
-                <p>Componente: <span>[[_getProperty(eventoCorrente,'componente')]]</span></p>
-                <p>Categoria: <span>[[_getProperty(eventoCorrente,'categoriaEvento')]]</span></p>
-                <p>Tipo: <span>[[_getProperty(eventoCorrente,'tipoEvento')]]</span></p>
-                <p>Sottotipo: <span>[[_getProperty(eventoCorrente,'sottotipoEvento')]]</span></p>
-                <p>Fruitore: <span>[[_getProperty(eventoCorrente,'codFruitore')]]</span></p>
-                <p>Erogatore: <span>[[_getProperty(eventoCorrente,'codErogatore')]]</span></p>
-                <p>Altri Parametri: <span>[[_getProperty(eventoCorrente,'altriParametri')]]</span></p>
+        <div class="layout horizontal center-justified restorePadding">
+            <div class="layout vertical flex">
+                <div class="layout horizontal center-justified">
+                    <div id="itembox" class="layout vertical flex itembox">
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
+
+                            </div>
+                        </div>
+
+                        <paper-material elevation="0">
+                            <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                            <p class="groupItem"><span class="grouplabel">Data: </span><span>[[_getDataFieldAsString(eventoCorrente,'dataOraEvento')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Esito: </span><span>[[_getProperty(eventoCorrente,'esito')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Dominio: </span><span>[[_getProperty(eventoCorrente,'codDominio')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Stazione: </span><span>[[_getProperty(eventoCorrente,'codStazione')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">IUV: </span><span>[[_getProperty(eventoCorrente,'iuv')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">CCP: </span><span>[[_getProperty(eventoCorrente,'ccp')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Applicazione: </span><span>[[_getProperty(eventoCorrente,'codApplicazione')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Psp: </span><span>[[_getProperty(eventoCorrente,'codPsp')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Canale: </span><span>[[_getProperty(eventoCorrente,'canalePagamento')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Tipo Versamento: </span><span>[[_getProperty(eventoCorrente,'tipoVersamento')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Componente: </span><span>[[_getProperty(eventoCorrente,'componente')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Categoria: </span><span>[[_getProperty(eventoCorrente,'categoriaEvento')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Tipo: </span><span>[[_getProperty(eventoCorrente,'tipoEvento')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Sottotipo: </span><span>[[_getProperty(eventoCorrente,'sottotipoEvento')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Fruitore: </span><span>[[_getProperty(eventoCorrente,'codFruitore')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Erogatore: </span><span>[[_getProperty(eventoCorrente,'codErogatore')]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Altri Parametri: </span><span>[[_getProperty(eventoCorrente,'altriParametri')]]</span></p>
+                        </paper-material>
+                    </div>
+                </div>
             </div>
-        </paper-card>
+        </div>
     </template>
 
     <script>
@@ -89,12 +61,51 @@
           eventoCorrente: {
             type: Object,
             value: null
-          }
+          },
+           selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
         },
 
         ready: function() {
           //   console.log('ready function...');
         },
+        _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
+        }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+         _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
+      },
          _getProperty: function(oggetto, nomeProperty){
             if(oggetto){
                 var val = oggetto[nomeProperty];
@@ -102,12 +113,6 @@
             }
             return '';
         },
-
-        _getTitoloSezione: function (eventoCorrente){
-            return this.titoloSezione;
-        },
-
-
         _getDataFieldAsString: function(item,field) {
             var data = this._getProperty(item,field);
             if(data){

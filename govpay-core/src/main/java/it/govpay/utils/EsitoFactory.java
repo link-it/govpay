@@ -26,6 +26,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Esito;
 import it.govpay.bd.model.Esito.StatoSpedizione;
+import it.govpay.bd.model.Esito.TipoEsito;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rt;
 import it.govpay.bd.model.Versamento;
@@ -36,7 +37,7 @@ import it.govpay.web.adapter.PagamentiTelematiciGPUtil;
 
 public class EsitoFactory {
 
-	public static Esito newEsito(BasicBD bd, Applicazione applicazione, Versamento versamento, Rpt rpt, Rt rt, byte[] ctRtByte) throws GovPayException {
+	public static Esito newEsito(BasicBD bd, TipoEsito tipo, Applicazione applicazione, Versamento versamento, Rpt rpt, Rt rt, byte[] ctRtByte) throws GovPayException {
 		Esito esito = new Esito();
 		esito.setCodDominio(versamento.getCodDominio());
 		esito.setDataOraCreazione(new Date());
@@ -44,13 +45,16 @@ public class EsitoFactory {
 		esito.setIuv(versamento.getIuv());
 		esito.setStatoSpedizione(StatoSpedizione.DA_SPEDIRE);
 		esito.setTentativiSpedizione(0l);
-		
+		esito.setTipo(tipo);
 		byte[] xml = null;
 		
 		try {
 			switch (applicazione.getVersione()) {
 			case GPv1:
-				xml = JaxbUtils.toByte(Converter.toVerificaPagamento(versamento, rpt, ctRtByte));
+				if(esito.equals(TipoEsito.ESITO_PAGAMENTO))
+					xml = JaxbUtils.toByte(Converter.toVerificaPagamento(versamento, rpt, ctRtByte));
+				else
+					return null;
 				break;
 			case GPv2:
 				xml = PagamentiTelematiciGPUtil.toEsitoPagamento(bd, applicazione, versamento, rpt, ctRtByte);

@@ -194,6 +194,7 @@ public class Rendicontazioni extends BasicBD {
 										setAutoCommit(false);
 										VersamentiBD versamentiBD = new VersamentiBD(this);
 										frBD = new FrBD(this);
+										
 										for(CtDatiSingoliPagamenti dsp : flussoRendicontazione.getDatiSingoliPagamenti()) {
 											
 											SingolaRendicontazione sr = new SingolaRendicontazione();
@@ -227,6 +228,12 @@ public class Rendicontazioni extends BasicBD {
 													sr.setIdSingoloVersamento(singoloVersamento.getId());
 													singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.RENDICONTATO);
 													versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), StatoSingoloVersamento.RENDICONTATO);
+													
+													// Esitare?
+													//EsitiBD esiti = new EsitiBD(this);
+													//Applicazione applicazione = AnagraficaManager.getApplicazione(this, versamento.getIdApplicazione());
+													//Esito esito = EsitoFactory.newEsito(this, TipoEsito.RENDICONTAZIONE, applicazione, versamento, null, null, null);
+													//esiti.insertEsito(esito);
 													
 													found = true;
 													
@@ -268,6 +275,7 @@ public class Rendicontazioni extends BasicBD {
 											fr.getSingolaRendicontazioneList().clear();
 											fr.setStato(StatoFr.RIFIUTATA);
 											fr.setDescrizioneStato(StringUtils.join(erroriAcquisizione,"#"));
+											frBD.insertFr(fr, tracciato);
 											this.commit();
 										}
 									}
@@ -282,6 +290,24 @@ public class Rendicontazioni extends BasicBD {
 			}
 		} catch(Exception e) {
 			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Errore durante l'acquisizione delle rendicontazioni", e);
+		}
+	}
+	
+	public Fr getFlusso(long idFr) throws GovPayException {
+		try {
+			FrBD frBD = new FrBD(this);
+			return frBD.getFr(idFr);
+		} catch (Exception e) {
+			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+		}
+	}
+	
+	public List<Fr> getFlussi() throws GovPayException {
+		try {
+			FrBD frBD = new FrBD(this);
+			return frBD.findAll(frBD.newFilter());
+		} catch (Exception e) {
+			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 		}
 	}
 }

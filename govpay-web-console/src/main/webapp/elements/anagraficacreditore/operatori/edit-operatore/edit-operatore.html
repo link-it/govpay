@@ -12,6 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="edit-operatore">
     <template>
+        <style include="shared-styles"></style>
         <style>
             @media (min-width: 600px) {
             :host {
@@ -23,10 +24,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             background: var(--paper-dialog-background-color, --primary-background-color);
             color: var(--paper-dialog-color, --primary-text-color);
 
-            @apply(--layout-scroll);
-            @apply(--paper-font-body1);
-            @apply(--shadow-elevation-16dp);
-            @apply(--paper-dialog);
             }
             }
 
@@ -46,26 +43,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
             }
 
-            paper-menu-button {
-            padding-left: 0!important;
-            }
-
-            .content {
-            padding: 24px;
-            overflow: auto;
-            }
-
-            .titleCard {
-            margin-top: 16px;
-            }
-
-            paper-card {
-            padding: 16px;
-            margin-bottom: 16px;
-            }
-
-            .gap {
-            width: 24px;
+            .title {
+            margin-left: 12px !important;
             }
         </style>
         <iron-ajax auto="false" verbose="true"
@@ -82,38 +61,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    on-response="_visualizzaEsitoSalvataggio"
                    on-error="_visualizzaMessaggioErrore">
         </iron-ajax>
-        <paper-header-panel>
+        <paper-header-panel mode="standard">
             <div class="paper-header">
                 <paper-toolbar>
-                    <paper-icon-button icon="close" on-tap="_closeDialog"></paper-icon-button>
-                    <span class="title">[[titolo]]</span>
-                    <paper-icon-button icon="check" on-tap="_salvaOperatore"></paper-icon-button>
+                    <span class="title start">[[titolo]]</span>
+                    <paper-icon-button icon="close" on-tap="_closeDialog" class="end"></paper-icon-button>
                 </paper-toolbar>
             </div>
-
-            <div class="content layout vertical">
-                <paper-card>
-                    <paper-toggle-button class="flex" checked="{{operatoreCorrente.operatore.abilitato}}">
-                        <span>{{_getAbilitatoLabel(operatoreCorrente.operatore.abilitato)}}</span>
-                    </paper-toggle-button>
+            <div class="content layout vertical flex formbox">
+                <paper-material elevation="0">
                     <paper-input class="flex" disabled$="[[!isAdd]]"
                                  value="{{operatoreCorrente.operatore.principal}}"
                                  label="Principal" required></paper-input>
-                    <span class="gap"></span>
+
                     <paper-input class="flex" value="{{operatoreCorrente.operatore.nome}}" label="Nome"
                                  required></paper-input>
-                    <span class="gap"></span>
-                    <paper-dropdown-menu label="Profilo" style="width: 100%">
+
+                    <paper-dropdown-menu label="Profilo" style="width: 100%" class="flex">
                         <paper-menu class="dropdown-content" attr-for-selected="valore"
                                     selected="{{operatoreCorrente.operatore.profilo}}">
                             <paper-item valore="ADMIN">Amministratore</paper-item>
-                          <!--  <paper-item valore="ENTE">Operatore</paper-item> -->
+                            <!--  <paper-item valore="ENTE">Operatore</paper-item> -->
                         </paper-menu>
                     </paper-dropdown-menu>
-                    <span class="gap"></span>
-                </paper-card>
+                </paper-material>
 
-                <template is="dom-if" if="[[!_nascondiSezioneUfficiApplicazioni(operatoreCorrente.operatore.profilo)]]">
+                <paper-material elevation="0">
+                    <div class="content layout horizontal">
+                        <paper-toggle-button class="green flex start-justified"
+                                             checked="{{operatoreCorrente.operatore.attivo}}">
+                            <span>{{_getAbilitatoLabel(operatoreCorrente.operatore.attivo)}}</span>
+                        </paper-toggle-button>
+
+                        <paper-button class="green" raised on-tap="_salvaOperatore" elevation="0">Salva
+                        </paper-button>
+                    </div>
+                </paper-material>
+            </div>
+               <!-- <template is="dom-if" if="[[!_nascondiSezioneUfficiApplicazioni(operatoreCorrente.operatore.profilo)]]">
                     <paper-card>
                         <ajax-pick-list id="pickUffici" label="Uffici" source-list-url="{{govpayEntiUrl}}" target-list="{{enti}}"
                                            source-label="Uffici Disponibili" target-label="Uffici Selezionati"
@@ -133,10 +118,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </ajax-pick-list>
                         <span class="gap"></span>
                     </paper-card>
-                </template>
-
+                </template>-->
             </div>
-
         </paper-header-panel>
     </template>
     <script>

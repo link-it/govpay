@@ -20,6 +20,7 @@
 	jaxb:version="2.0">
 	<wsdl:types>
 		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
+			<xsd:import schemaLocation="http://schemas.xmlsoap.org/soap/envelope/" namespace="http://schemas.xmlsoap.org/soap/envelope/" />
 			<xsd:simpleType name="stText35">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
@@ -35,6 +36,8 @@
 						<xsd:element name="identificativoUnivocoVersamento" type="ppthead:stText35" />
 						<xsd:element name="codiceContestoPagamento" type="ppthead:stText35" />
 					</xsd:sequence>
+					<xsd:attribute ref="soapenv:actor" use="optional" />
+					<xsd:attribute ref="soapenv:mustUnderstand" use="optional" />
 				</xsd:complexType>
 			</xsd:element>
 			<xsd:element name="intestazioneCarrelloPPT" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
@@ -44,6 +47,8 @@
 						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35" />
 						<xsd:element name="identificativoCarrello" type="ppthead:stText35" />
 					</xsd:sequence>
+					<xsd:attribute ref="soapenv:actor" use="optional" />
+					<xsd:attribute ref="soapenv:mustUnderstand" use="optional" />
 				</xsd:complexType>
 			</xsd:element>
 		</xsd:schema>
@@ -65,6 +70,24 @@
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="8" />
 					<xsd:maxLength value="15" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType name="stEffettuazioneScelta">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="SI"></xsd:enumeration>
+					<xsd:enumeration value="NO"></xsd:enumeration>
+					<xsd:enumeration value="PO"></xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+			<xsd:simpleType name="stTipoVersamento">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="BBT"/> <!-- Bonifico Bancario di Tesoreria -->
+					<xsd:enumeration value="BP"/> <!-- Bollettino Postale -->
+					<xsd:enumeration value="AD"/> <!-- Addebito Diretto -->
+					<xsd:enumeration value="CP"/> <!-- Carta di Pagamento -->
+					<xsd:enumeration value="PO"/> <!-- Pagamento attivato presso PSP  -->
+					<xsd:enumeration value="OBEP"/> <!-- Online Banking Electronic Payment -->
+		            <xsd:maxLength value="4"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 			<xsd:element name="nodoChiediCopiaRT" type="ppt:nodoChiediCopiaRT" />
@@ -100,6 +123,9 @@
         	<xsd:element name="nodoChiediFlussoRendicontazione" type="ppt:nodoChiediFlussoRendicontazione" />
         	<xsd:element name="nodoChiediFlussoRendicontazioneRisposta" type="ppt:nodoChiediFlussoRendicontazioneRisposta" />
     		
+    		<xsd:element name="nodoChiediSceltaWISP" type="ppt:nodoChiediSceltaWISP" />
+			<xsd:element name="nodoChiediSceltaWISPRisposta" type="ppt:nodoChiediSceltaWISPRisposta" />
+			
 			<xsd:complexType name="risposta">
 				<xsd:sequence>
 					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0" />
@@ -440,6 +466,31 @@
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>
+			
+			<xsd:complexType name="nodoChiediSceltaWISP">
+				<xsd:sequence>
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
+					<xsd:element name="password" type="ppt:stPassword" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35" />
+					<xsd:element name="keyPA" type="ppt:stText35" />
+					<xsd:element name="keyWISP" type="ppt:stText35" />
+				</xsd:sequence>
+			</xsd:complexType>
+						
+			<xsd:complexType name="nodoChiediSceltaWISPRisposta">
+				<xsd:complexContent>
+					<xsd:extension base="ppt:risposta">
+						<xsd:sequence>
+							<xsd:element name="effettuazioneScelta" type="ppt:stEffettuazioneScelta" minOccurs="0" />
+							<xsd:element name="identificativoPSP" type="ppt:stText35"  minOccurs="0" />
+							<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" minOccurs="0" />
+							<xsd:element name="identificativoCanale" type="ppt:stText35" minOccurs="0" />
+							<xsd:element name="tipoVersamento" type="ppt:stTipoVersamento" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
 		</xsd:schema>
     </wsdl:types>
 	<wsdl:message name="nodoChiediStatoRPT">
@@ -536,6 +587,15 @@
 		<wsdl:part name="parameters" element="ppt:nodoInviaRichiestaStornoRisposta"></wsdl:part>
 	</wsdl:message>
 	
+	<wsdl:message name="nodoChiediSceltaWISP">
+		<wsdl:part name="bodyrichiesta" element="ppt:nodoChiediSceltaWISP">
+		</wsdl:part>
+	</wsdl:message>
+	<wsdl:message name="nodoChiediSceltaWISPResponse">
+		<wsdl:part name="bodyrisposta" element="ppt:nodoChiediSceltaWISPRisposta">
+		</wsdl:part>
+	</wsdl:message>
+	
 	<wsdl:portType name="PagamentiTelematiciRPT">
 		<jaxws:bindings xmlns:jaxws="http://java.sun.com/xml/ns/jaxws">
 			<jaxws:enableWrapperStyle>false</jaxws:enableWrapperStyle>
@@ -594,6 +654,12 @@
 		<wsdl:operation name="nodoInviaRichiestaStorno">
 			<wsdl:input name="nodoInviaRichiestaStorno" message="tns:nodoInviaRichiestaStorno" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStorno" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStorno"></wsdl:input>
 			<wsdl:output name="nodoInviaRichiestaStornoResponse" message="tns:nodoInviaRichiestaStornoResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStornoRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStornoRisposta"></wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="nodoChiediSceltaWISP">
+			<wsdl:input name="nodoChiediSceltaWISP" message="tns:nodoChiediSceltaWISP" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediSceltaWISPRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediSceltaWISPRichiesta">
+			</wsdl:input>
+			<wsdl:output name="nodoChiediSceltaWISPResponse" message="tns:nodoChiediSceltaWISPResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediSceltaWISPRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediSceltaWISPRisposta">
+			</wsdl:output>
 		</wsdl:operation>
 	</wsdl:portType>
 	
@@ -700,6 +766,15 @@
 				<soap:body use="literal" />
 			</wsdl:input>
 			<wsdl:output name="nodoInviaRichiestaStornoResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		<wsdl:operation name="nodoChiediSceltaWISP">
+			<soap:operation soapAction="nodoChiediSceltaWISP" style="document" />
+			<wsdl:input name="nodoChiediSceltaWISP">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="nodoChiediSceltaWISPResponse">
 				<soap:body use="literal" />
 			</wsdl:output>
 		</wsdl:operation>

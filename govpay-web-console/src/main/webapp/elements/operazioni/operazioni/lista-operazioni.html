@@ -15,44 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <style include="shared-styles"></style>
         <style>
             :host {
-            @apply(--paper-font-common-base);
-
             display: block;
-            font-family: sans-serif;
             }
-            .headMaterial {
-            padding: 20px;
-            margin-bottom: 10px;
-            }
-
-            .searchButton {
-                background-color: blue;
-                color: white;
-            }
-
-            .refreshButton {
-                background-color: white;
-                color: black;
-            }
-
-            paper-card {
-                width: 100%;
-                margin-bottom: 25px;
-            }
-
-
-            paper-button {
-                margin-bottom: 10px;
-                margin-top: 10px;
-            }
-            paper-button.colorful {
-               color: #4285f4;
-            }
-            paper-button[raised].colorful {
-               background: #4285f4;
-               color: #fff;
-            }
-
         </style>
         <iron-ajax auto="false"
                    id="connettoreOperazioni"
@@ -66,50 +30,53 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    on-response="_visualizzaEsitoOperazione"
                    on-error="_visualizzaMessaggioErrore">
         </iron-ajax>
-        <paper-material elevation="1">
-            <h4 class="page-title">[[titoloSezione]]</h4>
-            <div class="content layout vertical">
+        <div class="layout horizontal center-justified restorePadding">
+            <div id="resultbox" class="layout vertical flex">
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden="true"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden="true"></paper-icon-button>
+                </div>
+                <paper-material elevation="0">
+                    <paper-input bind-value="{{filtro}}" class="flex filtro" label="Filtro" hidden>
+                    </paper-input>
+                    <paper-icon-item hidden="true">
+                        <paper-checkbox item-icon></paper-checkbox>
+                        <div class="flex selectAll">Seleziona tutto</div>
+                    </paper-icon-item>
 
-                <paper-card heading="Elenco Psp">
-                    <div class="card-content">
-                       Aggiorna l'elenco dei Psp.
-                    </div>
-                    <div class="card-actions">
-                        <paper-button icon="add" on-tap="_aggiornaElencoPsp" class="colorful custom" raised>
-                            <iron-icon icon="refresh"></iron-icon> Aggiorna</paper-button>
-                    </div>
-                </paper-card>
+                    <paper-icon-item class="even" on-tap="_aggiornaElencoPsp">
+                        <paper-checkbox item-icon hidden="true"></paper-checkbox>
+                       <paper-item-body two-line>
+                            <div>Aggiorna PSP</div>
+                            <div secondary>Aggiorna l'elenco dei Psp.</div>
+                        </paper-item-body>
+                    </paper-icon-item>
 
-                <paper-card heading="Rpt">
-                    <div class="card-content">
-                        Verifica l'esistenza di Rpt.
-                    </div>
-                    <div class="card-actions">
-                        <paper-button icon="add" on-tap="_recuperaRpt" class="colorful custom" raised>Recupera Rpt Pendenti</paper-button>
-                    </div>
-                </paper-card>
+                    <paper-icon-item class="odd" on-tap="_recuperaRpt">
+                        <paper-checkbox item-icon hidden="true"></paper-checkbox>
+                        <paper-item-body two-line>
+                            <div>Recupera RPT</div>
+                            <div secondary>Verifica l'esistenza di Rpt.</div>
+                        </paper-item-body>
+                    </paper-icon-item>
 
-                <paper-card heading="Rendicontazioni">
-                    <div class="card-content">
-                        Acquisisce i flussi di rendicontazione.
-                    </div>
-                    <div class="card-actions">
-                        <paper-button icon="add" on-tap="_acquisisciRendicontazioni" class="colorful custom" raised>Acquisizione</paper-button>
-                    </div>
-                </paper-card>
-
-                <paper-card heading="Cache">
-                    <div class="card-content">
-                       Reset della Cache.
-                    </div>
-                    <div class="card-actions">
-                        <paper-button icon="add" on-tap="_resetCache" class="colorful custom" raised>
-                            <iron-icon icon="cached"></iron-icon> Reset Cache</paper-button>
-                    </div>
-                </paper-card>
-
+                    <paper-icon-item class="even" on-tap="_acquisisciRendicontazioni">
+                        <paper-checkbox item-icon hidden="true"></paper-checkbox>
+                        <paper-item-body two-line>
+                            <div>Acquisisci Rendicontazioni</div>
+                            <div secondary>Acquisisce i flussi di Rendicontazione.</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                    <paper-icon-item class="odd" on-tap="_resetCache">
+                        <paper-checkbox item-icon hidden="true"></paper-checkbox>
+                        <paper-item-body two-line>
+                            <div>Cache Reset</div>
+                            <div secondary>Reset della Cache.</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </paper-material>
             </div>
-            </paper-material>
+        </div>
     </template>
     <script>
   (function() {

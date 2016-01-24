@@ -39,11 +39,13 @@
   <mapping name="idAnagraficaAttestante" class="it.govpay.orm.IdAnagrafica" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idAnagrafica" field="idAnagrafica" usage="required"/>
+    <value name="codUnivoco" field="codUnivoco" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdAnagrafica_Type" class="it.govpay.orm.IdAnagrafica" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idAnagrafica" field="idAnagrafica" usage="required"/>
+    <value name="codUnivoco" field="codUnivoco" usage="optional"/>
   </mapping>
   <mapping name="idPsp" class="it.govpay.orm.IdPsp" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

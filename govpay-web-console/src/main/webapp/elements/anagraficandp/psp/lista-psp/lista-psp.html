@@ -17,45 +17,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             :host {
             display: block;
             }
-            .disabilitato {
-            color: #ccc;
-            }
-
-            #itemsPspList {
-            @apply(--layout-flex);
-            }
-
-            .item {
-            @apply(--layout-horizontal);
-            cursor: pointer;
-            padding: 16px 22px;
-            border-bottom: 1px solid #DDD;
-            }
-
-            .item:focus,
-            .item.selected:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-            .item.selected:not(:focus) {
-            background-color: var(--google-grey-100);
-            }
-
-            paper-item {
-            white-space: nowrap;
-            cursor: pointer;
-            position: relative;
-            }
-
-            paper-item:focus {
-            outline: 0;
-            background-color: #ddd;
-            }
-
-            paper-item:hover {
-            background-color: #ccc;
-            }
-
         </style>
         <iron-ajax auto="false" id="connettorePsp"
                    url="[[govpayUrl]]"
@@ -64,43 +25,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                    last-response="{{ajaxResponsePsp}}"
                    lastError="{{ajaxError}}" on-error="_erroreDars" on-response="_responseDars"
                 ></iron-ajax>
+        <div class="layout horizontal center-justified restorePadding">
+            <!-- Ricerca -->
+            <div id="searchbox" class="layout vertical" hidden="true">
+                <div class="headerbox" >
+                    <p hidden$="[[_ricercaVuota(ajaxResponsePsp.response.length)]]">Trovati [[ajaxResponse.response.length]] risultati</p>
+                </div>
 
-        <paper-material elevation="1">
-            <h4 class="page-title">[[titoloSezione]]</h4>
+                <paper-material elevation="0">
+                    <div class="layout horizontal end-justified buttons">
+                        <paper-button class="green" raised on-tap="eseguiRicerca" elevation="0">Search</paper-button>
+                    </div>
 
-        <paper-input bind-value="{{filtro}}" hidden="true"
-                     on-bind-value-changed="_refreshList"
-                     class="flex"
-                     label="Filtra Psp"></paper-input>
-
-            <div class="card-content div-table">
-                <paper-item>
-                    <paper-item-body>
-                        <div class="horizontal layout div-table-header-row">
-                            <div class="div-table-col"><span>Codice</span></div>
-                            <div class="div-table-col"><span>Ragione Sociale</span></div>
-                            <div class="div-table-col"><span>Codice Flusso</span></div>
-                            <div class="div-table-col-com"><span></span></div>
-                        </div>
-                    </paper-item-body>
-                </paper-item>
-                <template is="dom-repeat" items="[[ajaxResponsePsp.response]]" filter="_filtraPsp">
-                        <paper-item on-tap="_selectPsp">
-                            <paper-item-body>
-                                <div>
-                                    <div tabindex="0" class="horizontal layout div-table-row">
-                                        <div class="div-table-col"><span>[[item.codPsp]]</span></div>
-                                        <div class="div-table-col"><span>[[item.ragioneSociale]]</span></div>
-                                        <div class="div-table-col"><span>[[item.codFlusso]]</span></div>
-                                        <div class="div-table-col-com"><span><iron-icon
-                                                icon="notification:do-not-disturb" style="color: red"
-                                                hidden$="[[item.attivo]]"></iron-icon></span></div>
-                                </div>
-                            </paper-item-body>
-                        </paper-item>
-                    </template>
+                </paper-material>
             </div>
-            </paper-material>
+
+            <div class="separatore"   hidden></div>
+            <!-- Risultati -->
+            <div id="resultbox" class="layout vertical flex" >
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                </div>
+
+                <paper-material elevation="0">
+                    <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                 class="flex filtro" label="Filtro">
+                    </paper-input>
+                    <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                        <paper-checkbox item-icon></paper-checkbox>
+                        <div class="flex selectAll">Seleziona tutto</div>
+                    </paper-icon-item>
+
+                    <template is="dom-repeat" items="[[ajaxResponsePsp.response]]" filter="_filtraListaRisultati">
+                        <paper-icon-item class$="[[isEven(index)]]" on-tap="_selectPsp">
+                            <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                            <paper-item-body two-line>
+                                <div>[[item.ragioneSociale]] ([[item.codPsp]])
+                                </div>
+                                <div secondary>[[_getAbilitatoAsString(item.attivo)]], Bollo [[_getAbilitatoAsString(item.bolloGestito)]], Storno [[_getAbilitatoAsString(item.stornoGestito)]]</div>
+                            </paper-item-body>
+                        </paper-icon-item>
+                    </template>
+                </paper-material>
+            </div>
+        </div>
     </template>
     <script>
   (function() {
@@ -123,10 +92,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         dataProvider: {
           type: Array,
           value: []
-        }
-      },
+        },
 
-      _filtraPsp: function(item){
+          filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+       _refreshList: function(){
+
+        },
+        _filtraListaRisultati: function(item){
         var mostra = true;
         if (this.filtro && this.filtro!==''){
           if  (item.codPsp.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
@@ -136,11 +112,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         return mostra;
       },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
 
-      _refreshList: function(){
-        this.dataProvider = this.dataProvider.slice(0);
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
       },
-      filtraRisultati: function (){
+      eseguiRicerca: function (){
             this.govpayUrl = govpayUrl + '/rs/dars/psp/';
            this.$.connettorePsp.generateRequest();
       },
@@ -181,7 +168,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _selectPsp: function(event){
         var target = event.model.item;
-        this.fire('select-item', {psp: target});
+        var titoloPagina = target.ragioneSociale + ' (' + target.codPsp +')';
+        this.fire('select-item', {psp: target, 'titoloPagina': titoloPagina});
       }
     });
   })();

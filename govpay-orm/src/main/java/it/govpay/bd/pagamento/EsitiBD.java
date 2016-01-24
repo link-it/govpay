@@ -89,7 +89,7 @@ public class EsitiBD extends BasicBD {
 	 */
 	public void insertEsito(Esito esito) throws NotFoundException, ServiceException {
 		try {
-			
+			if(esito == null) return;
 			it.govpay.orm.Esito esitoVo = EsitoConverter.toVO(esito);
 			this.getEsitoService().create(esitoVo);
 			

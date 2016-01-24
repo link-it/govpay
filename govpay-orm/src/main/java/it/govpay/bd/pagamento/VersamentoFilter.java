@@ -26,6 +26,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,6 +51,8 @@ public class VersamentoFilter extends AbstractFilter {
 	private String iuv =null;
 	
 	private String codEnte = null;
+	private String codUnivocoDebitore;
+	private Boolean terminato;
 	private List<Long> idEnti;
 	private List<Long> idApplicazioni;
 
@@ -57,6 +60,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private Date dataFine;
 	
 	public enum SortFields {
+		STATO
 //TODO		COD_PSP, COD_FLUSSO
 		}
 	
@@ -128,6 +132,32 @@ public class VersamentoFilter extends AbstractFilter {
 				
 			}
 			
+			if(this.codUnivocoDebitore != null) {
+				newExpression.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.COD_UNIVOCO, this.codUnivocoDebitore);
+			}
+			
+			if(this.terminato != null) {
+				List<String> lst = new ArrayList<String>();
+				
+				if(this.terminato.booleanValue()) {
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.PAGAMENTO_ESEGUITO.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.PAGAMENTO_NON_ESEGUITO.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.PAGAMENTO_PARZIALMENTE_ESEGUITO.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.DECORRENZA_TERMINI.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.DECORRENZA_TERMINI_PARZIALE.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.ANNULLATO.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.SCADUTO.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.FALLITO.toString());
+				} else {
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.IN_ATTESA.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.IN_CORSO.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.AUTORIZZATO_DIFFERITO.toString());
+					lst.add(it.govpay.bd.model.Versamento.StatoVersamento.AUTORIZZATO_IMMEDIATO.toString());
+				}
+				
+				newExpression.in(Versamento.model().STATO_VERSAMENTO, lst);
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -140,6 +170,8 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
+		if(field.equals(SortFields.STATO)) 
+			filterSortWrapper.setField(Versamento.model().STATO_VERSAMENTO); 
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}
@@ -177,6 +209,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdEnti() {
+		if(idEnti == null) idEnti = new ArrayList<Long>();
 		return idEnti;
 	}
 
@@ -185,11 +218,28 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public List<Long> getIdApplicazioni() {
+		if(idApplicazioni == null) idApplicazioni = new ArrayList<Long>();
 		return idApplicazioni;
 	}
 
 	public void setIdApplicazioni(List<Long> idApplicazioni) {
 		this.idApplicazioni = idApplicazioni;
+	}
+
+	public String getCodUnivocoDebitore() {
+		return codUnivocoDebitore;
+	}
+
+	public void setCodUnivocoDebitore(String codUnivocoDebitore) {
+		this.codUnivocoDebitore = codUnivocoDebitore;
+	}
+
+	public Boolean getTerminato() {
+		return terminato;
+	}
+
+	public void setTerminato(Boolean terminato) {
+		this.terminato = terminato;
 	}
 	
 	

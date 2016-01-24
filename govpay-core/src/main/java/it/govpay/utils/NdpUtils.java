@@ -85,7 +85,7 @@ import org.xml.sax.SAXException;
 public class NdpUtils {
 
 	// uso locale "ENGLISH" perche il separatore decimale deve essere il "."
-	private static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
+	public static final DecimalFormat nFormatter = new DecimalFormat("0.00", new DecimalFormatSymbols(Locale.ENGLISH));
 	private static JAXBContext jaxbContext;
 	private static Schema RPT_RT_schema;
 	private static XMLOutputFactory xof;

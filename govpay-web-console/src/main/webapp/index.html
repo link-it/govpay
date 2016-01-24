@@ -12,6 +12,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <html lang="">
 
 <head>
+    <!-- Compatibilita con IE Edge-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -47,7 +50,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- endbuild-->
 
     <!-- CSS LINK-->
+    <!-- build:css styles/link.css -->
     <link rel="stylesheet" href="styles/link.css">
+    <!-- endbuild-->
 
     <!-- build:js bower_components/webcomponentsjs/webcomponents-lite.min.js -->
     <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
@@ -88,11 +93,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                on-error="_visualizzaErroreGetProfilo">
     </iron-ajax>
 
-    <paper-drawer-panel id="paperDrawerPanel">
+    <paper-drawer-panel id="paperDrawerPanel" force-narrow>
         <!-- Drawer Scroll Header Panel -->
-        <paper-scroll-header-panel drawer fixed>
+        <paper-scroll-header-panel drawer>
 
-            <!-- Drawer Toolbar -->
+            <!-- Drawer Toolbar
             <paper-toolbar id="drawerToolbar">
                 <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'profilo')]]">
                     <paper-icon-item>
@@ -102,20 +107,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-icon-button icon="icons:arrow-drop-down" class="dropdown-trigger"></paper-icon-button>
                                 <paper-menu class="dropdown-content" attr-for-selected="action">
                                     <!-- <paper-item action="Preferenze">Preferenze</paper-item> -->
-                                    <a href="[[govpayUrlLogout]]">Logout</a>
+                                    <!--<a href="[[govpayUrlLogout]]">Logout</a>
                                 </paper-menu>
                             </paper-menu-button>
                     </paper-icon-item>
                 </template>
             </paper-toolbar>
+-->
 
             <!-- Drawer Content -->
             <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
                 <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'pagamenti')]]">
                     <paper-submenu>
-                        <paper-item class="menu-trigger">Pagamenti</paper-item>
+                        <paper-item class="menu-trigger">Monitoraggio</paper-item>
                         <paper-menu class="menu-content">
-                            <paper-item>
+                            <paper-item >
                                 <a data-route="pagamenti" href="/pagamenti" comp="listaPagamenti"
                                    on-tap="onDataRouteClick">Pagamenti</a>
                             </paper-item>
@@ -129,12 +135,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <a data-route="eventi" href="/eventi" comp="listaEventi" on-tap="onDataRouteClick">Giornale
                                     degli Eventi</a>
                             </paper-item>
-                        </paper-menu>
+                         </paper-menu>
                     </paper-submenu>
                 </template>
                 <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'anagraficaNdp')]]">
                     <paper-submenu>
-                        <paper-item class="menu-trigger">Anagrafica NdP</paper-item>
+                        <paper-item class="menu-trigger">Anagrafica NodoSPC</paper-item>
                         <paper-menu class="menu-content">
                             <paper-item>
                                 <a data-route="psp" href="/psp" comp="configurazionePsp"
@@ -142,7 +148,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </paper-item>
                             <paper-item>
                                 <a data-route="intermediari" href="/intermediari" comp="lci"
-                                   on-tap="onDataRouteClick">Intemediari</a>
+                                   on-tap="onDataRouteClick">Intermediari</a>
                             </paper-item>
                             <paper-item>
                                 <a data-route="domini" href="/domini" comp="configurazioneDomini"
@@ -156,7 +162,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-item class="menu-trigger">Anagrafica Creditore</paper-item>
                         <paper-menu class="menu-content">
                             <paper-item>
-                                <a data-route="enti" href="/enti" comp="configurazioneEnti" on-tap="onDataRouteClick">Enti</a>
+                                <a data-route="enti" href="/enti" comp="configurazioneEnti" on-tap="onDataRouteClick">Uffici</a>
                             </paper-item>
                             <paper-item>
                                 <a data-route="tributi" href="/tributi" comp="configurazioneTributi"
@@ -178,11 +184,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </template>
                 <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'operazioni')]]">
                     <paper-submenu>
-                        <paper-item class="menu-trigger">Operazioni</paper-item>
+                        <paper-item class="menu-trigger">Manutenzione</paper-item>
                         <paper-menu class="menu-content">
                             <paper-item>
                                 <a data-route="eventi" href="/operazioni" comp="listaOperazioni"
-                                   on-tap="onDataRouteClick">Operazioni</a>
+                                   on-tap="onDataRouteClick">Strumenti</a>
                             </paper-item>
                         </paper-menu>
                     </paper-submenu>
@@ -192,10 +198,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-scroll-header-panel>
 
         <!-- Main Area -->
-        <paper-scroll-header-panel main condenses keep-condensed-header>
+        <paper-scroll-header-panel main fixed>
 
             <!-- Main Toolbar -->
-            <paper-toolbar id="mainToolbar">
+            <paper-toolbar id="mainToolbar" >
                 <paper-icon-button id="paperToggle" icon="menu" paper-drawer-toggle
                                    hidden$="[[!isFirstPage]]"></paper-icon-button>
                 <paper-icon-button id="arrow-back" icon="arrow-back" hidden$="[[isFirstPage]]"
@@ -203,80 +209,87 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <span class="flex"></span>
 
                 <!-- Toolbar icons -->
-                <template is="dom-if" if="[[isEditSection]]">
+              <!--  <template is="dom-if" if="[[isEditSection]]"> class$="[[_getToolbarClass(isFirstPage)]]"
                     <paper-icon-button id="new" icon="add" hidden$="[[!isFirstPage]]"
                                        on-tap="_nuovoElemento"></paper-icon-button>
                     <paper-icon-button id="new" icon="create" hidden$="[[isFirstPage]]"
                                        on-tap="_modificaElemento"></paper-icon-button>
-                    <!--paper-icon-button id="new" icon="notification:do-not-disturb" hidden$="[[isFirstPage]]" on-tap="_disabilitaIntermediario"></paper-icon-button-->
-                </template>
+                    &lt;!&ndash;paper-icon-button id="new" icon="notification:do-not-disturb" hidden$="[[isFirstPage]]" on-tap="_disabilitaIntermediario"></paper-icon-button&ndash;&gt;
+                </template>-->
 
                 <!-- Application name -->
                 <div class="middle middle-container center horizontal layout">
-                    <div class="app-name">GovPay Enterprise v2.0.RC1</div>
+                    <div class="app-name">[[titoloPagina]]</div>
                 </div>
 
                 <!-- Application sub title -->
                 <!-- <div class="bottom bottom-container center horizontal layout">
                   <div class="bottom-title paper-font-subhead">v2.0.m1</div>
                 </div> -->
+                <paper-menu-button id="profiloOperatoreMenu">
+                    <paper-icon-button icon="icons:face" class="dropdown-trigger"></paper-icon-button>
+                    <paper-menu class="dropdown-content" attr-for-selected="action">
+                          <a href="[[govpayUrlLogout]]">Logout</a>
+                    </paper-menu>
+                    </paper-menu-button>
+        </paper-toolbar>
 
-            </paper-toolbar>
-
-            <!-- Main Content -->
+<!-- Main Content -->
             <div class="content">
                 <iron-pages attr-for-selected="data-route" selected="{{route}}">
 
                     <section data-route="intermediari">
-                        <link-configurazione-intermediari id="lci" on-dars-error="darsError"
+                        <link-configurazione-intermediari id="lci" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                           on-changed-page="_changedPage"></link-configurazione-intermediari>
                     </section>
 
                     <section data-route="domini">
-                        <configurazione-domini id="configurazioneDomini" on-dars-error="darsError"
+                        <configurazione-domini id="configurazioneDomini" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                on-changed-page="_changedPage"></configurazione-domini>
                     </section>
 
                     <section data-route="psp">
-                        <configurazione-psp id="configurazionePsp" on-changed-page="_changedPage" on-dars-error="darsError"></configurazione-psp>
+                        <configurazione-psp id="configurazionePsp" on-changed-page="_changedPage" on-dars-error="darsError"
+                                            on-change-titolo-pagina="_changeTitoloPagina"></configurazione-psp>
                     </section>
 
                     <section data-route="enti">
-                        <configurazione-enti id="configurazioneEnti" on-dars-error="darsError"
+                        <configurazione-enti id="configurazioneEnti" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                              on-changed-page="_changedPage"></configurazione-enti>
                     </section>
 
                     <section data-route="applicazioni">
-                        <configurazione-applicazioni id="configurazioneApplicazioni" on-dars-error="darsError"
+                        <configurazione-applicazioni id="configurazioneApplicazioni" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                      on-changed-page="_changedPage"></configurazione-applicazioni>
                     </section>
 
                     <section data-route="tributi">
-                        <configurazione-tributi id="configurazioneTributi" on-dars-error="darsError"
+                        <configurazione-tributi id="configurazioneTributi" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                 on-changed-page="_changedPage"></configurazione-tributi>
                     </section>
 
                     <section data-route="operatori">
-                        <configurazione-operatori id="configurazioneOperatori" on-dars-error="darsError"
+                        <configurazione-operatori id="configurazioneOperatori" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                      on-changed-page="_changedPage"></configurazione-operatori>
                     </section>
 
                     <section data-route="portali">
-                        <configurazione-portali id="configurazionePortali" on-dars-error="darsError"
+                        <configurazione-portali id="configurazionePortali" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                   on-changed-page="_changedPage"></configurazione-portali>
                     </section>
 
                     <section data-route="pagamenti">
-                        <consultazione-pagamenti id="listaPagamenti" on-dars-error="darsError"
+                        <consultazione-pagamenti id="listaPagamenti" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                  on-changed-page="_changedPage"></consultazione-pagamenti>
                     </section>
 
                     <section data-route="eventi">
-                        <consultazione-eventi id="listaEventi" on-changed-page="_changedPage"></consultazione-eventi>
+                        <consultazione-eventi id="listaEventi" on-changed-page="_changedPage"
+                                              on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"></consultazione-eventi>
                     </section>
 
                     <section data-route="rendicontazioni">
-                        <consultazione-rendicontazioni id="listaRendicontazioni" on-dars-error="darsError"
+                        <consultazione-rendicontazioni id="listaRendicontazioni" on-dars-error="darsError" on-change-titolo-pagina="_changeTitoloPagina"
                                                        on-changed-page="_changedPage"></consultazione-rendicontazioni>
                     </section>
 
@@ -285,7 +298,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </section>
 
                     <section data-route="error-page">
-                        <error-page id="errorPage" on-changed-page="_changedPage"></error-page>
+                        <error-page id="errorPage" on-changed-page="_changedPage" ></error-page>
                     </section>
                     <section data-route="nonautorizzato">
                         <non-autorizzato-page id="nonAutorizzatoPage" on-changed-page="_changedPage"></non-autorizzato-page>
@@ -295,6 +308,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
         </paper-scroll-header-panel>
     </paper-drawer-panel>
+
+    <template is="dom-if" if="[[isEditSection]]">
+        <paper-fab icon="add" class="actionButton" elevation="0" hidden$="[[!isFirstPage]]" on-tap="_nuovoElemento" title="Aggiungi"></paper-fab>
+        <paper-fab icon="create" class="actionButton" elevation="0" hidden$="[[isFirstPage]]" on-tap="_modificaElemento" title="Modifica"></paper-fab>
+    </template>
 
     <paper-toast id="messaggiUtente" text="" duration="11000"></paper-toast>
     <!-- Uncomment next block to enable Service Worker support (1/2) -->

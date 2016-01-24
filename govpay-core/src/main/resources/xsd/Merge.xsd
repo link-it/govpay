@@ -9,7 +9,7 @@ PagInf_RPT_RT_6_0_2.xsd
 
 	<xsd:annotation>
 		<xsd:documentation>Richiesta Pagamento Telematico (RPT) e Ricevuta Telematica (RT)</xsd:documentation>
-		<xsd:documentation>XSD RPT/RT relativo al documento base "SPECIFICHE ATTUATIVE DEL NODO DEI PAGAMENTI-SPC versione 1.6.2 febbraio 2015"</xsd:documentation>
+		<xsd:documentation>XSD RPT/RT relativo al documento base "SPECIFICHE ATTUATIVE DEL NODO DEI PAGAMENTI-SPC versione 1.7"</xsd:documentation>
     </xsd:annotation>
 
 
@@ -88,7 +88,7 @@ PagInf_RPT_RT_6_0_2.xsd
 		</xsd:restriction>
 	</xsd:simpleType>
 
-	<xsd:simpleType name="stNazione">
+	<xsd:simpleType name="stNazioneProvincia">
 		<xsd:restriction base="xsd:string">
               <xsd:pattern value="[A-Z]{2,2}"/>
         </xsd:restriction>
@@ -164,6 +164,26 @@ PagInf_RPT_RT_6_0_2.xsd
             <xsd:maxLength value="256"/>
 		</xsd:restriction>
 	</xsd:simpleType>
+	
+	<xsd:simpleType name="stTipoBollo">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="01"/><!-- Imposta di bollo -->
+			<xsd:length value="2"/>
+        </xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="stTipoAllegatoRicevuta">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ES"/><!-- Esito originario pagamento (come ricevuto da PSP) -->
+			<xsd:enumeration value="BD"/><!-- Marca da bollo digitale  -->
+            <xsd:length value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="stBase64">
+		<xsd:restriction base="xsd:base64Binary">
+		</xsd:restriction>
+	</xsd:simpleType>
 
 	<!-- **** END: tipi semplici  ****-->
 
@@ -180,6 +200,41 @@ PagInf_RPT_RT_6_0_2.xsd
 			<xsd:element name="identificativoStazioneRichiedente" type="pay_i:stText35" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Identifica la stazione richiedente il pagamento. Nella fattispecie assume il codice del PdA richiedente o quello del Portale del ministero.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="ctDatiMarcaBolloDigitale">
+		<xsd:sequence>
+			<xsd:element name="tipoBollo" type="pay_i:stTipoBollo" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Contiene la tipologia di Bollo Digitale.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="hashDocumento" type="pay_i:stText70" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Contiene l’impronta informatica (digest), rappresentata in “base 64 binary”, del documento informatico o della segnatura di protocollo cui è associata la marca da bollo digitale</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="provinciaResidenza" type="pay_i:stNazioneProvincia" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Sigla automobilistica della provincia di residenza del soggetto pagatore.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="ctAllegatoRicevuta">
+		<xsd:sequence>
+			<xsd:element name="tipoAllegatoRicevuta" type="pay_i:stTipoAllegatoRicevuta" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Identifica il tipo di allegato trasportato con la RT.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="testoAllegato" type="pay_i:stBase64" minOccurs="1">
+				<xsd:annotation>
+					<xsd:documentation>Contiene l’allegato vero e proprio, il cui significato è indicato dal dato tipoAllegatoRicevuta.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
@@ -277,7 +332,7 @@ PagInf_RPT_RT_6_0_2.xsd
 					<xsd:documentation>Indica la provincia del versante.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="nazioneVersante" type="pay_i:stNazione" minOccurs="0">
+			<xsd:element name="nazioneVersante" type="pay_i:stNazioneProvincia" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Indica il codice nazione del versante secondo lo standard ISO 3166.</xsd:documentation>
 				</xsd:annotation>
@@ -328,7 +383,7 @@ PagInf_RPT_RT_6_0_2.xsd
 					<xsd:documentation>Indica la provincia del pagatore.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="nazionePagatore" type="pay_i:stNazione" minOccurs="0">
+			<xsd:element name="nazionePagatore" type="pay_i:stNazioneProvincia" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Indica il codice nazione del pagatore secondo lo standard ISO 3166.</xsd:documentation>
 				</xsd:annotation>
@@ -396,7 +451,7 @@ PagInf_RPT_RT_6_0_2.xsd
 					<xsd:documentation>Può coincidere con quello dell’unità operativa destinataria.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="nazioneBeneficiario" type="pay_i:stNazione" minOccurs="0">
+			<xsd:element name="nazioneBeneficiario" type="pay_i:stNazioneProvincia" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Indica il codice nazione dell’ente beneficiario secondo lo standard ISO 3166.</xsd:documentation>
 					<xsd:documentation>Può coincidere con quello dell’unità operativa destinataria.</xsd:documentation>
@@ -460,7 +515,7 @@ PagInf_RPT_RT_6_0_2.xsd
 					<xsd:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="nazioneAttestante" type="pay_i:stNazione" minOccurs="0">
+			<xsd:element name="nazioneAttestante" type="pay_i:stNazioneProvincia" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Indica il codice nazione dell’attestante secondo lo standard ISO 3166.</xsd:documentation>
 					<xsd:documentation>Può coincidere con quello dell’unità operativa che rilascia la ricevuta</xsd:documentation>
@@ -483,7 +538,7 @@ PagInf_RPT_RT_6_0_2.xsd
 					<xsd:documentation>Campo numerico (due cifre per la parte decimale, il separatore dei centesimi è il punto “.”), indicante l’importo relativo alla somma da versare. Il data è riportato a solo titolo indicativo e non comporta attività a carico del PSP. Se presente deve essere diverso da “0.00”.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier" minOccurs="1">
+			<xsd:element name="ibanAccredito" type="pay_i:stIBANIdentifier" minOccurs="0">
 				<xsd:annotation>
 					<xsd:documentation>Identifica l’International Bank Account Number, definito secondo lo standard ISO 13616, del conto da accreditare presso la Banca di accredito indicata dall’ente creditore, di norma la Banca Tesoriera. </xsd:documentation>
 				</xsd:annotation>
@@ -523,6 +578,11 @@ PagInf_RPT_RT_6_0_2.xsd
                     <xsd:documentation>9 Altro codice ad uso dell’amministrazione</xsd:documentation>
                     <xsd:documentation>Esempio: 0/3321.00 per indicare il Contributo Unificato delle spese di giustizia</xsd:documentation>
                 </xsd:annotation>
+			</xsd:element>
+			<xsd:element name="datiMarcaBolloDigitale" type="pay_i:ctDatiMarcaBolloDigitale" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Aggregazione che contiene le informazioni necessarie al PSP per generare la marca da bollo digitale.</xsd:documentation>
+				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
@@ -622,6 +682,11 @@ PagInf_RPT_RT_6_0_2.xsd
 			<xsd:element name="datiSpecificiRiscossione" type="pay_i:stDatiSpecificiRiscossione" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Il dato, se presente, deve essere riportato invariato, a cura del Psp, così come presente nella Richiesta di Pagamento Telematico (RPT) cui si riferisce il messaggio di Ricevuta Telematica.</xsd:documentation>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="allegatoRicevuta" type="pay_i:ctAllegatoRicevuta" minOccurs="0">
+				<xsd:annotation>
+					<xsd:documentation>Aggregazione contenente l'allegato al singolo pagamento.</xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
 		</xsd:sequence>

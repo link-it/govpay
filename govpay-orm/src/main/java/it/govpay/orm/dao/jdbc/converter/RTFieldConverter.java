@@ -103,6 +103,13 @@ public class RTFieldConverter extends AbstractSQLFieldConverter {
 				return "id_anagrafica";
 			}
 		}
+		if(field.equals(RT.model().ID_ANAGRAFICA_ATTESTANTE.COD_UNIVOCO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_univoco";
+			}else{
+				return "cod_univoco";
+			}
+		}
 		if(field.equals(RT.model().COD_ESITO_PAGAMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_esito_pagamento";
@@ -157,6 +164,9 @@ public class RTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RT.model(), returnAlias);
 		}
 		if(field.equals(RT.model().ID_ANAGRAFICA_ATTESTANTE.ID_ANAGRAFICA)){
+			return this.toTable(RT.model().ID_ANAGRAFICA_ATTESTANTE, returnAlias);
+		}
+		if(field.equals(RT.model().ID_ANAGRAFICA_ATTESTANTE.COD_UNIVOCO)){
 			return this.toTable(RT.model().ID_ANAGRAFICA_ATTESTANTE, returnAlias);
 		}
 		if(field.equals(RT.model().COD_ESITO_PAGAMENTO)){

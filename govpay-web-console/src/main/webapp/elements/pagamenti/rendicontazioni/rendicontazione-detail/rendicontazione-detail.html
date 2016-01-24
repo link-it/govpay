@@ -8,101 +8,77 @@
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
-            .blue {
-            color: var(--paper-light-blue-300);
-            }
-            .red {
-            color: var(--paper-red-300);
-            }
-            .orange {
-            color: var(--paper-amber-300);
-            }
-            .green {
-            color: var(--paper-green-300);
-            }
-
-            .div-table-row:hover .shortText::after {
-            content: ' [+]';
-            color: gray;
-            }
-            .div-table-row.expanded:hover .shortText::after {
-            content: '';
-            }
-            .div-table-row .longText {
-
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded .longText {
-            display: block;
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded:hover .longText::after {
-            content: ' [–]';
-            }
-      .shortText, .longText {
-        font-size: 14px;
-      }
-      .longText {
-        color: gray;
-        display: none !important;
-      }
         </style>
-        <paper-card heading="[[_getTitoloSezione(rendicontazioneCorrente.fr)]]" class="fullCardWidth">
-            <div class="card-content">
-                <p>Iur: <span>[[_getProperty(rendicontazioneCorrente.fr,'iur')]]</span></p>
-                <p>Codice Flusso: <span>[[_getProperty(rendicontazioneCorrente.fr,'codFlusso')]]</span></p>
-                <p>Data Flusso: <span>[[_getDataFieldAsString(rendicontazioneCorrente.fr,'dataOraFlusso')]]</span></p>
-                <p>Anno Riferimento: <span>[[_getProperty(rendicontazioneCorrente.fr,'annoRiferimento')]]</span></p>
-                <p>Psp: <span>[[_getProperty(rendicontazioneCorrente.psp,'codPsp')]]</span></p>
-                <p>Data Regolamento: <span>[[_getDataFieldAsString(rendicontazioneCorrente.fr,'dataRegolamento')]]</span></p>
-                <p>Numero Pagamenti: <span>[[_getProperty(rendicontazioneCorrente.fr,'numeroPagamenti')]]</span></p>
-                <p>Importo Totale Pagamenti: <span>[[_getProperty(rendicontazioneCorrente.fr,'importoTotalePagamenti')]] &euro;</span></p>
-                <p>Stato: <span>[[_getProperty(rendicontazioneCorrente.fr,'stato')]]</span></p>
-                <p>Descrizione Stato: <span>[[_getProperty(rendicontazioneCorrente.fr,'descrizioneStato')]]</span></p>
-            </div>
+        <div class="layout horizontal center-justified">
+            <div class="layout vertical flex">
+                <paper-tabs selected="{{selectedTab}}" noink>
+                    <paper-tab>INFORMAZIONI GENERALI</paper-tab>
+                    <paper-tab>SINGOLE RENDICONTAZIONI</paper-tab>
+                </paper-tabs>
 
-            <paper-material class="headMaterial" id="rendicontazioniList" elevation="2">
-                <h4>Singole Rendicontazioni</h4>
+                <iron-pages selected="{{selectedTab}}">
+                    <div class="layout horizontal center-justified">
+                        <div id="itembox" class="layout vertical flex itembox restorePadding">
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
 
-                <div class="card-content div-table">
-                    <paper-item>
-                        <paper-item-body>
-                            <div class="horizontal layout div-table-header-row">
-                                <div class="div-table-col width200"><span>IUR</span></div>
-                                <div class="div-table-col width200"><span>IUV</span></div>
-                                <div class="div-table-col width200"><span>Singolo Importo</span></div>
-                                <div class="div-table-col width200"><span>Esito</span></div>
-                                <div class="div-table-col"><span>Data Esito</span></div>
-                                <div class="div-table-col-com"></div>
+                                </div>
                             </div>
-                        </paper-item-body>
-                    </paper-item>
-                    <iron-list id="elencoSingoleRendicontazioni" items="{{_getListaSingoleRendicontazioni(rendicontazioneCorrente.fr)}}" as="item">
-                        <template>
-                            <paper-item  on-tap="_selectSingolaRendicontazione">
-                                <paper-item-body>
-                                    <div class$="[[getClassForItem(item, item.expanded)]]">
-                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.iur]]</span></div>
-                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.iuv]]</span></div>
-                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.singoloImporto]] &euro;</span> </div>
-                                        <div class="div-table-col width200"><span>[[item.singolaRendicontazione.codiceEsito]]</span></div>
-                                        <div class="div-table-col"><span>[[_getDataFieldAsString(item.singolaRendicontazione, 'dataEsito')]]</span></div>
-                                        <div class="div-table-col-com shortText"></div>
-                                    </div>
-                                    <div class="horizontal layout div-table-row longText">
-                                        cccc
-                                    </div>
-                                </paper-item-body>
-                            </paper-item>
-                        </template>
-                    </iron-list>
-                </div>
-            </paper-material>
-        </paper-card>
+
+                            <paper-material elevation="0">
+                                <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                                <p class="groupItem"><span class="grouplabel">Id Regolamento: </span><span>[[_getProperty(rendicontazioneCorrente.fr,'iur')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Codice Flusso: </span><span>[[_getProperty(rendicontazioneCorrente.fr,'codFlusso')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Data Flusso: </span><span>[[_getDataFieldAsString(rendicontazioneCorrente.fr,'dataOraFlusso')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Anno Riferimento: </span><span>[[_getProperty(rendicontazioneCorrente.fr,'annoRiferimento')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Psp: </span><span>[[_getProperty(rendicontazioneCorrente.psp,'codPsp')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Data Regolamento: </span><span>[[_getDataFieldAsString(rendicontazioneCorrente.fr,'dataRegolamento')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Numero Pagamenti: </span><span>[[_getProperty(rendicontazioneCorrente.fr,'numeroPagamenti')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Importo Totale Pagamenti: </span><span>[[_getProperty(rendicontazioneCorrente.fr,'importoTotalePagamenti')]] &euro;</span></p>
+                                <p class="groupItem"><span class="grouplabel">Stato: </span><span>[[_getProperty(rendicontazioneCorrente.fr,'stato')]]</span></p>
+                                <p class="groupItem"><span class="grouplabel">Descrizione Stato: </span><span>[[_getProperty(rendicontazioneCorrente.fr,'descrizioneStato')]]</span></p>
+                            </paper-material>
+                        </div>
+                    </div>
+
+                    <div class="layout horizontal center-justified">
+                        <div id="resultbox" class="layout vertical flex restorePadding" >
+                            <div class="layout horizontal flex">
+                                <div class="layout horizontal center start-justified headerbox" >
+                                    <p>Il Flusso contiene [[rendicontazioneCorrente.fr.singolaRendicontazioneList.length]] Rendicontazioni</p>
+                                </div>
+                                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                                    <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
+                                    <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
+                                </div>
+                            </div>
+
+                            <paper-material elevation="0">
+                                <paper-input bind-value="{{filtro}}" on-bind-value-changed="_refreshList"
+                                             class="flex filtro" label="Filtro">
+                                </paper-input>
+                                <paper-icon-item hidden$="{{!abilitaSelezione}}">
+                                    <paper-checkbox item-icon></paper-checkbox>
+                                    <div class="flex selectAll">Seleziona tutto</div>
+                                </paper-icon-item>
+
+                                <template is="dom-repeat" items="[[rendicontazioneCorrente.fr.singolaRendicontazioneList]]" filter="_filtraListaRisultati">
+                                    <paper-icon-item class$="[[isEven(index)]]">
+                                        <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
+                                        <paper-item-body two-line>
+                                            <div>IUR: [[item.iur]], IUV: [[item.iuv]], [[_getCodiceEsito(item.codiceEsito)]]
+                                            </div>
+                                            <div secondary>Data Esito: [[_getDataFieldAsString(item, 'dataEsito')]], Importo: [[item.singoloImporto]] &euro;</div>
+                                        </paper-item-body>
+                                    </paper-icon-item>
+                                </template>
+                            </paper-material>
+                        </div>
+                    </div>
+                </iron-pages>
+            </div>
+        </div>
     </template>
     <script>
     (function() {
@@ -122,7 +98,12 @@
           },
           singoleRendicontazioni: {
             type: Array
-          }
+          },
+           selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
         },
 
         ready: function() {
@@ -135,10 +116,56 @@
             }
             return '';
         },
+        _refreshList: function(){
+        this.dataProvider = this.dataProvider.slice(0);
+      },
+        _filtraListaRisultati: function(item){
+        var mostra = true;
+        if (this.filtro && this.filtro!==''){
+           if  (item.codEnte.toLowerCase().indexOf(this.filtro.toLowerCase())===-1 &&
+              (item.ragioneSociale.toLowerCase().indexOf(this.filtro.toLowerCase())===-1)){
+            mostra = false;
+          }
+        }
+        return mostra;
+      },
+        _ricercaVuota: function(numeroRisultati){
+            return numeroRisultati == 0;
+        },
+        isEven: function(index){
+            if((index % 2)==0)
+                return 'even';
+
+            return 'odd';
+        },
+         _getAbilitatoAsString: function(abilitato){
+            if(abilitato)
+                return 'Abilitato';
+
+            return 'Disabilitato';
+      },
+         _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
+      },
+      _getCodiceEsito: function(esito){
+            if(esito == 0)
+                return 'Pagamento Eseguito';
+
+            if(esito == 3)
+                return 'Pagamento Revocato';
+
+            if(esito == 9)
+                return 'Pagamento Eseguito senza RPT';
+
+            return 'Esito non codificato (' + esito + ')';
+      },
           _getListaSingoleRendicontazioni: function(rendicontazioneCorrente){
-            if(this.singoleRendicontazioni)
-                return this.singoleRendicontazioni;
-            else{
+            //if(this.singoleRendicontazioni)
+             //   return this.singoleRendicontazioni;
+           // else{
                 var tmp = this._getProperty(rendicontazioneCorrente,'singolaRendicontazioneList');
                  if(tmp){
                     this.singoleRendicontazioni = [];
@@ -149,7 +176,7 @@
                 }
 
                return this.singoleRendicontazioni;
-            }
+          //  }
         },
          _selectSingolaRendicontazione: function (e){
             var list = this.$.elencoSingoleRendicontazioni;

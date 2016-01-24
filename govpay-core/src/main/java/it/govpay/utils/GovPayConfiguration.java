@@ -33,7 +33,8 @@ public class GovPayConfiguration extends ConfigurationUtils {
 		esiti_limit,
 		mail_serverPort,
 		mail_limit,
-		mail_maxRetries;
+		mail_maxRetries,
+		ricercaVersamentiDefaultLimit;
 	
 	private String 
 		versioneRPT,
@@ -84,6 +85,9 @@ public class GovPayConfiguration extends ConfigurationUtils {
 		mail_password = getNullableStringValue("govpay.batch.notificaMail.password");
 		mail_limit = getNullableIntValue("govpay.batch.notificaMail.limit");
 		mail_maxRetries = getNullableIntValue("govpay.batch.notificaMail.maxRetries");
+		
+		ricercaVersamentiDefaultLimit = getNullableIntValue("govpay.search.limit");
+		
 		String listErroriSpedizioneString = getNullableStringValue("govpay.batch.notificaMail.erroriSpedizione");
 		if(listErroriSpedizioneString != null) {
 			String[] splitList = listErroriSpedizioneString.split("\\|");
@@ -176,5 +180,14 @@ public class GovPayConfiguration extends ConfigurationUtils {
 
 	public GovPayConfiguration getInstance() {
 		return instance;
+	}
+
+	public int getRicercaVersamentiDefaultLimit() {
+		return ricercaVersamentiDefaultLimit;
+	}
+
+	public void setRicercaVersamentiDefaultLimit(
+			int ricercaVersamentiDefaultLimit) {
+		this.ricercaVersamentiDefaultLimit = ricercaVersamentiDefaultLimit;
 	}
 }

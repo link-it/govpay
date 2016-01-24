@@ -46,6 +46,8 @@ public class PspBD extends it.govpay.bd.anagrafica.PspBD{
 				entry.setCodFlusso(pspVo.getCodFlusso());
 				entry.setCodPsp(pspVo.getCodPsp());
 				entry.setRagioneSociale(pspVo.getRagioneSociale());
+				entry.setBolloGestito(pspVo.isBolloGestito());
+				entry.setStornoGestito(pspVo.isStornoGestito()); 
 				pspLst.add(entry);
 			}
 			return pspLst;

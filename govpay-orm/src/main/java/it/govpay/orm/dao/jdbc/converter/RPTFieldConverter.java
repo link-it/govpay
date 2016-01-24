@@ -173,6 +173,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "id_anagrafica";
 			}
 		}
+		if(field.equals(RPT.model().ID_ANAGRAFICA_VERSANTE.COD_UNIVOCO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_univoco";
+			}else{
+				return "cod_univoco";
+			}
+		}
 		if(field.equals(RPT.model().DATA_ORA_MSG_RICHIESTA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_ora_msg_richiesta";
@@ -313,6 +320,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().ID_ANAGRAFICA_VERSANTE.ID_ANAGRAFICA)){
+			return this.toTable(RPT.model().ID_ANAGRAFICA_VERSANTE, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_ANAGRAFICA_VERSANTE.COD_UNIVOCO)){
 			return this.toTable(RPT.model().ID_ANAGRAFICA_VERSANTE, returnAlias);
 		}
 		if(field.equals(RPT.model().DATA_ORA_MSG_RICHIESTA)){

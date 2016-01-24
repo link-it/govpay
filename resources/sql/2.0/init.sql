@@ -1,1 +1,1 @@
-INSERT INTO operatori (principal,profilo,nome) VALUES ('@PRINCIPAL@','A','@RAGIONA_SOCIALE@');
+INSERT INTO operatori (principal,profilo,nome) VALUES ('@PRINCIPAL@','A','@RAGIONE_SOCIALE@');

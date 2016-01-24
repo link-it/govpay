@@ -12,44 +12,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="tributo-detail">
     <template>
+        <style include="shared-styles"></style>
         <style>
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
         </style>
-        <h2>Tributo [[tributoCorrente.tributo.codTributo]]
-            <iron-icon icon="notification:do-not-disturb" style="color: red"
-                       hidden$="[[tributoCorrente.tributo.abilitato]]"></iron-icon>
-        </h2>
-        <paper-material class="headMaterial" id="connettore" elevation="2">
-            <div class="card-content">
-                <p>Descrizione <span>[[tributoCorrente.tributo.descrizione]]</span></p>
+        <div class="layout horizontal center-justified restorePadding">
+            <div class="layout vertical flex">
+                <div class="layout horizontal center-justified">
+                    <div id="itembox" class="layout vertical flex itembox">
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
 
-                <p>Ente <span>[[tributoCorrente.ente.codEnte]]</span></p>
+                            </div>
+                        </div>
 
-                <p>Tipo Contabilit&agrave; <span>[[tributoCorrente.tributo.tipoContabilita]]</span></p>
+                        <paper-material elevation="0">
+                            <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+                            <p class="groupItem"><span class="grouplabel">Codice: </span><span>[[tributoCorrente.tributo.codTributo]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Descrizione: </span><span>[[tributoCorrente.tributo.descrizione]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(tributoCorrente.tributo.abilitato)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Ufficio </span><span>[[tributoCorrente.ente.codEnte]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Tipo Contabilit&agrave;: </span><span>[[tributoCorrente.tributo.tipoContabilita]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Codice Contabilit&agrave;: </span><span>[[tributoCorrente.tributo.codContabilita]]</span></p>
+                        </paper-material>
 
-                <p>Codice Contabilit&agrave; <span>[[tributoCorrente.tributo.codContabilita]]</span></p>
-            </div>
-            <span class="gap"></span>
-            <paper-material class="headMaterial" id="connettore" elevation="2">
-                <h4>Informazioni Accredito</h4>
+                        <paper-material elevation="0">
+                            <p class="groupTitle"><span class="groupTitle">INFORMAZIONI ACCREDITO</span>
 
-                <div class="card-content">
-                    <p>Codice IBAN: <span>[[tributoCorrente.ibanAccredito.codIban]]</span></p>
-                    <p>Codice BIC Accredito: <span>[[tributoCorrente.ibanAccredito.codBicAccredito]]</span></p>
-                    <p>Coddic IBAN Appoggio: <span>[[tributoCorrente.ibanAccredito.codIbanAppoggio]]</span></p>
-                    <p>Codice BIC Appoggio: <span>[[tributoCorrente.ibanAccredito.codBicAppoggio]]</span></p>
-                    <p>Id Seller Bank: <span>[[tributoCorrente.ibanAccredito.idSellerBank]]</span></p>
-                    <p>Id Negozio: <span>[[tributoCorrente.ibanAccredito.idNegozio]]</span></p>
-                    <p>Postale: <span>[[_getPostale(tributoCorrente.ibanAccredito)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Codice IBAN: </span><span>[[tributoCorrente.ibanAccredito.codIban]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Codice BIC Accredito: </span><span>[[tributoCorrente.ibanAccredito.codBicAccredito]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Coddic IBAN Appoggio: </span><span>[[tributoCorrente.ibanAccredito.codIbanAppoggio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Codice BIC Appoggio: </span><span>[[tributoCorrente.ibanAccredito.codBicAppoggio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Id Seller Bank: </span><span>[[tributoCorrente.ibanAccredito.idSellerBank]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Id Negozio: </span><span>[[tributoCorrente.ibanAccredito.idNegozio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Postale: </span><span>[[_getPostale(tributoCorrente.ibanAccredito)]]</span></p>
+                        </paper-material>
+                    </div>
                 </div>
-            </paper-material>
-        </paper-material>
+            </div>
+        </div>
     </template>
     <script>
   (function() {
@@ -62,7 +65,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         tributoCorrente: {
           type: Object,
           value: null
-        }
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
       },
        _getPostale: function(ibanObj){
             var valore = this._getProperty(ibanObj, 'postale') || false;
@@ -71,6 +79,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return 'Si';
             else
                 return 'No';
+      },
+
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
       },
       _getProperty: function(elemento, nomeProperty){
             if(elemento){

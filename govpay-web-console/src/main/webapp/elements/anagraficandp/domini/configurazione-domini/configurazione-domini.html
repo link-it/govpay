@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.entryAnimation = 'slide-from-left-animation';
             this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
-            this.$.lista.filtraRisultati();
+            this.$.lista.eseguiRicerca();
         },
 
       _selectDominio: function(event){
@@ -78,6 +78,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.govpayUrl = govpayUrl + '/rs/dars/domini/'+ this.dominioCorrente.id;
         this.selected = 1;
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', event.detail.titoloPagina);
       },
 
        _reloadDominio: function(elementoModificato){
@@ -94,7 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                this.$.dettagliodominio.generateRequest();
 
                if(this.selected == 0){
-                    this.$.lista.filtraRisultati();
+                    this.$.lista.eseguiRicerca();
                 }
               }
           }
@@ -108,8 +109,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
-        this.$.lista.filtraRisultati();
+        this.$.lista.eseguiRicerca();
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', 'Domini');
       }
     });
   })();

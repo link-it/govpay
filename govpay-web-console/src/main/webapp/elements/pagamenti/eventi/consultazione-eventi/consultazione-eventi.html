@@ -66,7 +66,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.exitAnimation = 'slide-right-animation';
             this.selected = 0;
             this.$.lista.init();
-            this.$.lista.filtraRisultati();
+            this.$.lista.eseguiRicerca();
         },
 
       _selectEvento: function(event){
@@ -74,11 +74,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.exitAnimation = 'slide-left-animation';
         this.eventoCorrente = event.detail.eventoCorrente;
         this.govpayUrl = govpayUrl + '/rs/dars/eventi/'+ this.eventoCorrente.id;
-
-       // this.dettaglioEventoCorrente = this.ajaxResponseEvento;
-        //console.log(this.dettaglioEventoCorrente);
         this.selected = 1;
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', event.detail.titoloPagina);
       },
 
       _erroreDars : function(event){
@@ -89,8 +87,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
-        this.$.lista.filtraRisultati();
+        this.$.lista.eseguiRicerca();
         this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', 'Giornale degli Eventi');
       }
     });
   })();
