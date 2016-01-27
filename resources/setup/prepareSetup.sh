@@ -58,12 +58,12 @@ then
         exit 5
 fi 
 cp ${DOC}/GovPay-ManualeUtente.pdf core.template/doc/
-if [ ! -e "${DOC}/GovPay-ManualeIntroduzione.pdf" ]
+if [ ! -e "${DOC}/GovPay-PagoPA.pdf" ]
 then
         echo "Manuale di Introduzione a GovPay non esistente"
         exit 5
 fi
-cp ${DOC}/GovPay-ManualeIntroduzione.pdf core.template/doc/
+cp ${DOC}/GovPay-PagoPA.pdf core.template/doc/
 if [ ! -e "${COPYING_FILE}" ]
 then
         echo "Copying file non esistente"
