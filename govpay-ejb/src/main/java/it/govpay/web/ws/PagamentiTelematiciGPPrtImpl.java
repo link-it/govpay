@@ -152,7 +152,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			if(bodyrichiesta.getCanale().getCodCanale() != null) {
 				canale = psp.getCanale(bodyrichiesta.getCanale().getCodCanale());
 			} else {
-				canale = psp.getCanale(PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getCanale().getTipoVersamento()), null);
+				canale = psp.getCanaleAttivo(PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getCanale().getTipoVersamento()), null);
 			}
 			
 			if(canale == null) {
@@ -313,7 +313,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			if(bodyrichiesta.getCanale().getCodCanale() != null) {
 				canale = psp.getCanale(bodyrichiesta.getCanale().getCodCanale());
 			} else {
-				canale = psp.getCanale(PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getCanale().getTipoVersamento()), modello);
+				canale = psp.getCanaleAttivo(PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getCanale().getTipoVersamento()), modello);
 			}
 			
 			if(canale == null) throw new GovPayException(GovPayExceptionEnum.PSP_NON_TROVATO);

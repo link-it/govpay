@@ -21,14 +21,13 @@
 package it.govpay.bd.model;
 
 import it.govpay.bd.model.Rpt.TipoVersamento;
+import org.apache.commons.lang.ArrayUtils;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.apache.commons.lang.ArrayUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 /**
  * Modello di un PSP GovPay
@@ -189,6 +188,23 @@ public class Psp extends BasicModel {
 			txt = txt + c.toString();
 		}
 		return txt;
+	}
+
+	/**
+	 * Restituisce il Canale attivo in base al {@link TipoVersamento} e al {@link ModelloPagamento} se indicato
+	 *
+	 * @param tipoVersamento
+	 * @param modelloPagamento
+	 * @return {@link Canale} attivo
+	 */
+	public Canale getCanaleAttivo(TipoVersamento tipoVersamento, ModelloPagamento modelloPagamento) {
+		for (Canale c : canali) {
+			if (c.getTipoVersamento().equals(tipoVersamento)
+					&& (modelloPagamento == null || c.getModelloPagamento().equals(modelloPagamento))
+					&& c.isAbilitato())
+				return c;
+		}
+		return null;
 	}
 	
 	public Canale getCanale(TipoVersamento tipoVersamento, ModelloPagamento modelloPagamento) {
