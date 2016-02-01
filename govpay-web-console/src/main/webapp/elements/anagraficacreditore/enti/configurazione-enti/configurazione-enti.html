@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-enti id="lista" on-select-item="_selectEnte"></lista-enti>
             </neon-animatable>
             <neon-animatable>
-                <ente-detail ente-corrente="{{dettaglioEnteCorrente.response}}"></ente-detail>
+                <ente-detail id="dettaglioPage" ente-corrente="{{dettaglioEnteCorrente.response}}"></ente-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -72,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _selectEnte: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+         this.$.dettaglioPage.selectedTab=0;
         this.enteCorrente = event.detail.ente;
         this.govpayUrl = govpayUrl + '/rs/dars/enti/'+ this.enteCorrente.id;
         this.selected = 1;
@@ -89,6 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 } else {
                     this.enteCorrente = { 'id' : id};
                 }
+                 this.$.dettaglioPage.selectedTab=0;
                 this.govpayUrl = govpayUrl + '/rs/dars/enti/'+ this.enteCorrente.id;
                 this.$.dettaglioente.generateRequest();
                if(this.selected == 0){

@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-pagamenti id="lista" on-select-item="_selectPagamento"></lista-pagamenti>
             </neon-animatable>
             <neon-animatable>
-                <pagamento-detail pagamento-corrente="[[dettaglioPagamentoCorrente.response]]"></pagamento-detail>
+                <pagamento-detail id="dettaglioPage" pagamento-corrente="[[dettaglioPagamentoCorrente.response]]"></pagamento-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -69,11 +69,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.selected = 0;
             this.$.lista.init();
             this.$.lista.eseguiRicerca();
+            this.pagamentoCorrente = null;
+            this.dettaglioPagamentoCorrente=null;
         },
 
       _selectPagamento: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+        this.dettaglioPagamentoCorrente=null;
+        this.$.dettaglioPage.selectedTab=0;
+        this.govpayUrl = null;
         this.pagamentoCorrente = event.detail.pagamentoCorrente;
         this.govpayUrl = govpayUrl + '/rs/dars/pagamenti/'+ this.pagamentoCorrente.id;
         this.selected = 1;
@@ -90,6 +95,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
         this.$.lista.eseguiRicerca();
+        //this.dettaglioPagamentoCorrente=null;
+        this.pagamentoCorrente = null;
         this.fire('changed-page', this.selected);
         this.fire('change-titolo-pagina', 'Pagamenti');
       }

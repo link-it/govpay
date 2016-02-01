@@ -31,7 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-rendicontazioni id="lista" on-select-item="_selectRendicontazione"></lista-rendicontazioni>
             </neon-animatable>
             <neon-animatable>
-                <rendicontazione-detail rendicontazione-corrente="[[dettaglioRendicontazioneCorrente.response]]"></rendicontazione-detail>
+                <rendicontazione-detail id="dettaglioPage" rendicontazione-corrente="[[dettaglioRendicontazioneCorrente.response]]"></rendicontazione-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -68,11 +68,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.selected = 0;
             this.$.lista.init();
             this.$.lista.eseguiRicerca();
+            this.rendicontazioneCorrente=null;
+            this.dettaglioRendicontazioneCorrente=null;
         },
 
       _selectRendicontazione: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+        this.dettaglioRendicontazioneCorrente=null;
+        this.govpayUrl = null;
+        this.$.dettaglioPage.selectedTab=0;
         this.rendicontazioneCorrente = event.detail.rendicontazioneCorrente;
         this.govpayUrl = govpayUrl + '/rs/dars/rendicontazioni/'+ this.rendicontazioneCorrente.id;
         this.selected = 1;
@@ -87,6 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
         this.$.lista.eseguiRicerca();
+        this.rendicontazioneCorrente=null;
         this.fire('changed-page', this.selected);
         this.fire('change-titolo-pagina', 'Rendicontazioni');
       }

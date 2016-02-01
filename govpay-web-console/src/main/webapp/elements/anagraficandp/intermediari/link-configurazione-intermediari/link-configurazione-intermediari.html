@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <link-list-intermediari id="lista" on-select-item="_selectIntermediario"></link-list-intermediari>
       </neon-animatable>
       <neon-animatable>
-        <link-intermediario-detail intermediario-corrente="{{dettaglioIntermediarioCorrente.response}}"></link-intermediario-detail>
+        <link-intermediario-detail  id="dettaglioPage" intermediario-corrente="{{dettaglioIntermediarioCorrente.response}}"></link-intermediario-detail>
       </neon-animatable>
     </neon-animated-pages>
   </template>
@@ -79,6 +79,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _selectIntermediario: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+        this.$.dettaglioPage.selectedTab=0;
         this.intermediarioCorrente = event.detail.intermediario;
         this.govpayUrl = govpayUrl + '/rs/dars/intermediari/'+ this.intermediarioCorrente.id;
         this.selected = 1;
@@ -96,6 +97,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 } else {
                     this.intermediarioCorrente = { 'id' : id};
                 }
+                this.$.dettaglioPage.selectedTab=0;
                 this.govpayUrl = govpayUrl + '/rs/dars/intermediari/'+ this.intermediarioCorrente.id;
                 this.$.govpayintermediariconndettaglio.generateRequest();
                 if(this.selected == 0){

@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-psp id="lista" on-select-item="_selectPsp"></lista-psp>
             </neon-animatable>
             <neon-animatable>
-                <psp-detail psp-corrente="{{dettaglioPspCorrente.response}}"></psp-detail>
+                <psp-detail id="dettaglioPage" psp-corrente="{{dettaglioPspCorrente.response}}"></psp-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -73,6 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
         this.pspCorrente = event.detail.psp;
+        this.$.dettaglioPage.selectedTab=0;
         this.govpayUrl = govpayUrl + '/rs/dars/psp/'+ this.pspCorrente.id;
         this.selected = 1;
         this.fire('changed-page', this.selected);

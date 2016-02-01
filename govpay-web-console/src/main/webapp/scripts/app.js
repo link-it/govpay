@@ -38,6 +38,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if(esitoOperazione == 'ESEGUITA'){
                     app.profiloCorrente = darsResponse.response;
                     app.isEditSection = false;
+                    app.isFirstPage = true;
+
+                    //visualizza pagina dei pagamenti
+                    app.route = 'pagamenti';
+                    var drawerPanel = document.querySelector('#paperDrawerPanel');
+                    if (drawerPanel.narrow) {
+                      drawerPanel.closeDrawer();
+                    }
+
+                    var pagina = document.querySelector('#listaPagamenti');
+                    pagina.init();
+
+                    // Evidenzia il menu
+                    var sezioneMonitoraggio = document.querySelector('#sezioneMonitoraggio');
+                    if(sezioneMonitoraggio){
+                        sezioneMonitoraggio.opened=true;
+                        sezioneMonitoraggio.classList.add('iron-selected');
+                    }
+                    console.log(sezioneMonitoraggio);
+
                 } else if(esitoOperazione == 'NON_ESEGUITA'){
                     // impossibile leggere il profilo utente;
                      window.location = '/govpayConsole/public/errore.html';

@@ -8,57 +8,21 @@
             :host {
             display: block;
             }
-
-            .fullCardWidth {
-            width: 100%;
-            }
-            .blue {
-            color: var(--paper-light-blue-300);
-            }
-            .red {
-            color: var(--paper-red-300);
-            }
-            .orange {
-            color: var(--paper-amber-300);
-            }
-            .green {
-            color: var(--paper-green-300);
-            }
-
-            .div-table-row:hover .shortText::after {
-            content: ' [+]';
-            color: gray;
-            }
-            .div-table-row.expanded:hover .shortText::after {
-            content: '';
-            }
-            .div-table-row .longText {
-
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded .longText {
-            display: block;
-            border-bottom: solid 1px #000;
-            }
-            .div-table-row.expanded:hover .longText::after {
-            content: ' [–]';
-            }
-            .shortText, .longText {
-            font-size: 14px;
-            }
-            .longText {
-            color: gray;
-            display: none !important;
-            }
         </style>
-        <paper-card heading="[[_getTitoloSezione(erroreCorrente)]]" class="fullCardWidth">
-            <div class="card-content">
-                Non si dispone dell'autorizzazioni per visualizzare la sezione selezionata.
+        <div class="layout horizontal center-justified restorePadding">
+            <div id="resultbox" class="layout vertical flex">
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden="true"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden="true"></paper-icon-button>
+                </div>
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">[[_getTitoloSezione(erroreCorrente)]]</span></p>
 
+                    <p class="groupItem"><span> Non si dispone dell'autorizzazioni per visualizzare la sezione selezionata.</span></p>
+                </paper-material>
             </div>
-        </paper-card>
+        </div>
     </template>
-
     <script>
     (function() {
       'use strict';

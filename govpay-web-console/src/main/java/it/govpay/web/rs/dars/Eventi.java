@@ -135,6 +135,8 @@ public class Eventi extends BaseRsService {
 				else {
 					filter.setCodDominiAbilitati(listaIdDominiByIdEnti);
 				}
+				
+				filter.setIdApplicazioni(operatore.getIdApplicazioni()); 
 			}
 
 			if(findAll == null)
@@ -199,6 +201,15 @@ public class Eventi extends BaseRsService {
 				if(listaIdDominiByIdEnti != null) {
 					for(String codDominio: listaIdDominiByIdEnti) {
 						if(codDominio.equals(evento.getCodDominio())) {
+							authorized = true;
+							break;
+						}
+					}
+				}
+				
+				if(operatore.getIdApplicazioni() != null && !authorized) {
+					for(Long idApplicazione: operatore.getIdApplicazioni()) {
+						if(idApplicazione.longValue() == evento.getIdApplicazione()) {
 							authorized = true;
 							break;
 						}

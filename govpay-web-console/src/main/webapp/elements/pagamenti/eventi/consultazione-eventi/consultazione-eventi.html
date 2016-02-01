@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-eventi id="lista" on-select-item="_selectEvento"></lista-eventi>
             </neon-animatable>
             <neon-animatable>
-                <evento-detail evento-corrente="[[dettaglioEventoCorrente.response]]"></evento-detail>
+                <evento-detail id="dettaglioPage" evento-corrente="[[dettaglioEventoCorrente.response]]"></evento-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -67,11 +67,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.selected = 0;
             this.$.lista.init();
             this.$.lista.eseguiRicerca();
+            this.eventoCorrente=null;
+            this.dettaglioEventoCorrente=null;
         },
 
       _selectEvento: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+        this.dettaglioEventoCorrente=null;
+        this.govpayUrl = null;
+        this.$.dettaglioPage.selectedTab=0;
         this.eventoCorrente = event.detail.eventoCorrente;
         this.govpayUrl = govpayUrl + '/rs/dars/eventi/'+ this.eventoCorrente.id;
         this.selected = 1;
@@ -88,6 +93,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.exitAnimation = 'slide-right-animation';
         this.selected = 0;
         this.$.lista.eseguiRicerca();
+        this.eventoCorrente = null;
         this.fire('changed-page', this.selected);
         this.fire('change-titolo-pagina', 'Giornale degli Eventi');
       }

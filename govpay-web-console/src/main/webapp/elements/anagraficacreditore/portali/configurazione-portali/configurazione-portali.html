@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-portali id="lista" on-select-item="_selectPortale"></lista-portali>
             </neon-animatable>
             <neon-animatable>
-                <portale-detail portale-corrente="{{dettaglioPortaleCorrente.response}}"></portale-detail>
+                <portale-detail  id="dettaglioPage" portale-corrente="{{dettaglioPortaleCorrente.response}}"></portale-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -73,6 +73,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _selectPortale: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+         this.$.dettaglioPage.selectedTab=0;
         this.portaleCorrente = event.detail.portale;
         this.govpayUrl = govpayUrl + '/rs/dars/portali/'+ this.portaleCorrente.id;
         this.selected = 1;
@@ -92,6 +93,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 } else {
                     this.portaleCorrente = { 'id' : id};
                 }
+                 this.$.dettaglioPage.selectedTab=0;
                 this.govpayUrl = govpayUrl + '/rs/dars/portali/'+ this.portaleCorrente.id;
                 this.$.dettaglioportale.generateRequest();
                 if(this.selected == 0){

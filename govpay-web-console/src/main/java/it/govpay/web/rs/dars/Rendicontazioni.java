@@ -20,6 +20,7 @@
  */
 package it.govpay.web.rs.dars;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.DefaultValue;
@@ -37,6 +38,9 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.rendicontazione.FrFilter;
 import it.govpay.dars.bd.RendicontazioniBD;
 import it.govpay.dars.model.FrExt;
@@ -73,14 +77,16 @@ public class Rendicontazioni extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-		
+
 		try {		
 			try {
 				bd = BasicBD.newInstance();
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			this.checkOperatoreAdmin(bd);
+
+			Operatore operatore = this.getOperatoreByPrincipal(bd);
+
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
 			FrFilter filter = rendicontazioniBD.newFilter();
 			filter.setOffset(offset);
@@ -89,7 +95,17 @@ public class Rendicontazioni extends BaseRsService {
 			filter.setCodFlusso(codFlusso);
 			filter.setCodPsp(codPsp);
 			filter.setStato(stato); 
-			
+
+			// Se l'utente non e' admin puo'vedere solo le rendicontazioni che sono associati a lui.
+			if(!ProfiloOperatore.ADMIN.equals(operatore.getProfilo())){
+				List<Long> idDomini = new ArrayList<Long>();
+				for(Long idEnte : operatore.getIdEnti()) {
+					long idDominio = AnagraficaManager.getEnte(bd, idEnte).getIdDominio();
+					if(!idDomini.contains(idDominio)) idDomini.add(idDominio);
+				}
+				filter.setIdDomini(idDomini);
+			}
+
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.FR.model().DATA_ORA_FLUSSO);
 			fsw.setSortOrder(SortOrder.DESC);
@@ -130,11 +146,29 @@ public class Rendicontazioni extends BaseRsService {
 			} catch (Exception e) {
 				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 			}
-			this.checkOperatoreAdmin(bd);
+
+			Operatore operatore = this.getOperatoreByPrincipal(bd);
 			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
 			FrExt rendicontazione = rendicontazioniBD.get(id);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(rendicontazione);
+
+
+			if(!ProfiloOperatore.ADMIN.equals(operatore.getProfilo())) { //Filtro per operatori vede tutto
+				boolean authorized = false;
+				for(Long idEnte : operatore.getIdEnti()) {
+					long idDominio = AnagraficaManager.getEnte(bd, idEnte).getIdDominio();
+					if(idDominio==rendicontazione.getFr().getIdDominio()){
+						authorized = true;
+						break;
+					}
+				}
+
+				if(!authorized) {
+					throw new WebApplicationException(getUnauthorizedResponse());
+				}
+			}			
+
 		}catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante la ricerca della rendicontazione:" +e.getMessage() , e);
 			throw e;

@@ -21,7 +21,7 @@
             <!-- Ricerca -->
             <div id="searchbox" class="layout vertical" hidden$="false">
                 <div class="headerbox" >
-                    <p hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]">Trovati [[ajaxResponse.response.length]] risultati</p>
+                    <p>Trovati [[ajaxResponse.response.length]] risultati</p>
                 </div>
 
                 <paper-material elevation="0">
@@ -62,9 +62,9 @@
                 </paper-material>
             </div>
 
-            <div class="separatore"   hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]"></div>
+            <div class="separatore"></div>
             <!-- Risultati -->
-            <div id="resultbox" class="layout vertical flex"  hidden$="[[_ricercaVuota(ajaxResponse.response.length)]]">
+            <div id="resultbox" class="layout vertical flex">
                 <div id="listToolbox" class="layout horizontal center end-justified headerbox">
                     <paper-icon-button icon="icons:file-upload" hidden$="{{nascondiAzioneExport}}"></paper-icon-button>
                     <paper-icon-button icon="icons:remove" hidden$="{{nascondiAzioneCancella}}"></paper-icon-button>
@@ -84,7 +84,7 @@
                                 <paper-checkbox item-icon hidden$="{{!abilitaSelezione}}"></paper-checkbox>
                                 <paper-item-body two-line>
                                     <div>IUV [[item.iuv]] per [[item.ente]] di [[item.importoTotale]] &euro;</div>
-                                    <div secondary>[[_getStatoPagamento(item)]]</div>
+                                    <div secondary>[[_getStatoPagamento(item)]] in Data [[_getDataUltimoAggiornamento(item)]]</div>
                                 </paper-item-body>
                             </paper-icon-item>
                         </template>

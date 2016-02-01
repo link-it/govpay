@@ -46,18 +46,14 @@
                             </paper-material>
 
                             <!-- RPT -->
-                            <paper-material elevation="0">
+                            <paper-material elevation="0" hidden$="[[_nascondiRpt(pagamentoCorrente)]]">
                                 <p class="groupTitle"><span class="groupTitle">RPT</span></p>
 
                                 <p class="groupItem"><span class="grouplabel">Stato: </span><span>[[_getPropertyRpt(pagamentoCorrente,'statoRpt')]]</span></p>
-                                <p class="groupItem"><span class="grouplabel">IUV: </span><span>[[_getPropertyVersamento(pagamentoCorrente,'iuv')]]</span></p>
-                                <p class="groupItem"><span class="grouplabel">CCP: </span><span>[[_getCCP(pagamentoCorrente)]]</span></p>
                                 <p class="groupItem"><span class="grouplabel">Codice Carrello: </span><span>[[_getPropertyRpt(pagamentoCorrente,'codCarrello')]]</span></p>
                                 <p class="groupItem"><span class="grouplabel">Codice Sessione: </span><span>[[_getPropertyRpt(pagamentoCorrente,'codSessione')]]</span></p>
-                                <p class="groupItem"><span class="grouplabel">Dominio: </span><span>[[_getPropertyVersamento(pagamentoCorrente,'codDominio')]]</span></p>
                                 <p class="groupItem"><span class="grouplabel">Psp: </span><span>[[_getPropertyPsp(pagamentoCorrente,'codPsp')]]</span></p>
                                 <p class="groupItem"><span class="grouplabel">Canale: </span><span>[[pagamentoCorrente.canale.codCanale]]</span></p>
-                                <p class="groupItem"><span class="grouplabel">Applicazione: </span><span>[[_getPropertyApplicazione(pagamentoCorrente,'codApplicazione')]]</span></p>
                                 <p class="groupItem"><span class="grouplabel">Tipo Versamento: </span><span>[[_getPropertyRpt(pagamentoCorrente,'tipoVersamento')]]</span></p>
                                 <template is="dom-if" if="[[_getVersante(pagamentoCorrente) != '']]">
                                     <p class="groupItem"><span class="grouplabel">Versante: </span><span>[[_getVersante(pagamentoCorrente)]]</span></p>
@@ -81,7 +77,7 @@
                             </paper-material>
 
                             <!-- RT -->
-                            <paper-material elevation="0">
+                            <paper-material elevation="0" hidden$="[[_nascondiRt(pagamentoCorrente)]]">
                                 <p class="groupTitle"><span class="groupTitle">RT</span></p>
 
                                 <p class="groupItem"><span class="grouplabel">Id Messaggio: </span><span>[[_getPropertyRt(pagamentoCorrente,'codMsgRicevuta')]]</span></p>
@@ -225,10 +221,6 @@
           pagamentoCorrente: {
             type: Object,
             value: null
-          },
-          selectedTab: {
-            type: Object,
-            value: 0
           },
           dettaglioAnagrafica: {
             type: String,
@@ -534,6 +526,22 @@
         },
          _dateFormat : function(date, format) {
             return moment(date).format(format);
+        },
+        _nascondiRpt: function(pagamentoCorrente) {
+            var rpt = this._getProperty(pagamentoCorrente,'rpt');
+
+            if(rpt){
+                return false;
+            }
+            return true;
+        },
+        _nascondiRt: function(pagamentoCorrente) {
+            var rt = this._getProperty(pagamentoCorrente,'rt');
+
+            if(rt){
+                return false;
+            }
+            return true;
         }
       });
     })();

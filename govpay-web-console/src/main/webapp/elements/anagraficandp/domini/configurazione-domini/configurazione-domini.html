@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-domini id="lista" on-select-item="_selectDominio"></lista-domini>
             </neon-animatable>
             <neon-animatable>
-                <dominio-detail dominio-corrente="{{dettaglioDominioCorrente.response}}"></dominio-detail>
+                <dominio-detail id="dettaglioPage"  dominio-corrente="{{dettaglioDominioCorrente.response}}"></dominio-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -74,6 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _selectDominio: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+        this.$.dettaglioPage.selectedTab=0;
         this.dominioCorrente = event.detail.dominio;
         this.govpayUrl = govpayUrl + '/rs/dars/domini/'+ this.dominioCorrente.id;
         this.selected = 1;
@@ -91,6 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 } else {
                     this.dominioCorrente = { 'id' : id};
                 }
+                this.$.dettaglioPage.selectedTab=0;
                this.govpayUrl = govpayUrl + '/rs/dars/domini/'+ this.dominioCorrente.id;
                this.$.dettagliodominio.generateRequest();
 

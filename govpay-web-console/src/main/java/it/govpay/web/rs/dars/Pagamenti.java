@@ -20,7 +20,6 @@
  */
 package it.govpay.web.rs.dars;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ws.rs.DefaultValue;
@@ -103,13 +102,8 @@ public class Pagamenti extends BaseRsService {
 
 			// Se l'utente non e' admin puo'vedere solo gli enti che sono associati a lui.
 			if(!ProfiloOperatore.ADMIN.equals(operatore.getProfilo())){
-				if(operatore.getIdEnti() == null || operatore.getIdEnti().isEmpty() 
-						|| operatore.getIdApplicazioni() == null || operatore.getIdApplicazioni().isEmpty())
-					findAll = new ArrayList<ListaPagamentiEntry>();
-				else {
-					filter.setIdEnti(operatore.getIdEnti());
-					filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				}
+				filter.setIdEnti(operatore.getIdEnti());
+				filter.setIdApplicazioni(operatore.getIdApplicazioni());
 			}
 
 			if(findAll == null)

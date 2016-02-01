@@ -116,28 +116,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
             <!-- Drawer Content -->
-            <paper-menu class="list" attr-for-selected="data-route" selected="[[route]]">
-                <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'pagamenti')]]">
-                    <paper-submenu>
+            <paper-menu class="list" attr-for-selected="data-route" selected="{{route}}">
+                <!--<template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'pagamenti')]]">-->
+                    <paper-submenu id="sezioneMonitoraggio">
                         <paper-item class="menu-trigger">Monitoraggio</paper-item>
                         <paper-menu class="menu-content">
                             <paper-item >
                                 <a data-route="pagamenti" href="/pagamenti" comp="listaPagamenti"
                                    on-tap="onDataRouteClick">Pagamenti</a>
                             </paper-item>
-                            <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'rendicontazioni')]]">
+                         <!--   <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'rendicontazioni')]]">-->
                                 <paper-item>
                                     <a data-route="rendicontazioni" href="/rendicontazioni" comp="listaRendicontazioni"
                                        on-tap="onDataRouteClick">Rendicontazioni</a>
                                 </paper-item>
-                            </template>
+                            <!--</template>-->
                             <paper-item>
                                 <a data-route="eventi" href="/eventi" comp="listaEventi" on-tap="onDataRouteClick">Giornale
                                     degli Eventi</a>
                             </paper-item>
                          </paper-menu>
                     </paper-submenu>
-                </template>
+                <!--</template>-->
                 <template is="dom-if" if="[[!_nascondiSezione(profiloCorrente,'anagraficaNdp')]]">
                     <paper-submenu>
                         <paper-item class="menu-trigger">Anagrafica NodoSPC</paper-item>
@@ -226,6 +226,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <!-- <div class="bottom bottom-container center horizontal layout">
                   <div class="bottom-title paper-font-subhead">v2.0.m1</div>
                 </div> -->
+                <div>[[profiloCorrente.nome]]</div>
                 <paper-menu-button id="profiloOperatoreMenu">
                     <paper-icon-button icon="icons:face" class="dropdown-trigger"></paper-icon-button>
                     <paper-menu class="dropdown-content" attr-for-selected="action">

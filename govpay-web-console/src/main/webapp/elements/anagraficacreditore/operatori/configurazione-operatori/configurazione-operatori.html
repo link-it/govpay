@@ -30,7 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <lista-operatori id="lista" on-select-item="_selectOperatore"></lista-operatori>
             </neon-animatable>
             <neon-animatable>
-                <operatore-detail operatore-corrente="{{dettaglioOperatoreCorrente.response}}"></operatore-detail>
+                <operatore-detail id="dettaglioPage" operatore-corrente="{{dettaglioOperatoreCorrente.response}}"></operatore-detail>
             </neon-animatable>
         </neon-animated-pages>
     </template>
@@ -72,6 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _selectOperatore: function(event){
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
+         this.$.dettaglioPage.selectedTab=0;
         this.operatoreCorrente = event.detail.operatore;
         this.govpayUrl = govpayUrl + '/rs/dars/operatori/'+ this.operatoreCorrente.id;
         this.selected = 1;
@@ -91,6 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 } else {
                     this.operatoreCorrente = { 'id' : id};
                 }
+                 this.$.dettaglioPage.selectedTab=0;
                 this.govpayUrl = govpayUrl + '/rs/dars/operatori/'+ this.operatoreCorrente.id;
                 this.$.dettagliooperatore.generateRequest();
                 if(this.selected == 0){
