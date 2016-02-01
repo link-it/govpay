@@ -60,6 +60,7 @@ public class FrTest extends BasicTest {
 		fr.setIur("iur");
 		fr.setNumeroPagamenti(1);
 		fr.setStato(StatoFr.ACQUISITA);
+		fr.setIdDominio(dominioA.getId());
 		
 		List<SingolaRendicontazione> singolaRendicontazioneList = new ArrayList<SingolaRendicontazione>();
 		SingolaRendicontazione singolaRendicontazione = new SingolaRendicontazione();

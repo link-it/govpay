@@ -38,6 +38,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="idTracciatoXML" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idPsp" type="{http://www.govpay.it/orm}id-psp" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codFlusso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
@@ -63,6 +64,7 @@ import java.io.Serializable;
   propOrder = {
   	"idTracciatoXML",
   	"idPsp",
+  	"idDominio",
   	"codFlusso",
   	"annoRiferimento",
   	"dataOraFlusso",
@@ -109,6 +111,14 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 
   public void setIdPsp(IdPsp idPsp) {
     this.idPsp = idPsp;
+  }
+
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
   }
 
   public java.lang.String getCodFlusso() {
@@ -207,6 +217,9 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 
   @XmlElement(name="idPsp",required=true,nillable=false)
   protected IdPsp idPsp;
+
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codFlusso",required=true,nillable=false)

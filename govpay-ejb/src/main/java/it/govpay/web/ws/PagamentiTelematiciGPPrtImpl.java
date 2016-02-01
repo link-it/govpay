@@ -411,7 +411,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 
 	@Override
 	public GpSceltaWISPResponse gpSceltaWISP(GpSceltaWISP bodyrichiesta) {
-		log.info("Ricevuta richiesta di recupero SceltaWISP [codDominio: " + bodyrichiesta.getCodDominio() + "][keyPA: " + bodyrichiesta.getKeyPA() + "][keyWISP: " + bodyrichiesta.getKeyWISP() + "]");
+		log.info("Ricevuta richiesta di recupero SceltaWISP [codDominio: " + bodyrichiesta.getCodDominio() + "][codEnte: " + bodyrichiesta.getCodEnte() + "][keyPA: " + bodyrichiesta.getKeyPA() + "][keyWISP: " + bodyrichiesta.getKeyWISP() + "]");
 		
 		GpSceltaWISPResponse esitoOperazione = new GpSceltaWISPResponse();
 		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
@@ -473,10 +473,12 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		} catch (GovPayException e) {
 			esitoOperazione.setCodEsito(CodEsito.KO);
 			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
+			esitoOperazione.setDescrizioneErrore(e.getDescrizione());
 			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
 				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
+			else {
+				log.error("Errore durante il pagamento. Ritorno esito [" + e.getTipoException() + "]");
+			}
 			return esitoOperazione;
 		} catch (Exception e) {
 			esitoOperazione.setCodEsito(CodEsito.KO);

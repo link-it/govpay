@@ -175,33 +175,39 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			fields.add(FR.model().STATO);
 			fields.add(FR.model().DESCRIZIONE_STATO);
 			fields.add(new CustomField("id_psp", Long.class, "id_psp", this.getFRFieldConverter().toTable(FR.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFRFieldConverter().toTable(FR.model())));
 			fields.add(new CustomField("id_tracciato_xml", Long.class, "id_tracciato_xml", this.getFRFieldConverter().toTable(FR.model())));
-			
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				Long id_psp = (Long) map.remove("id_psp");
+				Long id_dominio = (Long) map.remove("id_dominio");
 				Long id_tracciato_xml = (Long) map.remove("id_tracciato_xml");
 
 				FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
 				
 				it.govpay.orm.IdPsp id_er_psp = null;
+				it.govpay.orm.IdTracciato id_er_tracciatoXML = null;
+				it.govpay.orm.IdDominio id_fr_dominio = null;
+
 				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
 					id_er_psp = ((JDBCPspServiceSearch)(this.getServiceManager().getPspServiceSearch())).findId(id_psp, false);
+					id_er_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findId(id_tracciato_xml, false);
+					id_fr_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(id_dominio, false);
 				}else{
 					id_er_psp = new it.govpay.orm.IdPsp();
+					id_er_tracciatoXML = new it.govpay.orm.IdTracciato();
+					id_fr_dominio = new it.govpay.orm.IdDominio();
 				}
 				id_er_psp.setId(id_psp);
 				fr.setIdPsp(id_er_psp);
 				
-				it.govpay.orm.IdTracciato id_er_tracciatoXML = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_er_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findId(id_tracciato_xml, false);
-				}else{
-					id_er_tracciatoXML = new it.govpay.orm.IdTracciato();
-				}
 				id_er_tracciatoXML.setId(id_tracciato_xml);
 				fr.setIdTracciatoXML(id_er_tracciatoXML);
+
+				id_fr_dominio.setId(id_dominio);
+				fr.setIdDominio(id_fr_dominio);
 
 
 				list.add(fr);
@@ -495,6 +501,10 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				imgSaved.getIdPsp()!=null){
 			obj.getIdPsp().setId(imgSaved.getIdPsp().getId());
 		}
+		if(obj.getIdDominio()!=null && 
+				imgSaved.getIdDominio()!=null){
+			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
+		}
 
 	}
 	
@@ -561,13 +571,18 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			String tableName2 = this.getFRFieldConverter().toAliasTable(FR.model().ID_PSP);
 			sqlQueryObject.addWhereCondition(tableName1+".id_psp="+tableName2+".id");
 		}
+
+		if(expression.inUseModel(FR.model().ID_DOMINIO,false)){
+			String tableName1 = this.getFRFieldConverter().toAliasTable(FR.model());
+			String tableName2 = this.getFRFieldConverter().toAliasTable(FR.model().ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
+		}
 		
 		if(expression.inUseModel(FR.model().ID_TRACCIATO_XML,false)){
 			String tableName1 = this.getFRFieldConverter().toAliasTable(FR.model());
 			String tableName2 = this.getFRFieldConverter().toAliasTable(FR.model().ID_TRACCIATO_XML);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tracciato_xml="+tableName2+".id");
 		}
-		
         
 	}
 	
@@ -604,6 +619,12 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PSP),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_PSP))
+			));
+
+		// FR.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(FR.model().ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_DOMINIO))
 			));
 
         return mapTableToPKColumn;		

@@ -1184,11 +1184,13 @@ CREATE TABLE fr
 	id NUMBER NOT NULL,
 	id_tracciato_xml NUMBER NOT NULL,
 	id_psp NUMBER NOT NULL,
+	id_dominio NUMBER NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,anno_riferimento),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_1 FOREIGN KEY (id_tracciato_xml) REFERENCES tracciatixml(id) ON DELETE CASCADE,
 	CONSTRAINT fk_fr_2 FOREIGN KEY (id_psp) REFERENCES psp(id) ON DELETE CASCADE,
+	CONSTRAINT fk_fr_3 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
@@ -1343,7 +1345,7 @@ end;
 
 
 
-CREATE TABLE id_messaggio_relativo
+CREATE TABLE ID_MESSAGGIO_RELATIVO
 (
 	COUNTER NUMBER NOT NULL,
 	PROTOCOLLO VARCHAR(255) NOT NULL,
@@ -1351,9 +1353,9 @@ CREATE TABLE id_messaggio_relativo
 	ora_registrazione TIMESTAMP,
 	-- fk/pk columns
 	-- fk/pk keys constraints
-	CONSTRAINT pk_id_messaggio_relativo PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
+	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
 );
 
 
-ALTER TABLE id_messaggio_relativo MODIFY ora_registrazione DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE ID_MESSAGGIO_RELATIVO MODIFY ora_registrazione DEFAULT CURRENT_TIMESTAMP;
 

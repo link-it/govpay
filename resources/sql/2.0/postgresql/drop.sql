@@ -1,5 +1,5 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
-DROP TABLE id_messaggio_relativo CASCADE;
+DROP TABLE ID_MESSAGGIO_RELATIVO CASCADE;
 DROP TABLE conti_accredito CASCADE;
 DROP TABLE tabella_controparti CASCADE;
 DROP TABLE mail CASCADE;

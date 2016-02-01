@@ -616,6 +616,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idTracciatoXML" field="idTracciatoXML" usage="required" map-as="_IdTracciato_Type"/>
     <structure name="idPsp" field="idPsp" usage="required" map-as="_IdPsp_Type"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
     <value name="annoRiferimento" field="annoRiferimento" usage="required"/>
     <value name="dataOraFlusso" field="dataOraFlusso" usage="required"/>

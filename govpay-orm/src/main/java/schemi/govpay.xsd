@@ -969,6 +969,10 @@
 				
 			</xsd:element>
 			
+			<xsd:element name="idDominio" type="id-dominio">
+				
+			</xsd:element>
+			
 			<xsd:element name="codFlusso" type="xsd:string"/>
 			<xsd:element name="annoRiferimento" type="xsd:int"/>
 			<xsd:element name="dataOraFlusso" type="xsd:dateTime"/>

@@ -27,7 +27,7 @@
 -- DROP INDEX index_intermediari_1 ON intermediari  CASCADE;
 -- DROP INDEX index_canali_1 ON canali  CASCADE;
 -- DROP INDEX index_psp_1 ON psp  CASCADE;
-DROP TABLE id_messaggio_relativo CASCADE;
+DROP TABLE ID_MESSAGGIO_RELATIVO CASCADE;
 DROP TABLE conti_accredito CASCADE;
 DROP TABLE tabella_controparti CASCADE;
 DROP TABLE mail CASCADE;

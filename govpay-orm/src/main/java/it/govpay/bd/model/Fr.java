@@ -36,6 +36,7 @@ public class Fr extends BasicModel{
 	private Long id;
 	private Long idTracciatoXML;
 	private long idPsp;
+	private long idDominio;
 	
 	private String codFlusso;
 	private int annoRiferimento;
@@ -157,6 +158,14 @@ public class Fr extends BasicModel{
 	public void setSingolaRendicontazioneList(
 			List<SingolaRendicontazione> singolaRendicontazioneList) {
 		this.singolaRendicontazioneList = singolaRendicontazioneList;
+	}
+
+	public long getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(long idDominio) {
+		this.idDominio = idDominio;
 	}
 
 	

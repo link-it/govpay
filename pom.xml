@@ -21,7 +21,6 @@
 		<javaVersion>1.6</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<openspcoop2.version>2.3.0-SNAPSHOT</openspcoop2.version>
-		<it.govpay.orm.databaseType>postgresql</it.govpay.orm.databaseType>
 		<database.groupId>postgresql</database.groupId>
 		<database.artifactId>postgresql</database.artifactId>
 		<database.version>9.1-901-1.jdbc4</database.version>

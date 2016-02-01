@@ -44,6 +44,7 @@ public class FRModel extends AbstractModel<FR> {
 	
 		this.ID_TRACCIATO_XML = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoXML",it.govpay.orm.IdTracciato.class,"FR",FR.class));
 		this.ID_PSP = new it.govpay.orm.model.IdPspModel(new Field("idPsp",it.govpay.orm.IdPsp.class,"FR",FR.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
 		this.COD_FLUSSO = new Field("codFlusso",java.lang.String.class,"FR",FR.class);
 		this.ANNO_RIFERIMENTO = new Field("annoRiferimento",int.class,"FR",FR.class);
 		this.DATA_ORA_FLUSSO = new Field("dataOraFlusso",java.util.Date.class,"FR",FR.class);
@@ -62,6 +63,7 @@ public class FRModel extends AbstractModel<FR> {
 	
 		this.ID_TRACCIATO_XML = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoXML",it.govpay.orm.IdTracciato.class,"FR",FR.class));
 		this.ID_PSP = new it.govpay.orm.model.IdPspModel(new ComplexField(father,"idPsp",it.govpay.orm.IdPsp.class,"FR",FR.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
 		this.COD_FLUSSO = new ComplexField(father,"codFlusso",java.lang.String.class,"FR",FR.class);
 		this.ANNO_RIFERIMENTO = new ComplexField(father,"annoRiferimento",int.class,"FR",FR.class);
 		this.DATA_ORA_FLUSSO = new ComplexField(father,"dataOraFlusso",java.util.Date.class,"FR",FR.class);
@@ -79,6 +81,8 @@ public class FRModel extends AbstractModel<FR> {
 	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO_XML = null;
 	 
 	public it.govpay.orm.model.IdPspModel ID_PSP = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 	public IField COD_FLUSSO = null;
 	 

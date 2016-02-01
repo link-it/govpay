@@ -1,4 +1,4 @@
-DELETE FROM id_messaggio_relativo;
+DELETE FROM ID_MESSAGGIO_RELATIVO;
 DELETE FROM conti_accredito;
 DELETE FROM tabella_controparti;
 DELETE FROM mail;

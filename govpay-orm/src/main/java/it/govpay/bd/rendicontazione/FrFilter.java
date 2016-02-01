@@ -21,8 +21,11 @@
 package it.govpay.bd.rendicontazione;
 
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -32,8 +35,9 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
-import it.govpay.orm.Evento;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.FR;
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
 
 public class FrFilter extends AbstractFilter {
 	
@@ -43,6 +47,7 @@ public class FrFilter extends AbstractFilter {
 	private int annoRiferimento;
 	private Date datainizio;
 	private Date dataFine;
+	private List<Long> idDomini;
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
@@ -73,6 +78,7 @@ public class FrFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
+				addAnd = true;
 			}
 			
 			if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
@@ -80,13 +86,24 @@ public class FrFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.equals(FR.model().ID_PSP.COD_PSP, this.codPsp);
+				addAnd = true;
 			}
 			
 			if(this.datainizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.between(Evento.model().DATA_ORA_EVENTO, this.datainizio,this.dataFine);
+				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
+				addAnd = true;
+			}
+			
+			if(this.idDomini!= null && !this.idDomini.isEmpty()) {
+				if(addAnd)
+					newExpression.and();
+				
+				FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabaseType());
+				IField idDominioField = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(FR.model()));
+				newExpression.in(idDominioField, this.idDomini);
 				addAnd = true;
 			}
 			
@@ -146,6 +163,14 @@ public class FrFilter extends AbstractFilter {
 
 	public void setCodPsp(String codPsp) {
 		this.codPsp = codPsp;
+	}
+
+	public List<Long> getIdDomini() {
+		return idDomini;
+	}
+
+	public void setIdDomini(List<Long> idDomini) {
+		this.idDomini = idDomini;
 	}
 
 }

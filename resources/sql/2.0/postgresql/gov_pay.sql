@@ -807,11 +807,13 @@ CREATE TABLE fr
 	id BIGINT DEFAULT nextval('seq_fr') NOT NULL,
 	id_tracciato_xml BIGINT NOT NULL,
 	id_psp BIGINT NOT NULL,
+	id_dominio BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,anno_riferimento),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_1 FOREIGN KEY (id_tracciato_xml) REFERENCES tracciatixml(id) ON DELETE CASCADE,
 	CONSTRAINT fk_fr_2 FOREIGN KEY (id_psp) REFERENCES psp(id) ON DELETE CASCADE,
+	CONSTRAINT fk_fr_3 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
@@ -911,7 +913,7 @@ CREATE TABLE conti_accredito
 
 
 
-CREATE TABLE id_messaggio_relativo
+CREATE TABLE ID_MESSAGGIO_RELATIVO
 (
 	COUNTER BIGINT NOT NULL,
 	PROTOCOLLO VARCHAR(255) NOT NULL,
@@ -919,6 +921,6 @@ CREATE TABLE id_messaggio_relativo
 	ora_registrazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	-- fk/pk columns
 	-- fk/pk keys constraints
-	CONSTRAINT pk_id_messaggio_relativo PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
+	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
 );
 

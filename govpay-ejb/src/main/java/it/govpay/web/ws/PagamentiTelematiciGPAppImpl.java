@@ -22,6 +22,7 @@ package it.govpay.web.ws;
 
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import it.govpay.bd.BasicBD;
@@ -32,6 +33,7 @@ import it.govpay.bd.model.Ente;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Iuv;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.VersamentiBD.TipoIUV;
 import it.govpay.business.Autorizzazione;
@@ -381,8 +383,19 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				throw new GovPayException(GovPayExceptionEnum.APPLICAZIONE_NON_TROVATA);
 			}
 			
+			Applicazione applicazione = new Autorizzazione(bd).authApplicazione(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodApplicazione());
+			List<Long> idDomini = new ArrayList<Long>();
+			List<Long> tributi = applicazione.getIdTributi();
+			
+			for(Long idTributo : tributi) {
+				Tributo tributo = AnagraficaManager.getTributo(bd, idTributo);
+				Ente ente = AnagraficaManager.getEnte(bd, tributo.getIdEnte());
+				if(!idDomini.contains(ente.getIdDominio()))
+				       idDomini.add(ente.getIdDominio());
+			}
+			
 			Rendicontazioni rendicontazioniBD = new Rendicontazioni(bd);
-			List<Fr> frs= rendicontazioniBD.getFlussi();
+			List<Fr> frs= rendicontazioniBD.getFlussi(idDomini);
 			
 			esitoOperazione.setCodEsito(CodEsito.OK);
 			esitoOperazione.setCodApplicazione(bodyrichiesta.getCodApplicazione());

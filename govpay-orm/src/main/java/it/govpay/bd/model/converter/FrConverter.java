@@ -22,6 +22,7 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Fr.StatoFr;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdPsp;
 import it.govpay.orm.IdTracciato;
 
@@ -56,6 +57,7 @@ public class FrConverter {
 		dto.setIdTracciatoXML(vo.getIdTracciatoXML().getId());
 		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
 		dto.setDataRegolamento(vo.getDataRegolamento());
+		dto.setIdDominio(vo.getIdDominio().getId());
 		return dto;
 	}
 
@@ -72,6 +74,10 @@ public class FrConverter {
 		IdPsp idPsp = new IdPsp();
 		idPsp.setId(dto.getIdPsp());
 		vo.setIdPsp(idPsp);
+		
+		IdDominio idDominio = new IdDominio();
+		idDominio.setId(dto.getIdDominio());
+		vo.setIdDominio(idDominio);
 		
 		vo.setDataOraFlusso(dto.getDataOraFlusso());
 		

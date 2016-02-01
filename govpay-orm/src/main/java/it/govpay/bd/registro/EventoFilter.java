@@ -48,6 +48,7 @@ public class EventoFilter extends AbstractFilter {
 	private Date dataFine;
 	private String codDominio;
 	private List<String> codDominiAbilitati;
+	private List<Long> idApplicazioni;
 	
 	
 	public enum SortFields {
@@ -123,6 +124,13 @@ public class EventoFilter extends AbstractFilter {
 				
 				newExpression.between(Evento.model().DATA_ORA_EVENTO, this.datainizio,this.dataFine);
 				addAnd = true;
+			}
+			
+			if(this.idApplicazioni != null && !this.idApplicazioni.isEmpty()){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.in(Evento.model().ID_APPLICAZIONE, this.idApplicazioni);
 			}
 				
 				
@@ -224,6 +232,15 @@ public class EventoFilter extends AbstractFilter {
 	public void setCodDominiAbilitati(List<String> codDominiAbilitati) {
 		this.codDominiAbilitati = codDominiAbilitati;
 	}
+
+	public List<Long> getIdApplicazioni() {
+		return idApplicazioni;
+	}
+
+	public void setIdApplicazioni(List<Long> idApplicazioni) {
+		this.idApplicazioni = idApplicazioni;
+	}
+	
 
 	 
 }

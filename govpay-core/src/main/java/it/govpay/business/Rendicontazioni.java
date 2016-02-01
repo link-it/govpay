@@ -44,6 +44,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Versamento.StatoRendicontazione;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.rendicontazione.FrBD;
+import it.govpay.bd.rendicontazione.FrFilter;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.utils.JaxbUtils;
@@ -182,7 +183,7 @@ public class Rendicontazioni extends BasicBD {
 										fr.setDataRegolamento(flussoRendicontazione.getDataRegolamento());
 										fr.setNumeroPagamenti(flussoRendicontazione.getNumeroTotalePagamenti().longValue());
 										fr.setImportoTotalePagamenti(flussoRendicontazione.getImportoTotalePagamenti().doubleValue());
-										
+										fr.setIdDominio(dominioEnte.getId());
 										
 										log.info("Flusso ricevuto: " + flussoRendicontazione.getDatiSingoliPagamenti().size() + " singoli pagamenti");
 
@@ -302,10 +303,12 @@ public class Rendicontazioni extends BasicBD {
 		}
 	}
 	
-	public List<Fr> getFlussi() throws GovPayException {
+	public List<Fr> getFlussi(List<Long> idDomini) throws GovPayException {
 		try {
 			FrBD frBD = new FrBD(this);
-			return frBD.findAll(frBD.newFilter());
+			FrFilter filter = frBD.newFilter();
+			filter.setIdDomini(idDomini);
+			return frBD.findAll(filter);
 		} catch (Exception e) {
 			throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
 		}

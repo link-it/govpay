@@ -45,7 +45,7 @@ public class RendicontazioniBD extends it.govpay.bd.rendicontazione.FrBD {
 	public List<ListaRendicontazioniEntry> findAll(FrFilter filter) throws ServiceException {
 		try {
 			List<it.govpay.orm.FR> lstFRVO = this.getFrService().findAll(filter.toPaginatedExpression());
-			List<ListaRendicontazioniEntry> dominiLst = new ArrayList<ListaRendicontazioniEntry>();
+			List<ListaRendicontazioniEntry> rendicontazioniLst = new ArrayList<ListaRendicontazioniEntry>();
 			for(it.govpay.orm.FR frVO: lstFRVO) {
 				ListaRendicontazioniEntry entry = new ListaRendicontazioniEntry();
 				entry.setAnnoRiferimento(frVO.getAnnoRiferimento());
@@ -60,10 +60,10 @@ public class RendicontazioniBD extends it.govpay.bd.rendicontazione.FrBD {
 				entry.setImportoTotalePagamenti(frVO.getImportoTotalePagamenti());
 				entry.setNumeroPagamenti(frVO.getNumeroPagamenti());
 				entry.setStato(Fr.StatoFr.valueOf(frVO.getStato()));
-				dominiLst.add(entry);
+				rendicontazioniLst.add(entry);
 			}
 
-			return dominiLst;
+			return rendicontazioniLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {
