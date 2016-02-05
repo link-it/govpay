@@ -31,7 +31,9 @@ import it.govpay.bd.model.Ente;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Portale;
+import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Psp.Canale;
+import it.govpay.bd.model.Psp.ModelloPagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rpt.Autenticazione;
 import it.govpay.bd.model.Rt;
@@ -54,6 +56,7 @@ import it.govpay.servizi.pa.CodEsito;
 import it.govpay.servizi.pa.GpCercaVersamentiRequest;
 import it.govpay.servizi.pa.GpChiediStatoPagamentoResponse;
 import it.govpay.servizi.pa.IdPagamento;
+import it.govpay.servizi.pa.ModelloVersamento;
 import it.govpay.servizi.pa.PaInviaEsitoPagamento;
 import it.govpay.servizi.pa.Pagamento;
 import it.govpay.servizi.pa.StatoPagamento;
@@ -173,16 +176,17 @@ public class PagamentiTelematiciGPUtil {
 		throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
 	}
 
-	public static it.govpay.bd.model.Rpt.TipoVersamento toTipoVersamento(TipoVersamento tipoVersamento) throws GovPayException {
+	public static TipoVersamento toTipoVersamento(it.govpay.bd.model.Rpt.TipoVersamento tipoVersamento) {
 		switch (tipoVersamento) {
-		case AD: return it.govpay.bd.model.Rpt.TipoVersamento.ADDEBITO_DIRETTO;
-		case BBT: return it.govpay.bd.model.Rpt.TipoVersamento.BONIFICO_BANCARIO_TESORERIA;
-		case BP: return it.govpay.bd.model.Rpt.TipoVersamento.BOLLETTINO_POSTALE;
-		case CP: return it.govpay.bd.model.Rpt.TipoVersamento.CARTA_PAGAMENTO;
-		case OBEP: return it.govpay.bd.model.Rpt.TipoVersamento.MYBANK;
-		case PO: return it.govpay.bd.model.Rpt.TipoVersamento.ATTIVATO_PRESSO_PSP;
+			case ADDEBITO_DIRETTO: return TipoVersamento.AD;
+			case ATTIVATO_PRESSO_PSP: return TipoVersamento.PO;
+			case BOLLETTINO_POSTALE: return TipoVersamento.BP;
+			case BONIFICO_BANCARIO_TESORERIA: return TipoVersamento.BBT;
+			case CARTA_PAGAMENTO: return TipoVersamento.CP;
+			case MYBANK: return TipoVersamento.OBEP;
+			case SCONOSCIUTO: return null;
 		}
-		throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+		return null;
 	}
 
 	public static GpChiediStatoPagamentoResponse toGpChiediStatoPagamentoResponse(
@@ -426,7 +430,6 @@ public class PagamentiTelematiciGPUtil {
 			filter.setTerminato(bodyrichiesta.isTerminato());
 		}
 
-		//[TODO] chiedere a Lorenzo come gestire gli ordinamenti
 		// Ordino per stato ASC
 		filter.addSortField(SortFields.STATO, true);
 
@@ -496,4 +499,44 @@ public class PagamentiTelematiciGPUtil {
 		}
 		return f;
 	}
+
+	public static List<it.govpay.servizi.pa.GpChiediListaPspResponse.Psp> toPsp(
+			List<Psp> psp) {
+		List<it.govpay.servizi.pa.GpChiediListaPspResponse.Psp> pspWeb = new ArrayList<it.govpay.servizi.pa.GpChiediListaPspResponse.Psp>();
+		for(Psp p : psp){
+			if(!p.isAttivo()) continue;
+			it.govpay.servizi.pa.GpChiediListaPspResponse.Psp pWeb = new it.govpay.servizi.pa.GpChiediListaPspResponse.Psp();
+			pWeb.setRagioneSociale(p.getRagioneSociale());
+			pWeb.setBollo(p.isBolloGestito());
+			pWeb.setCodPsp(p.getCodPsp());
+			pWeb.setStorno(p.isStornoGestito());
+			pWeb.setUrlInfo(p.getUrlInfo());
+			for(Canale c : p.getCanali()) {
+				if(!c.isAbilitato()) continue;
+				it.govpay.servizi.pa.GpChiediListaPspResponse.Psp.Canale cWeb = new it.govpay.servizi.pa.GpChiediListaPspResponse.Psp.Canale();
+				cWeb.setCodCanale(c.getCodCanale());
+				cWeb.setCondizioni(c.getCondizioni());
+				cWeb.setDescrizione(c.getDescrizione());
+				cWeb.setDisponibilita(c.getDisponibilita());
+				cWeb.setModelloVersamento(toModelloVersamento(c.getModelloPagamento()));
+				cWeb.setTipoVersamento(toTipoVersamento(c.getTipoVersamento()));
+				cWeb.setUrlInfo(c.getUrlInfo());
+				pWeb.getCanale().add(cWeb);
+			}
+			pspWeb.add(pWeb);
+		}
+		return pspWeb;
+	}
+
+	private static ModelloVersamento toModelloVersamento(
+			ModelloPagamento modelloPagamento) {
+		switch (modelloPagamento) {
+			case ATTIVATO_PRESSO_PSP: return ModelloVersamento.ATTIVATO_PSP;
+			case DIFFERITO: return ModelloVersamento.DIFFERITO;
+			case IMMEDIATO: return ModelloVersamento.IMMEDIATO;
+			case IMMEDIATO_MULTIBENEFICIARIO: return ModelloVersamento.IMMEDIATO_MULTIBENEFICIARIO;
+		}
+		return null;
+	}
+
 }

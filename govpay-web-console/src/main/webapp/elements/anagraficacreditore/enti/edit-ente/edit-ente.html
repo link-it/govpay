@@ -71,15 +71,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <div class="content layout vertical flex formbox">
                 <paper-material elevation="0">
                     <div class="layout horizontal flex">
-                        <paper-input class="flex" value="{{enteCorrente.ente.codEnte}}" label="Codice Ufficio" disabled$="[[!isAdd]]" required></paper-input>
+                        <paper-input class="flex" value="{{enteCorrente.ente.codEnte}}" label="Codice Ufficio" disabled$="[[!isAdd]]"
+                                     id="uff_codUfficioInput"
+                                     required error-message="Codice Ufficio obbligatorio" minlength="1"></paper-input>
                         <div class="separatore"></div>
-                        <ajax-select-list label="Dominio" select-list-url="{{govpayDominiUrl}}" hidden$="[[!isAdd]]" class="flex"
-                                          option-value="id" option-label="codDominio" on-select-option="_selectDominio"
+                        <ajax-select-list label="Dominio" select-list-url="{{govpayDominiUrl}}" hidden$="[[!isAdd]]" class="flex" required
+                                          error-message="Dominio Obbligatorio"
+                                          option-value="id" option-label="codDominio" on-select-option="_selectDominio" id="uff_dominioInput"
                                           selected-item="{{idDominio}}"></ajax-select-list>
                     </div>
                     <div class="layout horizontal flex">
                         <!--<paper-input  value="{{anagrafica.codUnivoco}}" label="Codice Univoco" required hidden></paper-input>-->
-                        <paper-input class="flex" value="{{anagrafica.ragioneSociale}}" label="Denominazione" required></paper-input>
+                        <paper-input class="flex" value="{{anagrafica.ragioneSociale}}" id="uff_ragioneSocialeInput"
+                                     label="Ragione Sociale" char-counter maxlength="255"></paper-input>
                     </div>
                     <div class="layout horizontal flex">
                         <paper-input label="Indirizzo" value="{{anagrafica.indirizzo}}" required class="flex"></paper-input>
@@ -197,20 +201,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
        _salvaEnte: function(){
-        this.enteCorrente.ente.anagraficaEnte = this.anagrafica;
-        this.enteCorrente.ente.idDominio = this.idDominio;
 
+        var valido = this.validate();
 
-        if(!this.isAdd){
-           this.actionMethod = 'PUT';
-         }else{
-            this.actionMethod = 'POST';
+        if(valido){
+            this.enteCorrente.ente.anagraficaEnte = this.anagrafica;
+            this.enteCorrente.ente.idDominio = this.idDominio;
+
+            if(!this.isAdd){
+               this.actionMethod = 'PUT';
+             }else{
+                this.actionMethod = 'POST';
+            }
+
+             this.govpayUrl = govpayUrl + '/rs/dars/enti/';
+             this.$.connettoresalvataggioEnte.generateRequest();
+            this.govpayUrl = null;
          }
-
-         this.govpayUrl = govpayUrl + '/rs/dars/enti/';
-         this.$.connettoresalvataggioEnte.generateRequest();
-        this.govpayUrl = null;
       },
+       validate :function() {
+            var valido = document.getElementById('uff_codUfficioInput').validate();
+
+            if(!valido)
+                 return valido;
+
+
+            //Dominio Obbligatorio
+            var dominioInput = document.getElementById('uff_dominioInput');
+
+                valido = dominioInput.validate();
+
+                if(!valido)
+                     return valido;
+
+            valido = document.getElementById('uff_ragioneSocialeInput').validate();
+
+            if(!valido)
+                 return valido;
+
+            return valido;
+        },
     _getAbilitatoLabel: function (abilitato){
         if(abilitato) return 'Abilitato'; else return 'Disabilitato';
       },

@@ -70,18 +70,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
             <div class="content layout vertical flex formbox">
                 <paper-material elevation="0">
-                    <paper-input class="flex" disabled$="[[!isAdd]]" value="{{tributoCorrente.tributo.codTributo}}" label="Cod Tributo" required></paper-input>
-                    <paper-input class="flex" value="{{tributoCorrente.tributo.descrizione}}" label="Descrizione" required></paper-input>
-                    <ajax-select-list label="Ufficio" select-list-url="{{govpayEntiUrl}}"
+                    <ajax-select-list label="Ufficio" select-list-url="{{govpayEntiUrl}}" id="trib_ufficioInput"
+                                      required error-message="Ufficio Obbligatorio" disabled="[[!isAdd]]"
                                       option-value="id" option-label="codEnte" on-select-option="_selectEnte"
                                       selected-item="{{idEnte}}"></ajax-select-list>
+                    <paper-input class="flex" disabled$="[[!isAdd]]" value="{{tributoCorrente.tributo.codTributo}}" label="Codice Tributo" required
+                                 minlength="1" id="trib_codTributoInput"
+                                 error-message="Codice Tributo Obbligatorio"
+                            ></paper-input>
+                    <paper-input class="flex" value="{{tributoCorrente.tributo.descrizione}}" label="Descrizione" required
+                                 minlength="1" error-message="Descrizione Obbligatoria" id="trib_descrizioneInput"
+                            ></paper-input>
+
                     <template is="dom-if" if="{{mostraSelectIBAN}}">
-                        <ajax-select-list label="IBAN" select-list-url="{{govpayIBANUrl}}"
+                        <ajax-select-list label="IBAN" select-list-url="{{govpayIBANUrl}}" id="trib_ibanInput"
+                                          required error-message="IBAN Obbligatorio"
                                           select-list-params="{{ibanSelectListParams}}"
                                           option-value="id" option-label="codIban" on-select-option="_selectIBAN"
                                           selected-item="{{idIBAN}}"></ajax-select-list>
                     </template>
-                    <paper-dropdown-menu label="Tipo Contabilit&agrave;" style="width: 100%;" class="flex">
+                    <paper-dropdown-menu label="Tipo Contabilit&agrave;" style="width: 100%;" class="flex" error-message="Tipo Contabilit&agrave; Obbligatorio" id="trib_tipo_contabilitaInput" required>
                         <paper-menu class="dropdown-content" attr-for-selected="valore" selected="{{tributoCorrente.tributo.tipoContabilita}}">
                             <paper-item valore="CAPITOLO">Capitolo</paper-item>
                             <paper-item valore="SPECIALE">Speciale</paper-item>
@@ -89,7 +97,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <paper-item valore="ALTRO">Altro</paper-item>
                         </paper-menu>
                     </paper-dropdown-menu>
-                    <paper-input class="flex" value="{{tributoCorrente.tributo.codContabilita}}" label="Codice Contabilit&agrave;" required></paper-input>
+                    <paper-input class="flex" value="{{tributoCorrente.tributo.codContabilita}}" label="Codice Contabilit&agrave;" required
+                                 minlength="1" error-message="Codice Contabilit&agrave; Obbligatorio" id="trib_cod_contabilitaInput" char-counter maxlength="120"
+                            ></paper-input>
                 </paper-material>
 
                 <paper-material elevation="0">
@@ -192,18 +202,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.close();
       },
       _salvaTributo: function(){
-          this.tributoCorrente.tributo.idEnte = this.idEnte;
-          this.tributoCorrente.tributo.ibanAccredito = this.idIBAN;
+            var valido = this.validate();
 
-          if(!this.isAdd){
-           this.actionMethod = 'PUT';
-         }else{
-            this.actionMethod = 'POST';
-         }
+        if(valido){
+            this.tributoCorrente.tributo.idEnte = this.idEnte;
+            this.tributoCorrente.tributo.ibanAccredito = this.idIBAN;
 
-         this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
-         this.$.connettoresalvataggioTributo.generateRequest();
-         this.govpayUrl = null;
+              if(!this.isAdd){
+               this.actionMethod = 'PUT';
+             }else{
+                this.actionMethod = 'POST';
+             }
+
+             this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
+             this.$.connettoresalvataggioTributo.generateRequest();
+             this.govpayUrl = null;
+        }
       },
         _selectEnte:  function(event){
             this.idEnte = event.detail.itemCorrente.id;
@@ -214,6 +228,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         _getAbilitatoLabel: function (abilitato){
         if(abilitato) return 'Abilitato'; else return 'Disabilitato';
+      },
+      validate :function() {
+        var valido = document.getElementById('trib_codTributoInput').validate();
+
+        if(!valido)
+             return valido;
+
+        valido = document.getElementById('trib_descrizioneInput').validate();
+
+        if(!valido)
+             return valido;
+
+        valido = document.getElementById('trib_ufficioInput').validate();
+
+        if(!valido)
+             return valido;
+
+        valido = document.getElementById('trib_ibanInput').validate();
+
+        if(!valido)
+             return valido;
+
+        valido = document.getElementById('trib_tipo_contabilitaInput').validate();
+
+        if(!valido)
+             return valido;
+
+        valido = document.getElementById('trib_cod_contabilitaInput').validate();
+
+        if(!valido)
+             return valido;
+
+         return valido;
       },
 
        _checkData: function(nuovo){
@@ -234,36 +281,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.titolo = 'Nuovo Tributo';
           this.isAdd = true;
         }
+
+
+
+        if(this.idEnte > 0)
+            this.mostraSelectIBAN = true;
       },
       _checkParametriIban: function(nuovo){
             if (nuovo){
                  this.ibanSelectListParams = {  'idEnte': nuovo} ;
             } else {
-            this.ibanSelectListParams = {  'idEnte': '0'} ;
+                this.ibanSelectListParams = {  'idEnte': '0'} ;
             }
 
             this.govpayIBANUrl = null;
 
             if(this.ibanSelectListParams.idEnte > 0){
                 this.mostraSelectIBAN = true;
-                 this.govpayIBANUrl = govpayUrl + '/rs/dars/domini/ibanaccredito/';
-                      }else{
+                this.govpayIBANUrl = govpayUrl + '/rs/dars/domini/ibanaccredito/';
+            }else{
                 this.mostraSelectIBAN = false;
-                 this.govpayIBANUrl = null;
-                }
-
+                this.govpayIBANUrl = null;
+            }
       },
-
-      _setTitolo: function(event){
-        if (event.currentTarget.value!==''){
-          this.titolo = event.currentTarget.value;
-        } else {
-          this.titolo = 'Nuovo Tributo';
-        }
-      } ,
        _visualizzaEsitoSalvataggio: function(event){
         var response = event.detail;
-        console.log(event);
         if(response){
             var darsResponse = response.response;
 

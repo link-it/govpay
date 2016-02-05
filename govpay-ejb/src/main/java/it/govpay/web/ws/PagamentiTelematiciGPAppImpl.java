@@ -21,6 +21,8 @@
 package it.govpay.web.ws;
 
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +37,7 @@ import it.govpay.bd.model.Iuv;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD.TipoIUV;
 import it.govpay.business.Autorizzazione;
 import it.govpay.business.Pagamenti;
@@ -53,6 +56,8 @@ import it.govpay.servizi.pa.GpChiediListaFlussiRendicontazione;
 import it.govpay.servizi.pa.GpChiediListaFlussiRendicontazioneResponse;
 import it.govpay.servizi.pa.GpChiediStatoPagamento;
 import it.govpay.servizi.pa.GpChiediStatoPagamentoResponse;
+import it.govpay.servizi.pa.GpGeneraCodiciAvviso;
+import it.govpay.servizi.pa.GpGeneraCodiciAvvisoResponse;
 import it.govpay.servizi.pa.GpGeneraIUV;
 import it.govpay.servizi.pa.IdPagamento;
 import it.govpay.servizi.pa.PagamentiTelematiciGPApp;
@@ -60,6 +65,7 @@ import it.govpay.servizi.pa.Pagamento;
 import it.govpay.web.adapter.PagamentiTelematiciGPUtil;
 
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
@@ -453,6 +459,93 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			esitoOperazione.setCodEsito(CodEsito.KO);
 			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
 			log.error("Errore durante la ricerca dei versamenti. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
+			return esitoOperazione;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+	}
+	
+	@Override
+	public GpGeneraCodiciAvvisoResponse gpGeneraCodiciAvviso(GpGeneraCodiciAvviso bodyrichiesta) {
+		log.info("Ricevuta richiesta di gpGeneraCodiciAvvisoResponse.");
+		
+		GpGeneraCodiciAvvisoResponse esitoOperazione = new GpGeneraCodiciAvvisoResponse();
+		esitoOperazione.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
+		
+		BasicBD bd = null;
+		try {
+			try {
+				bd = BasicBD.newInstance();
+			} catch (Exception e) {
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+			}
+
+			Applicazione applicazione = new Autorizzazione(bd).authApplicazione(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodApplicazione());
+			log.info("Identificazione Applicazione avvenuta con successo [CodApplicazione: " + applicazione.getCodApplicazione() + "]");
+			
+			Ente ente = null;
+			try {
+				ente = AnagraficaManager.getEnte(bd, bodyrichiesta.getIdPagamento().getCodEnte());
+			} catch (NotFoundException e){
+				log.error("Ente [codEnte: " + bodyrichiesta.getIdPagamento().getCodEnte() + "] non censito in Anagrafica Enti.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
+			
+			Dominio dominio = null;
+			try {
+				dominio = AnagraficaManager.getDominio(bd, ente.getIdDominio());
+			} catch (NotFoundException e){
+				log.error("Dominio [idDominio: " + ente.getIdDominio() + "] associato all'Ente [codEnte: " + ente.getCodEnte() + " non censito in Anagrafica Domini.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
+			
+			Stazione stazione = null;
+			try {
+				stazione = AnagraficaManager.getStazione(bd, dominio.getIdStazione());
+			} catch (NotFoundException e){
+				log.error("Stazione [idStazione: " + dominio.getIdStazione() + "] associato al Dominio [codDominio: " + dominio.getCodDominio() + " non censito in Anagrafica Domini.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			Versamento versamento = null;
+			try {
+				versamento = versamentiBD.getVersamento(dominio.getCodDominio(), bodyrichiesta.getIdPagamento().getIuv());
+			} catch (Exception e){
+				throw new GovPayException(GovPayExceptionEnum.IUV_NON_TROVATO);
+			} 
+			
+			
+			ByteArrayOutputStream barcodeos = new ByteArrayOutputStream();
+			String barcodetxt = PagamentiTelematiciGPUtil.buildBarCodeTxt(dominio.getGln(), stazione.getApplicationCode(), versamento.getIuv(), versamento.getImportoTotale());
+			log.debug("Produzione barcode: " + barcodetxt);
+			BufferedImage barcode = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(new com.google.zxing.oned.Code128Writer().encode(barcodetxt, com.google.zxing.BarcodeFormat.CODE_128, 700, 200));
+			ImageIO.write(barcode, "GIF", barcodeos);
+			esitoOperazione.setBarcode(barcodeos.toByteArray());
+			
+			ByteArrayOutputStream qrcodeos = new ByteArrayOutputStream();
+			String qrcodetxt = PagamentiTelematiciGPUtil.buildQrCodeTxt(dominio.getCodDominio(), stazione.getApplicationCode(), versamento.getIuv(), versamento.getImportoTotale()); 
+			log.debug("Produzione qrcode: " + qrcodetxt);
+			BufferedImage qrcode = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(new com.google.zxing.qrcode.QRCodeWriter().encode(qrcodetxt, com.google.zxing.BarcodeFormat.QR_CODE, 500, 500));
+			ImageIO.write(qrcode, "GIF", qrcodeos);
+			esitoOperazione.setQrcode(qrcodeos.toByteArray());
+			
+			esitoOperazione.setCodEsito(CodEsito.OK);
+			log.info("Generazione eseguita.");
+			return esitoOperazione;
+		} catch (GovPayException e) {
+			esitoOperazione.setCodEsito(CodEsito.KO);
+			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
+			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
+				log.error("Errore durante la generazione dei codici grafici. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
+			else
+				log.error("Errore durante la generazione dei codici grafici. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
+			return esitoOperazione;
+		} catch (Exception e) {
+			esitoOperazione.setCodEsito(CodEsito.KO);
+			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
+			log.error("Errore durante la generazione dei codici grafici.. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
 			return esitoOperazione;
 		} finally {
 			if(bd != null) bd.closeConnection();

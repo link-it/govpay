@@ -124,7 +124,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <template is="dom-if" if="{{mostraSezioneSSL}}">
                         <div class="content layout vertical" id="sezSsl">
                             <div class="layout horizontal flex">
-                                <paper-dropdown-menu label="Tipo SSL" style="width: 100%" class="flex">
+                                <paper-dropdown-menu label="Tipo SSL" style="width: 100%" class="flex" error-message="Campo obbligatorio" required id="sslTipoSelectInput">
                                     <paper-menu class="dropdown-content" attr-for-selected="valore"
                                                 selected="{{connettorePdd.tipoSsl}}">
                                         <paper-item valore="CLIENT">Client</paper-item>
@@ -143,18 +143,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                              required id="sslKsLocationInput" error-message="Campo obbligatorio"
                                              minlength="1" maxlength="255"></paper-input>
                                 <div class="separatore"></div>
-                                <paper-input-container class="flex" required id="sslKsPasswdInput"
-                                                       error-message="Campo obbligatorio" minlength="1" maxlength="255">
+                                <paper-input-container class="flex" >
                                     <label>KeyStore Password</label>
-                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslKsPasswd}}">
+                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslKsPasswd}}" id="sslKsPasswdInput" required
+                                           error-message="Campo obbligatorio" minlength="1" maxlength="255">
                                     <paper-input-error>Campo obbligatorio</paper-input-error>
                                 </paper-input-container>
                             </div>
                             <div class="layout horizontal flex">
-                                <paper-input-container class="flex" required id="sslPKeyPasswdInput"
-                                                       error-message="Campo obbligatorio" minlength="1" maxlength="255">
+                                <paper-input-container class="flex" >
                                     <label>PrivateKey Password</label>
-                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslPKeyPasswd}}">
+                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslPKeyPasswd}}" id="sslPKeyPasswdInput" required
+                                           error-message="Campo obbligatorio" minlength="1" maxlength="255">
                                     <paper-input-error>Campo obbligatorio</paper-input-error>
                                 </paper-input-container>
                                 <div class="separatore"></div>
@@ -169,10 +169,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                              required id="sslTsLocationInput" error-message="Campo obbligatorio"
                                              minlength="1" maxlength="255"></paper-input>
                                 <div class="separatore"></div>
-                                <paper-input-container class="flex" required id="sslTsPasswdInput"
-                                                       error-message="Campo obbligatorio" minlength="1" maxlength="255">
+                                <paper-input-container class="flex" >
                                     <label>TrustStore Password</label>
-                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslTsPasswd}}">
+                                    <input is="iron-input" type="password" bind-value="{{connettorePdd.sslTsPasswd}}" id="sslTsPasswdInput" required
+                                           error-message="Campo obbligatorio" minlength="1" maxlength="255">
                                     <paper-input-error>Campo obbligatorio</paper-input-error>
                                 </paper-input-container>
                             </div>
@@ -366,7 +366,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if(selected == 'NONE'){
                 // non valido gli input
             } else if(selected == 'SSL'){
-                valido = document.getElementById('sslKsTypeInput').validate() && document.getElementById('sslKsLocationInput').validate()
+                valido = document.getElementById('sslTipoSelectInput').validate()
+                    && document.getElementById('sslKsTypeInput').validate() && document.getElementById('sslKsLocationInput').validate()
                     && document.getElementById('sslKsPasswdInput').validate() && document.getElementById('sslPKeyPasswdInput').validate()
                     && document.getElementById('sslTsTypeInput').validate() && document.getElementById('sslTsLocationInput').validate()
                     && document.getElementById('sslTsPasswdInput').validate() && document.getElementById('sslTypeInput').validate()
@@ -469,7 +470,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         } else {
           this.stazioni = [];
           this.intermediarioCorrente = { codIntermediario: '', abilitato: true, connettorePdd: {  tipoAutenticazione : 'NONE'}, stazioni: []};
-          this.connettorePdd= this.intermediarioCorrente.connettorePdd ||  {  tipoAutenticazione : 'NONE'};
+          this.connettorePdd= this.intermediarioCorrente.connettorePdd ||  {  tipoAutenticazione : 'NONE' };
           this.titolo = 'Nuovo intermediario';
           this.isAdd = true;
         }

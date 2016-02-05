@@ -56,8 +56,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         sezioneMonitoraggio.opened=true;
                         sezioneMonitoraggio.classList.add('iron-selected');
                     }
-                    console.log(sezioneMonitoraggio);
-
                 } else if(esitoOperazione == 'NON_ESEGUITA'){
                     // impossibile leggere il profilo utente;
                      window.location = '/govpayConsole/public/errore.html';
@@ -74,48 +72,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         app.isEditSection = false;
         var responseCode = event.detail.request.status;
         var responseStatus = event.detail.request.statusText;
-
-        //console.log('Errore get profilo: ' + responseCode);
-
         window.location = '/govpayConsole/public/nonAutorizzato.html';
-
-        // Url servizi Rest errata
-      //  if(responseCode == 404){
-       //     var erroreCorrente = { event : event , messaggio : 'Servizi DARS non raggiungibili.'};
-       //     document.querySelector('#errorPage').setErrore(erroreCorrente);
-     //       app.route = 'error';
-    //    } else if(responseCode == 401){
-          //  var erroreCorrente = { event : event , messaggio : 'Non si dispone dei diritti necessari per visualizzare il contenuto richiesto.'};
-          //  document.querySelector('#nonAutorizzatoPage').setErrore(erroreCorrente);
-          //  app.route = 'nonAutorizzato';
-          // window.location = '/public/nonAutorizzato.html';
-      //  }
     }
 
     app._esitoChiamataDars  = function(event){
        var responseCode = event.detail.status;
        var responseStatus = event.detail.statusText;
-
-       //console.log('Dars OK: ' + responseCode);
     }
 
     // Gestisce il caso di errore nell'invocazione dei servizi dars
-      app.darsError = function(event) {
-       //   console.log('Handler Generale: Ricevuto Errore');
-       // console.log(event);
-        app.isEditSection = false;
-        app.isFirstPage = true;
-        var drawerPanel = document.querySelector('#paperDrawerPanel');
-        if (drawerPanel.narrow) {
+    app.darsError = function(event) {
+       app.isEditSection = false;
+       app.isFirstPage = true;
+       var drawerPanel = document.querySelector('#paperDrawerPanel');
+       if (drawerPanel.narrow) {
           drawerPanel.closeDrawer();
-        }
+       }
 
         var erroreCorrente = { event : event };
         document.querySelector('#errorPage').setErrore(erroreCorrente);
         app.route = 'error-page';
 
         document.getElementById('mainContainer').scrollTop = 0;
-      };
+    };
 
   // controlla se sto navigando in una sezione di edit, restituisce true se devo nasconderla
 

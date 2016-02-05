@@ -77,7 +77,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                      error-message="Codice Dominio lungo 11 cifre obbligatorio" allowed-pattern="[0-9]"
                                      required></paper-input>
                         <div class="separatore"></div>
-                        <ajax-select-list label="Stazione" select-list-url="{{govpayStazioniUrl}}" id="stazInput"
+                        <ajax-select-list label="Stazione" select-list-url="{{govpayStazioniUrl}}" id="stazInput" required
+                                          error-message="Stazione Obbligatoria"
                                           option-value="id" option-label="codStazione" on-select-option="_selectStazione"
                                           selected-item="{{idStazione}}"></ajax-select-list>
                     </div>

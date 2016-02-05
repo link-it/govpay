@@ -44,14 +44,16 @@ import it.govpay.bd.pagamento.VersamentiBD.TipoIUV;
 import it.govpay.business.Autorizzazione;
 import it.govpay.business.Pagamenti;
 import it.govpay.business.Pagamenti.SceltaWISP;
+import it.govpay.dars.bd.PspBD;
 import it.govpay.exception.GovPayException;
 import it.govpay.exception.GovPayException.GovPayExceptionEnum;
 import it.govpay.servizi.pa.CodErrore;
 import it.govpay.servizi.pa.CodEsito;
 import it.govpay.servizi.pa.EffettuazioneSceltaWISP;
-import it.govpay.servizi.pa.EsitoOperazione;
 import it.govpay.servizi.pa.GpCercaVersamentiRequest;
 import it.govpay.servizi.pa.GpCercaVersamentiResponse;
+import it.govpay.servizi.pa.GpChiediListaPsp;
+import it.govpay.servizi.pa.GpChiediListaPspResponse;
 import it.govpay.servizi.pa.GpChiediStatoPagamento;
 import it.govpay.servizi.pa.GpChiediStatoPagamentoResponse;
 import it.govpay.servizi.pa.GpGeneraCodiciAvviso;
@@ -60,7 +62,6 @@ import it.govpay.servizi.pa.GpGeneraRpt;
 import it.govpay.servizi.pa.GpGeneraRptResponse;
 import it.govpay.servizi.pa.GpInviaRpt;
 import it.govpay.servizi.pa.GpInviaRptResponse;
-import it.govpay.servizi.pa.GpInviaRr;
 import it.govpay.servizi.pa.GpSceltaWISP;
 import it.govpay.servizi.pa.GpSceltaWISPResponse;
 import it.govpay.servizi.pa.IdPagamento;
@@ -186,12 +187,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		}
 	}
 	
-	@Override
-	public EsitoOperazione gpInviaRr(GpInviaRr bodyrichiesta) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	@Override
 	public GpChiediStatoPagamentoResponse gpChiediStatoPagamento(GpChiediStatoPagamento bodyrichiesta) {
 		log.info("Ricevuta richiesta di gpChiediStatoPagamento.");
@@ -583,7 +578,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		log.info("Ricevuta richiesta di CercaVersamenti");
 
 		GpCercaVersamentiResponse esitoOperazione = new GpCercaVersamentiResponse();
-		esitoOperazione.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
 		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
 
 		BasicBD bd = null;
@@ -595,7 +590,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			}
 
 			if(bodyrichiesta.getCodPortale() == null) {
-				throw new GovPayException(GovPayExceptionEnum.APPLICAZIONE_NON_TROVATA); //TODO che errore?
+				throw new GovPayException(GovPayExceptionEnum.APPLICAZIONE_NON_TROVATA); 
 			}
 			
 			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
@@ -627,6 +622,52 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			esitoOperazione.setCodEsito(CodEsito.KO);
 			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
 			log.error("Errore durante la ricerca dei versamenti. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
+			return esitoOperazione;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+	}
+
+	@Override
+	public GpChiediListaPspResponse gpChiediListaPsp(GpChiediListaPsp bodyrichiesta) {
+		log.info("Ricevuta richiesta di ChiediListaPsp");
+
+		GpChiediListaPspResponse esitoOperazione = new GpChiediListaPspResponse();
+		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
+		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
+
+		BasicBD bd = null;
+		try {
+			try {
+				bd = BasicBD.newInstance();
+			} catch (ServiceException e) {
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+			}
+
+			if(bodyrichiesta.getCodPortale() == null) {
+				throw new GovPayException(GovPayExceptionEnum.APPLICAZIONE_NON_TROVATA); 
+			}
+			
+			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
+
+			log.info("Identificazione Portale avvenuta con successo [CodPortale: " + portale.getCodPortale() + "]");
+
+			PspBD pspBD = new PspBD(bd);
+			esitoOperazione.getPsp().addAll(PagamentiTelematiciGPUtil.toPsp(pspBD.getPsp()));
+			esitoOperazione.setCodEsito(CodEsito.OK);
+			return esitoOperazione;
+		} catch (GovPayException e) {
+			esitoOperazione.setCodEsito(CodEsito.KO);
+			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
+			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
+				log.error("Errore durante la ricerca dei psp. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
+			else
+				log.error("Errore durante la ricerca dei psp. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
+			return esitoOperazione;
+		} catch (Exception e) {
+			esitoOperazione.setCodEsito(CodEsito.KO);
+			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
+			log.error("Errore durante la ricerca dei psp. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
 			return esitoOperazione;
 		} finally {
 			if(bd != null) bd.closeConnection();

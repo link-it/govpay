@@ -275,7 +275,10 @@ public class Enti extends BaseRsService {
 	
 	private void checkEnte(Ente ente, Ente oldEnte) throws ValidationException {
 		if(ente == null || ente.getCodEnte() == null || ente.getCodEnte().isEmpty()) throw new ValidationException("Il campo Cod Ente e' obbligatorio");
-		if(ente.getAnagraficaEnte() == null || ente.getAnagraficaEnte().getRagioneSociale() == null || ente.getAnagraficaEnte().getRagioneSociale().isEmpty()) throw new ValidationException("Il campo Ragione Sociale e' obbligatorio");
+		
+		if(ente.getAnagraficaEnte() != null && ente.getAnagraficaEnte().getRagioneSociale() != null && ente.getAnagraficaEnte().getRagioneSociale().length() > 255) 
+			throw new ValidationException("Il campo Ragione Sociale non puo' essere piu' lungo di 255 caratteri."); 
+		
 		if(ente.getAnagraficaEnte() == null || ente.getAnagraficaEnte().getCodUnivoco() == null || ente.getAnagraficaEnte().getCodUnivoco().isEmpty()) throw new ValidationException("Il campo Cod Univoco e' obbligatorio");
 		if(ente.getIdDominio() == 0) throw new ValidationException("Il campo Dominio e' obbligatorio");
 		if(oldEnte != null) {
