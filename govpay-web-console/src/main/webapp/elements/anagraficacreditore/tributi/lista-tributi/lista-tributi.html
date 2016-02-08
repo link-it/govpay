@@ -28,12 +28,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <div class="layout horizontal center-justified restorePadding">
             <!-- Ricerca -->
-            <div id="searchbox" class="layout vertical" hidden="true">
+            <div id="searchbox" class="layout vertical" hidden$="false">
                 <div class="headerbox" >
-                    <p hidden$="[[_ricercaVuota(ajaxResponseTributi.response.length)]]">Trovati [[ajaxResponse.response.length]] risultati</p>
+                    <p>Trovati [[ajaxResponseTributi.response.length]] risultati</p>
                 </div>
 
                 <paper-material elevation="0">
+                    <ajax-select-list label="Ufficio" select-list-url="{{govpayEntiUrl}}" class="inputs" all-mode="true" option-valore-all=""
+                                      option-value="[[enteOptionValue]]" option-label="[[enteOptionLabel]]" on-select-option="_selectEnte"
+                                      selected-item="{{codEnteInput}}"></ajax-select-list>
+
                     <div class="layout horizontal end-justified buttons">
                         <paper-button class="green" raised on-tap="eseguiRicerca" elevation="0">Search</paper-button>
                     </div>
@@ -41,7 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-material>
             </div>
 
-            <div class="separatore"   hidden></div>
+            <div class="separatore"></div>
             <!-- Risultati -->
             <div id="resultbox" class="layout vertical flex">
                 <div id="listToolbox" class="layout horizontal center end-justified headerbox">
@@ -86,6 +90,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           govpayUrl: { type: String, value: function (){
             return null;
             } },
+             govpayEntiUrl: { type: String, value: function (){
+              return null;
+                } },
         searchParams: {
             type: Object, value: function (){ return  {  } }, notify: true
         },
@@ -93,7 +100,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Array,
           value: []
         },
-
+          enteOptionValue: {type : String , value: 'codEnte'},
+          enteOptionLabel: {type : String , value: 'codEnte'},
+          offsetRisultatiInput: { type: String, value: '0' },
+          numeroRisultatiInput: { type: String, value: '50' },
+          codEnteInput: { type: String, value: 'Qualsiasi' },
           filtro: {  type: String, value: ''},
           nascondiAzioneExport : { type: Boolean , value : true},
           nascondiAzioneCancella : {type: Boolean , value : true},
@@ -113,6 +124,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         return mostra;
       },
+        _selectEnte:  function(event){
+            this.codEnteInput = event.detail.itemCorrente[this.enteOptionValue];
+           // console.log('Ente: ' + this.codEnteInput);
+        },
         _ricercaVuota: function(numeroRisultati){
             return numeroRisultati == 0;
         },
@@ -128,10 +143,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             return 'Disabilitato';
       },
+       init: function (){
+            this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
+            this.govpayEntiUrl = govpayUrl + '/rs/dars/enti/';
+        },
       eseguiRicerca: function (){
-       this.govpayUrl = govpayUrl + '/rs/dars/tributi/';
-           this.$.connettoreTributi.generateRequest();
+        var enteVal = this.codEnteInput;
+            if(enteVal == 'Qualsiasi')
+                enteVal = '';
+
+            this.searchParams =  {
+
+                    'limit' : this.numeroRisultatiInput,
+                    'offset' : this.offsetRisultatiInput,
+                    'codEnte' : enteVal
+                    };
       },
+       resetFiltro: function (){
+             this.codEnteInput = 'Qualsiasi';
+
+            this.searchParams =  {
+
+                'limit' : this.numeroRisultatiInput,
+                'offset' : this.offsetRisultatiInput
+                };
+        },
 
       _erroreDars : function(event){
          this.fire('dars-error', {error: event.detail});

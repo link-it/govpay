@@ -288,6 +288,10 @@ public class Applicazioni extends BaseRsService {
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			filter.setCodEnte(codEnte);
+			FilterSortWrapper fswUfficio = new FilterSortWrapper();
+			fswUfficio.setField(it.govpay.orm.Tributo.model().ID_ENTE.COD_ENTE);
+			fswUfficio.setSortOrder(SortOrder.ASC);
+			filter.getFilterSortList().add(fswUfficio);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
 			fsw.setSortOrder(SortOrder.ASC);

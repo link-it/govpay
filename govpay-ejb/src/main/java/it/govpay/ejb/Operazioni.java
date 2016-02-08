@@ -49,7 +49,7 @@ public class Operazioni{
 	
 	private static Logger log = LogManager.getLogger();
 	
-	@Schedule(hour="*/24", persistent=true)
+	@Schedule(hour="4,8,16,20", persistent=false)
 	public static boolean acquisizioneRendicontazioni(){
 		ThreadContext.put("cmd", "AcquisizioneRendicontazioni");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
@@ -68,7 +68,7 @@ public class Operazioni{
 		}
 	}
 	
-	@Schedule(hour="*/24", persistent=true)
+	@Schedule(hour="12,24", persistent=false)
 	public static boolean aggiornamentoRegistroPsp(){
 		ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
@@ -85,7 +85,7 @@ public class Operazioni{
 		}
 	}
 	
-	@Schedule(hour="*/24", persistent=true)
+	@Schedule(hour="2,6,10,14,18,22", persistent=false)
 	public static boolean recuperoRptPendenti(){
 		ThreadContext.put("cmd", "RecuperoRptPendenti");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
@@ -104,7 +104,7 @@ public class Operazioni{
 		}
 	}
 	
-	@Schedule(hour="*", minute="*/15", persistent=true)
+	@Schedule(hour="*", minute="*/15", persistent=false)
 	public static boolean notificheMail(){
 		ThreadContext.put("cmd", "NotificheMail");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
@@ -122,7 +122,7 @@ public class Operazioni{
 		}
 	}
 	
-	@Schedule(hour="*", minute="*/1", persistent=true)
+	@Schedule(hour="*", minute="*/1", persistent=false)
 	public static boolean spedizioneEsiti(){
 		ThreadContext.put("cmd", "SpedizioneEsiti");
 		ThreadContext.put("op", UUID.randomUUID().toString() );

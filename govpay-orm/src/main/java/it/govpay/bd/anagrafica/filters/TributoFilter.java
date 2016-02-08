@@ -23,6 +23,7 @@ package it.govpay.bd.anagrafica.filters;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -48,7 +49,7 @@ public class TributoFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			
-			if(this.getCodEnte() != null)
+			if(this.getCodEnte() != null && StringUtils.isNotEmpty(this.codEnte))
 				newExpression.equals(it.govpay.orm.Tributo.model().ID_ENTE.COD_ENTE, this.getCodEnte());
 
 			return newExpression;

@@ -34,9 +34,14 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Ente;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Iuv;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.RptBD;
+import it.govpay.bd.pagamento.RtBD;
+import it.govpay.bd.pagamento.TracciatiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD.TipoIUV;
 import it.govpay.business.Autorizzazione;
@@ -318,8 +323,87 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 
 	@Override
 	public GpChiediStatoPagamentoResponse gpChiediStatoPagamento(GpChiediStatoPagamento bodyrichiesta) {
-		// TODO Auto-generated method stub
-		return null;
+		log.info("Ricevuta richiesta di gpChiediStatoPagamento.");
+		
+		GpChiediStatoPagamentoResponse esitoOperazione = new GpChiediStatoPagamentoResponse();
+		esitoOperazione.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
+		
+		BasicBD bd = null;
+		try {
+			try {
+				bd = BasicBD.newInstance();
+			} catch (Exception e) {
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+			}
+
+			Applicazione applicazione = new Autorizzazione(bd).authApplicazione(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodApplicazione());
+			log.info("Identificazione Applicazione avvenuta con successo [CodApplicazione: " + applicazione.getCodApplicazione() + "]");
+			
+			Ente ente = null;
+			try {
+				ente = AnagraficaManager.getEnte(bd, bodyrichiesta.getIdPagamento().getCodEnte());
+			} catch (NotFoundException e){
+				log.error("Ente [codEnte: " + bodyrichiesta.getIdPagamento().getCodEnte() + "] non censito in Anagrafica Enti.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
+			
+			Dominio dominio = null;
+			try {
+				dominio = AnagraficaManager.getDominio(bd, ente.getIdDominio());
+			} catch (NotFoundException e){
+				log.error("Dominio [idDominio: " + ente.getIdDominio() + "] associato all'Ente [codEnte: " + ente.getCodEnte() + " non censito in Anagrafica Domini.");
+				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
+			} 
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			Versamento versamento = null;
+			try {
+				versamento = versamentiBD.getVersamento(dominio.getCodDominio(), bodyrichiesta.getIdPagamento().getIuv());
+			} catch (Exception e){
+				throw new GovPayException(GovPayExceptionEnum.IUV_NON_TROVATO);
+			} 
+			
+			RptBD rptBD = new RptBD(bd);
+			Rpt rpt = null;
+			try {
+				rpt = rptBD.getLastRpt(versamento.getId());
+				//Verifico lo stato RPT
+				if(new Pagamenti(bd).aggiornaRptDaNpD(rpt)) {
+					versamento = versamentiBD.getVersamento(versamento.getId());
+				}
+			} catch (Exception e){
+				return PagamentiTelematiciGPUtil.toGpChiediStatoPagamentoResponse(bd, esitoOperazione, applicazione, ente, dominio, versamento, null, null);
+			} 
+			
+			RtBD rtBD = new RtBD(bd);
+			Rt rt = null;
+			byte[] rtByte = null;
+			try {
+				rt = rtBD.getLastRt(rpt.getId());
+				TracciatiBD tracciatiBD = new TracciatiBD(bd);
+				rtByte = tracciatiBD.getTracciato(rt.getIdTracciatoXML());
+			} catch (Exception e){
+				
+			} 
+			log.info("Verifica effettuata. Pagamento in stato: " + versamento.getStato());
+			return PagamentiTelematiciGPUtil.toGpChiediStatoPagamentoResponse(bd, esitoOperazione, applicazione, ente, dominio,versamento, rpt, rtByte);
+		} catch (GovPayException e) {
+			esitoOperazione.setCodEsito(CodEsito.KO);
+			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
+			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
+				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
+			else
+				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
+			return esitoOperazione;
+		} catch (Exception e) {
+			esitoOperazione.setCodEsito(CodEsito.KO);
+			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
+			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
+			return esitoOperazione;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-VERSION=v2.0.RC1
+VERSION=v2.0
 
 # Directory
 COPYING_FILE=../../COPYING
