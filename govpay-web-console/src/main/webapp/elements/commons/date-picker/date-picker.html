@@ -1,0 +1,64 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+<dom-module id="date-picker">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+
+        </style>
+        <paper-input label="[[label]]" value="{{textValue}}" preventInvalidInput="[[preventInvalidInput]]" allowedPattern="[[allowedPattern]]">
+            <paper-icon-button  suffix icon="event" on-tap="showDialog" raised></paper-icon-button>
+        </paper-input>
+        <paper-dialog id="dialog" class="paper-date-picker-dialog" modal on-iron-overlay-closed="dismissDialog">
+                <paper-date-picker id="picker"  date="{{value}}"></paper-date-picker>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button dialog-confirm>OK</paper-button>
+                </div>
+        </paper-dialog>
+    </template>
+    <script>
+    Polymer({
+        is: 'date-picker',
+
+        properties: {
+            label: {type : String, value: '' },
+            textValue: {type : String, value: '' },
+            preventInvalidInput: {type : Boolean, value: false },
+            allowedPattern: {type : String, value: '' },
+            value: { type: Date, value: function (){ return new Date();} , notify: true }
+        },
+        _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        },
+        dismissDialog: function(event) {
+             if (event.detail.confirmed) {
+                    this.value = this.$.picker.date;
+
+                    this.textValue = this._dateFormat(this.value, 'YYYY-MM-DD HH:mm:ss');
+
+              //      console.log(this.textValue);
+            } else {
+                    this.textValue = '';
+            }
+        },
+
+        showDialog: function(event) {
+           //  console.log(this.value);
+             this.$.dialog.toggle();
+        },
+        _getProperty: function(itemCorrente, nomeProperty){
+            if(itemCorrente){
+                var val = itemCorrente[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+        ready: function() {
+            this.value = new Date();
+        }
+    });
+    </script>
+</dom-module>

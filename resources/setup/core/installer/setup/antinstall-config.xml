@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+<installer name="GovPay PRODUCT_VERSION Installer" defaultImageResource="/logoSetup.png"
+    windowIcon="/iconaSetup.png" wide="550:275">
+    
+    <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
+    <!-- loadDefaults="true" > -->
+
+    <page type="input" name="intro" displayText="Installer GovPay PRODUCT_VERSION">
+
+	<hidden property="antinstaller_product_version" value="PRODUCT_VERSION"/>
+
+        <comment explanatoryText="GovPay - Porta di Accesso al Nodo dei Pagamenti SPC - http://www.gov4j.it/govpay"/>
+        <comment explanatoryText="Copyright (c) 2014-2015 Link.it srl (http://www.link.it)."/>
+        <comment explanatoryText=""/>
+	<comment explanatoryText="This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version."/>
+        <comment explanatoryText="This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details."/>
+	<comment explanatoryText="You should have received a copy of the GNU General Public License along with this program. If not, see &lt;http://www.gnu.org/licenses/&gt;."/>
+    </page>
+
+
+    <page name="informazioniente" type="input" displayText="Informazioni Preliminari">
+        
+	<comment displayText=""/>
+
+	<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder"
+            checkExists="false" property="antinstaller_log_folder" />
+
+	<comment displayText=""/>
+
+        <large-select defaultValue="INFO" property="antinstaller_log_level" displayText="Log Level">
+            <option value="TRACE" text="TRACE"/>
+            <option value="DEBUG" text="DEBUG"/>
+            <option value="INFO" text="INFO"/>
+	    <option value="WARN" text="WARN"/>
+	    <option value="ERROR" text="ERROR"/>
+        </large-select>
+
+        <comment displayText=""/>
+        
+        <large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
+            <option value="postgresql" text="PostgreSQL"/>
+            <option value="mysql" text="MySQL"/>
+            <option value="oracle" text="Oracle"/>
+        </large-select>
+        
+        <comment displayText=""/>
+        
+        <large-select defaultValue="jboss7" property="antinstaller_as" displayText="Application Server">
+            <option value="jboss7" text="JBoss 7.x"/>
+	    <option value="jboss7" text="JBoss EAP 6.x"/>
+        </large-select>
+
+    </page>
+    
+    <page name="informazioniApplicative" type="input" displayText="Informazioni Applicative">
+
+	<!--
+	<comment displayText="Utente Amministratore"/>
+        <validated defaultValue="GovPay Administrator" property="antinstaller_ragione_sociale" displayText="Ragione Sociale"
+            regex=".+"/>	
+	<validated defaultValue="00000000000ADMIN" property="antinstaller_cod_univoco" displayText="Codice Fiscale"
+            regex=".+"/>
+        <validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Principal"
+            regex=".+"/>
+	-->
+	<comment displayText=""/>
+	<hidden property="antinstaller_ragione_sociale" value="GovPay Administrator"/>
+	<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
+	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username Amministratore"
+            regex=".+"/>
+
+	<comment displayText=""/>
+	<checkbox defaultValue="false" property="antinstaller_notifiche_mail" displayText="Configurazione Mail Server"/>
+
+    </page>
+
+    <page name="preinstallazione2" type="input" displayText="Configurazione Mail Server" ifProperty="(${antinstaller_notifiche_mail}=true)">
+                              
+	<comment displayText="Mail Server"/>
+
+        <validated defaultValue="127.0.0.1" property="antinstaller_mail_host" displayText="Hostname"
+            regex=".+"/>
+	<validated defaultValue="25" property="antinstaller_mail_port" displayText="Port"
+            regex=".+"/>
+	<validated property="antinstaller_mail_username" displayText="Username"
+            regex=".+"/>
+	<validated property="antinstaller_mail_password" displayText="Password"
+            regex=".+"/>
+        
+     </page>
+
+    <page name="informazionidibasexml" type="input" displayText="Il Database">
+
+	<conditional ifProperty="${antinstaller_notifiche_mail}=false">
+		<hidden property="antinstaller_mail_host" value="-"/>
+		<hidden property="antinstaller_mail_port" value="-"/>
+		<hidden property="antinstaller_mail_username" value="-"/>
+		<hidden property="antinstaller_mail_password" value="-"/>
+	</conditional>
+
+        <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname"
+            regex=".+"/>
+        <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
+            <hidden property="porta-db" value="5432"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="org.postgresql.Driver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.PostgreSQLDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=mysql">
+            <hidden property="porta-db" value="3306"/>
+            <hidden property="TABLESPACE" value="openspcoop2"/>
+            <hidden property="antinstaller_driver_jdbc" value="com.mysql.jdbc.Driver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.MySQLDialect"/>
+        </conditional>
+        <conditional ifProperty="${antinstaller_tipo_database}=oracle">
+            <hidden property="porta-db" value="1521"/>
+            <hidden property="TABLESPACE" value="XE"/>
+            <hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver"/>
+            <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.OracleDialect"/>
+        </conditional>
+        <validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport"
+            displayText="Porta"/>
+
+        <validated defaultValue="govpay" property="antinstaller_dbname"
+            displayText="Nome Database" regex=".+"/>
+
+        <validated defaultValue="govpay" property="antinstaller_dbusername"
+            displayText="Username" regex=".+"/>
+        <validated defaultValue="govpay" property="antinstaller_dbpassword"
+            displayText="Password" regex=".+"/>
+
+    </page>
+    
+    <page name="Fine" displayText="Installazione" type="progress" showTargets="true"
+        target="setup_completo"/>
+    
+</installer>

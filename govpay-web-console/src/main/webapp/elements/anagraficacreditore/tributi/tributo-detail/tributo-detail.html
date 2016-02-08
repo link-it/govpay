@@ -1,0 +1,103 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="tributo-detail">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <div class="layout horizontal center-justified restorePadding">
+            <div class="layout vertical flex">
+                <div class="layout horizontal center-justified">
+                    <div id="itembox" class="layout vertical flex itembox">
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
+
+                            </div>
+                        </div>
+
+                        <paper-material elevation="0">
+                            <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+                            <p class="groupItem"><span class="grouplabel">Codice: </span><span>[[tributoCorrente.tributo.codTributo]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Descrizione: </span><span>[[tributoCorrente.tributo.descrizione]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(tributoCorrente.tributo.abilitato)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Ufficio </span><span>[[tributoCorrente.ente.codEnte]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Tipo Contabilit&agrave;: </span><span>[[tributoCorrente.tributo.tipoContabilita]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Codice Contabilit&agrave;: </span><span>[[tributoCorrente.tributo.codContabilita]]</span></p>
+                        </paper-material>
+
+                        <paper-material elevation="0">
+                            <p class="groupTitle"><span class="groupTitle">INFORMAZIONI ACCREDITO</span>
+
+                            <p class="groupItem"><span class="grouplabel">Codice IBAN: </span><span>[[tributoCorrente.ibanAccredito.codIban]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Codice BIC Accredito: </span><span>[[tributoCorrente.ibanAccredito.codBicAccredito]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Coddic IBAN Appoggio: </span><span>[[tributoCorrente.ibanAccredito.codIbanAppoggio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Codice BIC Appoggio: </span><span>[[tributoCorrente.ibanAccredito.codBicAppoggio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Id Seller Bank: </span><span>[[tributoCorrente.ibanAccredito.idSellerBank]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Id Negozio: </span><span>[[tributoCorrente.ibanAccredito.idNegozio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Postale: </span><span>[[_getPostale(tributoCorrente.ibanAccredito)]]</span></p>
+                        </paper-material>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'tributo-detail',
+
+      properties: {
+        tributoCorrente: {
+          type: Object,
+          value: null
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+       _getPostale: function(ibanObj){
+            var valore = this._getProperty(ibanObj, 'postale') || false;
+
+            if(valore)
+                return 'Si';
+            else
+                return 'No';
+      },
+
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
+      },
+      _getProperty: function(elemento, nomeProperty){
+            if(elemento){
+                var val = elemento[nomeProperty];
+                return val;
+            }
+            return '';
+        }
+    });
+  })();
+
+
+
+    </script>
+</dom-module>

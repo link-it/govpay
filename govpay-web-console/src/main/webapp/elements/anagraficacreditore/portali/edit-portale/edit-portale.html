@@ -1,0 +1,287 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of conapplicazioners may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="edit-portale">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            @media (min-width: 600px) {
+            :host {
+            display: block;
+            width: 70%;
+            height: 70%;
+            overflow: auto !important;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            }
+            }
+
+            @media (max-width: 600px) {
+            :host {
+            display: block;
+            width: 100%;
+            height: 100%;
+
+            background: var(--paper-dialog-background-color, --primary-background-color);
+            color: var(--paper-dialog-color, --primary-text-color);
+
+            @apply(--layout-scroll);
+            @apply(--paper-font-body1);
+            @apply(--shadow-elevation-16dp);
+            @apply(--paper-dialog);
+            }
+            }
+
+            .title {
+            margin-left: 12px !important;
+            }
+        </style>
+        <iron-ajax auto="false" verbose="true"
+                   id="connettoresalvataggioPortale"
+                   url="{{govpayUrl}}"
+                   params="{{actionParams}}"
+                   method="{{actionMethod}}"
+                   handle-as="json"
+                   content-type="application/json"
+                   body="{{portaleCorrente}}"
+                   debounce-duration="3000"
+                   last-response="{{esitoSalvataggioPortale}}"
+                   last-error="{{ajaxErrorSalvataggioPortale}}"
+                   on-response="_visualizzaEsitoSalvataggio"
+                   on-error="_visualizzaMessaggioErrore">
+        </iron-ajax>
+        <paper-header-panel mode="standard">
+            <div class="paper-header">
+                <paper-toolbar>
+                    <span class="title start">[[titolo]]</span>
+                    <paper-icon-button icon="close" on-tap="_closeDialog" class="end"></paper-icon-button>
+                </paper-toolbar>
+            </div>
+            <div class="content layout vertical flex formbox">
+                <paper-material elevation="0">
+                    <paper-input class="flex" disabled$="[[!isAdd]]"
+                                 value="{{portaleCorrente.portale.codPortale}}"
+                                 label="Codice Portale" required></paper-input>
+                    <paper-input class="flex" value="{{portaleCorrente.portale.principal}}" label="Principal"
+                                 required></paper-input>
+                    <paper-input class="flex" value="{{portaleCorrente.portale.defaultCallbackURL}}"
+                                 label="Callback URL" required></paper-input>
+                </paper-material>
+
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">APPLICAZIONI</span></p>
+                    <ajax-pick-list label="" source-list-url="{{govpayApplicazioniUrl}}" target-list="{{applicazioni}}"
+                                    select-list-params="{{applicazioniActionParams}}"
+                                    source-label="Applicazioni Disponibili" target-label="Applicazioni Selezionate"
+                                    source-option-value="id" source-option-label="codApplicazione"
+                                    on-change-item="_updateApplicazioni"
+                                    target-option-value="id" target-option-label="codApplicazione">
+
+                    </ajax-pick-list>
+                </paper-material>
+
+                <paper-material elevation="0">
+                    <div class="content layout horizontal">
+                        <paper-toggle-button class="green flex start-justified"
+                                             checked="{{portaleCorrente.portale.abilitato}}">
+                            <span>{{_getAbilitatoLabel(portaleCorrente.portale.abilitato)}}</span>
+                        </paper-toggle-button>
+
+                        <paper-button class="green" raised on-tap="_salvaPortale" elevation="0">Salva
+                        </paper-button>
+                    </div>
+                </paper-material>
+            </div>
+        </paper-header-panel>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'edit-portale',
+      behaviors: [
+        Polymer.PaperDialogBehavior,
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+      _onNeonAnimationFinish: function() {
+        if (this.opened) {
+          this._finishRenderOpened();
+        } else {
+          this._finishRenderClosed();
+        }
+      },
+      _renderOpened: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.open();
+        }
+        this.playAnimation('entry');
+        this.modified=false;
+       this.govpayApplicazioniUrl = govpayUrl + '/rs/dars/portali/'+this.portaleCorrente.portale.id+'/applicazioni/';
+      },
+      _renderClosed: function() {
+        if (this.withBackdrop) {
+          this.backdropElement.close();
+        }
+        this.playAnimation('exit');
+      },
+
+      properties: {
+        applicazioni: {
+          type: Array,
+          value: [1]
+        },
+        govpayUrl: { type: String, value: function (){
+                return null;
+            } },
+        govpayApplicazioniUrl: { type: String, value: function (){
+                return null;
+                } },
+        portaleCorrente: {
+          type: Object,
+          value: null,
+          observer: '_checkData'
+        },
+        isAdd: {
+            type: Boolean, value : false
+        },
+        actionMethod: {
+            type: String, value : 'GET'
+        },
+        actionParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          },
+          applicazioniActionParams: {
+            type: Object, value: function (){ return  { escludeOwnedApp : true } }, notify: true
+          }
+      },
+      _closeDialog: function(){
+        this.fire('reload-item', {elementoModificato: this.portaleCorrente});
+        this.close();
+      },
+       _salvaPortale: function(){
+
+      if(!this.isAdd){
+           this.actionMethod = 'PUT';
+         }else{
+            this.actionMethod = 'POST';
+         }
+
+         this.govpayUrl =  govpayUrl + '/rs/dars/portali/';
+         this.$.connettoresalvataggioPortale.generateRequest();
+         this.govpayUrl =  null;
+      },
+      _getAbilitatoLabel: function (abilitato){
+        if(abilitato) return 'Abilitato'; else return 'Disabilitato';
+      },
+
+       _checkData: function(nuovo){
+
+        if (nuovo){
+          this.titolo = 'Modifica Portale: ' + nuovo.portale.codPortale;
+          this.applicazioni = this.portaleCorrente.applicazioni;
+          this.isAdd = false;
+        } else {
+
+          this.portaleCorrente = {portale : { abilitato: true, idApplicazioni : [] ,  id: '0' }, applicazioni: []};
+          this.applicazioni = this.portaleCorrente.applicazioni;
+          this.titolo = 'Nuovo Portale';
+          this.isAdd = true;
+        }
+        // console.log(this.portaleCorrente.portale.id);
+
+      },
+
+      _setTitolo: function(event){
+        if (event.currentTarget.value!==''){
+          this.titolo = event.currentTarget.value;
+        } else {
+          this.titolo = 'Nuovo Portale';
+        }
+      } ,
+
+      _updateApplicazioni:  function(event){
+        var applicazioniSelezionate = event.detail.elementiSelezionati;
+        this.portaleCorrente.portale.idApplicazioni = [];
+
+        for(var t in applicazioniSelezionate){
+            var applicazione = applicazioniSelezionate[t];
+            this.push('portaleCorrente.portale.idApplicazioni',applicazione.id);
+        }
+      },
+     _visualizzaEsitoSalvataggio: function(event){
+        var response = event.detail;
+        console.log(event);
+        if(response){
+            var darsResponse = response.response;
+
+            if(darsResponse) {
+                var esitoOperazione = darsResponse.esitoOperazione;
+                var codOperazione = darsResponse.codOperazione;
+                var id = darsResponse.response || '';
+                var messaggio= '';
+
+                if(esitoOperazione == 'ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Portale completato con successo. Codice Operazione: ' + codOperazione + '.';
+                        this.portaleCorrente.portale.id = id;
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Portale completato con successo. Codice Operazione: ' + codOperazione + '.';
+                    }
+
+                    this.close();
+                    this.fire('reload-item', {elementoModificato: this.portaleCorrente});
+                } else if(esitoOperazione == 'NON_ESEGUITA'){
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Inserimento Portale non completato. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Aggiornamento Portale non completato. Codice Operazione: ' + codOperazione + '.';
+                    }
+                } else {
+                    // ERRORE
+                    // Creazione
+                    if(this.actionMethod == 'POST'){
+                        messaggio = 'Si e\' verificato un errore durante l\'inserimento dell\'Portale. Codice Operazione: ' + codOperazione + '.';
+                    }else {
+                        //Aggiornamento
+                        messaggio = 'Si e\' verificato un errore durante l\'aggiornamento dell\'Portale. Codice Operazione: ' + codOperazione + '.';
+                    }
+                }
+                var messaggi = document.querySelector('#messaggiUtente');
+                if(messaggi){
+                    if(messaggio){
+                        messaggi.text = messaggio;
+                        messaggi.show();
+                    }
+                }
+            }
+         }
+      },
+       _visualizzaMessaggioErrore: function(event){
+         this.lastActionMethod = this.actionMethod;
+         this.fire('dars-error', {error: event.detail});
+      }
+    });
+  })();
+
+
+    </script>
+</dom-module>

@@ -1,0 +1,102 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="consultazione-rendicontazioni">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   id="govpaypagconndettaglio"
+                   url="{{govpayUrl}}"
+                   params="{{detailParams}}"
+                   handle-as="json"
+                   last-response="{{dettaglioRendicontazioneCorrente}}"
+                   lastError="{{ajaxErrorRendicontazione}}"
+                   on-error="_erroreDars">
+        </iron-ajax>
+        <neon-animated-pages id="rendicontazioniPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <neon-animatable>
+                <lista-rendicontazioni id="lista" on-select-item="_selectRendicontazione"></lista-rendicontazioni>
+            </neon-animatable>
+            <neon-animatable>
+                <rendicontazione-detail id="dettaglioPage" rendicontazione-corrente="[[dettaglioRendicontazioneCorrente.response]]"></rendicontazione-detail>
+            </neon-animatable>
+        </neon-animated-pages>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'consultazione-rendicontazioni',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        },
+        govpayUrl: { type: String, value: function (){
+            return null;
+            } },
+        rendicontazioneCorrente: {
+          type: Object,
+          value: null
+        },
+        dettaglioRendicontazioneCorrente: {
+          type: Object,
+          value: null
+        },
+        detailParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          }
+      },
+       init: function() {
+            this.entryAnimation = 'slide-from-left-animation';
+            this.exitAnimation = 'slide-right-animation';
+            this.selected = 0;
+            this.$.lista.init();
+            this.$.lista.eseguiRicerca();
+            this.rendicontazioneCorrente=null;
+            this.dettaglioRendicontazioneCorrente=null;
+        },
+
+      _selectRendicontazione: function(event){
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.dettaglioRendicontazioneCorrente=null;
+        this.govpayUrl = null;
+        this.$.dettaglioPage.selectedTab=0;
+        this.rendicontazioneCorrente = event.detail.rendicontazioneCorrente;
+        this.govpayUrl = govpayUrl + '/rs/dars/rendicontazioni/'+ this.rendicontazioneCorrente.id;
+        this.selected = 1;
+        this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', event.detail.titoloPagina);
+      },
+        _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
+      selectPrevPage: function(){
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+        this.selected = 0;
+        this.$.lista.eseguiRicerca();
+        this.rendicontazioneCorrente=null;
+        this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', 'Rendicontazioni');
+      }
+    });
+  })();
+  </script>
+</dom-module>

@@ -6,12 +6,12 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>2.0</version>
 	</parent>
 
 	<artifactId>govpay-ear</artifactId>
 	<packaging>ear</packaging>
-	<name>GovPAY EAR module</name>
+	<name>GovPay EAR module</name>
 
 	<profiles>
 		<profile>
@@ -30,10 +30,6 @@
 			</properties>
 		</profile>
 	</profiles>
-	
-	<properties>
-        <env>template</env>            
-    </properties>
 
 	<dependencies>
 		<!-- Depend on the ejb module and war so that we can package them -->
@@ -42,34 +38,25 @@
 			<artifactId>govpay-web</artifactId>
 			<type>war</type>
 		</dependency>
+		
 		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-web</artifactId>
-			<version>${project.version}</version><!--$NO-MVN-MAN-VER$-->
+			<version>${project.version}</version><!--$NO-MVN-MAN-VER$ -->
 			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-ejb</artifactId>
-			<type>ejb</type>
-		</dependency>
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web-console</artifactId>
-			<type>war</type>
 		</dependency>
 	</dependencies>
 
 	<build>
 		<resources>
-		  <resource>
-		    <directory>src/main/application</directory>
-		    <filtering>true</filtering>
-		  </resource>
+			<resource>
+				<directory>src/main/application</directory>
+				<filtering>true</filtering>
+			</resource>
 		</resources>
-	
+
 		<finalName>govpay</finalName>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -80,7 +67,6 @@
 					<filters>
 						<filter>${basedir}/../resources/filters/${env}.filter.properties</filter>
 					</filters>
-					<version>6</version>
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<earSourceExcludes>${resourceToExclude}</earSourceExcludes>
 					<skinnyWars>true</skinnyWars>
@@ -90,20 +76,17 @@
 							<artifactId>govpay-web</artifactId>
 							<contextRoot>/govpay</contextRoot>
 						</webModule>
-						<webModule>
-							<groupId>it.govpay</groupId>
-							<artifactId>govpay-web-console</artifactId>
-							<contextRoot>/govpayConsole</contextRoot>
-						</webModule>
 					</modules>
+                	<libraryDirectoryMode>EMPTY</libraryDirectoryMode>
+                	<version>6</version>
 				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.jboss.as.plugins</groupId>
 				<artifactId>jboss-as-maven-plugin</artifactId>
 				<configuration>
-        	        <hostname>localhost</hostname>
-				    <port>9999</port>
+					<hostname>localhost</hostname>
+					<port>9999</port>
 					<skip>false</skip>
 				</configuration>
 			</plugin>

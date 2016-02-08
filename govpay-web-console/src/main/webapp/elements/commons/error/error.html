@@ -1,0 +1,170 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="error-page">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <div class="layout horizontal center-justified restorePadding">
+            <div id="resultbox" class="layout vertical flex">
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden="true"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden="true"></paper-icon-button>
+                </div>
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">[[_getTitoloSezione(erroreCorrente)]]</span></p>
+
+                    <p class="groupItem"><span>[[_getIntestazioneErrore(erroreCorrente)]]</span></p>
+
+                    <paper-card class="fullCardWidth" hidden>
+                        <div class="card-content" >
+                            <paper-button toggles on-tap="_mostraDettaglio" raised>
+                                <span>{{_getLabel(mostraDettaglio)}}</span>
+                            </paper-button>
+
+                            <div class="card-content" hidden$="{{mostraDettaglio}}">
+                                <p><span>[[_getDettaglioErrore(erroreCorrente)]]</span></p>
+                            </div>
+                        </div>
+                    </paper-card>
+                </paper-material>
+            </div>
+        </div>
+    </template>
+
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'error-page',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Error'
+          },
+          erroreCorrente: {
+            type: Object,
+            value: null
+          },
+          mostraDettaglio: {
+            type: Boolean,
+            value: true
+          }
+        },
+
+        ready: function() {
+          //   console.log('ready function...');
+        },
+         _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+        _getTitoloSezione: function (erroreCorrente){
+            return 'Attenzione';
+            //return this.titoloSezione;
+        },
+        _getLabel: function (mostraDettaglio){
+            if(mostraDettaglio)
+                return 'Mostra Dettaglio';
+            else
+                return 'Nascondi Dettaglio';
+        },
+
+        _mostraDettaglio: function(event){
+            this.mostraDettaglio = !this.mostraDettaglio;
+        },
+        setErrore: function (erroreCorrente){
+            this.erroreCorrente = erroreCorrente;
+            this.eventCorrente = erroreCorrente.event;
+            this.mostraDettaglio = true;
+        },
+
+          _getIntestazioneErrore: function (erroreCorrente){
+            if(erroreCorrente){
+                var rc = this._getResponseCode(erroreCorrente);
+
+                if(rc){
+                    if(rc == 405){
+                        return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+                    } else {
+                        // OK
+                    }
+                }
+            }
+
+            return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+        },
+          _getDettaglioErrore: function (erroreCorrente){
+            if(erroreCorrente){
+                var rc = this._getResponseCode(erroreCorrente);
+
+                if(rc){
+                    if(rc == 405){
+                        return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+                    } else {
+                        // OK
+                    }
+                }
+            }
+
+            return 'Si e\' verificato un errore. Riprovare piu\' tardi.';
+        },
+
+          _getResponseCode: function (erroreCorrente){
+            if(erroreCorrente){
+                var event= erroreCorrente.event;
+                if(event){
+                    var detail = event.detail;
+                    if(detail)
+                        if(detail.error)
+                            if(detail.error.request)
+                                return detail.error.request.status;
+                }
+            }
+
+            return '';
+        },
+
+          _getResponseStatus: function (erroreCorrente){
+            if(erroreCorrente){
+                var event= erroreCorrente.event;
+                if(event){
+                    var detail = event.detail.error.request.statusText;
+                    return detail;
+                }
+            }
+
+            return '';
+        },
+
+        _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+      });
+    })();
+
+
+    </script>
+
+</dom-module>

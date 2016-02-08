@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+<Configuration>
+	<Appenders>
+	
+		<File name="govpay" fileName="${log.folder}/govpay.log" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd}  %msg%n" />
+		</File>
+		
+		<File name="govpay_orm" fileName="${log.folder}/govpay_orm.log" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd} %msg%n" />
+		</File>
+		
+		<File name="govpay_psp" fileName="${log.folder}/govpay_psp.log" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %msg%n" />
+		</File>
+		
+		<File name="STDOUT" fileName="${log.folder}/govpay_root.log" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %msg%n" />
+		</File>
+
+        <File name="subethamail" fileName="${log.folder}/subethamail.log" append="true">
+                <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %msg%n" />
+        </File>
+	</Appenders>
+	
+	<Loggers>
+		<Logger name="it.govpay.business.RegistroPSP" level="${log.level}" additivity="false">
+			<AppenderRef ref="govpay_psp" />
+		</Logger>
+		
+		<Logger name="it.govpay.orm" level="${log.level}" additivity="false">
+			<AppenderRef ref="govpay_orm" />
+		</Logger>
+		
+		<Logger name="it.govpay.business" level="${log.level}" additivity="false">
+			<AppenderRef ref="govpay" />
+		</Logger>
+
+		<Logger name="org.subethamail" level="${log.level}" additivity="false">
+		        <AppenderRef ref="subethamail" />
+		</Logger>
+		
+		<Logger name="javax.mail" level="${log.level}" additivity="false">
+		        <AppenderRef ref="subethamail" />
+		</Logger>
+		
+		<Logger name="org.apache.commons.mail" level="${log.level}" additivity="false">
+		        <AppenderRef ref="subethamail" />
+		</Logger>
+
+		<Root level="${log.level}">
+			<AppenderRef ref="STDOUT" />
+		</Root>
+	</Loggers>
+</Configuration>

@@ -1,0 +1,110 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="ente-detail">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <div class="layout horizontal center-justified restorePadding">
+            <div class="layout vertical flex">
+                <div class="layout horizontal center-justified">
+                    <div id="itembox" class="layout vertical flex itembox">
+                        <div class="layout horizontal flex">
+                            <div class="layout horizontal center start-justified headerbox" >
+
+                            </div>
+                        </div>
+
+                        <paper-material elevation="0">
+                            <!--  <p class="groupTitle"><span class="groupTitle">INFORMAZIONI INTERMEDIARIO</span></p>-->
+
+                            <p class="groupItem"><span class="grouplabel">Ufficio: </span><span>[[enteCorrente.ente.codEnte]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Dominio: </span><span>[[enteCorrente.dominio.codDominio]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Ragione Sociale: </span><span>[[enteCorrente.ente.anagraficaEnte.ragioneSociale]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Abilitato: </span><span>[[_getAbilitatoSiNo(enteCorrente.ente.attivo)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Indirizzo: </span><span>[[_getIndirizzoEnte(enteCorrente.ente.anagraficaEnte)]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Telefono: </span><span>[[enteCorrente.ente.anagraficaEnte.telefono]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Cellulare: </span><span>[[enteCorrente.ente.anagraficaEnte.cellulare]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Fax: </span><span>[[enteCorrente.ente.anagraficaEnte.fax]]</span></p>
+                            <p class="groupItem"><span class="grouplabel">Email: </span><span>[[enteCorrente.ente.anagraficaEnte.email]]</span></p>
+
+                        </paper-material>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'ente-detail',
+
+      properties: {
+        enteCorrente: {
+          type: Object,
+          value: null
+        },
+         selectedTab: {type: Number, value : 0},
+         filtro: {  type: String, value: ''},
+          nascondiAzioneExport : { type: Boolean , value : true},
+          nascondiAzioneCancella : {type: Boolean , value : true},
+          abilitaSelezione : {type: Boolean , value : false}
+      },
+       _getAbilitatoSiNo: function(abilitato){
+            if(abilitato)
+                return 'SI';
+
+            return 'NO';
+      },
+      _getIndirizzoEnte: function(anagrafica) {
+
+         if(anagrafica){
+                var text = '';
+
+                var indirizzo;
+
+                 if(anagrafica.indirizzo)
+                   indirizzo = anagrafica.indirizzo + ' ';
+
+                 if(anagrafica.civico)
+                   indirizzo += anagrafica.civico + ' ';
+
+                 if(anagrafica.cap)
+                   indirizzo+= anagrafica.cap + ' ';
+
+                 if(anagrafica.localita)
+                   indirizzo += anagrafica.localita;
+
+                 if(anagrafica.provincia)
+                   indirizzo += ' (' + anagrafica.provincia + ') ';
+
+                 if(anagrafica.nazione)
+                   indirizzo += anagrafica.nazione;
+
+
+                   text += indirizzo || '';
+                   return text;
+
+                }
+           return '';
+       },
+    });
+  })();
+
+    </script>
+</dom-module>

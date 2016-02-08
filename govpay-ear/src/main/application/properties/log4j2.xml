@@ -2,35 +2,41 @@
 <!DOCTYPE xml>
 <Configuration>
 	<Appenders>
-		<File name="govpay_psp" fileName="${log.folder}/psp.log" append="true">
-			<PatternLayout pattern="%d %-5p - %m%n" />
-		</File>
+	
 		<File name="govpay" fileName="${log.folder}/govpay.log" append="true">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{proc} [%X{dom} - %X{iuv} - %X{ccp}] %msg%n" />
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd}  %msg%n" />
 		</File>
-		<File name="govpay_gde" fileName="${log.folder}/govpay-gde.log" append="true">
-			<PatternLayout pattern="%d %-5p - %m%n" />
+		
+		<File name="govpay_orm" fileName="${log.folder}/govpay_orm.log" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd} %msg%n" />
 		</File>
-		<File name="govpay_web_console" fileName="${log.folder}/govpay_web_console.log" append="true">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{username} [%X{cid}] %msg%n" />
+		
+		<File name="govpay_psp" fileName="${log.folder}/govpay_psp.log" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %msg%n" />
 		</File>
-		<Console name="STDOUT" target="SYSTEM_OUT">
-			<PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" />
-		</Console>
+		
+		<File name="STDOUT" fileName="${log.folder}/govpay_root.log" append="true">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %msg%n" />
+		</File>
 	</Appenders>
+	
 	<Loggers>
+		<Logger name="it.govpay.business.RegistroPSP" level="${log.level}" additivity="false">
+			<AppenderRef ref="govpay_psp" />
+		</Logger>
+		
+		<Logger name="it.govpay.orm" level="${log.level}" additivity="false">
+			<AppenderRef ref="govpay_orm" />
+		</Logger>
+		
 		<Logger name="it.govpay" level="${log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>
-		<Logger name="it.govpay.web.console" level="${log.level}" additivity="false">
-			<AppenderRef ref="govpay_web_console" />
+		
+		<Logger name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean" level="${log.level}" additivity="false">
+			<AppenderRef ref="govpay" />
 		</Logger>
-		<Logger name="govpay_psp" level="${log.level}" additivity="false">
-			<AppenderRef ref="govpay_psp" />
-		</Logger>
-		<Logger name="it.govpay.ndp.controller.GdeController" level="${log.level}" additivity="false">
-			<AppenderRef ref="govpay_gde" />
-		</Logger>
+		
 		<Root level="${log.level}">
 			<AppenderRef ref="STDOUT" />
 		</Root>

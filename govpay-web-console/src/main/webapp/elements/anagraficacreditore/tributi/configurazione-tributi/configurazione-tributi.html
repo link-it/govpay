@@ -1,0 +1,124 @@
+<!--
+@license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../../../../bower_components/polymer/polymer.html">
+
+<dom-module id="configurazione-tributi">
+    <template>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <iron-ajax auto="false"
+                   id="dettagliotributo"
+                   url="{{govpayUrl}}"
+                   params="{{detailParams}}"
+                   handle-as="json"
+                   last-response="{{dettaglioTributoCorrente}}"
+                   lastError="{{ajaxErrorTributo}}" on-error="_erroreDars">
+        </iron-ajax>
+        <neon-animated-pages id="tributiPages" class="flex" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <neon-animatable>
+                <lista-tributi id="lista" on-select-item="_selectTributo"></lista-tributi>
+            </neon-animatable>
+            <neon-animatable>
+                <tributo-detail id="dettaglioPage" tributo-corrente="{{dettaglioTributoCorrente.response}}"></tributo-detail>
+            </neon-animatable>
+        </neon-animated-pages>
+    </template>
+    <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'configurazione-tributi',
+
+      properties: {
+        selected: {
+          type: Number,
+          value: 0
+        },
+         govpayUrl: { type: String, value: function (){
+            return null;
+             } },
+
+        tributoCorrente: {
+          type: Object,
+          value: null
+        },
+        dettaglioTributoCorrente: {
+          type: Object,
+          value: null
+        },
+        detailParams: {
+            type: Object, value: function (){ return  { } }, notify: true
+          }
+      },
+       init: function() {
+            this.entryAnimation = 'slide-from-left-animation';
+            this.exitAnimation = 'slide-right-animation';
+            this.selected = 0;
+            this.$.lista.init();
+            this.$.lista.eseguiRicerca();
+            this.tributoCorrente = null;
+            this.dettaglioTributoCorrente=null;
+        },
+
+      _selectTributo: function(event){
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        this.dettaglioTributoCorrente=null;
+        this.govpayUrl = null;
+        this.$.dettaglioPage.selectedTab=0;
+        this.tributoCorrente = event.detail.tributo;
+        this.govpayUrl = govpayUrl + '/rs/dars/tributi/'+ this.tributoCorrente.id;
+        this.selected = 1;
+        this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', event.detail.titoloPagina);
+      },
+
+      _reloadTributo: function(elementoModificato){
+          if(elementoModificato){
+              var id = elementoModificato.tributo.id || 0;
+              //console.log('Reload Elemento Id: ' + id);
+              if(id >0 ){
+              if(this.tributoCorrente){
+                    this.tributoCorrente.id = id;
+                } else {
+                    this.tributoCorrente = { 'id' : id};
+                }
+                 this.$.dettaglioPage.selectedTab=0;
+                this.govpayUrl = govpayUrl + '/rs/dars/tributi/'+ this.tributoCorrente.id;
+                this.$.dettagliotributo.generateRequest();
+                if(this.selected == 0){
+                    this.$.lista.eseguiRicerca();
+                }
+              }
+          }
+      },
+
+      _erroreDars : function(event){
+         this.fire('dars-error', {error: event.detail});
+      },
+
+      selectPrevPage: function(){
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+        this.selected = 0;
+        this.$.lista.eseguiRicerca();
+        this.tributoCorrente = null;
+        this.fire('changed-page', this.selected);
+        this.fire('change-titolo-pagina', 'Tributi');
+      }
+    });
+  })();
+  </script>
+</dom-module>

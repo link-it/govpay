@@ -1,0 +1,82 @@
+<link rel="import" href="../../../bower_components/polymer/polymer.html">
+
+
+<dom-module id="non-autorizzato-page">
+    <template>
+        <style include="shared-styles"></style>
+        <style>
+            :host {
+            display: block;
+            }
+        </style>
+        <div class="layout horizontal center-justified restorePadding">
+            <div id="resultbox" class="layout vertical flex">
+                <div id="listToolbox" class="layout horizontal center end-justified headerbox">
+                    <paper-icon-button icon="icons:file-upload" hidden="true"></paper-icon-button>
+                    <paper-icon-button icon="icons:remove" hidden="true"></paper-icon-button>
+                </div>
+                <paper-material elevation="0">
+                    <p class="groupTitle"><span class="groupTitle">[[_getTitoloSezione(erroreCorrente)]]</span></p>
+
+                    <p class="groupItem"><span> Non si dispone dell'autorizzazioni per visualizzare la sezione selezionata.</span></p>
+                </paper-material>
+            </div>
+        </div>
+    </template>
+    <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'non-autorizzato-page',
+
+        properties: {
+          titoloSezione: {
+            type: String,
+            value: 'Non Autorizzato'
+          },
+          erroreCorrente: {
+            type: Object,
+            value: null
+          }
+        },
+
+        ready: function() {
+          //   console.log('ready function...');
+        },
+         _getProperty: function(oggetto, nomeProperty){
+            if(oggetto){
+                var val = oggetto[nomeProperty];
+                return val;
+            }
+            return '';
+        },
+
+        _getTitoloSezione: function (erroreCorrente){
+            return this.titoloSezione;
+        },
+
+        setErrore: function (erroreCorrente){
+            this.erroreCorrente = erroreCorrente;
+        },
+
+
+        _getDataFieldAsString: function(item,field) {
+            var data = this._getProperty(item,field);
+            if(data){
+
+                var d = new Date(data);
+                return this._dateFormat(d,'YYYY-MM-DD HH:mm:ss');
+
+            }
+
+            return '';
+        },
+         _dateFormat : function(date, format) {
+            return moment(date).format(format);
+        }
+      });
+    })();
+    </script>
+
+</dom-module>
