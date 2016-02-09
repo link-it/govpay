@@ -68,7 +68,7 @@ public class Operazioni{
 		}
 	}
 	
-	@Schedule(hour="12,24", persistent=false)
+	@Schedule(hour="0,12", persistent=false)
 	public static boolean aggiornamentoRegistroPsp(){
 		ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
