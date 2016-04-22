@@ -1,0 +1,139 @@
+
+<project name="setup-pdd" basedir=".">
+	
+	<description>
+        	SETUP PDD
+	</description>
+
+	<import file="utils.xml" />
+	
+	<target name="govpay_properties_settings">
+
+		<antcall target="set_property">
+			<param name="file" value="${file}"/>
+			<param name="token" value="govpay.sourceCodeDisclaimer"/>
+			<param name="value" value="Generato con GovPay ${antinstaller_product_version}"/>
+		</antcall>
+
+		<!-- Server Mail -->
+		<if>
+			<not>
+				<equals arg1="${antinstaller_mail_host}" arg2="-" />
+			</not>
+			<then>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.serverHost"/>
+					<param name="value" value="${antinstaller_mail_host}"/>
+				</antcall>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.serverPort"/>
+					<param name="value" value="${antinstaller_mail_port}"/>
+				</antcall>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.username"/>
+					<param name="value" value="${antinstaller_mail_username}"/>
+				</antcall>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.password"/>
+					<param name="value" value="${antinstaller_mail_password}"/>
+				</antcall>
+			</then>
+			<else>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.serverHost"/>
+					<param name="value" value="MAIL_SERVER_HOST"/>
+				</antcall>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.serverPort"/>
+					<param name="value" value="25"/>
+				</antcall>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.username"/>
+					<param name="value" value="MAIL_SERVER_USERNAME"/>
+				</antcall>
+				<antcall target="set_property">
+					<param name="file" value="${file}"/>
+					<param name="token" value="govpay.batch.notificaMail.password"/>
+					<param name="value" value="MAIL_SERVER_PASSWORD"/>
+				</antcall>
+			</else>
+		</if>
+	</target>
+
+	<target name="govpay_orm_properties_settings">
+
+		<!-- Database -->
+		<antcall target="set_property">
+			<param name="file" value="${file}"/>
+			<param name="token" value="it.govpay.orm.databaseType"/>
+			<param name="value" value="${antinstaller_tipo_database}"/>
+		</antcall>
+		<antcall target="set_property">
+			<param name="file" value="${file}"/>
+			<param name="token" value="it.govpay.orm.showSql"/>
+			<param name="value" value="false"/>
+		</antcall>
+		<antcall target="set_property">
+			<param name="file" value="${file}"/>
+			<param name="token" value="it.govpay.orm.dataSourceJNDIName"/>
+			<param name="value" value="govpay"/>
+		</antcall>
+
+	</target>
+
+	<target name="govpay_logger_properties_settings">
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="TRACE"/>
+                        <param name="value" value="${antinstaller_log_level}"/>
+                </antcall>
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="DEBUG"/>
+                        <param name="value" value="${antinstaller_log_level}"/>
+                </antcall>
+		<antcall target="replace_token">
+			<param name="file" value="${file}"/>
+			<param name="token" value="INFO"/>
+			<param name="value" value="${antinstaller_log_level}"/>
+		</antcall>
+		<antcall target="replace_token">
+			<param name="file" value="${file}"/>
+			<param name="token" value="WARN"/>
+			<param name="value" value="${antinstaller_log_level}"/>
+		</antcall>
+		<antcall target="replace_token">
+			<param name="file" value="${file}"/>
+			<param name="token" value="ERROR"/>
+			<param name="value" value="${antinstaller_log_level}"/>
+		</antcall>
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="FATAL"/>
+                        <param name="value" value="${antinstaller_log_level}"/>
+                </antcall>
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="OFF"/>
+                        <param name="value" value="${antinstaller_log_level}"/>
+                </antcall>
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="ALL"/>
+                        <param name="value" value="${antinstaller_log_level}"/>
+                </antcall>
+		<antcall target="replace_token">
+			<param name="file" value="${file}"/>
+			<param name="token" value="/var/log/govpay"/>
+			<param name="value" value="${antinstaller_log_folder}"/>
+		</antcall>
+	</target>
+	
+</project>

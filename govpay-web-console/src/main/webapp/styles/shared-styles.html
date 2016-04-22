@@ -1,0 +1,204 @@
+<link rel="import" href="../bower_components/polymer/polymer.html"><link rel="import" href="../bower_components/paper-styles/typography.html"><dom-module id="shared-styles"><template><style>
+      /* General styles */
+
+      body {
+        @apply(--layout-fullbleed);
+        @apply(--layout-vertical);
+      }
+
+      .main {
+        @apply(--layout-fit);
+      }
+
+      .space {
+        @apply(--layout-flex);
+      }
+
+      #drawerToolbar {
+        color: var(--primary-text-color);
+        background-color: var(--drawer-menu-color);
+        border-bottom: var(--drawer-toolbar-border-color);
+      }
+
+      #drawerToolbar .menu-name {
+        @apply(--paper-font-title);
+      }
+
+      .addFAB, .editFAB {
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+      }
+
+      paper-toolbar {
+        --paper-toolbar-background: var(--toolbar-color);
+      }
+
+      paper-scroll-header-panel {
+        height: 100%;
+      }
+
+      paper-menu {
+      --paper-menu-selected-item: {
+         color: var(--primary-color);
+      }
+
+      --paper-menu-focused-item-after: {
+         background: var(--primary-color);
+       }
+      }
+
+      paper-menu iron-icon {
+        margin-right: 33px;
+        opacity: 0.54;
+      }
+
+      paper-menu a {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+
+        text-decoration: none;
+        color: var(--menu-link-color);
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 24px;
+        min-height: 48px;
+        padding: 0 16px;
+      }
+
+      paper-tab {
+        --paper-tab-ink: var(--accent-color);
+      }
+
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--accent-color);
+      }
+
+      /* Height of the scroll area */
+      .content {
+        height: 900px;
+      }
+
+      section[data-route="home"] paper-material {
+        @apply(--paper-font-body2);
+      }
+
+      section[data-route="home"] paper-material .subhead {
+        @apply(--paper-font-subhead);
+      }
+
+      paper-material {
+        border-radius: 2px;
+        height: 100%;
+        padding: 16px 0 16px 0;
+        width: calc(98.66% - 16px);
+        margin: 16px auto;
+        background: white;
+      }
+
+      paper-input {
+        --paper-input-container-focus-color: var(--accent-color);
+      }
+
+      paper-dropdown-menu {
+        --paper-dropdown-menu-input {
+           --paper-input-container-focus-color: var(--accent-color);
+         }
+      }
+
+      #toast .toast-hide-button {
+        color: #eeff41;
+        margin: 10px;
+      }
+
+      paper-toast.success {
+        --paper-toast-background-color: #DFF2BF;
+        --paper-toast-color: #4F8A10;
+      }
+
+      paper-toast.error {
+        --paper-toast-background-color: #FFBABA;
+        --paper-toast-color: #D8000C;
+      }
+
+      paper-toast.warning {
+        --paper-toast-background-color: #FEEFB3;
+        --paper-toast-color: #9F6000;
+      }
+
+      .buttonBar {
+        padding-top: 24px;
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified);
+      }
+
+      .allSpace {
+        /*width: 100%;*/
+        @apply(--layout-flex);
+      }
+
+      .accentColor {
+        background-color: var(--accent-color);
+        color: #fff;
+      }
+
+      /*#spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+      }*/
+
+      /* Breakpoints */
+
+      /* Small */
+      @media (max-width: 600px) {
+
+        #drawer .paper-toolbar {
+          margin-left: 16px;
+        }
+
+        paper-material {
+          --menu-container-display: none;
+          width: calc(97.33% - 32px);
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+      }
+
+      /* Tablet+ */
+      @media (min-width: 601px) {
+
+        #drawer.paper-drawer-panel > [drawer] {
+          border-right: 1px solid rgba(0, 0, 0, 0.14);
+        }
+
+        iron-pages {
+          padding: 48px 62px;
+        }
+
+        paper-material {
+          width: calc(98% - 46px);
+          margin-bottom: 32px;
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+
+      }
+      .page-title {
+        @apply(--paper-font-display2);
+      }
+
+      #mainMenu paper-item, #mainMenu paper-icon-item {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.14);
+      }
+
+      @media (max-width: 600px) {
+        .page-title {
+          font-size: 24px!important;
+        }
+      }
+    </style></template></dom-module>

@@ -1,0 +1,104 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package it.govpay.core.business;
+
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISP;
+import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediSceltaWISPRisposta;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Intermediario;
+import it.govpay.bd.model.Portale;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Canale.TipoVersamento;
+import it.govpay.core.business.model.SceltaWISP;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NdpException.FaultNodo;
+import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NodoClient;
+import it.govpay.servizi.commons.EsitoOperazione;
+
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
+public class Wisp extends BasicBD {
+	
+	public Wisp(BasicBD basicBD) {
+		super(basicBD);
+	}
+
+	public SceltaWISP chiediScelta(Portale portaleAutenticato, Dominio dominio, String codKeyPA, String codKeyWISP) throws ServiceException, GovPayException {
+		try {
+			Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
+			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
+			closeConnection();
+			NodoClient client = new NodoClient(intermediario);
+			NodoChiediSceltaWISP nodoChiediSceltaWISP = new NodoChiediSceltaWISP();
+			nodoChiediSceltaWISP.setIdentificativoDominio(dominio.getCodDominio());
+			nodoChiediSceltaWISP.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
+			nodoChiediSceltaWISP.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
+			nodoChiediSceltaWISP.setKeyPA(codKeyPA);
+			nodoChiediSceltaWISP.setKeyWISP(codKeyWISP);
+			nodoChiediSceltaWISP.setPassword(stazione.getPassword());
+			NodoChiediSceltaWISPRisposta risposta = client.nodoChiediSceltaWISP(nodoChiediSceltaWISP, intermediario.getDenominazione());
+			setupConnection();
+			if(risposta.getFault() != null) {
+				FaultNodo fault = FaultNodo.valueOf(risposta.getFault().getFaultCode());
+				switch (fault) {
+				case PPT_WISP_SESSIONE_SCONOSCIUTA:
+					throw new GovPayException(EsitoOperazione.WISP_000);
+				case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
+					throw new GovPayException(EsitoOperazione.WISP_001);
+				default:
+					throw new GovPayException(EsitoOperazione.NDP_001, risposta.getFault().getFaultCode());
+				}
+			} else {
+				SceltaWISP scelta = new SceltaWISP();
+				switch (risposta.getEffettuazioneScelta()) {
+				case SI:
+					try {
+						Canale canale = AnagraficaManager.getCanale(this,  risposta.getIdentificativoPSP(), risposta.getIdentificativoCanale(), TipoVersamento.toEnum(risposta.getTipoVersamento().toString()));
+						canale.setPsp(canale.getPsp(this));
+						scelta.setCanale(canale);
+					} catch (NotFoundException e) {
+						throw new GovPayException(EsitoOperazione.WISP_002,  risposta.getIdentificativoPSP(), risposta.getIdentificativoCanale(), risposta.getTipoVersamento().toString());
+					}
+					scelta.setPagaDopo(false);
+					scelta.setSceltaEffettuata(true);
+					return scelta;
+				case NO:
+					scelta.setPagaDopo(false);
+					scelta.setSceltaEffettuata(false);
+					return scelta;
+				case PO:
+					scelta.setPagaDopo(true);
+					scelta.setSceltaEffettuata(true);
+					return scelta;
+				}
+				return scelta;
+			} 
+		} 
+		catch (ClientException e) {
+			throw new GovPayException(EsitoOperazione.NDP_000);
+		}
+	}
+}

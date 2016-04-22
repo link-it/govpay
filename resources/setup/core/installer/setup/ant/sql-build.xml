@@ -1,0 +1,30 @@
+
+<project name="setup-sql" basedir=".">
+	
+	<description>
+        	SETUP SQL
+	</description>
+
+	<import file="utils.xml" />
+
+	<target name="sql_settings">
+
+		<antcall target="replace_token">
+		    <param name="file" value="${file}"/>
+			<param name="token" value="@RAGIONE_SOCIALE@"/>
+			<param name="value" value="${antinstaller_ragione_sociale}"/>
+		</antcall>
+		<antcall target="replace_token">
+		    <param name="file" value="${file}"/>
+			<param name="token" value="@CODICE_FISCALE@"/>
+			<param name="value" value="${antinstaller_cod_univoco}"/>
+		</antcall>
+		<antcall target="replace_token">
+                    <param name="file" value="${file}"/>
+                        <param name="token" value="@PRINCIPAL@"/>
+                        <param name="value" value="${antinstaller_principal}"/>
+                </antcall>
+	
+	</target>
+	
+</project>
