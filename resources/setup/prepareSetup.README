@@ -1,3 +1,0 @@
-1. Compila GovPay utilizzando il filtro "template"
-2. Edita il file prepareSetup.sh indicando la versione nella prima riga.
-3. Avvia lo script prepareSetup.sh
