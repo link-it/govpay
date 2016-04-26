@@ -58,7 +58,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 		String methodName = "getElenco " + this.titoloServizio;
 		
 		try{		
-//			Integer offset = this.getOffset(uriInfo);
+			Integer offset = this.getOffset(uriInfo);
 //			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
@@ -69,7 +69,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
 			PspFilter filter = pspBD.newFilter();
-//			filter.setOffset(offset);
+			filter.setOffset(offset);
 //			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Psp.model().COD_PSP);

@@ -63,4 +63,7 @@ public interface IDarsHandler<T> {
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
 	
 	public void checkEntry(T entry, T oldEntry) throws ValidationException;
+	
+	public String getTitolo(T entry) ;
+	public String getSottotitolo(T entry) ;
 }

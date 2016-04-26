@@ -81,7 +81,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			//			Integer offset = this.getOffset(uriInfo);
+			Integer offset = this.getOffset(uriInfo);
 			//			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
@@ -90,14 +90,14 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = intermediariBD.newFilter();
-			//			filter.setOffset(offset);
+			filter.setOffset(offset);
 			//			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Intermediario.model().COD_INTERMEDIARIO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
-			
+
+
 			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 			String codIntermediario = this.getParameter(uriInfo, codIntermediarioId, String.class);
 
@@ -137,17 +137,17 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
-		
+
 		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
-		
+
 		if(infoRicercaMap == null){
 			initInfoRicerca(uriInfo, bd);
 
 		}
-		
-		
+
+
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-		
+
 		InputNumber codIntermediario = (InputNumber) infoRicercaMap.get(codIntermediarioId);
 		codIntermediario.setDefaultValue(null);
 		codIntermediario.setEditable(true); 
@@ -205,7 +205,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
-		
+
 
 		Sezione sezioneConnettore = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_PDD + ".titolo"));
 
@@ -215,7 +215,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		return infoCreazione;
 	}
-	
+
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		if(infoRicercaMap == null){
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
@@ -223,7 +223,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 			// codIntermediario
 			String codIntermediarioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label");
-			InputNumber codIntermediario = new InputNumber(codIntermediarioId, codIntermediarioLabel, null, false, false, true, 1, 11);
+			InputNumber codIntermediario = new InputNumber(codIntermediarioId, codIntermediarioLabel, null, false, false, true, 11, 11);
 			infoRicercaMap.put(codIntermediarioId, codIntermediario);
 		}
 	}
@@ -408,7 +408,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodIntermediario());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
-		 
+
 			intermediariBD.insertIntermediario(entry); 
 
 			log.info("Esecuzione " + methodName + " completata.");

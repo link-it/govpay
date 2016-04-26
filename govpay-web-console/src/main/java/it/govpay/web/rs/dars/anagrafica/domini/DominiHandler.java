@@ -93,7 +93,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			//			Integer offset = this.getOffset(uriInfo);
+			Integer offset = this.getOffset(uriInfo);
 			//			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
@@ -102,7 +102,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter();
-			//			filter.setOffset(offset);
+			filter.setOffset(offset);
 			//			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
@@ -258,7 +258,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		codDominio.setDefaultValue(null);
 		codDominio.setEditable(true); 
 		sezioneRoot.addField(codDominio);
-		
+
 		InputNumber uoId = (InputNumber) infoCreazioneMap.get(uoIdId);
 		uoId.setDefaultValue(null);
 		sezioneRoot.addField(uoId);
@@ -399,7 +399,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		codDominio.setDefaultValue(Long.parseLong(entry.getCodDominio()));
 		codDominio.setEditable(false); 
 		sezioneRoot.addField(codDominio);
-		
+
 		InputNumber uoId = (InputNumber) infoCreazioneMap.get(uoIdId);
 		uoId.setDefaultValue(unitaOperativa.getId());
 		sezioneRoot.addField(uoId);
@@ -560,8 +560,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			this.darsService.checkOperatoreAdmin(bd);
 
 			List<Object> lista = this.creaDominioEAnagrafica(is, uriInfo, bd);
-			
-			
+
+
 			Dominio entry = (Dominio) lista.get(0);
 			UnitaOperativa uo = (UnitaOperativa) lista.get(1); 
 
@@ -576,7 +576,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			}catch(NotFoundException e){}
 
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
-			
+
 			// Inserimento di Dominio e UO in maniera transazionale.
 			bd.setAutoCommit(false); 
 			dominiBD.insertDominio(entry);
@@ -616,12 +616,12 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			baos.flush();
 			baos.close();
-			
+
 			JSONObject jsonObjectDominio = JSONObject.fromObject( baos.toString() );
 			jsonConfig.setRootClass(Dominio.class);
 			entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
-			
-			
+
+
 
 			//[TODO] Scegliere dei valori corretti per xml_conti_accredito e xml_tabella_controparti
 			byte val [] = "".getBytes();
@@ -655,26 +655,26 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			JSONObject jsonObjectDominio = JSONObject.fromObject( baos.toString() );  
 			String ragioneSocialeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
 			JSONArray jsonArray = jsonObjectDominio.getJSONArray(ragioneSocialeId);
-			
+
 			String ragSocDominio = jsonArray.getString(0);
 			String ragSocAnagrafica = jsonArray.getString(1);
-			
+
 			jsonObjectDominio.remove(ragioneSocialeId);
-			
+
 			jsonConfig.setRootClass(Dominio.class);
-			
+
 			Dominio  entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
 			//[TODO] Scegliere dei valori corretti per xml_conti_accredito e xml_tabella_controparti
 			byte val [] = "".getBytes();
 			entry.setTabellaControparti(val);
 			entry.setContiAccredito(val);
-			
+
 			entry.setRagioneSociale(ragSocDominio);
-			
+
 			jsonConfig.setRootClass(Anagrafica.class);
 			Anagrafica anagrafica = (Anagrafica) JSONObject.toBean( jsonObjectDominio, jsonConfig );
 			anagrafica.setRagioneSociale(ragSocAnagrafica);   
-			
+
 			String uoIdId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
 			String uoId = jsonObjectDominio.getString(uoIdId);
 			Long uoIdLong = null;

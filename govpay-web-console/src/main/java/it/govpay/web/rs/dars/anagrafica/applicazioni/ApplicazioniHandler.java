@@ -97,32 +97,32 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			//			Integer offset = this.getOffset(uriInfo);
+			Integer offset = this.getOffset(uriInfo);
 			//			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 			boolean visualizzaRicerca = true;
-			
+
 			log.info("Esecuzione " + methodName + " in corso..."); 
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
-			//			filter.setOffset(offset);
+			filter.setOffset(offset);
 			//			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
+
 			Operatori operatoriDars = new Operatori();
 			String principalId = Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".principal.id");
 			String principalOperatore = this.getParameter(uriInfo, principalId, String.class); 
-			
+
 			Portali portaliDars = new Portali();
 			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".codPortale.id");
 			String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
-			
-			
+
+
 			boolean entitaSenzaApplicazioni = false;
 			if(StringUtils.isNotEmpty(principalOperatore)){
 				visualizzaRicerca = false;
@@ -131,7 +131,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				entitaSenzaApplicazioni = Utils.isEmpty(operatore.getIdApplicazioni());
 				filter.setListaIdApplicazioni(operatore.getIdApplicazioni());
 			}
-			
+
 			if(StringUtils.isNotEmpty(codPortale)){
 				visualizzaRicerca = false;
 				PortaliBD portaliBD = new PortaliBD(bd);
@@ -139,8 +139,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				entitaSenzaApplicazioni = Utils.isEmpty(portale.getIdApplicazioni());
 				filter.setListaIdApplicazioni(portale.getIdApplicazioni());
 			}
-			
-			
+
+
 			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
 			String codApplicazione = this.getParameter(uriInfo, codApplicazioneId, String.class	);
 			if(StringUtils.isNotEmpty(codApplicazione)){
@@ -148,7 +148,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			}
 
 			long count = entitaSenzaApplicazioni ? 0 : applicazioniBD.count(filter);
-			
+
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
@@ -179,15 +179,15 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
-		
+
 		String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-		
+
 		if(infoRicercaMap == null){
 			initInfoRicerca(uriInfo, bd);
 
 		}
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-		
+
 		InputText codApplicazione= (InputText) infoRicercaMap.get(codApplicazioneId);
 		codApplicazione.setDefaultValue(null);
 		sezioneRoot.addField(codApplicazione);
@@ -221,7 +221,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
-		
+
 		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd);
 
@@ -233,24 +233,24 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(applicazioneId);
 		idInterm.setDefaultValue(null);
 		sezioneRoot.addField(idInterm);
-		
+
 		InputText codApplicazione = (InputText) infoCreazioneMap.get(codApplicazioneId);
 		codApplicazione.setDefaultValue(null);
 		codApplicazione.setEditable(true); 
 		sezioneRoot.addField(codApplicazione);
-		
+
 		InputText principal = (InputText) infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(null);
 		sezioneRoot.addField(principal);
-		
+
 		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(FirmaRichiesta.NESSUNA.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
-		
+
 		Tributi tributi = (Tributi) infoCreazioneMap.get(tributiId);
 		TributiBD tributiBD = new TributiBD(bd);
 		List<Voce<Long>> idTributi= new ArrayList<Voce<Long>>();
-	
+
 		try {
 			TributoFilter filter = tributiBD.newFilter();
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -263,15 +263,15 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 					idTributi.add(new Voce<Long>(tributo.getCodTributo(), tributo.getId())); 
 				}
 			}
-			
+
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		
+
 		tributi.setValues(idTributi); 
 		tributi.setDefaultValue(new ArrayList<Long>());
 		sezioneRoot.addField(tributi);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
@@ -281,7 +281,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		for (ParamField<?> par : infoCreazioneConnettoreVerifica) { 
 			sezioneConnettoreVerifica.addField(par); 	
 		}
-		
+
 		Sezione sezioneConnettoreNotifica = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
 
 		for (ParamField<?> par : infoCreazioneConnettoreNotifica) { 
@@ -302,7 +302,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 			String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 			String tributiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.id");
-			
+
 			// id 
 			InputNumber id = new InputNumber(applicazioneId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(applicazioneId, id);
@@ -324,7 +324,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
 			infoCreazioneMap.put(abilitatoId, abiliato);
-			
+
 			String firmaRichiestaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label");
 			List<Voce<String>> valoriFirma = new ArrayList<Voce<String>>(); 
 			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna"), FirmaRichiesta.NESSUNA.getCodifica()));
@@ -333,7 +333,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata"), FirmaRichiesta.AVANZATA.getCodifica()));
 			SelectList<String> firmaRichiesta = new SelectList<String>(firmaRichiestaId, firmaRichiestaLabel, null, true, false, true, valoriFirma);
 			infoCreazioneMap.put(firmaRichiestaId, firmaRichiesta);
-			
+
 			String tributiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.label");
 			List<Voce<Long>> idTributi= new ArrayList<Voce<Long>>();
 			Tributi tributi = new Tributi(tributiId, tributiLabel, null, false, false, true, idTributi);
@@ -341,14 +341,14 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 			List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
-			
+
 			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
 			List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd);
 
 			for (ParamField<?> par : infoCreazioneConnettoreVerifica) { 
 				infoCreazioneMap.put(par.getId(),par); 	
 			}
-			
+
 			for (ParamField<?> par : infoCreazioneConnettoreNotifica) { 
 				infoCreazioneMap.put(par.getId(),par); 	
 			}
@@ -370,7 +370,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica());
-		
+
 		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica());
 
@@ -382,21 +382,21 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(applicazioneId);
 		idInterm.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idInterm);
-		
+
 		InputText codApplicazione = (InputText) infoCreazioneMap.get(codApplicazioneId);
 		codApplicazione.setDefaultValue(entry.getCodApplicazione());
 		codApplicazione.setEditable(false); 
 		sezioneRoot.addField(codApplicazione);
-		
+
 		InputText principal = (InputText) infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(entry.getPrincipal());
 		sezioneRoot.addField(principal);
-		
+
 		FirmaRichiesta firmaRichiestaValue = entry.getFirmaRichiesta() != null ? entry.getFirmaRichiesta() : FirmaRichiesta.NESSUNA;
 		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(firmaRichiestaValue.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
-		
+
 		Tributi tributi = (Tributi) infoCreazioneMap.get(tributiId);
 		TributiBD tributiBD = new TributiBD(bd);
 		List<Voce<Long>> idTributi= new ArrayList<Voce<Long>>();
@@ -412,15 +412,15 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 					idTributi.add(new Voce<Long>(tributo.getCodTributo(), tributo.getId())); 
 				}
 			}
-			
+
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		
+
 		tributi.setValues(idTributi); 
 		tributi.setDefaultValue(entry.getIdTributi());
 		sezioneRoot.addField(tributi);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
@@ -430,7 +430,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		for (ParamField<?> par : infoModificaConnettoreVerifica) { 
 			sezioneConnettoreVerifica.addField(par); 	
 		}
-		
+
 		Sezione sezioneConnettoreNotifica = infoModifica.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
 
 		for (ParamField<?> par : infoModificaConnettoreNotifica) { 
@@ -488,10 +488,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			// dati dell'intermediario
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label"), applicazione.getCodApplicazione());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), applicazione.getPrincipal());
-			
+
 			FirmaRichiesta firmaRichiestaValue = applicazione.getFirmaRichiesta() != null ? applicazione.getFirmaRichiesta() : FirmaRichiesta.NESSUNA;
 			String firmaRichiestaAsString = null;
-			
+
 			switch (firmaRichiestaValue) {
 			case AVANZATA:
 				firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata");
@@ -507,7 +507,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna");
 				break;
 			}
-			
+
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"), firmaRichiestaAsString);
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(applicazione.isAbilitato()));
 
@@ -516,7 +516,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreVerifica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
 			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 			connettoreVerificaHandler.fillSezione(sezioneConnettoreVerifica, connettoreVerifica);
-			
+
 			// sezione connettore
 			Connettore connettoreNotifica = applicazione.getConnettoreNotifica();
 			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreNotifica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
@@ -526,8 +526,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			// Elementi correlati
 			String etichettaTributi = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tributi.titolo");
 			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-			
-			
+
+
 			it.govpay.web.rs.dars.anagrafica.tributi.Tributi tributiDars = new it.govpay.web.rs.dars.anagrafica.tributi.Tributi();
 			UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(tributiDars.getPathServizio()).queryParam(codApplicazioneId, applicazione.getCodApplicazione());
 			dettaglio.addElementoCorrelato(etichettaTributi, uriBuilder.build());
@@ -541,7 +541,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException,ValidationException,DuplicatedEntryException {
@@ -563,7 +563,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodApplicazione());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
-		 
+
 			applicazioniBD.insertApplicazione(entry); 
 
 			log.info("Esecuzione " + methodName + " completata.");
@@ -579,7 +579,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Applicazione creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd)
@@ -601,20 +601,20 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			JSONObject jsonObjectApplicazione = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Applicazione.class);
 			entry = (Applicazione) JSONObject.toBean( jsonObjectApplicazione, jsonConfig );
-			
+
 			String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 			String codFirma = jsonObjectApplicazione.getString(firmaRichiestaId);
 			if(codFirma != null){
 				FirmaRichiesta enum1 = FirmaRichiesta.toEnum(codFirma);
 				entry.setFirmaRichiesta(enum1); 
 			}
-			
+
 
 			String cvPrefix = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".idPrefix");
 			JSONObject jsonObjectCV = new JSONObject();
 			String cnPrefix = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".idPrefix");
 			JSONObject jsonObjectCN = new JSONObject();
-			
+
 			Set<String> keySet = jsonObjectApplicazione.keySet();
 			for (String key : keySet) {
 				if(key.startsWith(cvPrefix)){
@@ -624,11 +624,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 					jsonObjectCN.put(key.substring(key.indexOf(cnPrefix)+cnPrefix.length()), jsonObjectApplicazione.get(key));
 				}
 			}
-						
+
 			jsonConfig.setRootClass(Connettore.class);
 			Connettore cv = (Connettore) JSONObject.toBean( jsonObjectCV, jsonConfig );
 			entry.setConnettoreVerifica(cv);
-			
+
 			Connettore cn = (Connettore) JSONObject.toBean( jsonObjectCN, jsonConfig );
 			entry.setConnettoreNotifica(cn);
 
@@ -640,7 +640,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public void checkEntry(Applicazione entry, Applicazione oldEntry) throws ValidationException {
 		if(entry == null || StringUtils.isEmpty(entry.getCodApplicazione())) {
@@ -652,7 +652,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		Connettore connettoreNotifica = entry.getConnettoreNotifica();
 		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA, titoloServizio, pathServizio);
 		connettoreNotificaHandler.valida(connettoreNotifica);
-		
+
 		Connettore connettoreVerifica = entry.getConnettoreVerifica();
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA, titoloServizio, pathServizio);
 		connettoreVerificaHandler.valida(connettoreVerifica);
@@ -662,7 +662,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				throw new ValidationException("Cod Applicazione non deve cambiare in update. Atteso ["+oldEntry.getCodApplicazione()+"] trovato ["+entry.getCodApplicazione()+"]");
 		}
 	}
-	
+
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException, ValidationException {

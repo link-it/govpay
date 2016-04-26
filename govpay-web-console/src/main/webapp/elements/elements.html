@@ -19176,6 +19176,11 @@ if (!window.Promise) {
         newDetail.addEventListener('back', this.goBack.bind(this));
         newDetail.addEventListener('home', this.goHome.bind(this));
         newDetail.addEventListener('view-detail', this.showDetail.bind(this));
+        if (this.$.pages.children.length>1){
+          newDetail.showHome=true;
+        } else{
+          newDetail.showHome=false;
+        }
 //        newNA.appendChild(newDetail);
         /*var pp=document.createElement('paper-material');
         newNA.appendChild(pp);*/
@@ -24301,6 +24306,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               var msl = document.createElement('div');
               this.setMultiSelectionList(msl, obj);
               target.appendChild(msl);
+//              msl.disabled = !obj.editable;
               /*
               QUESTO SE LA MULTISELECTIONLIST DEVE ESSERE VISUALIZZATA COME DROPDOWN
 
@@ -24313,53 +24319,62 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               var pdm = document.createElement('paper-dropdown-menu');
               this.setDropDownProperties(pdm, obj);
               target.appendChild(pdm);
+              pdm.disabled = !obj.editable;
               break;
             case 'CheckButton':
               //Toggle button
               var ptb = document.createElement('paper-checkbox');
               this.setCheckboxProperties(ptb, obj);
               target.appendChild(ptb);
+              ptb.disabled = !obj.editable;
               break;
             case 'InputText':
               //Text input
               var pti = document.createElement('paper-input');
               this.setInputProperties(pti, 'text', obj);
               target.appendChild(pti);
+              pti.disabled = !obj.editable;
               break;
             case 'InputNumber':
               //Number input
               var pin = document.createElement('paper-input');
               this.setInputProperties(pin, 'number', obj);
               target.appendChild(pin);
+              pin.disabled = !obj.editable;
               break;
             case 'InputSecret':
               //Secret input
               var pis = document.createElement('paper-input');
               this.setInputProperties(pis, 'password', obj);
               target.appendChild(pis);
+              pis.disabled = !obj.editable;
               break;
             case 'InputTextArea':
               //TEXTAREA
               var pta = document.createElement('paper-textarea');
               this.setTextareaProperties(pta, obj);
               target.appendChild(pta);
+              pti.disabled = !obj.editable;
               break;
             case 'InputDate':
               //Date input
               var pdi = document.createElement('paper-input');
               this.setDateInputProperties(pdi, obj);
               target.appendChild(pdi);
+              pdi.disabled = !obj.editable;
               break;
             case 'InputFile':
               //File input
               var pif = document.createElement('paper-input');
               this.setFileInputProperties(pif, obj);
               target.appendChild(pif);
+              pif.disabled = !obj.editable;
               break;
             case 'RadioButton':
               var prg = document.createElement('paper-radio-group');
               this.setRadioGroupProperties(prg, obj);
               target.appendChild(prg);
+              prg.disabled = !obj.editable;
               break;
           }
           /*if (!showTitle){
@@ -24497,7 +24512,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     setDropDownProperties: function(dropdown, data){
       dropdown.style.width='100%';
       dropdown.label = data.label;
-      dropdown.disabled = !data.editable;
       dropdown.avanzata = data.avanzata;
       if (data.avanzata){
         dropdown.hidden = !this.avanzata;
@@ -24568,7 +24582,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     setCheckboxProperties: function(checkbox, data){
       checkbox.style.width='100%';
       checkbox.style.paddingTop = '24px';
-      checkbox.disabled = !data.editable;
       checkbox.avanzata = data.avanzata;
       if (data.avanzata){
         checkbox.hidden = !this.avanzata;
@@ -24625,7 +24638,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     setInputProperties: function(paperInput, type, data){
       paperInput.type = type;
-      paperInput.disabled = !data.editable;
       paperInput.avanzata = data.avanzata;
       if (data.avanzata){
         paperInput.hidden = !this.avanzata;
@@ -24694,7 +24706,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     setTextareaProperties: function(textarea, data){
-      textarea.disabled = !data.editable;
       textarea.avanzata = data.avanzata;
       if (data.avanzata){
         textarea.hidden = !this.avanzata;
@@ -24764,7 +24775,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     setDateInputProperties: function(dateInput, data){
       dateInput.type = 'date';
-      dateInput.disabled = !data.editable;
       dateInput.avanzata = data.avanzata;
       if (data.avanzata){
         dateInput.hidden = !this.avanzata;
@@ -24830,7 +24840,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     setFileInputProperties: function(fileInput, data){
       fileInput.type = 'file';
-      fileInput.disabled = !data.editable;
       fileInput.avanzata = data.avanzata;
       if (data.avanzata){
         fileInput.hidden = !this.avanzata;
@@ -24901,7 +24910,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       sottotitoloRadio.className = 'sottotitoloElemento';
       Polymer.dom(etichetta).appendChild(sottotitoloRadio);
       Polymer.dom(radioGroup).appendChild(etichetta);
-      radioGroup.disabled = !data.editable;
       radioGroup.avanzata = data.avanzata;
       if (data.avanzata){
         radioGroup.hidden = !this.avanzata;
@@ -25744,6 +25752,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         :host {
           display: block;
           width: 70%;
+          height: 90%;
           /*height: 50%;*/
           /*overflow: visible !important;*/
           background: var(--paper-dialog-background-color, --primary-background-color);
@@ -25768,34 +25777,40 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         }
       }
 
-      .formCont {
+      #editForm {
         padding: 24px;
+      }
+
+      .mainDialog {
+        padding: 24px;;
       }
 
       .footer {
         padding: 24px;
+        /*position: absolute;
+        bottom: 0;*/
         @apply(--layout-horizontal);
         @apply(--layout-end-justified);
       }
     </style>
-      <div id="mainDialog">
+      <paper-scroll-header-panel id="mainDialog" fixed="">
         
-        <paper-toolbar>
+        <paper-toolbar fi="">
           <div>[[titolo]]</div>
           <div class="space"></div>
           
           <paper-icon-button icon="close" dialog-dismiss=""></paper-icon-button>
         </paper-toolbar>
         
-        <paper-dialog-scrollable id="formCont" dialog-element="[[mainDialog]]">
+        
         
           <form is="iron-form" id="editForm" action="[[editUrl]]">
           </form>
         
-        </paper-dialog-scrollable>
-        <div class="footer">
-          <paper-button class="accentColor" on-tap="edit">salva</paper-button>
-        </div>
+        
+      </paper-scroll-header-panel>
+      <div class="footer">
+        <paper-button class="accentColor" on-tap="edit">salva</paper-button>
       </div>
     <iron-ajax id="editResource" handle-as="json" on-response="editResource_responseHandler" on-error="editResource_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
@@ -25810,9 +25825,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         'build(template)'
       ],
 
-      ready: function(){
-//        var scrollable = Polymer.dom(this).querySelector('paper-dialog-scrollable');
-//        scrollable.dialogElement = this;
+      attached: function(){
       },
 
       behaviors: [
@@ -25926,6 +25939,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         var resp = event.detail.response;
         //TODO VERIFICARE COLORAZIONE ALERT CON SUCCESSO
         //E CONTROLLARE DOPPIA CREAZIONE
+        //SCROLL SU EDIT
         if (resp.dettaglioEsito){
           switch (resp.esitoOperazione){
             case 'ESEGUITA':
@@ -25970,7 +25984,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         .mainContent {
           padding: 0 24px;
           @apply(--layout-horizontal);
-          @apply(--layout-center-justified);
+          /*@apply(--layout-center-justified);*/
         }
       }
 
@@ -25989,7 +26003,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         .mainContent {
           padding: 0 8px;
           @apply(--layout-vertical);
-          @apply(--layout-center-justified);
+          /*@apply(--layout-center-justified);*/
         }
       }
 
@@ -26010,6 +26024,11 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         @apply(--layout-center);
       }
 
+      .noResults {
+        font-size: 24px;
+        color: #9e9e9e;
+      }
+
       .center-vertical {
         height: 58px;
         @apply(--layout-vertical);
@@ -26023,6 +26042,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
 
       .gap {
         width: 24px;
+        height: 24px;
       }
 
     </style>
@@ -26053,7 +26073,8 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           <div class="mainContent">
             <link-searchbox id="searchbox" auto="" on-append-response="appendResults" hidden$="[[!ricercaUrl]]" on-response="setResults"></link-searchbox>
             <span class="gap" hidden$="[[showSpaceBetween(results.length, ricercaUrl)]]"></span>
-            <link-listbox id="resultsBox" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
+            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
+            <div class="noResults" hidden$="[[!noResults(results.length)]]">Nessun elemento presente.</div>
           </div>
         </div>
       </iron-scroll-threshold>
@@ -26117,6 +26138,10 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           type: Number,
           value: 0
         },
+        filtrabile: {
+          type: Boolean,
+          value: false
+        },
         ricercaUrl: {
           type: String,
           value: ''
@@ -26171,6 +26196,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
           this.creazioneUrl = '';
         }
         this.cancellazioneUrl = response.cancellazione;
+        this.filtrabile = (response.filtro);
         this.esportazioneUrl = response.esportazione;
         if (response.infoRicerca){
           this.ricercaUrl = response.infoRicerca.uri;
@@ -26285,8 +26311,8 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
       },
 
       saved: function(event){
-        //TODO EFFETTUARE REFRESH LISTA
-        this.set('obj', event.detail);
+        this.refresh();
+//        this.set('obj', event.detail);
       }
     });
   })();
@@ -27643,7 +27669,7 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
     <paper-scroll-header-panel class="main" main="" fixed="">
       
       <paper-toolbar class="medium-tall">
-        <paper-icon-button icon="home" on-tap="goHome"></paper-icon-button>
+        <paper-icon-button icon="home" on-tap="goHome" hidden$="[[!showHome]]"></paper-icon-button>
         <paper-icon-button icon="arrow-back" on-tap="goBack"></paper-icon-button>
         <div class="app-name">[[obj.titolo]]</div>
         <div class="space"></div>
@@ -27726,6 +27752,10 @@ The `aria-labelledby` attribute will be set to the header element, if one exists
         uriRefresh: {
           type: String,
           value: ''
+        },
+        showHome: {
+          type: Boolean,
+          value: false
         }
       },
 
@@ -28330,6 +28360,8 @@ event and do your own custom submission:
         margin-left: 0;
         margin-right: 0;
         margin-top: 0;
+        margin-bottom: 0;
+        height: auto;
       }
 
       .cont {
@@ -28395,16 +28427,18 @@ event and do your own custom submission:
         for (var i = 0; i < lista.length; i++) {
           var obj = lista[i];
           var newValue = temp[obj];
-          switch (this.$$('#'+obj).localName){
-            case 'paper-dropdown-menu':
-              if (this.$$('#'+obj).selectedItem){
-                newValue=this.$$('#'+obj).selectedItem.value;
-              } else {
-                newValue = null;
-              }
-              break;
-            default:
-              break;
+          if (this.$$('#'+obj)){
+            switch (this.$$('#'+obj).localName){
+              case 'paper-dropdown-menu':
+                if (this.$$('#'+obj).selectedItem){
+                  newValue=this.$$('#'+obj).selectedItem.value;
+                } else {
+                  newValue = null;
+                }
+                break;
+              default:
+                break;
+            }
           }
           if (newValue){
             query.push(obj+'='+newValue);
@@ -28455,6 +28489,8 @@ event and do your own custom submission:
         margin-left: 0;
         margin-right: 0;
         margin-top: 0;
+        margin-bottom: 0;
+        height: auto;
       }
 
       paper-item {
@@ -28510,6 +28546,10 @@ event and do your own custom submission:
       is: 'link-listbox',
 
       properties: {
+        filtrabile: {
+          type: Boolean,
+          value: false
+        },
         dataProvider: {
           type: Array,
           value: []
@@ -28562,7 +28602,8 @@ event and do your own custom submission:
       },
 
       onlyOne: function(numresults){
-        return (numresults<=1);
+        console.debug('Filtro:'+this.filtrabile);
+        return (numresults<=1 || !this.filtrabile);
       },
 
       notSelectable: function(selectable){

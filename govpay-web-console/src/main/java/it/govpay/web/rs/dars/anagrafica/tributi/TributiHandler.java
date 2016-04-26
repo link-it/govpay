@@ -92,7 +92,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			//			Integer offset = this.getOffset(uriInfo);
+						Integer offset = this.getOffset(uriInfo);
 			//			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
@@ -102,7 +102,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			TributiBD tributiBD = new TributiBD(bd);
 			TributoFilter filter = tributiBD.newFilter();
-			//			filter.setOffset(offset);
+						filter.setOffset(offset);
 			//			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);

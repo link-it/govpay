@@ -89,14 +89,14 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
-			Integer limit = this.getLimit(uriInfo);
+//			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter();
 			filter.setOffset(offset);
-			filter.setLimit(limit);
+//			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Operatore.model().PRINCIPAL);
 			fsw.setSortOrder(SortOrder.ASC);

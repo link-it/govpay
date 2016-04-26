@@ -84,7 +84,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			//			Integer offset = this.getOffset(uriInfo);
+			Integer offset = this.getOffset(uriInfo);
 			//			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
@@ -93,16 +93,16 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			PortaliBD applicazioniBD = new PortaliBD(bd);
 			PortaleFilter filter = applicazioniBD.newFilter();
-			//			filter.setOffset(offset);
+			filter.setOffset(offset);
 			//			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Portale.model().COD_PORTALE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
+
 			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
 			String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
-			
+
 			if(StringUtils.isNotEmpty(codPortale)){
 				filter.setCodPortale(codPortale);
 			}
@@ -137,15 +137,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
-		
+
 		String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-		
+
 		if(infoRicercaMap == null){
 			initInfoRicerca(uriInfo, bd);
 
 		}
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-		
+
 		InputText codPortale= (InputText) infoRicercaMap.get(codPortaleId);
 		codPortale.setDefaultValue(null);
 		codPortale.setEditable(true); 
@@ -153,7 +153,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 		return infoRicerca;
 	}
-	
+
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		if(infoRicercaMap == null){
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
@@ -202,24 +202,24 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(portaleId);
 		idInterm.setDefaultValue(null);
 		sezioneRoot.addField(idInterm);
-		
+
 		InputText codPortale = (InputText) infoCreazioneMap.get(codPortaleId);
 		codPortale.setDefaultValue(null);
 		codPortale.setEditable(true); 
 		sezioneRoot.addField(codPortale);
-		
+
 		InputText principal = (InputText) infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(null);
 		sezioneRoot.addField(principal);
-		
+
 		InputText defaultCallbackURL = (InputText) infoCreazioneMap.get(defaultCallbackURLId);
 		defaultCallbackURL.setDefaultValue(null);
 		sezioneRoot.addField(defaultCallbackURL);
-		
+
 		Applicazioni applicazioni = (Applicazioni) infoCreazioneMap.get(applicazioniId);
 		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 		List<Voce<Long>> idApplicazioni= new ArrayList<Voce<Long>>();
-	
+
 		try {
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -232,15 +232,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 					idApplicazioni.add(new Voce<Long>(tributo.getCodApplicazione(), tributo.getId())); 
 				}
 			}
-			
+
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		
+
 		applicazioni.setValues(idApplicazioni); 
 		applicazioni.setDefaultValue(new ArrayList<Long>());
 		sezioneRoot.addField(applicazioni);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
@@ -258,7 +258,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			String portaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 			String defaultCallbackURLId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.id");
 			String applicazioniId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioni.id");
-			
+
 			// id 
 			InputNumber id = new InputNumber(portaleId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(portaleId, id);
@@ -280,11 +280,11 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
 			infoCreazioneMap.put(abilitatoId, abiliato);
-			
+
 			String defaultCallbackURLLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.label");
 			InputText defaultCallbackURL = new InputText(defaultCallbackURLId, defaultCallbackURLLabel, null, true, false, true, 1,255);
 			infoCreazioneMap.put(defaultCallbackURLId, defaultCallbackURL);
-			
+
 			String applicazioniLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicazioni.label");
 			List<Voce<Long>> idApplicazioni= new ArrayList<Voce<Long>>();
 			Applicazioni applicazioni = new Applicazioni(applicazioniId, applicazioniLabel, null, false, false, true, idApplicazioni);
@@ -312,20 +312,20 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(portaleId);
 		idInterm.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idInterm);
-		
+
 		InputText codPortale = (InputText) infoCreazioneMap.get(codPortaleId);
 		codPortale.setDefaultValue(entry.getCodPortale());
 		codPortale.setEditable(false); 
 		sezioneRoot.addField(codPortale);
-		
+
 		InputText principal = (InputText) infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(entry.getPrincipal());
 		sezioneRoot.addField(principal);
-		
+
 		InputText defaultCallbackURL = (InputText) infoCreazioneMap.get(defaultCallbackURLId);
 		defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
 		sezioneRoot.addField(defaultCallbackURL);
-		
+
 		Applicazioni applicazioni = (Applicazioni) infoCreazioneMap.get(applicazioniId);
 		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 		List<Voce<Long>> idApplicazioni= new ArrayList<Voce<Long>>();
@@ -341,15 +341,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 					idApplicazioni.add(new Voce<Long>(tributo.getCodApplicazione(), tributo.getId())); 
 				}
 			}
-			
+
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		
+
 		applicazioni.setValues(idApplicazioni); 
 		applicazioni.setDefaultValue(entry.getIdApplicazioni());
 		sezioneRoot.addField(applicazioni);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
@@ -411,7 +411,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			// Elementi correlati
 			String etichettaApplicazioni = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.applicazioni.titolo");
 			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-			
+
 			it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
 			UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(applicazioniDars.getPathServizio()).queryParam(codPortaleId, portale.getCodPortale());
 			dettaglio.addElementoCorrelato(etichettaApplicazioni, uriBuilder.build());
@@ -425,7 +425,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException,ValidationException,DuplicatedEntryException {
@@ -447,7 +447,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodPortale());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
-		 
+
 			applicazioniBD.insertPortale(entry); 
 
 			log.info("Esecuzione " + methodName + " completata.");
@@ -463,7 +463,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public Portale creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
@@ -493,7 +493,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public void checkEntry(Portale entry, Portale oldEntry) throws ValidationException {
 		if(entry == null || StringUtils.isEmpty(entry.getCodPortale())) {
@@ -507,7 +507,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 				throw new ValidationException("Cod Portale non deve cambiare in update. Atteso ["+oldEntry.getCodPortale()+"] trovato ["+entry.getCodPortale()+"]");
 		}
 	}
-	
+
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException, ValidationException {

@@ -20,12 +20,6 @@
  */
 package it.govpay.bd.pagamento.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.Versamento;
-import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,19 +34,26 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.Versamento;
+import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
+
 public class VersamentoFilter extends AbstractFilter {
-	
+
 	private String statoPagamento =  null;
 	private String codUnivocoDebitore;
 	private List<Long> idUo;
 	private List<Long> idApplicazioni;
 	private Date datainizio;
 	private Date dataFine;
-	
+	private Long idVersamento= null;
+
 	public enum SortFields {
 		STATO
 	}
-	
+
 	public VersamentoFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
@@ -67,41 +68,47 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.equals(Versamento.model().STATO_VERSAMENTO, this.statoPagamento);
 				addAnd = true;
 			}
-			
+
 			if(this.datainizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
-				
+
 				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.datainizio,this.dataFine);
 				addAnd = true;
 			}
-			
+
 			if((this.idUo != null && !this.idUo.isEmpty()) || (this.idApplicazioni != null && !this.idApplicazioni.isEmpty())) {
 				IExpression newExpressionEntiApplicazioni = this.newExpression();
 				VersamentoFieldConverter versamentoFieldConverter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-				
-				CustomField idEnteCustomField = new CustomField("id_ente",  Long.class, "id_ente",  versamentoFieldConverter.toTable(Versamento.model()));
+
+				CustomField idUoCustomField = new CustomField("id_uo",  Long.class, "id_uo",  versamentoFieldConverter.toTable(Versamento.model()));
 				CustomField idApplicazioneCustomField = new CustomField("id_applicazione",  Long.class, "id_applicazione",  versamentoFieldConverter.toTable(Versamento.model()));
-				
+
 				if(this.idUo != null && !this.idUo.isEmpty()) {
 					for(Long id: this.idUo) {
-						newExpressionEntiApplicazioni.equals(idEnteCustomField, id).or();
+						newExpressionEntiApplicazioni.equals(idUoCustomField, id).or();
 					}
 				}
-				
+
 				if(this.idApplicazioni != null && !this.idApplicazioni.isEmpty()) {
 					for(Long id: this.idApplicazioni) {
 						newExpressionEntiApplicazioni.equals(idApplicazioneCustomField, id).or();
 					}
 				}
 				newExpression.and(newExpressionEntiApplicazioni);
-				
+
 			}
-			
+
 			if(this.codUnivocoDebitore != null) {
 				newExpression.equals(Versamento.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore);
 			}
-			
+
+			if(this.idVersamento != null){
+				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
+				newExpression.equals(cf, this.idVersamento);
+			}
+
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -153,5 +160,15 @@ public class VersamentoFilter extends AbstractFilter {
 	public void setCodUnivocoDebitore(String codUnivocoDebitore) {
 		this.codUnivocoDebitore = codUnivocoDebitore;
 	}
+
+	public Long getIdVersamento() {
+		return idVersamento;
+	}
+
+	public void setIdVersamento(Long idVersamento) {
+		this.idVersamento = idVersamento;
+	}
+
+
 
 }

@@ -42,16 +42,14 @@ import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
 import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.anagrafica.portali.Portali;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
-import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
-import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.model.Console;
 import it.govpay.web.rs.dars.model.Console.About;
 import it.govpay.web.rs.dars.model.Console.SezioneMenu;
+import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.utils.Utils;
-import it.govpay.web.rs.dars.model.DarsResponse;
 
 @Path("/dars/")
 public class Menu extends BaseRsService {
@@ -88,13 +86,13 @@ public class Menu extends BaseRsService {
 
 			Console console = new Console(Utils.getInstance().getMessageFromResourceBundle("govpay.appTitle"), logout);
 			About about = console.new About();
-			about.setTitolo("GovPay - Porta di Accesso al Nodo dei Pagamenti SPC");
-			about.setBuild("build09122016");
-			about.setLicenza(new URI("https://raw.githubusercontent.com/link-it/GovPay/master/LICENSE"));
-			about.setManualeUso(new URI("http://www.gov4j.it/gov4j/download/GovPay-ManualeUtente.pdf"));
-			about.setProjectPage(new URI("http://www.gov4j.it/govpay"));
-			about.setVersione("2.1");
-			about.setCopyright("Copyright (c) 2014-2016 Link.it srl (http://www.link.it)");
+			about.setTitolo(Utils.getInstance().getMessageFromResourceBundle("govpay.about.titolo"));
+			about.setBuild(Utils.getInstance().getMessageFromResourceBundle("govpay.about.build"));
+			about.setLicenza(new URI(Utils.getInstance().getMessageFromResourceBundle("govpay.about.licenza")));
+			about.setManualeUso(new URI(Utils.getInstance().getMessageFromResourceBundle("govpay.about.manuale")));
+			about.setProjectPage(new URI(Utils.getInstance().getMessageFromResourceBundle("govpay.about.paginaProgetto")));
+			about.setVersione(Utils.getInstance().getMessageFromResourceBundle("govpay.about.versione"));
+			about.setCopyright(Utils.getInstance().getMessageFromResourceBundle("govpay.about.copyright"));
 			console.setAbout(about);
 			it.govpay.web.rs.dars.model.Console.Menu menu = console.new Menu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".govpay"));
 			Intermediari intermediariDars = new Intermediari();
@@ -106,13 +104,6 @@ public class Menu extends BaseRsService {
 			
 			Domini dominiDars = new Domini();
 			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(dominiDars.getPathServizio()).build(), false));
-			
-			UnitaOperative uoDars = new UnitaOperative();
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(uoDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(uoDars.getPathServizio()).build(), false));
-			
-			Tributi tributiDars = new Tributi();
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio() + ".titolo"),
-					uriInfo.getBaseUriBuilder().path(tributiDars.getPathServizio()).build(), false));
 			
 			Applicazioni applicazioniDars = new Applicazioni();
 			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(applicazioniDars.getNomeServizio() + ".titolo"),

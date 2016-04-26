@@ -79,6 +79,16 @@
 				<version>2.1.1</version>
 				<configuration>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webResources>
+			            <resource>
+			                <filtering>true</filtering>
+			                <directory>src/main/webapp/scripts</directory>
+			                <includes>
+			                    <include>*.js</include>
+			                </includes>
+			                <targetPath>scripts</targetPath>
+			            </resource>
+			        </webResources>
 				</configuration>
 			</plugin>
 		</plugins>

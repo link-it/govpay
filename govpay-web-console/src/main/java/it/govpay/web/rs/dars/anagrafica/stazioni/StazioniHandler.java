@@ -80,6 +80,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			Integer offset = this.getOffset(uriInfo);
 
 			Intermediari intermediariDars = new Intermediari();
 			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
@@ -96,6 +97,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
+			filter.setOffset(offset);
 
 
 			long count = stazioniBD.count(filter);

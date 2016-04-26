@@ -21,13 +21,14 @@
 package it.govpay.web.rs.dars.model.input.dinamic;
 
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.input.FieldType;
 
 import java.net.URI;
 import java.util.List;
 
 public abstract class InputSecret extends InputText {
 	public InputSecret(String id, String label, int minLength, int maxLength, URI refreshUri, List<RawParamValue> values) {
-		super(id, label, minLength, maxLength, refreshUri, values);
+		super(id, label, minLength, maxLength, refreshUri, values, FieldType.INPUT_SECRET); 
 	}
 }
 

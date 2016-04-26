@@ -32,7 +32,6 @@ import org.apache.commons.lang.StringUtils;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.Dominio;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.model.input.ParamField;
@@ -78,7 +77,7 @@ public class AnagraficaHandler {
 
 			// ragionesociale
 			String ragioneSocialeLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".ragioneSociale.label");
-			InputText ragineSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, true, true, false, 1, 255);
+			InputText ragineSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, true, true, false, 1, 70);
 			//			ragineSociale.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".ragioneSociale.errorMessage"));
 			mappaCreazione.put(ragioneSocialeId, ragineSociale);
 
@@ -90,37 +89,37 @@ public class AnagraficaHandler {
 
 			// indirizzo
 			String indirizzoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".indirizzo.label");
-			InputText indirizzo = new InputText(indirizzoId, indirizzoLabel, null, false, false, true, 1, 255);
+			InputText indirizzo = new InputText(indirizzoId, indirizzoLabel, null, false, false, true, 1, 70);
 			//			indirizzo.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".indirizzo.errorMessage"));
 			mappaCreazione.put(indirizzoId, indirizzo);
 
 			// civico
 			String civicoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica +  ".civico.label");
-			InputText civico = new InputText(civicoId, civicoLabel, null, false, false, true, 1, 255);
+			InputText civico = new InputText(civicoId, civicoLabel, null, false, false, true, 1, 16);
 			//			civico.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio  + "." + this.nomeAnagrafica + ".civico.errorMessage"));
 			mappaCreazione.put(civicoId, civico);
 
 			// cap
 			String capLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica +  ".cap.label");
-			InputText cap = new InputText(capId, capLabel, null, false, false, true, 1, 255);
+			InputText cap = new InputText(capId, capLabel, null, false, false, true, 1, 16);
 			//			cap.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio  + "." + this.nomeAnagrafica + ".cap.errorMessage"));
 			mappaCreazione.put(capId, cap);
 
 			// localita
 			String localitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".localita.label");
-			InputText localita = new InputText(localitaId, localitaLabel, null, false, false, true, 1, 255);
+			InputText localita = new InputText(localitaId, localitaLabel, null, false, false, true, 1, 35);
 			//			localita.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".localita.errorMessage"));
 			mappaCreazione.put(localitaId, localita);
 
 			// provincia
 			String provinciaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.label");
-			InputText provincia = new InputText(provinciaId, provinciaLabel, null, false, false, true, 1, 255);
+			InputText provincia = new InputText(provinciaId, provinciaLabel, null, false, false, true, 1, 35);
 			//			provincia.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.errorMessage"));
 			mappaCreazione.put(provinciaId, provincia);
 
 			// nazione
 			String nazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.label");
-			InputText nazione = new InputText(nazioneId, nazioneLabel, null, false, false, true, 1, 255);
+			InputText nazione = new InputText(nazioneId, nazioneLabel, null, false, false, true, 1, 2);
 			//			nazione.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.errorMessage"));
 			mappaCreazione.put(nazioneId, nazione);
 
@@ -194,28 +193,6 @@ public class AnagraficaHandler {
 		nazione.setDefaultValue(null);
 		listaParametri.add(nazione);
 
-		// email
-		InputText email = (InputText) mappaCreazione.get(emailId);
-		email.setDefaultValue(null);
-		listaParametri.add(email);
-
-		// telefono
-		InputText telefono = (InputText) mappaCreazione.get(telefonoId);
-		telefono.setDefaultValue(null);
-		listaParametri.add(telefono);
-
-		// cellulare
-		InputText cellulare = (InputText) mappaCreazione.get(cellulareId);
-		cellulare.setDefaultValue(null);
-		listaParametri.add(cellulare);
-
-		// fax
-		InputText fax = (InputText) mappaCreazione.get(faxId);
-		fax.setDefaultValue(null);
-		listaParametri.add(fax);
-
- 
-
 		return listaParametri;
 	}
 	
@@ -242,7 +219,7 @@ public class AnagraficaHandler {
 
 			// ragionesociale
 			String ragioneSocialeLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".ragioneSociale.label");
-			InputText ragineSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, false, true, 1, 255);
+			InputText ragineSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, false, true, 1, 70);
 			//			ragineSociale.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".ragioneSociale.errorMessage"));
 			mappaCreazione.put(ragioneSocialeId, ragineSociale);
 
@@ -254,37 +231,37 @@ public class AnagraficaHandler {
 
 			// indirizzo
 			String indirizzoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".indirizzo.label");
-			InputText indirizzo = new InputText(indirizzoId, indirizzoLabel, null, false, false, true, 1, 255);
+			InputText indirizzo = new InputText(indirizzoId, indirizzoLabel, null, false, false, true, 1, 70);
 			//			indirizzo.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".indirizzo.errorMessage"));
 			mappaCreazione.put(indirizzoId, indirizzo);
 
 			// civico
 			String civicoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica +  ".civico.label");
-			InputText civico = new InputText(civicoId, civicoLabel, null, false, false, true, 1, 255);
+			InputText civico = new InputText(civicoId, civicoLabel, null, false, false, true, 1, 16);
 			//			civico.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio  + "." + this.nomeAnagrafica + ".civico.errorMessage"));
 			mappaCreazione.put(civicoId, civico);
 
 			// cap
 			String capLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica +  ".cap.label");
-			InputText cap = new InputText(capId, capLabel, null, false, false, true, 1, 255);
+			InputText cap = new InputText(capId, capLabel, null, false, false, true, 1, 16);
 			//			cap.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio  + "." + this.nomeAnagrafica + ".cap.errorMessage"));
 			mappaCreazione.put(capId, cap);
 
 			// localita
 			String localitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".localita.label");
-			InputText localita = new InputText(localitaId, localitaLabel, null, false, false, true, 1, 255);
+			InputText localita = new InputText(localitaId, localitaLabel, null, false, false, true, 1, 35);
 			//			localita.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".localita.errorMessage"));
 			mappaCreazione.put(localitaId, localita);
 
 			// provincia
 			String provinciaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.label");
-			InputText provincia = new InputText(provinciaId, provinciaLabel, null, false, false, true, 1, 255);
+			InputText provincia = new InputText(provinciaId, provinciaLabel, null, false, false, true, 1, 35);
 			//			provincia.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.errorMessage"));
 			mappaCreazione.put(provinciaId, provincia);
 
 			// nazione
 			String nazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.label");
-			InputText nazione = new InputText(nazioneId, nazioneLabel, null, false, false, true, 1, 255);
+			InputText nazione = new InputText(nazioneId, nazioneLabel, null, false, false, true, 1, 2);
 			//			nazione.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.errorMessage"));
 			mappaCreazione.put(nazioneId, nazione);
 
@@ -533,27 +510,6 @@ public class AnagraficaHandler {
 		nazione.setDefaultValue(anagrafica.getNazione());
 		listaParametri.add(nazione);
 
-		// email
-		InputText email = (InputText) mappaCreazione.get(emailId);
-		email.setDefaultValue(anagrafica.getEmail());
-		listaParametri.add(email);
-
-		// telefono
-		InputText telefono = (InputText) mappaCreazione.get(telefonoId);
-		telefono.setDefaultValue(anagrafica.getTelefono());
-		listaParametri.add(telefono);
-
-		// cellulare
-		InputText cellulare = (InputText) mappaCreazione.get(cellulareId);
-		cellulare.setDefaultValue(anagrafica.getCellulare());
-		listaParametri.add(cellulare);
-
-		// fax
-		InputText fax = (InputText) mappaCreazione.get(faxId);
-		fax.setDefaultValue(anagrafica.getFax());
-		listaParametri.add(fax);
-
-
 		return listaParametri;
 	}
 
@@ -606,13 +562,5 @@ public class AnagraficaHandler {
 			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.label"), anagrafica.getProvincia());
 		if(StringUtils.isNotEmpty(anagrafica.getNazione()))
 			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.label"), anagrafica.getNazione());
-		if(StringUtils.isNotEmpty(anagrafica.getEmail()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".email.label"), anagrafica.getEmail());
-		if(StringUtils.isNotEmpty(anagrafica.getTelefono()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".telefono.label"), anagrafica.getTelefono());
-		if(StringUtils.isNotEmpty(anagrafica.getCellulare()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".cellulare.label"), anagrafica.getCellulare());
-		if(StringUtils.isNotEmpty(anagrafica.getFax()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".fax.label"), anagrafica.getFax());
 	}
 }

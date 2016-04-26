@@ -3,29 +3,29 @@
 <Configuration>
 	<Appenders>
 	
-		<File name="govpay" fileName="${log.folder}/govpay-console.log" append="true">
+		<File name="govpay" fileName="${it.govpay.log.folder}/govpay-console.log" append="true">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd}  %msg%n" />
 		</File>
 		
-		<File name="govpay_orm" fileName="${log.folder}/govpay-console_orm.log" append="true">
+		<File name="govpay_orm" fileName="${it.govpay.log.folder}/govpay-console_orm.log" append="true">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd} %msg%n" />
 		</File>
 		
-		<File name="STDOUT" fileName="${log.folder}/govpay_root.log" append="true">
+		<File name="STDOUT" fileName="${it.govpay.log.folder}/govpay_root.log" append="true">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %msg%n" />
 		</File>
 	</Appenders>
 	
 	<Loggers>
-		<Logger name="it.govpay" level="${log.level}" additivity="false">
+		<Logger name="it.govpay" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay" />
 		</Logger>
 		
-		<Logger name="it.govpay.orm" level="${log.level}" additivity="false">
+		<Logger name="it.govpay.orm" level="${it.govpay.log.level}" additivity="false">
 			<AppenderRef ref="govpay_orm" />
 		</Logger>
 
-		<Root level="${log.level}">
+		<Root level="${it.govpay.log.level}">
 			<AppenderRef ref="STDOUT" />
 		</Root>
 	</Loggers>
