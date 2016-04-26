@@ -86,17 +86,17 @@ public class GovpayConfig {
 			}
 		
 			try {
-				this.logoDir = getProperty("it.govpay.logo.path", props, false);
+				this.logoDir = getProperty("it.govpay.psp.logo.path", props, false);
 				if(this.logoDir != null) {
 					File logoDirFile = new File(logoDir);
 					if(!logoDirFile.isDirectory())
-						throw new Exception("Il path indicato nella property \"it.govpay.logo.path\" (" + logoDir + ") non esiste o non e' un folder.");
+						throw new Exception("Il path indicato nella property \"it.govpay.psp.logo.path\" (" + logoDir + ") non esiste o non e' un folder.");
 					File logoDirFile80 = new File(logoDir + "/80x40");
 					if(!logoDirFile80.isDirectory())
-						throw new Exception("Il folder indicato nella property \"it.govpay.logo.path\" (" + logoDir + ") non contiene il subfolder (80x40).");
+						throw new Exception("Il folder indicato nella property \"it.govpay.psp.logo.path\" (" + logoDir + ") non contiene il subfolder (80x40).");
 					File logoDirFile160 = new File(logoDir + "/160x80");
 					if(!logoDirFile160.isDirectory())
-						throw new Exception("Il folder indicato nella property \"it.govpay.logo.path\" (" + logoDir + ") non contiene il subfolder (160x80).");
+						throw new Exception("Il folder indicato nella property \"it.govpay.psp.logo.path\" (" + logoDir + ") non contiene il subfolder (160x80).");
 				}
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
