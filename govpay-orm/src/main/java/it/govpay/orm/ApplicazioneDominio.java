@@ -29,14 +29,13 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for id-iban-accredito complex type.
+/** <p>Java class for ApplicazioneDominio complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="id-iban-accredito">
+ * &lt;complexType name="ApplicazioneDominio">
  * 		&lt;sequence>
- * 			&lt;element name="codIban" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -50,17 +49,16 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "id-iban-accredito", 
+@XmlType(name = "ApplicazioneDominio", 
   propOrder = {
-  	"codIban",
   	"idDominio"
   }
 )
 
-@XmlRootElement(name = "id-iban-accredito")
+@XmlRootElement(name = "ApplicazioneDominio")
 
-public class IdIbanAccredito extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public IdIbanAccredito() {
+public class ApplicazioneDominio extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public ApplicazioneDominio() {
   }
 
   public Long getId() {
@@ -77,14 +75,6 @@ public class IdIbanAccredito extends org.openspcoop2.utils.beans.BaseBean implem
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getCodIban() {
-    return this.codIban;
-  }
-
-  public void setCodIban(java.lang.String codIban) {
-    this.codIban = codIban;
-  }
-
   public IdDominio getIdDominio() {
     return this.idDominio;
   }
@@ -99,10 +89,6 @@ public class IdIbanAccredito extends org.openspcoop2.utils.beans.BaseBean implem
   private Long id;
 
 
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codIban",required=true,nillable=false)
-  protected java.lang.String codIban;
 
   @XmlElement(name="idDominio",required=true,nillable=false)
   protected IdDominio idDominio;

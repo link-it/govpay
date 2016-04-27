@@ -459,10 +459,6 @@ public class AnagraficaHandler {
 		String localitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".localita.id");
 		String provinciaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.id");
 		String nazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.id");
-		String emailId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".email.id");
-		String telefonoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".telefono.id");
-		String cellulareId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".cellulare.id");
-		String faxId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".fax.id");
 
 		Map<String, ParamField<?>> mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeAnagrafica);
 		

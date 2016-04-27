@@ -376,6 +376,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ApplicazioneDominio }
+     */
+    public ApplicazioneDominio createApplicazioneDominio() {
+        return new ApplicazioneDominio();
+    }
+
+    /**
      * Create an instance of {@link Evento }
      */
     public Evento createEvento() {

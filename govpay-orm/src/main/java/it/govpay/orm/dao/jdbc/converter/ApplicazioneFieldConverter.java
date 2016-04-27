@@ -110,6 +110,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_verifica";
 			}
 		}
+		if(field.equals(Applicazione.model().TRUSTED)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trusted";
+			}else{
+				return "trusted";
+			}
+		}
 		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -122,6 +129,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_tributo";
 			}else{
 				return "cod_tributo";
+			}
+		}
+		if(field.equals(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
 			}
 		}
 
@@ -155,11 +169,17 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Applicazione.model().COD_CONNETTORE_VERIFICA)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
+		if(field.equals(Applicazione.model().TRUSTED)){
+			return this.toTable(Applicazione.model(), returnAlias);
+		}
 		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.COD_TRIBUTO)){
 			return this.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO, returnAlias);
 		}
 
 
@@ -185,6 +205,12 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO)){
 			return "id_dominio";
+		}
+		if(model.equals(Applicazione.model().APPLICAZIONE_DOMINIO)){
+			return "applicazioni_domini";
+		}
+		if(model.equals(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO)){
+			return "domini";
 		}
 
 

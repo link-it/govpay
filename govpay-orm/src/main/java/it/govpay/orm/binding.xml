@@ -179,9 +179,16 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codMsgRevoca" field="codMsgRevoca" usage="required"/>
   </mapping>
-  <mapping name="idIbanAccredito" class="it.govpay.orm.IdIbanAccredito">
+  <mapping name="idIbanAccredito" class="it.govpay.orm.IdIbanAccredito" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codIban" field="codIban" usage="required"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
+  </mapping>
+
+  <mapping type-name="_IdIbanAccredito_Type" class="it.govpay.orm.IdIbanAccredito" abstract="true">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codIban" field="codIban" usage="required"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
   </mapping>
   <mapping name="id-er" class="it.govpay.orm.IdEr">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -317,8 +324,12 @@
     <value name="firmaRicevuta" field="firmaRicevuta" usage="required"/>
     <value name="codConnettoreEsito" field="codConnettoreEsito" usage="optional"/>
     <value name="codConnettoreVerifica" field="codConnettoreVerifica" usage="optional"/>
+    <value name="trusted" field="trusted" usage="required"/>
     <collection field="applicazioneTributo" create-type="java.util.ArrayList">
       <structure map-as="it.govpay.orm.ApplicazioneTributo"/>
+    </collection>
+    <collection field="applicazioneDominio" create-type="java.util.ArrayList">
+      <structure map-as="it.govpay.orm.ApplicazioneDominio"/>
     </collection>
   </mapping>
   <mapping name="IbanAccredito" class="it.govpay.orm.IbanAccredito">
@@ -340,13 +351,17 @@
     <value name="codTributo" field="codTributo" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
     <value name="descrizione" field="descrizione" usage="optional"/>
-    <structure field="idIbanAccredito" usage="optional" map-as="it.govpay.orm.IdIbanAccredito"/>
+    <structure name="idIbanAccredito" field="idIbanAccredito" usage="optional" map-as="_IdIbanAccredito_Type"/>
     <value name="tipoContabilita" field="tipoContabilita" usage="required"/>
     <value name="codiceContabilita" field="codiceContabilita" usage="required"/>
   </mapping>
   <mapping name="ApplicazioneTributo" class="it.govpay.orm.ApplicazioneTributo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idTributo" field="idTributo" usage="required" map-as="_IdTributo_Type"/>
+  </mapping>
+  <mapping name="ApplicazioneDominio" class="it.govpay.orm.ApplicazioneDominio">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
   </mapping>
   <mapping name="Operatore" class="it.govpay.orm.Operatore">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -433,7 +448,7 @@
   <mapping name="SingoloVersamento" class="it.govpay.orm.SingoloVersamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
-    <structure name="idTributo" field="idTributo" usage="required" map-as="_IdTributo_Type"/>
+    <structure name="idTributo" field="idTributo" usage="optional" map-as="_IdTributo_Type"/>
     <value name="codSingoloVersamentoEnte" field="codSingoloVersamentoEnte" usage="required"/>
     <value name="statoSingoloVersamento" field="statoSingoloVersamento" usage="required"/>
     <value name="importoSingoloVersamento" field="importoSingoloVersamento" usage="required"/>
@@ -441,6 +456,9 @@
     <value name="tipoBollo" field="tipoBollo" usage="optional"/>
     <value name="hashDocumento" field="hashDocumento" usage="optional"/>
     <value name="provinciaResidenza" field="provinciaResidenza" usage="optional"/>
+    <structure name="idIbanAccredito" field="idIbanAccredito" usage="optional" map-as="_IdIbanAccredito_Type"/>
+    <value name="tipoContabilita" field="tipoContabilita" usage="optional"/>
+    <value name="codiceContabilita" field="codiceContabilita" usage="optional"/>
   </mapping>
   <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

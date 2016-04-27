@@ -34,9 +34,11 @@ public class Applicazione extends BasicModel {
 	private String principal;
 	private boolean abilitato;
 	private List<Long> idTributi;
+	private List<Long> idDomini;
     private Connettore connettoreNotifica;
     private Connettore connettoreVerifica;
     private FirmaRichiesta firmaRichiesta;
+    private boolean trusted;
     
     public Long getId() {
 		return id;
@@ -88,5 +90,17 @@ public class Applicazione extends BasicModel {
 	}
 	public void setCodFirmaRichiesta(String codifica) throws ServiceException {
 		this.firmaRichiesta = FirmaRichiesta.toEnum(codifica);
+	}
+	public List<Long> getIdDomini() {
+		return idDomini;
+	}
+	public void setIdDomini(List<Long> idDomini) {
+		this.idDomini = idDomini;
+	}
+	public boolean isTrusted() {
+		return trusted;
+	}
+	public void setTrusted(boolean trusted) {
+		this.trusted = trusted;
 	}
 }

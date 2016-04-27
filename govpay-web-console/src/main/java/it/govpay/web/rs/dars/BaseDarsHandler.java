@@ -40,6 +40,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
@@ -50,6 +51,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	protected String pathServizio = null;
 	protected String titoloServizio = null;
 	protected BaseDarsService darsService = null;
+	private Integer limit = null;
 
 	public BaseDarsHandler(Logger log, BaseDarsService darsService){
 		this.log = log;
@@ -57,6 +59,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		this.nomeServizio = this.darsService.getNomeServizio();
 		this.pathServizio = this.darsService.getPathServizio();
 		this.titoloServizio = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".titolo");
+		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
 	}
 
 	public abstract Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
@@ -117,14 +120,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			throw new ConsoleException(e);
 		} 
 	}
-	
+
 	public abstract Dettaglio getDettaglio(long id, UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException;
 	public abstract void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public abstract T creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public abstract Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException,DuplicatedEntryException;
 	public abstract void checkEntry(T entry, T oldEntry) throws ValidationException;
 	public abstract Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
-	
+
 	public  abstract String getTitolo(T entry) ;
 	public  abstract String getSottotitolo(T entry) ;
 
@@ -156,6 +159,17 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 
 	public Integer getLimit(UriInfo uriInfo) throws ConsoleException{
-		return getParameter(uriInfo, "limit", Integer.class);
+		Integer parameter = getParameter(uriInfo, "limit", Integer.class);
+		return parameter != null ? parameter : this.limit;
+	}
+
+	public boolean visualizzaRicerca(long count, long limit){
+		boolean nascondi = false;
+		if(ConsoleProperties.getInstance().isNascondiRicerca()){
+			if(count < limit)
+				nascondi = true;
+		}
+		
+		return !nascondi;
 	}
 }

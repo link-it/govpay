@@ -1,3 +1,5 @@
+CREATE SEQUENCE seq_psp start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
 CREATE TABLE psp
 (
 	cod_psp VARCHAR(35) NOT NULL,
@@ -7,17 +9,17 @@ CREATE TABLE psp
 	storno BOOLEAN NOT NULL,
 	marca_bollo BOOLEAN NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_psp') NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_psp_1 UNIQUE (cod_psp),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_psp PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_psp_1 ON psp (cod_psp);
+);
 
 
+
+
+CREATE SEQUENCE seq_canali start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE canali
 (
@@ -25,25 +27,25 @@ CREATE TABLE canali
 	cod_intermediario VARCHAR(35) NOT NULL,
 	tipo_versamento VARCHAR(4) NOT NULL,
 	modello_pagamento INT NOT NULL,
-	disponibilita LONGTEXT,
-	descrizione LONGTEXT,
+	disponibilita TEXT,
+	descrizione TEXT,
 	condizioni VARCHAR(35),
 	url_info VARCHAR(255),
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_canali') NOT NULL,
 	id_psp BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_canali_1 UNIQUE (id_psp,cod_canale,tipo_versamento),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_canali_1 FOREIGN KEY (id_psp) REFERENCES psp(id) ON DELETE CASCADE,
 	CONSTRAINT pk_canali PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_canali_1 ON canali (id_psp,cod_canale,tipo_versamento);
+);
 
 
+
+
+CREATE SEQUENCE seq_intermediari start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE intermediari
 (
@@ -52,17 +54,17 @@ CREATE TABLE intermediari
 	denominazione VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_intermediari') NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_intermediari_1 UNIQUE (cod_intermediario),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_intermediari PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_intermediari_1 ON intermediari (cod_intermediario);
+);
 
 
+
+
+CREATE SEQUENCE seq_stazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE stazioni
 (
@@ -71,19 +73,19 @@ CREATE TABLE stazioni
 	abilitato BOOLEAN NOT NULL,
 	application_code INT NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_stazioni') NOT NULL,
 	id_intermediario BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_stazioni_1 UNIQUE (cod_stazione),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_stazioni_1 FOREIGN KEY (id_intermediario) REFERENCES intermediari(id) ON DELETE CASCADE,
 	CONSTRAINT pk_stazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_stazioni_1 ON stazioni (cod_stazione);
+);
 
 
+
+
+CREATE SEQUENCE seq_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE applicazioni
 (
@@ -93,20 +95,20 @@ CREATE TABLE applicazioni
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
+	trusted BOOLEAN NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_applicazioni') NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_applicazioni_1 UNIQUE (cod_applicazione),
 	CONSTRAINT unique_applicazioni_2 UNIQUE (principal),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_applicazioni_1 ON applicazioni (cod_applicazione);
-CREATE INDEX index_applicazioni_2 ON applicazioni (principal);
+);
 
 
+
+
+CREATE SEQUENCE seq_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE domini
 (
@@ -114,12 +116,12 @@ CREATE TABLE domini
 	gln VARCHAR(35) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	ragione_sociale VARCHAR(70) NOT NULL,
-	xml_conti_accredito MEDIUMBLOB NOT NULL,
-	xml_tabella_controparti MEDIUMBLOB NOT NULL,
+	xml_conti_accredito BYTEA NOT NULL,
+	xml_tabella_controparti BYTEA NOT NULL,
 	riuso_iuv BOOLEAN NOT NULL,
 	custom_iuv BOOLEAN NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,
 	id_applicazione_default BIGINT,
 	-- unique constraints
@@ -128,12 +130,12 @@ CREATE TABLE domini
 	CONSTRAINT fk_domini_1 FOREIGN KEY (id_stazione) REFERENCES stazioni(id) ON DELETE CASCADE,
 	CONSTRAINT fk_domini_2 FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_domini PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_domini_1 ON domini (cod_dominio);
+);
 
 
+
+
+CREATE SEQUENCE seq_uo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE uo
 (
@@ -148,19 +150,19 @@ CREATE TABLE uo
 	uo_provincia VARCHAR(35),
 	uo_nazione VARCHAR(2),
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_uo') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_uo_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_uo PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_uo_1 ON uo (cod_uo,id_dominio);
+);
 
 
+
+
+CREATE SEQUENCE seq_operatori start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE operatori
 (
@@ -169,47 +171,51 @@ CREATE TABLE operatori
 	profilo VARCHAR(16) NOT NULL,
 	abilitato BOOLEAN NOT NULL DEFAULT true,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_operatori') NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_operatori_1 UNIQUE (principal),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_operatori PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_operatori_1 ON operatori (principal);
+);
 
 
+
+
+CREATE SEQUENCE seq_operatori_uo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE operatori_uo
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_operatori_uo') NOT NULL,
 	id_operatore BIGINT NOT NULL,
 	id_uo BIGINT NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_operatori_uo_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
 	CONSTRAINT fk_operatori_uo_2 FOREIGN KEY (id_uo) REFERENCES uo(id) ON DELETE CASCADE,
 	CONSTRAINT pk_operatori_uo PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_operatori_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE operatori_applicazioni
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_operatori_applicazioni') NOT NULL,
 	id_operatore BIGINT NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_operatori_applicazioni_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
 	CONSTRAINT fk_operatori_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_operatori_applicazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_connettori start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE connettori
 (
@@ -217,17 +223,17 @@ CREATE TABLE connettori
 	cod_proprieta VARCHAR(255) NOT NULL,
 	valore VARCHAR(255) NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_connettori') NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_connettori_1 UNIQUE (cod_connettore,cod_proprieta),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_connettori PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_connettori_1 ON connettori (cod_connettore,cod_proprieta);
+);
 
 
+
+
+CREATE SEQUENCE seq_portali start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE portali
 (
@@ -236,49 +242,52 @@ CREATE TABLE portali
 	principal VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_portali') NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_portali_1 UNIQUE (cod_portale),
 	CONSTRAINT unique_portali_2 UNIQUE (principal),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_portali PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_portali_1 ON portali (cod_portale);
-CREATE INDEX index_portali_2 ON portali (principal);
+);
 
 
+
+
+CREATE SEQUENCE seq_operatori_portali start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE operatori_portali
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_operatori_portali') NOT NULL,
 	id_operatore BIGINT NOT NULL,
 	id_portale BIGINT NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_operatori_portali_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
 	CONSTRAINT fk_operatori_portali_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
 	CONSTRAINT pk_operatori_portali PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_portali_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE portali_applicazioni
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_portali_applicazioni') NOT NULL,
 	id_portale BIGINT NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_portali_applicazioni_1 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
 	CONSTRAINT fk_portali_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_portali_applicazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_iban_accredito start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE iban_accredito
 (
@@ -292,19 +301,19 @@ CREATE TABLE iban_accredito
 	attivato BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_iban_accredito') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	-- unique constraints
-	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban),
+	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban,id_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_iban_accredito_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_iban_accredito PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_iban_accredito_1 ON iban_accredito (cod_iban);
+);
 
 
+
+
+CREATE SEQUENCE seq_tributi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE tributi
 (
@@ -314,7 +323,7 @@ CREATE TABLE tributi
 	tipo_contabilita VARCHAR(1) NOT NULL,
 	codice_contabilita VARCHAR(255) NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_iban_accredito BIGINT,
 	-- unique constraints
@@ -323,42 +332,58 @@ CREATE TABLE tributi
 	CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_tributi_1 ON tributi (id_dominio,cod_tributo);
+);
 
 
+
+
+CREATE SEQUENCE seq_applicazioni_tributi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE applicazioni_tributi
 (
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_applicazioni_tributi') NOT NULL,
 	id_applicazione BIGINT,
 	id_tributo BIGINT NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_applicazioni_tributi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT fk_applicazioni_tributi_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id) ON DELETE CASCADE,
 	CONSTRAINT pk_applicazioni_tributi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_applicazioni_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE applicazioni_domini
+(
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_applicazioni_domini') NOT NULL,
+	id_applicazione BIGINT,
+	id_dominio BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_applicazioni_domini_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_applicazioni_domini_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT pk_applicazioni_domini PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_versamenti start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE versamenti
 (
 	cod_versamento_ente VARCHAR(35) NOT NULL,
-	importo_totale DOUBLE NOT NULL,
+	importo_totale DOUBLE PRECISION NOT NULL,
 	stato_versamento VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(255),
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
 	aggiornabile BOOLEAN NOT NULL,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_scadenza TIMESTAMP(3) DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_creazione TIMESTAMP NOT NULL,
+	data_scadenza TIMESTAMP,
+	data_ora_ultimo_aggiornamento TIMESTAMP NOT NULL,
 	causale_versamento VARCHAR(511),
 	debitore_identificativo VARCHAR(35) NOT NULL,
 	debitore_anagrafica VARCHAR(70) NOT NULL,
@@ -369,7 +394,7 @@ CREATE TABLE versamenti
 	debitore_provincia VARCHAR(35),
 	debitore_nazione VARCHAR(2),
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_uo BIGINT NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	-- unique constraints
@@ -378,18 +403,18 @@ CREATE TABLE versamenti
 	CONSTRAINT fk_versamenti_1 FOREIGN KEY (id_uo) REFERENCES uo(id) ON DELETE CASCADE,
 	CONSTRAINT fk_versamenti_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_versamenti_1 ON versamenti (cod_versamento_ente,id_applicazione);
+);
 
 
+
+
+CREATE SEQUENCE seq_singoli_versamenti start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE singoli_versamenti
 (
 	cod_singolo_versamento_ente VARCHAR(70) NOT NULL,
 	stato_singolo_versamento VARCHAR(35) NOT NULL,
-	importo_singolo_versamento DOUBLE NOT NULL,
+	importo_singolo_versamento DOUBLE PRECISION NOT NULL,
 	anno_riferimento INT,
 	-- MARCA BOLLO Valori possibili:\n01: Imposta di bollo
 	tipo_bollo VARCHAR(2),
@@ -397,22 +422,26 @@ CREATE TABLE singoli_versamenti
 	hash_documento VARCHAR(70),
 	-- MARCA BOLLO: Sigla automobilistica della provincia di residenza
 	provincia_residenza VARCHAR(2),
+	tipo_contabilita VARCHAR(1),
+	codice_contabilita VARCHAR(255),
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_singoli_versamenti') NOT NULL,
 	id_versamento BIGINT NOT NULL,
-	id_tributo BIGINT NOT NULL,
+	id_tributo BIGINT,
+	id_iban_accredito BIGINT,
 	-- unique constraints
 	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_singoli_versamenti_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id) ON DELETE CASCADE,
 	CONSTRAINT fk_singoli_versamenti_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id) ON DELETE CASCADE,
+	CONSTRAINT fk_singoli_versamenti_3 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_singoli_versamenti_1 ON singoli_versamenti (id_versamento,cod_singolo_versamento_ente);
+);
 
 
+
+
+CREATE SEQUENCE seq_rpt start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE rpt
 (
@@ -423,31 +452,28 @@ CREATE TABLE rpt
 	-- Identificativo dell'RPT utilizzato come riferimento nell'RT
 	cod_msg_richiesta VARCHAR(35) NOT NULL,
 	-- Data di creazione dell'RPT
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_msg_richiesta TIMESTAMP NOT NULL,
 	-- Stato RPT secondo la codifica AgID
 	stato VARCHAR(35) NOT NULL,
-	descrizione_stato LONGTEXT,
+	descrizione_stato TEXT,
 	cod_sessione VARCHAR(255),
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
 	psp_redirect_url VARCHAR(512),
-	xml_rpt MEDIUMBLOB NOT NULL,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
+	xml_rpt BYTEA NOT NULL,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
-	callback_url LONGTEXT,
+	callback_url TEXT,
 	modello_pagamento VARCHAR(16) NOT NULL,
 	cod_msg_ricevuta VARCHAR(35),
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_ricevuta TIMESTAMP(3) DEFAULT 0,
+	data_msg_ricevuta TIMESTAMP,
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
 	cod_esito_pagamento INT,
-	importo_totale_pagato DOUBLE,
-	xml_rt MEDIUMBLOB,
+	importo_totale_pagato DOUBLE PRECISION,
+	xml_rt BYTEA,
 	cod_stazione VARCHAR(35) NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,
 	id_canale BIGINT NOT NULL,
 	id_portale BIGINT,
@@ -459,13 +485,12 @@ CREATE TABLE rpt
 	CONSTRAINT fk_rpt_2 FOREIGN KEY (id_canale) REFERENCES canali(id) ON DELETE CASCADE,
 	CONSTRAINT fk_rpt_3 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_rpt_1 ON rpt (cod_msg_richiesta);
-CREATE INDEX index_rpt_2 ON rpt (iuv,ccp,cod_dominio);
+);
 
 
+
+
+CREATE SEQUENCE seq_rr start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE rr
 (
@@ -473,46 +498,41 @@ CREATE TABLE rr
 	iuv VARCHAR(35) NOT NULL,
 	ccp VARCHAR(35) NOT NULL,
 	cod_msg_revoca VARCHAR(35) NOT NULL,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_revoca TIMESTAMP(3) NOT NULL DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_esito TIMESTAMP(3) DEFAULT 0,
+	data_msg_revoca TIMESTAMP NOT NULL,
+	data_msg_esito TIMESTAMP,
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(512),
-	importo_totale_richiesto DOUBLE NOT NULL,
+	importo_totale_richiesto DOUBLE PRECISION NOT NULL,
 	cod_msg_esito VARCHAR(35),
-	importo_totale_revocato DOUBLE,
-	xml_rr MEDIUMBLOB NOT NULL,
-	xml_er MEDIUMBLOB,
+	importo_totale_revocato DOUBLE PRECISION,
+	xml_rr BYTEA NOT NULL,
+	xml_er BYTEA,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_rr') NOT NULL,
 	id_rpt BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_rr_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id) ON DELETE CASCADE,
 	CONSTRAINT pk_rr PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_rr_1 ON rr (cod_msg_revoca);
+);
 
 
+
+
+CREATE SEQUENCE seq_notifiche start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE notifiche
 (
 	tipo_esito VARCHAR(16) NOT NULL,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_creazione TIMESTAMP NOT NULL,
 	stato VARCHAR(16) NOT NULL,
 	descrizione_stato VARCHAR(255),
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_prossima_spedizione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_aggiornamento_stato TIMESTAMP NOT NULL,
+	data_prossima_spedizione TIMESTAMP NOT NULL,
 	tentativi_spedizione BIGINT,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_notifiche') NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	id_rpt BIGINT,
 	id_rr BIGINT,
@@ -521,21 +541,23 @@ CREATE TABLE notifiche
 	CONSTRAINT fk_notifiche_2 FOREIGN KEY (id_rpt) REFERENCES rpt(id) ON DELETE CASCADE,
 	CONSTRAINT fk_notifiche_3 FOREIGN KEY (id_rr) REFERENCES rr(id) ON DELETE CASCADE,
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_iuv start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE iuv
 (
 	prg BIGINT NOT NULL,
 	iuv VARCHAR(35) NOT NULL,
 	application_code INT NOT NULL,
-	data_generazione TIMESTAMP NOT NULL DEFAULT 0,
+	data_generazione DATE NOT NULL,
 	tipo_iuv VARCHAR(1) NOT NULL,
 	cod_versamento_ente VARCHAR(35),
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_iuv') NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	-- unique constraints
@@ -544,30 +566,28 @@ CREATE TABLE iuv
 	CONSTRAINT fk_iuv_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT fk_iuv_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_iuv PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_iuv_1 ON iuv (id_dominio,iuv);
+);
 
 
+
+
+CREATE SEQUENCE seq_fr start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE fr
 (
 	cod_flusso VARCHAR(35) NOT NULL,
 	stato VARCHAR(35) NOT NULL,
-	descrizione_stato LONGTEXT,
+	descrizione_stato TEXT,
 	iur VARCHAR(35) NOT NULL,
 	anno_riferimento INT NOT NULL,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_flusso TIMESTAMP(3) DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_regolamento TIMESTAMP(3) DEFAULT 0,
+	data_ora_flusso TIMESTAMP,
+	data_regolamento TIMESTAMP,
 	numero_pagamenti BIGINT,
-	importo_totale_pagamenti DOUBLE,
+	importo_totale_pagamenti DOUBLE PRECISION,
 	cod_bic_riversamento VARCHAR(35),
-	xml MEDIUMBLOB NOT NULL,
+	xml BYTEA NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_fr') NOT NULL,
 	id_psp BIGINT NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	-- unique constraints
@@ -576,60 +596,59 @@ CREATE TABLE fr
 	CONSTRAINT fk_fr_1 FOREIGN KEY (id_psp) REFERENCES psp(id) ON DELETE CASCADE,
 	CONSTRAINT fk_fr_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_fr PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
--- index
-CREATE INDEX index_fr_1 ON fr (cod_flusso,anno_riferimento);
+);
 
 
+
+
+CREATE SEQUENCE seq_fr_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE fr_applicazioni
 (
 	numero_pagamenti BIGINT NOT NULL,
-	importo_totale_pagamenti DOUBLE NOT NULL,
+	importo_totale_pagamenti DOUBLE PRECISION NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_fr_applicazioni') NOT NULL,
 	id_applicazione BIGINT NOT NULL,
 	id_fr BIGINT NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_fr_applicazioni_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT fk_fr_applicazioni_2 FOREIGN KEY (id_fr) REFERENCES fr(id) ON DELETE CASCADE,
 	CONSTRAINT pk_fr_applicazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_pagamenti start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE pagamenti
 (
 	cod_singolo_versamento_ente VARCHAR(35) NOT NULL,
-	importo_pagato DOUBLE NOT NULL,
+	importo_pagato DOUBLE PRECISION NOT NULL,
 	iur VARCHAR(35) NOT NULL,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT 0,
-	commissioni_psp DOUBLE,
+	data_pagamento TIMESTAMP NOT NULL,
+	commissioni_psp DOUBLE PRECISION,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),
-	allegato MEDIUMBLOB,
+	allegato BYTEA,
 	rendicontazione_esito INT,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	rendicontazione_data TIMESTAMP(3) DEFAULT 0,
+	rendicontazione_data TIMESTAMP,
 	codflusso_rendicontazione VARCHAR(35),
 	anno_riferimento INT,
 	indice_singolo_pagamento INT,
 	causale_revoca VARCHAR(140),
 	dati_revoca VARCHAR(140),
-	importo_revocato DOUBLE,
+	importo_revocato DOUBLE PRECISION,
 	esito_revoca VARCHAR(140),
 	dati_esito_revoca VARCHAR(140),
 	rendicontazione_esito_revoca INT,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	rendicontazione_data_revoca TIMESTAMP(3) DEFAULT 0,
+	rendicontazione_data_revoca TIMESTAMP,
 	cod_flusso_rendicontaz_revoca VARCHAR(35),
 	anno_riferimento_revoca INT,
 	ind_singolo_pagamento_revoca INT,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_pagamenti') NOT NULL,
 	id_rpt BIGINT NOT NULL,
 	id_singolo_versamento BIGINT NOT NULL,
 	id_fr_applicazione BIGINT,
@@ -642,10 +661,12 @@ CREATE TABLE pagamenti
 	CONSTRAINT fk_pagamenti_4 FOREIGN KEY (id_rr) REFERENCES rr(id) ON DELETE CASCADE,
 	CONSTRAINT fk_pagamenti_5 FOREIGN KEY (id_fr_applicazione_revoca) REFERENCES fr_applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_eventi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE eventi
 (
@@ -665,26 +686,26 @@ CREATE TABLE eventi
 	parametri_1 VARCHAR(512),
 	parametri_2 VARCHAR(512),
 	esito VARCHAR(35),
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_1 TIMESTAMP(3) DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_2 TIMESTAMP(3) DEFAULT 0,
+	data_1 TIMESTAMP,
+	data_2 TIMESTAMP,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
+
+CREATE SEQUENCE seq_rendicontazioni_senza_rpt start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE rendicontazioni_senza_rpt
 (
-	importo_pagato DOUBLE NOT NULL,
+	importo_pagato DOUBLE PRECISION NOT NULL,
 	iur VARCHAR(35) NOT NULL,
-	rendicontazione_data TIMESTAMP NOT NULL DEFAULT 0,
+	rendicontazione_data DATE NOT NULL,
 	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
+	id BIGINT DEFAULT nextval('seq_rendicontazioni_senza_rpt') NOT NULL,
 	id_fr_applicazione BIGINT NOT NULL,
 	id_iuv BIGINT NOT NULL,
 	id_singolo_versamento BIGINT,
@@ -693,7 +714,7 @@ CREATE TABLE rendicontazioni_senza_rpt
 	CONSTRAINT fk_rendicontazioni_senza_rpt_2 FOREIGN KEY (id_iuv) REFERENCES iuv(id) ON DELETE CASCADE,
 	CONSTRAINT fk_rendicontazioni_senza_rpt_3 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id) ON DELETE CASCADE,
 	CONSTRAINT pk_rendicontazioni_senza_rpt PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 
 
 
@@ -703,10 +724,9 @@ CREATE TABLE ID_MESSAGGIO_RELATIVO
 	COUNTER BIGINT NOT NULL,
 	PROTOCOLLO VARCHAR(255) NOT NULL,
 	INFO_ASSOCIATA VARCHAR(255) NOT NULL,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	ora_registrazione TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP(3),
+	ora_registrazione TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	-- fk/pk columns
 	-- fk/pk keys constraints
 	CONSTRAINT pk_ID_MESSAGGIO_RELATIVO PRIMARY KEY (PROTOCOLLO,INFO_ASSOCIATA)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+);
 

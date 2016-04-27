@@ -66,6 +66,13 @@
 					<xsd:maxLength value="35"/>
 				</xsd:restriction>
 			</xsd:simpleType>
+			<xsd:simpleType name="stText40">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1"/>
+					<xsd:maxLength value="40"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			
 			<xsd:simpleType name="stPassword">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="8"/>
@@ -473,8 +480,8 @@
 					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
 					<xsd:element name="password" type="ppt:stPassword"/>
 					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
-					<xsd:element name="keyPA" type="ppt:stText35"/>
-					<xsd:element name="keyWISP" type="ppt:stText35"/>
+					<xsd:element name="keyPA" type="ppt:stText40"/>
+					<xsd:element name="keyWISP" type="ppt:stText40"/>
 				</xsd:sequence>
 			</xsd:complexType>
 						

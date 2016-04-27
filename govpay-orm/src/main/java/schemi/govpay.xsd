@@ -274,6 +274,7 @@
 	<xsd:complexType name="id-iban-accredito">
 		<xsd:sequence>
 			<xsd:element name="codIban" type="xsd:string"/>
+			<xsd:element name="idDominio" type="id-dominio"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -472,7 +473,9 @@
 			<xsd:element name="firmaRicevuta" type="String1"/>
 			<xsd:element minOccurs="0" name="codConnettoreEsito" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="codConnettoreVerifica" type="xsd:string"/>
+			<xsd:element name="trusted" type="xsd:boolean"/>
 			<xsd:element maxOccurs="unbounded" minOccurs="0" ref="ApplicazioneTributo"/>
+			<xsd:element maxOccurs="unbounded" minOccurs="0" ref="ApplicazioneDominio"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -519,6 +522,16 @@
 		
 		<xsd:sequence>
 			<xsd:element name="idTributo" type="id-tributo">
+				
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="ApplicazioneDominio" type="ApplicazioneDominio"/>
+	<xsd:complexType name="ApplicazioneDominio">
+		
+		<xsd:sequence>
+			<xsd:element name="idDominio" type="id-dominio">
 				
 			</xsd:element>
 		</xsd:sequence>
@@ -661,7 +674,7 @@
 			<xsd:element name="idVersamento" type="id-versamento">
 				
 			</xsd:element>
-			<xsd:element name="idTributo" type="id-tributo">
+			<xsd:element minOccurs="0" name="idTributo" type="id-tributo">
 				
 			</xsd:element>
 			<xsd:element name="codSingoloVersamentoEnte" type="String70"/>
@@ -678,6 +691,12 @@
 			<xsd:element minOccurs="0" name="provinciaResidenza" type="String2">
 				
 			</xsd:element>
+			
+			<xsd:element minOccurs="0" name="idIbanAccredito" type="id-iban-accredito">
+				
+			</xsd:element>
+			<xsd:element minOccurs="0" name="tipoContabilita" type="String1"/>
+			<xsd:element minOccurs="0" name="codiceContabilita" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>	
 

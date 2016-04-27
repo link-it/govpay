@@ -34,6 +34,7 @@ import it.govpay.bd.IFilter;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.converter.IbanAccreditoConverter;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.dao.jdbc.JDBCIbanAccreditoServiceSearch;
 
@@ -83,11 +84,13 @@ public class IbanAccreditoBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public IbanAccredito getIbanAccredito(String codIban) throws NotFoundException, ServiceException, MultipleResultException {
+	public IbanAccredito getIbanAccredito(Long idDominio, String codIban) throws NotFoundException, ServiceException, MultipleResultException {
 		try {
 			IdIbanAccredito id = new IdIbanAccredito();
 			id.setCodIban(codIban);
-			
+			IdDominio idDominioVo = new IdDominio();
+			idDominioVo.setId(idDominio);
+			id.setIdDominio(idDominioVo);
 			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().get(id);
 			IbanAccredito ibanAccredito = getIbanAccredito(ibanAccreditoVO);
 			

@@ -94,7 +94,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
-			//			Integer limit = this.getLimit(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
@@ -103,7 +103,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter();
 			filter.setOffset(offset);
-			//			filter.setLimit(limit);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -131,8 +131,13 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			}
 
 			long count = dominiBD.count(filter);
+			
+			// visualizza la ricerca solo se i risultati sono > del limit
+			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 

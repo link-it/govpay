@@ -402,7 +402,7 @@ public class ConnettoreHandler {
 		
 		sezioneConnettore.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".url.label"), connettore.getUrl());
 		sezioneConnettore.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".azioneInURL.label"), 
-				Utils.getAbilitatoAsLabel(connettore.isAzioneInUrl()),true);
+				Utils.getSiNoAsLabel(connettore.isAzioneInUrl()),true);
 
 		String tipoAutenticazione = null;
 		EnumAuthType tipoAutenticazioneVal = connettore.getTipoAutenticazione() != null ? connettore.getTipoAutenticazione() : EnumAuthType.NONE;

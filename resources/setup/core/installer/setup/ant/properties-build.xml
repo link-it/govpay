@@ -135,5 +135,13 @@
 			<param name="value" value="${antinstaller_log_folder}"/>
 		</antcall>
 	</target>
+
+	<target name="govpay_console_properties_settings">
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="http://localhost:8080"/>
+                        <param name="value" value="${antinstaller_pubhost}"/>
+                </antcall>
+	</target>
 	
 </project>

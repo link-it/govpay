@@ -94,7 +94,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
-			//			Integer limit = this.getLimit(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
@@ -103,7 +103,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			UnitaOperativeBD unitaOperativaBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = unitaOperativaBD.newFilter();
 			filter.setOffset(offset);
-			//			filter.setLimit(limit);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Uo.model().COD_UO);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -124,6 +124,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			if(StringUtils.isNotEmpty(codDominio)){
 				DominiBD dominiBD = new DominiBD(bd);
 				Dominio dominio = dominiBD.getDominio(codDominio);
+				this.idDominio = dominio.getId();
 				filter.setDominioFilter(dominio.getId()); 
 				visualizzaRicerca = false;
 			}
@@ -142,28 +143,10 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 				visualizzaRicerca = false;
 			} 
 
-			// Ricerca nella sezione UO
-
-			String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-			String codUo = this.getParameter(uriInfo, codUoId, String.class);
-
-			if(StringUtils.isNotEmpty(codUo)){
-				filter.setCodUo(codUo);
-			}
-
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			String idDominioString = this.getParameter(uriInfo, idDominioId, String.class);
-			if(StringUtils.isNotEmpty(idDominioString)){
-				this.idDominio = null;
-				try{
-					this.idDominio = Long.parseLong(idDominioString);
-				}catch(Exception e){ this.idDominio = null;	}
-				if(this.idDominio != null && this.idDominio > 0){
-					filter.setDominioFilter(this.idDominio); 
-				}
-			}
-
 			long count = entitaSenzaUo ? 0 : unitaOperativaBD.count(filter);
+			
+			// visualizza la ricerca solo se i risultati sono > del limit
+			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
@@ -298,7 +281,6 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		SelectList<Long> idDominio = (SelectList<Long>) infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(this.idDominio);
 		if(this.idDominio == null){
-			idDominio.setHidden(true);
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter;
 			try {
@@ -317,8 +299,11 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			} catch (ServiceException e) {
 				throw new ConsoleException(e);
 			}
-		} else {
 			idDominio.setHidden(false);
+			idDominio.setEditable(true);
+		}else {
+			idDominio.setHidden(true);
+			idDominio.setEditable(false);
 		}
 
 		idDominio.setValues(domini); 

@@ -95,7 +95,7 @@ public class BasicClient {
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
 		
 		if(connettore == null) {
-			return;
+			throw new ClientException("Connettore non configurato");
 		}
 		
 		try {

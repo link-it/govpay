@@ -43,6 +43,7 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
+import it.govpay.orm.ApplicazioneDominio;
 import it.govpay.orm.ApplicazioneTributo;
 import it.govpay.orm.Applicazione;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
@@ -81,6 +82,7 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().FIRMA_RICEVUTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().TRUSTED,false),"?");
 
 		// Insert applicazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getApplicazioneFetch().getKeyGeneratorObject(Applicazione.model());
@@ -90,9 +92,46 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getPrincipal(),Applicazione.model().PRINCIPAL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getFirmaRicevuta(),Applicazione.model().FIRMA_RICEVUTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreEsito(),Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreVerifica(),Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getCodConnettoreVerifica(),Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(applicazione.getTrusted(),Applicazione.model().TRUSTED.getFieldType())
 		);
 		applicazione.setId(id);
+
+		// for applicazione
+		for (int i = 0; i < applicazione.getApplicazioneDominioList().size(); i++) {
+
+			// Object _applicazioneDominio_dominio
+			Long id_applicazioneDominio_dominio = null;
+			it.govpay.orm.IdDominio idLogic_applicazioneDominio_dominio = null;
+			idLogic_applicazioneDominio_dominio = applicazione.getApplicazioneDominioList().get(i).getIdDominio();
+			if(idLogic_applicazioneDominio_dominio!=null){
+				if(idMappingResolutionBehaviour==null ||
+					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+					id_applicazioneDominio_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_applicazioneDominio_dominio, false);
+				}
+				else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+					id_applicazioneDominio_dominio = idLogic_applicazioneDominio_dominio.getId();
+					if(id_applicazioneDominio_dominio==null || id_applicazioneDominio_dominio<=0){
+						throw new Exception("Logic id not contains table id");
+					}
+				}
+			}
+
+
+			// Object applicazione.getApplicazioneDominioList().get(i)
+			ISQLQueryObject sqlQueryObjectInsert_applicazioneDominio = sqlQueryObjectInsert.newSQLQueryObject();
+			sqlQueryObjectInsert_applicazioneDominio.addInsertTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
+			sqlQueryObjectInsert_applicazioneDominio.addInsertField("id_dominio","?");
+			sqlQueryObjectInsert_applicazioneDominio.addInsertField("id_applicazione","?");
+
+			// Insert applicazione.getApplicazioneDominioList().get(i)
+			org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_applicazioneDominio = this.getApplicazioneFetch().getKeyGeneratorObject(Applicazione.model().APPLICAZIONE_DOMINIO);
+			long id_applicazioneDominio = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_applicazioneDominio, keyGenerator_applicazioneDominio, jdbcProperties.isShowSql(),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazioneDominio_dominio,Long.class),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
+			);
+			applicazione.getApplicazioneDominioList().get(i).setId(id_applicazioneDominio);
+		} // fine for 
 
 		// for applicazione
 		for (int i = 0; i < applicazione.getApplicazioneTributoList().size(); i++) {
@@ -192,6 +231,8 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreEsito(), Applicazione.model().COD_CONNETTORE_ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().COD_CONNETTORE_VERIFICA,false), "?");
 		lstObjects_applicazione.add(new JDBCObject(applicazione.getCodConnettoreVerifica(), Applicazione.model().COD_CONNETTORE_VERIFICA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getApplicazioneFieldConverter().toColumn(Applicazione.model().TRUSTED,false), "?");
+		lstObjects_applicazione.add(new JDBCObject(applicazione.getTrusted(), Applicazione.model().TRUSTED.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_applicazione.add(new JDBCObject(tableId, Long.class));
 
@@ -309,6 +350,116 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 		}
 
 		jdbcUtilities.execute(sqlQueryObjectUpdate_applicazioneTributo_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_applicazione_applicazioneTributo_delete.toArray(new JDBCObject[]{}));
+
+		// for applicazione_applicazioneDominio
+
+		java.util.List<Long> ids_applicazione_applicazioneDominio_da_non_eliminare = new java.util.ArrayList<Long>();
+		for (Object applicazione_applicazioneDominio_object : applicazione.getApplicazioneDominioList()) {
+			ApplicazioneDominio applicazione_applicazioneDominio = (ApplicazioneDominio) applicazione_applicazioneDominio_object;
+			if(applicazione_applicazioneDominio.getId() == null || applicazione_applicazioneDominio.getId().longValue() <= 0) {
+
+				long id = applicazione.getId();			
+				// Object _applicazione_applicazioneDominio_dominio
+				Long id_applicazione_applicazioneDominio_dominio = null;
+				it.govpay.orm.IdDominio idLogic_applicazione_applicazioneDominio_dominio = null;
+				idLogic_applicazione_applicazioneDominio_dominio = applicazione_applicazioneDominio.getIdDominio();
+				if(idLogic_applicazione_applicazioneDominio_dominio!=null){
+					if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+						id_applicazione_applicazioneDominio_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_applicazione_applicazioneDominio_dominio, false);
+					}
+					else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+						id_applicazione_applicazioneDominio_dominio = idLogic_applicazione_applicazioneDominio_dominio.getId();
+						if(id_applicazione_applicazioneDominio_dominio==null || id_applicazione_applicazioneDominio_dominio<=0){
+							throw new Exception("Logic id not contains table id");
+						}
+					}
+				}
+
+
+				// Object applicazione_applicazioneDominio
+				ISQLQueryObject sqlQueryObjectInsert_applicazione_applicazioneDominio = sqlQueryObjectInsert.newSQLQueryObject();
+				sqlQueryObjectInsert_applicazione_applicazioneDominio.addInsertTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
+				sqlQueryObjectInsert_applicazione_applicazioneDominio.addInsertField("id_dominio","?");
+				sqlQueryObjectInsert_applicazione_applicazioneDominio.addInsertField("id_applicazione","?");
+
+				// Insert applicazione_applicazioneDominio
+				org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_applicazione_applicazioneDominio = this.getApplicazioneFetch().getKeyGeneratorObject(Applicazione.model().APPLICAZIONE_DOMINIO);
+				long id_applicazione_applicazioneDominio = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_applicazione_applicazioneDominio, keyGenerator_applicazione_applicazioneDominio, jdbcProperties.isShowSql(),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione_applicazioneDominio_dominio,Long.class),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
+				);
+				applicazione_applicazioneDominio.setId(id_applicazione_applicazioneDominio);
+
+				ids_applicazione_applicazioneDominio_da_non_eliminare.add(applicazione_applicazioneDominio.getId());
+			} else {
+
+				// Object _applicazione_applicazioneDominio_dominio
+				Long id_applicazione_applicazioneDominio_dominio = null;
+				it.govpay.orm.IdDominio idLogic_applicazione_applicazioneDominio_dominio = null;
+				idLogic_applicazione_applicazioneDominio_dominio = applicazione_applicazioneDominio.getIdDominio();
+				if(idLogic_applicazione_applicazioneDominio_dominio!=null){
+					if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+						id_applicazione_applicazioneDominio_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_applicazione_applicazioneDominio_dominio, false);
+					}
+					else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+						id_applicazione_applicazioneDominio_dominio = idLogic_applicazione_applicazioneDominio_dominio.getId();
+						if(id_applicazione_applicazioneDominio_dominio==null || id_applicazione_applicazioneDominio_dominio<=0){
+							throw new Exception("Logic id not contains table id");
+						}
+					}
+				}
+
+
+				// Object applicazione_applicazioneDominio
+				ISQLQueryObject sqlQueryObjectUpdate_applicazione_applicazioneDominio = sqlQueryObjectUpdate.newSQLQueryObject();
+				sqlQueryObjectUpdate_applicazione_applicazioneDominio.setANDLogicOperator(true);
+				sqlQueryObjectUpdate_applicazione_applicazioneDominio.addUpdateTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
+				boolean isUpdate_applicazione_applicazioneDominio = true;
+				java.util.List<JDBCObject> lstObjects_applicazione_applicazioneDominio = new java.util.ArrayList<JDBCObject>();
+				if(setIdMappingResolutionBehaviour){
+					sqlQueryObjectUpdate_applicazione_applicazioneDominio.addUpdateField("id_dominio","?");
+				}
+				if(setIdMappingResolutionBehaviour){
+					lstObjects_applicazione_applicazioneDominio.add(new JDBCObject(id_applicazione_applicazioneDominio_dominio, Long.class));
+				}
+				sqlQueryObjectUpdate_applicazione_applicazioneDominio.addWhereCondition("id=?");
+				ids_applicazione_applicazioneDominio_da_non_eliminare.add(applicazione_applicazioneDominio.getId());
+				lstObjects_applicazione_applicazioneDominio.add(new JDBCObject(new Long(applicazione_applicazioneDominio.getId()),Long.class));
+
+				if(isUpdate_applicazione_applicazioneDominio) {
+					// Update applicazione_applicazioneDominio
+					jdbcUtilities.executeUpdate(sqlQueryObjectUpdate_applicazione_applicazioneDominio.createSQLUpdate(), jdbcProperties.isShowSql(), 
+						lstObjects_applicazione_applicazioneDominio.toArray(new JDBCObject[]{}));
+				}
+			}
+		} // fine for applicazione_applicazioneDominio
+
+		// elimino tutte le occorrenze di applicazione_applicazioneDominio non presenti nell'update
+
+		ISQLQueryObject sqlQueryObjectUpdate_applicazioneDominio_deleteList = sqlQueryObjectUpdate.newSQLQueryObject();
+		sqlQueryObjectUpdate_applicazioneDominio_deleteList.setANDLogicOperator(true);
+		sqlQueryObjectUpdate_applicazioneDominio_deleteList.addDeleteTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
+		java.util.List<JDBCObject> jdbcObjects_applicazione_applicazioneDominio_delete = new java.util.ArrayList<JDBCObject>();
+
+		sqlQueryObjectUpdate_applicazioneDominio_deleteList.addWhereCondition("id_applicazione=?");
+		jdbcObjects_applicazione_applicazioneDominio_delete.add(new JDBCObject(applicazione.getId(), Long.class));
+
+		StringBuffer marks_applicazione_applicazioneDominio = new StringBuffer();
+		if(ids_applicazione_applicazioneDominio_da_non_eliminare.size() > 0) {
+			for(Long ids : ids_applicazione_applicazioneDominio_da_non_eliminare) {
+				if(marks_applicazione_applicazioneDominio.length() > 0) {
+					marks_applicazione_applicazioneDominio.append(",");
+				}
+				marks_applicazione_applicazioneDominio.append("?");
+				jdbcObjects_applicazione_applicazioneDominio_delete.add(new JDBCObject(ids, Long.class));
+
+			}
+			sqlQueryObjectUpdate_applicazioneDominio_deleteList.addWhereCondition("id NOT IN ("+marks_applicazione_applicazioneDominio.toString()+")");
+		}
+
+		jdbcUtilities.execute(sqlQueryObjectUpdate_applicazioneDominio_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_applicazione_applicazioneDominio_delete.toArray(new JDBCObject[]{}));
 
 
 	}
@@ -462,6 +613,31 @@ public class JDBCApplicazioneServiceImpl extends JDBCApplicazioneServiceSearchIm
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(applicazione_applicazioneTributo.getId()),Long.class));
 			}
 		} // fine for applicazione_applicazioneTributo
+
+		//Recupero oggetto _applicazione_applicazioneDominio
+		ISQLQueryObject sqlQueryObjectDelete_applicazione_applicazioneDominio_getToDelete = sqlQueryObjectDelete.newSQLQueryObject();
+		sqlQueryObjectDelete_applicazione_applicazioneDominio_getToDelete.setANDLogicOperator(true);
+		sqlQueryObjectDelete_applicazione_applicazioneDominio_getToDelete.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
+		sqlQueryObjectDelete_applicazione_applicazioneDominio_getToDelete.addWhereCondition("id_applicazione=?");
+		java.util.List<Object> applicazione_applicazioneDominio_toDelete_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectDelete_applicazione_applicazioneDominio_getToDelete.createSQLQuery(), jdbcProperties.isShowSql(), Applicazione.model().APPLICAZIONE_DOMINIO, this.getApplicazioneFetch(),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class));
+
+		// for applicazione_applicazioneDominio
+		for (Object applicazione_applicazioneDominio_object : applicazione_applicazioneDominio_toDelete_list) {
+			ApplicazioneDominio applicazione_applicazioneDominio = (ApplicazioneDominio) applicazione_applicazioneDominio_object;
+
+			// Object applicazione_applicazioneDominio
+			ISQLQueryObject sqlQueryObjectDelete_applicazione_applicazioneDominio = sqlQueryObjectDelete.newSQLQueryObject();
+			sqlQueryObjectDelete_applicazione_applicazioneDominio.setANDLogicOperator(true);
+			sqlQueryObjectDelete_applicazione_applicazioneDominio.addDeleteTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
+			sqlQueryObjectDelete_applicazione_applicazioneDominio.addWhereCondition("id=?");
+
+			// Delete applicazione_applicazioneDominio
+			if(applicazione_applicazioneDominio != null){
+				jdbcUtilities.execute(sqlQueryObjectDelete_applicazione_applicazioneDominio.createSQLDelete(), jdbcProperties.isShowSql(), 
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(applicazione_applicazioneDominio.getId()),Long.class));
+			}
+		} // fine for applicazione_applicazioneDominio
 
 		// Object applicazione
 		sqlQueryObjectDelete.setANDLogicOperator(true);

@@ -10,6 +10,7 @@ DELETE FROM rr;
 DELETE FROM rpt;
 DELETE FROM singoli_versamenti;
 DELETE FROM versamenti;
+DELETE FROM applicazioni_domini;
 DELETE FROM applicazioni_tributi;
 DELETE FROM tributi;
 DELETE FROM iban_accredito;

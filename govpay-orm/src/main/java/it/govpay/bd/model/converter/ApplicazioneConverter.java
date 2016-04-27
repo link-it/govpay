@@ -23,7 +23,9 @@ package it.govpay.bd.model.converter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
+import it.govpay.orm.ApplicazioneDominio;
 import it.govpay.orm.ApplicazioneTributo;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTributo;
 
 import java.util.ArrayList;
@@ -41,14 +43,24 @@ public class ApplicazioneConverter {
 		dto.setConnettoreVerifica(connettoreVerifica);
 		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
 		dto.setId(vo.getId());
+		dto.setPrincipal(vo.getPrincipal());
+		dto.setTrusted(vo.getTrusted());
+		
+		List<Long> idTributi = new ArrayList<Long>();
 		if(vo.getApplicazioneTributoList() != null && !vo.getApplicazioneTributoList().isEmpty()) {
-			List<Long> idTributi = new ArrayList<Long>();
 			for(ApplicazioneTributo tributo: vo.getApplicazioneTributoList()) {
 				idTributi.add(tributo.getIdTributo().getId());
 			}
-			dto.setIdTributi(idTributi);
 		}
-		dto.setPrincipal(vo.getPrincipal());
+		dto.setIdTributi(idTributi);
+		
+		List<Long> idDomini = new ArrayList<Long>();
+		if(vo.getApplicazioneDominioList() != null && !vo.getApplicazioneDominioList().isEmpty()) {
+			for(ApplicazioneDominio dominio: vo.getApplicazioneDominioList()) {
+				idDomini.add(dominio.getIdDominio().getId());
+			}
+		}
+		dto.setIdDomini(idDomini);
 		return dto;
 	}
 
@@ -68,8 +80,10 @@ public class ApplicazioneConverter {
 			vo.setCodConnettoreVerifica(dto.getConnettoreVerifica().getIdConnettore());
 		}
 		
-		vo.setPrincipal(dto.getPrincipal());
 		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
+		vo.setPrincipal(dto.getPrincipal());
+		vo.setTrusted(dto.isTrusted());
+		
 		if(dto.getIdTributi() != null && !dto.getIdTributi().isEmpty()) {
 			List<ApplicazioneTributo> idTributi = new ArrayList<ApplicazioneTributo>();
 			for(Long tributo: dto.getIdTributi()) {
@@ -80,6 +94,18 @@ public class ApplicazioneConverter {
 				idTributi.add(applicazioneTributo);
 			}
 			vo.setApplicazioneTributoList(idTributi);
+		}
+		
+		if(dto.getIdDomini() != null && !dto.getIdDomini().isEmpty()) {
+			List<ApplicazioneDominio> idDomini = new ArrayList<ApplicazioneDominio>();
+			for(Long dominio: dto.getIdDomini()) {
+				ApplicazioneDominio applicazioneDominio = new ApplicazioneDominio();
+				IdDominio idDominio = new IdDominio();
+				idDominio.setId(dominio);
+				applicazioneDominio.setIdDominio(idDominio);
+				idDomini.add(applicazioneDominio);
+			}
+			vo.setApplicazioneDominioList(idDomini);
 		}
 		
 		return vo;

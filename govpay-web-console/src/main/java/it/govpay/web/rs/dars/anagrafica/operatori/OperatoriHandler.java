@@ -89,14 +89,14 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
-//			Integer limit = this.getLimit(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter();
 			filter.setOffset(offset);
-//			filter.setLimit(limit);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Operatore.model().PRINCIPAL);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -117,8 +117,12 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			}
 
 			long count = operatoriBD.count(filter);
+			
+			// visualizza la ricerca solo se i risultati sono > del limit
+			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
@@ -240,14 +244,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 		UnitaOperative uo = (UnitaOperative) infoCreazioneMap.get(uoId);
 		uo.init(tipoAutenticazioneValues, bd); 
-		uo.setHidden(true);
-		uo.setDefaultValue(new ArrayList<Long>()); 
 		sezioneRoot.addField(uo);
 
 		Applicazioni applicazioni = (Applicazioni) infoCreazioneMap.get(applicazioniId);
 		applicazioni.init(tipoAutenticazioneValues, bd); 
-		applicazioni.setHidden(true);
-		applicazioni.setDefaultValue(new ArrayList<Long>()); 
 		sezioneRoot.addField(applicazioni); 
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
@@ -378,14 +378,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 		UnitaOperative uo = (UnitaOperative) infoCreazioneMap.get(uoId);
 		uo.init(tipoAutenticazioneValues, bd); 
-		uo.setHidden(hiddenUo);
-		uo.setDefaultValue(entry.getIdEnti()); 
 		sezioneRoot.addField(uo);
 
 		Applicazioni applicazioni = (Applicazioni) infoCreazioneMap.get(applicazioniId);
 		applicazioni.init(tipoAutenticazioneValues, bd); 
-		applicazioni.setHidden(hiddenUo);
-		applicazioni.setDefaultValue(entry.getIdApplicazioni());  
 		sezioneRoot.addField(applicazioni); 
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);

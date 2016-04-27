@@ -90,8 +90,7 @@ public abstract class BaseRsService {
 	}
 		
 	public Operatore getOperatoreByPrincipal(BasicBD bd) throws ServiceException,WebApplicationException {
-		Operatore operatore = getOperatoreByPrincipal(bd, "amministratore");
-//		Operatore operatore = getOperatoreByPrincipal(bd, getPrincipal());
+		Operatore operatore = getOperatoreByPrincipal(bd, getPrincipal());
 		return operatore;
 	}
 

@@ -88,6 +88,8 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			URI esportazione = null;
 			URI cancellazione = null;
 
+			Integer offset = this.getOffset(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter();
 			filter.setCodDominio(this.codDominio);
@@ -95,6 +97,8 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
+			filter.setOffset(offset);
+			filter.setLimit(limit);
 
 
 			long count = ibanAccreditoBD.count(filter);
@@ -440,7 +444,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			}catch(NotFoundException e){}
 
 			try{
-				ibanAccreditoBD.getIbanAccredito(entry.getCodIban());
+				ibanAccreditoBD.getIbanAccredito(entry.getIdDominio(),entry.getCodIban());
 				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodIban());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
@@ -523,15 +527,17 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			DominiBD dominiBD = new DominiBD(bd);
-
-			IbanAccredito oldEntry = ibanAccreditoBD.getIbanAccredito(entry.getCodIban());
-
-			this.checkEntry(entry, oldEntry); 
-
+			
 			try{
 				Dominio dominio = dominiBD.getDominio(this.codDominio);
 				entry.setIdDominio(dominio.getId());
 			}catch(NotFoundException e){}
+
+			IbanAccredito oldEntry = ibanAccreditoBD.getIbanAccredito(entry.getIdDominio(),entry.getCodIban());
+
+			this.checkEntry(entry, oldEntry); 
+
+
 
 			ibanAccreditoBD.updateIbanAccredito(entry); 
 

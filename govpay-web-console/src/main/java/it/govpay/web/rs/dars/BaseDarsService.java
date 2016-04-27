@@ -48,6 +48,7 @@ import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.utils.Utils;
 
 @Path("/")
 public abstract class BaseDarsService extends BaseRsService {
@@ -89,7 +90,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito("ERR");
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".elenco.erroreGenerico"));
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -117,6 +118,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			// Field richiesto non valido
 			if(field == null){
 				darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+				darsResponse.setDettaglioEsito(Utils.getInstance().getMessageWithParamsFromResourceBundle("field.fieldNonPresente", id,this.getNomeServizio()));
 				return darsResponse;
 			}
 
@@ -131,7 +133,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito("ERR");
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -170,7 +172,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito("ERR");
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".dettaglio.erroreGenerico"));
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -202,7 +204,6 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try {
 			bd = BasicBD.newInstance();
-			this.getOperatoreByPrincipal(bd);
 
 			getDarsHandler().delete(idsToDelete, uriInfo, bd);
 
@@ -216,7 +217,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito("ERR");
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".cancella.erroreGenerico"));
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -244,10 +245,11 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			darsResponse.setResponse(dettaglio);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.ok")); 
 		} catch(ValidationException e){
 			log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
-			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreValidazione")+ " " + e.getMessage());
 			return darsResponse;
 		} catch(DuplicatedEntryException e){
 			log.error("Riscontrata errore di entry duplicata durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
@@ -264,7 +266,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito("ERR");
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreGenerico"));
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -291,10 +293,11 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			darsResponse.setResponse(dettaglio);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.ok")); 
 		} catch(ValidationException e){
 			log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
-			darsResponse.setDettaglioEsito("Dati di input non validi: " + e.getMessage());
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreValidazione")+ " " + e.getMessage());
 			return darsResponse;
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
@@ -306,7 +309,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito("ERR");
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreGenerico"));
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();

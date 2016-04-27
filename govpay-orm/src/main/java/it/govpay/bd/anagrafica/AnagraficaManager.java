@@ -406,10 +406,10 @@ public class AnagraficaManager {
 		}
 	}
 
-	public static IbanAccredito getIbanAccredito(BasicBD basicBD, String codIbanAccredito) throws ServiceException, NotFoundException {
+	public static IbanAccredito getIbanAccredito(BasicBD basicBD, Long idDominio, String codIbanAccredito) throws ServiceException, NotFoundException {
 		try {
 			String method = "getIbanAccredito";
-			Object ibanAccredito = ibanAccreditoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codIbanAccredito, method, codIbanAccredito);
+			Object ibanAccredito = ibanAccreditoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codIbanAccredito + "@" + idDominio, method, idDominio, codIbanAccredito);
 			return (IbanAccredito) ibanAccredito;
 		} catch (Throwable t) {
 			if(t instanceof NotFoundException) {

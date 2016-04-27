@@ -184,27 +184,56 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().ANNO_RIFERIMENTO);
 			fields.add(SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO);
 			fields.add(SingoloVersamento.model().HASH_DOCUMENTO);
+			fields.add(SingoloVersamento.model().TIPO_CONTABILITA);
+			fields.add(SingoloVersamento.model().CODICE_CONTABILITA);
 			fields.add(SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO);
 
+			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_tributo", Long.class, "id_tributo", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				Long idTributo = (Long)map.remove("id_tributo");
+				
+				Object idTributoObj = map.remove("id_tributo");
+				Long idTributo = null;
+				if(idTributoObj instanceof Long) {
+					idTributo = (Long) idTributoObj;
+				}
+				
+				Object idIbanAccreditoObj = map.remove("id_iban_accredito");
+				Long idIbanAccredito = null;
+				if(idIbanAccreditoObj instanceof Long) {
+					idIbanAccredito = (Long) idIbanAccreditoObj;
+				}
+				
+				
 				Long idVersamento = (Long)map.remove("id_versamento");
 
 				SingoloVersamento singoloVersamento = (SingoloVersamento)this.getSingoloVersamentoFetch().fetch(jdbcProperties.getDatabase(), SingoloVersamento.model(), map);
 
-				it.govpay.orm.IdTributo id_singoloVersamento_tributo = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_singoloVersamento_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findId(idTributo, false);
-				}else{
-					id_singoloVersamento_tributo = new it.govpay.orm.IdTributo();
+				if(idTributo != null) {
+					it.govpay.orm.IdTributo id_singoloVersamento_tributo = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_singoloVersamento_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findId(idTributo, false);
+					}else{
+						id_singoloVersamento_tributo = new it.govpay.orm.IdTributo();
+					}
+					id_singoloVersamento_tributo.setId(idTributo);
+					singoloVersamento.setIdTributo(id_singoloVersamento_tributo);
 				}
-				id_singoloVersamento_tributo.setId(idTributo);
-				singoloVersamento.setIdTributo(id_singoloVersamento_tributo);
+
+				if(idIbanAccredito != null) {
+					it.govpay.orm.IdIbanAccredito id_singoloVersamento_ibanAccredito = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_singoloVersamento_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAccredito, false);
+					}else{
+						id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
+					}
+					id_singoloVersamento_ibanAccredito.setId(idTributo);
+					singoloVersamento.setIdIbanAccredito(id_singoloVersamento_ibanAccredito);
+				}
 
 				it.govpay.orm.IdVersamento id_singoloVersamento_versamento = null;
 				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
@@ -514,6 +543,10 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				obj.getIdTributo().getIdDominio().setId(imgSaved.getIdTributo().getIdDominio().getId());
 			}
 		}
+		if(obj.getIdIbanAccredito()!=null && 
+				imgSaved.getIdIbanAccredito()!=null){
+			obj.getIdIbanAccredito().setId(imgSaved.getIdIbanAccredito().getId());
+		}
 
 	}
 	
@@ -594,6 +627,12 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
 		}
 		
+		if(expression.inUseModel(SingoloVersamento.model().ID_IBAN_ACCREDITO,false)){
+			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+			String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_IBAN_ACCREDITO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_iban_accredito="+tableName2+".id");
+		}
+		
 		if(expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
 			
 			if(expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO,false)){
@@ -608,7 +647,6 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
 		
-
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdSingoloVersamento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -658,6 +696,11 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO))
 			));
 
+		// SingoloVersamento.model().ID_IBAN_ACCREDITO
+		mapTableToPKColumn.put(converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO))
+			));
 
         return mapTableToPKColumn;		
 	}

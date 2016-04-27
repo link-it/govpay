@@ -80,6 +80,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	private static Map<String, ParamField<?>> infoCreazioneMap = null;
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
 	public static final String ANAGRAFICA_UO = "anagrafica";
+	private Long idDominio = null;
 
 	public TributiHandler(Logger log, BaseDarsService darsService) {
 		super(log,darsService);
@@ -92,8 +93,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-						Integer offset = this.getOffset(uriInfo);
-			//			Integer limit = this.getLimit(uriInfo);
+			Integer offset = this.getOffset(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
@@ -102,8 +103,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			TributiBD tributiBD = new TributiBD(bd);
 			TributoFilter filter = tributiBD.newFilter();
-						filter.setOffset(offset);
-			//			filter.setLimit(limit);
+			filter.setOffset(offset);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -117,6 +118,9 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			if(StringUtils.isNotEmpty(codDominio)){
 				filter.setCodDominio(codDominio);
+				DominiBD dominiBD = new DominiBD(bd);
+				Dominio dominio = dominiBD.getDominio(codDominio);
+				this.idDominio = dominio.getId();
 				visualizzaRicerca = false;
 			} 
 
@@ -135,33 +139,10 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 				filter.setListaIdTributi(applicazione.getIdTributi());
 			} 
 
-			// sezione tributi
-			// Ricerca nella sezione UO
-
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
-
-			if(StringUtils.isNotEmpty(codTributo)){
-				filter.setCodTributo(codTributo);
-			}
-
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
-			if(StringUtils.isNotEmpty(idDominio)){
-				long idDom = -1l;
-				try{
-					idDom = Long.parseLong(idDominio);
-				}catch(Exception e){ idDom = -1l;	}
-				if(idDom > 0){
-					DominiBD dominiBD = new DominiBD(bd);
-					Dominio dominio = dominiBD.getDominio(idDom);
-					filter.setCodDominio(dominio.getCodDominio());
-				}
-			}
-
-
-
 			long count = applicazioneSenzaTributi ? 0 : tributiBD.count(filter);
+			
+			// visualizza la ricerca solo se i risultati sono > del limit
+			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
@@ -297,29 +278,37 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		// se lo uso dentro la maschera domini bisogna impostare l'id dominio
 		List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-		DominiBD dominiBD = new DominiBD(bd);
-		DominioFilter filter;
-		try {
-			filter = dominiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Dominio> findAll = dominiBD.findAll(filter );
+		SelectList<Long> idDominio = (SelectList<Long>) infoCreazioneMap.get(idDominioId);
 
-			if(findAll != null && findAll.size() > 0){
-				for (Dominio dominio : findAll) {
-					domini.add(new Voce<Long>(dominio.getCodDominio(), dominio.getId()));  
+		if(this.idDominio == null){
+			DominiBD dominiBD = new DominiBD(bd);
+			DominioFilter filter;
+			try {
+				filter = dominiBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+				fsw.setSortOrder(SortOrder.ASC);
+				filter.getFilterSortList().add(fsw);
+				List<Dominio> findAll = dominiBD.findAll(filter );
+
+				if(findAll != null && findAll.size() > 0){
+					for (Dominio dominio : findAll) {
+						domini.add(new Voce<Long>(dominio.getCodDominio(), dominio.getId()));  
+					}
 				}
+			} catch (ServiceException e) {
+				throw new ConsoleException(e);
 			}
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
+			idDominio.setHidden(false);
+			idDominio.setEditable(true);
+		}else {
+			idDominio.setHidden(true);
+			idDominio.setEditable(false);
 		}
 
-		SelectList<Long> idDominio = (SelectList<Long>) infoCreazioneMap.get(idDominioId);
 		idDominio.setValues(domini);   
-		idDominio.setDefaultValue(null);
-		idDominio.setEditable(true);
+		idDominio.setDefaultValue(this.idDominio);
+
 		sezioneRoot.addField(idDominio);
 
 		it.govpay.web.rs.dars.anagrafica.tributi.input.IbanAccredito idIbanAccredito = (it.govpay.web.rs.dars.anagrafica.tributi.input.IbanAccredito) infoCreazioneMap.get(idIbanAccreditoId);

@@ -35,6 +35,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
@@ -46,6 +48,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.model.Console;
 import it.govpay.web.rs.dars.model.Console.About;
 import it.govpay.web.rs.dars.model.Console.SezioneMenu;
+import it.govpay.web.rs.dars.model.Console.VoceMenu;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
@@ -55,13 +58,13 @@ import it.govpay.web.utils.Utils;
 public class Menu extends BaseRsService {
 
 	private Logger log = LogManager.getLogger();
-	private String basePathServizi;
+	private String pathServizio;
 	private String nomeServizio;
 
 
 	public Menu() {
 		this.nomeServizio = "menu";
-		this.basePathServizi = "dars";
+		this.pathServizio = "/dars/";
 	}
 
 	@GET
@@ -79,8 +82,9 @@ public class Menu extends BaseRsService {
 		try{
 			bd = BasicBD.newInstance();
 
-			// necessario autorizzare l'utente per vedere il menu'?
-			this.getOperatoreByPrincipal(bd);
+			// controllo delle autorizzazioni dell'utente
+			Operatore operatore = this.getOperatoreByPrincipal(bd);
+			ProfiloOperatore profilo = operatore.getProfilo(); 
 
 			URI logout = uriInfo.getBaseUriBuilder().path("../logout").build();
 
@@ -95,42 +99,50 @@ public class Menu extends BaseRsService {
 			about.setCopyright(Utils.getInstance().getMessageFromResourceBundle("govpay.about.copyright"));
 			console.setAbout(about);
 			it.govpay.web.rs.dars.model.Console.Menu menu = console.new Menu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".govpay"));
+
 			Intermediari intermediariDars = new Intermediari();
-			menu.setHome(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(intermediariDars.getPathServizio()).build(), false));
-			SezioneMenu anagrafica = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".anagrafica"));
-			Psp pspDars = new Psp();
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(pspDars.getPathServizio()).build(), false));
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(intermediariDars.getPathServizio()).build(), false));
-			
-			Domini dominiDars = new Domini();
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(dominiDars.getPathServizio()).build(), false));
-			
-			Applicazioni applicazioniDars = new Applicazioni();
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(applicazioniDars.getNomeServizio() + ".titolo"),
-					uriInfo.getBaseUriBuilder().path(applicazioniDars.getPathServizio()).build(), false));
-			
-			Portali portaliDars = new Portali();
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".titolo"),
-					uriInfo.getBaseUriBuilder().path(portaliDars.getPathServizio()).build(), false));
-			
-			Operatori operatoriDars = new Operatori();
-			anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"),
-					uriInfo.getBaseUriBuilder().path(operatoriDars.getPathServizio()).build(), false));
-			menu.getSezioni().add(anagrafica);
-			
-			SezioneMenu monitoraggio = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".monitoraggio"));
 			Versamenti versamentiDars = new Versamenti();
-			monitoraggio.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),
-					uriInfo.getBaseUriBuilder().path(versamentiDars.getPathServizio()).build(), false));
-			menu.getSezioni().add(monitoraggio);
+
+			VoceMenu voceMenuVersamenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	uriInfo.getBaseUriBuilder().path(versamentiDars.getPathServizio()).build(), false);
 			
-//			SezioneMenu avanzate = console.new SezioneMenu("Avanzate");
-//			avanzate.getVociMenu().add(console.new VoceMenu("Test non funzionante", uriInfo.getBaseUriBuilder().path(basePathServizi).path("test").build(), true));
-//			menu.getSezioni().add(avanzate);
+			if(profilo.equals(ProfiloOperatore.ADMIN)){
+				VoceMenu voceMenuIntermediari = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(intermediariDars.getPathServizio()).build(), false);
+				menu.setHome(voceMenuIntermediari);
+
+				SezioneMenu anagrafica = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".anagrafica"));
+				Psp pspDars = new Psp();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(pspDars.getPathServizio()).build(), false));
+				anagrafica.getVociMenu().add(voceMenuIntermediari);
+
+				Domini dominiDars = new Domini();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(dominiDars.getPathServizio()).build(), false));
+
+				Applicazioni applicazioniDars = new Applicazioni();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(applicazioniDars.getNomeServizio() + ".titolo"),
+						uriInfo.getBaseUriBuilder().path(applicazioniDars.getPathServizio()).build(), false));
+
+				Portali portaliDars = new Portali();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".titolo"),
+						uriInfo.getBaseUriBuilder().path(portaliDars.getPathServizio()).build(), false));
+
+				Operatori operatoriDars = new Operatori();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"),
+						uriInfo.getBaseUriBuilder().path(operatoriDars.getPathServizio()).build(), false));
+				menu.getSezioni().add(anagrafica);
+
+			} else {
+				menu.setHome(voceMenuVersamenti);
+
+			}
+			SezioneMenu monitoraggio = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".monitoraggio"));
+
+			monitoraggio.getVociMenu().add(voceMenuVersamenti);
+			menu.getSezioni().add(monitoraggio);
+
 			console.setMenu(menu);
+
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(console);
-
 		} catch(WebApplicationException e){
 			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
@@ -140,7 +152,7 @@ public class Menu extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito("ERR");
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erroreGenerico"));
 		}finally {
 			response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -149,4 +161,14 @@ public class Menu extends BaseRsService {
 
 		return darsResponse;
 	}
+
+	public String getPathServizio() {
+		return pathServizio;
+	}
+
+	public String getNomeServizio() {
+		return nomeServizio;
+	}
+	
+	
 }

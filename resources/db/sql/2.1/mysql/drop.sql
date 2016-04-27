@@ -32,6 +32,7 @@ DROP TABLE rr CASCADE;
 DROP TABLE rpt CASCADE;
 DROP TABLE singoli_versamenti CASCADE;
 DROP TABLE versamenti CASCADE;
+DROP TABLE applicazioni_domini CASCADE;
 DROP TABLE applicazioni_tributi CASCADE;
 DROP TABLE tributi CASCADE;
 DROP TABLE iban_accredito CASCADE;

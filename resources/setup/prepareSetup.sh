@@ -1,9 +1,9 @@
-VERSION=v2.1
+VERSION=v2.1.dev
 
 # Directory
 COPYING_FILE=../../COPYING
-SQL=../../resources/sql/2.1/
-DATASOURCE=../../resources/datasource/
+SQL=../../resources/db/sql/2.1/
+DATASOURCE=../../resources/db/datasource/
 DOC=../../resources/doc/pdf
 GOVPAY=../../govpay-ear/target/govpay.ear
 GOVPAY_CONSOLE=../../govpay-web-console/target/govpayConsole.war
@@ -93,6 +93,7 @@ cp ${GOVPAY_CONSOLE} core.template/installer/archivi/
 echo "Prepare archivi [completed]"
 
 echo "Creazione archivio compresso ..."
+rm -rf target
 mkdir target 
 mv core.template govpay-installer-${VERSION}
 tar czf target/govpay-installer-${VERSION}.tgz govpay-installer-${VERSION}/

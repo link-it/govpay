@@ -98,7 +98,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
-			//			Integer limit = this.getLimit(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 			boolean visualizzaRicerca = true;
@@ -108,7 +108,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
 			filter.setOffset(offset);
-			//			filter.setLimit(limit);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -121,7 +121,6 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			Portali portaliDars = new Portali();
 			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".codPortale.id");
 			String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
-
 
 			boolean entitaSenzaApplicazioni = false;
 			if(StringUtils.isNotEmpty(principalOperatore)){
@@ -148,7 +147,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			}
 
 			long count = entitaSenzaApplicazioni ? 0 : applicazioniBD.count(filter);
-
+			
+			// visualizza la ricerca solo se i risultati sono > del limit
+			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
+								
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
@@ -218,6 +220,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 		String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 		String tributiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.id");
+		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
@@ -246,6 +249,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(FirmaRichiesta.NESSUNA.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
+
+		CheckButton trusted = (CheckButton) infoCreazioneMap.get(trustedId);
+		trusted.setDefaultValue(true); 
+		sezioneRoot.addField(trusted);
 
 		Tributi tributi = (Tributi) infoCreazioneMap.get(tributiId);
 		TributiBD tributiBD = new TributiBD(bd);
@@ -302,6 +309,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 			String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 			String tributiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.id");
+			String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 
 			// id 
 			InputNumber id = new InputNumber(applicazioneId, null, null, true, true, false, 1, 20);
@@ -339,6 +347,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			Tributi tributi = new Tributi(tributiId, tributiLabel, null, false, false, true, idTributi);
 			infoCreazioneMap.put(tributiId, tributi);
 
+			// trusted
+			String trustedLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.label");
+			CheckButton trusted = new CheckButton(trustedId, trustedLabel, true, false, false, true);
+			infoCreazioneMap.put(trustedId, trusted);
+
 			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 			List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
 
@@ -367,6 +380,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 		String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 		String tributiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.id");
+		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica());
@@ -396,6 +410,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(firmaRichiestaValue.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
+
+		CheckButton trusted = (CheckButton) infoCreazioneMap.get(trustedId);
+		trusted.setDefaultValue(true); 
+		sezioneRoot.addField(trusted);
 
 		Tributi tributi = (Tributi) infoCreazioneMap.get(tributiId);
 		TributiBD tributiBD = new TributiBD(bd);

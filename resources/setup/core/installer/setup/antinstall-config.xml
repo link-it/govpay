@@ -51,6 +51,11 @@
 	    <option value="jboss7" text="JBoss EAP 6.x"/>
         </large-select>
 
+        <comment displayText=""/>
+
+	<validated defaultValue="http://serviziclienti.link.it/" property="antinstaller_pubhost" displayText="Hostname pubblico"
+            regex=".+"/>
+
     </page>
     
     <page name="informazioniApplicative" type="input" displayText="Informazioni Applicative">
@@ -69,12 +74,12 @@
 	<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
 	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username Amministratore"
             regex=".+"/>
-
+<!--
 	<comment displayText=""/>
 	<checkbox defaultValue="false" property="antinstaller_notifiche_mail" displayText="Configurazione Mail Server"/>
-
+-->
     </page>
-
+<!--
     <page name="preinstallazione2" type="input" displayText="Configurazione Mail Server" ifProperty="(${antinstaller_notifiche_mail}=true)">
                               
 	<comment displayText="Mail Server"/>
@@ -89,7 +94,7 @@
             regex=".+"/>
         
      </page>
-
+-->
     <page name="informazionidibasexml" type="input" displayText="Il Database">
 
 	<conditional ifProperty="${antinstaller_notifiche_mail}=false">

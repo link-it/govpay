@@ -37,6 +37,7 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.bd.model.SingoloVersamento.TipoBollo;
 import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.Tributo.TipoContabilta;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Versamento.CausaleSemplice;
 import it.govpay.bd.model.Versamento.CausaleSpezzoni;
@@ -152,13 +153,37 @@ public class VersamentoUtils {
 			model.setHashDocumento(singoloVersamento.getBolloTelematico().getHash());
 			model.setProvinciaResidenza(singoloVersamento.getBolloTelematico().getProvincia());
 			model.setTipoBollo(TipoBollo.toEnum(singoloVersamento.getBolloTelematico().getTipo()));
-		} else {
+		} 
+		
+		if(singoloVersamento.getCodTributo() != null) {
 			try {
 				model.setTributo(singoloVersamento.getCodTributo(), bd);
 			} catch (NotFoundException e) {
 				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
+			
+			if(!versamento.getApplicazione(bd).isTrusted() && !versamento.getApplicazione(bd).getIdTributi().contains(model.getIdTributo())) {
+				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
+			}
 		}
+		
+		if(singoloVersamento.getTributo() != null) {
+			
+			if(!versamento.getApplicazione(bd).isTrusted())
+				throw new GovPayException(EsitoOperazione.VER_019);
+			
+			if(!versamento.getApplicazione(bd).getIdDomini().contains(versamento.getUo(bd).getDominio(bd).getId()))
+				throw new GovPayException(EsitoOperazione.VER_021);
+			
+			try {
+				model.setIbanAccredito(AnagraficaManager.getIbanAccredito(bd, versamento.getUo(bd).getDominio(bd).getId(), singoloVersamento.getTributo().getIbanAccredito()));
+				model.setTipoContabilita(TipoContabilta.valueOf(singoloVersamento.getTributo().getTipoContabilita().toString()));
+				model.setCodContabilita(singoloVersamento.getTributo().getCodContabilita());
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.VER_020, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getTributo().getIbanAccredito());
+			}
+		}
+		
 		return model;
 	}
 

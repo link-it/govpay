@@ -59,7 +59,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 	
 	private Long id;
-	private long idTributo;
+	private Long idTributo;
 	private long idVersamento;
 	private String codSingoloVersamentoEnte;
 	private StatoSingoloVersamento statoSingoloVersamento;
@@ -67,7 +67,9 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private TipoBollo tipoBollo;
 	private String hashDocumento;
 	private String provinciaResidenza;
-	
+	private Long idIbanAccredito;
+	private Tributo.TipoContabilta tipoContabilita;
+	private String codContabilita;
 	
 	
 	public Long getId() {
@@ -78,15 +80,15 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		this.id = id;
 	}
 
-	public long getIdTributo() {
+	public Long getIdTributo() {
 		return idTributo;
 	}
 
-	public void setIdTributo(long idTributo) {
+	public void setIdTributo(Long idTributo) {
 		this.idTributo = idTributo;
 	}
 
-	public long getIdVersamento() {
+	public Long getIdVersamento() {
 		return idVersamento;
 	}
 
@@ -142,6 +144,30 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	public void setProvinciaResidenza(String provinciaResidenza) {
 		this.provinciaResidenza = provinciaResidenza;
 	}
+	
+	public Long getIdIbanAccredito() {
+		return idIbanAccredito;
+	}
+
+	public void setIdIbanAccredito(Long idIbanAccredito) {
+		this.idIbanAccredito = idIbanAccredito;
+	}
+
+	public Tributo.TipoContabilta getTipoContabilita() {
+		return tipoContabilita;
+	}
+
+	public void setTipoContabilita(Tributo.TipoContabilta tipoContabilita) {
+		this.tipoContabilita = tipoContabilita;
+	}
+
+	public String getCodContabilita() {
+		return codContabilita;
+	}
+
+	public void setCodContabilita(String codContabilita) {
+		this.codContabilita = codContabilita;
+	}
 
 	@Override
 	public int compareTo(SingoloVersamento sv) {
@@ -152,9 +178,10 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	
 	private Versamento versamento;
 	private Tributo tributo;
+	private IbanAccredito ibanAccredito;
 	
 	public Tributo getTributo(BasicBD bd) throws ServiceException {
-		if(tributo == null) {
+		if(tributo == null && idTributo != null) {
 			tributo = AnagraficaManager.getTributo(bd, getIdTributo());
 		}
 		return tributo;
@@ -178,5 +205,19 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		}
 		return this.versamento;
 	}
+	
+	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
+		if(ibanAccredito == null && ibanAccredito != null) {
+			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, getIdIbanAccredito());
+		}
+		return ibanAccredito;
+	}
+	
+	public void setIbanAccredito(IbanAccredito ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
+		if(ibanAccredito.getId() != null)
+			this.idIbanAccredito = ibanAccredito.getId();
+	}
+
 }
 

@@ -137,6 +137,10 @@ public class GovPayException extends Exception {
 		case VER_016: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' in uno stato che non consente la notifica di pagamento (" + params[2] + ")";
 		case VER_017: return "Lo IUV (" + params[0] + ") non e' conforme alle specifiche agid";
 		case VER_018: return "Lo IUV (" + params[0] + ") e' gia' associato al versamento (" + params[1] + ")";
+		case VER_019: return "Applicazione non autorizzata all'autodeterminazione dei tributi";
+		case VER_020: return "Iban di accredito non censito";
+		case VER_021: return "Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato";
+		case VER_022: return "Applicazione non autorizzata alla gestione del tributo indicato";
 		case WISP_000: return "Sessione di scelta sconosciuta al WISP";
 		case WISP_001: return "Sessione di scelta scaduta per timeout al WISP";
 		case WISP_002: return "Canale (" + params[1] + ") del Psp (" + params[0] + ") con tipo versamento (" + params[2] + ") scelto non presente in anagrafica Psp";

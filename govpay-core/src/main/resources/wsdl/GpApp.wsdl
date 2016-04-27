@@ -177,6 +177,15 @@
 													</xsd:sequence>
 												</xsd:complexType>
 											</xsd:element>
+											<xsd:element name="tributo">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="ibanAccredito" type="com:cod35"></xsd:element>
+														<xsd:element name="tipoContabilita" type="com:tipoContabilita"></xsd:element>
+														<xsd:element name="codContabilita" type="com:string140"></xsd:element>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
 										</xsd:choice>
 									</xsd:sequence>
 								</xsd:complexType>
@@ -209,6 +218,12 @@
 			<xsd:simpleType name="string35">
 				<xsd:restriction base="xsd:string">
 					<xsd:maxLength value="35" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="string40">
+				<xsd:restriction base="xsd:string">
+					<xsd:maxLength value="40" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
@@ -270,6 +285,15 @@
 					<xsd:enumeration value="USR"></xsd:enumeration>
 					<xsd:enumeration value="OTH"></xsd:enumeration>
 					<xsd:enumeration value="N/A"></xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:simpleType name="tipoContabilita">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="CAPITOLO"></xsd:enumeration>
+					<xsd:enumeration value="SPECIALE"></xsd:enumeration>
+					<xsd:enumeration value="SIOPE"></xsd:enumeration>
+					<xsd:enumeration value="ALTRO"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
 			
@@ -451,12 +475,16 @@
 					<xsd:enumeration value="VER_015"><xsd:annotation><xsd:documentation>Aggiornamento non consentito se AggiornaSeEsiste impostato a false</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="VER_016"><xsd:annotation><xsd:documentation>Non è possibile notificare un pagamento per un versamento in stato diverso da NON_ESEGUITO o ANNULLATO</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="VER_017"><xsd:annotation><xsd:documentation>Iuv da caricare non conforme alle specifiche AgID</xsd:documentation></xsd:annotation></xsd:enumeration>
-					<xsd:enumeration value="VER_018"><xsd:annotation><xsd:documentation>Iuv da caricare gia' associato ad un diverso Versamento</xsd:documentation></xsd:annotation></xsd:enumeration><xsd:enumeration value="WISP_000"><xsd:annotation><xsd:documentation>Sessione di scelta sconosciuta al WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_018"><xsd:annotation><xsd:documentation>Iuv da caricare gia' associato ad un diverso Versamento</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_019"><xsd:annotation><xsd:documentation>Applicazione non autorizzata all'autodeterminazione dei tributi</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_020"><xsd:annotation><xsd:documentation>Iban di accredito non censito</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_021"><xsd:annotation><xsd:documentation>Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_022"><xsd:annotation><xsd:documentation>Applicazione non autorizzata alla gestione del tributo indicato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="WISP_000"><xsd:annotation><xsd:documentation>Sessione di scelta sconosciuta al WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="WISP_001"><xsd:annotation><xsd:documentation>Sessione di scelta scaduta per timeout al WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="WISP_002"><xsd:annotation><xsd:documentation>Canale scelto non presente in anagrafica</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="WISP_003"><xsd:annotation><xsd:documentation>Il debitore non ha operato alcuna scelta sul WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="WISP_004"><xsd:annotation><xsd:documentation>Il debitore ha scelto di pagare dopo tramite avviso di pagamento.</xsd:documentation></xsd:annotation></xsd:enumeration>
-					
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:schema>

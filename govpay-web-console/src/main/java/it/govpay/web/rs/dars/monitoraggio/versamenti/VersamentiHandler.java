@@ -97,7 +97,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 
 			Integer offset = this.getOffset(uriInfo);
-			//			Integer limit = this.getLimit(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
@@ -106,7 +106,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			VersamentoFilter filter = versamentiBD.newFilter();
 			filter.setOffset(offset);
-			//			filter.setLimit(limit);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
 			fsw.setSortOrder(SortOrder.DESC);
@@ -159,7 +159,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			// visualizza la ricerca solo se i risultati sono > del limit
+			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 

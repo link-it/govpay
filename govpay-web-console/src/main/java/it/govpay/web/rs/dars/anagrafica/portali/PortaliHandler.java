@@ -85,7 +85,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
-			//			Integer limit = this.getLimit(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
@@ -94,7 +94,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			PortaliBD applicazioniBD = new PortaliBD(bd);
 			PortaleFilter filter = applicazioniBD.newFilter();
 			filter.setOffset(offset);
-			//			filter.setLimit(limit);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Portale.model().COD_PORTALE);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -108,8 +108,12 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			}
 
 			long count = applicazioniBD.count(filter);
+			
+			// visualizza la ricerca solo se i risultati sono > del limit
+			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
@@ -285,7 +289,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			InputText defaultCallbackURL = new InputText(defaultCallbackURLId, defaultCallbackURLLabel, null, true, false, true, 1,255);
 			infoCreazioneMap.put(defaultCallbackURLId, defaultCallbackURL);
 
-			String applicazioniLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicazioni.label");
+			String applicazioniLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioni.label");
 			List<Voce<Long>> idApplicazioni= new ArrayList<Voce<Long>>();
 			Applicazioni applicazioni = new Applicazioni(applicazioniId, applicazioniLabel, null, false, false, true, idApplicazioni);
 			infoCreazioneMap.put(applicazioniId, applicazioni);

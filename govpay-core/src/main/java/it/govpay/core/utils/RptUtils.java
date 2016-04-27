@@ -258,21 +258,31 @@ public class RptUtils {
 	private static CtDatiSingoloVersamentoRPT buildDatiSingoloVersamento(Rpt rpt, SingoloVersamento singoloVersamento, BasicBD bd) throws ServiceException  {
 		CtDatiSingoloVersamentoRPT datiSingoloVersamento = new CtDatiSingoloVersamentoRPT();
 		datiSingoloVersamento.setImportoSingoloVersamento(singoloVersamento.getImportoSingoloVersamento());
-		if(singoloVersamento.getTributo(bd).getIdIbanAccredito() != null) {
-			IbanAccredito ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito(bd);
+		
+		if(singoloVersamento.getIbanAccredito(bd) != null) {
+			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
 			datiSingoloVersamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
 			datiSingoloVersamento.setBicAppoggio(ibanAccredito.getCodBicAppoggio());
 			datiSingoloVersamento.setIbanAppoggio(ibanAccredito.getCodIbanAppoggio());
 			datiSingoloVersamento.setIbanAccredito(ibanAccredito.getCodIban());
+			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita().getCodifica() + "/" + singoloVersamento.getCodContabilita());
 		} else {
-			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
-			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
-			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-			marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
-			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
+			if(singoloVersamento.getTributo(bd).getIdIbanAccredito() != null) {
+				IbanAccredito ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito(bd);
+				datiSingoloVersamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
+				datiSingoloVersamento.setBicAppoggio(ibanAccredito.getCodBicAppoggio());
+				datiSingoloVersamento.setIbanAppoggio(ibanAccredito.getCodIbanAppoggio());
+				datiSingoloVersamento.setIbanAccredito(ibanAccredito.getCodIban());
+			} else {
+				CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
+				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
+				marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+				datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
+			}
+			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTributo(bd).getTipoContabilita().getCodifica() + "/" + singoloVersamento.getTributo(bd).getCodContabilita());
 		}
 		datiSingoloVersamento.setCausaleVersamento(buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento()));
-		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTributo(bd).getTipoContabilita().getCodifica() + "/" + singoloVersamento.getTributo(bd).getCodContabilita());
 		return datiSingoloVersamento;
 	}
 

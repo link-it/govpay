@@ -44,7 +44,9 @@ import java.util.List;
  * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ApplicazioneTributo" type="{http://www.govpay.it/orm}ApplicazioneTributo" minOccurs="0" maxOccurs="unbounded"/>
+ * 			&lt;element name="ApplicazioneDominio" type="{http://www.govpay.it/orm}ApplicazioneDominio" minOccurs="0" maxOccurs="unbounded"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -65,7 +67,9 @@ import java.util.List;
   	"firmaRicevuta",
   	"codConnettoreEsito",
   	"codConnettoreVerifica",
-  	"applicazioneTributo"
+  	"trusted",
+  	"applicazioneTributo",
+  	"applicazioneDominio"
   }
 )
 
@@ -141,6 +145,18 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.codConnettoreVerifica = codConnettoreVerifica;
   }
 
+  public boolean isTrusted() {
+    return this.trusted;
+  }
+
+  public boolean getTrusted() {
+    return this.trusted;
+  }
+
+  public void setTrusted(boolean trusted) {
+    this.trusted = trusted;
+  }
+
   public void addApplicazioneTributo(ApplicazioneTributo applicazioneTributo) {
     this.applicazioneTributo.add(applicazioneTributo);
   }
@@ -163,6 +179,30 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 
   public int sizeApplicazioneTributoList() {
     return this.applicazioneTributo.size();
+  }
+
+  public void addApplicazioneDominio(ApplicazioneDominio applicazioneDominio) {
+    this.applicazioneDominio.add(applicazioneDominio);
+  }
+
+  public ApplicazioneDominio getApplicazioneDominio(int index) {
+    return this.applicazioneDominio.get( index );
+  }
+
+  public ApplicazioneDominio removeApplicazioneDominio(int index) {
+    return this.applicazioneDominio.remove( index );
+  }
+
+  public List<ApplicazioneDominio> getApplicazioneDominioList() {
+    return this.applicazioneDominio;
+  }
+
+  public void setApplicazioneDominioList(List<ApplicazioneDominio> applicazioneDominio) {
+    this.applicazioneDominio=applicazioneDominio;
+  }
+
+  public int sizeApplicazioneDominioList() {
+    return this.applicazioneDominio.size();
   }
 
   private static final long serialVersionUID = 1L;
@@ -208,6 +248,10 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @XmlElement(name="codConnettoreVerifica",required=false,nillable=false)
   protected java.lang.String codConnettoreVerifica;
 
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="trusted",required=true,nillable=false)
+  protected boolean trusted;
+
   @XmlElement(name="ApplicazioneTributo",required=true,nillable=false)
   protected List<ApplicazioneTributo> applicazioneTributo = new ArrayList<ApplicazioneTributo>();
 
@@ -236,6 +280,36 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @Deprecated
   public int sizeApplicazioneTributo() {
   	return this.applicazioneTributo.size();
+  }
+
+  @XmlElement(name="ApplicazioneDominio",required=true,nillable=false)
+  protected List<ApplicazioneDominio> applicazioneDominio = new ArrayList<ApplicazioneDominio>();
+
+  /**
+   * @deprecated Use method getApplicazioneDominioList
+   * @return List<ApplicazioneDominio>
+  */
+  @Deprecated
+  public List<ApplicazioneDominio> getApplicazioneDominio() {
+  	return this.applicazioneDominio;
+  }
+
+  /**
+   * @deprecated Use method setApplicazioneDominioList
+   * @param applicazioneDominio List<ApplicazioneDominio>
+  */
+  @Deprecated
+  public void setApplicazioneDominio(List<ApplicazioneDominio> applicazioneDominio) {
+  	this.applicazioneDominio=applicazioneDominio;
+  }
+
+  /**
+   * @deprecated Use method sizeApplicazioneDominioList
+   * @return lunghezza della lista
+  */
+  @Deprecated
+  public int sizeApplicazioneDominio() {
+  	return this.applicazioneDominio.size();
   }
 
 }

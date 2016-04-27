@@ -23,6 +23,8 @@ package it.govpay.bd.model.converter;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.bd.model.SingoloVersamento.TipoBollo;
+import it.govpay.bd.model.Tributo.TipoContabilta;
+import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdVersamento;
 
@@ -47,13 +49,19 @@ public class SingoloVersamentoConverter {
 	public static SingoloVersamento toDTO(it.govpay.orm.SingoloVersamento vo) throws ServiceException {
 		SingoloVersamento dto = new SingoloVersamento();
 		dto.setId(vo.getId());
-		dto.setIdTributo(vo.getIdTributo().getId());
+		if(vo.getIdTributo() != null)
+			dto.setIdTributo(vo.getIdTributo().getId());
+		if(vo.getIdIbanAccredito() != null)
+			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
-		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
-		dto.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf(vo.getStatoSingoloVersamento()));
 		dto.setImportoSingoloVersamento(BigDecimal.valueOf(vo.getImportoSingoloVersamento()));
+		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
+		dto.setCodContabilita(vo.getCodiceContabilita());
+		dto.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf(vo.getStatoSingoloVersamento()));
 		if(vo.getTipoBollo() != null)
 			dto.setTipoBollo(TipoBollo.toEnum(vo.getTipoBollo()));
+		if(vo.getTipoContabilita() != null)
+			dto.setTipoContabilita(TipoContabilta.toEnum(vo.getTipoContabilita()));
 		dto.setHashDocumento(vo.getHashDocumento());
 		dto.setProvinciaResidenza(vo.getProvinciaResidenza());
 		return dto;
@@ -62,17 +70,31 @@ public class SingoloVersamentoConverter {
 	public static it.govpay.orm.SingoloVersamento toVO(SingoloVersamento dto) {
 		it.govpay.orm.SingoloVersamento vo = new it.govpay.orm.SingoloVersamento();
 		vo.setId(dto.getId());
-		IdTributo idTributo = new IdTributo();
-		idTributo.setId(dto.getIdTributo());
-		vo.setIdTributo(idTributo);
+		
+		if(dto.getIdIbanAccredito() != null) {
+			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
+			idIbanAccredito.setId(dto.getIdIbanAccredito());
+			vo.setIdIbanAccredito(idIbanAccredito);
+		}
+		
+		if(dto.getIdTributo() != null) {
+			IdTributo idTributo = new IdTributo();
+			idTributo.setId(dto.getIdTributo());
+			vo.setIdTributo(idTributo);
+		}
+		
 		IdVersamento idVersamento = new IdVersamento();
 		idVersamento.setId(dto.getIdVersamento());
 		vo.setIdVersamento(idVersamento);
+		
 		vo.setCodSingoloVersamentoEnte(dto.getCodSingoloVersamentoEnte());
+		vo.setCodiceContabilita(dto.getCodContabilita());
 		vo.setStatoSingoloVersamento(dto.getStatoSingoloVersamento().toString());
 		vo.setImportoSingoloVersamento(dto.getImportoSingoloVersamento().doubleValue());
-		if(dto.getTipoBollo()!=null)
+		if(dto.getTipoBollo() != null)
 			vo.setTipoBollo(dto.getTipoBollo().getCodifica());
+		if(dto.getTipoContabilita() != null)
+			vo.setTipoContabilita(dto.getTipoContabilita().getCodifica());
 		vo.setHashDocumento(dto.getHashDocumento());
 		vo.setProvinciaResidenza(dto.getProvinciaResidenza());
 		return vo;

@@ -48,7 +48,9 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		this.FIRMA_RICEVUTA = new Field("firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_ESITO = new Field("codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_VERIFICA = new Field("codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.TRUSTED = new Field("trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.APPLICAZIONE_TRIBUTO = new it.govpay.orm.model.ApplicazioneTributoModel(new Field("ApplicazioneTributo",it.govpay.orm.ApplicazioneTributo.class,"Applicazione",Applicazione.class));
+		this.APPLICAZIONE_DOMINIO = new it.govpay.orm.model.ApplicazioneDominioModel(new Field("ApplicazioneDominio",it.govpay.orm.ApplicazioneDominio.class,"Applicazione",Applicazione.class));
 	
 	}
 	
@@ -62,7 +64,9 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		this.FIRMA_RICEVUTA = new ComplexField(father,"firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_ESITO = new ComplexField(father,"codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_VERIFICA = new ComplexField(father,"codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.TRUSTED = new ComplexField(father,"trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.APPLICAZIONE_TRIBUTO = new it.govpay.orm.model.ApplicazioneTributoModel(new ComplexField(father,"ApplicazioneTributo",it.govpay.orm.ApplicazioneTributo.class,"Applicazione",Applicazione.class));
+		this.APPLICAZIONE_DOMINIO = new it.govpay.orm.model.ApplicazioneDominioModel(new ComplexField(father,"ApplicazioneDominio",it.govpay.orm.ApplicazioneDominio.class,"Applicazione",Applicazione.class));
 	
 	}
 	
@@ -80,7 +84,11 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 	 
 	public IField COD_CONNETTORE_VERIFICA = null;
 	 
+	public IField TRUSTED = null;
+	 
 	public it.govpay.orm.model.ApplicazioneTributoModel APPLICAZIONE_TRIBUTO = null;
+	 
+	public it.govpay.orm.model.ApplicazioneDominioModel APPLICAZIONE_DOMINIO = null;
 	 
 
 	@Override

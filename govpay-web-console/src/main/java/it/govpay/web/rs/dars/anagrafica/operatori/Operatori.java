@@ -65,43 +65,6 @@ public class Operatori extends BaseDarsService {
 	}
 
 	@GET
-	@Path("/ruoliutente")
-	@Produces({MediaType.APPLICATION_JSON})
-	public DarsResponse getRuoliOperatore() throws ConsoleException {
-		initLogger("getRuoliOperatore");
-		log.info("Ricevuta richiesta");
-
-		DarsResponse darsResponse = new DarsResponse();
-		darsResponse.setCodOperazione(this.codOperazione);
-
-		BasicBD bd = null;
-		List<String> listaRuoli = new ArrayList<String>();
-		try {
-			bd = BasicBD.newInstance();
-			Operatore operatore = getOperatoreByPrincipal(bd);
-
-			listaRuoli.add(operatore.getProfilo().getCodifica());
-
-			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
-			darsResponse.setResponse(listaRuoli);
-		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante la ricerca dei ruoli dell'operatore:" +e.getMessage() , e);
-			throw e;
-		} catch (Exception e) {
-			log.error("Riscontrato errore durante la ricerca dei ruoli operatore:" +e.getMessage() , e);
-
-			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Operatori.ERRORE_INTERNO);
-		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
-			if(bd != null) bd.closeConnection();
-		}
-		log.info("Richiesta evasa con successo");
-		return darsResponse;
-
-	}
-
-	@GET
 	@Path("/user")
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse getOperatore() throws ConsoleException {

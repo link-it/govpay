@@ -20,7 +20,7 @@
  */
 package it.govpay.orm.model;
 
-import it.govpay.orm.IdIbanAccredito;
+import it.govpay.orm.ApplicazioneDominio;
 
 import org.openspcoop2.generic_project.beans.AbstractModel;
 import org.openspcoop2.generic_project.beans.IField;
@@ -29,43 +29,39 @@ import org.openspcoop2.generic_project.beans.ComplexField;
 
 
 /**     
- * Model IdIbanAccredito 
+ * Model ApplicazioneDominio 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class IdIbanAccreditoModel extends AbstractModel<IdIbanAccredito> {
+public class ApplicazioneDominioModel extends AbstractModel<ApplicazioneDominio> {
 
-	public IdIbanAccreditoModel(){
+	public ApplicazioneDominioModel(){
 	
 		super();
 	
-		this.COD_IBAN = new Field("codIban",java.lang.String.class,"id-iban-accredito",IdIbanAccredito.class);
-		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"id-iban-accredito",IdIbanAccredito.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"ApplicazioneDominio",ApplicazioneDominio.class));
 	
 	}
 	
-	public IdIbanAccreditoModel(IField father){
+	public ApplicazioneDominioModel(IField father){
 	
 		super(father);
 	
-		this.COD_IBAN = new ComplexField(father,"codIban",java.lang.String.class,"id-iban-accredito",IdIbanAccredito.class);
-		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"id-iban-accredito",IdIbanAccredito.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"ApplicazioneDominio",ApplicazioneDominio.class));
 	
 	}
 	
 	
 
-	public IField COD_IBAN = null;
-	 
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 
 	@Override
-	public Class<IdIbanAccredito> getModeledClass(){
-		return IdIbanAccredito.class;
+	public Class<ApplicazioneDominio> getModeledClass(){
+		return ApplicazioneDominio.class;
 	}
 	
 	@Override

@@ -139,6 +139,7 @@ CREATE TABLE applicazioni
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
+	trusted NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -460,7 +461,7 @@ CREATE TABLE iban_accredito
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	-- unique constraints
-	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban),
+	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban,id_dominio),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_iban_accredito_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_iban_accredito PRIMARY KEY (id)
@@ -543,6 +544,34 @@ end;
 
 
 
+CREATE SEQUENCE seq_applicazioni_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE applicazioni_domini
+(
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_applicazione NUMBER,
+	id_dominio NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_applicazioni_domini_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_applicazioni_domini_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT pk_applicazioni_domini PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_applicazioni_domini
+BEFORE
+insert on applicazioni_domini
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_applicazioni_domini.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE versamenti
@@ -605,15 +634,19 @@ CREATE TABLE singoli_versamenti
 	hash_documento VARCHAR(70),
 	-- MARCA BOLLO: Sigla automobilistica della provincia di residenza
 	provincia_residenza VARCHAR(2),
+	tipo_contabilita VARCHAR(1),
+	codice_contabilita VARCHAR(255),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
-	id_tributo NUMBER NOT NULL,
+	id_tributo NUMBER,
+	id_iban_accredito NUMBER,
 	-- unique constraints
 	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_singoli_versamenti_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id) ON DELETE CASCADE,
 	CONSTRAINT fk_singoli_versamenti_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id) ON DELETE CASCADE,
+	CONSTRAINT fk_singoli_versamenti_3 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 );
 

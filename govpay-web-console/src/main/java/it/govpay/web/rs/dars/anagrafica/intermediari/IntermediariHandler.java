@@ -82,7 +82,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
-			//			Integer limit = this.getLimit(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 			URI cancellazione = null;
 
@@ -91,7 +91,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = intermediariBD.newFilter();
 			filter.setOffset(offset);
-			//			filter.setLimit(limit);
+			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Intermediario.model().COD_INTERMEDIARIO);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -106,11 +106,15 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			}
 
 			long count = intermediariBD.count(filter);
+			
+			// visualizza la ricerca solo se i risultati sono > del limit
+			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
-			
+
 			elenco.setFiltro(true);
 
 			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
@@ -357,7 +361,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			// dati dell'intermediario
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label"), intermediario.getCodIntermediario());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.label"), intermediario.getDenominazione());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(intermediario.isAbilitato()));
+			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(intermediario.isAbilitato()));
 
 			// sezione connettore
 			Connettore connettore = intermediario.getConnettorePdd();

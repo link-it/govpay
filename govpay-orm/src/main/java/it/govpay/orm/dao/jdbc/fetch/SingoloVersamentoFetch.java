@@ -69,6 +69,10 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "hash_documento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType()));
 				setParameter(object, "setProvinciaResidenza", SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "provincia_residenza", SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType()));
+				setParameter(object, "setTipoContabilita", SingoloVersamento.model().TIPO_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", SingoloVersamento.model().TIPO_CONTABILITA.getFieldType()));
+				setParameter(object, "setCodiceContabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "codice_contabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType()));
 				return object;
 			}
 			
@@ -105,6 +109,10 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"hashDocumento"));
 				setParameter(object, "setProvinciaResidenza", SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType(),
 					this.getObjectFromMap(map,"provinciaResidenza"));
+				setParameter(object, "setTipoContabilita", SingoloVersamento.model().TIPO_CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"tipoContabilita"));
+				setParameter(object, "setCodiceContabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"codiceContabilita"));
 				return object;
 			}
 			

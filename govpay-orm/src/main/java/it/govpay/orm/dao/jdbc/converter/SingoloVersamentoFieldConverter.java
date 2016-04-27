@@ -145,6 +145,27 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "provincia_residenza";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().ID_IBAN_ACCREDITO.COD_IBAN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_iban";
+			}else{
+				return "cod_iban";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().TIPO_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_contabilita";
+			}else{
+				return "tipo_contabilita";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().CODICE_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".codice_contabilita";
+			}else{
+				return "codice_contabilita";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -191,6 +212,15 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(SingoloVersamento.model().PROVINCIA_RESIDENZA)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
+		if(field.equals(SingoloVersamento.model().ID_IBAN_ACCREDITO.COD_IBAN)){
+			return this.toTable(SingoloVersamento.model().ID_IBAN_ACCREDITO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().TIPO_CONTABILITA)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().CODICE_CONTABILITA)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -211,13 +241,16 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "versamenti";
 		}
 		if(model.equals(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "applicazioni";
+			return "id_applicazione";
 		}
 		if(model.equals(SingoloVersamento.model().ID_TRIBUTO)){
 			return "tributi";
 		}
 		if(model.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO)){
-			return "domini";
+			return "id_dominio";
+		}
+		if(model.equals(SingoloVersamento.model().ID_IBAN_ACCREDITO)){
+			return "iban_accredito";
 		}
 
 
