@@ -46,11 +46,11 @@ public class Dettaglio {
 	}
 	
 	public List<Sezione> getSezioni() {
-		return sezioni;
+		return this.sezioni;
 	}
 
 	public List<ElementoCorrelato> getElementiCorrelati() {
-		return elementiCorrelati;
+		return this.elementiCorrelati;
 	}
 	
 	@JsonIgnore
@@ -71,19 +71,19 @@ public class Dettaglio {
 	}
 
 	public String getTitolo() {
-		return titolo;
+		return this.titolo;
 	}
 	
 	public URI getEsportazione() {
-		return esportazione;
+		return this.esportazione;
 	}
 
 	public URI getCancellazione() {
-		return cancellazione;
+		return this.cancellazione;
 	}
 
 	public InfoForm getInfoModifica() {
-		return infoModifica;
+		return this.infoModifica;
 	}
 
 }

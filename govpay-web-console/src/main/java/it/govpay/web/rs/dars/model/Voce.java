@@ -36,15 +36,15 @@ public class Voce<T> {
 	}
 	
 	public String getEtichetta() {
-		return etichetta;
+		return this.etichetta;
 	}
 	
 	public T getValore() {
-		return valore;
+		return this.valore;
 	}
 
 	public boolean isAvanzata() {
-		return avanzata;
+		return this.avanzata;
 	}
 
 	

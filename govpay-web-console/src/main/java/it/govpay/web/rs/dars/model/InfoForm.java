@@ -40,7 +40,7 @@ public class InfoForm {
 	}
 	
 	public List<Sezione> getSezioni() {
-		return sezioni;
+		return this.sezioni;
 	}
 
 	@JsonIgnore
@@ -55,7 +55,7 @@ public class InfoForm {
 	}
 	
 	public URI getUri() {
-		return uri;
+		return this.uri;
 	}
 
 	public class Sezione {
@@ -68,11 +68,11 @@ public class InfoForm {
 		}
 		
 		public String getEtichetta() {
-			return etichetta;
+			return this.etichetta;
 		}
 		
 		public List<ParamField<?>> getFields() {
-			return fields;
+			return this.fields;
 		}
 		
 		public void addField(ParamField<?> field) {

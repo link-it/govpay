@@ -47,35 +47,35 @@ public class Elenco {
 	}
 	
 	public InfoForm getInfoRicerca() {
-		return infoRicerca;
+		return this.infoRicerca;
 	}
 
 	public List<Elemento> getElenco() {
-		return elenco;
+		return this.elenco;
 	}
 
 	public long getTotaleRisultati() {
-		return totaleRisultati;
+		return this.totaleRisultati;
 	}
 	
 	public String getTitolo() {
-		return titolo;
+		return this.titolo;
 	}
 	
 	public URI getEsportazione() {
-		return esportazione;
+		return this.esportazione;
 	}
 	
 	public URI getCancellazione() {
-		return cancellazione;
+		return this.cancellazione;
 	}
 
 	public InfoForm getInfoCreazione() {
-		return infoCreazione;
+		return this.infoCreazione;
 	}
 
 	public boolean isFiltro() {
-		return filtro;
+		return this.filtro;
 	}
 
 	public void setFiltro(boolean filtro) {

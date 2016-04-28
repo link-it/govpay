@@ -36,7 +36,7 @@ public class MultiSelectList<K, T extends List<K>> extends ParamField<T> {
 	private List<Voce<K>> values; 
 	
 	public List<Voce<K>> getValues() {
-		return values;
+		return this.values;
 	}
 
 	public void setValues(List<Voce<K>> values) {

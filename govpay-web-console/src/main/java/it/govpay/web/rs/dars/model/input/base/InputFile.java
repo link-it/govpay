@@ -37,11 +37,11 @@ public class InputFile extends ParamField<byte[]> {
 	}
 
 	public List<String> getAcceptedMimeTypes() {
-		return acceptedMimeTypes;
+		return this.acceptedMimeTypes;
 	}
 
 	public long getMaxByteSize() {
-		return maxByteSize;
+		return this.maxByteSize;
 	}
 	
 }

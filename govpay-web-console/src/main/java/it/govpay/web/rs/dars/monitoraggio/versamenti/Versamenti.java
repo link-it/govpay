@@ -44,11 +44,11 @@ public class Versamenti extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new VersamentiHandler(log, this);
+		return new VersamentiHandler(this.log, this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 }

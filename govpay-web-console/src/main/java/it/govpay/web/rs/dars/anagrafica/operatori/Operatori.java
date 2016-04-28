@@ -20,9 +20,6 @@
  */
 package it.govpay.web.rs.dars.anagrafica.operatori;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -34,6 +31,7 @@ import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Operatore;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -56,20 +54,20 @@ public class Operatori extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new OperatoriHandler(log,this);
+		return new OperatoriHandler(this.log,this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 
 	@GET
 	@Path("/user")
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse getOperatore() throws ConsoleException {
-		initLogger("getOperatore");
-		log.info("Ricevuta richiesta");
+		this.initLogger("getOperatore");
+		this.log.info("Ricevuta richiesta");
 
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -77,7 +75,7 @@ public class Operatori extends BaseDarsService {
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance();
-			Operatore operatore = getOperatoreByPrincipal(bd);
+			Operatore operatore = this.getOperatoreByPrincipal(bd);
 
 			// Reset ID DB
 			operatore.setId(null);
@@ -85,18 +83,58 @@ public class Operatori extends BaseDarsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(operatore);
 		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore:" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore:" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante la ricerca dell'operatore:" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante la ricerca dell'operatore:" +e.getMessage() , e);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Operatori.ERRORE_INTERNO);
+			darsResponse.setDettaglioEsito(BaseRsService.ERRORE_INTERNO);
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta evasa con successo");
+		this.log.info("Richiesta evasa con successo");
+		return darsResponse;
+
+	}
+	
+	@GET
+	@Path("/userNonAutorizzato")
+	@Produces({MediaType.APPLICATION_JSON})
+	public DarsResponse getOperatoreNonAutorizzato() throws ConsoleException {
+		this.initLogger("simulazioneUtenteNonAutorizzato");
+		
+		this.log.info("Ricevuta richiesta");
+
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance();
+			Operatore operatore = this.getOperatoreByPrincipal(bd,"UTENTE_NON_ESISTENTE");
+
+			// Reset ID DB
+			operatore.setId(null);
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setResponse(operatore);
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore:" +e.getMessage() , e);
+			// Invalido la sessione appena creata dal container.
+			this.invalidateSession(this.log);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante la ricerca dell'operatore:" +e.getMessage() , e);
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(BaseRsService.ERRORE_INTERNO);
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 
 	}

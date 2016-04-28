@@ -53,6 +53,7 @@ import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Portale;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Tributo;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -103,7 +104,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			URI cancellazione = null;
 			boolean visualizzaRicerca = true;
 
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
@@ -157,7 +158,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Applicazione> findAll = entitaSenzaApplicazioni ? new ArrayList<Applicazione>() : applicazioniBD.findAll(filter);
 
@@ -167,7 +168,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -185,7 +186,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
 
 		if(infoRicercaMap == null){
-			initInfoRicerca(uriInfo, bd);
+			this.initInfoRicerca(uriInfo, bd);
 
 		}
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
@@ -229,7 +230,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd);
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
@@ -389,7 +390,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica());
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
@@ -487,7 +488,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -547,10 +548,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 
 			it.govpay.web.rs.dars.anagrafica.tributi.Tributi tributiDars = new it.govpay.web.rs.dars.anagrafica.tributi.Tributi();
-			UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(tributiDars.getPathServizio()).queryParam(codApplicazioneId, applicazione.getCodApplicazione());
+			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(tributiDars.getPathServizio()).queryParam(codApplicazioneId, applicazione.getCodApplicazione());
 			dettaglio.addElementoCorrelato(etichettaTributi, uriBuilder.build());
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -566,7 +567,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String methodName = "Insert " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -584,7 +585,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			applicazioniBD.insertApplicazione(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return this.getDettaglio(entry.getId(),uriInfo,bd);
 		}catch(DuplicatedEntryException e){
@@ -605,7 +606,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String methodName = "creaEntry " + this.titoloServizio;
 		Applicazione entry = null;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -650,7 +651,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			Connettore cn = (Connettore) JSONObject.toBean( jsonObjectCN, jsonConfig );
 			entry.setConnettoreNotifica(cn);
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
 			throw e;
@@ -668,11 +669,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) throw new ValidationException("Il campo Principal deve essere valorizzato.");
 
 		Connettore connettoreNotifica = entry.getConnettoreNotifica();
-		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA, titoloServizio, pathServizio);
+		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA, this.titoloServizio, this.pathServizio);
 		connettoreNotificaHandler.valida(connettoreNotifica);
 
 		Connettore connettoreVerifica = entry.getConnettoreVerifica();
-		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA, titoloServizio, pathServizio);
+		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA, this.titoloServizio, this.pathServizio);
 		connettoreVerificaHandler.valida(connettoreVerifica);
 
 		if(oldEntry != null) { //caso update
@@ -687,7 +688,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String methodName = "Update " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -700,7 +701,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			applicazioniBD.updateApplicazione(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(),uriInfo,bd);
 		}catch(ValidationException e){
 			throw e;

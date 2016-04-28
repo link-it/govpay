@@ -42,6 +42,7 @@ import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Intermediario;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -86,7 +87,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			URI esportazione = null;
 			URI cancellazione = null;
 
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = intermediariBD.newFilter();
@@ -117,7 +118,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			elenco.setFiltro(true);
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}"); 
 
 			List<Intermediario> findAll = intermediariBD.findAll(filter);
 
@@ -127,7 +128,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -145,7 +146,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 
 		if(infoRicercaMap == null){
-			initInfoRicerca(uriInfo, bd);
+			this.initInfoRicerca(uriInfo, bd);
 
 		}
 
@@ -191,7 +192,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd);
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 
 		}
 
@@ -286,7 +287,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		List<ParamField<?>> infoModificaConnettore = connettoreHandler.getInfoModifica(uriInfo, bd, entry.getConnettorePdd());
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
@@ -342,7 +343,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String methodName = "dettaglio " + this.titoloServizio + ".Id"+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -374,10 +375,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 
 			Stazioni stazioniDars = new Stazioni();
-			UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(stazioniDars.getPathServizio()).queryParam(codIntermediarioId, intermediario.getCodIntermediario());
+			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(stazioniDars.getPathServizio()).queryParam(codIntermediarioId, intermediario.getCodIntermediario());
 			dettaglio.addElementoCorrelato(etichettaStazioni, uriBuilder.build());
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -397,7 +398,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String methodName = "Insert " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -415,7 +416,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			intermediariBD.insertIntermediario(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(DuplicatedEntryException e){
@@ -434,7 +435,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String methodName = "creaEntry " + this.titoloServizio;
 		Intermediario entry = null;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -455,7 +456,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			entry.setConnettorePdd(c); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
 			throw e;
@@ -480,7 +481,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		if(entry.getDenominazione() == null || entry.getDenominazione().isEmpty()) throw new ValidationException("Il campo Denominazione deve essere valorizzato.");
 
 		Connettore connettore = entry.getConnettorePdd();
-		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD, titoloServizio, pathServizio);
+		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD, this.titoloServizio, this.pathServizio);
 		connettoreHandler.valida(connettore); 
 
 		if(oldEntry != null) { //caso update
@@ -494,7 +495,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String methodName = "Update " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -507,7 +508,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			intermediariBD.updateIntermediario(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(ValidationException e){
 			throw e;

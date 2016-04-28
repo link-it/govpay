@@ -44,12 +44,12 @@ public class Domini extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new DominiHandler(log, this);
+		return new DominiHandler(this.log, this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 
 }

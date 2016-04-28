@@ -37,11 +37,11 @@ public class InputDate extends ParamField<Date> {
 	}
 
 	public Date getMinDate() {
-		return minDate;
+		return this.minDate;
 	}
 
 	public Date getMaxDate() {
-		return maxDate;
+		return this.maxDate;
 	}
 
 }

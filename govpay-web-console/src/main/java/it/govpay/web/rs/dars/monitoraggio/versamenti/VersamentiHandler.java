@@ -55,6 +55,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -101,7 +102,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			URI esportazione = null;
 			URI cancellazione = null;
 
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			VersamentoFilter filter = versamentiBD.newFilter();
@@ -167,7 +168,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Versamento> findAll = eseguiRicerca ? versamentiBD.findAll(filter) : new ArrayList<Versamento>(); 
 
@@ -177,7 +178,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -200,7 +201,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 
 		if(infoRicercaMap == null){
-			initInfoRicerca(uriInfo, bd);
+			this.initInfoRicerca(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
@@ -307,7 +308,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita agli utenti registrati
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			ProfiloOperatore profilo = operatore.getProfilo();
@@ -367,11 +368,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				if(versamento.getImportoTotale() != null)
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), versamento.getImportoTotale().toString()+ " Euro");
 				if(versamento.getDataCreazione() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataCreazione.label"), sdf.format(versamento.getDataCreazione()));
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataCreazione.label"), this.sdf.format(versamento.getDataCreazione()));
 				if(versamento.getDataScadenza() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.label"), sdf.format(versamento.getDataScadenza()));
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.label"), this.sdf.format(versamento.getDataScadenza()));
 				if(versamento.getDataUltimoAggiornamento() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataUltimoAggiornamento.label"), sdf.format(versamento.getDataUltimoAggiornamento()));
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataUltimoAggiornamento.label"), this.sdf.format(versamento.getDataUltimoAggiornamento()));
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornabile.label"), Utils.getSiNoAsLabel(versamento.isAggiornabile()));
 				if(versamento.getCausaleVersamento() != null)
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causaleVersamento.label"), versamento.getCausaleVersamento().toString());
@@ -389,12 +390,12 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 
 				SingoliVersamenti svDars = new SingoliVersamenti();
-				UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(svDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
+				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
 				dettaglio.addElementoCorrelato(etichettaSingoliVersamenti, uriBuilder.build());
 
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -423,7 +424,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
 		Date dataUltimoAggiornamento = entry.getDataUltimoAggiornamento();
 
-		sb.append("Stato ").append(statoVersamento).append(", Data: ").append(sdf.format(dataUltimoAggiornamento)); 
+		sb.append("Stato ").append(statoVersamento).append(", Data: ").append(this.sdf.format(dataUltimoAggiornamento)); 
 
 		return sb.toString();
 	} 

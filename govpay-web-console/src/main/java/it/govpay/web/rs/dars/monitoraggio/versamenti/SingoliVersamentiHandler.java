@@ -23,6 +23,7 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.bd.pagamento.SingoliVersamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -55,7 +56,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 			URI esportazione = null;
 			URI cancellazione = null;
 
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			
 			Versamenti versamentiDars = new  Versamenti();
 			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".idVersamento.id");
@@ -92,7 +93,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			if(singoliVersamenti != null && singoliVersamenti.size() > 0){
 				for (SingoloVersamento entry : singoliVersamenti) {
@@ -100,7 +101,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -127,7 +128,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita agli utenti registrati
 			@SuppressWarnings("unused")
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
@@ -160,7 +161,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 			if(versamento.getTipoBollo() != null) 
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoBollo.label"), versamento.getTipoBollo().name());
 			
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){

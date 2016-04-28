@@ -69,7 +69,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse find( 	@Context UriInfo uriInfo) throws ConsoleException,WebApplicationException {
 		String methodName = "find " + this.getNomeServizio(); 
-		initLogger(methodName);
+		this.initLogger(methodName);
 
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -77,25 +77,25 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try{
 			bd = BasicBD.newInstance();
-			Elenco elenco = getDarsHandler().getElenco(uriInfo,bd);
+			Elenco elenco = this.getDarsHandler().getElenco(uriInfo,bd);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(elenco);
 		}catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			if(bd != null) 
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".elenco.erroreGenerico"));
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta "+methodName +" evasa con successo");
+		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
 	}
 
@@ -105,7 +105,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	public DarsResponse field(List<RawParamValue> rawValues, 
 			@PathParam("id") String id, @Context UriInfo uriInfo) throws Exception,WebApplicationException{
 		String methodName = "field " + this.getNomeServizio() + "." + id; 
-		initLogger(methodName);
+		this.initLogger(methodName);
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -113,7 +113,7 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try {
 			bd = BasicBD.newInstance();
-			Object field = getDarsHandler().getField(uriInfo, rawValues, id, bd);
+			Object field = this.getDarsHandler().getField(uriInfo, rawValues, id, bd);
 
 			// Field richiesto non valido
 			if(field == null){
@@ -125,20 +125,20 @@ public abstract class BaseDarsService extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(field);
 		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			if(bd != null) 
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta "+methodName +" evasa con successo");
+		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
 	}
 
@@ -149,7 +149,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			@PathParam("id") long id,
 			@Context UriInfo uriInfo) throws ConsoleException,WebApplicationException {
 		String methodName = "get " + this.getNomeServizio() + "." + id; 
-		initLogger(methodName);
+		this.initLogger(methodName);
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -158,15 +158,15 @@ public abstract class BaseDarsService extends BaseRsService {
 		try {
 			bd = BasicBD.newInstance();
 
-			Dettaglio dettaglio = getDarsHandler().getDettaglio(id,uriInfo,bd);
+			Dettaglio dettaglio = this.getDarsHandler().getDettaglio(id,uriInfo,bd);
 
 			darsResponse.setResponse(dettaglio);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 
 			if(bd != null) 
 				bd.rollback();
@@ -174,10 +174,10 @@ public abstract class BaseDarsService extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".dettaglio.erroreGenerico"));
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta evasa con successo");
+		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 
@@ -196,7 +196,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			}
 
 		String methodName = "delete " + this.getNomeServizio() + "[" + sb.toString() + "]";  
-		initLogger(methodName);
+		this.initLogger(methodName);
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -205,24 +205,24 @@ public abstract class BaseDarsService extends BaseRsService {
 		try {
 			bd = BasicBD.newInstance();
 
-			getDarsHandler().delete(idsToDelete, uriInfo, bd);
+			this.getDarsHandler().delete(idsToDelete, uriInfo, bd);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			if(bd != null) 
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".cancella.erroreGenerico"));
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta "+methodName +" evasa con successo");
+		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
 	}
 
@@ -232,7 +232,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse insert(InputStream is, @Context UriInfo uriInfo) throws ConsoleException,WebApplicationException {
 		String methodName = "insert " + this.getNomeServizio(); 
-		initLogger(methodName);
+		this.initLogger(methodName);
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -241,26 +241,26 @@ public abstract class BaseDarsService extends BaseRsService {
 		try {
 			bd = BasicBD.newInstance();
 
-			Dettaglio dettaglio = getDarsHandler().insert(is,uriInfo,bd);
+			Dettaglio dettaglio = this.getDarsHandler().insert(is,uriInfo,bd);
 
 			darsResponse.setResponse(dettaglio);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.ok")); 
 		} catch(ValidationException e){
-			log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreValidazione")+ " " + e.getMessage());
 			return darsResponse;
 		} catch(DuplicatedEntryException e){
-			log.error("Riscontrata errore di entry duplicata durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrata errore di entry duplicata durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
 			darsResponse.setDettaglioEsito(e.getMessage());
 			return darsResponse;
 		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 
 			if(bd != null) 
 				bd.rollback();
@@ -268,10 +268,10 @@ public abstract class BaseDarsService extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreGenerico"));
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta evasa con successo");
+		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 	
@@ -281,7 +281,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse update(InputStream is, @Context UriInfo uriInfo) throws ConsoleException,WebApplicationException {
 		String methodName = "update " + this.getNomeServizio(); 
-		initLogger(methodName);
+		this.initLogger(methodName);
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
@@ -295,15 +295,15 @@ public abstract class BaseDarsService extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.ok")); 
 		} catch(ValidationException e){
-			log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreValidazione")+ " " + e.getMessage());
 			return darsResponse;
 		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 
 			if(bd != null) 
 				bd.rollback();
@@ -311,10 +311,10 @@ public abstract class BaseDarsService extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreGenerico"));
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta evasa con successo");
+		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
 		

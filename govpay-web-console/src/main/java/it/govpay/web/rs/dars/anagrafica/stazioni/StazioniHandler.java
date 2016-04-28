@@ -43,6 +43,7 @@ import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Stazione;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -77,7 +78,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 			Integer offset = this.getOffset(uriInfo);
@@ -92,7 +93,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			StazioneFilter filter = stazioniBD.newFilter();
-			filter.setCodIntermediario(codIntermediario);
+			filter.setCodIntermediario(this.codIntermediario);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -106,7 +107,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Stazione> findAll = stazioniBD.findAll(filter);
 
@@ -116,7 +117,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -145,7 +146,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
@@ -239,7 +240,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
@@ -282,7 +283,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -302,7 +303,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"), stazione.getCodStazione());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(stazione.isAbilitato()));
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -318,7 +319,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String methodName = "Insert " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -342,7 +343,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			stazioniBD.insertStazione(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(DuplicatedEntryException e){
@@ -361,7 +362,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String methodName = "creaEntry " + this.titoloServizio;
 		Stazione entry = null;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -381,7 +382,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			Intermediario intermediario = (Intermediario) JSONObject.toBean( jsonObjectStazione, jsonConfig );
 			this.codIntermediario = intermediario.getCodIntermediario();
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
 			throw e;
@@ -426,7 +427,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String methodName = "Update " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -446,7 +447,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			stazioniBD.updateStazione(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(ValidationException e){
 			throw e;

@@ -36,12 +36,12 @@ public class HttpSessionCheckListener implements HttpSessionListener {
 	
 	@Override
 	public void sessionCreated(HttpSessionEvent e) {
-		log.debug("session "+e.getSession().getId()+" created.");
+		this.log.debug("session "+e.getSession().getId()+" created.");
 	}
 
 	@Override
 	public void sessionDestroyed(HttpSessionEvent e) {
-		log.debug("session "+e.getSession().getId()+" destroyed.");
+		this.log.debug("session "+e.getSession().getId()+" destroyed.");
 		try{
 			HttpSession session = e.getSession();
 			
@@ -50,7 +50,7 @@ public class HttpSessionCheckListener implements HttpSessionListener {
 			
 			
 		}catch (Exception ex) {
-			log.error("errore durante le operazioni di clean-up della sessione: ",ex);
+			this.log.error("errore durante le operazioni di clean-up della sessione: ",ex);
 		}
 	}
 	

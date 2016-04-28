@@ -41,7 +41,7 @@ public class SelectList<T> extends ParamField<T> {
 	private List<Voce<T>> values; 
 	
 	public List<Voce<T>> getValues() {
-		return values;
+		return this.values;
 	}
 
 	public void setValues(List<Voce<T>> values) {

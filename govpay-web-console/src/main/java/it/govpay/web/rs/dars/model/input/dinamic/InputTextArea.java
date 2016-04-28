@@ -38,10 +38,10 @@ public abstract class InputTextArea extends RefreshableInput<String> {
 	private int columns; 
 	
 	public int getRows() {
-		return rows;
+		return this.rows;
 	}
 
 	public int getColumns() {
-		return columns;
+		return this.columns;
 	}
 }

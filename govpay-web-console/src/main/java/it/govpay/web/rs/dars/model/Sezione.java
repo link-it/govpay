@@ -34,11 +34,11 @@ public class Sezione {
 	}
 	
 	public String getEtichetta() {
-		return etichetta;
+		return this.etichetta;
 	}
 	
 	public List<Voce<String>> getVoci() {
-		return voci;
+		return this.voci;
 	}
 	
 	public void addVoce(String etichetta, String valore) {

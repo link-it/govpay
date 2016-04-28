@@ -32,6 +32,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
@@ -62,73 +63,91 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
 	}
 
+	@Override
 	public abstract Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+	@Override
 	public abstract InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	@Override
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).build();
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).build();
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
 
+	@Override
 	public abstract InfoForm getInfoCreazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
+	@Override
 	public URI getUriCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).build();
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).build();
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
+	@Override
 	public abstract InfoForm getInfoModifica(UriInfo uriInfo,BasicBD bd, T entry) throws ConsoleException;
+	@Override
 	public URI getUriModifica(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).build();
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).build();
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
 
+	@Override
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).path(BaseDarsService.PATH_CANCELLA).build();
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_CANCELLA).build();
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
 
+	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).path(BaseDarsService.PATH_ESPORTA).build(); 
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_ESPORTA).build(); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
 
+	@Override
 	public abstract Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException ;
 	@Override
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		} 
 	}
 
+	@Override
 	public abstract Dettaglio getDettaglio(long id, UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException;
+	@Override
 	public abstract void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+	@Override
 	public abstract T creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+	@Override
 	public abstract Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException,DuplicatedEntryException;
+	@Override
 	public abstract void checkEntry(T entry, T oldEntry) throws ValidationException;
+	@Override
 	public abstract Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
 
+	@Override
 	public  abstract String getTitolo(T entry) ;
+	@Override
 	public  abstract String getSottotitolo(T entry) ;
 
 	public Elemento getElemento(T entry, Long id, UriBuilder uriDettaglioBuilder){
@@ -155,11 +174,11 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 
 	public Integer getOffset(UriInfo uriInfo) throws ConsoleException{
-		return getParameter(uriInfo, "offset", Integer.class);
+		return this.getParameter(uriInfo, "offset", Integer.class);
 	}
 
 	public Integer getLimit(UriInfo uriInfo) throws ConsoleException{
-		Integer parameter = getParameter(uriInfo, "limit", Integer.class);
+		Integer parameter = this.getParameter(uriInfo, "limit", Integer.class);
 		return parameter != null ? parameter : this.limit;
 	}
 

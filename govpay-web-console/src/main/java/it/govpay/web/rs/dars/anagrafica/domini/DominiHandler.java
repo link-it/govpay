@@ -48,6 +48,7 @@ import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -98,7 +99,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			URI esportazione = null;
 			URI cancellazione = null;
 
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter();
@@ -141,7 +142,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Dominio> findAll = dominiBD.findAll(filter);
 
@@ -151,7 +152,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -171,7 +172,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String idStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 
 		if(infoRicercaMap == null){
-			initInfoRicerca(uriInfo, bd);
+			this.initInfoRicerca(uriInfo, bd);
 
 		}
 
@@ -252,7 +253,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
@@ -393,7 +394,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaDominio(uriInfo, bd,unitaOperativa.getAnagrafica());
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
@@ -484,7 +485,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "dettaglio " + this.titoloServizio + ".Id"+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -529,18 +530,18 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 
 			UnitaOperative uoDars =new UnitaOperative();
-			UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(uoDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
+			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(uoDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
 			dettaglio.addElementoCorrelato(etichettaUnitaOperative, uriBuilder.build());
 
 			Iban ibanDars =new Iban();
-			UriBuilder uriBuilderIban = uriInfo.getBaseUriBuilder().path(ibanDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
+			UriBuilder uriBuilderIban = BaseRsService.checkDarsURI(uriInfo).path(ibanDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
 			dettaglio.addElementoCorrelato(etichettaIban, uriBuilderIban.build());
 
 			Tributi tributiDars =new Tributi();
-			UriBuilder uriBuilderTributi = uriInfo.getBaseUriBuilder().path(tributiDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
+			UriBuilder uriBuilderTributi = BaseRsService.checkDarsURI(uriInfo).path(tributiDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
 			dettaglio.addElementoCorrelato(etichettaTributi, uriBuilderTributi.build());
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -560,7 +561,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "Insert " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -592,7 +593,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// ripristino l'autocommit.
 			bd.setAutoCommit(true); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(DuplicatedEntryException e){
@@ -611,7 +612,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "creaEntry " + this.titoloServizio;
 		Dominio entry = null;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -633,7 +634,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			entry.setTabellaControparti(val);
 			entry.setContiAccredito(val);
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
 			throw e;
@@ -646,7 +647,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "creaDominioEAnagrafica " + this.titoloServizio;
 		List<Object> list = new ArrayList<Object>();
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -700,7 +701,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			list.add(entry);
 			list.add(uo);
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return list;
 		}catch(WebApplicationException e){
 			throw e;
@@ -735,7 +736,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "Update " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -748,7 +749,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			dominiBD.updateDominio(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(ValidationException e){
 			throw e;

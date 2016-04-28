@@ -44,11 +44,11 @@ public class Portali extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new PortaliHandler(log, this);
+		return new PortaliHandler(this.log, this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 }

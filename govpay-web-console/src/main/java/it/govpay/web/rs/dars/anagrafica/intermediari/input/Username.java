@@ -45,7 +45,7 @@ public class Username extends InputText{
 
 	@Override
 	protected String getDefaultValue(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_HTTP_BASIC)){
 			return "";
@@ -56,7 +56,7 @@ public class Username extends InputText{
 
 	@Override
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_HTTP_BASIC)){
 			return true;
@@ -67,7 +67,7 @@ public class Username extends InputText{
 
 	@Override
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_HTTP_BASIC)){
 			return false;
@@ -78,7 +78,7 @@ public class Username extends InputText{
 
 	@Override
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_HTTP_BASIC)){
 			return true;

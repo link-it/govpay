@@ -46,6 +46,7 @@ import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.PortaleFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Portale;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -89,7 +90,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			URI esportazione = null;
 			URI cancellazione = null;
 
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			PortaliBD applicazioniBD = new PortaliBD(bd);
 			PortaleFilter filter = applicazioniBD.newFilter();
@@ -117,7 +118,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Portale> findAll = applicazioniBD.findAll(filter);
 
@@ -127,7 +128,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -145,7 +146,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
 
 		if(infoRicercaMap == null){
-			initInfoRicerca(uriInfo, bd);
+			this.initInfoRicerca(uriInfo, bd);
 
 		}
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
@@ -199,7 +200,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String applicazioniId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioni.id");
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
@@ -309,7 +310,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String applicazioniId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioni.id");
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
@@ -390,7 +391,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -417,10 +418,10 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
 
 			it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
-			UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(applicazioniDars.getPathServizio()).queryParam(codPortaleId, portale.getCodPortale());
+			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).queryParam(codPortaleId, portale.getCodPortale());
 			dettaglio.addElementoCorrelato(etichettaApplicazioni, uriBuilder.build());
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -436,7 +437,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String methodName = "Insert " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -454,7 +455,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			applicazioniBD.insertPortale(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return this.getDettaglio(entry.getId(),uriInfo,bd);
 		}catch(DuplicatedEntryException e){
@@ -474,7 +475,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String methodName = "creaEntry " + this.titoloServizio;
 		Portale entry = null;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -489,7 +490,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			jsonConfig.setRootClass(Portale.class);
 			entry = (Portale) JSONObject.toBean( jsonObjectPortale, jsonConfig );
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
 			throw e;
@@ -518,7 +519,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		String methodName = "Update " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -531,7 +532,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			applicazioniBD.updatePortale(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(),uriInfo,bd);
 		}catch(ValidationException e){
 			throw e;

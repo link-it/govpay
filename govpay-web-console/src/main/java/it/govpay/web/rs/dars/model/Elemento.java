@@ -37,16 +37,16 @@ public class Elemento {
 	private URI uri;
 	
 	public long getId() {
-		return id;
+		return this.id;
 	}
 	public String getTitolo() {
-		return titolo;
+		return this.titolo;
 	}
 	public String getSottotitolo() {
-		return sottotitolo;
+		return this.sottotitolo;
 	}
 	public URI getUri() {
-		return uri;
+		return this.uri;
 	}
 	
 }

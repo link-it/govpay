@@ -44,19 +44,19 @@ public abstract class RefreshableInput<T> extends RefreshableParamField<T>{
 	}
 
 	public Integer getMinLength() {
-		return minLength;
+		return this.minLength;
 	}
 
 	public Integer getMaxLength() {
-		return maxLength;
+		return this.maxLength;
 	}
 
 	public String getPattern() {
-		return pattern;
+		return this.pattern;
 	}
 
 	public String getErrorMessage() {
-		return errorMessage;
+		return this.errorMessage;
 	}
 
 }

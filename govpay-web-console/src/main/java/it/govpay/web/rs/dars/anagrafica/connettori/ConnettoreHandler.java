@@ -34,6 +34,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Connettore.EnumAuthType;
 import it.govpay.bd.model.Connettore.EnumSslType;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.Password;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.SslKsLocation;
@@ -389,7 +390,7 @@ public class ConnettoreHandler {
 
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);

@@ -56,7 +56,7 @@ public class IbanAccredito extends SelectList<Long>{
 
 	@Override
 	protected List<Voce<Long>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
-		String idDominioValue = Utils.getValue(paramValues, idDominioId);
+		String idDominioValue = Utils.getValue(paramValues, this.idDominioId);
 		List<Voce<Long>> lst = new ArrayList<Voce<Long>>();
 
 		if(StringUtils.isEmpty(idDominioValue)){
@@ -90,8 +90,8 @@ public class IbanAccredito extends SelectList<Long>{
 
 	@Override
 	protected Long getDefaultValue(List<RawParamValue> values, Object... objects) {
-		String idDominioValue = Utils.getValue(values, idDominioId);
-		String idTributo = Utils.getValue(values, tributoId);
+		String idDominioValue = Utils.getValue(values, this.idDominioId);
+		String idTributo = Utils.getValue(values, this.tributoId);
 
 		if(StringUtils.isEmpty(idDominioValue)){
 			return null;
@@ -117,7 +117,7 @@ public class IbanAccredito extends SelectList<Long>{
 	}
 	@Override
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
-		String idDominioValue = Utils.getValue(values, idDominioId);
+		String idDominioValue = Utils.getValue(values, this.idDominioId);
 		if(StringUtils.isNotEmpty(idDominioValue)){
 			return false;
 		}
@@ -126,7 +126,7 @@ public class IbanAccredito extends SelectList<Long>{
 	}
 	@Override
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
-		String idDominioValue = Utils.getValue(values, idDominioId);
+		String idDominioValue = Utils.getValue(values, this.idDominioId);
 		if(StringUtils.isNotEmpty(idDominioValue)){
 			return true;
 		}

@@ -55,11 +55,11 @@ public abstract class ParamField<T> {
 	}
 	
 	public String getId() {
-		return id;
+		return this.id;
 	}
 
 	public String getLabel() {
-		return label;
+		return this.label;
 	}
 	
 	public void setRequired(boolean required) {
@@ -67,7 +67,7 @@ public abstract class ParamField<T> {
 	}
 
 	public boolean isRequired() {
-		return required;
+		return this.required;
 	}
 	
 	public void setHidden(boolean hidden) {
@@ -75,11 +75,11 @@ public abstract class ParamField<T> {
 	}
 
 	public boolean isHidden() {
-		return hidden;
+		return this.hidden;
 	}
 
 	public String getSuggestion() {
-		return suggestion;
+		return this.suggestion;
 	}
 
 	public void setSuggestion(String suggestion) {
@@ -87,7 +87,7 @@ public abstract class ParamField<T> {
 	}
 	
 	public T getDefaultValue() {
-		return defaultValue;
+		return this.defaultValue;
 	}
 
 	public void setDefaultValue(T defaultValue) {
@@ -95,7 +95,7 @@ public abstract class ParamField<T> {
 	}
 
 	public List<String> getRefreshParamIds() {
-		return refreshParamIds;
+		return this.refreshParamIds;
 	}
 
 	public String getParamType(){
@@ -103,7 +103,7 @@ public abstract class ParamField<T> {
 	}
 	
 	public boolean isEditable() {
-		return editable;
+		return this.editable;
 	}
 	
 	public void setEditable(boolean editable) {
@@ -111,7 +111,7 @@ public abstract class ParamField<T> {
 	}
 
 	public boolean isAvanzata() {
-		return avanzata;
+		return this.avanzata;
 	}
 
 	public void setAvanzata(boolean avanzata) {

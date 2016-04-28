@@ -44,12 +44,12 @@ public class Intermediari extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new IntermediariHandler(log, this);
+		return new IntermediariHandler(this.log, this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 
 }

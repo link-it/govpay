@@ -48,7 +48,7 @@ public abstract class SelectList<T> extends RefreshableParamField<T> {
 	public void init(List<RawParamValue> paramValues, Object... objects) {
 		super.init(paramValues, objects); 
 		try {
-			this.values = getValues(paramValues, objects);
+			this.values = this.getValues(paramValues, objects);
 		} catch (ServiceException e) {
 			this.values = new ArrayList<Voce<T>>();
 			this.values.add(new Voce<T>("!! ERRORE !!", null));
@@ -59,7 +59,7 @@ public abstract class SelectList<T> extends RefreshableParamField<T> {
 	public void aggiornaParametro(List<RawParamValue> values, Object... objects) {
 		super.aggiornaParametro(values, objects);
 		try {
-			this.values = getValues(values, objects);
+			this.values = this.getValues(values, objects);
 		} catch (ServiceException e) {
 			this.values = new ArrayList<Voce<T>>();
 			this.values.add(new Voce<T>("!! ERRORE !!", null));
@@ -72,7 +72,7 @@ public abstract class SelectList<T> extends RefreshableParamField<T> {
 	private List<Voce<T>> values; 
 	
 	public List<Voce<T>> getValues() {
-		return values;
+		return this.values;
 	}
 
 }

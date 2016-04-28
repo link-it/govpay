@@ -491,6 +491,7 @@
 					<xsd:enumeration value="VER_020"><xsd:annotation><xsd:documentation>Iban di accredito non censito</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="VER_021"><xsd:annotation><xsd:documentation>Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="VER_022"><xsd:annotation><xsd:documentation>Applicazione non autorizzata alla gestione del tributo indicato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_023"><xsd:annotation><xsd:documentation>Non e' possibile aggiornare un versamento modificando l'iban di accredito</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="WISP_000"><xsd:annotation><xsd:documentation>Sessione di scelta sconosciuta al WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="WISP_001"><xsd:annotation><xsd:documentation>Sessione di scelta scaduta per timeout al WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
 					<xsd:enumeration value="WISP_002"><xsd:annotation><xsd:documentation>Canale scelto non presente in anagrafica</xsd:documentation></xsd:annotation></xsd:enumeration>

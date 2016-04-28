@@ -36,7 +36,7 @@ public class VoceRiferimento<T> extends Voce<T>{
 	}
 
 	public URI getRiferimento() {
-		return riferimento;
+		return this.riferimento;
 	}
 
 	public void setRiferimento(URI riferimento) {

@@ -42,17 +42,17 @@ public abstract class RefreshableParamField<T> extends ParamField<T> {
 	}
 
 	public void aggiornaParametro(List<RawParamValue> values, Object ... objects) {
-		this.defaultValue = getDefaultValue(values,objects);
-		this.required = isRequired(values,objects);
-		this.hidden = isHidden(values,objects);
-		this.editable = isEditable(values,objects);
+		this.defaultValue = this.getDefaultValue(values,objects);
+		this.required = this.isRequired(values,objects);
+		this.hidden = this.isHidden(values,objects);
+		this.editable = this.isEditable(values,objects);
 	}
 	
 	public void init(List<RawParamValue> values, Object ... objects){
-		this.defaultValue = getDefaultValue(values,objects);
-		this.required = isRequired(values,objects);
-		this.hidden = isHidden(values,objects);
-		this.editable = isEditable(values,objects);
+		this.defaultValue = this.getDefaultValue(values,objects);
+		this.required = this.isRequired(values,objects);
+		this.hidden = this.isHidden(values,objects);
+		this.editable = this.isEditable(values,objects);
 	}
 
 	private URI refreshUri; // URI di refresh del campo
@@ -60,11 +60,11 @@ public abstract class RefreshableParamField<T> extends ParamField<T> {
 	
 
 	public URI getRefreshUri() {
-		return refreshUri;
+		return this.refreshUri;
 	}
 
 	public List<String> getRefreshUriParamIds() {
-		return refreshUriParamIds;
+		return this.refreshUriParamIds;
 	}
 	
 	@JsonIgnore

@@ -43,7 +43,7 @@ public abstract class MultiSelectList<K, T extends List<K>> extends RefreshableP
 	public void init(List<RawParamValue> paramValues, Object... objects) {
 		super.init(paramValues, objects); 
 		try {
-			this.values = getValues(paramValues, objects);
+			this.values = this.getValues(paramValues, objects);
 		} catch (ServiceException e) {
 			this.values = new ArrayList<Voce<K>>();
 			this.values.add(new Voce<K>("!! ERRORE !!", null));
@@ -54,7 +54,7 @@ public abstract class MultiSelectList<K, T extends List<K>> extends RefreshableP
 	public void aggiornaParametro(List<RawParamValue> values, Object... objects) {
 		super.aggiornaParametro(values, objects);
 		try {
-			this.values = getValues(values, objects);
+			this.values = this.getValues(values, objects);
 		} catch (ServiceException e) {
 			this.values = new ArrayList<Voce<K>>();
 			this.values.add(new Voce<K>("!! ERRORE !!", null));
@@ -67,7 +67,7 @@ public abstract class MultiSelectList<K, T extends List<K>> extends RefreshableP
 	private List<Voce<K>> values; 
 	
 	public List<Voce<K>> getValues() {
-		return values;
+		return this.values;
 	}
 }
 

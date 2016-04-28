@@ -70,9 +70,9 @@ public class Menu extends BaseRsService {
 	@GET
 	@Path("/")
 	@Produces({MediaType.APPLICATION_JSON})
-	public DarsResponse find(
+	public DarsResponse creaMenu(
 			@Context UriInfo uriInfo) throws ConsoleException, URISyntaxException {
-		initLogger(this.nomeServizio);
+		this.initLogger(this.nomeServizio);
 		String methodName = "Sezione " + this.nomeServizio ; 
 
 		DarsResponse darsResponse = new DarsResponse();
@@ -81,13 +81,13 @@ public class Menu extends BaseRsService {
 
 		try{
 			bd = BasicBD.newInstance();
-
+			
 			// controllo delle autorizzazioni dell'utente
 			Operatore operatore = this.getOperatoreByPrincipal(bd);
 			ProfiloOperatore profilo = operatore.getProfilo(); 
 
-			URI logout = uriInfo.getBaseUriBuilder().path("../logout").build();
-
+			URI logout = BaseRsService.checkDarsURI(uriInfo).path("../logout").build();
+			
 			Console console = new Console(Utils.getInstance().getMessageFromResourceBundle("govpay.appTitle"), logout);
 			About about = console.new About();
 			about.setTitolo(Utils.getInstance().getMessageFromResourceBundle("govpay.about.titolo"));
@@ -103,31 +103,36 @@ public class Menu extends BaseRsService {
 			Intermediari intermediariDars = new Intermediari();
 			Versamenti versamentiDars = new Versamenti();
 
-			VoceMenu voceMenuVersamenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	uriInfo.getBaseUriBuilder().path(versamentiDars.getPathServizio()).build(), false);
+			
+			URI versamentiURI = BaseRsService.checkDarsURI(uriInfo).path(versamentiDars.getPathServizio()).build();
+			VoceMenu voceMenuVersamenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	versamentiURI, false);
 			
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
-				VoceMenu voceMenuIntermediari = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(intermediariDars.getPathServizio()).build(), false);
+				URI intermediariURI = BaseRsService.checkDarsURI(uriInfo).path(intermediariDars.getPathServizio()).build();
+				VoceMenu voceMenuIntermediari = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, false);
 				menu.setHome(voceMenuIntermediari);
 
 				SezioneMenu anagrafica = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".anagrafica"));
 				Psp pspDars = new Psp();
-				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(pspDars.getPathServizio()).build(), false));
+				URI pspURI = BaseRsService.checkDarsURI(uriInfo).path(pspDars.getPathServizio()).build();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), pspURI, false));
 				anagrafica.getVociMenu().add(voceMenuIntermediari);
 
 				Domini dominiDars = new Domini();
-				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".titolo"), uriInfo.getBaseUriBuilder().path(dominiDars.getPathServizio()).build(), false));
+				URI dominiURI = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).build();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".titolo"), dominiURI, false));
 
 				Applicazioni applicazioniDars = new Applicazioni();
-				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(applicazioniDars.getNomeServizio() + ".titolo"),
-						uriInfo.getBaseUriBuilder().path(applicazioniDars.getPathServizio()).build(), false));
+				URI applicazioniURI = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).build();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(applicazioniDars.getNomeServizio() + ".titolo"),	applicazioniURI, false));
 
 				Portali portaliDars = new Portali();
-				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".titolo"),
-						uriInfo.getBaseUriBuilder().path(portaliDars.getPathServizio()).build(), false));
+				URI portaliURI = BaseRsService.checkDarsURI(uriInfo).path(portaliDars.getPathServizio()).build();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".titolo"), portaliURI, false));
 
 				Operatori operatoriDars = new Operatori();
-				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"),
-						uriInfo.getBaseUriBuilder().path(operatoriDars.getPathServizio()).build(), false));
+				URI operatoriURI = BaseRsService.checkDarsURI(uriInfo).path(operatoriDars.getPathServizio()).build();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"), operatoriURI, false));
 				menu.getSezioni().add(anagrafica);
 
 			} else {
@@ -144,30 +149,30 @@ public class Menu extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(console);
 		} catch(WebApplicationException e){
-			log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			if(bd != null) 
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erroreGenerico"));
 		}finally {
-			response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
 		}
-		log.info("Richiesta "+methodName +" evasa con successo");
+		this.log.info("Richiesta "+methodName +" evasa con successo");
 
 		return darsResponse;
 	}
 
 	public String getPathServizio() {
-		return pathServizio;
+		return this.pathServizio;
 	}
 
 	public String getNomeServizio() {
-		return nomeServizio;
+		return this.nomeServizio;
 	}
 	
 	

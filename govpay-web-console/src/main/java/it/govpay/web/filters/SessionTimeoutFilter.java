@@ -73,29 +73,29 @@ public class SessionTimeoutFilter implements Filter {
 			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 			
 			String requestPath = httpServletRequest.getRequestURI();
-			log.debug("Richiesta risorsa: " + requestPath);
+			this.log.debug("Richiesta risorsa: " + requestPath);
 			
 			String principal = null;
 			if(httpServletRequest.getUserPrincipal()!=null){
 				principal =  httpServletRequest.getUserPrincipal().getName();
 			}
 			
-			log.debug("Utente: " + principal);
+			this.log.debug("Utente: " + principal);
 
 			// is session expire control required for this request?
-			if (isSessionControlRequiredForThisResource(httpServletRequest)) {
+			if (this.isSessionControlRequiredForThisResource(httpServletRequest)) {
 				HttpSession sessione = httpServletRequest.getSession(false);
 				
-				log.debug("Session: " + (sessione != null ? sessione.getId() : "Null"));
+				this.log.debug("Session: " + (sessione != null ? sessione.getId() : "Null"));
 
 				// is session invalid?
-				if (isSessionInvalid(httpServletRequest)) {					
+				if (this.isSessionInvalid(httpServletRequest)) {					
 					String redirPageUrl = httpServletRequest.getContextPath() + "/";
 					
 					if(sessione!= null)
 						sessione.invalidate();
 					
-					log.debug("La sessione non e' valida, effettuo redirect...");
+					this.log.debug("La sessione non e' valida, effettuo redirect...");
 					
 					//se la pagina richiesta e' quella di login allora redirigo direttamente a quella, altrimenti a quella di timeout
 					//redirPageUrl += StringUtils.contains(httpServletRequest.getRequestURI(), getLoginPage()) ? getLoginPage() : getTimeoutPage();

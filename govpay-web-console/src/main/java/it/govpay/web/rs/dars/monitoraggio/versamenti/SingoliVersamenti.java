@@ -24,11 +24,11 @@ public class SingoliVersamenti extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new SingoliVersamentiHandler(log, this);
+		return new SingoliVersamentiHandler(this.log, this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 }

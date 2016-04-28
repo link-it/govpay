@@ -37,19 +37,19 @@ public class Console {
 			this.avanzato = avanzato;
 		}
 		public String getLabel() {
-			return label;
+			return this.label;
 		}
 		public void setLabel(String label) {
 			this.label = label;
 		}
 		public URI getUri() {
-			return uri;
+			return this.uri;
 		}
 		public void setUri(URI uri) {
 			this.uri = uri;
 		}
 		public boolean isAvanzato() {
-			return avanzato;
+			return this.avanzato;
 		}
 		public void setAvanzato(boolean avanzato) {
 			this.avanzato = avanzato;
@@ -66,13 +66,13 @@ public class Console {
 		}
 		
 		public String getTitolo() {
-			return titolo;
+			return this.titolo;
 		}
 		public void setTitolo(String titolo) {
 			this.titolo = titolo;
 		}
 		public List<VoceMenu> getVociMenu() {
-			return vociMenu;
+			return this.vociMenu;
 		}
 		public void setVociMenu(List<VoceMenu> vociMenu) {
 			this.vociMenu = vociMenu;
@@ -89,43 +89,43 @@ public class Console {
 		private URI licenza;
 		
 		public URI getProjectPage() {
-			return projectPage;
+			return this.projectPage;
 		}
 		public void setProjectPage(URI projectPage) {
 			this.projectPage = projectPage;
 		}
 		public URI getManualeUso() {
-			return manualeUso;
+			return this.manualeUso;
 		}
 		public void setManualeUso(URI manualeUso) {
 			this.manualeUso = manualeUso;
 		}
 		public String getVersione() {
-			return versione;
+			return this.versione;
 		}
 		public void setVersione(String versione) {
 			this.versione = versione;
 		}
 		public String getBuild() {
-			return build;
+			return this.build;
 		}
 		public void setBuild(String build) {
 			this.build = build;
 		}
 		public URI getLicenza() {
-			return licenza;
+			return this.licenza;
 		}
 		public void setLicenza(URI licenza) {
 			this.licenza = licenza;
 		}
 		public String getTitolo() {
-			return titolo;
+			return this.titolo;
 		}
 		public void setTitolo(String titolo) {
 			this.titolo = titolo;
 		}
 		public String getCopyright() {
-			return copyright;
+			return this.copyright;
 		}
 		public void setCopyright(String copyright) {
 			this.copyright = copyright;
@@ -143,20 +143,20 @@ public class Console {
 		}
 		
 		public String getTitolo() {
-			return titolo;
+			return this.titolo;
 		}
 		public void setTitolo(String titolo) {
 			this.titolo = titolo;
 		}
 		public List<SezioneMenu> getSezioni() {
-			return sezioni;
+			return this.sezioni;
 		}
 		public void setSezioni(List<SezioneMenu> sezioni) {
 			this.sezioni = sezioni;
 		}
 
 		public VoceMenu getHome() {
-			return home;
+			return this.home;
 		}
 
 		public void setHome(VoceMenu home) {
@@ -175,25 +175,25 @@ public class Console {
 	}
 	
 	public String getTitolo() {
-		return titolo;
+		return this.titolo;
 	}
 	public void setTitolo(String titolo) {
 		this.titolo = titolo;
 	}
 	public Menu getMenu() {
-		return menu;
+		return this.menu;
 	}
 	public void setMenu(Menu menu) {
 		this.menu = menu;
 	}
 	public About getAbout() {
-		return about;
+		return this.about;
 	}
 	public void setAbout(About about) {
 		this.about = about;
 	}
 	public URI getLogout() {
-		return logout;
+		return this.logout;
 	}
 	public void setLogout(URI logout) {
 		this.logout = logout;

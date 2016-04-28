@@ -17,6 +17,8 @@ public class ConsoleProperties {
 	private int numeroRisultatiPerPagina;
 	private boolean nascondiRicerca;
 	
+	private String urlDARS;
+	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
 			init();
@@ -41,6 +43,8 @@ public class ConsoleProperties {
 			String num = this.getProperty("it.govpay.console.numeroRisultatiPerPagina", props, false);
 			this.numeroRisultatiPerPagina = num != null ? Integer.parseInt(num) : 25;
 			
+			this.urlDARS = this.getProperty("it.govpay.dars.url", props, false);
+			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -58,10 +62,15 @@ public class ConsoleProperties {
 	}
 
 	public int getNumeroRisultatiPerPagina() {
-		return numeroRisultatiPerPagina;
+		return this.numeroRisultatiPerPagina;
 	}
 
 	public boolean isNascondiRicerca() {
-		return nascondiRicerca;
+		return this.nascondiRicerca;
 	}
+
+	public String getUrlDARS() {
+		return this.urlDARS;
+	}
+	
 }

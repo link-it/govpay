@@ -141,13 +141,12 @@ public class GovPayException extends Exception {
 		case VER_020: return "Iban di accredito non censito";
 		case VER_021: return "Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato";
 		case VER_022: return "Applicazione non autorizzata alla gestione del tributo indicato";
+		case VER_023: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha il singolo versamento con codSingoloVersamentoEnte (" + params[2] + ") inviato ha un iban di accredito diverso dall'originale.";
 		case WISP_000: return "Sessione di scelta sconosciuta al WISP";
 		case WISP_001: return "Sessione di scelta scaduta per timeout al WISP";
 		case WISP_002: return "Canale (" + params[1] + ") del Psp (" + params[0] + ") con tipo versamento (" + params[2] + ") scelto non presente in anagrafica Psp";
 		case WISP_003: return "Il debitore non ha operato alcuna scelta sul WISP";
 		case WISP_004: return "Il debitore ha scelto di pagare dopo tramite avviso di pagamento.";
-		
-		
 		}
 		
 		return "";

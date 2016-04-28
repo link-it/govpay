@@ -43,6 +43,7 @@ import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -78,7 +79,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -107,7 +108,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<IbanAccredito> findAll = ibanAccreditoBD.findAll(filter);
 
@@ -117,7 +118,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -151,7 +152,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String codDominioId = Utils.getInstance().getMessageFromResourceBundle("domini.codDominio.id"); //(intermediariDars.getNomeServizio()+ ".codDominio.id");
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
@@ -309,7 +310,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String codDominioId = Utils.getInstance().getMessageFromResourceBundle("domini.codDominio.id"); //(intermediariDars.getNomeServizio()+ ".codDominio.id");
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
@@ -378,7 +379,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -411,7 +412,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".postale.label"), Utils.getSiNoAsLabel(ibanAccredito.isPostale()));
 			
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -427,7 +428,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String methodName = "Insert " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -451,7 +452,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			ibanAccreditoBD.insertIbanAccredito(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(DuplicatedEntryException e){
@@ -470,7 +471,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String methodName = "creaEntry " + this.titoloServizio;
 		IbanAccredito entry = null;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -490,7 +491,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			Dominio dominio = (Dominio) JSONObject.toBean( jsonObjectStazione, jsonConfig );
 			this.codDominio = dominio.getCodDominio();
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
 			throw e;
@@ -519,7 +520,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String methodName = "Update " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -541,7 +542,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			ibanAccreditoBD.updateIbanAccredito(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(ValidationException e){
 			throw e;

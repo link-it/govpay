@@ -32,13 +32,13 @@ public class ElementoCorrelato {
 		this.uri = uri;
 	}
 	public String getEtichetta() {
-		return etichetta;
+		return this.etichetta;
 	}
 	public void setEtichetta(String etichetta) {
 		this.etichetta = etichetta;
 	}
 	public URI getUri() {
-		return uri;
+		return this.uri;
 	}
 	public void setUri(URI uri) {
 		this.uri = uri;

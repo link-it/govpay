@@ -60,38 +60,38 @@ public class Utils {
 	}
 
 	public   String getMessageFromResourceBundle(String key) {
-		Locale locale = getLocale();
-		return getMessageFromResourceBundle("messages", key, null, locale);
+		Locale locale = this.getLocale();
+		return this.getMessageFromResourceBundle("messages", key, null, locale);
 	}
 
 	public   String getMessageWithParamsFromResourceBundle(String key, Object ... params) {
-		Locale locale = getLocale();
-		return getMessageFromResourceBundle("messages", key, params, locale);
+		Locale locale = this.getLocale();
+		return this.getMessageFromResourceBundle("messages", key, params, locale);
 	}
 
 
 	public   String getMessageFromResourceBundle(String key,Locale locale){
-		return getMessageFromResourceBundle("messages", key, null, locale);
+		return this.getMessageFromResourceBundle("messages", key, null, locale);
 	}
 
 	public   String getMessageFromResourceBundle(String key, String bundleName){
-		Locale locale = getLocale();
+		Locale locale = this.getLocale();
 
 		if(bundleName == null)
 			bundleName = "messages";
 
-		return getMessageFromResourceBundle(bundleName, key, null, locale);
+		return this.getMessageFromResourceBundle(bundleName, key, null, locale);
 	}
 
 	public   String getMessageFromResourceBundle(String key, String bundleName, Locale locale){
 		if(locale == null){
-			locale = getLocale();
+			locale = this.getLocale();
 		}
 
 		if(bundleName == null)
 			bundleName = "messages";
 
-		return getMessageFromResourceBundle(bundleName, key, null, locale);
+		return this.getMessageFromResourceBundle(bundleName, key, null, locale);
 	}
 
 	public String getMessageFromResourceBundle(
@@ -104,7 +104,7 @@ public class Utils {
 		try{
 			ResourceBundle bundle = 
 					ResourceBundle.getBundle(bundleName, locale, 
-							getCurrentClassLoader(params));
+							this.getCurrentClassLoader(params));
 
 
 			text = bundle.getString(key);

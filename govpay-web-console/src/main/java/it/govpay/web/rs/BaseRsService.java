@@ -20,17 +20,23 @@
  */
 package it.govpay.web.rs;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.ws.rs.OPTIONS;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -40,6 +46,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.web.utils.ConsoleProperties;
 
 @Path("/")
 public abstract class BaseRsService {
@@ -56,11 +63,11 @@ public abstract class BaseRsService {
 		
 
 	protected void initLogger(String cmd) {
-		if(response != null){
-			codOperazione = UUID.randomUUID().toString();
+		if(this.response != null){
+			this.codOperazione = UUID.randomUUID().toString();
 			ThreadContext.put("cmd", cmd);
-			ThreadContext.put("op",  codOperazione);
-			response.setHeader("X-GP-CMDID", cmd);
+			ThreadContext.put("op",  this.codOperazione);
+			this.response.setHeader("X-GP-CMDID", cmd);
 		}
 	}
 
@@ -76,9 +83,9 @@ public abstract class BaseRsService {
 	}
 	
 	public void checkOperatoreAdmin(BasicBD bd) throws ServiceException,WebApplicationException{
-		Operatore operatore = getOperatoreByPrincipal(bd);
+		Operatore operatore = this.getOperatoreByPrincipal(bd);
 		if(!ProfiloOperatore.ADMIN.equals(operatore.getProfilo())) {
-			   throw new WebApplicationException(getUnauthorizedResponse());
+			   throw new WebApplicationException(this.getUnauthorizedResponse());
 		}
 	}
 	
@@ -96,7 +103,7 @@ public abstract class BaseRsService {
 
 	protected Operatore getOperatoreByPrincipal(BasicBD bd, String principal) throws ServiceException,WebApplicationException{
 		if(principal == null)
-			throw new WebApplicationException(getUnauthorizedResponse());
+			throw new WebApplicationException(this.getUnauthorizedResponse());
 		
 		Operatore operatore = null;
 		try {
@@ -105,15 +112,15 @@ public abstract class BaseRsService {
 			
 			// Se l'utente non dispone di un profilo allora non e' autorizzato
 			if(operatore.getProfilo() == null)
-				throw new WebApplicationException(getUnauthorizedResponse());
+				throw new WebApplicationException(this.getUnauthorizedResponse());
 			
 			return operatore;
 		} catch (ServiceException e) {
 			throw e;
 		} catch (NotFoundException e) {
-			throw new WebApplicationException(getUnauthorizedResponse());
+			throw new WebApplicationException(this.getUnauthorizedResponse());
 		} catch (MultipleResultException e) {
-			throw new WebApplicationException(getUnauthorizedResponse());
+			throw new WebApplicationException(this.getUnauthorizedResponse());
 		}	
 	}
 	
@@ -126,4 +133,31 @@ public abstract class BaseRsService {
 		return res;
 	}
 
+	public void invalidateSession(Logger log){
+		log.info("Invalidate Session in corso...");
+		
+		HttpSession session = this.request.getSession(false);
+		if(session != null){
+			session.invalidate();
+		}
+		
+		log.info("Invalidate Session completata.");
+	}
+	
+	public static UriBuilder checkDarsURI(UriInfo uriInfo) throws MalformedURLException{
+		 String urlDarsString = ConsoleProperties.getInstance().getUrlDARS();
+		 if(urlDarsString != null){
+			 try {
+				URL urlDARS = new URL(urlDarsString);
+				return uriInfo.getBaseUriBuilder()
+						.scheme(urlDARS.getProtocol())
+						.host(urlDARS.getHost())
+						.port(urlDARS.getPort());
+			} catch (MalformedURLException e) {
+				throw e;
+			}
+		 }
+		 
+		 return uriInfo.getBaseUriBuilder();
+	}
 }

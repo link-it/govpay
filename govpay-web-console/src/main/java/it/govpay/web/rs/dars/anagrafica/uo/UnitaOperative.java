@@ -44,12 +44,12 @@ public class UnitaOperative extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new UnitaOperativeHandler(log, this);
+		return new UnitaOperativeHandler(this.log, this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 }
 

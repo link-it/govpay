@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Anagrafica;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.model.input.ParamField;
@@ -511,7 +512,7 @@ public class AnagraficaHandler {
 
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
-			URI uri = uriInfo.getBaseUriBuilder().path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);

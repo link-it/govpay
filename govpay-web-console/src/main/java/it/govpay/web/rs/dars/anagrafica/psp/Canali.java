@@ -44,12 +44,12 @@ public class Canali extends BaseDarsService {
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new CanaliHandler(log,this);
+		return new CanaliHandler(this.log,this);
 	}
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + getNomeServizio();
+		return "/dars/" + this.getNomeServizio();
 	}
 
 }

@@ -57,7 +57,7 @@ public class Applicazioni extends MultiSelectList<Long, List<Long>>{
 
 	@Override
 	protected List<Voce<Long>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
-		String profiloValue = Utils.getValue(paramValues, profiloId);
+		String profiloValue = Utils.getValue(paramValues, this.profiloId);
 		List<Voce<Long>> lst = new ArrayList<Voce<Long>>();
 
 		if(StringUtils.isNotEmpty(profiloValue) && profiloValue.equals(OperatoriHandler.PROFILO_OPERATORE_VALUE_ADMIN)){
@@ -87,8 +87,8 @@ public class Applicazioni extends MultiSelectList<Long, List<Long>>{
 
 	@Override
 	protected List<Long> getDefaultValue(List<RawParamValue> values, Object... objects) {
-		String profiloValue = Utils.getValue(values, profiloId);
-		String idOperatore = Utils.getValue(values, operatoreId);
+		String profiloValue = Utils.getValue(values, this.profiloId);
+		String idOperatore = Utils.getValue(values, this.operatoreId);
 		List<Long> lst = new ArrayList<Long>();
 
 		if(StringUtils.isNotEmpty(profiloValue) && profiloValue.equals(OperatoriHandler.PROFILO_OPERATORE_VALUE_ADMIN)){
@@ -111,7 +111,7 @@ public class Applicazioni extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {
-		String profiloValue = Utils.getValue(values, profiloId);
+		String profiloValue = Utils.getValue(values, this.profiloId);
 
 		if(StringUtils.isNotEmpty(profiloValue) && profiloValue.equals(OperatoriHandler.PROFILO_OPERATORE_VALUE_ADMIN)){
 			return false;
@@ -121,7 +121,7 @@ public class Applicazioni extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
-		String profiloValue = Utils.getValue(values, profiloId);
+		String profiloValue = Utils.getValue(values, this.profiloId);
 		if(StringUtils.isNotEmpty(profiloValue) && profiloValue.equals(OperatoriHandler.PROFILO_OPERATORE_VALUE_ADMIN)){
 			return true;
 		}
@@ -130,7 +130,7 @@ public class Applicazioni extends MultiSelectList<Long, List<Long>>{
 	}
 	@Override
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
-		String profiloValue = Utils.getValue(values, profiloId);
+		String profiloValue = Utils.getValue(values, this.profiloId);
 		if(StringUtils.isNotEmpty(profiloValue) && profiloValue.equals(OperatoriHandler.PROFILO_OPERATORE_VALUE_ADMIN)){
 			return false;
 		}

@@ -35,11 +35,11 @@ public class InputTextArea extends Input<String> {
 	private int columns; 
 	
 	public int getRows() {
-		return rows;
+		return this.rows;
 	}
 
 	public int getColumns() {
-		return columns;
+		return this.columns;
 	}
 
 }

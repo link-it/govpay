@@ -43,6 +43,7 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -84,7 +85,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		String methodName = "getElenco " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso..."); 
+			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -126,7 +127,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = uriInfo.getBaseUriBuilder().path(this.pathServizio).path("{id}");
+			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Operatore> findAll = operatoriBD.findAll(filter);
 
@@ -136,7 +137,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 				}
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return elenco;
 		}catch(WebApplicationException e){
@@ -156,7 +157,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 
 		if(infoRicercaMap == null){
-			initInfoRicerca(uriInfo, bd);
+			this.initInfoRicerca(uriInfo, bd);
 
 		}
 
@@ -215,7 +216,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
@@ -337,7 +338,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		String uoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".uo.id");
 
 		if(infoCreazioneMap == null){
-			initInfoCreazione(uriInfo, bd);
+			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
@@ -357,11 +358,9 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		SelectList<String> profilo = (SelectList<String>) infoCreazioneMap.get(profiloId);
 		String profiloOperatoreValue = null;
 		ProfiloOperatore profiloOperatore = entry.getProfilo();
-		boolean hiddenUo = false;
 		switch (profiloOperatore) {
 		case ADMIN:
 			profiloOperatoreValue = PROFILO_OPERATORE_VALUE_ADMIN;
-			hiddenUo = true;
 			break;
 		case ENTE:
 		default:
@@ -419,7 +418,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
@@ -463,16 +462,16 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 				String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 
 				it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative uoDars = new it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative();
-				UriBuilder uriBuilder = uriInfo.getBaseUriBuilder().path(uoDars.getPathServizio()).queryParam(principalId, operatore.getPrincipal());
+				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(uoDars.getPathServizio()).queryParam(principalId, operatore.getPrincipal());
 				dettaglio.addElementoCorrelato(etichettaUnitaOperative, uriBuilder.build());
 
 				it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
-				UriBuilder applicazioniUriBuilder = uriInfo.getBaseUriBuilder().path(applicazioniDars.getPathServizio()).queryParam(principalId, operatore.getPrincipal());
+				UriBuilder applicazioniUriBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).queryParam(principalId, operatore.getPrincipal());
 				dettaglio.addElementoCorrelato(etichettaApplicazioni, applicazioniUriBuilder.build()); 
 
 			}
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
 		}catch(WebApplicationException e){
@@ -488,7 +487,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		String methodName = "Insert " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -506,7 +505,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			operatoriBD.insertOperatore(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(DuplicatedEntryException e){
@@ -526,7 +525,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		String methodName = "creaEntry " + this.titoloServizio;
 		Operatore entry = null;
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -541,7 +540,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			jsonConfig.setRootClass(Operatore.class);
 			entry = (Operatore) JSONObject.toBean( jsonObject, jsonConfig );
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
 			throw e;
@@ -572,7 +571,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		String methodName = "Update " + this.titoloServizio;
 
 		try{
-			log.info("Esecuzione " + methodName + " in corso...");
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
@@ -585,7 +584,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			operatoriBD.updateOperatore(entry); 
 
-			log.info("Esecuzione " + methodName + " completata.");
+			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(ValidationException e){
 			throw e;

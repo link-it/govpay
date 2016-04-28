@@ -34,13 +34,13 @@ public class RawParamValue {
 	}
 	
 	public String getId() {
-		return id;
+		return this.id;
 	}
 	public void setId(String id) {
 		this.id = id;
 	}
 	public String getValue() {
-		return value;
+		return this.value;
 	}
 	public void setValue(String value) {
 		this.value = value;

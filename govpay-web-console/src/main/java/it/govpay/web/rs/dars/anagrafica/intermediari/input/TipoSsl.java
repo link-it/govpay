@@ -59,7 +59,7 @@ public class TipoSsl extends SelectList<String> {
 	}
 	@Override
 	protected String getDefaultValue(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
 			return "";
@@ -70,7 +70,7 @@ public class TipoSsl extends SelectList<String> {
 
 	@Override
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
 			return true;
@@ -81,7 +81,7 @@ public class TipoSsl extends SelectList<String> {
 
 	@Override
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
 			return false;
@@ -92,7 +92,7 @@ public class TipoSsl extends SelectList<String> {
 
 	@Override
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
-		String tipoAutenticazioneValue = Utils.getValue(values, tipoAutenticazioneId);
+		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
 			return true;
