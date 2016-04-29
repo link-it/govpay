@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars.anagrafica.psp;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -99,11 +100,8 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
@@ -209,4 +207,14 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 		return sb.toString();
 	}
 
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
+	}
 }

@@ -26,6 +26,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -159,7 +160,12 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		sezioneRoot.addField(codIntermediario);
 
 		InputText codStazione = (InputText) infoCreazioneMap.get(codStazioneId);
-		codStazione.setDefaultValue(this.codIntermediario + "_XX");
+		String codStazioneSuggestion = this.codIntermediario + "_XX"; 
+		codStazione.setDefaultValue(codStazioneSuggestion);
+		String codStazionePattern = this.codIntermediario + "[_]{1,1}[0-9]{2,2}";
+		String codStazioneErrorMessage = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.errorMessage") +" "+  codStazioneSuggestion;
+		codStazione.setValidation(codStazionePattern, codStazioneErrorMessage); 
+		codStazione.setSuggestion(codStazioneSuggestion);
 		codStazione.setEditable(true);     
 		sezioneRoot.addField(codStazione);
 
@@ -473,6 +479,15 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
 
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 }

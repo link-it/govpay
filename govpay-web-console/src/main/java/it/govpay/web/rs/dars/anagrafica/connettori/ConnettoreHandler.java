@@ -312,6 +312,8 @@ public class ConnettoreHandler {
 		
 		if(mappaCreazione == null)
 			this.getInfoCreazione(uriInfo, bd);
+		
+		mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeConnettore);
 
 		// prelevo i componenti e gli setto i valori correnti
 		InputText url = (InputText) mappaCreazione.get(urlId);

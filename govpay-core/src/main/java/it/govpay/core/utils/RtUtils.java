@@ -18,6 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
 package it.govpay.core.utils;
 
 import java.math.BigDecimal;
@@ -68,28 +69,34 @@ public class RtUtils extends NdpValidationUtils {
 		DecorrenzaTerminiParziale;
 	}
 
-	public static byte[] validaFirma(String tipoFirma,  byte[] rt) throws NdpException {
+	public static byte[] validaFirma(String tipoFirma,  byte[] rt, String idDominio) throws NdpException {
 
 		if(tipoFirma.equals("0"))
 			return rt;
 		
 		if(tipoFirma.equals("1"))
-			return validaFirmaCades(rt);
+			return validaFirmaCades(rt, idDominio);
 		
 		if(tipoFirma.equals("3"))
-			return validaFirmaXades(rt);
+			return validaFirmaXades(rt, idDominio);
 		
 		throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
 	}
 
-	private static byte[] validaFirmaXades(byte[] rt) throws NdpException {
-		// TODO DA IMPLEMENTARE Firma XaDes
-		throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "Firma XaDes non supportata");
+	private static byte[] validaFirmaXades(byte[] rt, String idDominio) throws NdpException {
+		try {
+			return SignUtils.cleanXadesSignedFile(rt);
+		} catch (Exception e) {
+			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio);
+		}
 	}
 
-	private static byte[] validaFirmaCades(byte[] rt) throws NdpException {		
-		// TODO DA IMPLEMENTARE Firma CaDes
-		throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "Firma CaDes non supportata");
+	private static byte[] validaFirmaCades(byte[] rt, String idDominio) throws NdpException {		
+		try {
+			return SignUtils.cleanCadesSignedFile(rt);
+		} catch (Exception e) {
+			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio);
+		}
 	}
 
 	public static void validaSemantica(CtRichiestaPagamentoTelematico rpt, CtRicevutaTelematica rt) throws NdpException {
@@ -227,7 +234,7 @@ public class RtUtils extends NdpValidationUtils {
 		// Validazione RT
 		try {
 			// Validazione Firma
-			byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rtByte);
+			byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rtByte, codDominio);
 			
 			// Validazione Sintattica
 			try {

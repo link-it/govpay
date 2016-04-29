@@ -46,6 +46,7 @@ import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Iuv;
 import it.govpay.bd.model.Iuv.TipoIUV;
+import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
@@ -229,6 +230,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			// Creazione dell'RPT
 			Anagrafica versante = toOrm(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante());
 			Rpt rpt = RptUtils.buildRpt(intermediario, stazione, null, versamento, iuvModel, ccp, null, psp, canale, versante, "N/A", null, null, bd);
+			
+			// Da specifica, le RPT ad iniziativa PSP non possono richiedere firma
+			rpt.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 
 			RptBD rptBD = new RptBD(bd);
 			

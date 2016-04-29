@@ -20,8 +20,11 @@
  */
 package it.govpay.web.rs.dars;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -33,6 +36,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.LogManager;
@@ -148,7 +152,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	public DarsResponse get(
 			@PathParam("id") long id,
 			@Context UriInfo uriInfo) throws ConsoleException,WebApplicationException {
-		String methodName = "get " + this.getNomeServizio() + "." + id; 
+		String methodName = "Dettaglio " + this.getNomeServizio() + ".id [" + id + "]"; 
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
@@ -181,10 +185,10 @@ public abstract class BaseDarsService extends BaseRsService {
 		return darsResponse;
 	}
 
-	@POST
+	@GET
 	@Path("/cancella")
 	@Produces({MediaType.APPLICATION_JSON})
-	public DarsResponse delete(List<Long> idsToDelete, @Context UriInfo uriInfo) throws Exception{
+	public DarsResponse cancella(List<Long> idsToDelete, @Context UriInfo uriInfo) throws Exception{
 		StringBuffer sb = new StringBuffer();
 
 		if(idsToDelete != null && idsToDelete.size() > 0)
@@ -195,7 +199,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				sb.append(long1);
 			}
 
-		String methodName = "delete " + this.getNomeServizio() + "[" + sb.toString() + "]";  
+		String methodName = "cancella " + this.getNomeServizio() + "[" + sb.toString() + "]";  
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
@@ -224,6 +228,86 @@ public abstract class BaseDarsService extends BaseRsService {
 		}
 		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
+	}
+	
+	@POST
+	@Path("/esporta")
+	@Produces({MediaType.APPLICATION_OCTET_STREAM})
+	public Response esporta(List<Long> idsToExport, @Context UriInfo uriInfo) throws Exception{
+		StringBuffer sb = new StringBuffer();
+
+		if(idsToExport != null && idsToExport.size() > 0)
+			for (Long long1 : idsToExport) {
+				
+				if(sb.length() > 0)
+					sb.append(", ");
+
+				sb.append(long1);
+			}
+
+		String methodName = "esporta " + this.getNomeServizio() + "[" + sb.toString() + "]";  
+		this.initLogger(methodName);
+
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		try {
+			bd = BasicBD.newInstance();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ZipOutputStream zout = new ZipOutputStream(baos);
+			
+			String fileName = this.getDarsHandler().esporta(idsToExport, uriInfo, bd, zout);
+			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
+			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			if(bd != null) 
+				bd.rollback();
+			return Response.serverError().build();
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		
+	}
+	
+	@GET
+	@Path("/{id}/esporta")
+	@Produces({MediaType.APPLICATION_OCTET_STREAM})
+	public Response esportaDettaglio(@PathParam("id") long id, @Context UriInfo uriInfo) throws Exception{
+
+		String methodName = "esporta " + this.getNomeServizio() + "[" + id+ "]";  
+		this.initLogger(methodName);
+
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		try {
+			bd = BasicBD.newInstance();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ZipOutputStream zout = new ZipOutputStream(baos);
+			
+			String fileName = this.getDarsHandler().esporta(id, uriInfo, bd, zout);
+			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
+			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			if(bd != null) 
+				bd.rollback();
+			return Response.serverError().build();
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		
 	}
 
 	@POST
@@ -317,7 +401,6 @@ public abstract class BaseDarsService extends BaseRsService {
 		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
-		
 
 	public abstract String getNomeServizio();
 

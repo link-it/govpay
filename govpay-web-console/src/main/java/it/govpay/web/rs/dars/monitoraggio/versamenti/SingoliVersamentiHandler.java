@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -191,7 +192,19 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 		sb.append("Stato ").append(statoVersamento); 
 		
 		return sb.toString();
-	} 
+	}
+	
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 	/* Creazione/Update non consentiti**/
 

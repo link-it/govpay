@@ -382,6 +382,8 @@ public class AnagraficaHandler {
 		
 		if(mappaCreazione == null)
 			this.getInfoCreazioneAnagraficaUO(uriInfo, bd);
+		
+		mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeAnagrafica);
 
 		// prelevo i componenti e gli setto i valori correnti
 		//Ragione Sociale
@@ -465,6 +467,8 @@ public class AnagraficaHandler {
 		
 		if(mappaCreazione == null)
 			this.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
+		
+		mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeAnagrafica);
 
 		// prelevo i componenti e gli setto i valori correnti
 		//Ragione Sociale

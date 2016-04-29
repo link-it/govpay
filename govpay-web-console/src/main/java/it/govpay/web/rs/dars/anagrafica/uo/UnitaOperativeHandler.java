@@ -23,10 +23,10 @@ package it.govpay.web.rs.dars.anagrafica.uo;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -35,19 +35,15 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
-import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -55,7 +51,6 @@ import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
-import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
@@ -65,13 +60,11 @@ import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
-import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
-import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -110,7 +103,6 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			boolean entitaSenzaUo = false;
 			boolean visualizzaRicerca = true;
 
 			// tutte le unita' con codice uo = 'EC' sono nascoste
@@ -130,22 +122,8 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 				visualizzaRicerca = false;
 			}
 
-			// Ricerca dal dettaglio Operatore con ruolo USER
+			long count = unitaOperativaBD.count(filter);
 
-			Operatori operatoriDars = new Operatori();
-			String principalId = Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".principal.id");
-			String principalOperatore = this.getParameter(uriInfo, principalId, String.class); 
-
-			if(StringUtils.isNotEmpty(principalOperatore)){
-				OperatoriBD operatoriBD = new OperatoriBD(bd);
-				Operatore operatore = operatoriBD.getOperatore(principalOperatore);
-				entitaSenzaUo = Utils.isEmpty(operatore.getIdEnti());
-				filter.setListaIdUo(operatore.getIdEnti());
-				visualizzaRicerca = false;
-			} 
-
-			long count = entitaSenzaUo ? 0 : unitaOperativaBD.count(filter);
-			
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 
@@ -157,7 +135,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
-			List<UnitaOperativa> findAll = entitaSenzaUo ? new ArrayList<UnitaOperativa>() : unitaOperativaBD.findAll(filter);
+			List<UnitaOperativa> findAll =  unitaOperativaBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (UnitaOperativa entry : findAll) {
@@ -175,14 +153,14 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		Domini dominiDars = new Domini();
+		String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
 
 		if(infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
@@ -196,32 +174,16 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		codUnitaOperativa.setDefaultValue(null);
 		sezioneRoot.addField(codUnitaOperativa);
 
-		// idDominio
-		List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-
+		// codDominio
+		InputText codDominio = (InputText) infoRicercaMap.get(codDominioId);
 		DominiBD dominiBD = new DominiBD(bd);
-		DominioFilter filter;
 		try {
-			filter = dominiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Dominio> findAll = dominiBD.findAll(filter );
-
-			domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-			if(findAll != null && findAll.size() > 0){
-				for (Dominio dominio : findAll) {
-					domini.add(new Voce<Long>(dominio.getCodDominio(), dominio.getId()));  
-				}
-			}
-		} catch (ServiceException e) {
+			Dominio dominio = dominiBD.getDominio(this.idDominio);
+			codDominio.setDefaultValue(dominio.getCodDominio());
+		} catch (Exception e) {
 			throw new ConsoleException(e);
 		}
-		SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-		idDominio.setDefaultValue(-1L);
-		idDominio.setValues(domini); 
-		sezioneRoot.addField(idDominio);
+		sezioneRoot.addField(codDominio);
 
 		return infoRicerca;
 	}
@@ -231,24 +193,21 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			Domini dominiDars = new Domini();
+			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
 
 			// codUO
 			String codUnitaOperativaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
 			InputText codUnitaOperativa = new InputText(codUoId, codUnitaOperativaLabel, null, false, false, true, 1, 255);
 			infoRicercaMap.put(codUoId, codUnitaOperativa);
 
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio
-			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
-			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
-			idDominio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.suggestion"));
-			infoRicercaMap.put(idDominioId, idDominio);
+			InputText codDominio = new InputText(codDominioId, null, null, true, true, false, 1, 255);
+			infoRicercaMap.put(codDominioId, codDominio);
 
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
@@ -278,36 +237,8 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		sezioneRoot.addField(codUnitaOperativa);
 
 		// idDominio
-		List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-		SelectList<Long> idDominio = (SelectList<Long>) infoCreazioneMap.get(idDominioId);
+		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(this.idDominio);
-		if(this.idDominio == null){
-			DominiBD dominiBD = new DominiBD(bd);
-			DominioFilter filter;
-			try {
-				filter = dominiBD.newFilter();
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-				fsw.setSortOrder(SortOrder.ASC);
-				filter.getFilterSortList().add(fsw);
-				List<Dominio> findAll = dominiBD.findAll(filter );
-
-				if(findAll != null && findAll.size() > 0){
-					for (Dominio dominio : findAll) {
-						domini.add(new Voce<Long>(dominio.getCodDominio(), dominio.getId()));  
-					}
-				}
-			} catch (ServiceException e) {
-				throw new ConsoleException(e);
-			}
-			idDominio.setHidden(false);
-			idDominio.setEditable(true);
-		}else {
-			idDominio.setHidden(true);
-			idDominio.setEditable(false);
-		}
-
-		idDominio.setValues(domini); 
 		sezioneRoot.addField(idDominio);
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
@@ -344,10 +275,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			infoCreazioneMap.put(codUoId, codUnitaOperativa);
 
 			// idDominio
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
-			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, true, false, true, domini);
-			idDominio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.suggestion"));
+			InputNumber idDominio = new InputNumber(idDominioId, null, null, true, true, false, 1, 255);
 			infoCreazioneMap.put(idDominioId, idDominio);
 
 			// abilitato
@@ -360,7 +288,6 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
@@ -388,32 +315,8 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		codUnitaOperativa.setDefaultValue(entry.getCodUo());
 		sezioneRoot.addField(codUnitaOperativa);
 
-		// idDominio
-		List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-
-		DominiBD dominiBD = new DominiBD(bd);
-		DominioFilter filter;
-		try {
-			filter = dominiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Dominio> findAll = dominiBD.findAll(filter );
-
-			if(findAll != null && findAll.size() > 0){
-				for (Dominio dominio : findAll) {
-					domini.add(new Voce<Long>(dominio.getCodDominio(), dominio.getId()));  
-				}
-			}
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
-		}
-
-
-		SelectList<Long> idDominio = (SelectList<Long>) infoCreazioneMap.get(idDominioId);
+		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(entry.getIdDominio());
-		idDominio.setValues(domini); 
 		sezioneRoot.addField(idDominio);
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
@@ -490,7 +393,6 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
 			AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio);
 			anagraficaHandler.fillSezioneAnagraficaUO(sezioneAnagrafica, anagrafica);
-
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -663,5 +565,14 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		return sb.toString();
 	}
 
-
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
+	}
 }

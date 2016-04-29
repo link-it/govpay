@@ -21,8 +21,10 @@
 package it.govpay.web.rs.dars;
 
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
@@ -119,6 +121,26 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
+		try{
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path(BaseDarsService.PATH_CANCELLA).build(id);
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
+
+	@Override
+	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
+		try{
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path(BaseDarsService.PATH_ESPORTA).build(id); 
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
 
 	@Override
 	public abstract Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException ;
@@ -149,6 +171,12 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public  abstract String getTitolo(T entry) ;
 	@Override
 	public  abstract String getSottotitolo(T entry) ;
+	
+	@Override
+	public abstract String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
+	
+	@Override
+	public abstract String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException;
 
 	public Elemento getElemento(T entry, Long id, UriBuilder uriDettaglioBuilder){
 		String titolo = this.getTitolo(entry);
@@ -164,8 +192,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters(); 
 
 			String paramAsString = queryParams.getFirst(parameterName);
-			if(paramAsString != null)
-				toReturn = type.cast(paramAsString);
+			if(paramAsString != null){
+				log.debug("Trovato Parametro ["+parameterName+"] class["+paramAsString.getClass().getName()+"] provo il cast a ["+type.getName()+"]");
+				Constructor<P> constructor = type.getConstructor(String.class);
+				if(constructor != null)
+					toReturn = constructor.newInstance(paramAsString);
+				else
+					toReturn = type.cast(paramAsString);
+			}
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}

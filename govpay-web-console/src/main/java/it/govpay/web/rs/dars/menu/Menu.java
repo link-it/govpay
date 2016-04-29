@@ -108,14 +108,16 @@ public class Menu extends BaseRsService {
 			VoceMenu voceMenuVersamenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	versamentiURI, false);
 			
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
-				URI intermediariURI = BaseRsService.checkDarsURI(uriInfo).path(intermediariDars.getPathServizio()).build();
-				VoceMenu voceMenuIntermediari = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, false);
-				menu.setHome(voceMenuIntermediari);
+				
+				menu.setHome(voceMenuVersamenti);
 
 				SezioneMenu anagrafica = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".anagrafica"));
 				Psp pspDars = new Psp();
 				URI pspURI = BaseRsService.checkDarsURI(uriInfo).path(pspDars.getPathServizio()).build();
 				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), pspURI, false));
+				
+				URI intermediariURI = BaseRsService.checkDarsURI(uriInfo).path(intermediariDars.getPathServizio()).build();
+				VoceMenu voceMenuIntermediari = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, false);
 				anagrafica.getVociMenu().add(voceMenuIntermediari);
 
 				Domini dominiDars = new Domini();

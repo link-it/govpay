@@ -21,6 +21,7 @@
 package it.govpay.bd.anagrafica.filters;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -30,13 +31,16 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.IbanAccredito;
+import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
 
 public class IbanAccreditoFilter extends AbstractFilter {
 
 	// Filtro che indica che voglio gli iban associati al dominio.
 	private String codDominio;
+	private Long idDominio;
 
 	public enum SortFields {
 		COD_IBAN
@@ -49,10 +53,19 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	@Override
 	public IExpression toExpression() throws ServiceException {
 		try {
+			boolean addAnd = false;
 			IExpression expr = this.newExpression();
 			if(StringUtils.isNotEmpty(this.getCodDominio())){
 				expr.equals(IbanAccredito.model().ID_DOMINIO.COD_DOMINIO, this.getCodDominio());
+				addAnd = true;
 			} 
+			if(this.getIdDominio() != null){
+				if(addAnd) expr.and();
+				IbanAccreditoFieldConverter fieldConverter = new IbanAccreditoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				expr.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.IbanAccredito.model())), getIdDominio());
+				addAnd = true;
+			}
+			
 			return expr;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -83,6 +96,14 @@ public class IbanAccreditoFilter extends AbstractFilter {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public Long getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(Long idDominio) {
+		this.idDominio = idDominio;
 	}
 
  

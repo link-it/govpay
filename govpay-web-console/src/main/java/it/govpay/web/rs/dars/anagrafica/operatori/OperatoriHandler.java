@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -39,20 +40,29 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
+import it.govpay.bd.anagrafica.UnitaOperativeBD;
+import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
+import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.anagrafica.applicazioni.ApplicazioniHandler;
 import it.govpay.web.rs.dars.anagrafica.operatori.input.Applicazioni;
 import it.govpay.web.rs.dars.anagrafica.operatori.input.UnitaOperative;
+import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperativeHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -456,19 +466,64 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			if(!isAdmin){
 				// Elementi correlati dell'operatore UO e Applicazioni
-
 				String etichettaUnitaOperative = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.uo.titolo");
+				it.govpay.web.rs.dars.model.Sezione sezioneUo = dettaglio.addSezione(etichettaUnitaOperative);
+				
+				if(!Utils.isEmpty(operatore.getIdEnti())){
+					UnitaOperativeBD unitaOperativaBD = new UnitaOperativeBD(bd);
+					UnitaOperativaFilter filter = unitaOperativaBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Uo.model().COD_UO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setListaIdUo(operatore.getIdEnti());
+					// tutte le unita' con codice uo = 'EC' sono nascoste
+					filter.setExcludeEC(true); 
+					
+					List<UnitaOperativa> findAll =  unitaOperativaBD.findAll(filter);
+
+						
+					
+					it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative uoDars = new it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative();
+					UnitaOperativeHandler uoDarsHandler = (UnitaOperativeHandler) uoDars.getDarsHandler();
+					UriBuilder uriDettaglioUoBuilder = BaseRsService.checkDarsURI(uriInfo).path(uoDars.getPathServizio()).path("{id}");
+
+					if(findAll != null && findAll.size() > 0){
+						for (UnitaOperativa entry : findAll) {
+							Elemento elemento = uoDarsHandler.getElemento(entry, entry.getId(), uriDettaglioUoBuilder);
+							sezioneUo.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
+						}
+					}
+					
+				}
+				
 				String etichettaApplicazioni = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.applicazioni.titolo");
-				String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				it.govpay.web.rs.dars.model.Sezione sezioneApplicazioni = dettaglio.addSezione(etichettaApplicazioni);
+				
+				if(!Utils.isEmpty(operatore.getIdApplicazioni())){
+					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+					ApplicazioneFilter filter = applicazioniBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setListaIdApplicazioni(operatore.getIdApplicazioni());
+					
+					List<Applicazione> findAll =  applicazioniBD.findAll(filter);
 
-				it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative uoDars = new it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative();
-				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(uoDars.getPathServizio()).queryParam(principalId, operatore.getPrincipal());
-				dettaglio.addElementoCorrelato(etichettaUnitaOperative, uriBuilder.build());
+						
+					
+					it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
+					ApplicazioniHandler applicazioniDarsHandler = (ApplicazioniHandler) applicazioniDars.getDarsHandler();
+					UriBuilder uriDettaglioApplicazioniBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).path("{id}");
 
-				it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
-				UriBuilder applicazioniUriBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).queryParam(principalId, operatore.getPrincipal());
-				dettaglio.addElementoCorrelato(etichettaApplicazioni, applicazioniUriBuilder.build()); 
-
+					if(findAll != null && findAll.size() > 0){
+						for (Applicazione entry : findAll) {
+							Elemento elemento = applicazioniDarsHandler.getElemento(entry, entry.getId(), uriDettaglioApplicazioniBuilder);
+							sezioneApplicazioni.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
+						}
+					}
+				}
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -619,5 +674,16 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			sb.append("Operatore");
 
 		return sb.toString();
+	}
+	
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
 	}
 }

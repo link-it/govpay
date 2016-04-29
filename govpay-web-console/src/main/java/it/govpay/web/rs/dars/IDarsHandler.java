@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
@@ -51,6 +52,8 @@ public interface IDarsHandler<T> {
 	
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id) throws ConsoleException;
+	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,long id) throws ConsoleException;
 	
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;
@@ -66,4 +69,6 @@ public interface IDarsHandler<T> {
 	
 	public String getTitolo(T entry) ;
 	public String getSottotitolo(T entry) ;
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 }

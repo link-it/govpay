@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -50,11 +51,13 @@ import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.anagrafica.applicazioni.ApplicazioniHandler;
 import it.govpay.web.rs.dars.anagrafica.portali.input.Applicazioni;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -396,8 +399,8 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			this.darsService.checkOperatoreAdmin(bd);
 
 			// recupero oggetto
-			PortaliBD applicazioniBD = new PortaliBD(bd);
-			Portale portale = applicazioniBD.getPortale(id);
+			PortaliBD portaliBD = new PortaliBD(bd);
+			Portale portale = portaliBD.getPortale(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,portale);
 			URI cancellazione = null;
@@ -415,12 +418,33 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			// Elementi correlati
 			String etichettaApplicazioni = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.applicazioni.titolo");
-			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
+			it.govpay.web.rs.dars.model.Sezione sezioneApplicazioni = dettaglio.addSezione(etichettaApplicazioni);
+			
+			if(!Utils.isEmpty(portale.getIdApplicazioni())){
+				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+				ApplicazioneFilter filter = applicazioniBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+				fsw.setSortOrder(SortOrder.ASC);
+				filter.getFilterSortList().add(fsw);
+				filter.setListaIdApplicazioni(portale.getIdApplicazioni());
+				
+				List<Applicazione> findAll =  applicazioniBD.findAll(filter);
 
-			it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).queryParam(codPortaleId, portale.getCodPortale());
-			dettaglio.addElementoCorrelato(etichettaApplicazioni, uriBuilder.build());
+					
+				
+				it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
+				ApplicazioniHandler applicazioniDarsHandler = (ApplicazioniHandler) applicazioniDars.getDarsHandler();
+				UriBuilder uriDettaglioApplicazioniBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).path("{id}");
 
+				if(findAll != null && findAll.size() > 0){
+					for (Applicazione entry : findAll) {
+						Elemento elemento = applicazioniDarsHandler.getElemento(entry, entry.getId(), uriDettaglioApplicazioniBuilder);
+						sezioneApplicazioni.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
+					}
+				}
+			}
+			
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
@@ -565,5 +589,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		return sb.toString();
 	}
 
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 }

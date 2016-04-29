@@ -20,16 +20,123 @@
  */
 package it.govpay.web.rs.dars.anagrafica.applicazioni.input;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.ApplicazioniBD;
+import it.govpay.bd.anagrafica.TributiBD;
+import it.govpay.bd.anagrafica.filters.TributoFilter;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Tributo;
+import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.input.base.MultiSelectList;
+import it.govpay.web.rs.dars.model.input.dinamic.MultiSelectList;
+import it.govpay.web.utils.Utils;
 
 public class Tributi extends MultiSelectList<Long, List<Long>>{
 
-	public Tributi(String id, String label, List<Long> defaultValue, boolean required, boolean hidden, boolean editable,
-			List<Voce<Long>> values) { 
-		super(id, label, defaultValue, required, hidden, editable, values);
-	} 
+	private String trustedId= null;
+	private String applicazioneId = null;
+	private String nomeServizio = null;
+
+	public Tributi(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
+			 Object... objects) {
+		super(id, label, refreshUri, paramValues, objects);
+		this.nomeServizio = nomeServizio;
+		this.trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		this.applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.log = LogManager.getLogger();
+	}
+
+	@Override
+	protected List<Voce<Long>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
+		String trustedValue = Utils.getValue(paramValues, this.trustedId);
+		List<Voce<Long>> lst = new ArrayList<Voce<Long>>();
+
+		if(StringUtils.isNotEmpty(trustedValue) && trustedValue.equalsIgnoreCase("true")){
+			return lst;
+		}
+
+		try {
+			BasicBD bd = (BasicBD) objects[0];
+			TributiBD tributiBD = new TributiBD(bd); 
+
+			TributoFilter filter = tributiBD.newFilter();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
+			fsw.setSortOrder(SortOrder.ASC);
+			filter.getFilterSortList().add(fsw);
+			List<Tributo> findAll = tributiBD.findAll(filter);
+
+			for(Tributo tributo : findAll) {
+				lst.add(new Voce<Long>(tributo.getCodTributo(), tributo.getId()));
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+			throw new ServiceException(e);
+		}
+
+		return lst;
+	}
+
+	@Override
+	protected List<Long> getDefaultValue(List<RawParamValue> values, Object... objects) {
+		String trustedValue = Utils.getValue(values, this.trustedId);
+		String idapplicazione = Utils.getValue(values, this.applicazioneId);
+		List<Long> lst = new ArrayList<Long>();
+
+		if(StringUtils.isNotEmpty(trustedValue) && trustedValue.equalsIgnoreCase("true")){
+			return lst;
+		}
+		if(StringUtils.isEmpty(idapplicazione)){
+			return lst;
+		}
+
+		try {
+			BasicBD bd = (BasicBD) objects[0];
+			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			Applicazione applicazione = applicazioniBD.getApplicazione(Long.parseLong(idapplicazione));
+			lst.addAll(applicazione.getIdTributi());
+		} catch (Exception e) {
+			log.error(e.getMessage(),e); 
+		}
+
+		return lst;
+	}
+	@Override
+	protected boolean isRequired(List<RawParamValue> values, Object... objects) {
+		String trustedValue = Utils.getValue(values, this.trustedId);
+
+		if(StringUtils.isNotEmpty(trustedValue) && trustedValue.equalsIgnoreCase("true")){
+			return false;
+		}
+
+		return true;
+	}
+	@Override
+	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
+		String trustedValue = Utils.getValue(values, this.trustedId);
+		if(StringUtils.isNotEmpty(trustedValue) && trustedValue.equalsIgnoreCase("true")){
+			return true;
+		}
+
+		return false;
+	}
+	@Override
+	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
+		String trustedValue = Utils.getValue(values, this.trustedId);
+		if(StringUtils.isNotEmpty(trustedValue) && trustedValue.equalsIgnoreCase("true")){
+			return false;
+		}
+		return true;
+	}
 
 }

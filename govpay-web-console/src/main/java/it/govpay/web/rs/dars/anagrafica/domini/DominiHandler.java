@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -39,20 +41,28 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
+import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Anagrafica;
+import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.core.utils.DominioUtils;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
+import it.govpay.web.rs.dars.anagrafica.applicazioni.ApplicazioniHandler;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
@@ -90,16 +100,15 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	@Override
 	public Elenco getElenco(UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
-		try{	
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
+			URI esportazione = this.getUriEsportazione(uriInfo, bd);
 			URI cancellazione = null;
-
-			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter();
@@ -132,12 +141,12 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			}
 
 			long count = dominiBD.count(filter);
-			
+
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
-			
+
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
@@ -248,6 +257,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String idStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 		String glnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
 		String uoIdId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
+		String idApplicazioneDefaultId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
+		String riusoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
+		String customIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
 
 		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
@@ -295,12 +307,51 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		stazione.setDefaultValue(null);
 		stazione.setValues(stazioni);
 		sezioneRoot.addField(stazione); 
+
 		InputText ragioneSociale = (InputText) infoCreazioneMap.get(ragioneSocialeId);
 		ragioneSociale.setDefaultValue(null);
 		sezioneRoot.addField(ragioneSociale);
+
 		InputText gln = (InputText) infoCreazioneMap.get(glnId);
 		gln.setDefaultValue(null);
 		sezioneRoot.addField(gln);
+
+		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+
+		try{
+			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			ApplicazioneFilter filter = applicazioniBD.newFilter();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+			fsw.setSortOrder(SortOrder.ASC);
+			filter.getFilterSortList().add(fsw);
+
+			List<Applicazione> findAll = applicazioniBD.findAll(filter);
+
+
+			if(findAll != null && findAll.size() > 0){
+				for (Applicazione entry : findAll) {
+					applicazioni.add(new Voce<Long>(entry.getCodApplicazione(), entry.getId()));
+				}
+			}
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+
+		SelectList<Long> idApplicazioneDefault = (SelectList<Long>) infoCreazioneMap.get(idApplicazioneDefaultId);
+		idApplicazioneDefault.setDefaultValue(null);
+		idApplicazioneDefault.setValues(applicazioni);
+		sezioneRoot.addField(idApplicazioneDefault); 
+
+
+		CheckButton riusoIuv = (CheckButton) infoCreazioneMap.get(riusoIuvId);
+		riusoIuv.setDefaultValue(true); 
+		sezioneRoot.addField(riusoIuv);
+
+		CheckButton customIuv = (CheckButton) infoCreazioneMap.get(customIuvId);
+		customIuv.setDefaultValue(false); 
+		sezioneRoot.addField(customIuv);
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
@@ -333,10 +384,13 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String idStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 			String glnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
+			String idApplicazioneDefaultId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
+			String riusoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
+			String customIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
-			InputNumber codDominio = new InputNumber(codDominioId, codDominioLabel, null, true, false, true, 1, 11);
+			InputNumber codDominio = new InputNumber(codDominioId, codDominioLabel, null, true, false, true, 11, 11);
 			codDominio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.suggestion"));
 			codDominio.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.errorMessage"));
 			infoCreazioneMap.put(codDominioId, codDominio);
@@ -364,6 +418,26 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
 			infoCreazioneMap.put(abilitatoId, abiliato);
 
+			// idApplicazioneDefault
+			String idApplicazioneDefaultlabel =Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label");
+			List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+			SelectList<Long> idApplicazioneDefault = new SelectList<Long>(idApplicazioneDefaultId, idApplicazioneDefaultlabel, null, true, false, true, applicazioni );
+			idApplicazioneDefault.setAvanzata(true); 
+			infoCreazioneMap.put(idApplicazioneDefaultId, idApplicazioneDefault);
+
+
+			// riusoIuv
+			String riusoIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label");
+			CheckButton riusoIuv = new CheckButton(riusoIuvId, riusoIuvLabel, true, false, false, true);
+			riusoIuv.setAvanzata(true); 
+			infoCreazioneMap.put(riusoIuvId, riusoIuv);
+
+			// customIuv
+			String customIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.label");
+			CheckButton customIuv = new CheckButton(customIuvId, customIuvLabel, true, false, false, true);
+			customIuv.setAvanzata(true); 
+			infoCreazioneMap.put(customIuvId,customIuv);
+
 		}
 	}
 
@@ -380,6 +454,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String idStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 		String glnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".gln.id");
 		String uoIdId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
+		String idApplicazioneDefaultId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
+		String riusoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
+		String customIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
 
 
 		UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
@@ -443,6 +520,41 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		gln.setDefaultValue(entry.getGln());
 		sezioneRoot.addField(gln);
 
+		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+
+		try{
+			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			ApplicazioneFilter filter = applicazioniBD.newFilter();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+			fsw.setSortOrder(SortOrder.ASC);
+			filter.getFilterSortList().add(fsw);
+
+			List<Applicazione> findAll = applicazioniBD.findAll(filter);
+
+
+			if(findAll != null && findAll.size() > 0){
+				for (Applicazione applicazione : findAll) {
+					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), entry.getId()));
+				}
+			}
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+
+		SelectList<Long> idApplicazioneDefault = (SelectList<Long>) infoCreazioneMap.get(idApplicazioneDefaultId);
+		idApplicazioneDefault.setDefaultValue(entry.getIdApplicazioneDefault());
+		idApplicazioneDefault.setValues(applicazioni);
+		sezioneRoot.addField(idApplicazioneDefault); 
+
+		CheckButton riusoIuv = (CheckButton) infoCreazioneMap.get(riusoIuvId);
+		riusoIuv.setDefaultValue(entry.isRiusoIuv()); 
+		sezioneRoot.addField(riusoIuv);
+
+		CheckButton customIuv = (CheckButton) infoCreazioneMap.get(customIuvId);
+		customIuv.setDefaultValue(entry.isCustomIuv()); 
+		sezioneRoot.addField(customIuv);
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
@@ -482,7 +594,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
-		String methodName = "dettaglio " + this.titoloServizio + ".Id"+ id;
+		String methodName = "dettaglio " + this.titoloServizio + ".Id "+ id;
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
@@ -495,7 +607,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,dominio);
 			URI cancellazione = null;
-			URI esportazione = null;
+			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd,id);
 
 			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio), esportazione, cancellazione, infoModifica);
 
@@ -506,6 +618,16 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.label"), dominio.getStazione(bd).getCodStazione());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"), dominio.getRagioneSociale());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".gln.label"), dominio.getGln());
+			if(dominio.getIdApplicazioneDefault() != null){
+				Applicazione applicazione = dominio.getApplicazioneDefault(bd);
+				it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
+				UriBuilder uriDettaglioApplicazioniBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).path("{id}");
+				URI applicazioneURI = uriDettaglioApplicazioniBuilder.build(applicazione.getId());
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), applicazione.getCodApplicazione(),applicazioneURI,true); 
+			}
+			
+			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label"), Utils.getSiNoAsLabel(dominio.isRiusoIuv()),true);
+			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.label"), Utils.getSiNoAsLabel(dominio.isCustomIuv()),true);
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(dominio.isAbilitato()));
 
 			// Sezione Anagrafica
@@ -522,6 +644,16 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
 			AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio);
 			anagraficaHandler.fillSezioneAnagraficaDominio(sezioneAnagrafica, anagrafica);
+
+//			// ContiAccredito 
+//			it.govpay.web.rs.dars.model.Sezione sezioneContiAccredito = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "contiAccredito.titolo"));
+//			UriBuilder uriContoAccreditoBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("contiAccredito"); 
+//			sezioneContiAccredito.addVoce("Conto Accredito", "scarica", uriContoAccreditoBuilder.build(dominio.getId()));  
+//
+//			// Tabella controparti
+//			it.govpay.web.rs.dars.model.Sezione sezioneTabellaControparti = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "tabellaControparti.titolo"));
+//			UriBuilder uriTabellaContropartiBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("informativa");
+//			sezioneTabellaControparti.addVoce("Tabella Controparti", "scarica", uriTabellaContropartiBuilder.build(dominio.getId()));
 
 			// Elementi correlati
 			String etichettaUnitaOperative = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.unitaOperative.titolo");
@@ -626,14 +758,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			JSONObject jsonObjectDominio = JSONObject.fromObject( baos.toString() );
 			jsonConfig.setRootClass(Dominio.class);
 			entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
-
-
-
-			//[TODO] Scegliere dei valori corretti per xml_conti_accredito e xml_tabella_controparti
-			byte val [] = "".getBytes();
-			entry.setTabellaControparti(val);
-			entry.setContiAccredito(val);
-
+			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
+			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -670,10 +796,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			jsonConfig.setRootClass(Dominio.class);
 
 			Dominio  entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
-			//[TODO] Scegliere dei valori corretti per xml_conti_accredito e xml_tabella_controparti
-			byte val [] = "".getBytes();
-			entry.setTabellaControparti(val);
-			entry.setContiAccredito(val);
+			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
+			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
 
 			entry.setRagioneSociale(ragSocDominio);
 
@@ -744,7 +868,6 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio oldEntry = dominiBD.getDominio(entry.getCodDominio());
-
 			this.checkEntry(entry, oldEntry);
 
 			dominiBD.updateDominio(entry); 
@@ -792,5 +915,111 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		return sb.toString();
 	}
 
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		StringBuffer sb = new StringBuffer();
+		if(idsToExport != null && idsToExport.size() > 0)
+			for (Long long1 : idsToExport) {
 
+				if(sb.length() > 0)
+					sb.append(", ");
+
+				sb.append(long1);
+			}
+
+		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+
+		if(idsToExport.size() == 1)
+			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
+
+		String fileName = "Domini.zip";
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+			// Operazione consentita solo all'amministratore
+			this.darsService.checkOperatoreAdmin(bd);
+
+			DominiBD dominiBD = new DominiBD(bd);
+
+			for (Long idDominio : idsToExport) {
+				Dominio dominio = dominiBD.getDominio(idDominio);
+				String folderName = dominio.getCodDominio();
+
+				IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
+				IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
+				filter.setIdDominio(idDominio);
+				List<IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
+				final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
+
+				ZipEntry contiAccreditoXml = new ZipEntry(folderName + "/contiAccredito.xml");
+				zout.putNextEntry(contiAccreditoXml);
+				zout.write(contiAccredito);
+				zout.closeEntry();
+
+				final byte[] informativa = DominioUtils.buildInformativaControparte(dominio, true);
+
+				ZipEntry informativaXml = new ZipEntry(folderName + "/informativa.xml");
+				zout.putNextEntry(informativaXml);
+				zout.write(informativa);
+				zout.closeEntry();
+
+			}
+			zout.flush();
+			zout.close();
+
+			this.log.info("Esecuzione " + methodName + " completata.");
+
+			return fileName;
+		}catch(WebApplicationException e){
+			throw e;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
+
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
+
+
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+			// Operazione consentita solo all'amministratore
+			this.darsService.checkOperatoreAdmin(bd);
+
+			DominiBD dominiBD = new DominiBD(bd);
+
+			Dominio dominio = dominiBD.getDominio(idToExport);
+			String fileName = "Dominio_"+dominio.getCodDominio()+".zip";
+
+			IbanAccreditoBD ibanAccreditoDB = new IbanAccreditoBD(bd);
+			IbanAccreditoFilter filter = ibanAccreditoDB.newFilter();
+			filter.setIdDominio(idToExport);
+			List<IbanAccredito> ibans = ibanAccreditoDB.findAll(filter);
+			final byte[] contiAccredito = DominioUtils.buildInformativaContoAccredito(dominio, ibans);
+
+			ZipEntry contiAccreditoXml = new ZipEntry("contiAccredito.xml");
+			zout.putNextEntry(contiAccreditoXml);
+			zout.write(contiAccredito);
+			zout.closeEntry();
+
+			final byte[] informativa = DominioUtils.buildInformativaControparte(dominio, true);
+
+			ZipEntry informativaXml = new ZipEntry("informativa.xml");
+			zout.putNextEntry(informativaXml);
+			zout.write(informativa);
+			zout.closeEntry();
+
+			zout.flush();
+			zout.close();
+
+			this.log.info("Esecuzione " + methodName + " completata.");
+
+			return fileName;
+		}catch(WebApplicationException e){
+			throw e;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
 }

@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -296,9 +297,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	}
 
 	@Override
-	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
-			throws WebApplicationException, ConsoleException {
-		// TODO Auto-generated method stub
+	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
 
@@ -428,6 +427,18 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		return sb.toString();
 	} 
+	
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 	/* Creazione/Update non consentiti**/
 

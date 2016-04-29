@@ -27,11 +27,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
@@ -68,6 +72,8 @@ import net.sf.json.JsonConfig;
 
 public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDarsHandler<IbanAccredito> {
 
+	public static final String patternIBAN = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"; 
+	public static final String patternBIC = "[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}";
 	private static Map<String, ParamField<?>> infoCreazioneMap = null;
 	private String codDominio = null;
 
@@ -172,31 +178,31 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		InputText codIbanAppoggio = (InputText) infoCreazioneMap.get(codIbanAppoggioId);
 		codIbanAppoggio.setDefaultValue(null);
 		sezioneRoot.addField(codIbanAppoggio);
-		
+
 		InputText codBicAccredito = (InputText) infoCreazioneMap.get(codBicAccreditoId);
 		codBicAccredito.setDefaultValue(null);
 		sezioneRoot.addField(codBicAccredito);
-		
+
 		InputText codBicAppoggio = (InputText) infoCreazioneMap.get(codBicAppoggioId);
 		codBicAppoggio.setDefaultValue(null);
 		sezioneRoot.addField(codBicAppoggio);
-		
+
 		IdNegozio idNegozio = (IdNegozio) infoCreazioneMap.get(idNegozioId);
 		idNegozio.setDefaultValue(null);
 		sezioneRoot.addField(idNegozio);
-		
+
 		IdSellerBank idSellerBank = (IdSellerBank) infoCreazioneMap.get(idSellerBankId);
 		idSellerBank.setDefaultValue(null);
 		sezioneRoot.addField(idSellerBank);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
-		
+
 		CheckButton attivatoObep = (CheckButton) infoCreazioneMap.get(attivatoObepId);
 		attivatoObep.setDefaultValue(false); 
 		sezioneRoot.addField(attivatoObep);
-		
+
 		CheckButton postale = (CheckButton) infoCreazioneMap.get(postaleId);
 		postale.setDefaultValue(false); 
 		sezioneRoot.addField(postale);
@@ -231,26 +237,34 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			// codIban
 			String codIbanLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIban.label");
-			InputText codIban = new InputText(codIbanId, codIbanLabel, null, true, false, true, 1, 255);
+			InputText codIban = new InputText(codIbanId, codIbanLabel, null, true, false, true, 5, 34);
+			codIban.setValidation(patternIBAN, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIban.errorMessage"));
+			codIban.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIban.suggestion"));
 			infoCreazioneMap.put(codIbanId, codIban);
 
 			// codIbanAppoggio
 			String codIbanAppoggioLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.label");
-			InputText codIbanAppoggio = new InputText(codIbanAppoggioId, codIbanAppoggioLabel, null, false, false, true, 1, 255);
+			InputText codIbanAppoggio = new InputText(codIbanAppoggioId, codIbanAppoggioLabel, null, false, false, true, 5, 34);
+			codIbanAppoggio.setValidation(patternIBAN, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.errorMessage"));
+			codIban.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.suggestion"));
 			infoCreazioneMap.put(codIbanAppoggioId, codIbanAppoggio);
 
 			// codBicAccredito
 			String codBicAccreditoLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.label");
-			InputText codBicAccredito = new InputText(codBicAccreditoId, codBicAccreditoLabel, null, false, false, true, 1, 255);
+			InputText codBicAccredito = new InputText(codBicAccreditoId, codBicAccreditoLabel, null, false, false, true, 8, 11);
 			codBicAccredito.setAvanzata(true);
+			codBicAccredito.setValidation(patternBIC, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.errorMessage"));
+			codBicAccredito.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.suggestion"));
 			infoCreazioneMap.put(codBicAccreditoId, codBicAccredito);
 
 			// codBicAppoggio
 			String codBicAppoggioLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.label");
-			InputText codBicAppoggio = new InputText(codBicAppoggioId, codBicAppoggioLabel, null, false, false, true, 1, 255);
+			InputText codBicAppoggio = new InputText(codBicAppoggioId, codBicAppoggioLabel, null, false, false, true, 8, 11);
 			codBicAppoggio.setAvanzata(true); 
+			codBicAppoggio.setValidation(patternBIC, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.errorMessage"));
+			codBicAppoggio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.suggestion"));
 			infoCreazioneMap.put(codBicAppoggioId, codBicAppoggio);
-			
+
 			// attivatoObep
 			String attivatoObepLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.label");
 			CheckButton attivatoObep = new CheckButton(attivatoObepId, attivatoObepLabel, null, false, false, true);
@@ -261,12 +275,12 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			// idNegozio
 			String idNegozioLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.label");
 			URI idNegozioRefreshUri = this.getUriField(uriInfo, bd, idNegozioId); 
-			
+
 			IdNegozio idNegozio = new IdNegozio(this.nomeServizio, idNegozioId, idNegozioLabel, 1, 255, idNegozioRefreshUri , attivatoObepValues); 
 			idNegozio.addDependencyField(attivatoObep);
 			idNegozio.init(attivatoObepValues);
 			infoCreazioneMap.put(idNegozioId,idNegozio);
-			
+
 			// idSellerBank
 			String idSellerBankLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.label");
 			URI idSellerBankRefreshUri = this.getUriField(uriInfo, bd, idSellerBankId); 
@@ -279,8 +293,6 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, null, false, false, true);
 			infoCreazioneMap.put(abilitatoId, abiliato);
-
-	
 
 			// postale
 			String postaleLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".postale.label");
@@ -325,7 +337,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		} catch (Exception e) {
 			throw new ConsoleException(e);
 		}
-		
+
 		InputText codDominio = (InputText) infoCreazioneMap.get(codDominioId);
 		codDominio.setDefaultValue(dominio.getCodDominio()); 
 		sezioneRoot.addField(codDominio);
@@ -338,31 +350,31 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		InputText codIbanAppoggio = (InputText) infoCreazioneMap.get(codIbanAppoggioId);
 		codIbanAppoggio.setDefaultValue(entry.getCodIbanAppoggio());
 		sezioneRoot.addField(codIbanAppoggio);
-		
+
 		InputText codBicAccredito = (InputText) infoCreazioneMap.get(codBicAccreditoId);
 		codBicAccredito.setDefaultValue(entry.getCodBicAccredito());
 		sezioneRoot.addField(codBicAccredito);
-		
+
 		InputText codBicAppoggio = (InputText) infoCreazioneMap.get(codBicAppoggioId);
 		codBicAppoggio.setDefaultValue(entry.getCodBicAppoggio());
 		sezioneRoot.addField(codBicAppoggio);
-		
+
 		IdNegozio idNegozio = (IdNegozio) infoCreazioneMap.get(idNegozioId);
 		idNegozio.setDefaultValue(entry.getIdNegozio());
 		sezioneRoot.addField(idNegozio);
-		
+
 		IdSellerBank idSellerBank = (IdSellerBank) infoCreazioneMap.get(idSellerBankId);
 		idSellerBank.setDefaultValue(entry.getIdSellerBank());
 		sezioneRoot.addField(idSellerBank);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
-		
+
 		CheckButton attivatoObep = (CheckButton) infoCreazioneMap.get(attivatoObepId);
 		attivatoObep.setDefaultValue(entry.isAttivatoObep()); 
 		sezioneRoot.addField(attivatoObep);
-		
+
 		CheckButton postale = (CheckButton) infoCreazioneMap.get(postaleId);
 		postale.setDefaultValue(entry.isPostale()); 
 		sezioneRoot.addField(postale);
@@ -386,7 +398,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			// recupero oggetto
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			IbanAccredito ibanAccredito = ibanAccreditoBD.getIbanAccredito(id);
-			
+
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(ibanAccredito.getIdDominio());
 
@@ -400,17 +412,21 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			// dati dele dettaglio
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIban.label"), ibanAccredito.getCodIban());
-			//Domini dominiDars = new Domini();
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle("domini.codDominio.label"), dominio.getCodDominio());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.label"), ibanAccredito.getCodIbanAppoggio(),true);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.label"), ibanAccredito.getCodBicAccredito(),true);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.label"), ibanAccredito.getCodBicAppoggio(),true);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.label"), ibanAccredito.getIdNegozio(),true);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.label"), ibanAccredito.getIdSellerBank(),true);
+			if(StringUtils.isNotEmpty(ibanAccredito.getCodIbanAppoggio()))
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.label"), ibanAccredito.getCodIbanAppoggio(),true);
+			if(StringUtils.isNotEmpty(ibanAccredito.getCodBicAccredito()))
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.label"), ibanAccredito.getCodBicAccredito(),true);
+			if(StringUtils.isNotEmpty(ibanAccredito.getCodBicAppoggio()))
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.label"), ibanAccredito.getCodBicAppoggio(),true);
+			if(StringUtils.isNotEmpty(ibanAccredito.getIdNegozio()))
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idNegozio.label"), ibanAccredito.getIdNegozio(),true);
+			if(StringUtils.isNotEmpty(ibanAccredito.getIdSellerBank()))
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idSellerBank.label"), ibanAccredito.getIdSellerBank(),true);
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(ibanAccredito.isAbilitato()));
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.label"), Utils.getSiNoAsLabel(ibanAccredito.isAttivatoObep()));
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".postale.label"), Utils.getSiNoAsLabel(ibanAccredito.isPostale()));
-			
+
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -482,13 +498,13 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			baos.flush();
 			baos.close();
 
-			JSONObject jsonObjectStazione = JSONObject.fromObject( baos.toString() );  
+			JSONObject jsonObjectIBAN = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(IbanAccredito.class);
-			entry = (IbanAccredito) JSONObject.toBean( jsonObjectStazione, jsonConfig );
+			entry = (IbanAccredito) JSONObject.toBean( jsonObjectIBAN, jsonConfig );
 
-			jsonObjectStazione = JSONObject.fromObject( baos.toString() );  
+			jsonObjectIBAN = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Dominio.class);
-			Dominio dominio = (Dominio) JSONObject.toBean( jsonObjectStazione, jsonConfig );
+			Dominio dominio = (Dominio) JSONObject.toBean( jsonObjectIBAN, jsonConfig );
 			this.codDominio = dominio.getCodDominio();
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -503,16 +519,50 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	public void checkEntry(IbanAccredito entry, IbanAccredito oldEntry) throws ValidationException {
 		if(entry.getCodIban() == null)  throw new ValidationException("Codice Iban Accredito nullo");
 
-		if(entry.getCodIban().length() != 27)
-			throw new ValidationException("La lunghezza dell'Iban di accredito deve essere di 27 caratteri, trovati " + entry.getCodIban().length() + ".");
+		if(entry.getCodIban().length() < 5 || entry.getCodIban().length() > 34)
+			throw new ValidationException("La lunghezza dell'Iban Accredito deve essere compressa tra 5 e 34 caratteri, trovati " + entry.getCodIban().length() + ".");
+
+		Pattern ibanPattern= Pattern.compile(patternIBAN);
+		Matcher matcher = ibanPattern.matcher(entry.getCodIban());
+
+		if(!matcher.matches())
+			throw new ValidationException("Il formato dell'Iban Accredito e' errato."); 
+
+		if(StringUtils.isNotEmpty(entry.getCodIbanAppoggio())){
+			if(entry.getCodIbanAppoggio().length() < 5 || entry.getCodIbanAppoggio().length() > 34)
+				throw new ValidationException("La lunghezza dell'Iban Appoggio deve essere compressa tra 5 e 34 caratteri, trovati " + entry.getCodIbanAppoggio().length() + ".");
+
+			matcher = ibanPattern.matcher(entry.getCodIbanAppoggio());
+			if(!matcher.matches())
+				throw new ValidationException("Il formato dell'Iban Appoggio e' errato.");
+		}
 		
-		// aggiungere pattern validazione IBAN
+		// validazione dei bic
+		Pattern bicPattern= Pattern.compile(patternBIC); //[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}
 		
+		if(StringUtils.isNotEmpty(entry.getCodBicAccredito())){
+			if(entry.getCodBicAccredito().length() < 8 || entry.getCodBicAccredito().length() > 11)
+				throw new ValidationException("La lunghezza dell'Bic Accredito deve essere compressa tra 8 e 11 caratteri, trovati " + entry.getCodBicAccredito().length() + ".");
+
+			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAccredito());
+			if(!bicMtcher.matches())
+				throw new ValidationException("Il formato del Bic Accredito e' errato.");
+		}
+		
+		if(StringUtils.isNotEmpty(entry.getCodBicAppoggio())){
+			if(entry.getCodBicAppoggio().length() < 8 || entry.getCodBicAppoggio().length() > 11)
+				throw new ValidationException("La lunghezza dell'Bic Appoggio deve essere compressa tra 8 e 11 caratteri, trovati " + entry.getCodBicAppoggio().length() + ".");
+
+			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAppoggio());
+			if(!bicMtcher.matches())
+				throw new ValidationException("Il formato del Bic Appoggio e' errato.");
+		}
+
 		// update
 		if(oldEntry != null){
 			if(!entry.getCodIban().equals(oldEntry.getCodIban())) throw new ValidationException("Non e' consentito modificare l'Iban Accredito");
 		}
-		
+
 	}
 
 	@Override
@@ -528,7 +578,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			DominiBD dominiBD = new DominiBD(bd);
-			
+
 			try{
 				Dominio dominio = dominiBD.getDominio(this.codDominio);
 				entry.setIdDominio(dominio.getId());
@@ -574,6 +624,15 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
 
-
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 }

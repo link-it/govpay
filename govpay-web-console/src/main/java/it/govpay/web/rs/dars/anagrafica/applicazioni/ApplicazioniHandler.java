@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -36,35 +37,35 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
-import it.govpay.bd.anagrafica.OperatoriBD;
-import it.govpay.bd.anagrafica.PortaliBD;
+import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Portale;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Tributo;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.anagrafica.applicazioni.input.Domini;
 import it.govpay.web.rs.dars.anagrafica.applicazioni.input.Tributi;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
-import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
-import it.govpay.web.rs.dars.anagrafica.portali.Portali;
+import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.anagrafica.tributi.TributiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -115,39 +116,13 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			Operatori operatoriDars = new Operatori();
-			String principalId = Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".principal.id");
-			String principalOperatore = this.getParameter(uriInfo, principalId, String.class); 
-
-			Portali portaliDars = new Portali();
-			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".codPortale.id");
-			String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
-
-			boolean entitaSenzaApplicazioni = false;
-			if(StringUtils.isNotEmpty(principalOperatore)){
-				visualizzaRicerca = false;
-				OperatoriBD operatoriBD = new OperatoriBD(bd);
-				Operatore operatore = operatoriBD.getOperatore(principalOperatore);
-				entitaSenzaApplicazioni = Utils.isEmpty(operatore.getIdApplicazioni());
-				filter.setListaIdApplicazioni(operatore.getIdApplicazioni());
-			}
-
-			if(StringUtils.isNotEmpty(codPortale)){
-				visualizzaRicerca = false;
-				PortaliBD portaliBD = new PortaliBD(bd);
-				Portale portale = portaliBD.getPortale(codPortale);
-				entitaSenzaApplicazioni = Utils.isEmpty(portale.getIdApplicazioni());
-				filter.setListaIdApplicazioni(portale.getIdApplicazioni());
-			}
-
-
 			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
 			String codApplicazione = this.getParameter(uriInfo, codApplicazioneId, String.class	);
 			if(StringUtils.isNotEmpty(codApplicazione)){
 				filter.setCodApplicazione(codApplicazione); 
 			}
 
-			long count = entitaSenzaApplicazioni ? 0 : applicazioniBD.count(filter);
+			long count = applicazioniBD.count(filter);
 			
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
@@ -160,7 +135,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
-			List<Applicazione> findAll = entitaSenzaApplicazioni ? new ArrayList<Applicazione>() : applicazioniBD.findAll(filter);
+			List<Applicazione> findAll = applicazioniBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (Applicazione entry : findAll) {
@@ -222,6 +197,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 		String tributiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.id");
 		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
@@ -252,33 +228,19 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		sezioneRoot.addField(firmaRichiesta);
 
 		CheckButton trusted = (CheckButton) infoCreazioneMap.get(trustedId);
-		trusted.setDefaultValue(true); 
+		trusted.setDefaultValue(false); 
 		sezioneRoot.addField(trusted);
+		List<RawParamValue> trustedValues = new ArrayList<RawParamValue>();
+		trustedValues.add(new RawParamValue(applicazioneId, null)); 
+		trustedValues.add(new RawParamValue(trustedId, "false"));
 
 		Tributi tributi = (Tributi) infoCreazioneMap.get(tributiId);
-		TributiBD tributiBD = new TributiBD(bd);
-		List<Voce<Long>> idTributi= new ArrayList<Voce<Long>>();
-
-		try {
-			TributoFilter filter = tributiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Tributo> tributiList = tributiBD.findAll(filter);
-			if(tributiList != null && tributiList.size() > 0){
-				for (Tributo tributo : tributiList) {
-					idTributi.add(new Voce<Long>(tributo.getCodTributo(), tributo.getId())); 
-				}
-			}
-
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
-		}
-
-		tributi.setValues(idTributi); 
-		tributi.setDefaultValue(new ArrayList<Long>());
+		tributi.aggiornaParametro(trustedValues, bd); 
 		sezioneRoot.addField(tributi);
+		
+		Domini domini = (Domini) infoCreazioneMap.get(dominiId);
+		domini.aggiornaParametro(trustedValues, bd); 
+		sezioneRoot.addField(domini);
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
@@ -311,7 +273,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 			String tributiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.id");
 			String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
-
+			String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
+			
 			// id 
 			InputNumber id = new InputNumber(applicazioneId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(applicazioneId, id);
@@ -339,19 +302,35 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna"), FirmaRichiesta.NESSUNA.getCodifica()));
 			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des"), FirmaRichiesta.CA_DES.getCodifica()));
 			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des"), FirmaRichiesta.XA_DES.getCodifica()));
-			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata"), FirmaRichiesta.AVANZATA.getCodifica()));
+			//valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata"), FirmaRichiesta.AVANZATA.getCodifica()));
 			SelectList<String> firmaRichiesta = new SelectList<String>(firmaRichiestaId, firmaRichiestaLabel, null, true, false, true, valoriFirma);
 			infoCreazioneMap.put(firmaRichiestaId, firmaRichiesta);
-
-			String tributiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.label");
-			List<Voce<Long>> idTributi= new ArrayList<Voce<Long>>();
-			Tributi tributi = new Tributi(tributiId, tributiLabel, null, false, false, true, idTributi);
-			infoCreazioneMap.put(tributiId, tributi);
 
 			// trusted
 			String trustedLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.label");
 			CheckButton trusted = new CheckButton(trustedId, trustedLabel, true, false, false, true);
 			infoCreazioneMap.put(trustedId, trusted);
+			
+			String tributiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.label");
+			URI tributiRefreshUri = this.getUriField(uriInfo, bd, tributiId);
+			List<RawParamValue> trustedValues = new ArrayList<RawParamValue>();
+			trustedValues.add(new RawParamValue(applicazioneId, null)); 
+			trustedValues.add(new RawParamValue(trustedId, "false"));
+
+			Tributi tributi = new Tributi(this.nomeServizio, tributiId, tributiLabel, tributiRefreshUri, trustedValues, bd);
+			tributi.addDependencyField(trusted);
+			tributi.init(trustedValues, bd);
+			
+			infoCreazioneMap.put(tributiId, tributi);
+			
+			String dominiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.label");
+			URI dominiRefreshUri = this.getUriField(uriInfo, bd, dominiId);
+
+			Domini domini = new Domini(this.nomeServizio, dominiId, dominiLabel, dominiRefreshUri, trustedValues, bd);
+			domini.addDependencyField(trusted);
+			domini.init(trustedValues, bd);
+			
+			infoCreazioneMap.put(dominiId, domini);
 
 			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 			List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
@@ -382,6 +361,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 		String tributiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.id");
 		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica());
@@ -413,32 +393,20 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		sezioneRoot.addField(firmaRichiesta);
 
 		CheckButton trusted = (CheckButton) infoCreazioneMap.get(trustedId);
-		trusted.setDefaultValue(true); 
+		trusted.setDefaultValue(entry.isTrusted()); 
 		sezioneRoot.addField(trusted);
+		
+		List<RawParamValue> trustedValues = new ArrayList<RawParamValue>();
+		trustedValues.add(new RawParamValue(applicazioneId, entry.getId() + "")); 
+		trustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
 
 		Tributi tributi = (Tributi) infoCreazioneMap.get(tributiId);
-		TributiBD tributiBD = new TributiBD(bd);
-		List<Voce<Long>> idTributi= new ArrayList<Voce<Long>>();
-		try {
-			TributoFilter filter = tributiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Tributo> tributiList = tributiBD.findAll(filter);
-			if(tributiList != null && tributiList.size() > 0){
-				for (Tributo tributo : tributiList) {
-					idTributi.add(new Voce<Long>(tributo.getCodTributo(), tributo.getId())); 
-				}
-			}
-
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
-		}
-
-		tributi.setValues(idTributi); 
-		tributi.setDefaultValue(entry.getIdTributi());
+		tributi.aggiornaParametro(trustedValues, bd); 
 		sezioneRoot.addField(tributi);
+		
+		Domini domini = (Domini) infoCreazioneMap.get(dominiId);
+		domini.aggiornaParametro(trustedValues, bd); 
+		sezioneRoot.addField(domini);
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
@@ -528,6 +496,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			}
 
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"), firmaRichiestaAsString);
+			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.label"), Utils.getSiNoAsLabel(applicazione.isTrusted()));
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(applicazione.isAbilitato()));
 
 			// sezione connettore
@@ -542,14 +511,61 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
 			connettoreNotificaHandler.fillSezione(sezioneConnettoreNotifica, connettoreNotifica);
 
-			// Elementi correlati
-			String etichettaTributi = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tributi.titolo");
-			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+			// Elementi correlati visualizzati come sezione
+			if(applicazione.isTrusted()){
+				it.govpay.web.rs.dars.model.Sezione sezioneDomini = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiTrusted.titolo"));
+				
+				if(!Utils.isEmpty(applicazione.getIdDomini())){
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter = dominiBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setIdDomini(applicazione.getIdDomini());
+					
+					List<Dominio> findAll = dominiBD.findAll(filter);
+					
+					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
+					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
+					UriBuilder uriDettaglioDominioBuilder = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).path("{id}");
 
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio entry : findAll) {
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), uriDettaglioDominioBuilder,bd);
+							sezioneDomini.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
+						}
+					}
+					
+				}
+			
+			}else {
+				it.govpay.web.rs.dars.model.Sezione sezioneTributi = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributiTrusted.titolo"));
+				
+				if(!Utils.isEmpty(applicazione.getIdTributi())){
+					TributiBD tributiBD = new TributiBD(bd);
+					TributoFilter filter = tributiBD.newFilter();
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					filter.setListaIdTributi(applicazione.getIdTributi());
+					
+					List<Tributo> findAll = tributiBD.findAll(filter);
+					
+					it.govpay.web.rs.dars.anagrafica.tributi.Tributi tributiDars = new it.govpay.web.rs.dars.anagrafica.tributi.Tributi();
+					TributiHandler tributiDarsHandler = (TributiHandler) tributiDars.getDarsHandler();
+					UriBuilder uriDettaglioTributoBuilder = BaseRsService.checkDarsURI(uriInfo).path(tributiDars.getPathServizio()).path("{id}");
 
-			it.govpay.web.rs.dars.anagrafica.tributi.Tributi tributiDars = new it.govpay.web.rs.dars.anagrafica.tributi.Tributi();
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(tributiDars.getPathServizio()).queryParam(codApplicazioneId, applicazione.getCodApplicazione());
-			dettaglio.addElementoCorrelato(etichettaTributi, uriBuilder.build());
+					if(findAll != null && findAll.size() > 0){
+						for (Tributo entry : findAll) {
+							Elemento elemento = tributiDarsHandler.getElemento(entry, entry.getId(), uriDettaglioTributoBuilder,bd);
+							sezioneTributi.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
+						}
+					}
+					
+				}
+			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -734,5 +750,15 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		return sb.toString();
 	}
 
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 }

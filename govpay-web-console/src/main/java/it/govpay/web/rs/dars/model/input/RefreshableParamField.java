@@ -26,9 +26,12 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 public abstract class RefreshableParamField<T> extends ParamField<T> {
+	
+	protected Logger log ;
 
 	public RefreshableParamField(String id, String label, URI refreshUri, List<RawParamValue> values, FieldType paramType) {
 		super(id, label,paramType);

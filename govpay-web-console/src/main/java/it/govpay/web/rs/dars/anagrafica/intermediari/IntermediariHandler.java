@@ -26,6 +26,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
@@ -248,7 +249,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			// codIntermediario
 			String codIntermediarioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label");
-			InputNumber codIntermediario = new InputNumber(codIntermediarioId, codIntermediarioLabel, null, true, false, true, 1, 11);
+			InputNumber codIntermediario = new InputNumber(codIntermediarioId, codIntermediarioLabel, null, true, false, true, 11, 11);
 			codIntermediario.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.suggestion"));
 			codIntermediario.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.errorMessage"));
 			infoCreazioneMap.put(codIntermediarioId, codIntermediario);
@@ -537,5 +538,14 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		return sb.toString();
 	}
 
-
+	@Override
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+		return null;
+	}
 }
