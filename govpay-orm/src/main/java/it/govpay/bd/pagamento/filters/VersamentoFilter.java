@@ -78,6 +78,9 @@ public class VersamentoFilter extends AbstractFilter {
 			}
 
 			if((this.idUo != null && !this.idUo.isEmpty()) || (this.idApplicazioni != null && !this.idApplicazioni.isEmpty())) {
+				if(addAnd)
+					newExpression.and();
+				
 				IExpression newExpressionEntiApplicazioni = this.newExpression();
 				VersamentoFieldConverter versamentoFieldConverter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 
@@ -96,17 +99,23 @@ public class VersamentoFilter extends AbstractFilter {
 					}
 				}
 				newExpression.and(newExpressionEntiApplicazioni);
-
+				addAnd = true;
 			}
 
 			if(this.codUnivocoDebitore != null) {
+				if(addAnd)
+					newExpression.and();
 				newExpression.equals(Versamento.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore);
+				addAnd = true;
 			}
 
 			if(this.idVersamento != null){
+				if(addAnd)
+					newExpression.and();
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
 				newExpression.equals(cf, this.idVersamento);
+				addAnd = true;
 			}
 
 			return newExpression;

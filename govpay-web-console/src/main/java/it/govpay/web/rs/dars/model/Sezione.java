@@ -37,6 +37,10 @@ public class Sezione {
 		return this.etichetta;
 	}
 	
+	public void setEtichetta(String etichetta) {
+		this.etichetta = etichetta;
+	}
+
 	public List<Voce<String>> getVoci() {
 		return this.voci;
 	}
@@ -56,5 +60,6 @@ public class Sezione {
 	public void addVoce(String etichetta, String valore, URI reference, boolean avanzata) {
 		this.voci.add(new VoceRiferimento<String>(etichetta, valore, avanzata, reference));
 	}
+	
 }
 

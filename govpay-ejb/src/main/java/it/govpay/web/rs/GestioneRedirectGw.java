@@ -25,9 +25,6 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.RptBD;
 
-import javax.annotation.Resource;
-import javax.ejb.Timer;
-import javax.ejb.TimerService;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -37,9 +34,6 @@ import javax.ws.rs.core.UriBuilder;
 @Path("/pub")
 public class GestioneRedirectGw {
 
-	@Resource
-	TimerService timers;
-	
 	@GET
 	@Path("/backUrl")
 	public Response backUrl(
@@ -72,19 +66,6 @@ public class GestioneRedirectGw {
 		} finally {
 			if(bd!= null) bd.closeConnection();
 		}
-	}
-	
-	@GET
-	@Path("/check")
-	public Response check() {
-		String s = "";
-		for(Timer t : timers.getTimers()){
-			s += t.getClass();
-			s += t.getNextTimeout();
-			s += t.getInfo();
-			s += "\n";
-		}
-		return Response.ok(s).build();
 	}
 }
 

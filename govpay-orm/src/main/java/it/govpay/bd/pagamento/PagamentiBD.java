@@ -22,15 +22,6 @@ package it.govpay.bd.pagamento;
 
 import java.util.List;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
-import it.govpay.bd.model.converter.PagamentoConverter;
-import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
-import it.govpay.orm.IdPagamento;
-import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.RendicontazioneSenzaRPTFieldConverter;
-
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -40,6 +31,16 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.converter.PagamentoConverter;
+import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
+import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.orm.IdPagamento;
+import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.RendicontazioneSenzaRPTFieldConverter;
 
 public class PagamentiBD extends BasicBD {
 
@@ -125,20 +126,10 @@ public class PagamentiBD extends BasicBD {
 		}
 	}
 
-	public List<Pagamento> getPagamentiRendicontati(Long idFrApplicazione) throws ServiceException {
-		try {
-			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
-			PagamentoFieldConverter fieldConverter = new PagamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
-			exp.equals(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", fieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazione);
-			List<it.govpay.orm.Pagamento> singoliPagamenti =  this.getPagamentoService().findAll(exp);
-			return PagamentoConverter.toDTO(singoliPagamenti);
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
+	public List<Pagamento> getPagamentiByFrApplicazione(Long idFrApplicazione) throws ServiceException {
+		PagamentoFilter filter = newFilter();
+		filter.setIdFrApplicazione(idFrApplicazione);
+		return findAll(filter);
 	}
 	
 	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(Long idFrApplicazione) throws ServiceException {
@@ -157,19 +148,30 @@ public class PagamentiBD extends BasicBD {
 		}
 	}
 
-	public List<Pagamento> getPagamentiStornati(Long idRr) throws ServiceException {
+	public List<Pagamento> getPagamentiByRr(Long idRr) throws ServiceException {
+		PagamentoFilter filter = newFilter();
+		filter.setIdRr(idRr);
+		return findAll(filter);
+	}
+	
+	public PagamentoFilter newFilter() throws ServiceException {
+		return new PagamentoFilter(this.getPagamentoService());
+	}
+
+	public List<Pagamento> findAll(PagamentoFilter filter) throws ServiceException {
 		try {
-			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
-			PagamentoFieldConverter fieldConverter = new PagamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
-			exp.equals(new CustomField("id_rr", Long.class, "id_rr", fieldConverter.toTable(it.govpay.orm.Pagamento.model())), idRr);
-			List<it.govpay.orm.Pagamento> singoliPagamenti =  this.getPagamentoService().findAll(exp);
-			return PagamentoConverter.toDTO(singoliPagamenti);
+			List<it.govpay.orm.Pagamento>pagamentoVOLst = this.getPagamentoService().findAll(filter.toPaginatedExpression()); 
+			return PagamentoConverter.toDTO(pagamentoVOLst);
 		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
+			throw new ServiceException(e);
 		}
 	}
+	public long count(PagamentoFilter filter) throws ServiceException {
+		try {
+			return this.getPagamentoService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 }

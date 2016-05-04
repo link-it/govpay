@@ -45,6 +45,7 @@ import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.anagrafica.portali.Portali;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.manutenzione.strumenti.Strumenti;
 import it.govpay.web.rs.dars.model.Console;
 import it.govpay.web.rs.dars.model.Console.About;
 import it.govpay.web.rs.dars.model.Console.SezioneMenu;
@@ -81,13 +82,13 @@ public class Menu extends BaseRsService {
 
 		try{
 			bd = BasicBD.newInstance();
-			
+
 			// controllo delle autorizzazioni dell'utente
 			Operatore operatore = this.getOperatoreByPrincipal(bd);
 			ProfiloOperatore profilo = operatore.getProfilo(); 
 
 			URI logout = BaseRsService.checkDarsURI(uriInfo).path("../logout").build();
-			
+
 			Console console = new Console(Utils.getInstance().getMessageFromResourceBundle("govpay.appTitle"), logout);
 			About about = console.new About();
 			about.setTitolo(Utils.getInstance().getMessageFromResourceBundle("govpay.about.titolo"));
@@ -103,19 +104,19 @@ public class Menu extends BaseRsService {
 			Intermediari intermediariDars = new Intermediari();
 			Versamenti versamentiDars = new Versamenti();
 
-			
+
 			URI versamentiURI = BaseRsService.checkDarsURI(uriInfo).path(versamentiDars.getPathServizio()).build();
 			VoceMenu voceMenuVersamenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	versamentiURI, false);
-			
+
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
-				
+
 				menu.setHome(voceMenuVersamenti);
 
 				SezioneMenu anagrafica = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".anagrafica"));
 				Psp pspDars = new Psp();
 				URI pspURI = BaseRsService.checkDarsURI(uriInfo).path(pspDars.getPathServizio()).build();
 				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), pspURI, false));
-				
+
 				URI intermediariURI = BaseRsService.checkDarsURI(uriInfo).path(intermediariDars.getPathServizio()).build();
 				VoceMenu voceMenuIntermediari = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, false);
 				anagrafica.getVociMenu().add(voceMenuIntermediari);
@@ -146,6 +147,18 @@ public class Menu extends BaseRsService {
 			monitoraggio.getVociMenu().add(voceMenuVersamenti);
 			menu.getSezioni().add(monitoraggio);
 
+			if(profilo.equals(ProfiloOperatore.ADMIN)){
+				// sezione manutenzione
+				SezioneMenu manutenzione = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".manutenzione"));
+
+				Strumenti strumentiDars = new Strumenti();
+				URI strumentiURI = BaseRsService.checkDarsURI(uriInfo).path(strumentiDars.getPathServizio()).build();
+				VoceMenu voceMenuStrumenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(strumentiDars.getNomeServizio() + ".titolo"),	strumentiURI, false);
+				manutenzione.getVociMenu().add(voceMenuStrumenti);
+				menu.getSezioni().add(manutenzione);
+			}
+			
+			
 			console.setMenu(menu);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
@@ -176,6 +189,6 @@ public class Menu extends BaseRsService {
 	public String getNomeServizio() {
 		return this.nomeServizio;
 	}
-	
-	
+
+
 }

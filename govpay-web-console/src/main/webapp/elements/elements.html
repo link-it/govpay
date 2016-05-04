@@ -24898,7 +24898,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       Polymer.dom(etichetta).appendChild(sottotitoloRadio);
       Polymer.dom(list).appendChild(etichetta);
       var listBox = document.createElement('paper-listbox');
-      listBox.multi = true;
+      listBox.id=data.id;
+      listBox.setAttribute('multi', '');
       listBox.style.maxHeight='192px';
       listBox.style.overflow='auto';
       listBox.attrForSelected='value';
@@ -24911,7 +24912,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         Polymer.dom(pi).innerHTML = voce.etichetta;
         Polymer.dom(listBox).appendChild(pi);
       }
-      /*if (data.refreshParamIds.length>0){
+      if (data.refreshParamIds.length>0){
         listBox.refreshParamIds = data.refreshParamIds;
         listBox.addEventListener('iron-select', this.changeData.bind(this));
       }
@@ -24919,9 +24920,43 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         listBox.refreshUri = data.refreshUri;
         listBox.refreshUriParamIds = data.refreshUriParamIds;
         listBox.refresh = this.refreshMultiSelectionDropdownData.bind(this, listBox);
-      }*/
+      }
       listBox.addEventListener('iron-select', this._modifiedForm);
       Polymer.dom(list).appendChild(listBox);
+    },
+
+    refreshMultiSelectionDropdownData: function(target){
+      target.selectedValues=[];
+      var query=[];
+      for (var i = 0; i < target.refreshUriParamIds.length; i++) {
+        var obj = target.refreshUriParamIds[i];
+        var temp = {};
+        temp.id=obj;
+        //CONTROLLARE IN BASE A CASO REALE
+        if (this.$$('#'+obj).selectedItem){
+          temp.value=''+this.$$('#'+obj).selectedItem.value;
+          query.push(temp);
+        }
+      }
+      if (query.length==target.refreshUriParamIds.length){
+        var getNewData= this.create('iron-ajax');
+        getNewData.method="POST";
+        getNewData.contentType="application/json";
+        getNewData.body = JSON.stringify(query);
+        getNewData.url = target.refreshUri;
+        getNewData.addEventListener('response', this.refreshMultiSelectionDropdown_success.bind(this, target));
+        getNewData.addEventListener('error', this.refresh_error);
+        getNewData.generateRequest();
+      } else {
+//        Polymer.dom(target.contentElement).innerHTML='';
+      }
+    },
+
+    refreshMultiSelectionDropdown_success: function(target, event){
+      var obj = event.detail.response.response;
+      Polymer.dom(target).innerHTML='';
+      this.setMultiSelectionList(target, obj);
+      target.disabled = !obj.editable;
     },
 
     /*
@@ -25062,7 +25097,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         getNewData.addEventListener('error', this.refresh_error);
         getNewData.generateRequest();
       } else {
-        Polymer.dom(target.contentElement).innerHTML='';
+//        Polymer.dom(target.contentElement).innerHTML='';
       }
     },
 
@@ -26371,6 +26406,10 @@ It will also ensure that focus remains in the dialog.
         var ok = this.$.editForm.validate();
         if (ok){
           var temp = this.serializeForm(this.$.editForm);
+          for (var lb = 0; lb < this.querySelectorAll('paper-listbox[multi]').length; lb++) {
+            var lbox = this.querySelectorAll('paper-listbox[multi]')[lb];
+            temp[lbox.id]=lbox.selectedValues;
+          }
           var lista = Object.keys(temp);
           for (var i = 0; i < lista.length; i++) {
             var obj = lista[i];
@@ -26405,9 +26444,6 @@ It will also ensure that focus remains in the dialog.
       editResource_responseHandler: function(event){
         app.hideSpinner();
         var resp = event.detail.response;
-        //TODO VERIFICARE COLORAZIONE ALERT CON SUCCESSO
-        //E CONTROLLARE DOPPIA CREAZIONE
-        //SCROLL SU EDIT
         if (resp.dettaglioEsito){
           switch (resp.esitoOperazione){
             case 'ESEGUITA':

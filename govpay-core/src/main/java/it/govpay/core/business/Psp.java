@@ -27,6 +27,8 @@ import java.util.List;
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Unmarshaller;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -92,7 +94,8 @@ public class Psp extends BasicBD {
 	}
 	
 	
-	public void aggiornaRegistro() throws GovPayException {
+	public String aggiornaRegistro() throws GovPayException {
+		List<String> response = new ArrayList<String>();
 		log.info("Aggiornamento del Registro PSP");
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
@@ -200,6 +203,7 @@ public class Psp extends BasicBD {
 						// Il psp e' nel catalogo, va aggiornato. 
 						// Rimuovo la versione aggiornata dal catalogo e lo mando in update
 						log.info("Aggiornamento [codPsp: " + psp.getCodPsp() + "]");
+						response.add(psp.getRagioneSociale() + " (" + psp.getCodPsp() + ")#Acquisita versione aggiornata.");
 						pspBD.updatePsp(catalogoPsp.get(i));
 						catalogoPsp.remove(i);
 						trovato = true;
@@ -212,6 +216,7 @@ public class Psp extends BasicBD {
 					// Se era attivo, lo disattivo.
 					if(psp.isAbilitato()) {
 						log.info("Disabilitazione [codPsp: " + psp.getCodPsp() + "]");
+						response.add(psp.getRagioneSociale() + " (" + psp.getCodPsp() + ")#Disabilitato.");
 						pspBD.disablePsp(psp.getId());
 					}
 				}
@@ -220,12 +225,18 @@ public class Psp extends BasicBD {
 			// I psp rimasti nel catalogo, sono nuovi e vanno aggiunti
 			for(it.govpay.bd.model.Psp psp : catalogoPsp) {
 				log.info("Inserimento [codPsp: " + psp.getCodPsp() + "]");
+				response.add(psp.getRagioneSociale() + " (" + psp.getCodPsp() + ")#Aggiunto al registro.");
 				pspBD.insertPsp(psp);
 			}
 
 			commit();
 			log.info("Aggiornamento Registro PSP completato.");
-			return;
+			
+			if(response.isEmpty()) {
+				return "Acquisizione completata#Nessun psp acquisito.";
+			} else {
+				return StringUtils.join(response,"|");
+			}
 		} catch (Exception se) {
 			rollback();
 			throw new GovPayException(EsitoOperazione.INTERNAL, se, "Non è stato possibile acquisire il Catalogo dei Psp dal Nodo dei Pagamenti: " + se.getMessage());

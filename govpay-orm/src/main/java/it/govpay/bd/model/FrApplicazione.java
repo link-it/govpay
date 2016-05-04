@@ -107,7 +107,7 @@ public class FrApplicazione extends BasicModel{
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
 		if(pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamenti = pagamentiBD.getPagamentiRendicontati(id);
+			pagamenti = pagamentiBD.getPagamentiByFrApplicazione(id);
 		}
 		return pagamenti;
 	}

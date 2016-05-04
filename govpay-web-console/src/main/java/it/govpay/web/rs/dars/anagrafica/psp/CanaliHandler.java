@@ -33,6 +33,7 @@ import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Canale.ModelloPagamento;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -144,7 +145,28 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			// dati del canale
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"), canale.getModelloPagamento().toString());
+			ModelloPagamento modelloPagamento = canale.getModelloPagamento();
+			if(modelloPagamento != null){
+				String modelloPagamentoString = null;
+				switch (modelloPagamento) {
+				case ATTIVATO_PRESSO_PSP:
+					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.ATTIVATO_PRESSO_PSP");
+					break;
+				case DIFFERITO:
+					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.DIFFERITO");
+					break;
+				case IMMEDIATO:
+					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO");
+					break;
+				case IMMEDIATO_MULTIBENEFICIARIO:
+				default:
+					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
+					break;
+				}
+				
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
+			}
+			
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());

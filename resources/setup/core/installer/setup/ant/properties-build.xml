@@ -9,62 +9,19 @@
 	
 	<target name="govpay_properties_settings">
 
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="/var/govpay/"/>
+                        <param name="value" value="${antinstaller_work_folder}"/>
+                </antcall>
+
+
 		<antcall target="set_property">
 			<param name="file" value="${file}"/>
 			<param name="token" value="govpay.sourceCodeDisclaimer"/>
 			<param name="value" value="Generato con GovPay ${antinstaller_product_version}"/>
 		</antcall>
 
-		<!-- Server Mail -->
-		<if>
-			<not>
-				<equals arg1="${antinstaller_mail_host}" arg2="-" />
-			</not>
-			<then>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverHost"/>
-					<param name="value" value="${antinstaller_mail_host}"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverPort"/>
-					<param name="value" value="${antinstaller_mail_port}"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.username"/>
-					<param name="value" value="${antinstaller_mail_username}"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.password"/>
-					<param name="value" value="${antinstaller_mail_password}"/>
-				</antcall>
-			</then>
-			<else>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverHost"/>
-					<param name="value" value="MAIL_SERVER_HOST"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverPort"/>
-					<param name="value" value="25"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.username"/>
-					<param name="value" value="MAIL_SERVER_USERNAME"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.password"/>
-					<param name="value" value="MAIL_SERVER_PASSWORD"/>
-				</antcall>
-			</else>
-		</if>
 	</target>
 
 	<target name="govpay_orm_properties_settings">

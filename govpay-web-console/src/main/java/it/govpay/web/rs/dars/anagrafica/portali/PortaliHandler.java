@@ -504,6 +504,10 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			this.darsService.checkOperatoreAdmin(bd);
 
 			JsonConfig jsonConfig = new JsonConfig();
+			
+			Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("idApplicazioni", Long.class); 
+			jsonConfig.setClassMap(classMap);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Utils.copy(is, baos);
 

@@ -3,6 +3,7 @@ package it.govpay.web.utils;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,6 +19,11 @@ public class ConsoleProperties {
 	private boolean nascondiRicerca;
 	
 	private String urlDARS;
+	
+	private String dominioOperazioniJMX;
+	private String tipoOperazioniJMX;
+	private String nomeRisorsaOperazioniJMX;
+	private String[] operazioniJMXDisponibili;
 	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
@@ -44,6 +50,13 @@ public class ConsoleProperties {
 			this.numeroRisultatiPerPagina = num != null ? Integer.parseInt(num) : 25;
 			
 			this.urlDARS = this.getProperty("it.govpay.dars.url", props, false);
+			
+			this.dominioOperazioniJMX = this.getProperty("it.govpay.console.operazioni.jmx.dominio", props, false);
+			this.tipoOperazioniJMX = this.getProperty("it.govpay.console.operazioni.jmx.tipo", props, false);
+			this.nomeRisorsaOperazioniJMX = this.getProperty("it.govpay.console.operazioni.jmx.nomeRisorsa", props, false);
+			String operazioniAsString = this.getProperty("it.govpay.console.operazioni.jmx.operazioniDisponibili", props, false);
+			if(StringUtils.isNotEmpty(operazioniAsString))
+				this.operazioniJMXDisponibili = operazioniAsString.split(",");
 			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
@@ -72,5 +85,22 @@ public class ConsoleProperties {
 	public String getUrlDARS() {
 		return this.urlDARS;
 	}
+
+	public String getDominioOperazioniJMX() {
+		return dominioOperazioniJMX;
+	}
+
+	public String getTipoOperazioniJMX() {
+		return tipoOperazioniJMX;
+	}
+
+	public String getNomeRisorsaOperazioniJMX() {
+		return nomeRisorsaOperazioniJMX;
+	}
+
+	public String[] getOperazioniJMXDisponibili() {
+		return operazioniJMXDisponibili;
+	}
+	
 	
 }

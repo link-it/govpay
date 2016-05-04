@@ -633,6 +633,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			baos.flush();
 			baos.close();
 
+			Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("idTributi", Long.class); 
+			classMap.put("idDomini", Long.class); 
+			jsonConfig.setClassMap(classMap);
+			
 			JSONObject jsonObjectApplicazione = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Applicazione.class);
 			entry = (Applicazione) JSONObject.toBean( jsonObjectApplicazione, jsonConfig );

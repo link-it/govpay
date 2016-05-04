@@ -400,7 +400,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
 			fsw.setSortOrder(SortOrder.ASC);
 			filterIban.getFilterSortList().add(fsw);
-			filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
+			filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
 			List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 			if(findAll != null && findAll.size() > 0){
@@ -570,15 +570,24 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			this.darsService.checkOperatoreAdmin(bd);
 
 			JsonConfig jsonConfig = new JsonConfig();
+			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Utils.copy(is, baos);
 
 			baos.flush();
 			baos.close();
 
-			JSONObject jsonObject = JSONObject.fromObject( baos.toString() );  
+			JSONObject jsonObject = JSONObject.fromObject( baos.toString() ); 
+			
+			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String tipocontabilitaS = jsonObject.getString(tipoContabilitaId);
+			jsonObject.remove(tipoContabilitaId);
 			jsonConfig.setRootClass(Tributo.class);
 			entry = (Tributo) JSONObject.toBean( jsonObject, jsonConfig );
+			
+			TipoContabilta tipoContabilita =  TipoContabilta.toEnum(tipocontabilitaS);
+			entry.setTipoContabilita(tipoContabilita); 
+			
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;

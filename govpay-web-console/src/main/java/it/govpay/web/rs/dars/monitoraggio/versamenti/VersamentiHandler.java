@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -51,10 +52,17 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Versamento.StatoVersamento;
+import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -67,6 +75,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -81,7 +90,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/mm/yyyy HH:mm");  
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
 	public VersamentiHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -100,7 +109,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
+			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -340,7 +349,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			InfoForm infoModifica = null;
 			URI cancellazione = null;
-			URI esportazione = null;
+			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id);
 
 			String titolo = versamento != null ? this.getTitolo(versamento) : "";
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
@@ -365,7 +374,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				if(StringUtils.isNotEmpty(versamento.getDescrizioneStato())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), versamento.getDescrizioneStato());
 				if(versamento.getImportoTotale() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), versamento.getImportoTotale().toString()+ " Euro");
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), versamento.getImportoTotale().toString()+ "€");
 				if(versamento.getDataCreazione() != null)
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataCreazione.label"), this.sdf.format(versamento.getDataCreazione()));
 				if(versamento.getDataScadenza() != null)
@@ -385,13 +394,35 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 				// Singoli Versamenti
 				String etichettaSingoliVersamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.singoliVersamenti.titolo");
+				it.govpay.web.rs.dars.model.Sezione sezioneSingoliVersamenti = dettaglio.addSezione(etichettaSingoliVersamenti);
+
+				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+				if(!Utils.isEmpty(singoliVersamenti)){
+					SingoliVersamenti svDars = new SingoliVersamenti();
+					SingoliVersamentiHandler svDarsHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
+					UriBuilder uriDettaglioSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
+
+					if(singoliVersamenti != null && singoliVersamenti.size() > 0){
+						for (SingoloVersamento entry : singoliVersamenti) {
+							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), uriDettaglioSVBuilder);
+							sezioneSingoliVersamenti.addVoce(elemento.getTitolo(), elemento.getSottotitolo());
+						}
+					}
+				}
+
 				String versamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
 
+				Pagamenti pagamentiDars = new Pagamenti();
+				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
 
-				SingoliVersamenti svDars = new SingoliVersamenti();
-				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
-				dettaglio.addElementoCorrelato(etichettaSingoliVersamenti, uriBuilder.build());
+				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
 
+				Transazioni transazioniDars = new Transazioni();
+				String etichettaTransazioni = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.transazioni.titolo");
+				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
+
+				dettaglio.addElementoCorrelato(etichettaTransazioni, uriBuilder.build());
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -411,7 +442,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		BigDecimal importoTotale = entry.getImportoTotale();
 		String codVersamentoEnte = entry.getCodVersamentoEnte();
 
-		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append(" Euro");
+		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append("€");
 
 		return sb.toString();
 	}
@@ -419,25 +450,217 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	@Override
 	public String getSottotitolo(Versamento entry) {
 		StringBuilder sb = new StringBuilder();
-
-		StatoVersamento statoVersamento = entry.getStatoVersamento();
 		Date dataUltimoAggiornamento = entry.getDataUltimoAggiornamento();
 
-		sb.append("Stato ").append(statoVersamento).append(", Data: ").append(this.sdf.format(dataUltimoAggiornamento)); 
+
+		StatoVersamento statoVersamento = entry.getStatoVersamento();
+		switch (statoVersamento) {
+		case ANNULLATO:
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.annullato"));
+			break;
+		case ANOMALO:
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.anomalo"));
+			break;
+		case ESEGUITO_SENZA_RPT:
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.eseguitoNoRpt"));
+			break;
+		case NON_ESEGUITO:
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.nonEseguito"));
+			break;
+		case PARZIALMENTE_ESEGUITO:
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.parzialmenteEseguito"));
+			break;
+		case ESEGUITO:
+		default:
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.eseguito"));
+			break;
+		}
+
+
+		sb.append(" ").append(this.sdf.format(dataUltimoAggiornamento)); 
 
 		return sb.toString();
 	} 
-	
+
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
-		return null;
+		StringBuffer sb = new StringBuffer();
+		if(idsToExport != null && idsToExport.size() > 0)
+			for (Long long1 : idsToExport) {
+
+				if(sb.length() > 0)
+					sb.append(", ");
+
+				sb.append(long1);
+			}
+
+		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+
+		if(idsToExport.size() == 1)
+			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
+
+		String fileName = "Versamenti.zip";
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+			this.darsService.getOperatoreByPrincipal(bd); 
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			RptBD rptBD = new RptBD(bd);
+
+			for (Long idVersamento : idsToExport) {
+				Versamento versamento = versamentiBD.getVersamento(idVersamento);
+
+				String folderName = versamento.getCodVersamentoEnte();
+
+				List<Long> idSingoliVersamenti = new ArrayList<Long>();
+				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+				if(singoliVersamenti != null && singoliVersamenti.size() >0){
+					for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+						idSingoliVersamenti.add(singoloVersamento.getId());
+					}
+				}
+
+				PagamentoFilter filter = pagamentiBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
+				fsw.setSortOrder(SortOrder.DESC);
+				filter.getFilterSortList().add(fsw);
+				filter.setIdSingoliVersamenti(idSingoliVersamenti);
+				List<Pagamento> listaPagamenti = pagamentiBD.findAll(filter); 
+				if(listaPagamenti != null && listaPagamenti.size()> 0)
+					for (Pagamento pagamento : listaPagamenti) {
+						SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+						String folderNamepagamento = "Pagamento_" + singoloVersamento.getCodSingoloVersamentoEnte();
+						
+						if(pagamento.getAllegato()!= null){
+							ZipEntry rtXml = new ZipEntry(folderName + "/"+ folderNamepagamento + "/allegato.xml");
+							zout.putNextEntry(rtXml);
+							zout.write(pagamento.getAllegato());
+							zout.closeEntry();
+						}
+					}
+
+				RptFilter rptFilter = rptBD.newFilter();
+				FilterSortWrapper rptFsw = new FilterSortWrapper();
+				rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
+				rptFsw.setSortOrder(SortOrder.DESC);
+				rptFilter.getFilterSortList().add(rptFsw);
+				rptFilter.setIdVersamento(idVersamento); 
+
+				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
+				if(listaRpt != null && listaRpt.size() >0 )
+					for (Rpt rpt : listaRpt) {
+						String folderNameRpt = "Transazione_"+rpt.getCodMsgRichiesta();
+
+						ZipEntry rptXml = new ZipEntry(folderName + "/"+ folderNameRpt +"/rpt.xml");
+						zout.putNextEntry(rptXml);
+						zout.write(rpt.getXmlRpt());
+						zout.closeEntry();
+
+						if(rpt.getXmlRt() != null){
+							ZipEntry rtXml = new ZipEntry(folderName + "/"+ folderNameRpt + "/rt.xml");
+							zout.putNextEntry(rtXml);
+							zout.write(rpt.getXmlRt());
+							zout.closeEntry();
+						}
+					}
+			}
+			zout.flush();
+			zout.close();
+
+			this.log.info("Esecuzione " + methodName + " completata.");
+
+			return fileName;
+		}catch(WebApplicationException e){
+			throw e;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
-		return null;
+		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
+
+
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+			this.darsService.getOperatoreByPrincipal(bd); 
+
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			RptBD rptBD = new RptBD(bd);
+			Versamento versamento = versamentiBD.getVersamento(idToExport);
+
+			String fileName = "Versamento_"+versamento.getCodVersamentoEnte()+".zip";
+
+			List<Long> idSingoliVersamenti = new ArrayList<Long>();
+			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+			if(singoliVersamenti != null && singoliVersamenti.size() >0){
+				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+					idSingoliVersamenti.add(singoloVersamento.getId());
+				}
+			}
+
+			PagamentoFilter filter = pagamentiBD.newFilter();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
+			fsw.setSortOrder(SortOrder.DESC);
+			filter.getFilterSortList().add(fsw);
+			filter.setIdSingoliVersamenti(idSingoliVersamenti);
+			List<Pagamento> listaPagamenti = pagamentiBD.findAll(filter); 
+			if(listaPagamenti != null && listaPagamenti.size()> 0)
+				for (Pagamento pagamento : listaPagamenti) {
+					SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+					String folderNamepagamento = "Pagamento_" + singoloVersamento.getCodSingoloVersamentoEnte();
+					
+					if(pagamento.getAllegato()!= null){
+						ZipEntry rtXml = new ZipEntry(folderNamepagamento + "/allegato.xml");
+						zout.putNextEntry(rtXml);
+						zout.write(pagamento.getAllegato());
+						zout.closeEntry();
+					}
+				}
+
+			RptFilter rptFilter = rptBD.newFilter();
+			FilterSortWrapper rptFsw = new FilterSortWrapper();
+			rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
+			rptFsw.setSortOrder(SortOrder.DESC);
+			rptFilter.getFilterSortList().add(rptFsw);
+			rptFilter.setIdVersamento(idToExport); 
+
+			List<Rpt> listaRpt = rptBD.findAll(rptFilter);
+			if(listaRpt != null && listaRpt.size() >0 )
+				for (Rpt rpt : listaRpt) {
+					String folderNameRpt = "Transazione_"+ rpt.getCodMsgRichiesta();
+
+					ZipEntry rptXml = new ZipEntry(  folderNameRpt +"/rpt.xml");
+					zout.putNextEntry(rptXml);
+					zout.write(rpt.getXmlRpt());
+					zout.closeEntry();
+
+					if(rpt.getXmlRt() != null){
+						ZipEntry rtXml = new ZipEntry(folderNameRpt + "/rt.xml");
+						zout.putNextEntry(rtXml);
+						zout.write(rpt.getXmlRt());
+						zout.closeEntry();
+					}
+				}
+
+			zout.flush();
+			zout.close();
+
+			this.log.info("Esecuzione " + methodName + " completata.");
+
+			return fileName;
+		}catch(WebApplicationException e){
+			throw e;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 	}
 
 	/* Creazione/Update non consentiti**/

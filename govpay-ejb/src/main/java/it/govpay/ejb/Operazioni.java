@@ -47,55 +47,49 @@ public class Operazioni{
 	private static Logger log = LogManager.getLogger();
 	
 	@Schedule(hour="4,8,16,20", persistent=false)
-	public static boolean acquisizioneRendicontazioni(){
+	public static String acquisizioneRendicontazioni(){
 		ThreadContext.put("cmd", "AcquisizioneRendicontazioni");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance();
-			log.info("Acquisizione rendicontazioni");
-			new Rendicontazioni(bd).downloadRendicontazioni();
-			log.info("Acquisizione rendicontazioni completata");
-			return true;
+			String response = new Rendicontazioni(bd).downloadRendicontazioni();
+			return response;
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
-			return false;
+			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
 	}
 	
 	@Schedule(hour="0,12", persistent=false)
-	public static boolean aggiornamentoRegistroPsp(){
+	public static String aggiornamentoRegistroPsp(){
 		ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance();
-			new Psp(bd).aggiornaRegistro();
-			return true;
+			return new Psp(bd).aggiornaRegistro();
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
-			return false;
+			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
 	}
 	
 	@Schedule(hour="2,6,10,14,18,22", persistent=false)
-	public static boolean recuperoRptPendenti(){
+	public static String recuperoRptPendenti(){
 		ThreadContext.put("cmd", "RecuperoRptPendenti");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance();
-			log.info("Recupero Rpt Pendenti");
-			new Pagamento(bd).verificaTransazioniPendenti();
-			log.info("Acquisizione Rpt pendenti completata");
-			return true;
+			return new Pagamento(bd).verificaTransazioniPendenti();
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
-			return false;
+			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}

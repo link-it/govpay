@@ -22,7 +22,6 @@ package it.govpay.web.rs.dars;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 

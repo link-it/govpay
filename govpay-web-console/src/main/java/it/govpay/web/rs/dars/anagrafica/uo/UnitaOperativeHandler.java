@@ -269,7 +269,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 			// codUnitaOperativa
 			String codUnitaOperativaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
-			InputText codUnitaOperativa = new InputText(codUoId, codUnitaOperativaLabel, null, true, false, true, 1, 255);
+			InputText codUnitaOperativa = new InputText(codUoId, codUnitaOperativaLabel, null, true, false, true, 1, 35);
 			codUnitaOperativa.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.suggestion"));
 			codUnitaOperativa.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.errorMessage"));
 			infoCreazioneMap.put(codUoId, codUnitaOperativa);
@@ -467,6 +467,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			jsonConfig.setRootClass(Anagrafica.class);
 			Anagrafica anagrafica = (Anagrafica) JSONObject.toBean( jsonObject, jsonConfig );
 
+			anagrafica.setCodUnivoco(entry.getCodUo());
 			entry.setAnagrafica(anagrafica);  
 
 			this.log.info("Esecuzione " + methodName + " completata.");

@@ -96,39 +96,22 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			throw new IllegalArgumentException("Nessuna operazione definita");
 
 		if(actionName.equals(ACQUISIZIONE_RENDICONTAZIONI)){
-			if(Operazioni.acquisizioneRendicontazioni())
-				return "Operazione di Acquisizione Rendicontazioni eseguita con successo.";
-			else
-				return "Operazione di Acquisizione Rendicontazioni fallita.";
+			 return Operazioni.acquisizioneRendicontazioni();
 		}
 
 		if(actionName.equals(AGGIORNAMENTO_REGISTRO_PSP)){
-			if(Operazioni.aggiornamentoRegistroPsp()) {
-				return "Operazione di Aggiornamento Registro Psp eseguita con successo.";
-			} else {
-				return "Operazione di AAggiornamento Registro Psp fallita.";
-			}
+			return Operazioni.aggiornamentoRegistroPsp();
 		}
 
 		if(actionName.equals(RECUPERO_RPT_PENDENTI)){
-			if(Operazioni.recuperoRptPendenti())
-				return "Operazione di Recupero RPT Pendenti eseguita con successo.";
-			else
-				return "Operazione di Recupero RPT Pendenti fallita.";
-		}
-
-		if(actionName.equals(SPEDIZIONE_NOTIFICHE)){
-			if(Operazioni.spedizioneNotifiche())
-				return "Operazione di Spedizione Esiti eseguita con successo.";
-			else
-				return "Operazione di Spedizione Esiti fallita.";
+			return Operazioni.recuperoRptPendenti();
 		}
 
 		if(actionName.equals(RESET_CACHE_ANAGRAFICA)){
 			if(Operazioni.resetCacheAnagrafica())
-				return "Operazione di Reset Cache Anagrafica eseguita con successo.";
+				return "Reset Cache Anagrafica#eseguita con successo.";
 			else
-				return "Operazione di Reset Cache Anagrafica fallita.";
+				return "Reset Cache Anagrafica#fallita.";
 		}
 
 		throw new UnsupportedOperationException("Operazione "+actionName+" sconosciuta");

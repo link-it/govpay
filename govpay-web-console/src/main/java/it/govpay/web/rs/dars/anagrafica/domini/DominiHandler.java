@@ -62,7 +62,6 @@ import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
-import it.govpay.web.rs.dars.anagrafica.applicazioni.ApplicazioniHandler;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
@@ -83,7 +82,6 @@ import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
@@ -310,7 +308,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		InputText ragioneSociale = (InputText) infoCreazioneMap.get(ragioneSocialeId);
 		ragioneSociale.setDefaultValue(null);
-		sezioneRoot.addField(ragioneSociale);
+		//sezioneRoot.addField(ragioneSociale);
 
 		InputText gln = (InputText) infoCreazioneMap.get(glnId);
 		gln.setDefaultValue(null);
@@ -349,7 +347,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		sezioneRoot.addField(riusoIuv);
 
 		CheckButton customIuv = (CheckButton) infoCreazioneMap.get(customIuvId);
-		customIuv.setDefaultValue(false); 
+		customIuv.setDefaultValue(false);
+		customIuv.setEditable(true);
 		sezioneRoot.addField(customIuv);
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
@@ -371,12 +370,12 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			// id 
 			String dominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			InputNumber id = new InputNumber(dominioId, null, null, true, true, false, 1, 20);
+			InputNumber id = new InputNumber(dominioId, null, null, false, true, false, 1, 20);
 			infoCreazioneMap.put(dominioId, id);
 
 			// uoid 
 			String uoIdId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
-			InputNumber uoId = new InputNumber(uoIdId, null, null, true, true, false, 1, 20);
+			InputNumber uoId = new InputNumber(uoIdId, null, null, false, true, false, 1, 20);
 			infoCreazioneMap.put(uoIdId, uoId);
 
 			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
@@ -397,7 +396,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			// ragioneSociale
 			String ragioneSocialeLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label");
-			InputText ragioneSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, true, false, true, 1, 50);
+			InputText ragioneSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, true, false, 1, 70);
 			ragioneSociale.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.errorMessage"));
 			infoCreazioneMap.put(ragioneSocialeId, ragioneSociale);
 
@@ -421,7 +420,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// idApplicazioneDefault
 			String idApplicazioneDefaultlabel =Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label");
 			List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-			SelectList<Long> idApplicazioneDefault = new SelectList<Long>(idApplicazioneDefaultId, idApplicazioneDefaultlabel, null, true, false, true, applicazioni );
+			SelectList<Long> idApplicazioneDefault = new SelectList<Long>(idApplicazioneDefaultId, idApplicazioneDefaultlabel, null, false, false, true, applicazioni );
 			idApplicazioneDefault.setAvanzata(true); 
 			infoCreazioneMap.put(idApplicazioneDefaultId, idApplicazioneDefault);
 
@@ -468,7 +467,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		}
 
 		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaDominio(uriInfo, bd,unitaOperativa.getAnagrafica());
+		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaDominio(uriInfo, bd,unitaOperativa.getAnagrafica(),entry.getRagioneSociale());
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -515,7 +514,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		InputText ragioneSociale = (InputText) infoCreazioneMap.get(ragioneSocialeId);
 		ragioneSociale.setDefaultValue(entry.getRagioneSociale());
-		sezioneRoot.addField(ragioneSociale);
+		//sezioneRoot.addField(ragioneSociale);
+
 		InputText gln = (InputText) infoCreazioneMap.get(glnId);
 		gln.setDefaultValue(entry.getGln());
 		sezioneRoot.addField(gln);
@@ -552,7 +552,11 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		sezioneRoot.addField(riusoIuv);
 
 		CheckButton customIuv = (CheckButton) infoCreazioneMap.get(customIuvId);
-		customIuv.setDefaultValue(entry.isCustomIuv()); 
+		customIuv.setDefaultValue(entry.isCustomIuv());
+		// Se in modifica e' settato il customIuv allora non si puo' modificare
+		if(entry.isCustomIuv())
+			customIuv.setEditable(false);
+
 		sezioneRoot.addField(customIuv);
 
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
@@ -616,7 +620,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// dati dell'dominio
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"), dominio.getCodDominio());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.label"), dominio.getStazione(bd).getCodStazione());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"), dominio.getRagioneSociale());
+			//root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"), dominio.getRagioneSociale());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".gln.label"), dominio.getGln());
 			if(dominio.getIdApplicazioneDefault() != null){
 				Applicazione applicazione = dominio.getApplicazioneDefault(bd);
@@ -625,7 +629,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 				URI applicazioneURI = uriDettaglioApplicazioniBuilder.build(applicazione.getId());
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), applicazione.getCodApplicazione(),applicazioneURI,true); 
 			}
-			
+
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label"), Utils.getSiNoAsLabel(dominio.isRiusoIuv()),true);
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.label"), Utils.getSiNoAsLabel(dominio.isCustomIuv()),true);
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(dominio.isAbilitato()));
@@ -643,17 +647,17 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			Anagrafica anagrafica = unitaOperativa.getAnagrafica(); 
 			it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
 			AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio);
-			anagraficaHandler.fillSezioneAnagraficaDominio(sezioneAnagrafica, anagrafica);
+			anagraficaHandler.fillSezioneAnagraficaDominio(sezioneAnagrafica, anagrafica,dominio.getRagioneSociale()); 
 
-//			// ContiAccredito 
-//			it.govpay.web.rs.dars.model.Sezione sezioneContiAccredito = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "contiAccredito.titolo"));
-//			UriBuilder uriContoAccreditoBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("contiAccredito"); 
-//			sezioneContiAccredito.addVoce("Conto Accredito", "scarica", uriContoAccreditoBuilder.build(dominio.getId()));  
-//
-//			// Tabella controparti
-//			it.govpay.web.rs.dars.model.Sezione sezioneTabellaControparti = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "tabellaControparti.titolo"));
-//			UriBuilder uriTabellaContropartiBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("informativa");
-//			sezioneTabellaControparti.addVoce("Tabella Controparti", "scarica", uriTabellaContropartiBuilder.build(dominio.getId()));
+			//			// ContiAccredito 
+			//			it.govpay.web.rs.dars.model.Sezione sezioneContiAccredito = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "contiAccredito.titolo"));
+			//			UriBuilder uriContoAccreditoBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("contiAccredito"); 
+			//			sezioneContiAccredito.addVoce("Conto Accredito", "scarica", uriContoAccreditoBuilder.build(dominio.getId()));  
+			//
+			//			// Tabella controparti
+			//			it.govpay.web.rs.dars.model.Sezione sezioneTabellaControparti = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "tabellaControparti.titolo"));
+			//			UriBuilder uriTabellaContropartiBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("informativa");
+			//			sezioneTabellaControparti.addVoce("Tabella Controparti", "scarica", uriTabellaContropartiBuilder.build(dominio.getId()));
 
 			// Elementi correlati
 			String etichettaUnitaOperative = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.unitaOperative.titolo");
@@ -785,13 +789,13 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			baos.close();
 
 			JSONObject jsonObjectDominio = JSONObject.fromObject( baos.toString() );  
-			String ragioneSocialeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
-			JSONArray jsonArray = jsonObjectDominio.getJSONArray(ragioneSocialeId);
-
-			String ragSocDominio = jsonArray.getString(0);
-			String ragSocAnagrafica = jsonArray.getString(1);
-
-			jsonObjectDominio.remove(ragioneSocialeId);
+			//			String ragioneSocialeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+			//			JSONArray jsonArray = jsonObjectDominio.getJSONArray(ragioneSocialeId);
+			//
+			//			String ragSocDominio = jsonArray.getString(0);
+			//			String ragSocAnagrafica = jsonArray.getString(1);
+			//
+			//			jsonObjectDominio.remove(ragioneSocialeId);
 
 			jsonConfig.setRootClass(Dominio.class);
 
@@ -799,11 +803,11 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
 			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
 
-			entry.setRagioneSociale(ragSocDominio);
-
 			jsonConfig.setRootClass(Anagrafica.class);
 			Anagrafica anagrafica = (Anagrafica) JSONObject.toBean( jsonObjectDominio, jsonConfig );
-			anagrafica.setRagioneSociale(ragSocAnagrafica);   
+			String ragSocAnagrafica = anagrafica.getRagioneSociale();
+			entry.setRagioneSociale(ragSocAnagrafica);
+			anagrafica.setRagioneSociale(null); 
 
 			String uoIdId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".uoId.id");
 			String uoId = jsonObjectDominio.getString(uoIdId);
@@ -818,6 +822,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			uo.setAbilitato(true);
 			uo.setAnagrafica(anagrafica);
 			uo.setCodUo(Dominio.EC);
+			anagrafica.setCodUnivoco(uo.getCodUo());
 			if(entry.getId() != null)
 				uo.setIdDominio(entry.getId()); 
 			uo.setId(uoIdLong); 
@@ -864,11 +869,27 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			Dominio entry = this.creaEntry(is, uriInfo, bd);
+			List<Object> lista = this.creaDominioEAnagrafica(is, uriInfo, bd);
+
+
+			Dominio entry = (Dominio) lista.get(0);
+			UnitaOperativa uo = (UnitaOperativa) lista.get(1); 
 
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio oldEntry = dominiBD.getDominio(entry.getCodDominio());
 			this.checkEntry(entry, oldEntry);
+
+			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
+
+			// Aggiornamento di Dominio e UO in maniera transazionale.
+			bd.setAutoCommit(false); 
+			dominiBD.updateDominio(entry); 
+			uoBd.updateUnitaOperativa(uo);
+			bd.commit();
+
+			// ripristino l'autocommit.
+			bd.setAutoCommit(true); 
+
 
 			dominiBD.updateDominio(entry); 
 

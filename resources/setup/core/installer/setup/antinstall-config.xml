@@ -23,10 +23,8 @@
         
 	<comment displayText=""/>
 
-	<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder"
-            checkExists="false" property="antinstaller_log_folder" />
-
-	<comment displayText=""/>
+	<directory defaultValue="/var/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
+	<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
 
         <large-select defaultValue="INFO" property="antinstaller_log_level" displayText="Log Level">
             <option value="TRACE" text="TRACE"/>
@@ -51,61 +49,19 @@
 	    <option value="jboss7" text="JBoss EAP 6.x"/>
         </large-select>
 
-        <comment displayText=""/>
 
-	<validated defaultValue="http://serviziclienti.link.it/" property="antinstaller_pubhost" displayText="Hostname pubblico"
-            regex=".+"/>
-
+	<validated defaultValue="http://serviziclienti.link.it/" property="antinstaller_pubhost" displayText="Hostname Console" regex=".+"/>
     </page>
     
     <page name="informazioniApplicative" type="input" displayText="Informazioni Applicative">
-
-	<!--
-	<comment displayText="Utente Amministratore"/>
-        <validated defaultValue="GovPay Administrator" property="antinstaller_ragione_sociale" displayText="Ragione Sociale"
-            regex=".+"/>	
-	<validated defaultValue="00000000000ADMIN" property="antinstaller_cod_univoco" displayText="Codice Fiscale"
-            regex=".+"/>
-        <validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Principal"
-            regex=".+"/>
-	-->
 	<comment displayText=""/>
 	<hidden property="antinstaller_ragione_sociale" value="GovPay Administrator"/>
 	<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
-	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username Amministratore"
-            regex=".+"/>
-<!--
-	<comment displayText=""/>
-	<checkbox defaultValue="false" property="antinstaller_notifiche_mail" displayText="Configurazione Mail Server"/>
--->
+	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username Amministratore" regex=".+"/>
     </page>
-<!--
-    <page name="preinstallazione2" type="input" displayText="Configurazione Mail Server" ifProperty="(${antinstaller_notifiche_mail}=true)">
-                              
-	<comment displayText="Mail Server"/>
 
-        <validated defaultValue="127.0.0.1" property="antinstaller_mail_host" displayText="Hostname"
-            regex=".+"/>
-	<validated defaultValue="25" property="antinstaller_mail_port" displayText="Port"
-            regex=".+"/>
-	<validated property="antinstaller_mail_username" displayText="Username"
-            regex=".+"/>
-	<validated property="antinstaller_mail_password" displayText="Password"
-            regex=".+"/>
-        
-     </page>
--->
     <page name="informazionidibasexml" type="input" displayText="Il Database">
-
-	<conditional ifProperty="${antinstaller_notifiche_mail}=false">
-		<hidden property="antinstaller_mail_host" value="-"/>
-		<hidden property="antinstaller_mail_port" value="-"/>
-		<hidden property="antinstaller_mail_username" value="-"/>
-		<hidden property="antinstaller_mail_password" value="-"/>
-	</conditional>
-
-        <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname"
-            regex=".+"/>
+        <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+"/>
         <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
             <hidden property="porta-db" value="5432"/>
             <hidden property="TABLESPACE" value="openspcoop2"/>
@@ -124,20 +80,12 @@
             <hidden property="antinstaller_driver_jdbc" value="oracle.jdbc.OracleDriver"/>
             <hidden property="antinstaller_hibernate_dialect" value="org.hibernate.dialect.OracleDialect"/>
         </conditional>
-        <validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport"
-            displayText="Porta"/>
-
-        <validated defaultValue="govpay" property="antinstaller_dbname"
-            displayText="Nome Database" regex=".+"/>
-
-        <validated defaultValue="govpay" property="antinstaller_dbusername"
-            displayText="Username" regex=".+"/>
-        <validated defaultValue="govpay" property="antinstaller_dbpassword"
-            displayText="Password" regex=".+"/>
-
+        <validated defaultValue="${porta-db}" regex="^[0-9]{1,5}$" property="antinstaller_dbport" displayText="Porta"/>
+        <validated defaultValue="govpay" property="antinstaller_dbname" displayText="Nome Database" regex=".+"/>
+        <validated defaultValue="govpay" property="antinstaller_dbusername" displayText="Username" regex=".+"/>
+        <validated defaultValue="govpay" property="antinstaller_dbpassword" displayText="Password" regex=".+"/>
     </page>
     
-    <page name="Fine" displayText="Installazione" type="progress" showTargets="true"
-        target="setup_completo"/>
+    <page name="Fine" displayText="Installazione" type="progress" showTargets="true" target="setup_completo"/>
     
 </installer>

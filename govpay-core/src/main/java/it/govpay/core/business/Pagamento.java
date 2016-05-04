@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -67,6 +68,7 @@ import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
@@ -423,7 +425,8 @@ public class Pagamento extends BasicBD {
 		}
 	}
 
-	public void verificaTransazioniPendenti() throws GovPayException {
+	public String verificaTransazioniPendenti() throws GovPayException {
+		List<String> response = new ArrayList<String>();
 		try {
 			DominiBD dominiBD = new DominiBD(this);
 			List<Dominio> domini = dominiBD.getDomini();
@@ -509,17 +512,35 @@ public class Pagamento extends BasicBD {
 					if(stato != null) {
 						if(!rpt.getStato().equals(stato)) {
 							log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);
+							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt confermata pendente dal nodo con stato " + stato.toString());
 							rptBD.updateRpt(rpt.getId(), stato, null, null, null);
 						}
 					} else {
 						log.debug("Rpt non pendente sul nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
-						RptUtils.aggiornaRptDaNpD(client, rpt, this);
+						// Accedo alle entita che serviranno in seguito prima di chiudere la connessione;
+						rpt.getStazione(this).getIntermediario(this);
+						try {
+							RptUtils.aggiornaRptDaNpD(client, rpt, this);
+						} catch (NdpException e) {
+							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Errore durante l'aggiornamento: " + e.getFault().getFaultString() + ".");
+							continue;
+						} catch (Exception e) {
+							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Errore durante l'aggiornamento: " + e + ".");
+							continue;
+						}
+						response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
 					}
 				}
 			}
 		} catch (Exception e) {
 			log.error("Fallito aggiornamento pendenti", e);
 			throw new GovPayException(EsitoOperazione.INTERNAL, e);
+		}
+		
+		if(response.isEmpty()) {
+			return "Acquisizione completata#Nessun pagamento pendente.";
+		} else {
+			return StringUtils.join(response,"|");
 		}
 		
 	}

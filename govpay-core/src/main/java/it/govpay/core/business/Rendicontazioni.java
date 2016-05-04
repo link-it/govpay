@@ -78,8 +78,8 @@ public class Rendicontazioni extends BasicBD {
 		super(basicBD);
 	}
 
-	public void downloadRendicontazioni() throws GovPayException {
-
+	public String downloadRendicontazioni() throws GovPayException {
+		List<String> response = new ArrayList<String>();
 		try {
 			DominiBD dominiBD = new DominiBD(this);
 			List<Dominio> lstDomini = dominiBD.getDomini();
@@ -144,6 +144,7 @@ public class Rendicontazioni extends BasicBD {
 								boolean exists = frBD.exists(annoFlusso, idRendicontazione.getIdentificativoFlusso());
 								closeConnection();
 								if(exists){
+									response.add(idRendicontazione.getIdentificativoFlusso() + "#Flusso gia' acquisito");
 									log.trace("Flusso rendicontazione dal psp [" + psp.getCodPsp() + "] per il dominio [" + dominio.getCodDominio() + "] gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
 								} else {
 									log.debug("Ricevuto flusso rendicontazione dal psp [" + psp.getCodPsp() + "] per il dominio [" + dominio.getCodDominio() + "] non presente negli archivi. Acquisizione in corso del flusso con identificativo: " + idRendicontazione.getIdentificativoFlusso() + "");
@@ -162,12 +163,15 @@ public class Rendicontazioni extends BasicBD {
 										rispostaFlusso = client.nodoChiediFlussoRendicontazione(richiestaFlusso, intermediario.getDenominazione());
 									} catch (Exception e) {
 										// Errore nella richiesta. Loggo e continuo con il prossimo flusso
+										response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + e + ".");
 										log.error("Richiesta flusso  rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] per il psp [" + psp.getCodPsp() + "] fallita: " + e);
 										continue;
 									} 
 
 									if(risposta.getFault() != null) {
 										// Errore nella richiesta. Loggo e continuo con il prossimo flusso
+										response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
+										
 										log.error("Richiesta flusso  rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] per il psp [" + psp.getCodPsp() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
 									} else {
 										byte[] tracciato = null;
@@ -177,6 +181,7 @@ public class Rendicontazioni extends BasicBD {
 											dh.writeTo(output);
 											tracciato = output.toByteArray();
 										} catch (IOException e) {
+											response.add(idRendicontazione.getIdentificativoFlusso() + "#Lettura del flusso fallita: " + e + ".");
 											log.error("Errore durante la lettura del flusso di rendicontazione: " + e);
 											continue;
 										}
@@ -185,6 +190,7 @@ public class Rendicontazioni extends BasicBD {
 										try {
 											flussoRendicontazione = JaxbUtils.toFR(tracciato);
 										} catch (Exception e) {
+											response.add(idRendicontazione.getIdentificativoFlusso() + "#Parsing del flusso fallita: " + e + ".");
 											log.error("Errore durante il parsing del flusso di rendicontazione: " + e);
 											log.trace(new String(tracciato));
 											continue;
@@ -343,12 +349,14 @@ public class Rendicontazioni extends BasicBD {
 												}
 											}
 											this.commit();
+											response.add(idRendicontazione.getIdentificativoFlusso() + "#Aquisiti " + flussoRendicontazione.getDatiSingoliPagamenti().size() + " pagamenti per un totale di " + flussoRendicontazione.getImportoTotalePagamenti() + " Euro.");
 											log.info("Flusso di rendicontazione acquisito con successo.");
 										} else {
 											fr.setStato(StatoFr.RIFIUTATA);
 											fr.setDescrizioneStato(StringUtils.join(erroriAcquisizione,"#"));
 											frBD.insertFr(fr);
 											log.error("Flusso di rendicontazione rifiutato con errori.");
+											response.add(idRendicontazione.getIdentificativoFlusso() + "#Flusso rifiutato.");
 										}
 									}
 								}
@@ -362,6 +370,12 @@ public class Rendicontazioni extends BasicBD {
 			}
 		} catch(Exception e) {
 			throw new GovPayException(e);
+		}
+		
+		if(response.isEmpty()) {
+			return "Acquisizione completata#Nessun flusso acquisito.";
+		} else {
+			return StringUtils.join(response,"|");
 		}
 	}
 	

@@ -201,7 +201,7 @@ public class Rr extends BasicModel{
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
 		if(pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamenti = pagamentiBD.getPagamentiStornati(this.id);
+			pagamenti = pagamentiBD.getPagamentiByRr(this.id);
 		}
 		return pagamenti;
 	}

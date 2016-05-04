@@ -590,6 +590,11 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			baos.flush();
 			baos.close();
+			
+			Map<String,Class<?>> classMap = new HashMap<String, Class<?>>();
+			classMap.put("idApplicazioni", Long.class); 
+			classMap.put("idEnti", Long.class); 
+			jsonConfig.setClassMap(classMap);
 
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Operatore.class);

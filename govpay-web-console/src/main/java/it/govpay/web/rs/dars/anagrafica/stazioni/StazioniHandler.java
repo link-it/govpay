@@ -160,8 +160,8 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		sezioneRoot.addField(codIntermediario);
 
 		InputText codStazione = (InputText) infoCreazioneMap.get(codStazioneId);
-		String codStazioneSuggestion = this.codIntermediario + "_XX"; 
-		codStazione.setDefaultValue(codStazioneSuggestion);
+		String codStazioneSuggestion = this.codIntermediario + "_[0-9]{2}"; 
+		codStazione.setDefaultValue(this.codIntermediario + "_");
 		String codStazionePattern = this.codIntermediario + "[_]{1,1}[0-9]{2,2}";
 		String codStazioneErrorMessage = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.errorMessage") +" "+  codStazioneSuggestion;
 		codStazione.setValidation(codStazionePattern, codStazioneErrorMessage); 
