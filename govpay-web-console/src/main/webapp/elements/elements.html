@@ -26779,7 +26779,8 @@ It will also ensure that focus remains in the dialog.
         var a         = document.createElement('a');
         a.href        = window.URL.createObjectURL(event.detail.xhr.response);
         a.target      = '_blank';
-        a.download    = 'elenco.zip';
+        var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
+        a.download    = nomeFile;
         document.body.appendChild(a);
         a.click();
       },

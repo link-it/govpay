@@ -273,7 +273,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			// codPortale
 			String codPortaleLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.label");
-			InputText codPortale = new InputText(codPortaleId, codPortaleLabel, null, true, false, true, 1, 255);
+			InputText codPortale = new InputText(codPortaleId, codPortaleLabel, null, true, false, true, 1, 35);
 			codPortale.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.suggestion"));
 			codPortale.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.errorMessage"));
 			infoCreazioneMap.put(codPortaleId, codPortale);
@@ -290,7 +290,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			infoCreazioneMap.put(abilitatoId, abiliato);
 
 			String defaultCallbackURLLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.label");
-			InputText defaultCallbackURL = new InputText(defaultCallbackURLId, defaultCallbackURLLabel, null, true, false, true, 1,255);
+			InputText defaultCallbackURL = new InputText(defaultCallbackURLId, defaultCallbackURLLabel, null, true, false, true, 1,512);
 			infoCreazioneMap.put(defaultCallbackURLId, defaultCallbackURL);
 
 			String applicazioniLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioni.label");

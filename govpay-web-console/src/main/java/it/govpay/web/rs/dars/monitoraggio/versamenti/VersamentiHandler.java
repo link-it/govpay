@@ -512,7 +512,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			for (Long idVersamento : idsToExport) {
 				Versamento versamento = versamentiBD.getVersamento(idVersamento);
 
-				String folderName = versamento.getCodVersamentoEnte();
+				String folderName = "Versamento_" + versamento.getCodVersamentoEnte();
 
 				List<Long> idSingoliVersamenti = new ArrayList<Long>();
 				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
@@ -528,7 +528,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				fsw.setSortOrder(SortOrder.DESC);
 				filter.getFilterSortList().add(fsw);
 				filter.setIdSingoliVersamenti(idSingoliVersamenti);
-				List<Pagamento> listaPagamenti = pagamentiBD.findAll(filter); 
+				// cerco i pagamenti solo se ho singoliversamenti
+				List<Pagamento> listaPagamenti = idSingoliVersamenti.size() > 0 ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>(); 
 				if(listaPagamenti != null && listaPagamenti.size()> 0)
 					for (Pagamento pagamento : listaPagamenti) {
 						SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
@@ -611,7 +612,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 			filter.setIdSingoliVersamenti(idSingoliVersamenti);
-			List<Pagamento> listaPagamenti = pagamentiBD.findAll(filter); 
+			List<Pagamento> listaPagamenti = idSingoliVersamenti.size() > 0 ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>(); 
 			if(listaPagamenti != null && listaPagamenti.size()> 0)
 				for (Pagamento pagamento : listaPagamenti) {
 					SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);

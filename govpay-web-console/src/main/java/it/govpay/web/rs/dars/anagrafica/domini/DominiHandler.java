@@ -45,6 +45,7 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -55,6 +56,8 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.Tributo.TipoContabilta;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.utils.DominioUtils;
 import it.govpay.web.rs.BaseRsService;
@@ -718,12 +721,23 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			}catch(NotFoundException e){}
 
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
+			
+			Tributi tributiDars = new Tributi();
+			TributiBD tributiBD = new TributiBD(bd);
+			Tributo tributo = new Tributo();
+			tributo.setCodTributo(Tributo.BOLLOT);
+			tributo.setAbilitato(false);
+			tributo.setDescrizione(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.descrizione"));
+			tributo.setCodContabilita(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.codContabilita")); 
+			tributo.setTipoContabilita(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
 
-			// Inserimento di Dominio e UO in maniera transazionale.
+			// Inserimento di Dominio, UO e Tributo BolloTelematico in maniera transazionale.
 			bd.setAutoCommit(false); 
 			dominiBD.insertDominio(entry);
 			uo.setIdDominio(entry.getId());
 			uoBd.insertUnitaOperativa(uo);
+			tributo.setIdDominio(entry.getId());
+			tributiBD.insertTributo(tributo);
 			bd.commit();
 
 			// ripristino l'autocommit.

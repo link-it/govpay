@@ -200,10 +200,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
+		List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd,true);
 
 		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd);
+		List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd,true);
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -281,7 +281,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			// codApplicazione
 			String codApplicazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label");
-			InputText codApplicazione = new InputText(codApplicazioneId, codApplicazioneLabel, null, true, false, true, 1, 255);
+			InputText codApplicazione = new InputText(codApplicazioneId, codApplicazioneLabel, null, true, false, true, 1, 35);
 			codApplicazione.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.suggestion"));
 			codApplicazione.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.errorMessage"));
 			infoCreazioneMap.put(codApplicazioneId, codApplicazione);
@@ -309,6 +309,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			// trusted
 			String trustedLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.label");
 			CheckButton trusted = new CheckButton(trustedId, trustedLabel, true, false, false, true);
+			trusted.setAvanzata(true); 
 			infoCreazioneMap.put(trustedId, trusted);
 			
 			String tributiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tributi.label");
@@ -333,10 +334,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			infoCreazioneMap.put(dominiId, domini);
 
 			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
-			List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd);
+			List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd,true);
 
 			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
-			List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd);
+			List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd,true);
 
 			for (ParamField<?> par : infoCreazioneConnettoreVerifica) { 
 				infoCreazioneMap.put(par.getId(),par); 	
@@ -364,10 +365,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica());
+		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica(),true);
 
 		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica());
+		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica(),true);
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -503,13 +504,13 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			Connettore connettoreVerifica = applicazione.getConnettoreVerifica();
 			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreVerifica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
 			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
-			connettoreVerificaHandler.fillSezione(sezioneConnettoreVerifica, connettoreVerifica);
+			connettoreVerificaHandler.fillSezione(sezioneConnettoreVerifica, connettoreVerifica,true);
 
 			// sezione connettore
 			Connettore connettoreNotifica = applicazione.getConnettoreNotifica();
 			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreNotifica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
 			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
-			connettoreNotificaHandler.fillSezione(sezioneConnettoreNotifica, connettoreNotifica);
+			connettoreNotificaHandler.fillSezione(sezioneConnettoreNotifica, connettoreNotifica,true);
 
 			// Elementi correlati visualizzati come sezione
 			if(applicazione.isTrusted()){
@@ -691,11 +692,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		Connettore connettoreNotifica = entry.getConnettoreNotifica();
 		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA, this.titoloServizio, this.pathServizio);
-		connettoreNotificaHandler.valida(connettoreNotifica);
+		connettoreNotificaHandler.valida(connettoreNotifica,true);
 
 		Connettore connettoreVerifica = entry.getConnettoreVerifica();
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA, this.titoloServizio, this.pathServizio);
-		connettoreVerificaHandler.valida(connettoreVerifica);
+		connettoreVerificaHandler.valida(connettoreVerifica,true);
 
 		if(oldEntry != null) { //caso update
 			if(!oldEntry.getCodApplicazione().equals(entry.getCodApplicazione()))

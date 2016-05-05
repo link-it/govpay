@@ -269,6 +269,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			return Response.serverError().build();
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Expose-Headers", "content-disposition");
 			if(bd != null) bd.closeConnection();
 		}
 		
@@ -304,6 +305,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			return Response.serverError().build();
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			this.response.setHeader("Access-Control-Expose-Headers", "content-disposition");
 			if(bd != null) bd.closeConnection();
 		}
 		

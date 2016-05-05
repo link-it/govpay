@@ -54,6 +54,8 @@ public class GovpayConfig {
 	private String logoDir;
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePool;
+	private String ksLocation, ksPassword, ksAlias;
+	
 	
 	public GovpayConfig() {
 		// Default values:
@@ -61,7 +63,9 @@ public class GovpayConfig {
 		this.versioneAvviso = VersioneAvviso.v002;
 		this.dimensionePool = 10;
 		this.log4j2Config = null;
-		
+		this.ksAlias = null;
+		this.ksLocation = null;
+		this.ksPassword = null;
 		
 		try {
 			InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
@@ -162,4 +166,17 @@ public class GovpayConfig {
 	public int getDimensionePool() {
 		return dimensionePool;
 	}
+
+	public String getKsLocation() {
+		return ksLocation;
+	}
+
+	public String getKsPassword() {
+		return ksPassword;
+	}
+
+	public String getKsAlias() {
+		return ksAlias;
+	}
+
 }

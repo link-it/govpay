@@ -92,7 +92,7 @@ public class NotificheBD extends BasicBD {
 			if(tentativi != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().TENTATIVI_SPEDIZIONE, tentativi));
 			if(prossimaSpedizione != null) 
-				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, new Date()));
+				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, prossimaSpedizione));
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DATA_AGGIORNAMENTO_STATO, new Date()));
 
 			this.getNotificaService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));

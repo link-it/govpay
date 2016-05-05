@@ -36,6 +36,8 @@ import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Tributo;
+import it.govpay.web.rs.dars.anagrafica.tributi.TributiHandler;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.dinamic.MultiSelectList;
@@ -76,8 +78,12 @@ public class Tributi extends MultiSelectList<Long, List<Long>>{
 			filter.getFilterSortList().add(fsw);
 			List<Tributo> findAll = tributiBD.findAll(filter);
 
+			it.govpay.web.rs.dars.anagrafica.tributi.Tributi tributiDars = new it.govpay.web.rs.dars.anagrafica.tributi.Tributi();
+			TributiHandler tributiHandler = (TributiHandler) tributiDars.getDarsHandler();
+			
 			for(Tributo tributo : findAll) {
-				lst.add(new Voce<Long>(tributo.getCodTributo(), tributo.getId()));
+				Elemento elemento = tributiHandler.getElemento(tributo, tributo.getId(), null, bd);
+				lst.add(new Voce<Long>(elemento.getTitolo() + " " + elemento.getSottotitolo(), tributo.getId()));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

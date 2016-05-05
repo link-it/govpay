@@ -246,15 +246,15 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			String codIbanAppoggioLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.label");
 			InputText codIbanAppoggio = new InputText(codIbanAppoggioId, codIbanAppoggioLabel, null, false, false, true, 5, 34);
 			codIbanAppoggio.setValidation(patternIBAN, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.errorMessage"));
-			codIban.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.suggestion"));
+			codIbanAppoggio.setAvanzata(true);
+			//codIbanAppoggio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIbanAppoggio.suggestion"));
 			infoCreazioneMap.put(codIbanAppoggioId, codIbanAppoggio);
 
 			// codBicAccredito
 			String codBicAccreditoLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.label");
 			InputText codBicAccredito = new InputText(codBicAccreditoId, codBicAccreditoLabel, null, false, false, true, 8, 11);
-			codBicAccredito.setAvanzata(true);
 			codBicAccredito.setValidation(patternBIC, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.errorMessage"));
-			codBicAccredito.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.suggestion"));
+			//codBicAccredito.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAccredito.suggestion"));
 			infoCreazioneMap.put(codBicAccreditoId, codBicAccredito);
 
 			// codBicAppoggio
@@ -262,7 +262,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			InputText codBicAppoggio = new InputText(codBicAppoggioId, codBicAppoggioLabel, null, false, false, true, 8, 11);
 			codBicAppoggio.setAvanzata(true); 
 			codBicAppoggio.setValidation(patternBIC, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.errorMessage"));
-			codBicAppoggio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.suggestion"));
+			//codBicAppoggio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicAppoggio.suggestion"));
 			infoCreazioneMap.put(codBicAppoggioId, codBicAppoggio);
 
 			// attivatoObep

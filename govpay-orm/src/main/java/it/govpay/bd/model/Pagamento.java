@@ -347,7 +347,7 @@ public class Pagamento extends BasicModel {
 
 	public void setSingoloVersamento(SingoloVersamento singoloVersamento) {
 		this.singoloVersamento = singoloVersamento;
-		this.idSingoloVersamento = singoloVersamento.getIdVersamento();
+		this.idSingoloVersamento = singoloVersamento.getId();
 	}
 
 	public String getCodSingoloVersamentoEnte() {

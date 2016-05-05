@@ -36,6 +36,8 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.dinamic.MultiSelectList;
@@ -76,8 +78,12 @@ public class Domini extends MultiSelectList<Long, List<Long>>{
 			filter.getFilterSortList().add(fsw);
 			List<Dominio> findAll = dominiBD.findAll(filter);
 
+			it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
+			DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
+			
 			for(Dominio dominio : findAll) {
-				lst.add(new Voce<Long>(dominio.getCodDominio(), dominio.getId()));
+				Elemento elemento = dominiDarsHandler.getElemento(dominio, dominio.getId(), null,bd);
+				lst.add(new Voce<Long>(elemento.getTitolo(), dominio.getId())); 
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

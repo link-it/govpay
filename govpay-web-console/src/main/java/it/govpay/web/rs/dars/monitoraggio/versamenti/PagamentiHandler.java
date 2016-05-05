@@ -95,6 +95,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
 			boolean eseguiRicerca = isAdmin;
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = null;
 			// Utilizzo i singoli versamenti per avere i pagamenti
 			List<Long> idSingoliVersamenti = new ArrayList<Long>();
@@ -102,7 +103,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
 			if(!isAdmin){
 				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
-				VersamentiBD versamentiBD = new VersamentiBD(bd);
+				
 				VersamentoFilter filter = versamentiBD.newFilter();
 				filter.setIdApplicazioni(operatore.getIdApplicazioni());
 				filter.setIdUo(operatore.getIdEnti()); 
@@ -116,18 +117,19 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				filter.setIdVersamento(Long.parseLong(idVersamento));
 
 				eseguiRicerca = eseguiRicerca && count > 0;
-				versamento = eseguiRicerca ? versamentiBD.getVersamento(Long.parseLong(idVersamento)) : null;
 				
-				if(versamento != null){
-					List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-					if(singoliVersamenti != null && singoliVersamenti.size() >0){
-						for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-							idSingoliVersamenti.add(singoloVersamento.getId());
-						}
+			}
+			
+			versamento = eseguiRicerca ? versamentiBD.getVersamento(Long.parseLong(idVersamento)) : null;
+			if(versamento != null){
+				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+				if(singoliVersamenti != null && singoliVersamenti.size() >0){
+					for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+						idSingoliVersamenti.add(singoloVersamento.getId());
 					}
 				}
-				eseguiRicerca = eseguiRicerca && idSingoliVersamenti.size() > 0;
 			}
+			eseguiRicerca = eseguiRicerca && idSingoliVersamenti.size() > 0;
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			PagamentoFilter filter = pagamentiBD.newFilter();

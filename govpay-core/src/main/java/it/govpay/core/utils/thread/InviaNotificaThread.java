@@ -29,6 +29,7 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NotificaClient;
 
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -68,6 +69,17 @@ public class InviaNotificaThread implements Runnable {
 		BasicBD bd = null;
 		try {
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
+			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null) {
+				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");
+				if(bd == null)
+					bd = BasicBD.newInstance();
+				NotificheBD notificheBD = new NotificheBD(bd);
+				long tentativi = notifica.getTentativiSpedizione() + 1;
+				Date prossima = new GregorianCalendar(9999,12,31).getTime();
+				notificheBD.updateDaSpedire(notifica.getId(), "Connettore Notifica non configurato.", tentativi, prossima);
+				return;
+			}
+			
 			NotificaClient client = new NotificaClient(notifica.getApplicazione(bd));
 			client.invoke(notifica);
 			notifica.setStato(StatoSpedizione.SPEDITO);

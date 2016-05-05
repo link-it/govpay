@@ -30,6 +30,8 @@ import java.util.Map;
 
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Connettore.EnumAuthType;
@@ -72,13 +74,13 @@ public class ConnettoreHandler {
 		this.pathServizio = pathServizio;
 		this.nomeServizio = nomeServizio;
 		this.nomeConnettore = nomeConnettore;
-		
+
 		if(infoCreazioneMap == null)
 			infoCreazioneMap = new HashMap<String, Map<String,ParamField<?>>>();
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ParamField<?>> getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public List<ParamField<?>> getInfoCreazione(UriInfo uriInfo, BasicBD bd,boolean isConnettoreApplicazione) throws ConsoleException {
 
 		String urlId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".url.id");
 		String tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
@@ -97,7 +99,7 @@ public class ConnettoreHandler {
 		String sslTypeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslType.id");
 
 		Map<String, ParamField<?>> mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeConnettore);
-		
+
 		if(mappaCreazione == null){
 			mappaCreazione = new HashMap<String, ParamField<?>>();
 
@@ -220,20 +222,27 @@ public class ConnettoreHandler {
 			mappaCreazione.put(sslTypeId, sslType);
 
 			infoCreazioneMap.put(this.nomeServizio + "." + this.nomeConnettore, mappaCreazione);
-			
+
 		}
-		
+
 		List<ParamField<?>> listaParametri = new ArrayList<ParamField<?>>();
-		
+
 		// lista field
-		
+
 		InputText url = (InputText) mappaCreazione.get(urlId);
 		url.setDefaultValue(null);
+		if(!isConnettoreApplicazione){
+			url.setRequired(true);
+		} else{
+			url.setRequired(false);
+		}
 		listaParametri.add( url);
 
-		CheckButton azioneInURL = (CheckButton) mappaCreazione.get(azioneInURLId);
-		azioneInURL.setDefaultValue(false);
-		listaParametri.add(azioneInURL);
+		if(!isConnettoreApplicazione){
+			CheckButton azioneInURL = (CheckButton) mappaCreazione.get(azioneInURLId);
+			azioneInURL.setDefaultValue(false);
+			listaParametri.add(azioneInURL);
+		}
 
 		SelectList<String> tipoAutenticazione = (SelectList<String>) mappaCreazione.get(tipoAutenticazioneId);
 		tipoAutenticazione.setDefaultValue(TIPO_AUTENTICAZIONE_VALUE_NONE); 
@@ -282,13 +291,13 @@ public class ConnettoreHandler {
 		SslType sslType =  (SslType) mappaCreazione.get(sslTypeId);
 		sslType.setDefaultValue(null);
 		listaParametri.add(sslType);
-	 
+
 
 		return listaParametri;
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ParamField<?>> getInfoModifica(UriInfo uriInfo, BasicBD bd, Connettore connettore) throws ConsoleException {
+	public List<ParamField<?>> getInfoModifica(UriInfo uriInfo, BasicBD bd, Connettore connettore,boolean isConnettoreApplicazione) throws ConsoleException {
 
 		List<ParamField<?>> listaParametri = new ArrayList<ParamField<?>>();
 
@@ -309,20 +318,29 @@ public class ConnettoreHandler {
 		String sslTypeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslType.id");
 
 		Map<String, ParamField<?>> mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeConnettore);
-		
+
 		if(mappaCreazione == null)
-			this.getInfoCreazione(uriInfo, bd);
-		
+			this.getInfoCreazione(uriInfo, bd,isConnettoreApplicazione);
+
 		mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeConnettore);
 
 		// prelevo i componenti e gli setto i valori correnti
 		InputText url = (InputText) mappaCreazione.get(urlId);
 		url.setDefaultValue(connettore.getUrl());
+
+		if(!isConnettoreApplicazione){
+			url.setRequired(true);
+		} else{
+			url.setRequired(false);
+		}
+
 		listaParametri.add( url);
 
-		CheckButton azioneInURL = (CheckButton) mappaCreazione.get(azioneInURLId);
-		azioneInURL.setDefaultValue(connettore.isAzioneInUrl());
-		listaParametri.add(azioneInURL);
+		if(!isConnettoreApplicazione){
+			CheckButton azioneInURL = (CheckButton) mappaCreazione.get(azioneInURLId);
+			azioneInURL.setDefaultValue(connettore.isAzioneInUrl());
+			listaParametri.add(azioneInURL);
+		}
 
 		SelectList<String> tipoAutenticazione = (SelectList<String>) mappaCreazione.get(tipoAutenticazioneId);
 		EnumAuthType tipoAutenticazioneVal = connettore.getTipoAutenticazione() != null ? connettore.getTipoAutenticazione() : EnumAuthType.NONE;
@@ -399,20 +417,21 @@ public class ConnettoreHandler {
 		} 
 	}
 
-	public void fillSezione(it.govpay.web.rs.dars.model.Sezione sezioneConnettore, Connettore connettore) {
+	public void fillSezione(it.govpay.web.rs.dars.model.Sezione sezioneConnettore, Connettore connettore, boolean isConnettoreApplicazione) {
 
 		List<Voce<String>> listaVoci = new ArrayList<Voce<String>>();
-		
+
 		sezioneConnettore.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".url.label"), connettore.getUrl());
-		sezioneConnettore.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".azioneInURL.label"), 
-				Utils.getSiNoAsLabel(connettore.isAzioneInUrl()),true);
+		if(!isConnettoreApplicazione)
+			sezioneConnettore.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".azioneInURL.label"), 
+					Utils.getSiNoAsLabel(connettore.isAzioneInUrl()),true);
 
 		String tipoAutenticazione = null;
 		EnumAuthType tipoAutenticazioneVal = connettore.getTipoAutenticazione() != null ? connettore.getTipoAutenticazione() : EnumAuthType.NONE;
 		switch(tipoAutenticazioneVal){
 		case SSL: 
 			tipoAutenticazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.ssl"); 
-			
+
 			EnumSslType tipoSsl2 = connettore.getTipoSsl() != null ? connettore.getTipoSsl() : EnumSslType.CLIENT;
 			String tipoSsl = null;
 			switch (tipoSsl2) {
@@ -434,10 +453,10 @@ public class ConnettoreHandler {
 			listaVoci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslTsLocation.label"), connettore.getSslTsLocation()));
 			listaVoci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslTsPasswd.label"), connettore.getSslTsPasswd()));
 			listaVoci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslType.label"), connettore.getSslType()));
-			
-		
-		
-		break;
+
+
+
+			break;
 		case HTTPBasic: 
 			tipoAutenticazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.basic"); 
 			listaVoci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".username.label"), connettore.getHttpUser()));
@@ -453,14 +472,24 @@ public class ConnettoreHandler {
 		}
 	}
 
-	public void valida(Connettore connettore) throws ValidationException {
+	public void valida(Connettore connettore,boolean isConnettoreApplicazione) throws ValidationException {
 		if(connettore == null)  throw new ValidationException(this.nomeConnettore + " nullo");
-		if(connettore.getUrl() == null)  throw new ValidationException("URL "+this.nomeConnettore+" nullo");
+		if(!isConnettoreApplicazione){
+			if(StringUtils.isEmpty(connettore.getUrl()))  throw new ValidationException("URL "+this.nomeConnettore+" nullo");
 
-		try {
-			new URL(connettore.getUrl());
-		} catch (MalformedURLException e) {
-			throw new ValidationException("URL "+this.nomeConnettore+" non valida");
+			try {
+				new URL(connettore.getUrl());
+			} catch (MalformedURLException e) {
+				throw new ValidationException("URL "+this.nomeConnettore+" non valida");
+			}
+		} else {
+			if(StringUtils.isNotEmpty(connettore.getUrl())){
+				try {
+					new URL(connettore.getUrl());
+				} catch (MalformedURLException e) {
+					throw new ValidationException("URL "+this.nomeConnettore+" non valida");
+				}
+			}
 		}
 
 		if(connettore.getTipoAutenticazione() == null)  throw new ValidationException("Tipo Autenticazione "+this.nomeConnettore+" non puo' essere nullo");

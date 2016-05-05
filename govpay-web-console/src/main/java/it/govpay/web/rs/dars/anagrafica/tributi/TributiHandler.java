@@ -239,6 +239,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
 		descrizione.setDefaultValue(null);
+		descrizione.setEditable(true);
 		sezioneRoot.addField(descrizione);
 
 		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
@@ -268,6 +269,9 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+		idIbanAccredito.setEditable(true);
+		idIbanAccredito.setHidden(false);
+		idIbanAccredito.setRequired(true);
 		idIbanAccredito.setValues(listaIban);
 		idIbanAccredito.setDefaultValue(null);
 		sezioneRoot.addField(idIbanAccredito);
@@ -307,7 +311,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			// codUnitaOperativa
 			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
-			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, true, false, true, 1, 255);
+			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, true, false, true, 1, 35);
 			codTributo.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.suggestion"));
 			codTributo.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.errorMessage"));
 			infoCreazioneMap.put(codTributoId, codTributo);
@@ -383,6 +387,12 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
 		descrizione.setDefaultValue(entry.getDescrizione());
+
+		if(!entry.getCodTributo().equals(Tributo.BOLLOT))
+			descrizione.setEditable(false);
+		else 
+			descrizione.setEditable(true);
+
 		sezioneRoot.addField(descrizione);
 
 		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
@@ -392,26 +402,36 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		SelectList<Long> idIbanAccredito  = (SelectList<Long>) infoCreazioneMap.get(idIbanAccreditoId);
 		List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
 
-		try{
-			DominiBD dominiBD = new DominiBD(bd);
-			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
-			IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
-			fsw.setSortOrder(SortOrder.ASC);
-			filterIban.getFilterSortList().add(fsw);
-			filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
-			List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+		if(!entry.getCodTributo().equals(Tributo.BOLLOT)){
+			try{
+				DominiBD dominiBD = new DominiBD(bd);
+				IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
+				IbanAccreditoFilter filterIban = ibanAccreditoBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
+				fsw.setSortOrder(SortOrder.ASC);
+				filterIban.getFilterSortList().add(fsw);
+				filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
+				List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
-			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.bd.model.IbanAccredito ib : findAll) {
-					listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+				if(findAll != null && findAll.size() > 0){
+					for (it.govpay.bd.model.IbanAccredito ib : findAll) {
+						listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
+					}
 				}
-			}
 
-		}catch(Exception e){
-			throw new ConsoleException(e);
+			}catch(Exception e){
+				throw new ConsoleException(e);
+			}
+			idIbanAccredito.setEditable(true);
+			idIbanAccredito.setHidden(false);
+			idIbanAccredito.setRequired(true);
+		} else {
+			idIbanAccredito.setEditable(false);
+			idIbanAccredito.setHidden(true);
+			idIbanAccredito.setRequired(false);
 		}
+		
 		idIbanAccredito.setValues(listaIban);
 		idIbanAccredito.setDefaultValue(entry.getIdIbanAccredito());
 		sezioneRoot.addField(idIbanAccredito);
@@ -481,13 +501,14 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
 
 
-			DominiBD dominiBD = new DominiBD(bd);
-			Dominio dominio = dominiBD.getDominio(tributo.getIdDominio());
+			//			DominiBD dominiBD = new DominiBD(bd);
+			//			Dominio dominio = dominiBD.getDominio(tributo.getIdDominio());
+			//			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), dominio.getCodDominio());
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), dominio.getCodDominio());
-
-			IbanAccredito ibanAccredito = tributo.getIbanAccredito(bd); 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label"), ibanAccredito.getCodIban());
+			if(tributo.getIdIbanAccredito() != null){
+				IbanAccredito ibanAccredito = tributo.getIbanAccredito(bd); 
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label"), ibanAccredito.getCodIban());
+			}
 
 			TipoContabilta tipoContabilita = tributo.getTipoContabilita() != null ? tributo.getTipoContabilita() : TipoContabilta.CAPITOLO;
 			String tipoContabilitaValue = null;
@@ -570,7 +591,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			this.darsService.checkOperatoreAdmin(bd);
 
 			JsonConfig jsonConfig = new JsonConfig();
-			
+
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Utils.copy(is, baos);
 
@@ -578,16 +599,16 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			baos.close();
 
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() ); 
-			
+
 			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String tipocontabilitaS = jsonObject.getString(tipoContabilitaId);
 			jsonObject.remove(tipoContabilitaId);
 			jsonConfig.setRootClass(Tributo.class);
 			entry = (Tributo) JSONObject.toBean( jsonObject, jsonConfig );
-			
+
 			TipoContabilta tipoContabilita =  TipoContabilta.toEnum(tipocontabilitaS);
 			entry.setTipoContabilita(tipoContabilita); 
-			
+
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
@@ -667,7 +688,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		sb.append(", Dominio: ").append(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());
 
 		String sottotitolo = sb.toString();
-		URI urlDettaglio = id != null ?  uriDettaglioBuilder.build(id) : null;
+		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
 		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
 		return elemento;
 	}
@@ -680,13 +701,13 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;

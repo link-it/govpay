@@ -255,7 +255,7 @@ public class VersamentoUtils {
 		
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
-			if(versamento.isAggiornabile()) {
+			if(versamento.isAggiornabile() && versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
 				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), null, bd);
 			} else {
 				throw new VersamentoScadutoException();
@@ -265,6 +265,9 @@ public class VersamentoUtils {
 	}
 
 	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+		if(applicazione.getConnettoreVerifica() == null) {
+			throw new VersamentoSconosciutoException();
+		}
 		VerificaClient verificaClient = new VerificaClient(applicazione);
 		Versamento versamento = verificaClient.invoke(codVersamentoEnte, iuv, bd);
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);

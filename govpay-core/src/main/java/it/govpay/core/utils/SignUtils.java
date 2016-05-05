@@ -94,14 +94,14 @@ public class SignUtils {
 
 		CommonCertificateVerifier verifier = new CommonCertificateVerifier(true);
 
-		ProtectionParameter loadProtection = new PasswordProtection("123456".toCharArray());
+		ProtectionParameter loadProtection = new PasswordProtection(GovpayConfig.getInstance().getKsPassword().toCharArray());
 		KeyStore ks = KeyStore.Builder.newInstance(
 				KeyStore.getDefaultType(),
 				null,
-				new File("/var/log/govpay/jks/ndpsym.jks"),
+				new File(GovpayConfig.getInstance().getKsLocation()),
 				loadProtection).getKeyStore();
 
-		X509Certificate cert = (X509Certificate) ks.getCertificate("ndpsym");
+		X509Certificate cert = (X509Certificate) ks.getCertificate(GovpayConfig.getInstance().getKsAlias());
 
 		final CommonTrustedCertificateSource commonTrustedCertificateSource = new CommonTrustedCertificateSource();
 		commonTrustedCertificateSource.addCertificate(cert);

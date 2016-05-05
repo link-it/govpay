@@ -190,7 +190,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String intermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd);
+		List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd,false);
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -266,7 +266,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			infoCreazioneMap.put(abilitatoId, abiliato);
 
 			ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
-			List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd);
+			List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd,false);
 
 			for (ParamField<?> par : infoCreazioneConnettore) { 
 				infoCreazioneMap.put(par.getId(),par); 	
@@ -285,7 +285,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String intermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoModificaConnettore = connettoreHandler.getInfoModifica(uriInfo, bd, entry.getConnettorePdd());
+		List<ParamField<?>> infoModificaConnettore = connettoreHandler.getInfoModifica(uriInfo, bd, entry.getConnettorePdd(),false);
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -369,7 +369,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			Connettore connettore = intermediario.getConnettorePdd();
 			it.govpay.web.rs.dars.model.Sezione sezioneConnettore = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_PDD + ".titolo"));
 			ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
-			connettoreHandler.fillSezione(sezioneConnettore, connettore);
+			connettoreHandler.fillSezione(sezioneConnettore, connettore,false);
 
 			// Elementi correlati
 			String etichettaStazioni = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.stazioni.titolo");
@@ -483,7 +483,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		Connettore connettore = entry.getConnettorePdd();
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD, this.titoloServizio, this.pathServizio);
-		connettoreHandler.valida(connettore); 
+		connettoreHandler.valida(connettore,false); 
 
 		if(oldEntry != null) { //caso update
 			if(!oldEntry.getCodIntermediario().equals(entry.getCodIntermediario())) throw new ValidationException("CodIntermediario non deve cambiare in update. Atteso ["+oldEntry.getCodIntermediario()+"] trovato ["+entry.getCodIntermediario()+"]");
