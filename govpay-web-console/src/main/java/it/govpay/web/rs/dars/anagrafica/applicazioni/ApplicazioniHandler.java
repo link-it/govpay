@@ -434,6 +434,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
+			}
 
 			if(infoCreazioneMap.containsKey(fieldId)){
 				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);

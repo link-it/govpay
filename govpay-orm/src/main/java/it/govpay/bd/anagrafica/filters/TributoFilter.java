@@ -38,6 +38,7 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Tributo;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.UoFieldConverter;
 
 public class TributoFilter extends AbstractFilter {
 	
@@ -45,7 +46,8 @@ public class TributoFilter extends AbstractFilter {
 	private List<Long> listaIdTributi = null;
 	private CustomField cf;
 	private String codTributo = null;
-
+	private Long idDominio;
+	
 	public enum SortFields { }
 	
 	public TributoFilter(IExpressionConstructor expressionConstructor) {
@@ -64,8 +66,15 @@ public class TributoFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
+			if(this.idDominio != null){
+				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+				addAnd = true;
+			}
 			
 			if(this.getCodDominio() != null && StringUtils.isNotEmpty(this.getCodDominio())){
+				if(addAnd)
+					newExpression.and();
 				newExpression.equals(it.govpay.orm.Tributo.model().ID_DOMINIO.COD_DOMINIO, this.getCodDominio());
 				addAnd = true;
 			}
@@ -124,6 +133,14 @@ public class TributoFilter extends AbstractFilter {
 
 	public void setCodTributo(String codTributo) {
 		this.codTributo = codTributo;
+	}
+
+	public Long getIdDominio() {
+		return idDominio;
+	}
+
+	public void setIdDominio(Long idDominio) {
+		this.idDominio = idDominio;
 	}
 
 	

@@ -47,6 +47,7 @@ import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Pagamento.EsitoRendicontazione;
 import it.govpay.bd.model.Pagamento.TipoAllegato;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -70,7 +71,7 @@ import it.govpay.web.utils.Utils;
 public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");  
 
 	public PagamentiHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -90,8 +91,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
-			Versamenti versamentiDars = new  Versamenti();
-			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".idVersamento.id");
+			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
 			boolean eseguiRicerca = isAdmin;
@@ -188,14 +188,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			it.govpay.web.rs.dars.model.Sezione sezioneRoot = dettaglio.getSezioneRoot();
 
 
-			Rpt rpt = pagamento.getRpt(bd);
-			if(rpt!= null){
-				Transazioni transazioniDars = new Transazioni();
-				TransazioniHandler transazioniDarsHandler = (TransazioniHandler) transazioniDars.getDarsHandler();
-				UriBuilder uriRptBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).path("{id}");
-				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), uriRptBuilder );
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rpt.label"),elemento.getTitolo(),elemento.getUri());
-			}
+			
 
 			SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
 			if(singoloVersamento != null){
@@ -239,11 +232,20 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazione.label"),pagamento.getCodFlussoRendicontazione());
 			if(pagamento.getIndice() != null)
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indice.label"),pagamento.getIndice() + ""); 
+			
+			Rpt rpt = pagamento.getRpt(bd);
+			if(rpt!= null){
+				Transazioni transazioniDars = new Transazioni();
+				TransazioniHandler transazioniDarsHandler = (TransazioniHandler) transazioniDars.getDarsHandler();
+				UriBuilder uriRptBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).path("{id}");
+				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), uriRptBuilder );
+				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rpt.label"),elemento.getTitolo(),elemento.getUri());
+			}
 
 			if(pagamento.getIdRr() != null){
 				String etichettaRevoca = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneRevoca.titolo");
 				it.govpay.web.rs.dars.model.Sezione sezioneRevoca = dettaglio.addSezione(etichettaRevoca);
-
+				
 				if(StringUtils.isNotEmpty(pagamento.getCausaleRevoca()))
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causaleRevoca.label"),pagamento.getCausaleRevoca());
 				if(StringUtils.isNotEmpty(pagamento.getDatiRevoca()))
@@ -274,6 +276,15 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazioneRevoca.label"),pagamento.getCodFlussoRendicontazioneRevoca());
 				if(pagamento.getIndiceRevoca() != null)
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indiceRevoca.label"),pagamento.getIndiceRevoca() + ""); 
+				
+				Rr rr = pagamento.getRr(bd);
+				if(rr != null){
+					Revoche revocheDars = new Revoche();
+					RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
+					UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
+					Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder);
+					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rr.label"),elemento.getTitolo(),elemento.getUri());
+				}
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -289,13 +300,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	@Override
 	public String getTitolo(Pagamento entry) {
 		Date dataPagamento = entry.getDataPagamento();
-		EsitoRendicontazione esitoRendicontazione = entry.getEsitoRendicontazione();
 		BigDecimal importoPagato = entry.getImportoPagato();
 		StringBuilder sb = new StringBuilder();
 
-		String esitoRendicontazioneString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione." + esitoRendicontazione.name());
 		String pagamentoString = 
-				Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", esitoRendicontazioneString , this.sdf.format(dataPagamento), (importoPagato.toString() + "€")); 
+				Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", (importoPagato.toString() + "€") , this.sdf.format(dataPagamento)); 
 		sb.append(pagamentoString);	
 		return sb.toString();
 	}
@@ -303,6 +312,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	@Override
 	public String getSottotitolo(Pagamento entry) {
 		StringBuilder sb = new StringBuilder();
+		
+		if(entry.getIdRr() != null){
+			Date dataRevoca = entry.getDataPagamento();
+			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.revocato", this.sdf.format(dataRevoca)));
+		}
+		
 		return sb.toString();
 	}
 

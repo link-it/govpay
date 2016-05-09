@@ -28,6 +28,56 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
 
 public class NdpValidationUtils {
 	
+	public static String validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDominio rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDominio er) {
+		if(!equals(rr.getIdentificativoDominio(),er.getIdentificativoDominio())) return "IdentificativoDominio non corrisponde";
+		if(!equals(rr.getIdentificativoStazioneRichiedente(),er.getIdentificativoStazioneRichiedente())) return "IdentificativoStazioneRichiedente non corrisponde";
+		return null;
+	}
+
+	public static String validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante er) {
+		if(rr == null && er == null) return null;
+		if(rr == null || er == null) return "SoggettoVersante non corriponde";
+
+		if(!equals(rr.getAnagraficaVersante(),er.getAnagraficaVersante())) return "AnagraficaVersante non corrisponde";
+		if(!equals(rr.getCapVersante(),er.getCapVersante())) return "CapVersante non corrisponde";
+		if(!equals(rr.getCivicoVersante(),er.getCivicoVersante())) return "CivicoVersante non corrisponde";
+		if(!equals(rr.getEMailVersante(),er.getEMailVersante())) return "EMailVersante non corrisponde";
+		if(!equals(rr.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco(),er.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco())) return "IdentificativoUnivocoVersante non corrisponde";
+		if(!equals(rr.getIndirizzoVersante(),er.getIndirizzoVersante())) return "IndirizzoVersante non corrisponde";
+		if(!equals(rr.getLocalitaVersante(),er.getLocalitaVersante())) return "LocaltaVersante non corrisponde";
+		if(!equals(rr.getNazioneVersante(),er.getNazioneVersante())) return "NazioneVersante non corrisponde";
+		if(!equals(rr.getProvinciaVersante(),er.getProvinciaVersante())) return "ProvinciaVersante non corrisponde";
+		return null;
+	}
+
+	public static String validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIstitutoAttestante rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIstitutoAttestante er) {
+		if(!equals(rr.getDenominazioneMittente(),er.getDenominazioneMittente())) return "DenominazioneMittente non corrisponde";
+		if(!equals(rr.getDenomUnitOperMittente(),er.getDenomUnitOperMittente())) return "DenomUnitOperMittente non corrisponde";
+		if(!equals(rr.getCapMittente(),er.getCapMittente())) return "CapMittente non corrisponde";
+		if(!equals(rr.getCodiceUnitOperMittente(),er.getCodiceUnitOperMittente())) return "CodiceUnitOperMittente non corrisponde";
+		if(!equals(rr.getCivicoMittente(),er.getCivicoMittente())) return "CivicoMittente non corrisponde";
+		if(!equals(rr.getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco(),er.getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco())) return "IdentificativoUnivocoMittente non corrisponde";
+		if(!equals(rr.getIndirizzoMittente(),er.getIndirizzoMittente())) return "IndirizzoMittente non corrisponde";
+		if(!equals(rr.getLocalitaMittente(),er.getLocalitaMittente())) return "LocaltaMittente non corrisponde";
+		if(!equals(rr.getNazioneMittente(),er.getNazioneMittente())) return "NazioneMittente non corrisponde";
+		if(!equals(rr.getProvinciaMittente(),er.getProvinciaMittente())) return "ProvinciaPagatore non corrisponde";
+		return null;
+	}
+
+	public static String validaSemantica(it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore rr, it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore er) {
+		if(!equals(rr.getAnagraficaPagatore(),er.getAnagraficaPagatore())) return "AnagraficaPagatore non corrisponde";
+		if(!equals(rr.getCapPagatore(),er.getCapPagatore())) return "CapPagatore non corrisponde";
+		if(!equals(rr.getCivicoPagatore(),er.getCivicoPagatore())) return "CivicoPagatore non corrisponde";
+		if(!equals(rr.getEMailPagatore(),er.getEMailPagatore())) return "EMailPagatore non corrisponde";
+		if(!equals(rr.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco(),er.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco())) return "IdentificativoUnivocoPagatore non corrisponde";
+		if(!equals(rr.getIndirizzoPagatore(),er.getIndirizzoPagatore())) return "IndirizzoPagatore non corrisponde";
+		if(!equals(rr.getLocalitaPagatore(),er.getLocalitaPagatore())) return "LocaltaPagatore non corrisponde";
+		if(!equals(rr.getNazionePagatore(),er.getNazionePagatore())) return "NazionePagatore non corrisponde";
+		if(!equals(rr.getProvinciaPagatore(),er.getProvinciaPagatore())) return "ProvinciaPagatore non corrisponde";
+		return null;
+	}
+	
+	
 	public static String validaSemantica(CtEnteBeneficiario rpt, CtEnteBeneficiario rt) {
 		if(!equals(rpt.getDenominazioneBeneficiario(), rt.getDenominazioneBeneficiario())) return "DenominazioneBeneficiario non corrisponde";
 		if(!equals(rpt.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco(), rt.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco())) return "IdentificativoUnivocoBeneficiario non corrisponde";

@@ -326,7 +326,7 @@ public class ConnettoreHandler {
 
 		// prelevo i componenti e gli setto i valori correnti
 		InputText url = (InputText) mappaCreazione.get(urlId);
-		url.setDefaultValue(connettore.getUrl());
+		url.setDefaultValue(connettore == null ? null : connettore.getUrl());
 
 		if(!isConnettoreApplicazione){
 			url.setRequired(true);
@@ -338,12 +338,12 @@ public class ConnettoreHandler {
 
 		if(!isConnettoreApplicazione){
 			CheckButton azioneInURL = (CheckButton) mappaCreazione.get(azioneInURLId);
-			azioneInURL.setDefaultValue(connettore.isAzioneInUrl());
+			azioneInURL.setDefaultValue(connettore == null ? null :connettore.isAzioneInUrl());
 			listaParametri.add(azioneInURL);
 		}
 
 		SelectList<String> tipoAutenticazione = (SelectList<String>) mappaCreazione.get(tipoAutenticazioneId);
-		EnumAuthType tipoAutenticazioneVal = connettore.getTipoAutenticazione() != null ? connettore.getTipoAutenticazione() : EnumAuthType.NONE;
+		EnumAuthType tipoAutenticazioneVal =connettore == null ? EnumAuthType.NONE : connettore.getTipoAutenticazione() != null ? connettore.getTipoAutenticazione() : EnumAuthType.NONE;
 		switch(tipoAutenticazioneVal){
 		case SSL: tipoAutenticazione.setDefaultValue(TIPO_AUTENTICAZIONE_VALUE_SSL); break;
 		case HTTPBasic: tipoAutenticazione.setDefaultValue(TIPO_AUTENTICAZIONE_VALUE_HTTP_BASIC); break;
@@ -352,15 +352,15 @@ public class ConnettoreHandler {
 		listaParametri.add(tipoAutenticazione);
 
 		Username username = (Username) mappaCreazione.get(usernameId);
-		username.setDefaultValue(connettore.getHttpUser());
+		username.setDefaultValue(connettore == null ? null : connettore.getHttpUser());
 		listaParametri.add(username);
 
 		Password password = (Password) mappaCreazione.get(passwordId);
-		password.setDefaultValue(connettore.getHttpPassw());
+		password.setDefaultValue(connettore == null ? null : connettore.getHttpPassw());
 		listaParametri.add(password);
 
 		TipoSsl tipoSsl = (TipoSsl) mappaCreazione.get(tipoSslId);
-		EnumSslType tipoSsl2 = connettore.getTipoSsl() != null ? connettore.getTipoSsl() : EnumSslType.CLIENT;
+		EnumSslType tipoSsl2 = connettore == null ? EnumSslType.CLIENT : connettore.getTipoSsl() != null ? connettore.getTipoSsl() : EnumSslType.CLIENT;
 		switch (tipoSsl2) {
 		case SERVER:
 			tipoSsl.setDefaultValue(TipoSsl.TIPO_SSL_VALUE_SERVER);
@@ -374,35 +374,35 @@ public class ConnettoreHandler {
 		listaParametri.add(tipoSsl);
 
 		SslKsType sslKsType = (SslKsType) mappaCreazione.get(sslKsTypeId);
-		sslKsType.setDefaultValue(connettore.getSslKsType());
+		sslKsType.setDefaultValue(connettore == null ? null :connettore.getSslKsType());
 		listaParametri.add(sslKsType);
 
 		SslKsLocation sslKsLocation = (SslKsLocation) mappaCreazione.get(sslKsLocationId);
-		sslKsLocation.setDefaultValue(connettore.getSslKsLocation());
+		sslKsLocation.setDefaultValue(connettore == null ? null : connettore.getSslKsLocation());
 		listaParametri.add(sslKsLocation);
 
 		SslKsPasswd sslKsPasswd = (SslKsPasswd) mappaCreazione.get(sslKsPasswdId);
-		sslKsPasswd.setDefaultValue(connettore.getSslKsPasswd());
+		sslKsPasswd.setDefaultValue(connettore == null ? null : connettore.getSslKsPasswd());
 		listaParametri.add(sslKsPasswd);
 
 		SslPKeyPasswd sslPKeyPasswd = (SslPKeyPasswd) mappaCreazione.get(sslPKeyPasswdId);
-		sslPKeyPasswd.setDefaultValue(connettore.getSslPKeyPasswd());
+		sslPKeyPasswd.setDefaultValue(connettore == null ? null : connettore.getSslPKeyPasswd());
 		listaParametri.add(sslPKeyPasswd);
 
 		SslTsType sslTsType =  (SslTsType) mappaCreazione.get(sslTsTypeId);
-		sslTsType.setDefaultValue(connettore.getSslTsType());
+		sslTsType.setDefaultValue(connettore == null ? null :connettore.getSslTsType());
 		listaParametri.add(sslTsType);
 
 		SslTsLocation sslTsLocation = (SslTsLocation) mappaCreazione.get(sslTsLocationId);
-		sslTsLocation.setDefaultValue(connettore.getSslTsLocation());
+		sslTsLocation.setDefaultValue(connettore == null ? null : connettore.getSslTsLocation());
 		listaParametri.add(sslTsLocation);
 
 		SslTsPasswd sslTsPasswd = (SslTsPasswd) mappaCreazione.get(sslTsPasswdId);
-		sslTsPasswd.setDefaultValue(connettore.getSslTsPasswd());
+		sslTsPasswd.setDefaultValue(connettore == null ? null : connettore.getSslTsPasswd());
 		listaParametri.add(sslTsPasswd);
 
 		SslType sslType =  (SslType) mappaCreazione.get(sslTypeId);
-		sslType.setDefaultValue(connettore.getSslType());
+		sslType.setDefaultValue( connettore == null ? null :connettore.getSslType());
 		listaParametri.add(sslType);
 
 		return listaParametri;

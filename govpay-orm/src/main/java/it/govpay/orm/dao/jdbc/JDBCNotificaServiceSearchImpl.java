@@ -780,6 +780,11 @@ public class JDBCNotificaServiceSearchImpl implements IJDBCServiceSearchWithId<N
 	
 	protected Long findIdNotifica(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdNotifica id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+
+		if(id.getId() != null && id.getId().longValue() > 0) {
+			return id.getId();
+		}
+
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 

@@ -24888,7 +24888,35 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
     },
 
+    checkSelected: function(obj){
+      // temp.ok=true -> includi nella query string
+      // temp.value è il valore da passare
+      var temp={ok:false};
+      switch (this.$$('#'+obj).localName){
+        /*case 'paper-input':
+          temp.ok=true;
+          temp.value=''+this.$$('#'+obj).text;
+          break;*/
+        case 'paper-checkbox':
+          temp.ok=true;
+          temp.value=''+this.$$('#'+obj).checked;
+          break;
+        case 'paper-dropdown-menu':
+          if (this.$$('#'+obj).selectedItem){
+            temp.ok=true;
+            temp.value=''+this.$$('#'+obj).selectedItem.value;
+          }
+          break;
+      }
+      return temp;
+    },
+
     setMultiSelectionList: function(list, data){
+      if (data.avanzata){
+        list.hidden = !this.ptoggleb.checked;
+      } else {
+        list.hidden = data.hidden;
+      }
       var etichetta = document.createElement('div');
       etichetta.innerHTML = data.label;
       etichetta.className = 'titoloElemento';
@@ -24933,18 +24961,19 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var temp = {};
         temp.id=obj;
         //CONTROLLARE IN BASE A CASO REALE
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
-      if (query.length==target.refreshUriParamIds.length){
+      if (query.length>0){
         var getNewData= this.create('iron-ajax');
         getNewData.method="POST";
         getNewData.contentType="application/json";
         getNewData.body = JSON.stringify(query);
         getNewData.url = target.refreshUri;
-        getNewData.addEventListener('response', this.refreshMultiSelectionDropdown_success.bind(this, target));
+        getNewData.addEventListener('response', this.refreshMultiSelectionDropdown_success.bind(this, target.parentNode));
         getNewData.addEventListener('error', this.refresh_error);
         getNewData.generateRequest();
       } else {
@@ -25011,10 +25040,11 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var temp = {};
         temp.id=obj;
         //CONTROLLARE IN BASE A CASO REALE
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
-          query.push(temp);
-        }
+     var cs = this.checkSelected(obj)
+     if (cs.ok){
+     temp.value=cs.value;
+     query.push(temp);
+     }
       }
       if (query.length==target.refreshUriParamIds.length){
         var getNewData= this.create('iron-ajax');
@@ -25082,8 +25112,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var obj = target.refreshUriParamIds[i];
         var temp = {};
         temp.id=obj;
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
@@ -25140,8 +25171,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var obj = target.refreshUriParamIds[i];
         var temp = {};
         temp.id=obj;
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
@@ -25215,8 +25247,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var obj = target.refreshUriParamIds[i];
         var temp = {};
         temp.id=obj;
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
@@ -25284,8 +25317,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var obj = target.refreshUriParamIds[i];
         var temp = {};
         temp.id=obj;
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
@@ -25350,8 +25384,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var obj = target.refreshUriParamIds[i];
         var temp = {};
         temp.id=obj;
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
@@ -25414,8 +25449,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var obj = target.refreshUriParamIds[i];
         var temp = {};
         temp.id=obj;
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
@@ -25489,8 +25525,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var obj = target.refreshUriParamIds[i];
         var temp = {};
         temp.id=obj;
-        if (this.$$('#'+obj).selectedItem){
-          temp.value=''+this.$$('#'+obj).selectedItem.value;
+        var cs = this.checkSelected(obj)
+        if (cs.ok){
+          temp.value=cs.value;
           query.push(temp);
         }
       }
@@ -28261,7 +28298,7 @@ It will also ensure that focus remains in the dialog.
         color: var(--primary-text-color);
       }
 
-      .card-content .valoreRiferimento {
+      .card-content .valoreRiferimento, .card-content .etichettaRiferimento {
         color: var(--accent-color);
         cursor: pointer;
       }
@@ -28321,7 +28358,7 @@ It will also ensure that focus remains in the dialog.
                 <div class="card-content">
                   <template is="dom-repeat" items="[[item.voci]]" as="voce">
                     <div class="voce">
-                      <span class="etichetta">[[voce.etichetta]]:</span>
+                      <span class$="[[classeEtichetta(voce)]]">[[getEtichetta(voce)]]</span>
                       <span class$="[[classeValore(voce)]]" on-tap="getReference">[[voce.valore]]</span>
                       
                     </div>
@@ -28426,6 +28463,20 @@ It will also ensure that focus remains in the dialog.
           return 'valoreRiferimento';
         }
         return 'valore';
+      },
+
+      getEtichetta: function(voce){
+        if (voce.valore){
+          return voce.etichetta+':';
+        }
+        return voce.etichetta;
+      },
+
+      classeEtichetta: function(voce){
+        if (voce.riferimento && !voce.valore){
+          return 'etichettaRiferimento';
+        }
+        return 'etichetta';
       },
 
       getTabLabel: function(item){

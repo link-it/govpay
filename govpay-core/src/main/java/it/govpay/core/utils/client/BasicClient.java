@@ -246,26 +246,39 @@ public class BasicClient {
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
-		if(responseCode < 300) {
-			try {
-				if(connection.getInputStream() == null) {
-					return null;
+		
+		try {
+			if(responseCode < 300) {
+				try {
+					if(connection.getInputStream() == null) {
+						return null;
+					}
+					msg = connection.getInputStream() != null ? IOUtils.toByteArray(connection.getInputStream()) : new byte[]{};
+					return msg;
+				} catch (Exception e) {
+					throw new ClientException("Messaggio di risposta non valido", e);
 				}
-				msg = connection.getInputStream() != null ? IOUtils.toByteArray(connection.getInputStream()) : new byte[]{};
-				return msg;
-			} catch (Exception e) {
-				throw new ClientException("Messaggio di risposta non valido", e);
+			} else {
+				try {
+					msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
+				} catch (IOException e) {
+					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
+				} finally {
+					log.error("Errore nell'invocazione del Nodo dei Pagamenti: [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+				}
+				throw new ClientException("Errore nell'invocazione: HTTP " + responseCode);
 			}
-		} else {
-			try {
-				msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
-			} catch (IOException e) {
-				msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
-			} finally {
-				log.error("Errore nell'invocazione del Nodo dei Pagamenti: [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+		} finally {
+			if(log.getLevel().isMoreSpecificThan(Level.TRACE)) {
+				StringBuffer sb = new StringBuffer();
+				for(String key : connection.getHeaderFields().keySet()) { 
+					sb.append("\n\t" + key + ": " + connection.getHeaderField(key));
+				}
+				sb.append("\n" + new String(msg));
+				log.trace(sb.toString());
 			}
-			throw new ClientException("Errore nell'invocazione: HTTP " + responseCode);
 		}
+		
 	}
 
 	public static boolean cleanCache(String bundleKey) {

@@ -57,6 +57,7 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Rpt.StatoRpt;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
@@ -310,7 +311,12 @@ public class RptUtils {
 			inviaRPT.setIdentificativoPSP(rpt.getPsp(bd).getCodPsp());
 			inviaRPT.setPassword(rpt.getStazione(bd).getPassword());
 			inviaRPT.setRpt(rpt.getXmlRpt());
-			inviaRPT.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
+			
+			// FIX Bug Nodo che richiede firma vuota in caso di NESSUNA
+			if(rpt.getFirmaRichiesta() == FirmaRichiesta.NESSUNA)
+				inviaRPT.setTipoFirma("");
+			else
+				inviaRPT.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
 			return risposta;
 		} catch (NotFoundException e) {

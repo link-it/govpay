@@ -522,7 +522,7 @@
 											<xsd:element name="storno" type="xsd:boolean" />
 											<xsd:element name="bollo" type="xsd:boolean" />
 											<xsd:element name="logo" type="xsd:base64Binary" />
-											<xsd:element name="canale" maxOccurs="unbounded">
+											<xsd:element name="canale" minOccurs="0" maxOccurs="unbounded">
 												<xsd:complexType>
 													<xsd:sequence>
 														<xsd:element name="codCanale" type="com:cod35" />
@@ -580,8 +580,8 @@
 								<xsd:complexType>
 									<xsd:sequence>
 										<xsd:element name="codDominio" type="com:cod35" />
-										<xsd:element name="codKeyPA" type="com:cod35" />
-										<xsd:element name="codKeyWISP" type="com:cod35" />
+										<xsd:element name="codKeyPA" type="com:string40" />
+										<xsd:element name="codKeyWISP" type="com:string40" />
 									</xsd:sequence>
 								</xsd:complexType>
 							</xsd:element>

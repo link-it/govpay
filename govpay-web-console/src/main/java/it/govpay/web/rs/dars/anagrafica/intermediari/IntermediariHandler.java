@@ -321,6 +321,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
+			}
 
 			if(infoCreazioneMap.containsKey(fieldId)){
 				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);

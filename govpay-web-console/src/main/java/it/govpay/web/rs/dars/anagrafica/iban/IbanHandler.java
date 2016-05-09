@@ -51,7 +51,6 @@ import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
-import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.iban.input.IdNegozio;
 import it.govpay.web.rs.dars.anagrafica.iban.input.IdSellerBank;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -63,6 +62,7 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
 import it.govpay.web.rs.dars.model.input.base.InputText;
@@ -75,7 +75,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	public static final String patternIBAN = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"; 
 	public static final String patternBIC = "[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}";
 	private static Map<String, ParamField<?>> infoCreazioneMap = null;
-	private String codDominio = null;
+	private Long idDominio = null;
 
 	public IbanHandler(Logger log, BaseDarsService darsService) {
 		super(log,darsService);
@@ -89,9 +89,8 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			Domini dominiDars = new Domini();
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio()+ ".codDominio.id");
-			this.codDominio = this.getParameter(uriInfo, codDominioId, String.class);
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
+			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 			URI esportazione = null;
 			URI cancellazione = null;
 
@@ -99,7 +98,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			Integer limit = this.getLimit(uriInfo);
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
 			IbanAccreditoFilter filter = ibanAccreditoBD.newFilter();
-			filter.setCodDominio(this.codDominio);
+			filter.setIdDominio(this.idDominio);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.IbanAccredito.model().COD_IBAN);
 			fsw.setSortOrder(SortOrder.ASC);
@@ -154,8 +153,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String attivatoObepId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
 		String postaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
-		//Domini dominiDars = new Domini();
-		String codDominioId = Utils.getInstance().getMessageFromResourceBundle("domini.codDominio.id"); //(intermediariDars.getNomeServizio()+ ".codDominio.id");
+		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -166,9 +164,9 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		idIbanAccredito.setDefaultValue(null);
 		sezioneRoot.addField(idIbanAccredito);
 
-		InputText codDominio = (InputText) infoCreazioneMap.get(codDominioId);
-		codDominio.setDefaultValue(this.codDominio);
-		sezioneRoot.addField(codDominio);
+		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
+		idDominio.setDefaultValue(this.idDominio);
+		sezioneRoot.addField(idDominio);
 
 		InputText codIban = (InputText) infoCreazioneMap.get(codIbanId);
 		codIban.setDefaultValue(null);
@@ -224,16 +222,15 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String attivatoObepId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
 			String postaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
-			//Domini dominiDars = new Domini();
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle("domini.codDominio.id"); //(intermediariDars.getNomeServizio()+ ".codDominio.id");
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
 			// id 
 			InputNumber id = new InputNumber(ibanAccreditoId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(ibanAccreditoId, id);
 
-			// codIntermediario
-			InputText codDominio = new InputText(codDominioId, "", null, true, true, false, 1, 255);
-			infoCreazioneMap.put(codDominioId, codDominio);
+			// idDominio
+			InputNumber idDominio = new InputNumber(idDominioId, null, null, true, true, false, 1, 255);
+			infoCreazioneMap.put(idDominioId, idDominio);
 
 			// codIban
 			String codIbanLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIban.label");
@@ -318,8 +315,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String attivatoObepId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".attivatoObep.id");
 		String postaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".postale.id");
-		//Domini dominiDars = new Domini();
-		String codDominioId = Utils.getInstance().getMessageFromResourceBundle("domini.codDominio.id"); //(intermediariDars.getNomeServizio()+ ".codDominio.id");
+		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -330,17 +326,9 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		idIbanAccredito.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idIbanAccredito);
 
-		DominiBD dominiBD = new DominiBD(bd);
-		Dominio dominio = null;
-		try {
-			dominio = dominiBD.getDominio(entry.getIdDominio());
-		} catch (Exception e) {
-			throw new ConsoleException(e);
-		}
-
-		InputText codDominio = (InputText) infoCreazioneMap.get(codDominioId);
-		codDominio.setDefaultValue(dominio.getCodDominio()); 
-		sezioneRoot.addField(codDominio);
+		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
+		idDominio.setDefaultValue(entry.getIdDominio()); 
+		sezioneRoot.addField(idDominio);
 
 		InputText codIban = (InputText) infoCreazioneMap.get(codIbanId);
 		codIban.setDefaultValue(entry.getCodIban());
@@ -383,6 +371,29 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
+		this.log.debug("Richiesto field ["+fieldId+"]");
+		try{
+			// Operazione consentita solo all'amministratore
+			this.darsService.checkOperatoreAdmin(bd);
+			
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
+			}
+
+			if(infoCreazioneMap.containsKey(fieldId)){
+				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
+
+				paramField.aggiornaParametro(values,bd);
+
+				return paramField;
+
+			}
+
+			this.log.debug("Field ["+fieldId+"] non presente.");
+
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 		return null;
 	}
 
@@ -453,13 +464,6 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			this.checkEntry(entry, null);
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
-			DominiBD dominiBD = new DominiBD(bd);
-
-			try{
-				Dominio dominio = dominiBD.getDominio(this.codDominio);
-				entry.setIdDominio(dominio.getId());
-			}catch(NotFoundException e){}
-
 			try{
 				ibanAccreditoBD.getIbanAccredito(entry.getIdDominio(),entry.getCodIban());
 				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodIban());
@@ -501,11 +505,6 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			JSONObject jsonObjectIBAN = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(IbanAccredito.class);
 			entry = (IbanAccredito) JSONObject.toBean( jsonObjectIBAN, jsonConfig );
-
-			jsonObjectIBAN = JSONObject.fromObject( baos.toString() );  
-			jsonConfig.setRootClass(Dominio.class);
-			Dominio dominio = (Dominio) JSONObject.toBean( jsonObjectIBAN, jsonConfig );
-			this.codDominio = dominio.getCodDominio();
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
@@ -577,18 +576,9 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			IbanAccredito entry = this.creaEntry(is, uriInfo, bd);
 
 			IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
-			DominiBD dominiBD = new DominiBD(bd);
-
-			try{
-				Dominio dominio = dominiBD.getDominio(this.codDominio);
-				entry.setIdDominio(dominio.getId());
-			}catch(NotFoundException e){}
-
 			IbanAccredito oldEntry = ibanAccreditoBD.getIbanAccredito(entry.getIdDominio(),entry.getCodIban());
 
 			this.checkEntry(entry, oldEntry); 
-
-
 
 			ibanAccreditoBD.updateIbanAccredito(entry); 
 

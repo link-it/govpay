@@ -21,11 +21,11 @@
 package it.govpay.core.utils;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazioneCarrelloPPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.CtFlussoRiversamento;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaPagamentoTelematico;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
 import it.gov.digitpa.schemas._2011.pagamenti.ObjectFactory;
 import it.gov.digitpa.schemas._2011.psp.InformativaContoAccredito;
 import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
@@ -55,13 +55,14 @@ import org.xml.sax.SAXException;
 public class JaxbUtils {
 
 	private static JAXBContext jaxbContext, jaxbContextCodes, jaxbContextIntestazioneCarrelloPPT;
-	private static Schema RPT_RT_schema;
+	private static Schema RPT_RT_schema, RR_ER_schema;
 
 	public static void init() throws JAXBException, SAXException {
 		if(jaxbContext == null || RPT_RT_schema==null) {
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RPT_RT_6_0_2_RR_ER_1_0_0_FR_1_0_4.xsd"))); 
-			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.servizi.pa");
+			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RPT_RT_6_0_2_FR_1_0_4.xsd"))); 
+			RR_ER_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RR_ER_1_0_0.xsd"))); 
+			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.pagamenti.revoche:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.servizi.pa");
 			jaxbContextCodes = JAXBContext.newInstance("it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr");
 			jaxbContextIntestazioneCarrelloPPT = JAXBContext.newInstance(IntestazioneCarrelloPPT.class);
 		}
@@ -112,7 +113,7 @@ public class JaxbUtils {
 		Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
 		jaxbMarshaller.setProperty("com.sun.xml.bind.xmlDeclaration", Boolean.FALSE);
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		jaxbMarshaller.marshal(new ObjectFactory().createRR(rr), baos);
+		jaxbMarshaller.marshal(new it.gov.digitpa.schemas._2011.pagamenti.revoche.ObjectFactory().createRR(rr), baos);
 		return baos.toByteArray();
 	}
 	
@@ -171,7 +172,7 @@ public class JaxbUtils {
 	public static CtRichiestaRevoca toRR(byte[] rr) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(RPT_RT_schema);
+		jaxbUnmarshaller.setSchema(RR_ER_schema);
 		JAXBElement<CtRichiestaRevoca> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(rr)), CtRichiestaRevoca.class);
 		return root.getValue();
 	}
@@ -179,7 +180,7 @@ public class JaxbUtils {
 	public static CtEsitoRevoca toER(byte[] er) throws JAXBException, SAXException {
 		init();
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		jaxbUnmarshaller.setSchema(RPT_RT_schema);
+		jaxbUnmarshaller.setSchema(RR_ER_schema);
 		JAXBElement<CtEsitoRevoca> root = jaxbUnmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(er)), CtEsitoRevoca.class);
 		return root.getValue();
 	}

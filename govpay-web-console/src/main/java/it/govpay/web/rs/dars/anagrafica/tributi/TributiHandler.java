@@ -33,7 +33,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
@@ -45,7 +44,6 @@ import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
-import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Tributo.TipoContabilta;
@@ -53,7 +51,6 @@ import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
-import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
@@ -109,19 +106,9 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			// tributi di un dominio
-
-			Domini dominiDars = new Domini();
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
-			String codDominio = this.getParameter(uriInfo, codDominioId, String.class); 
-
-			if(StringUtils.isNotEmpty(codDominio)){
-				filter.setCodDominio(codDominio);
-				DominiBD dominiBD = new DominiBD(bd);
-				Dominio dominio = dominiBD.getDominio(codDominio);
-				this.idDominio = dominio.getId();
-				visualizzaRicerca = false;
-			} 
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
+			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
+			filter.setIdDominio(this.idDominio);
 
 			long count = tributiBD.count(filter);
 
@@ -158,8 +145,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-		Domini dominiDars = new Domini();
-		String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
 
 		if(infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
@@ -172,17 +157,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		codTributo.setDefaultValue(null);
 		sezioneRoot.addField(codTributo);
 
-		// codDominio
-		InputText codDominio = (InputText) infoRicercaMap.get(codDominioId);
-		DominiBD dominiBD = new DominiBD(bd);
-		try {
-			Dominio dominio = dominiBD.getDominio(this.idDominio);
-			codDominio.setDefaultValue(dominio.getCodDominio());
-		} catch (Exception e) {
-			throw new ConsoleException(e);
-		}
-		sezioneRoot.addField(codDominio);
-
 		return infoRicerca;
 	}
 
@@ -191,18 +165,11 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			Domini dominiDars = new Domini();
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
 
 			// codTributo
 			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, false, false, true, 1, 255);
 			infoRicercaMap.put(codTributoId, codTributo);
-
-			// idDominio
-			InputText codDominio = new InputText(codDominioId, null, null, true, true, false, 1, 255);
-			infoRicercaMap.put(codDominioId, codDominio);
-
 		}
 	}
 
@@ -457,6 +424,10 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
+			}
 
 			if(infoCreazioneMap.containsKey(fieldId)){
 				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
@@ -499,11 +470,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			// dati del tributo
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label"), tributo.getCodTributo());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
-
-
-			//			DominiBD dominiBD = new DominiBD(bd);
-			//			Dominio dominio = dominiBD.getDominio(tributo.getIdDominio());
-			//			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), dominio.getCodDominio());
 
 			if(tributo.getIdIbanAccredito() != null){
 				IbanAccredito ibanAccredito = tributo.getIbanAccredito(bd); 

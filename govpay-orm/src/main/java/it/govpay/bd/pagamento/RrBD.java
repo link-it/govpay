@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.converter.RrConverter;
+import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.orm.IdRr;
 import it.govpay.orm.RR;
 import it.govpay.orm.dao.jdbc.JDBCRRServiceSearch;
@@ -154,4 +155,28 @@ public class RrBD extends BasicBD {
 		}
 	}
 
+	public RrFilter newFilter() throws ServiceException {
+		return new RrFilter(this.getRrService());
+	}
+	
+	public long count(RrFilter filter) throws ServiceException {
+		try {
+			return this.getRrService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<Rr> findAll(RrFilter filter) throws ServiceException {
+		try {
+			List<Rr> rrLst = new ArrayList<Rr>();
+			List<it.govpay.orm.RR> rrVOLst = this.getRrService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.RR rrVO: rrVOLst) {
+				rrLst.add(RrConverter.toDTO(rrVO));
+			}
+			return rrLst;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

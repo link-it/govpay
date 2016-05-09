@@ -66,6 +66,7 @@ import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
+import it.govpay.web.rs.dars.anagrafica.iban.IbanHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -581,6 +582,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
+			}
 
 			if(infoCreazioneMap.containsKey(fieldId)){
 				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
@@ -666,18 +671,20 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String etichettaUnitaOperative = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.unitaOperative.titolo");
 			String etichettaIban = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.iban.titolo");
 			String etichettaTributi = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tributi.titolo");
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 
 			UnitaOperative uoDars =new UnitaOperative();
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(uoDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
+			String idDominioId =  Utils.getInstance().getMessageFromResourceBundle(uoDars.getNomeServizio() + ".idDominio.id");
+			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(uoDars.getPathServizio()).queryParam(idDominioId, dominio.getId());
 			dettaglio.addElementoCorrelato(etichettaUnitaOperative, uriBuilder.build());
 
 			Iban ibanDars =new Iban();
-			UriBuilder uriBuilderIban = BaseRsService.checkDarsURI(uriInfo).path(ibanDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
+			idDominioId =  Utils.getInstance().getMessageFromResourceBundle(ibanDars.getNomeServizio() + ".idDominio.id");
+			UriBuilder uriBuilderIban = BaseRsService.checkDarsURI(uriInfo).path(ibanDars.getPathServizio()).queryParam(idDominioId, dominio.getId());
 			dettaglio.addElementoCorrelato(etichettaIban, uriBuilderIban.build());
 
 			Tributi tributiDars =new Tributi();
-			UriBuilder uriBuilderTributi = BaseRsService.checkDarsURI(uriInfo).path(tributiDars.getPathServizio()).queryParam(codDominioId, dominio.getCodDominio());
+			idDominioId =  Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio() + ".idDominio.id");
+			UriBuilder uriBuilderTributi = BaseRsService.checkDarsURI(uriInfo).path(tributiDars.getPathServizio()).queryParam(idDominioId, dominio.getId());
 			dettaglio.addElementoCorrelato(etichettaTributi, uriBuilderTributi.build());
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -936,7 +943,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		sb.append(", Stazione: ").append(entry.getStazione(bd).getCodStazione());
 
 		String sottotitolo = sb.toString();
-		URI urlDettaglio = id != null ?  uriDettaglioBuilder.build(id) : null;
+		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
 		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
 		return elemento;
 	}

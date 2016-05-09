@@ -492,6 +492,9 @@ public class Pagamento extends BasicBD {
 						StatoRpt stato = StatoRpt.valueOf(rptPendente.getStato());
 						statiRptPendenti.put(rptKey, stato);
 					}
+					
+					a.add(Calendar.DATE, -7);
+					da.add(Calendar.DATE, -7);
 				}
 
 				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");

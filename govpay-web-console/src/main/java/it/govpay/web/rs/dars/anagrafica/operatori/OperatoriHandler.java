@@ -407,6 +407,11 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			this.log.debug("Richiesto field ["+fieldId+"]"); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
+			}
+			
 			if(infoCreazioneMap.containsKey(fieldId)){
 				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
 

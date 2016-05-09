@@ -33,13 +33,19 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiEsitoRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingolaRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloEsitoRevoca;
-import it.gov.digitpa.schemas._2011.pagamenti.CtEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingolaRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiSingoloEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDominio;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIstitutoAttestante;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRichiestaRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtRichiestaRevoca;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoPagatore;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtSoggettoVersante;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoco;
+import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStorno;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Evento;
@@ -117,14 +123,91 @@ public class RrUtils extends NdpValidationUtils {
 	private static CtRichiestaRevoca buildCtRr(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException {
 		CtRichiestaRevoca ctRr = new CtRichiestaRevoca();
 		ctRr.setVersioneOggetto(ctRt.getVersioneOggetto());
-		ctRr.setDominio(ctRt.getDominio());
+		ctRr.setDominio(toDominio(ctRt.getDominio()));
 		ctRr.setIdentificativoMessaggioRevoca(buildUUID35());
 		ctRr.setDataOraMessaggioRevoca(new Date());
-		ctRr.setIstitutoAttestante(ctRt.getIstitutoAttestante());
-		ctRr.setSoggettoVersante(ctRt.getSoggettoVersante());
-		ctRr.setSoggettoPagatore(ctRt.getSoggettoPagatore());
+		ctRr.setIstitutoAttestante(toIstitutoAttestante(ctRt.getIstitutoAttestante()));
+		ctRr.setSoggettoVersante(toSoggettoVersante(ctRt.getSoggettoVersante()));
+		ctRr.setSoggettoPagatore(toSoggettoPagatore(ctRt.getSoggettoPagatore()));
 		ctRr.setDatiRevoca(buildDatiRevoca(ctRt, pagamenti, bd));
 		return ctRr;
+	}
+
+	private static CtSoggettoPagatore toSoggettoPagatore(it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore soggettoPagatore) {
+		if(soggettoPagatore == null)
+			return null;
+		
+		CtSoggettoPagatore p = new CtSoggettoPagatore();
+		p.setAnagraficaPagatore(soggettoPagatore.getAnagraficaPagatore());
+		p.setCapPagatore(soggettoPagatore.getCapPagatore());
+		p.setCivicoPagatore(soggettoPagatore.getCivicoPagatore());
+		p.setEMailPagatore(soggettoPagatore.getEMailPagatore());
+		if(soggettoPagatore.getIdentificativoUnivocoPagatore() != null) {
+			it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIdentificativoUnivocoPersonaFG id = new it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIdentificativoUnivocoPersonaFG();
+			id.setCodiceIdentificativoUnivoco(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
+			id.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.valueOf(soggettoPagatore.getIdentificativoUnivocoPagatore().getTipoIdentificativoUnivoco().toString()));
+			p.setIdentificativoUnivocoPagatore(id);
+		}
+		p.setIndirizzoPagatore(soggettoPagatore.getIndirizzoPagatore());
+		p.setLocalitaPagatore(soggettoPagatore.getLocalitaPagatore());
+		p.setNazionePagatore(soggettoPagatore.getNazionePagatore());
+		p.setProvinciaPagatore(soggettoPagatore.getProvinciaPagatore());
+		return p;
+	}
+
+	private static CtSoggettoVersante toSoggettoVersante(it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante soggettoVersante) {
+		if(soggettoVersante == null)
+			return null;
+		
+		CtSoggettoVersante v = new CtSoggettoVersante();
+		v.setAnagraficaVersante(soggettoVersante.getAnagraficaVersante());
+		v.setCapVersante(soggettoVersante.getCapVersante());
+		v.setCivicoVersante(soggettoVersante.getCivicoVersante());
+		v.setEMailVersante(soggettoVersante.getEMailVersante());
+		if(soggettoVersante.getIdentificativoUnivocoVersante() != null) {
+			it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIdentificativoUnivocoPersonaFG id = new it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIdentificativoUnivocoPersonaFG();
+			id.setCodiceIdentificativoUnivoco(soggettoVersante.getIdentificativoUnivocoVersante().getCodiceIdentificativoUnivoco());
+			id.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivocoPersFG.valueOf(soggettoVersante.getIdentificativoUnivocoVersante().getTipoIdentificativoUnivoco().toString()));
+			v.setIdentificativoUnivocoVersante(id);
+		}
+		v.setIndirizzoVersante(soggettoVersante.getIndirizzoVersante());
+		v.setLocalitaVersante(soggettoVersante.getLocalitaVersante());
+		v.setNazioneVersante(soggettoVersante.getNazioneVersante());
+		v.setProvinciaVersante(soggettoVersante.getProvinciaVersante());
+		return v;
+	}
+
+	private static CtIstitutoAttestante toIstitutoAttestante(it.gov.digitpa.schemas._2011.pagamenti.CtIstitutoAttestante istitutoAttestante) {
+		if(istitutoAttestante == null)
+			return null;
+		
+		CtIstitutoAttestante i = new CtIstitutoAttestante();
+		i.setCapMittente(istitutoAttestante.getCapAttestante());
+		i.setCivicoMittente(istitutoAttestante.getCivicoAttestante());
+		i.setCodiceUnitOperMittente(istitutoAttestante.getCodiceUnitOperAttestante());
+		i.setDenominazioneMittente(istitutoAttestante.getDenominazioneAttestante());
+		i.setDenomUnitOperMittente(istitutoAttestante.getDenomUnitOperAttestante());
+		if(istitutoAttestante.getIdentificativoUnivocoAttestante() != null) {
+			it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIdentificativoUnivoco id = new it.gov.digitpa.schemas._2011.pagamenti.revoche.CtIdentificativoUnivoco();
+			id.setCodiceIdentificativoUnivoco(istitutoAttestante.getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco());
+			id.setTipoIdentificativoUnivoco(StTipoIdentificativoUnivoco.valueOf(istitutoAttestante.getIdentificativoUnivocoAttestante().getTipoIdentificativoUnivoco().toString()));
+			i.setIdentificativoUnivocoMittente(id);
+		}
+		i.setIndirizzoMittente(istitutoAttestante.getIndirizzoAttestante());
+		i.setLocalitaMittente(istitutoAttestante.getLocalitaAttestante());
+		i.setNazioneMittente(istitutoAttestante.getNazioneAttestante());
+		i.setProvinciaMittente(istitutoAttestante.getProvinciaAttestante());
+		return i;
+	}
+
+	private static CtDominio toDominio(it.gov.digitpa.schemas._2011.pagamenti.CtDominio dominio) {
+		if(dominio == null)
+			return null;
+		
+		CtDominio d = new CtDominio();
+		d.setIdentificativoDominio(dominio.getIdentificativoDominio());
+		d.setIdentificativoStazioneRichiedente(dominio.getIdentificativoStazioneRichiedente());
+		return d;
 	}
 
 	private static CtDatiRevoca buildDatiRevoca(CtRicevutaTelematica ctRt, List<Pagamento> pagamenti, BasicBD bd) throws ServiceException {
@@ -319,6 +402,4 @@ public class RrUtils extends NdpValidationUtils {
 		
 		return null;
 	}
-
-
 }

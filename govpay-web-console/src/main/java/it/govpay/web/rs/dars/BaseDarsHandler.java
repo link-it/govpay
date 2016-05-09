@@ -181,7 +181,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public Elemento getElemento(T entry, Long id, UriBuilder uriDettaglioBuilder){
 		String titolo = this.getTitolo(entry);
 		String sottotitolo = this.getSottotitolo(entry);
-		URI urlDettaglio = id != null ?  uriDettaglioBuilder.build(id) : null;
+		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
 		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
 		return elemento;
 	}

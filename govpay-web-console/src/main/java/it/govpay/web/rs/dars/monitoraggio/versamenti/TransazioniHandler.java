@@ -1,6 +1,7 @@
 package it.govpay.web.rs.dars.monitoraggio.versamenti;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,10 +32,13 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rpt.EsitoPagamento;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Rpt.StatoRpt;
+import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -44,6 +48,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
@@ -66,7 +71,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			ProfiloOperatore profilo = operatore.getProfilo();
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
+			URI esportazione = null;  
 			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
@@ -115,10 +120,29 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 			List<Rpt> rpt = eseguiRicerca ? rptBD.findAll(filter) : new ArrayList<Rpt>();
 
+			RrBD rrBD = new RrBD(bd);
+			FilterSortWrapper rrFsw = new FilterSortWrapper();
+			rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+			rrFsw.setSortOrder(SortOrder.DESC);
+			
+			Revoche revocheDars = new Revoche();
+			RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
+			UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
 
 			if(rpt != null && rpt.size() > 0){
 				for (Rpt entry : rpt) {
 					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					
+					RrFilter rrFilter = rrBD.newFilter();
+					rrFilter.getFilterSortList().add(rrFsw);
+					rrFilter.setIdRpt(entry.getId()); 
+					List<Rr> findAll = rrBD.findAll(rrFilter);
+					if(findAll != null && findAll.size() > 0){
+						for (Rr rr : findAll) {
+							Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder);
+							elenco.getElenco().add(elemento);
+						}
+					}
 				}
 			}
 
@@ -296,46 +320,54 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	public String getTitolo(Rpt entry) {
 		Date dataMsgRichiesta = entry.getDataMsgRichiesta();
 		String iuv = entry.getIuv();
-		StatoRpt stato = entry.getStato();
+		String ccp = entry.getCcp();
 		StringBuilder sb = new StringBuilder();
 
-		String statoString = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".titolo.stato." + stato.name(), iuv , this.sdf.format(dataMsgRichiesta)); 
+		String statoString = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", iuv , ccp, this.sdf.format(dataMsgRichiesta)); 
 		sb.append(statoString);	
 		return sb.toString();
 	}
 
 	@Override
 	public String getSottotitolo(Rpt entry) {
-		Date dataMsgRicevuta = entry.getDataMsgRicevuta();
-		EsitoPagamento esitoPagamento = entry.getEsitoPagamento();
-
 		StringBuilder sb = new StringBuilder();
-
-		// ricevuta presente
-		if(dataMsgRicevuta != null){
+		// ricevuta RT
+		if(entry.getDataMsgRicevuta()!= null){
+			EsitoPagamento esitoPagamento = entry.getEsitoPagamento();
+			String esitoPagamentoString = null;
 			switch (esitoPagamento) {		
 			case DECORRENZA_TERMINI:
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.esitoPagamento.DECORRENZA_TERMINI", this.sdf.format(dataMsgRicevuta))); 
+				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI"); 
 				break;
 			case DECORRENZA_TERMINI_PARZIALE:
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.esitoPagamento.DECORRENZA_TERMINI_PARZIALE", this.sdf.format(dataMsgRicevuta)));
+				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI_PARZIALE");
 				break;
 			case PAGAMENTO_ESEGUITO:
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.esitoPagamento.PAGAMENTO_ESEGUITO", this.sdf.format(dataMsgRicevuta)));
+				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_ESEGUITO");
 				break;
 			case PAGAMENTO_NON_ESEGUITO:
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.esitoPagamento.PAGAMENTO_NON_ESEGUITO", this.sdf.format(dataMsgRicevuta)));
+				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_NON_ESEGUITO");
 				break;
 			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 			default:
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".sottotitolo.esitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO", this.sdf.format(dataMsgRicevuta)));
+				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO");
 				break;
 			}
-
-		}else {
-			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".rtAssente"));
+			
+			
+			BigDecimal importoTotalePagato = entry.getImportoTotalePagato();
+			int compareTo = importoTotalePagato.compareTo(BigDecimal.ZERO);
+			if(compareTo > 0){
+				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente.importoPositivo",esitoPagamentoString, ( entry.getImportoTotalePagato() + "€")));
+			} else{
+				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente",esitoPagamentoString));
+			}
+				
+		} else {
+			StatoRpt stato = entry.getStato();
+			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtAssente", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name())));
 		}
-
+	 
 		return sb.toString();
 	}
 

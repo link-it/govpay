@@ -44,7 +44,7 @@ public class IdNegozio extends InputText{
 	protected String getDefaultValue(List<RawParamValue> values, Object... objects) {
 		String attivatoObepValue = Utils.getValue(values, this.attivatoObepId);
 		
-		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.getBoolean(attivatoObepValue)){
+		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.parseBoolean(attivatoObepValue)){
 			return "";
 		}
 		
@@ -55,7 +55,7 @@ public class IdNegozio extends InputText{
 	protected boolean isRequired(List<RawParamValue> values, Object... objects) {
 		String attivatoObepValue = Utils.getValue(values, this.attivatoObepId);
 		
-		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.getBoolean(attivatoObepValue)){
+		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.parseBoolean(attivatoObepValue)){
 			return true;
 		}
 		
@@ -66,7 +66,7 @@ public class IdNegozio extends InputText{
 	protected boolean isHidden(List<RawParamValue> values, Object... objects) {
 		String attivatoObepValue = Utils.getValue(values, this.attivatoObepId);
 		
-		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.getBoolean(attivatoObepValue)){
+		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.parseBoolean(attivatoObepValue)){
 			return false;
 		}
 		
@@ -77,7 +77,7 @@ public class IdNegozio extends InputText{
 	protected boolean isEditable(List<RawParamValue> values, Object... objects) {
 		String attivatoObepValue = Utils.getValue(values, this.attivatoObepId);
 		
-		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.getBoolean(attivatoObepValue)){
+		if(StringUtils.isNotEmpty(attivatoObepValue) && Boolean.parseBoolean(attivatoObepValue)){
 			return true;
 		}
 		

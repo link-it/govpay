@@ -108,19 +108,9 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			// tutte le unita' con codice uo = 'EC' sono nascoste
 			filter.setExcludeEC(true); 
 
-			// Ricerca dal dettaglio dominio
-
-			Domini dominiDars = new Domini();
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
-			String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
-
-			if(StringUtils.isNotEmpty(codDominio)){
-				DominiBD dominiBD = new DominiBD(bd);
-				Dominio dominio = dominiBD.getDominio(codDominio);
-				this.idDominio = dominio.getId();
-				filter.setDominioFilter(dominio.getId()); 
-				visualizzaRicerca = false;
-			}
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
+			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
+			filter.setDominioFilter(this.idDominio);
 
 			long count = unitaOperativaBD.count(filter);
 
@@ -159,31 +149,16 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-		Domini dominiDars = new Domini();
-		String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
 
 		if(infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
-
 		}
-
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
 		InputText codUnitaOperativa = (InputText) infoRicercaMap.get(codUoId);
 		codUnitaOperativa.setDefaultValue(null);
 		sezioneRoot.addField(codUnitaOperativa);
-
-		// codDominio
-		InputText codDominio = (InputText) infoRicercaMap.get(codDominioId);
-		DominiBD dominiBD = new DominiBD(bd);
-		try {
-			Dominio dominio = dominiBD.getDominio(this.idDominio);
-			codDominio.setDefaultValue(dominio.getCodDominio());
-		} catch (Exception e) {
-			throw new ConsoleException(e);
-		}
-		sezioneRoot.addField(codDominio);
 
 		return infoRicerca;
 	}
@@ -193,17 +168,11 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-			Domini dominiDars = new Domini();
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".codDominio.id");
 
 			// codUO
 			String codUnitaOperativaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
 			InputText codUnitaOperativa = new InputText(codUoId, codUnitaOperativaLabel, null, false, false, true, 1, 255);
 			infoRicercaMap.put(codUoId, codUnitaOperativa);
-
-			// idDominio
-			InputText codDominio = new InputText(codDominioId, null, null, true, true, false, 1, 255);
-			infoRicercaMap.put(codDominioId, codDominio);
 
 		}
 	}
@@ -339,6 +308,10 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
+			}
 
 			if(infoCreazioneMap.containsKey(fieldId)){
 				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
@@ -571,7 +544,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;

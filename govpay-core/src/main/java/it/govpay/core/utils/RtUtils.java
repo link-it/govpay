@@ -43,6 +43,7 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Notifica.TipoNotifica;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Rpt.StatoRpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
@@ -70,17 +71,20 @@ public class RtUtils extends NdpValidationUtils {
 	}
 
 	public static byte[] validaFirma(String tipoFirma,  byte[] rt, String idDominio) throws NdpException {
-
-		if(tipoFirma.equals("0"))
-			return rt;
-		
-		if(tipoFirma.equals("1"))
-			return validaFirmaCades(rt, idDominio);
-		
-		if(tipoFirma.equals("3"))
-			return validaFirmaXades(rt, idDominio);
-		
-		throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
+		try {
+			switch (FirmaRichiesta.toEnum(tipoFirma)) {
+			case NESSUNA:
+				return rt;
+			case CA_DES:
+				return validaFirmaCades(rt, idDominio);
+			case XA_DES:
+				return validaFirmaXades(rt, idDominio);
+			default:
+				throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
+			}
+		} catch (ServiceException e) {
+			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
+		}
 	}
 
 	private static byte[] validaFirmaXades(byte[] rt, String idDominio) throws NdpException {
@@ -225,7 +229,7 @@ public class RtUtils extends NdpValidationUtils {
 			throw new NdpException(FaultPa.PAA_RT_DUPLICATA, rpt.getCodDominio());
 		}
 		
-		if(!rpt.getFirmaRichiesta().getCodifica().equals(tipoFirma))
+		if(!rpt.getFirmaRichiesta().equals(FirmaRichiesta.toEnum(tipoFirma)))
 			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, codDominio, "Richiesta RT con firma [" + rpt.getFirmaRichiesta().getCodifica() + "], ricevuta RT con firma [" + tipoFirma + "]");
 		
 		

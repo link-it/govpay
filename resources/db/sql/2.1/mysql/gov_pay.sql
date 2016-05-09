@@ -529,7 +529,7 @@ CREATE TABLE notifiche
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_prossima_spedizione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_prossima_spedizione DATETIME NOT NULL DEFAULT 0,
 	tentativi_spedizione BIGINT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,

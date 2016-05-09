@@ -56,6 +56,9 @@ public class Rpt extends BasicModel{
 		}
 		
 		public static FirmaRichiesta toEnum(String codifica) throws ServiceException {
+			// FIX Bug Nodo che imposta firma vuota in caso di NESSUNA
+			if(codifica.isEmpty())
+				return NESSUNA;
 			
 			for(FirmaRichiesta p : FirmaRichiesta.values()){
 				if(p.getCodifica().equals(codifica))
@@ -117,7 +120,8 @@ public class Rpt extends BasicModel{
 		RT_ACCETTATA_NODO,
 		RT_ACCETTATA_PA,
 		RT_RIFIUTATA_PA,
-		RT_ESITO_SCONOSCIUTO_PA;
+		RT_ESITO_SCONOSCIUTO_PA,
+		PROCESSED;
 	}
 	
 	private Long id;

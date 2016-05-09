@@ -54,15 +54,18 @@ import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -410,16 +413,16 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					}
 				}
 
-				String versamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
-
 				Pagamenti pagamentiDars = new Pagamenti();
 				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+				String versamentoId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idVersamento.id");
 				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
 
 				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
 
 				Transazioni transazioniDars = new Transazioni();
 				String etichettaTransazioni = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.transazioni.titolo");
+				versamentoId = Utils.getInstance().getMessageFromResourceBundle(transazioniDars.getNomeServizio()+ ".idVersamento.id");
 				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
 
 				dettaglio.addElementoCorrelato(etichettaTransazioni, uriBuilder.build());
@@ -534,7 +537,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					for (Pagamento pagamento : listaPagamenti) {
 						SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
 						String folderNamepagamento = "Pagamento_" + singoloVersamento.getCodSingoloVersamentoEnte();
-						
+
 						if(pagamento.getAllegato()!= null){
 							ZipEntry rtXml = new ZipEntry(folderName + "/"+ folderNamepagamento + "/allegato.xml");
 							zout.putNextEntry(rtXml);
@@ -549,11 +552,16 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				rptFsw.setSortOrder(SortOrder.DESC);
 				rptFilter.getFilterSortList().add(rptFsw);
 				rptFilter.setIdVersamento(idVersamento); 
+				
+				RrBD rrBD = new RrBD(bd);
+				FilterSortWrapper rrFsw = new FilterSortWrapper();
+				rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+				rrFsw.setSortOrder(SortOrder.DESC);
 
 				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
 				if(listaRpt != null && listaRpt.size() >0 )
 					for (Rpt rpt : listaRpt) {
-						String folderNameRpt = "Transazione_"+rpt.getCodMsgRichiesta();
+						String folderNameRpt = "TransazionePagamento_"+rpt.getCodMsgRichiesta();
 
 						ZipEntry rptXml = new ZipEntry(folderName + "/"+ folderNameRpt +"/rpt.xml");
 						zout.putNextEntry(rptXml);
@@ -565,6 +573,28 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							zout.putNextEntry(rtXml);
 							zout.write(rpt.getXmlRt());
 							zout.closeEntry();
+						}
+						
+						RrFilter rrFilter = rrBD.newFilter();
+						rrFilter.getFilterSortList().add(rrFsw);
+						rrFilter.setIdRpt(rpt.getId()); 
+						List<Rr> findAll = rrBD.findAll(rrFilter);
+						if(findAll != null && findAll.size() > 0){
+							for (Rr rr : findAll) {
+								String folderNameRr = "TransazioneRevoca_"+ rr.getCodMsgRevoca();
+								
+								ZipEntry rrXml = new ZipEntry(folderName + "/"+ folderNameRr+"/rr.xml");
+								zout.putNextEntry(rrXml);
+								zout.write(rr.getXmlRr());
+								zout.closeEntry();
+
+								if(rr.getXmlEr() != null){
+									ZipEntry rtXml = new ZipEntry(folderName + "/"+ folderNameRr+"/er.xml");
+									zout.putNextEntry(rtXml);
+									zout.write(rr.getXmlEr());
+									zout.closeEntry();
+								}
+							}
 						}
 					}
 			}
@@ -617,7 +647,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				for (Pagamento pagamento : listaPagamenti) {
 					SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
 					String folderNamepagamento = "Pagamento_" + singoloVersamento.getCodSingoloVersamentoEnte();
-					
+
 					if(pagamento.getAllegato()!= null){
 						ZipEntry rtXml = new ZipEntry(folderNamepagamento + "/allegato.xml");
 						zout.putNextEntry(rtXml);
@@ -632,11 +662,16 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			rptFsw.setSortOrder(SortOrder.DESC);
 			rptFilter.getFilterSortList().add(rptFsw);
 			rptFilter.setIdVersamento(idToExport); 
+			
+			RrBD rrBD = new RrBD(bd);
+			FilterSortWrapper rrFsw = new FilterSortWrapper();
+			rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+			rrFsw.setSortOrder(SortOrder.DESC);
 
 			List<Rpt> listaRpt = rptBD.findAll(rptFilter);
 			if(listaRpt != null && listaRpt.size() >0 )
 				for (Rpt rpt : listaRpt) {
-					String folderNameRpt = "Transazione_"+ rpt.getCodMsgRichiesta();
+					String folderNameRpt = "TransazionePagamento_"+ rpt.getCodMsgRichiesta();
 
 					ZipEntry rptXml = new ZipEntry(  folderNameRpt +"/rpt.xml");
 					zout.putNextEntry(rptXml);
@@ -648,6 +683,28 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						zout.putNextEntry(rtXml);
 						zout.write(rpt.getXmlRt());
 						zout.closeEntry();
+					}
+					
+					RrFilter rrFilter = rrBD.newFilter();
+					rrFilter.getFilterSortList().add(rrFsw);
+					rrFilter.setIdRpt(rpt.getId()); 
+					List<Rr> findAll = rrBD.findAll(rrFilter);
+					if(findAll != null && findAll.size() > 0){
+						for (Rr rr : findAll) {
+							String folderNameRr = "TransazioneRevoca_"+ rr.getCodMsgRevoca();
+							
+							ZipEntry rrXml = new ZipEntry(folderNameRr+"/rr.xml");
+							zout.putNextEntry(rrXml);
+							zout.write(rr.getXmlRr());
+							zout.closeEntry();
+
+							if(rr.getXmlEr() != null){
+								ZipEntry rtXml = new ZipEntry(folderNameRr+"/er.xml");
+								zout.putNextEntry(rtXml);
+								zout.write(rr.getXmlEr());
+								zout.closeEntry();
+							}
+						}
 					}
 				}
 

@@ -62,7 +62,11 @@ public class Gp21Utils {
 		t.setModello(ModelloPagamento.valueOf(rpt.getModelloPagamento().toString()));
 		t.setRpt(rpt.getXmlRpt());
 		t.setRt(rpt.getXmlRt());
-		t.setStato(StatoTransazione.valueOf(rpt.getStato().toString()));
+		try {
+			t.setStato(StatoTransazione.valueOf(rpt.getStato().toString()));
+		} catch (Exception e) {
+			t.setStato(StatoTransazione.RPT_ACCETTATA_NODO);
+		}
 		for(Pagamento pagamento : rpt.getPagamenti(bd)) {
 			t.getPagamento().add(toPagamento(pagamento));
 		}

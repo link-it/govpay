@@ -78,7 +78,7 @@ public class VersamentoUtils {
 
 	public static Versamento toVersamentoModel(it.govpay.servizi.commons.Versamento versamento, BasicBD bd) throws ServiceException, GovPayException {
 		Versamento model = new Versamento();
-		model.setAggiornabile(versamento.isAggiornabile());
+		model.setAggiornabile(versamento.isAggiornabile() == null ? true : versamento.isAggiornabile());
 		model.setAnagraficaDebitore(toAnagraficaModel(versamento.getDebitore()));
 		
 		if(versamento.getCausale() != null) {
