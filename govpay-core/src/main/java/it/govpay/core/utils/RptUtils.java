@@ -167,15 +167,15 @@ public class RptUtils {
 		String cFiscale = versante.getCodUnivoco();
 		idUnivocoVersante.setCodiceIdentificativoUnivoco(cFiscale);
 		idUnivocoVersante.setTipoIdentificativoUnivoco((cFiscale.length() == 16) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
-		soggettoVersante.setAnagraficaVersante(versante.getRagioneSociale());
-		soggettoVersante.setCapVersante(versante.getCap());
-		soggettoVersante.setCivicoVersante(versante.getCivico());
-		soggettoVersante.setEMailVersante(versante.getEmail());
+		soggettoVersante.setAnagraficaVersante(getNotEmpty(versante.getRagioneSociale()));
+		soggettoVersante.setCapVersante(getNotEmpty(versante.getCap()));
+		soggettoVersante.setCivicoVersante(getNotEmpty(versante.getCivico()));
+		soggettoVersante.setEMailVersante(getNotEmpty(versante.getEmail()));
 		soggettoVersante.setIdentificativoUnivocoVersante(idUnivocoVersante);
-		soggettoVersante.setIndirizzoVersante(versante.getIndirizzo());
-		soggettoVersante.setLocalitaVersante(versante.getLocalita());
-		soggettoVersante.setNazioneVersante(versante.getNazione());
-		soggettoVersante.setProvinciaVersante(versante.getProvincia());
+		soggettoVersante.setIndirizzoVersante(getNotEmpty(versante.getIndirizzo()));
+		soggettoVersante.setLocalitaVersante(getNotEmpty(versante.getLocalita()));
+		soggettoVersante.setNazioneVersante(getNotEmpty(versante.getNazione()));
+		soggettoVersante.setProvinciaVersante(getNotEmpty(versante.getProvincia()));
 		return soggettoVersante;
 	}
 
@@ -186,14 +186,14 @@ public class RptUtils {
 		idUnivocoDebitore.setCodiceIdentificativoUnivoco(cFiscale);
 		idUnivocoDebitore.setTipoIdentificativoUnivoco((cFiscale.length() == 16) ? StTipoIdentificativoUnivocoPersFG.F : StTipoIdentificativoUnivocoPersFG.G);
 		soggettoDebitore.setAnagraficaPagatore(debitore.getRagioneSociale());
-		soggettoDebitore.setCapPagatore(debitore.getCap());
-		soggettoDebitore.setCivicoPagatore(debitore.getCivico());
-		soggettoDebitore.setEMailPagatore(debitore.getEmail());
+		soggettoDebitore.setCapPagatore(getNotEmpty(debitore.getCap()));
+		soggettoDebitore.setCivicoPagatore(getNotEmpty(debitore.getCivico()));
+		soggettoDebitore.setEMailPagatore(getNotEmpty(debitore.getEmail()));
 		soggettoDebitore.setIdentificativoUnivocoPagatore(idUnivocoDebitore);
-		soggettoDebitore.setIndirizzoPagatore(debitore.getIndirizzo());
-		soggettoDebitore.setLocalitaPagatore(debitore.getLocalita());
-		soggettoDebitore.setNazionePagatore(debitore.getNazione());
-		soggettoDebitore.setProvinciaPagatore(debitore.getProvincia());
+		soggettoDebitore.setIndirizzoPagatore(getNotEmpty(debitore.getIndirizzo()));
+		soggettoDebitore.setLocalitaPagatore(getNotEmpty(debitore.getLocalita()));
+		soggettoDebitore.setNazionePagatore(getNotEmpty(debitore.getNazione()));
+		soggettoDebitore.setProvinciaPagatore(getNotEmpty(debitore.getProvincia()));
 		return soggettoDebitore;
 	}
 
@@ -208,12 +208,12 @@ public class RptUtils {
 
 		try {
 			Anagrafica anagrafica = dominio.getAnagrafica(bd);
-			enteBeneficiario.setCapBeneficiario(anagrafica.getCap());
-			enteBeneficiario.setCivicoBeneficiario(anagrafica.getCivico());
-			enteBeneficiario.setIndirizzoBeneficiario(anagrafica.getIndirizzo());
-			enteBeneficiario.setLocalitaBeneficiario(anagrafica.getLocalita());
-			enteBeneficiario.setNazioneBeneficiario(anagrafica.getNazione());
-			enteBeneficiario.setProvinciaBeneficiario(anagrafica.getProvincia());
+			enteBeneficiario.setCapBeneficiario(getNotEmpty(anagrafica.getCap()));
+			enteBeneficiario.setCivicoBeneficiario(getNotEmpty(anagrafica.getCivico()));
+			enteBeneficiario.setIndirizzoBeneficiario(getNotEmpty(anagrafica.getIndirizzo()));
+			enteBeneficiario.setLocalitaBeneficiario(getNotEmpty(anagrafica.getLocalita()));
+			enteBeneficiario.setNazioneBeneficiario(getNotEmpty(anagrafica.getNazione()));
+			enteBeneficiario.setProvinciaBeneficiario(getNotEmpty(anagrafica.getProvincia()));
 		} catch (NotFoundException e) {
 		}
 
@@ -236,6 +236,13 @@ public class RptUtils {
 				enteBeneficiario.setNazioneBeneficiario(uo.getAnagrafica().getNazione());
 		}
 		return enteBeneficiario;
+	}
+
+	private static String getNotEmpty(String text) {
+		if(text == null || text.trim().isEmpty())
+			return null;
+		else
+			return text;
 	}
 
 	private static CtDatiVersamentoRPT buildDatiVersamento(Rpt rpt, Versamento versamento, Canale canale, String ibanAddebito, BasicBD bd) throws ServiceException {
@@ -262,18 +269,18 @@ public class RptUtils {
 		
 		if(singoloVersamento.getIbanAccredito(bd) != null) {
 			IbanAccredito ibanAccredito = singoloVersamento.getIbanAccredito(bd);
-			datiSingoloVersamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
-			datiSingoloVersamento.setBicAppoggio(ibanAccredito.getCodBicAppoggio());
-			datiSingoloVersamento.setIbanAppoggio(ibanAccredito.getCodIbanAppoggio());
-			datiSingoloVersamento.setIbanAccredito(ibanAccredito.getCodIban());
+			datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
+			datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
+			datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
+			datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
 			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita().getCodifica() + "/" + singoloVersamento.getCodContabilita());
 		} else {
 			if(singoloVersamento.getTributo(bd).getIdIbanAccredito() != null) {
 				IbanAccredito ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito(bd);
-				datiSingoloVersamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
-				datiSingoloVersamento.setBicAppoggio(ibanAccredito.getCodBicAppoggio());
-				datiSingoloVersamento.setIbanAppoggio(ibanAccredito.getCodIbanAppoggio());
-				datiSingoloVersamento.setIbanAccredito(ibanAccredito.getCodIban());
+				datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
+				datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
+				datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
+				datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
 			} else {
 				CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
 				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());

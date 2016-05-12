@@ -39,8 +39,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.ApplicazioniBD;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.Pagamento;
@@ -214,12 +212,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato.label"),
 						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato."+tipoAllegato.name()));
 
-			Long idFrApplicazione = pagamento.getIdFrApplicazione();
-			if(idFrApplicazione != null){
-				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-				Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.label"),applicazione.getCodApplicazione());
-			}
+//			Long idFrApplicazione = pagamento.getIdFrApplicazione();
+//			if(idFrApplicazione != null){
+//				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+//				Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
+//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.label"),applicazione.getCodApplicazione());
+//			}
 			EsitoRendicontazione esitoRendicontazione = pagamento.getEsitoRendicontazione();
 			if(esitoRendicontazione != null)
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione.label"),
@@ -258,13 +256,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				if(pagamento.getImportoRevocato() != null)
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoRevocato.label"),(pagamento.getImportoRevocato().toString() + "€"));
 
-				Long idFrApplicazioneRevoca = pagamento.getIdFrApplicazioneRevoca();
-				if(idFrApplicazioneRevoca != null){
-					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-					Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazioneRevoca.label"),applicazione.getCodApplicazione());
-				}
-				EsitoRendicontazione esitoRendicontazioneRevoca = pagamento.getEsitoRendicontazione();
+//				Long idFrApplicazioneRevoca = pagamento.getIdFrApplicazioneRevoca();
+//				if(idFrApplicazioneRevoca != null){
+//					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+//					Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
+//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazioneRevoca.label"),applicazione.getCodApplicazione());
+//				}
+				EsitoRendicontazione esitoRendicontazioneRevoca = pagamento.getEsitoRendicontazioneRevoca();
 				if(esitoRendicontazioneRevoca != null)
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca.label"),
 							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca."+esitoRendicontazioneRevoca.name()));
