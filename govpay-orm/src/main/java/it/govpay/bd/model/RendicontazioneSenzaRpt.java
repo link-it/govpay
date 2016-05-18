@@ -23,7 +23,6 @@ package it.govpay.bd.model;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.SingoliVersamentiBD;
-import it.govpay.orm.dao.jdbc.JDBCIUVService;
 
 import java.math.BigDecimal;
 import java.util.Date;

@@ -38,7 +38,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.FrApplicazione;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 
