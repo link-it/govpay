@@ -27,6 +27,8 @@ import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.Pagamento;
 import it.govpay.core.business.Psp;
 import it.govpay.core.business.Rendicontazioni;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 
@@ -40,6 +42,7 @@ import javax.ejb.Singleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.utils.logger.beans.proxy.Service;
 
 @Singleton
 public class Operazioni{
@@ -48,10 +51,16 @@ public class Operazioni{
 	
 	@Schedule(hour="4,8,16,20", persistent=false)
 	public static String acquisizioneRendicontazioni(){
-		ThreadContext.put("cmd", "AcquisizioneRendicontazioni");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "AcquisizioneRendicontazioni");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			String response = new Rendicontazioni(bd).downloadRendicontazioni();
 			return response;
@@ -60,15 +69,22 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
 		}
 	}
 	
 	@Schedule(hour="0,12", persistent=false)
 	public static String aggiornamentoRegistroPsp(){
-		ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			return new Psp(bd).aggiornaRegistro();
 		} catch (Exception e) {
@@ -81,10 +97,16 @@ public class Operazioni{
 	
 	@Schedule(hour="2,6,10,14,18,22", persistent=false)
 	public static String recuperoRptPendenti(){
-		ThreadContext.put("cmd", "RecuperoRptPendenti");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "RecuperoRptPendenti");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			return new Pagamento(bd).verificaTransazioniPendenti();
 		} catch (Exception e) {
@@ -97,13 +119,20 @@ public class Operazioni{
 	
 	@Schedule(hour="*", minute="*/1", persistent=false)
 	public static boolean spedizioneNotifiche(){
-		ThreadContext.put("cmd", "SpedizioneNotifiche");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
 		BasicBD bd = null;
 		List<InviaNotificaThread> threads = new ArrayList<InviaNotificaThread>();
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "SpedizioneNotifiche");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			log.trace("Spedizione notifiche non consegnate");
+			
 			NotificheBD notificheBD = new NotificheBD(bd);
 			
 			List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
@@ -111,8 +140,6 @@ public class Operazioni{
 			if(notifiche.size() == 0) return true;
 				
 			log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
-			
-			
 			
 			for(Notifica notifica: notifiche) {
 				InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);

@@ -32,6 +32,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
+import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Applicazione;
@@ -70,6 +71,7 @@ public class Tributi extends MultiSelectList<Long, List<Long>>{
 		try {
 			BasicBD bd = (BasicBD) objects[0];
 			TributiBD tributiBD = new TributiBD(bd); 
+			DominiBD dominiBD = new DominiBD(bd);
 
 			TributoFilter filter = tributiBD.newFilter();
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -83,7 +85,8 @@ public class Tributi extends MultiSelectList<Long, List<Long>>{
 			
 			for(Tributo tributo : findAll) {
 				Elemento elemento = tributiHandler.getElemento(tributo, tributo.getId(), null, bd);
-				lst.add(new Voce<Long>(elemento.getTitolo() + " " + elemento.getSottotitolo(), tributo.getId()));
+				lst.add(new Voce<Long>(elemento.getTitolo() + 
+						", Dominio: " + dominiBD.getDominio(tributo.getIdDominio()).getCodDominio(), tributo.getId()));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

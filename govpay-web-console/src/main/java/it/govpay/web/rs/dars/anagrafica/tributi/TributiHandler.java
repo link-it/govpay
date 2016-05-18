@@ -55,7 +55,6 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
-import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -398,7 +397,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			idIbanAccredito.setHidden(true);
 			idIbanAccredito.setRequired(false);
 		}
-		
+
 		idIbanAccredito.setValues(listaIban);
 		idIbanAccredito.setDefaultValue(entry.getIdIbanAccredito());
 		sezioneRoot.addField(idIbanAccredito);
@@ -424,7 +423,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
-			
+
 			if(infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
@@ -463,7 +462,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -635,7 +634,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
-	public String getTitolo(Tributo entry) {
+	public String getTitolo(Tributo entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append( entry.getDescrizione());
@@ -644,26 +643,17 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		return sb.toString();
 	}
 
-	public Elemento getElemento(Tributo entry, Long id, UriBuilder uriDettaglioBuilder, BasicBD bd) throws Exception{
-		String titolo = this.getTitolo(entry);
-
-		StringBuilder sb = new StringBuilder();
-		DominiBD dominiBD = new DominiBD(bd);
-
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
-		sb.append(", Dominio: ").append(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());
-
-		String sottotitolo = sb.toString();
-		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
-		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-		return elemento;
-	}
-
 	@Override
-	public String getSottotitolo(Tributo entry) {
+	public String getSottotitolo(Tributo entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+		DominiBD dominiBD = new DominiBD(bd);
+		try{
+			sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+			sb.append(", Dominio: ").append(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 
 		return sb.toString();
 	}

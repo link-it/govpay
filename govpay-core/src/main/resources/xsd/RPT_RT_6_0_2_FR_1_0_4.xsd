@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<xsd:schema xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" elementFormDefault="qualified" attributeFormDefault="unqualified" version="6.0.2"
+<xsd:schema xmlns:pay_i="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.digitpa.gov.it/schemas/2011/Pagamenti/" elementFormDefault="qualified" attributeFormDefault="unqualified" version="6.2"
             xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="1.0">
 
 	<xsd:annotation>

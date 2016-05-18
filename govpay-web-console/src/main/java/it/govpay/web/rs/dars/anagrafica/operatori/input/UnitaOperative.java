@@ -73,6 +73,7 @@ public class UnitaOperative extends MultiSelectList<Long, List<Long>>{
 			fsw.setField(it.govpay.orm.Uo.model().COD_UO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
+			filter.setExcludeEC(true); 
 			List<UnitaOperativa> findAll = uoBD.findAll(filter);
 
 			for(UnitaOperativa uo : findAll) {

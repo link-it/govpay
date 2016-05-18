@@ -171,10 +171,10 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
 
 	@Override
-	public String getTitolo(Object entry) {	return null; }
+	public String getTitolo(Object entry,BasicBD bd) {	return null; }
 
 	@Override
-	public String getSottotitolo(Object entry) { return null; }
+	public String getSottotitolo(Object entry,BasicBD bd) { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException { return null; }

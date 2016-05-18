@@ -66,14 +66,12 @@ import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
-import it.govpay.web.rs.dars.anagrafica.iban.IbanHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
-import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -190,7 +188,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-		InputNumber codDominio = (InputNumber) infoRicercaMap.get(codDominioId);
+		InputText codDominio = (InputText) infoRicercaMap.get(codDominioId);
 		codDominio.setDefaultValue(null);
 		codDominio.setEditable(true); 
 		sezioneRoot.addField(codDominio);
@@ -234,7 +232,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
-			InputNumber codDominio = new InputNumber(codDominioId, codDominioLabel, null, false, false, true, 1, 11);
+			InputText codDominio = new InputText(codDominioId, codDominioLabel, null, false, false, true, 1, 11);
 			infoRicercaMap.put(codDominioId, codDominio);
 
 			// idstazione
@@ -274,7 +272,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(dominioId);
 		idInterm.setDefaultValue(null);
 		sezioneRoot.addField(idInterm);
-		InputNumber codDominio = (InputNumber) infoCreazioneMap.get(codDominioId);
+		InputText codDominio = (InputText) infoCreazioneMap.get(codDominioId);
 		codDominio.setDefaultValue(null);
 		codDominio.setEditable(true); 
 		sezioneRoot.addField(codDominio);
@@ -393,9 +391,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
-			InputNumber codDominio = new InputNumber(codDominioId, codDominioLabel, null, true, false, true, 11, 11);
+			InputText codDominio = new InputText(codDominioId, codDominioLabel, null, true, false, true, 11, 11);
 			codDominio.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.suggestion"));
-			codDominio.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.errorMessage"));
+			codDominio.setValidation("[0-9]{11}", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.errorMessage"));
 			infoCreazioneMap.put(codDominioId, codDominio);
 
 			// ragioneSociale
@@ -481,8 +479,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(dominioId);
 		idInterm.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idInterm);
-		InputNumber codDominio = (InputNumber) infoCreazioneMap.get(codDominioId);
-		codDominio.setDefaultValue(Long.parseLong(entry.getCodDominio()));
+		InputText codDominio = (InputText) infoCreazioneMap.get(codDominioId);
+		codDominio.setDefaultValue(entry.getCodDominio());
 		codDominio.setEditable(false); 
 		sezioneRoot.addField(codDominio);
 
@@ -621,7 +619,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd,id);
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -926,7 +924,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
-	public String getTitolo(Dominio entry) {
+	public String getTitolo(Dominio entry, BasicBD bd)  throws ConsoleException{
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(entry.getRagioneSociale());
@@ -934,26 +932,18 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		return sb.toString();
 	}
 
-	public Elemento getElemento(Dominio entry, Long id, UriBuilder uriDettaglioBuilder, BasicBD bd) throws Exception{
-		String titolo = this.getTitolo(entry);
+	@Override
+	public String getSottotitolo(Dominio entry, BasicBD bd)  throws ConsoleException {
 
 		StringBuilder sb = new StringBuilder();
+		try{
 
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
 		sb.append(", Stazione: ").append(entry.getStazione(bd).getCodStazione());
 
-		String sottotitolo = sb.toString();
-		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
-		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-		return elemento;
-	}
-
-	@Override
-	public String getSottotitolo(Dominio entry) {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
-
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 		return sb.toString();
 	}
 

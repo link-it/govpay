@@ -21,42 +21,43 @@
 package it.govpay.web.handler;
 
 import java.io.ByteArrayOutputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
-import org.apache.logging.log4j.Level;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.utils.logger.beans.Message;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.constants.MessageType;
+
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 
 public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
 	private static Logger log = LogManager.getLogger();
-	private MessageLoggingHandlerUtils messageLoggingHandlerUtils;
 	
-	public MessageLoggingHandler() {
-		this.messageLoggingHandlerUtils = new MessageLoggingHandlerUtils();
-	}
 	public Set<QName> getHeaders() {
 		return null;
 	}
 
 	public boolean handleMessage(SOAPMessageContext smc) {
-		if(log.getLevel().compareTo(Level.DEBUG) > 0)
-			logToSystemOut(smc);
-		return true;
+		return logToSystemOut(smc);
 	}
 
 	public boolean handleFault(SOAPMessageContext smc) {
-		if(log.getLevel().compareTo(Level.DEBUG) > 0)
-			logToSystemOut(smc);
-		return true;
+		return logToSystemOut(smc);
 	}
 
 	public void close(MessageContext messageContext) {
@@ -64,38 +65,66 @@ public class MessageLoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
 
 	@SuppressWarnings("unchecked")
-	private void logToSystemOut(SOAPMessageContext smc) {
-
+	private boolean logToSystemOut(SOAPMessageContext smc) {
+		
 		Boolean outboundProperty = (Boolean)
 				smc.get (MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 		
-		StringBuffer sb = new StringBuffer();
-		Map<String, List<String>> httpHeaders = null;
-		if (outboundProperty.booleanValue()) {
-			sb.append("Outbound message: ");
-			httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_RESPONSE_HEADERS);
-		} else {
-			sb.append("Inbound message:");
-			httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_REQUEST_HEADERS);
-		}
-
+		GpContext ctx = null;
+		Message msg = new Message();
+		
 		SOAPMessage message = smc.getMessage();
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();  
 		try {
-			if(httpHeaders != null) {
-				sb.append("\n\tHTTP Headers: ");
-				for(String headerName : httpHeaders.keySet()) {
-					List<String> values = httpHeaders.get(headerName);
-					for(String value : values) {
-						sb.append("\n\t" + headerName + ": " + value);
-					}
-				}
-			}
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();  
 			message.writeTo(baos);  
-			this.messageLoggingHandlerUtils.logToSystemOut(outboundProperty, httpHeaders, baos.toByteArray());
+			msg.setContent(baos.toByteArray());
 		} catch (Exception e) {
 			log.error("Exception in handler: " + e);
 		}
+		
+		Map<String, List<String>> httpHeaders = null;
+		
+		if (outboundProperty.booleanValue()) {
+			ctx = GpThreadLocal.get();
+			httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_RESPONSE_HEADERS);
+			msg.setType(MessageType.RESPONSE_OUT);
+			ctx.getContext().getResponse().setOutDate(new Date());
+			ctx.getContext().getResponse().setOutSize(Long.valueOf(baos.size()));
+		} else {
+			try {
+				ctx = new GpContext(smc);
+				ThreadContext.put("op", ctx.getTransactionId());
+				GpThreadLocal.set(ctx);
+			} catch (Exception e) {
+				log.error(e.getMessage(),e);
+				return false;
+			}
+			httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_REQUEST_HEADERS);
+			msg.setType(MessageType.REQUEST_IN);
+			msg.setContentType(((HttpServletRequest) smc.get(MessageContext.SERVLET_REQUEST)).getContentType());
+			
+			ctx.getContext().getRequest().setInDate(new Date());
+			ctx.getContext().getRequest().setInSize(Long.valueOf(baos.size()));
+		}
+		
+		if(httpHeaders != null) {
+			for(String key : httpHeaders.keySet()) {
+				if(httpHeaders.get(key) != null) {
+					if(key == null)
+						msg.addHeader(new Property("Status-line", httpHeaders.get(key).get(0)));
+					else if(httpHeaders.get(key).size() == 1)
+						msg.addHeader(new Property(key, httpHeaders.get(key).get(0)));
+					else
+						msg.addHeader(new Property(key, ArrayUtils.toString(httpHeaders.get(key))));
+				}
+			}
+		}
+
+
+		
+		ctx.log(msg);
+		
+		return true;
 	}
 }
 

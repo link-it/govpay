@@ -127,7 +127,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			if(findAll != null && findAll.size() > 0){
 				for (Portale entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -410,7 +410,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(portale), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(portale,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -443,7 +443,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 				if(findAll != null && findAll.size() > 0){
 					for (Applicazione entry : findAll) {
-						Elemento elemento = applicazioniDarsHandler.getElemento(entry, entry.getId(), uriDettaglioApplicazioniBuilder);
+						Elemento elemento = applicazioniDarsHandler.getElemento(entry, entry.getId(), uriDettaglioApplicazioniBuilder,bd);
 						sezioneApplicazioni.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
 					}
 				}
@@ -581,7 +581,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
-	public String getTitolo(Portale entry) {
+	public String getTitolo(Portale entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(entry.getCodPortale());
@@ -589,7 +589,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
-	public String getSottotitolo(Portale entry) {
+	public String getSottotitolo(Portale entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));

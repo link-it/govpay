@@ -136,6 +136,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			String idVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, idVersamentoId, String.class);
+			if(StringUtils.isNotEmpty(idVersamento))
+				filter.setCodVersamento(idVersamento);
+			
 
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
@@ -162,6 +165,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+			if(StringUtils.isNotEmpty(iuv))
+				filter.setIuv(iuv); 
+			
 
 			boolean eseguiRicerca = isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
@@ -187,7 +193,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			if(findAll != null && findAll.size() > 0){
 				for (Versamento entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -254,7 +260,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 			if(findAll != null && findAll.size() > 0){
 				for (Dominio dominio : findAll) {
-					domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio), dominio.getId()));  
+					domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
 				}
 			}
 		} catch (ServiceException e) {
@@ -280,23 +286,23 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			// cfDebitore
 			String cfDebitoreLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.label");
-			InputText cfDebitore = new InputText(cfDebitoreId, cfDebitoreLabel, null, false, false, true, 1, 255);
+			InputText cfDebitore = new InputText(cfDebitoreId, cfDebitoreLabel, null, false, false, true, 1, 35);
 			infoRicercaMap.put(cfDebitoreId, cfDebitore);
 
 			// cfVersante
 			String cfVersanteLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfVersante.label");
-			InputText cfVersante = new InputText(cfVersanteId, cfVersanteLabel, null, false, false, true, 1, 255);
+			InputText cfVersante = new InputText(cfVersanteId, cfVersanteLabel, null, false, false, true, 1, 35);
 			cfVersante.setAvanzata(true);
 			infoRicercaMap.put(cfVersanteId, cfVersante);
 
 			// Id Versamento
 			String idVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.label");
-			InputText idVersamento = new InputText(idVersamentoId, idVersamentoLabel, null, false, false, true, 1, 255);
+			InputText idVersamento = new InputText(idVersamentoId, idVersamentoLabel, null, false, false, true, 1, 35);
 			infoRicercaMap.put(idVersamentoId, idVersamento);
 
 			// iuv
 			String iuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
-			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 1, 255);
+			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 1, 35);
 			infoRicercaMap.put(iuvId, iuv);			
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
@@ -354,7 +360,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id);
 
-			String titolo = versamento != null ? this.getTitolo(versamento) : "";
+			String titolo = versamento != null ? this.getTitolo(versamento,bd) : "";
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
@@ -407,7 +413,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 					if(singoliVersamenti != null && singoliVersamenti.size() > 0){
 						for (SingoloVersamento entry : singoliVersamenti) {
-							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), uriDettaglioSVBuilder);
+							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), uriDettaglioSVBuilder,bd);
 							sezioneSingoliVersamenti.addVoce(elemento.getTitolo(), elemento.getSottotitolo());
 						}
 					}
@@ -439,7 +445,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	}
 
 	@Override
-	public String getTitolo(Versamento entry) {
+	public String getTitolo(Versamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		BigDecimal importoTotale = entry.getImportoTotale();
@@ -451,7 +457,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	}
 
 	@Override
-	public String getSottotitolo(Versamento entry) {
+	public String getSottotitolo(Versamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		Date dataUltimoAggiornamento = entry.getDataUltimoAggiornamento();
 

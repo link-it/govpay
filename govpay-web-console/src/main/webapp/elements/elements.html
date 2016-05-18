@@ -12711,8 +12711,8 @@ this.fire('dom-change');
     Polymer.PaperItemBehaviorImpl
   ];
 </script>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700">
+
+
 <style is="custom-style">
 
   :root {
@@ -17175,6 +17175,8 @@ context. You should place this element as a child of `<body>` whenever possible.
     });
   </script>
 </dom-module>
+
+
 <style is="custom-style">
 
   /*
@@ -29345,65 +29347,6 @@ event and do your own custom submission:
 
       singleCheck: function(event){
         event.stopImmediatePropagation();
-      }
-    });
-  })();
-  </script>
-</dom-module>
-<dom-module id="link-govpay" assetpath="link-govpay/">
-  <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-      }
-    </style>
-    <paper-scroll-header-panel id="headerPanelMain" class="main" main="" fixed="">
-      
-      <paper-toolbar>
-        <paper-icon-button icon="menu" on-tap="openDrawer"></paper-icon-button>
-        <div class="app-name">GovPay 2.0</div>
-        <div class="space"></div>
-        
-        <paper-icon-button icon="face"></paper-icon-button>
-      </paper-toolbar>
-      
-      <div class="content">
-      </div>
-    </paper-scroll-header-panel>
-    <iron-ajax id="getUserInfo" url$="[[getUserURL()]]" handle-as="json" on-response="getUserInfo_responseHandler" on-error="getUserInfo_errorHandler" debounce-duration="300"></iron-ajax>
-  </template>
-  <script>
-  (function() {
-    'use strict';
-
-    Polymer({
-      is: 'link-govpay',
-
-      ready: function(){
-        app.showSpinner();
-        this.$.getUserInfo.generateRequest();
-      },
-
-      properties: {
-      },
-
-
-      getUserURL: function(){
-        return REST_URL+'operatori/user';
-      },
-
-      getUserInfo_responseHandler: function(event){
-        app.hideSpinner();
-        USER_LOGGED = event.detail.response.response;
-      },
-
-      getUserInfo_errorHandler: function(event){
-        app.hideSpinner();
-        app.showPaperToast('Errore', 'error');
-      },
-
-      openDrawer: function(event){
-        this.fire('open-drawer');
       }
     });
   })();

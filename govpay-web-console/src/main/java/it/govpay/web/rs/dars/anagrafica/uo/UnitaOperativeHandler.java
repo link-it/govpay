@@ -32,7 +32,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
@@ -50,12 +49,10 @@ import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
-import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
-import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -347,7 +344,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(unitaOperativa), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(unitaOperativa,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -503,7 +500,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	}
 
 	@Override
-	public String getTitolo(UnitaOperativa entry) {
+	public String getTitolo(UnitaOperativa entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		String ragioneSociale = entry.getAnagrafica().getRagioneSociale();
@@ -516,25 +513,16 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		return sb.toString();
 	}
 
-	public Elemento getElemento(UnitaOperativa entry, Long id, UriBuilder uriDettaglioBuilder, BasicBD bd) throws Exception{
-		String titolo = this.getTitolo(entry);
-
+	@Override
+	public String getSottotitolo(UnitaOperativa entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 
+		try{
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
 		sb.append(", Dominio: ").append(entry.getDominio(bd).getCodDominio());
-
-		String sottotitolo = sb.toString();
-		URI urlDettaglio = id != null ?  uriDettaglioBuilder.build(id) : null;
-		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-		return elemento;
-	}
-
-	@Override
-	public String getSottotitolo(UnitaOperativa entry) {
-		StringBuilder sb = new StringBuilder();
-
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 
 		return sb.toString();
 	}

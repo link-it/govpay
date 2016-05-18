@@ -20,7 +20,7 @@
 		
 			<xsd:complexType name="gpResponse">
 				<xsd:sequence>
-					<xsd:element name="codOperazione" type="com:cod35" />
+					<xsd:element name="codOperazione" type="com:uuid" />
 					<xsd:element name="codEsitoOperazione" type="com:esitoOperazione" />
 					<xsd:element name="descrizioneEsitoOperazione" type="xsd:string" minOccurs="0"/>
 				</xsd:sequence>
@@ -194,6 +194,13 @@
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>	
+			
+			<xsd:simpleType name="uuid">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="36" />
+				</xsd:restriction>
+			</xsd:simpleType>
 			
 			<xsd:simpleType name="cod35">
 				<xsd:restriction base="xsd:string">

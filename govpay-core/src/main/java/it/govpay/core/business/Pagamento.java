@@ -73,6 +73,8 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.RrUtils;
@@ -101,6 +103,8 @@ public class Pagamento extends BasicBD {
 	public GpAvviaTransazionePagamentoResponse avviaTransazione(Portale portaleAutenticato, GpAvviaTransazionePagamento gpAvviaTransazionePagamento, Canale canale) throws GovPayException, ServiceException {
 		Portale portale = null;
 
+		GpContext ctx = GpThreadLocal.get();
+		
 		try {
 			portale = AnagraficaManager.getPortale(this, gpAvviaTransazionePagamento.getCodPortale());
 		} catch (NotFoundException e) {
@@ -113,15 +117,18 @@ public class Pagamento extends BasicBD {
 		if(!portale.getCodPortale().equals(portaleAutenticato.getCodPortale()))
 			throw new GovPayException(EsitoOperazione.PRT_002, portaleAutenticato.getCodPortale(), gpAvviaTransazionePagamento.getCodPortale());
 		
+		ctx.log("integrazione.autorizzazionePortale");
+		
 		List<Versamento> versamenti = new ArrayList<Versamento>();
 		VersamentiBD versamentiBD = new VersamentiBD(this);
 		
 		for(VersamentoKey versamento : gpAvviaTransazionePagamento.getVersamentoOrVersamentoRef()) {
 			Versamento versamentoModel = null;
 			if(versamento instanceof it.govpay.servizi.commons.Versamento) {
+				ctx.log("integrazione.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				versamentoModel = VersamentoUtils.toVersamentoModel((it.govpay.servizi.commons.Versamento) versamento, this);
-				
 			} else {
+				ctx.log("integrazione.acquisizioneVersamentoRef", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				Applicazione applicazione = null;
 				try {
 					applicazione = AnagraficaManager.getApplicazione(this, versamento.getCodApplicazione());
@@ -143,15 +150,6 @@ public class Pagamento extends BasicBD {
 			versamenti.add(versamentoModel);
 		}
 		
-		if(canale == null) {
-			try {
-				TipoVersamento tipoVersamento = TipoVersamento.toEnum(gpAvviaTransazionePagamento.getCanale().getTipoVersamento().toString());
-				canale = AnagraficaManager.getCanale(this, gpAvviaTransazionePagamento.getCanale().getCodPsp(), gpAvviaTransazionePagamento.getCanale().getCodCanale(), tipoVersamento);
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.PSP_000, gpAvviaTransazionePagamento.getCanale().getCodPsp(), gpAvviaTransazionePagamento.getCanale().getCodCanale(), gpAvviaTransazionePagamento.getCanale().getTipoVersamento().toString());
-			}
-		}
-		
 		Anagrafica versante = VersamentoUtils.toAnagraficaModel(gpAvviaTransazionePagamento.getVersante());
 		boolean aggiornaSeEsiste = gpAvviaTransazionePagamento.isAggiornaSeEsiste() != null ? gpAvviaTransazionePagamento.isAggiornaSeEsiste() : true;
 		List<Rpt> rpts = avviaTransazione(versamenti, portale, canale, gpAvviaTransazionePagamento.getIbanAddebito(), versante, gpAvviaTransazionePagamento.getAutenticazione().value(), gpAvviaTransazionePagamento.getUrlRitorno(), aggiornaSeEsiste);
@@ -171,10 +169,23 @@ public class Pagamento extends BasicBD {
 			response.getRifTransazione().add(rifTransazione);
 		}
 		
+		if(rpts.get(0).getPspRedirectURL() != null) {
+			if(rpts.size() == 1)
+				ctx.log("core.consegnaRptRedirect", rpts.get(0).getCodMsgRichiesta(), rpts.get(0).getPspRedirectURL());
+			else
+				ctx.log("core.consegnaCarrelloRptRedirect", rpts.get(0).getCodCarrello(), rpts.get(0).getPspRedirectURL());
+		} else {
+			if(rpts.size() == 1)
+				ctx.log("core.consegnaRptNoRedirect", rpts.get(0).getCodMsgRichiesta());
+			else
+				ctx.log("core.consegnaCarrelloRptNoRedirect", rpts.get(0).getCodCarrello());
+		}
+		
 		return response;
 	}
 
 	public List<Rpt> avviaTransazione(List<Versamento> versamenti, Portale portale, Canale canale, String ibanAddebito, Anagrafica versante, String autenticazione, String redirect, boolean aggiornaSeEsiste) throws GovPayException {
+		GpContext ctx = GpThreadLocal.get();
 		try {
 			Date adesso = new Date();
 			boolean isBollo = false;
@@ -192,6 +203,7 @@ public class Pagamento extends BasicBD {
 				}
 				
 				if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(adesso) && versamentoModel.isAggiornabile()) {
+					
 					try {
 						versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, this);
 					} catch (VersamentoAnnullatoException e){
@@ -226,7 +238,6 @@ public class Pagamento extends BasicBD {
 			}
 			
 			// Verifico che il canale sia compatibile con la richiesta
-			
 			if(!canale.isAbilitato())
 				throw new GovPayException(EsitoOperazione.PSP_001, psp.getCodPsp(), canale.getCodCanale(), canale.getTipoVersamento().toString());
 			
@@ -276,24 +287,36 @@ public class Pagamento extends BasicBD {
 					Iuv iuvBusiness = new Iuv(this);
 					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), TipoIUV.ISO11694, versamento.getCodVersamentoEnte());
 					ccp = IuvUtils.buildCCP();
+					ctx.log("core.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
 					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso se il dominio e' configurato in tal senso. 
 					if(versamento.getUo(this).getDominio(this).isRiusoIuv()) {
 						try {
 							iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 							ccp = IuvUtils.buildCCP();
+							ctx.log("core.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						} catch (NotFoundException e) {
 							iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.ISO11694);
 							ccp = Rpt.CCP_NA;
+							ctx.log("core.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						}
 					} else {
 						iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.ISO11694);
 						ccp = Rpt.CCP_NA;
+						ctx.log("core.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 					}
 				}
+				
+				if(codCarrello != null) {
+					ctx.setCorrelationId(codCarrello);
+				} else {
+					ctx.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
+				}
+				
 				Rpt rpt = RptUtils.buildRpt(intermediario, stazione, codCarrello, versamento, iuv, ccp, portale, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
 				rptBD.insertRpt(rpt);
 				rpts.add(rpt);
+				ctx.log("core.creazioneRpt", versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp, rpt.getCodMsgRichiesta());
 				log.info("Inserita Rpt per il versamento ("+versamento.getCodVersamentoEnte()+") dell'applicazione (" + versamento.getApplicazione(this).getCodApplicazione() + ") con dominio (" + rpt.getCodDominio() + ") iuv (" + rpt.getIuv() + ") ccp (" + rpt.getCcp() + ")");
 			}
 			commit();
@@ -302,7 +325,18 @@ public class Pagamento extends BasicBD {
 			// Spedisco le RPT al Nodo
 			// Se ho una GovPayException, non ho sicuramente spedito nulla.
 			// Se ho una ClientException non so come sia andata la consegna.
+			
+			String idTransaction = null;
 			try {
+				
+				idTransaction = ctx.openTransaction();
+				
+				if(codCarrello != null) {
+					ctx.log("core.invioCarrelloRpt", codCarrello);
+				} else {
+					ctx.log("core.invioRpt", rpts.get(0).getCodMsgRichiesta());
+				}
+				
 				Risposta risposta = RptUtils.inviaRPT(intermediario, stazione, rpts, this);
 			
 				setupConnection();
@@ -359,6 +393,8 @@ public class Pagamento extends BasicBD {
 					// Ho lo stato aggiornato. Aggiorno il db
 					return updateStatoRpt(rpts, statoRpt, risposta.getEsito().getUrl(), e);
 				}
+			} finally {
+				ctx.closeTransaction(idTransaction);
 			}
 		} catch (ServiceException e) {
 			rollback();
@@ -366,7 +402,7 @@ public class Pagamento extends BasicBD {
 		} catch (GovPayException e){
 			rollback();
 			throw e;
-		}
+		} 
 	}
 
 	private List<Rpt> updateStatoRpt(List<Rpt> rpts, StatoRpt statoRpt, String url, Exception e) throws ServiceException, GovPayException {

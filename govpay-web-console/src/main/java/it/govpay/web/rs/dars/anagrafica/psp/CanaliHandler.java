@@ -85,7 +85,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Canale entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -138,7 +138,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -210,7 +210,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 	}
 
 	@Override
-	public String getTitolo(it.govpay.bd.model.Canale entry) {
+	public String getTitolo(it.govpay.bd.model.Canale entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Codice: ").
@@ -219,12 +219,14 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 	}
 
 	@Override
-	public String getSottotitolo(it.govpay.bd.model.Canale entry) {
+	public String getSottotitolo(it.govpay.bd.model.Canale entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Tipo Versamento: ")
-		.append(entry.getTipoVersamento())
-		.append(", Modello Pagamento: ").append(entry.getModelloPagamento());
+		.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento."+	entry.getTipoVersamento().name()))
+		.append(", Modello Pagamento: ").append(
+				Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento."+	entry.getModelloPagamento().name())
+				);
 
 		return sb.toString();
 	}

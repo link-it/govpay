@@ -42,7 +42,9 @@ public class PagamentoFilter extends AbstractFilter {
 	private List<Long> idSingoliVersamenti;
 	private Long idRr;
 	private Long idFrApplicazione;
-
+	private Long idFrApplicazioneRevoca;
+	private Long idFrApplicazioneOrIdFrApplicazioneRevoca;
+	
 	public enum SortFields {
 		DATA
 	}
@@ -79,6 +81,37 @@ public class PagamentoFilter extends AbstractFilter {
 				
 				newExpression.equals(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazione);
 				addAnd = true;
+			}
+			
+
+			if(this.getIdFrApplicazioneRevoca() != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneRevoca);
+				addAnd = true;
+			}
+			
+			if(this.idFrApplicazioneOrIdFrApplicazioneRevoca != null){
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression orExpr = this.newExpression();
+				IExpression revocaExpr = this.newExpression();
+				
+				orExpr.equals(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca);
+				orExpr.or();
+				
+				// id fr applicazione revoca non null
+				revocaExpr.equals(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca)
+				.and().isNotNull(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())));
+				
+				orExpr.or(revocaExpr);
+				
+				newExpression.and(orExpr);
+				
+				addAnd = true;
+				
 			}
 			
 			return newExpression;
@@ -122,4 +155,23 @@ public class PagamentoFilter extends AbstractFilter {
 	public void setIdFrApplicazione(Long idFrApplicazione) {
 		this.idFrApplicazione = idFrApplicazione;
 	}
+
+	public Long getIdFrApplicazioneRevoca() {
+		return idFrApplicazioneRevoca;
+	}
+
+	public void setIdFrApplicazioneRevoca(Long idFrApplicazioneRevoca) {
+		this.idFrApplicazioneRevoca = idFrApplicazioneRevoca;
+	}
+
+	public Long getIdFrApplicazioneOrIdFrApplicazioneRevoca() {
+		return idFrApplicazioneOrIdFrApplicazioneRevoca;
+	}
+
+	public void setIdFrApplicazioneOrIdFrApplicazioneRevoca(Long idFrApplicazioneOrIdFrApplicazioneRevoca) {
+		this.idFrApplicazioneOrIdFrApplicazioneRevoca = idFrApplicazioneOrIdFrApplicazioneRevoca;
+	}
+
+ 
+	
 }

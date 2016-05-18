@@ -94,10 +94,27 @@
 	</target>
 
 	<target name="govpay_console_properties_settings">
+		<condition property="pubhost_endWithSlash">
+	          <matches pattern="^https?://.+/$" string="${antinstaller_pubhost}" />
+        	</condition>
+        	<if>
+	          <equals arg1="${pubhost_endWithSlash}" arg2="true" />
+        	  <then>
+                	<echo>Correggo URL che termina con '/' </echo>
+	                 <propertyregex property="pubhost_noendslash"
+        	              input="${antinstaller_pubhost}"
+                	      regexp="^(https?://.+)/$"
+	                      select="\1"
+        	              casesensitive="false" />
+	          </then>
+        	  <else>
+	                <property name="pubhost_noendslash" value="${antinstaller_pubhost}"/>
+        	  </else>
+	        </if>
                 <antcall target="replace_token">
                         <param name="file" value="${file}"/>
                         <param name="token" value="http://localhost:8080"/>
-                        <param name="value" value="${antinstaller_pubhost}"/>
+                        <param name="value" value="${pubhost_noendslash}"/>
                 </antcall>
 	</target>
 	

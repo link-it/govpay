@@ -114,7 +114,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			if(findAll != null && findAll.size() > 0){
 				for (Stazione entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -301,7 +301,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(stazione), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(stazione,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -470,12 +470,12 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 
 	@Override
-	public String getTitolo(Stazione entry) {
+	public String getTitolo(Stazione entry, BasicBD bd) {
 		return entry.getCodStazione();
 	}
 
 	@Override
-	public String getSottotitolo(Stazione entry) {
+	public String getSottotitolo(Stazione entry, BasicBD bd) {
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
 

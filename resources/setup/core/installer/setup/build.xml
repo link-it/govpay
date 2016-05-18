@@ -70,6 +70,9 @@
 		<antcall target="govpay_console_properties_settings">
                         <param name="file" value="${tmp_dir}/govpayConsole/scripts/app.js"/>
                 </antcall>
+                <antcall target="govpay_console_properties_settings">
+                        <param name="file" value="${tmp_dir}/govpayConsole/WEB-INF/classes/govpayConsole.properties"/>
+                </antcall>
 		<antcall target="dos2unix">
 			<param name="dir" value="${tmp_dir}/govpay/properties"/>
 			<param name="file" value="*.properties"/>

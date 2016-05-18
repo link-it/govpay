@@ -125,7 +125,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			if(findAll != null && findAll.size() > 0){
 				for (Intermediario entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -154,7 +154,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-		InputNumber codIntermediario = (InputNumber) infoRicercaMap.get(codIntermediarioId);
+		InputText codIntermediario = (InputText) infoRicercaMap.get(codIntermediarioId);
 		codIntermediario.setDefaultValue(null);
 		codIntermediario.setEditable(true); 
 		sezioneRoot.addField(codIntermediario);
@@ -194,14 +194,13 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
-
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(intermediarioId);
 		idInterm.setDefaultValue(null);
 		sezioneRoot.addField(idInterm);
-		InputNumber codIntermediario = (InputNumber) infoCreazioneMap.get(codIntermediarioId);
+		InputText codIntermediario = (InputText) infoCreazioneMap.get(codIntermediarioId);
 		codIntermediario.setDefaultValue(null);
 		codIntermediario.setEditable(true); 
 		sezioneRoot.addField(codIntermediario);
@@ -229,7 +228,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 			// codIntermediario
 			String codIntermediarioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label");
-			InputNumber codIntermediario = new InputNumber(codIntermediarioId, codIntermediarioLabel, null, false, false, true, 11, 11);
+			InputText codIntermediario = new InputText(codIntermediarioId, codIntermediarioLabel, null, false, false, true, 11, 11);
 			infoRicercaMap.put(codIntermediarioId, codIntermediario);
 		}
 	}
@@ -249,9 +248,9 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			// codIntermediario
 			String codIntermediarioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label");
-			InputNumber codIntermediario = new InputNumber(codIntermediarioId, codIntermediarioLabel, null, true, false, true, 11, 11);
+			InputText codIntermediario = new InputText(codIntermediarioId, codIntermediarioLabel, null, true, false, true, 11, 11);
 			codIntermediario.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.suggestion"));
-			codIntermediario.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.errorMessage"));
+			codIntermediario.setValidation("[0-9]{11}", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.errorMessage"));
 			infoCreazioneMap.put(codIntermediarioId, codIntermediario);
 
 			// denominazione
@@ -295,8 +294,8 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(intermediarioId);
 		idInterm.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idInterm);
-		InputNumber codIntermediario = (InputNumber) infoCreazioneMap.get(codIntermediarioId);
-		codIntermediario.setDefaultValue(Long.parseLong(entry.getCodIntermediario()));
+		InputText codIntermediario = (InputText) infoCreazioneMap.get(codIntermediarioId);
+		codIntermediario.setDefaultValue(entry.getCodIntermediario());
 		codIntermediario.setEditable(false); 
 		sezioneRoot.addField(codIntermediario);
 		InputText denominazione = (InputText) infoCreazioneMap.get(denominazioneId);
@@ -360,7 +359,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(intermediario), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(intermediario,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -525,7 +524,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 
 	@Override
-	public String getTitolo(Intermediario entry) {
+	public String getTitolo(Intermediario entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(entry.getDenominazione());
@@ -534,7 +533,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 
 	@Override
-	public String getSottotitolo(Intermediario entry) {
+	public String getSottotitolo(Intermediario entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));

@@ -81,7 +81,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 
 			if(rr != null && rr.size() > 0){
 				for (Rr entry : rr) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -112,7 +112,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
 
-			String titolo = this.getTitolo(rr);
+			String titolo = this.getTitolo(rr,bd);
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			// Sezione RR
@@ -158,7 +158,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 
 	@Override
-	public String getTitolo(Rr entry) {
+	public String getTitolo(Rr entry,BasicBD bd) {
 		Date dataMsgRevoca = entry.getDataMsgRevoca();
 		String iuv = entry.getIuv();
 		String ccp = entry.getCcp();
@@ -170,7 +170,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 
 	@Override
-	public String getSottotitolo(Rr entry) {
+	public String getSottotitolo(Rr entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		StatoRr stato = entry.getStato();
 		String statoString  = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name());

@@ -54,7 +54,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	}
 
 	@Override
-	public String getTitolo(SingoloVersamento entry) {
+	public String getTitolo(SingoloVersamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		
 		BigDecimal importoTotale = entry.getImportoSingoloVersamento();
@@ -66,7 +66,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	}
 
 	@Override
-	public String getSottotitolo(SingoloVersamento entry) {
+	public String getSottotitolo(SingoloVersamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		
 		StatoSingoloVersamento statoVersamento = entry.getStatoSingoloVersamento();

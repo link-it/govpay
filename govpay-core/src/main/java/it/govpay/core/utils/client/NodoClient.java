@@ -48,6 +48,7 @@ import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpThreadLocal;
 
 import javax.xml.bind.JAXBElement;
 
@@ -55,6 +56,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class NodoClient extends BasicClient {
+	
+	
+
+	public enum Azione {
+		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediInformativaPSP, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP
+
+	}
 
 	private static ObjectFactory objectFactory;
 	private boolean isAzioneInUrl;
@@ -69,14 +77,32 @@ public class NodoClient extends BasicClient {
 	}
 
 	public Risposta send(String azione, JAXBElement<?> body, Object header) throws GovPayException, ClientException {
+		String urlString = url.toExternalForm();
+		if(isAzioneInUrl) {
+			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
+		} 
+		if(GpThreadLocal.get().getTransaction().getServer() != null)
+			GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
+		GpThreadLocal.get().log("cooperazione.invioRichiesta");
+		
 		byte[] response = super.sendSoap(azione, body, header, isAzioneInUrl);
 		try {
 			if(response == null) {
 				throw new ClientException("Il Nodo dei Pagamenti ha ritornato un messaggio vuoto.");
 			}
 			JAXBElement<?> jaxbElement = SOAPUtils.toJaxb(response);
-			return (Risposta) jaxbElement.getValue();
+			Risposta r = (Risposta) jaxbElement.getValue();
+			if(r.getFault() != null) {
+				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Empty Fault Code>";
+				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Empty Fault String>";
+				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Empty Fault Description>";
+				GpThreadLocal.get().log("cooperazione.invioRichiestaFault", faultCode, faultString, faultDescription);
+			} else {
+				GpThreadLocal.get().log("cooperazione.invioRichiestaOk");
+			}
+			return r;
 		} catch (Exception e) {
+			GpThreadLocal.get().log("cooperazione.invioRichiestaKo");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		}
 	}
@@ -89,7 +115,7 @@ public class NodoClient extends BasicClient {
 		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
 		intestazione.setIdentificativoUnivocoVersamento(rpt.getIuv());
 
-		Risposta response = send("nodoInviaRPT", objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
+		Risposta response = send(Azione.nodoInviaRPT.toString(), objectFactory.createNodoInviaRPT(inviaRPT), intestazione);
 		return (NodoInviaRPTRisposta) response;
 	}
 
@@ -98,47 +124,47 @@ public class NodoClient extends BasicClient {
 		intestazione.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());
 		intestazione.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
 		intestazione.setIdentificativoCarrello(codCarrello);
-		Risposta response = send("nodoInviaCarrelloRPT", objectFactory.createNodoInviaCarrelloRPT(inviaCarrelloRPT), intestazione);
+		Risposta response = send(Azione.nodoInviaCarrelloRPT.toString(), objectFactory.createNodoInviaCarrelloRPT(inviaCarrelloRPT), intestazione);
 		return (NodoInviaCarrelloRPTRisposta) response;
 	}
 
 	public NodoChiediInformativaPSPRisposta nodoChiediInformativaPSP(NodoChiediInformativaPSP nodoChiediInformativaPSP, String nomeSoggetto) throws GovPayException, ClientException {
-		Risposta response = send("nodoChiediInformativaPSP", objectFactory.createNodoChiediInformativaPSP(nodoChiediInformativaPSP), null);
+		Risposta response = send(Azione.nodoChiediInformativaPSP.toString(), objectFactory.createNodoChiediInformativaPSP(nodoChiediInformativaPSP), null);
 		return (NodoChiediInformativaPSPRisposta) response;
 	}
 
 	public NodoChiediStatoRPTRisposta nodoChiediStatoRpt(NodoChiediStatoRPT nodoChiediStatoRPT, String nomeSoggetto) throws GovPayException, ClientException {
-		Risposta response = send("nodoChiediStatoRPT", objectFactory.createNodoChiediStatoRPT(nodoChiediStatoRPT), null);
+		Risposta response = send(Azione.nodoChiediStatoRPT.toString(), objectFactory.createNodoChiediStatoRPT(nodoChiediStatoRPT), null);
 		return (NodoChiediStatoRPTRisposta) response;
 	}
 
 	public NodoChiediCopiaRTRisposta nodoChiediCopiaRT(NodoChiediCopiaRT nodoChiediCopiaRT, String nomeSoggetto) throws GovPayException, ClientException {
-		Risposta response = send("nodoChiediCopiaRT", objectFactory.createNodoChiediCopiaRT(nodoChiediCopiaRT), null);
+		Risposta response = send(Azione.nodoChiediCopiaRT.toString(), objectFactory.createNodoChiediCopiaRT(nodoChiediCopiaRT), null);
 		return (NodoChiediCopiaRTRisposta) response;
 	}
 
 	public NodoChiediListaPendentiRPTRisposta nodoChiediListaPendentiRPT(NodoChiediListaPendentiRPT nodoChiediListaPendentiRPT, String nomeSoggetto) throws GovPayException, ClientException {
-		Risposta response = send("nodoChiediListaPendentiRPT", objectFactory.createNodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT), null);
+		Risposta response = send(Azione.nodoChiediListaPendentiRPT.toString(), objectFactory.createNodoChiediListaPendentiRPT(nodoChiediListaPendentiRPT), null);
 		return (NodoChiediListaPendentiRPTRisposta) response;
 	}
 
 	public NodoInviaRichiestaStornoRisposta nodoInviaRichiestaStorno(NodoInviaRichiestaStorno nodoInviaRichiestaStorno) throws GovPayException, ClientException {
-		Risposta response = send("nodoInviaRichiestaStorno", objectFactory.createNodoInviaRichiestaStorno(nodoInviaRichiestaStorno), null);
+		Risposta response = send(Azione.nodoInviaRichiestaStorno.toString(), objectFactory.createNodoInviaRichiestaStorno(nodoInviaRichiestaStorno), null);
 		return (NodoInviaRichiestaStornoRisposta) response;
 	}
 
 	public NodoChiediElencoFlussiRendicontazioneRisposta nodoChiediElencoFlussiRendicontazione(NodoChiediElencoFlussiRendicontazione nodoChiediElencoFlussiRendicontazione, String nomeSoggetto) throws GovPayException, ClientException {
-		Risposta response = send("nodoChiediElencoFlussiRendicontazione", objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
+		Risposta response = send(Azione.nodoChiediElencoFlussiRendicontazione.toString(), objectFactory.createNodoChiediElencoFlussiRendicontazione(nodoChiediElencoFlussiRendicontazione), null);
 		return (NodoChiediElencoFlussiRendicontazioneRisposta) response;
 	}
 
 	public NodoChiediFlussoRendicontazioneRisposta nodoChiediFlussoRendicontazione(NodoChiediFlussoRendicontazione nodoChiediFlussoRendicontazione, String nomeSoggetto) throws GovPayException, ClientException {
-		Risposta response = send("nodoChiediFlussoRendicontazione", objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
+		Risposta response = send(Azione.nodoChiediFlussoRendicontazione.toString(), objectFactory.createNodoChiediFlussoRendicontazione(nodoChiediFlussoRendicontazione), null);
 		return (NodoChiediFlussoRendicontazioneRisposta) response;
 	}
 
 	public NodoChiediSceltaWISPRisposta nodoChiediSceltaWISP(NodoChiediSceltaWISP nodoChiediSceltaWISP, String nomeSoggetto) throws GovPayException, ClientException {
-		Risposta response = send("nodoChiediSceltaWISP", objectFactory.createNodoChiediSceltaWISP(nodoChiediSceltaWISP), null);
+		Risposta response = send(Azione.nodoChiediSceltaWISP.toString(), objectFactory.createNodoChiediSceltaWISP(nodoChiediSceltaWISP), null);
 		return (NodoChiediSceltaWISPRisposta) response;
 	}
 }

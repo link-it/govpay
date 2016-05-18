@@ -52,6 +52,9 @@ import it.govpay.web.rs.dars.model.Console.SezioneMenu;
 import it.govpay.web.rs.dars.model.Console.VoceMenu;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
+import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
+import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.FrApplicazioni;
+import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Rendicontazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.utils.Utils;
 
@@ -145,6 +148,31 @@ public class Menu extends BaseRsService {
 			SezioneMenu monitoraggio = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".monitoraggio"));
 
 			monitoraggio.getVociMenu().add(voceMenuVersamenti);
+
+			if(profilo.equals(ProfiloOperatore.ADMIN)){
+
+				Rendicontazioni rendicontazioniDars = new Rendicontazioni();
+				URI rendicontazioniURI = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniDars.getPathServizio()).build();
+				VoceMenu voceMenuRendicontazioni = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(rendicontazioniDars.getNomeServizio() + ".titolo"),	rendicontazioniURI, false);
+
+				monitoraggio.getVociMenu().add(voceMenuRendicontazioni);
+			}else {
+				FrApplicazioni frApplicazioniDars = new FrApplicazioni();
+				URI frApplicazioniURI = BaseRsService.checkDarsURI(uriInfo).path(frApplicazioniDars.getPathServizio()).build();
+				VoceMenu voceMenuFrApplicazioni = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(frApplicazioniDars.getNomeServizio() + ".titolo"),	frApplicazioniURI, false);
+
+				monitoraggio.getVociMenu().add(voceMenuFrApplicazioni);
+			}
+
+			if(profilo.equals(ProfiloOperatore.ADMIN)){
+
+				Eventi eventiDars = new Eventi();
+				URI eventiURI = BaseRsService.checkDarsURI(uriInfo).path(eventiDars.getPathServizio()).build();
+				VoceMenu voceMenuEventi = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".titolo"),	eventiURI, false);
+
+				monitoraggio.getVociMenu().add(voceMenuEventi);
+			}
+
 			menu.getSezioni().add(monitoraggio);
 
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
@@ -157,8 +185,8 @@ public class Menu extends BaseRsService {
 				manutenzione.getVociMenu().add(voceMenuStrumenti);
 				menu.getSezioni().add(manutenzione);
 			}
-			
-			
+
+
 			console.setMenu(menu);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);

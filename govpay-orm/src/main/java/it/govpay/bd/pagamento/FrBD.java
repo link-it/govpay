@@ -20,20 +20,6 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.FrApplicazione;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
-import it.govpay.bd.model.converter.FrApplicazioneConverter;
-import it.govpay.bd.model.converter.FrConverter;
-import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
-import it.govpay.bd.pagamento.filters.FrFilter;
-import it.govpay.orm.FR;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.FrApplicazioneFieldConverter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +32,22 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.FrApplicazione;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.converter.FrApplicazioneConverter;
+import it.govpay.bd.model.converter.FrConverter;
+import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
+import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
+import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.orm.FR;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
+import it.govpay.orm.dao.jdbc.JDBCFrApplicazioneServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.FrApplicazioneFieldConverter;
 
 public class FrBD extends BasicBD {
 
@@ -184,6 +186,28 @@ public class FrBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public List<Long> getIdFlussi(Long idApplicazione) throws ServiceException {
+		try {
+			IPaginatedExpression exp = this.getFrApplicazioneService().newPaginatedExpression();
+			FrApplicazioneFieldConverter conv = new FrApplicazioneFieldConverter(this.getJdbcProperties().getDatabase());
+			CustomField customField = new CustomField("id_applicazione", Long.class, "id_applicazione", conv.toTable(it.govpay.orm.FrApplicazione.model()));
+			exp.equals(customField, idApplicazione);
+			List<it.govpay.orm.FrApplicazione> frApplicazioniVOlst = this.getFrApplicazioneService().findAll(exp);
+			List<Long> idFlussi = new ArrayList<Long>();
+			
+			for (it.govpay.orm.FrApplicazione frApp : frApplicazioniVOlst) {
+				idFlussi.add(frApp.getId());
+			}
+			return idFlussi;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	public FrApplicazione getFrApplicazione(Long idApplicazione, int anno, String codFlusso) throws ServiceException, NotFoundException {
 		try {
@@ -205,11 +229,57 @@ public class FrBD extends BasicBD {
 		}
 	}
 	
+	/**
+	 * Recupera l'Fr identificato dalla chiave fisica
+	 * 
+	 * @param idFr
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public FrApplicazione getFrApplicazione(long idFrApplicazione) throws ServiceException {
+		try {
+			return FrApplicazioneConverter.toDTO(((JDBCFrApplicazioneServiceSearch)this.getFrApplicazioneService()).get(idFrApplicazione));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} 
+	}
+	
 	public void insertRendicontazioneSenzaRpt(RendicontazioneSenzaRpt rendicontazione) throws ServiceException {
 		try {
 			it.govpay.orm.RendicontazioneSenzaRPT vo = RendicontazioneSenzaRptConverter.toVO(rendicontazione);
 			this.getRendicontazioneSenzaRPTService().create(vo);
 			rendicontazione.setId(vo.getId());
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public FrApplicazioneFilter newFrApplicazioneFilter() throws ServiceException {
+		return new FrApplicazioneFilter(this.getFrApplicazioneService());
+	}
+
+	public long countFrApplicazione(FrApplicazioneFilter filter) throws ServiceException {
+		try {
+			return this.getFrApplicazioneService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<FrApplicazione> findAllFrApplicazione(FrApplicazioneFilter filter) throws ServiceException {
+		try {
+			List<FrApplicazione> frLst = new ArrayList<FrApplicazione>();
+			List<it.govpay.orm.FrApplicazione> frVOLst = this.getFrApplicazioneService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.FrApplicazione frVO: frVOLst) {
+				frLst.add(FrApplicazioneConverter.toDTO(frVO));
+			}
+			return frLst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

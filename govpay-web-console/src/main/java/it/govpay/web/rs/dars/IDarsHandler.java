@@ -67,8 +67,8 @@ public interface IDarsHandler<T> {
 	
 	public void checkEntry(T entry, T oldEntry) throws ValidationException;
 	
-	public String getTitolo(T entry) ;
-	public String getSottotitolo(T entry) ;
+	public String getTitolo(T entry, BasicBD bd) throws ConsoleException;
+	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 }

@@ -20,11 +20,17 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.converter.EventoConverter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
+import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.converter.EventoConverter;
+import it.govpay.bd.pagamento.filters.EventiFilter;
 
 public class EventiBD extends BasicBD {
 
@@ -41,5 +47,30 @@ public class EventiBD extends BasicBD {
 		}
 		dto.setId(vo.getId());
 		return dto;
+	}
+	
+	public EventiFilter newFilter() throws ServiceException {
+		return new EventiFilter(this.getEventoService());
+	}
+
+	public long count(IFilter filter) throws ServiceException {
+		try {
+			return this.getEventoService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<Evento> findAll(IFilter filter) throws ServiceException {
+		try {
+			List<Evento> eventoLst = new ArrayList<Evento>();
+			List<it.govpay.orm.Evento> eventoVOLst = this.getEventoService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.Evento eventoVO: eventoVOLst) {
+				eventoLst.add(EventoConverter.toDTO(eventoVO));
+			}
+			return eventoLst;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 }

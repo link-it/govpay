@@ -48,6 +48,7 @@ public class FrFilter extends AbstractFilter {
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idDomini;
+	private List<Long> idFlussi; 
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
@@ -104,6 +105,16 @@ public class FrFilter extends AbstractFilter {
 				FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabaseType());
 				IField idDominioField = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(FR.model()));
 				newExpression.in(idDominioField, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(this.idFlussi != null && !this.idFlussi.isEmpty()){
+				if(addAnd)
+					newExpression.and();
+				
+				FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabaseType());
+				IField idField = new CustomField("id", Long.class, "id", converter.toTable(FR.model()));
+				newExpression.in(idField, this.idFlussi);
 				addAnd = true;
 			}
 			
@@ -173,4 +184,11 @@ public class FrFilter extends AbstractFilter {
 		this.idDomini = idDomini;
 	}
 
+	public List<Long> getIdFlussi() {
+		return idFlussi;
+	}
+
+	public void setIdFlussi(List<Long> idFlussi) {
+		this.idFlussi = idFlussi;
+	}
 }

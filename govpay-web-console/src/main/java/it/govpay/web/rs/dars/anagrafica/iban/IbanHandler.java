@@ -119,7 +119,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			if(findAll != null && findAll.size() > 0){
 				for (IbanAccredito entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -417,7 +417,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(ibanAccredito), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(ibanAccredito,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -599,12 +599,12 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 
 	@Override
-	public String getTitolo(IbanAccredito entry) {
+	public String getTitolo(IbanAccredito entry, BasicBD bd) {
 		return entry.getCodIban();
 	}
 
 	@Override
-	public String getSottotitolo(IbanAccredito entry) {
+	public String getSottotitolo(IbanAccredito entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label")).append(": ").append(Utils.getSiNoAsLabel(entry.isAbilitato()));

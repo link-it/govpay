@@ -25,6 +25,7 @@ import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Connettore.EnumAuthType;
 import it.govpay.bd.model.Connettore.EnumSslType;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -34,6 +35,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,9 +49,12 @@ import javax.xml.bind.JAXBElement;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.logging.log4j.Level;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.logger.beans.Message;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.constants.MessageType;
 
 public class BasicClient {
 
@@ -77,6 +82,9 @@ public class BasicClient {
 	protected boolean ishttpBasicEnabled=false, isSslEnabled=false;
 	protected String httpBasicUser, httpBasicPassword;
 	protected String errMsg;
+	protected String destinatario;
+	protected String mittente;
+	
 	
 	public enum TipoConnettore {
 		VERIFICA, NOTIFICA;
@@ -85,11 +93,15 @@ public class BasicClient {
 	protected BasicClient(Intermediario intermediario) throws ClientException {
 		this("I_" + intermediario.getCodIntermediario(), intermediario.getConnettorePdd());
 		errMsg = "Pdd dell'intermediario (" + intermediario.getCodIntermediario() + ")";
+		mittente = intermediario.getDenominazione();
+		destinatario = "NodoDeiPagamentiDellaPA";
 	}
 	
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
 		this("A_" + tipoConnettore + applicazione.getCodApplicazione(), tipoConnettore == TipoConnettore.NOTIFICA ? applicazione.getConnettoreNotifica() : applicazione.getConnettoreVerifica());
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
+		mittente = "GovPay";
+		destinatario = applicazione.getCodApplicazione();
 	}
 	
 	private BasicClient(String bundleKey, Connettore connettore) throws ClientException {
@@ -189,13 +201,18 @@ public class BasicClient {
 				throw new ClientException("Url di connessione malformata: " + urlString.concat(azione), e);
 			}
 		} 
-
+	
 		try {
+			Message requestMsg = new Message();
+			requestMsg.setType(MessageType.REQUEST_OUT);
+			
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setDoOutput(true);
 			if(soap) {
 				connection.setRequestProperty("SOAPAction", "\"" + azione + "\"");
+				requestMsg.addHeader(new Property("SOAPAction", "\"" + azione + "\""));
 			}
+			requestMsg.setContentType("text/xml");
 			connection.setRequestProperty("Content-Type", "text/xml");
 			connection.setRequestMethod("POST");
 	
@@ -214,39 +231,47 @@ public class BasicClient {
 				connection.setRequestProperty("Authorization", "Basic " + encoding);
 			}
 			
-			if(log.getLevel().isMoreSpecificThan(Level.TRACE)) {
-				StringBuffer sb = new StringBuffer();
-				for(String key : connection.getRequestProperties().keySet()) {
-					sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
-				}
-				
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				if(soap) {
-					SOAPUtils.writeMessage(body, header, baos);
-				} else {
-					JaxbUtils.marshal(body, baos);
-				}
-				
-				sb.append("\n" + baos.toString());
-				log.trace(sb.toString());
-			}
-	
-			if(soap) {
-				SOAPUtils.writeMessage(body, header, connection.getOutputStream());
-			} else {
-				JaxbUtils.marshal(body, connection.getOutputStream());
-			}
-	
 			
+			
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			if(soap) {
+				SOAPUtils.writeMessage(body, header, baos);
+			} else {
+				JaxbUtils.marshal(body, baos);
+			}
+			
+			requestMsg.setContent(baos.toByteArray());
+			GpThreadLocal.get().getContext().getRequest().setOutDate(new Date());
+			GpThreadLocal.get().getContext().getRequest().setOutSize(Long.valueOf(baos.size()));
+			GpThreadLocal.get().log(requestMsg);
+			
+			connection.getOutputStream().write(baos.toByteArray());
+	
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
 		try {
 			responseCode = connection.getResponseCode();
+			if(GpThreadLocal.get().getTransaction().getServer() != null)
+				GpThreadLocal.get().getTransaction().getServer().setTransportCode(Integer.toString(responseCode));
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
 		
+		Message responseMsg = new Message();
+		responseMsg.setType(MessageType.RESPONSE_IN);
+		
+		for(String key : connection.getHeaderFields().keySet()) {
+			if(connection.getHeaderFields().get(key) != null) {
+				if(key == null)
+					responseMsg.addHeader(new Property("Status-line", connection.getHeaderFields().get(key).get(0)));
+				else if(connection.getHeaderFields().get(key).size() == 1)
+					responseMsg.addHeader(new Property(key, connection.getHeaderFields().get(key).get(0)));
+				else
+					responseMsg.addHeader(new Property(key, ArrayUtils.toString(connection.getHeaderFields().get(key))));
+			}
+		}
+			
 		try {
 			if(responseCode < 300) {
 				try {
@@ -254,6 +279,8 @@ public class BasicClient {
 						return null;
 					}
 					msg = connection.getInputStream() != null ? IOUtils.toByteArray(connection.getInputStream()) : new byte[]{};
+					if(msg.length > 0)
+						responseMsg.setContent(msg);
 					return msg;
 				} catch (Exception e) {
 					throw new ClientException("Messaggio di risposta non valido", e);
@@ -261,6 +288,7 @@ public class BasicClient {
 			} else {
 				try {
 					msg = connection.getErrorStream() != null ? IOUtils.toByteArray(connection.getErrorStream()) : new byte[]{};
+					responseMsg.setContent(msg);
 				} catch (IOException e) {
 					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 				} finally {
@@ -269,14 +297,7 @@ public class BasicClient {
 				throw new ClientException("Errore nell'invocazione: HTTP " + responseCode);
 			}
 		} finally {
-			if(log.getLevel().isMoreSpecificThan(Level.TRACE)) {
-				StringBuffer sb = new StringBuffer();
-				for(String key : connection.getHeaderFields().keySet()) { 
-					sb.append("\n\t" + key + ": " + connection.getHeaderField(key));
-				}
-				sb.append("\n" + new String(msg));
-				log.trace(sb.toString());
-			}
+			GpThreadLocal.get().log(responseMsg);
 		}
 		
 	}

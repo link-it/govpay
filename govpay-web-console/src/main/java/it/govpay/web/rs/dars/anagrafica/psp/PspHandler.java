@@ -90,7 +90,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Psp entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -142,7 +142,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(psp), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(psp,bd), esportazione, cancellazione, infoModifica);
 			
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -197,7 +197,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	}
 
 	@Override
-	public String getTitolo(it.govpay.bd.model.Psp entry) {
+	public String getTitolo(it.govpay.bd.model.Psp entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(entry.getRagioneSociale());
@@ -206,7 +206,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	}
 
 	@Override
-	public String getSottotitolo(it.govpay.bd.model.Psp entry) {
+	public String getSottotitolo(it.govpay.bd.model.Psp entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));

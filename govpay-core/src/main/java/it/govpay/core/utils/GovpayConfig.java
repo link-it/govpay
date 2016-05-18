@@ -21,6 +21,7 @@
 package it.govpay.core.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Arrays;
@@ -30,7 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class GovpayConfig {
-	
+
 	public enum VersioneAvviso {
 		v001, v002;
 	}
@@ -38,25 +39,25 @@ public class GovpayConfig {
 	private static final String PROPERTIES_FILE = "/govpay.properties";
 
 	private static GovpayConfig instance;
-	
+
 	private static Logger log = LogManager.getLogger();
-	
+
 	public static GovpayConfig getInstance() {
 		return instance;
 	}
-	
+
 	public static GovpayConfig newInstance() throws Exception {
 		instance = new GovpayConfig();
 		return instance;
 	}
-	
+
 	private URI log4j2Config;
 	private String logoDir;
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePool;
 	private String ksLocation, ksPassword, ksAlias;
-	
-	
+
+
 	public GovpayConfig() {
 		// Default values:
 		this.logoDir = null;
@@ -66,29 +67,49 @@ public class GovpayConfig {
 		this.ksAlias = null;
 		this.ksLocation = null;
 		this.ksPassword = null;
-		
+
 		try {
+			
+			// Recupero il property all'interno dell'EAR
 			InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
-			Properties props = new Properties();
-			props.load(is);
+			Properties props1 = new Properties();
+			props1.load(is);
+			
+			Properties props0 = null;
+			
+			Properties[] props = new Properties[2];
+			props[0] = props0;
+			props[1] = props1;
+			
+			// Recupero la configurazione della working dir
+			// Se e' configurata, la uso come prioritaria
 			
 			try {
-				String resourceDir = getProperty("it.govpay.resource.path", props, false);
+				String resourceDir = getProperty("it.govpay.resource.path", props1, false);
+				
 				if(resourceDir != null) {
 					File resourceDirFile = new File(resourceDir);
 					if(!resourceDirFile.isDirectory())
 						throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + resourceDir + ") non esiste o non e' un folder.");
-					
+
 					File log4j2ConfigFile = new File(resourceDir + File.separatorChar + "log4j2.xml");
-					
+
 					if(log4j2ConfigFile.exists()) {
+						log.info("Caricata configurazione logger: " + log4j2ConfigFile.getAbsolutePath());
 						this.log4j2Config = log4j2ConfigFile.toURI();
+					}
+					
+					File gpConfigFile = new File(resourceDir + File.separatorChar + "govpay.properties");
+					if(gpConfigFile.exists()) {
+						props0 = new Properties();
+						props0.load(new FileInputStream(gpConfigFile));
+						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 					}
 				}
 			} catch (Exception e) {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 			}
-		
+
 			try {
 				this.logoDir = getProperty("it.govpay.psp.logo.path", props, false);
 				if(this.logoDir != null) {
@@ -106,7 +127,7 @@ public class GovpayConfig {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 				this.logoDir = null;
 			}
-		
+
 			try {
 				String versioneAvvisoProperty = getProperty("it.govpay.avviso.versione", props, false);
 				if(versioneAvvisoProperty != null && !versioneAvvisoProperty.trim().isEmpty()) {
@@ -120,7 +141,7 @@ public class GovpayConfig {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + VersioneAvviso.v002);
 				this.versioneAvviso = VersioneAvviso.v002;
 			}
-			
+
 			try {
 				String dimensionePoolProperty = getProperty("it.govpay.thread.pool", props, false);
 				if(dimensionePoolProperty != null && !dimensionePoolProperty.trim().isEmpty()) {
@@ -134,23 +155,48 @@ public class GovpayConfig {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePool = 10;
 			}
-			
+
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
 	}
 
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {
-		String value = props.getProperty(name);
+		String value = System.getProperty(name);
+
 		if(value == null) {
-			if(required)
-				throw new Exception("Property ["+name+"] non trovata");
-			else return null;
+			if(props != null) value = props.getProperty(name);
+			if(value == null) {
+				if(required) 
+					throw new Exception("Proprieta ["+name+"] non trovata");
+				else return null;
+			} else {
+				log.debug("Letta proprieta di configurazione " + name + ": " + value);
+			}
+		} else {
+			log.debug("Letta proprieta di sistema " + name + ": " + value);
 		}
-		
+
 		return value.trim();
 	}
 	
+	private static String getProperty(String name, Properties[] props, boolean required) throws Exception {
+		String value = null;
+		for(Properties p : props) {
+			try { value = getProperty(name, p, required); } catch (Exception e) { }
+			if(value != null && !value.trim().isEmpty()) {
+				return value;
+			}
+		}
+		
+		log.debug("Proprieta " + name + " non trovata");
+		
+		if(required) 
+			throw new Exception("Proprieta ["+name+"] non trovata");
+		else 
+			return null;
+	}
+
 	public String getLogoDir() {
 		return logoDir;
 	}

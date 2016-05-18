@@ -26,11 +26,12 @@ import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Notifica.StatoSpedizione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.NotificaClient;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -64,10 +65,16 @@ public class InviaNotificaThread implements Runnable {
 
 	@Override
 	public void run() {
-		String codOperazione = UUID.randomUUID().toString();
-		ThreadContext.put("op",  codOperazione);
+		
+		GpContext ctx = null;
 		BasicBD bd = null;
 		try {
+			ctx = new GpContext("DA IMPOSTARE QUANDO MEMORIZZATO");
+			ThreadContext.put("op", ctx.getTransactionId());
+			log.info("Richiesta operazione gpAvviaTransazionePagamento");
+			GpThreadLocal.set(ctx);
+		
+		
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
 			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null) {
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");

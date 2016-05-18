@@ -168,9 +168,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public abstract Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
 
 	@Override
-	public  abstract String getTitolo(T entry) ;
+	public  abstract String getTitolo(T entry, BasicBD bd) throws ConsoleException;
 	@Override
-	public  abstract String getSottotitolo(T entry) ;
+	public  abstract String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 	
 	@Override
 	public abstract String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
@@ -178,9 +178,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public abstract String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException;
 
-	public Elemento getElemento(T entry, Long id, UriBuilder uriDettaglioBuilder){
-		String titolo = this.getTitolo(entry);
-		String sottotitolo = this.getSottotitolo(entry);
+	public Elemento getElemento(T entry, Long id, UriBuilder uriDettaglioBuilder, BasicBD bd) throws ConsoleException{
+		String titolo = this.getTitolo(entry,bd);
+		String sottotitolo = this.getSottotitolo(entry,bd);
 		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
 		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
 		return elemento;

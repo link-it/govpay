@@ -36,11 +36,13 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.Gp21Utils;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.StatoRevoca;
 import it.govpay.servizi.pa.PaNotificaTransazione;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.proxy.Server;
 
 public class NotificaClient extends BasicClient {
 
@@ -72,6 +74,10 @@ public class NotificaClient extends BasicClient {
 	 * @throws ClientException
 	 */
 	public void invoke(Notifica notifica) throws ClientException, ServiceException, GovPayException {
+		
+		Server server = new Server();
+		server.setName(notifica.getApplicazione(null).getCodApplicazione());
+		GpThreadLocal.get().getTransaction().setServer(server);
 		
 		log.debug("Spedisco la notifica di " + notifica.getTipo() + ((notifica.getIdRr() == null) ? " PAGAMENTO" : " STORNO") + " della transazione (" + notifica.getRpt(null).getCodDominio() + ")(" + notifica.getRpt(null).getIuv() + ")(" + notifica.getRpt(null).getCcp() + ") in versione (" + versione.toString() + ") alla URL ("+url+")");
 		

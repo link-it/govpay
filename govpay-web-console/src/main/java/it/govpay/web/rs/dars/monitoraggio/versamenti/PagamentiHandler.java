@@ -44,12 +44,15 @@ import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Pagamento.EsitoRendicontazione;
 import it.govpay.bd.model.Pagamento.TipoAllegato;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.web.rs.BaseRsService;
@@ -64,6 +67,8 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRpt;
+import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRptHandler;
 import it.govpay.web.utils.Utils;
 
 public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
@@ -83,6 +88,8 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			ProfiloOperatore profilo = operatore.getProfilo();
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			List<Long> idApplicazioniOperatore = operatore.getIdApplicazioni();
+			List<Long> idUoOperatore = operatore.getIdEnti();
 
 			URI esportazione = null; 
 			URI cancellazione = null;
@@ -92,42 +99,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
+			String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.id");
+			String idFrApplicazione = this.getParameter(uriInfo, idFrApplicazioneId, String.class);
+
 			boolean eseguiRicerca = isAdmin;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = null;
 			// Utilizzo i singoli versamenti per avere i pagamenti
 			List<Long> idSingoliVersamenti = new ArrayList<Long>();
-			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
-			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
-			if(!isAdmin){
-				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
-				
-				VersamentoFilter filter = versamentiBD.newFilter();
-				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				filter.setIdUo(operatore.getIdEnti()); 
-
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
-				fsw.setSortOrder(SortOrder.DESC);
-				filter.getFilterSortList().add(fsw);
-
-				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
-				filter.setIdVersamento(Long.parseLong(idVersamento));
-
-				eseguiRicerca = eseguiRicerca && count > 0;
-				
-			}
-			
-			versamento = eseguiRicerca ? versamentiBD.getVersamento(Long.parseLong(idVersamento)) : null;
-			if(versamento != null){
-				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-				if(singoliVersamenti != null && singoliVersamenti.size() >0){
-					for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-						idSingoliVersamenti.add(singoloVersamento.getId());
-					}
-				}
-			}
-			eseguiRicerca = eseguiRicerca && idSingoliVersamenti.size() > 0;
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			PagamentoFilter filter = pagamentiBD.newFilter();
@@ -135,10 +114,68 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
-			filter.setIdSingoliVersamenti(idSingoliVersamenti);
 
-			long count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+			long count = 0;
 
+			// elemento correlato al versamento.
+			if(StringUtils.isNotEmpty(idVersamento)){
+				// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
+				// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
+				if(!isAdmin){
+					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore) || !Utils.isEmpty(idUoOperatore);
+
+					VersamentoFilter versamentoFilter = versamentiBD.newFilter();
+					versamentoFilter.setIdApplicazioni(idApplicazioniOperatore);
+					versamentoFilter.setIdUo(idUoOperatore); 
+					versamentoFilter.setIdVersamento(Long.parseLong(idVersamento));
+
+					long countVersamento = eseguiRicerca ? versamentiBD.count(versamentoFilter) : 0;
+					eseguiRicerca = eseguiRicerca && countVersamento > 0;
+
+				}
+
+				versamento = eseguiRicerca ? versamentiBD.getVersamento(Long.parseLong(idVersamento)) : null;
+				if(versamento != null){
+					List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
+					if(singoliVersamenti != null && singoliVersamenti.size() >0){
+						for (SingoloVersamento singoloVersamento : singoliVersamenti) {
+							idSingoliVersamenti.add(singoloVersamento.getId());
+						}
+					}
+				}
+				eseguiRicerca = eseguiRicerca && idSingoliVersamenti.size() > 0;
+				filter.setIdSingoliVersamenti(idSingoliVersamenti);
+				count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+
+
+			}
+
+			long countRendicontazioniSenzaRpt = 0;
+			if(StringUtils.isNotEmpty(idFrApplicazione)){
+				if(!isAdmin){
+					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore);
+
+					FrBD frBD = new FrBD(bd);
+					FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
+					frApplicazioneFilter.setIdApplicazioni(idApplicazioniOperatore);
+					frApplicazioneFilter.setIdFrApplicazione(Long.parseLong(idFrApplicazione));
+
+					long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
+					eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
+				}
+
+				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
+				if(eseguiRicerca){
+					// Ricerca Pagamenti uso idFrApplicazione per filtrare
+					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(Long.parseLong(idFrApplicazione));
+					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+
+					// Rendicontazioni 
+					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(Long.parseLong(idFrApplicazione)) : 0;
+					count += countRendicontazioniSenzaRpt;
+
+				}
+			}
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
@@ -148,7 +185,24 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			if(pagamenti != null && pagamenti.size() > 0){
 				for (Pagamento entry : pagamenti) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+				}
+			}
+
+			// tmp poi fare il merge
+			if(countRendicontazioniSenzaRpt > 0){
+				RendicontazioniSenzaRpt rendicontazioniSenzaRptDars = new RendicontazioniSenzaRpt();
+				RendicontazioniSenzaRptHandler rendicontazioniSenzaRptDarsHandler = (RendicontazioniSenzaRptHandler) rendicontazioniSenzaRptDars.getDarsHandler();
+				UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniSenzaRptDars.getPathServizio()).path("{id}");
+				
+				List<RendicontazioneSenzaRpt> rendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(Long.parseLong(idFrApplicazione)) : new ArrayList<RendicontazioneSenzaRpt>();
+
+				if(rendicontazioniSenzaRpt != null && rendicontazioniSenzaRpt.size() > 0){
+					for (RendicontazioneSenzaRpt entry : rendicontazioniSenzaRpt) {
+						Elemento elemento = rendicontazioniSenzaRptDarsHandler.getElemento(entry, entry.getId(), uriDettaglioRRBuilder,bd);
+						elenco.getElenco().add(elemento);
+						
+					}
 				}
 			}
 
@@ -179,21 +233,21 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			URI cancellazione = null;
 			URI esportazione = null; 
 
-			String titolo = this.getTitolo(pagamento);
+			String titolo = this.getTitolo(pagamento,bd);
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			// Sezione root coi dati del pagamento
 			it.govpay.web.rs.dars.model.Sezione sezioneRoot = dettaglio.getSezioneRoot();
 
 
-			
+
 
 			SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
 			if(singoloVersamento != null){
 				SingoliVersamenti svDars = new SingoliVersamenti();
 				SingoliVersamentiHandler svHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
 				UriBuilder uriSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
-				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), uriSVBuilder); 
+				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), uriSVBuilder,bd); 
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
 			}
 			if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte()))
@@ -212,12 +266,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato.label"),
 						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato."+tipoAllegato.name()));
 
-//			Long idFrApplicazione = pagamento.getIdFrApplicazione();
-//			if(idFrApplicazione != null){
-//				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-//				Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
-//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.label"),applicazione.getCodApplicazione());
-//			}
+			//			Long idFrApplicazione = pagamento.getIdFrApplicazione();
+			//			if(idFrApplicazione != null){
+			//				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			//				Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
+			//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.label"),applicazione.getCodApplicazione());
+			//			}
 			EsitoRendicontazione esitoRendicontazione = pagamento.getEsitoRendicontazione();
 			if(esitoRendicontazione != null)
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione.label"),
@@ -230,20 +284,20 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazione.label"),pagamento.getCodFlussoRendicontazione());
 			if(pagamento.getIndice() != null)
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indice.label"),pagamento.getIndice() + ""); 
-			
+
 			Rpt rpt = pagamento.getRpt(bd);
 			if(rpt!= null){
 				Transazioni transazioniDars = new Transazioni();
 				TransazioniHandler transazioniDarsHandler = (TransazioniHandler) transazioniDars.getDarsHandler();
 				UriBuilder uriRptBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).path("{id}");
-				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), uriRptBuilder );
+				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), uriRptBuilder,bd);
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rpt.label"),elemento.getTitolo(),elemento.getUri());
 			}
 
 			if(pagamento.getIdRr() != null){
 				String etichettaRevoca = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneRevoca.titolo");
 				it.govpay.web.rs.dars.model.Sezione sezioneRevoca = dettaglio.addSezione(etichettaRevoca);
-				
+
 				if(StringUtils.isNotEmpty(pagamento.getCausaleRevoca()))
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causaleRevoca.label"),pagamento.getCausaleRevoca());
 				if(StringUtils.isNotEmpty(pagamento.getDatiRevoca()))
@@ -256,12 +310,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				if(pagamento.getImportoRevocato() != null)
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoRevocato.label"),(pagamento.getImportoRevocato().toString() + "€"));
 
-//				Long idFrApplicazioneRevoca = pagamento.getIdFrApplicazioneRevoca();
-//				if(idFrApplicazioneRevoca != null){
-//					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-//					Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
-//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazioneRevoca.label"),applicazione.getCodApplicazione());
-//				}
+				//				Long idFrApplicazioneRevoca = pagamento.getIdFrApplicazioneRevoca();
+				//				if(idFrApplicazioneRevoca != null){
+				//					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+				//					Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
+				//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazioneRevoca.label"),applicazione.getCodApplicazione());
+				//				}
 				EsitoRendicontazione esitoRendicontazioneRevoca = pagamento.getEsitoRendicontazioneRevoca();
 				if(esitoRendicontazioneRevoca != null)
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca.label"),
@@ -274,13 +328,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazioneRevoca.label"),pagamento.getCodFlussoRendicontazioneRevoca());
 				if(pagamento.getIndiceRevoca() != null)
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indiceRevoca.label"),pagamento.getIndiceRevoca() + ""); 
-				
+
 				Rr rr = pagamento.getRr(bd);
 				if(rr != null){
 					Revoche revocheDars = new Revoche();
 					RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
 					UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
-					Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder);
+					Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder,bd);
 					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rr.label"),elemento.getTitolo(),elemento.getUri());
 				}
 			}
@@ -296,7 +350,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	}
 
 	@Override
-	public String getTitolo(Pagamento entry) {
+	public String getTitolo(Pagamento entry,BasicBD bd) {
 		Date dataPagamento = entry.getDataPagamento();
 		BigDecimal importoPagato = entry.getImportoPagato();
 		StringBuilder sb = new StringBuilder();
@@ -308,14 +362,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	}
 
 	@Override
-	public String getSottotitolo(Pagamento entry) {
+	public String getSottotitolo(Pagamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		if(entry.getIdRr() != null){
 			Date dataRevoca = entry.getDataPagamento();
 			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.revocato", this.sdf.format(dataRevoca)));
 		}
-		
+
 		return sb.toString();
 	}
 

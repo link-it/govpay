@@ -20,7 +20,12 @@
  */
 package it.govpay.bd.model.converter;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.model.Evento;
+import it.govpay.bd.model.Canale.TipoVersamento;
+import it.govpay.bd.model.Evento.CategoriaEvento;
+import it.govpay.bd.model.Evento.TipoEvento;
 
 public class EventoConverter {
 
@@ -46,6 +51,34 @@ public class EventoConverter {
 		if(dto.getTipoVersamento() != null)
 			vo.setTipoVersamento(dto.getTipoVersamento().getCodifica());
 		return vo;
+	}
+	
+	
+	
+	public static Evento toDTO(it.govpay.orm.Evento vo) throws ServiceException{
+		Evento dto = new Evento();
+		if(vo.getCategoriaEvento() != null)
+		dto.setCategoriaEvento(CategoriaEvento.toEnum(vo.getCategoriaEvento()));
+		dto.setCcp(vo.getCcp());
+		dto.setCodCanale(vo.getCodCanale());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setCodPsp(vo.getCodPsp());
+		dto.setCodStazione(vo.getCodStazione());
+		dto.setComponente(vo.getComponente());
+		dto.setDataRichiesta(vo.getData1());
+		dto.setDataRisposta(vo.getData2());
+		dto.setErogatore(vo.getErogatore());
+		dto.setEsito(vo.getEsito());
+		dto.setFruitore(vo.getFruitore());
+		dto.setId(vo.getId());
+		dto.setIuv(vo.getIuv());
+		dto.setAltriParametriRichiesta(vo.getParametri1());
+		dto.setAltriParametriRisposta(vo.getParametri2());
+		if(vo.getTipoEvento() != null)
+			dto.setTipoEvento(TipoEvento.valueOf(vo.getTipoEvento()));
+		if(vo.getTipoVersamento() != null)
+			dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
+		return dto;
 	}
 
 }

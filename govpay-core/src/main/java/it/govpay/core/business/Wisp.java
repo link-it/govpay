@@ -98,7 +98,7 @@ public class Wisp extends BasicBD {
 			} 
 		} 
 		catch (ClientException e) {
-			throw new GovPayException(EsitoOperazione.NDP_000);
+			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		}
 	}
 }

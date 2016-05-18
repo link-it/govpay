@@ -139,7 +139,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			if(findAll != null && findAll.size() > 0){
 				for (Applicazione entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -473,7 +473,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(applicazione), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(applicazione,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -744,7 +744,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	@Override
-	public String getTitolo(Applicazione entry) {
+	public String getTitolo(Applicazione entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(entry.getCodApplicazione());
@@ -752,7 +752,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	@Override
-	public String getSottotitolo(Applicazione entry) {
+	public String getSottotitolo(Applicazione entry, BasicBD bd)  throws ConsoleException{
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));

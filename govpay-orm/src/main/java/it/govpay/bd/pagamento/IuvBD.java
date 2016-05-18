@@ -28,6 +28,7 @@ import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.bd.model.converter.IuvConverter;
 import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.orm.IUV;
+import it.govpay.orm.dao.jdbc.JDBCIUVService;
 import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
 
 import java.util.Collections;
@@ -70,7 +71,7 @@ public class IuvBD extends BasicBD {
 			iuv = IuvUtils.buildIuvNumerico(prg, auxDigit, applicationCode);
 			break;
 		}
-		
+
 		Iuv iuvDTO = new Iuv();
 		iuvDTO.setIdDominio(dominio.getId());
 		iuvDTO.setPrg(prg);
@@ -82,7 +83,7 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setApplicationCode(applicationCode);
 		return insertIuv(iuvDTO);
 	}
-	
+
 	public Iuv insertIuv(Iuv iuv) throws ServiceException{
 		IUV iuvVO = IuvConverter.toVO(iuv);
 		try {
@@ -114,9 +115,9 @@ public class IuvBD extends BasicBD {
 			params.setTipo(IDSerialGeneratorType.NUMERIC);
 			params.setWrap(false);
 			params.setInformazioneAssociataAlProgressivo(codDominio+type.toString()); // il progressivo sarà relativo a questa informazione
-			
+
 			java.sql.Connection con = null; 
-					
+
 			// Se sono in transazione aperta, utilizzo una connessione diversa perche' l'utility di generazione non supporta le transazioni.
 			if(!isAutoCommit()) {
 				bd = BasicBD.newInstance();
@@ -124,7 +125,7 @@ public class IuvBD extends BasicBD {
 			} else {
 				con = getConnection();
 			}
-			
+
 			return serialGenerator.buildIDAsNumber(params, con, this.getJdbcProperties().getDatabase(), log);
 		} catch (UtilsException e) {
 			log.error("Numero di errori 'access serializable': "+infoStat.getErrorSerializableAccess());
@@ -150,13 +151,13 @@ public class IuvBD extends BasicBD {
 			exp.equals(it.govpay.orm.IUV.model().IUV, iuv);
 			IUVFieldConverter converter = new IUVFieldConverter(this.getJdbcProperties().getDatabase());
 			CustomField idDominioField = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(IUV.model()));
-			
+
 			exp.equals(idDominioField, idDominio);
 			it.govpay.orm.IUV iuvVO = this.getIuvService().find(exp);
 
-			Iuv versamento = IuvConverter.toDTO(iuvVO);
+			Iuv iuvDTO = IuvConverter.toDTO(iuvVO);
 
-			return versamento;
+			return iuvDTO;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -167,7 +168,7 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public Iuv getIuv(long idApplicazione, String codVersamentoEnte, TipoIUV tipo) throws ServiceException, NotFoundException {
 		try {
 			IPaginatedExpression exp = this.getIuvService().newPaginatedExpression();
@@ -190,7 +191,28 @@ public class IuvBD extends BasicBD {
 			throw new ServiceException(e);
 		} 
 	}
-	
+
+	/**
+	 * Recupera lo IUV con la chiave logi generato
+	 * @param iuv
+	 * @return
+	 * @throws ServiceException
+	 */
+	public Iuv getIuv(long idIuv) throws ServiceException {
+		try {
+			it.govpay.orm.IUV iuvVO = ((JDBCIUVService)this.getIuvService()).get(idIuv);
+			Iuv iuvDTO = IuvConverter.toDTO(iuvVO);
+
+			return iuvDTO;
+		}  catch (NotFoundException e) {
+			throw new ServiceException(e);
+		}  catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		}
+	}
+
 	public class IuvComparator implements Comparator<Iuv> {
 		@Override
 		public int compare(Iuv o1, Iuv o2) {

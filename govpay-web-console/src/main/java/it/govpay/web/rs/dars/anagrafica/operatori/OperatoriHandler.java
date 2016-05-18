@@ -143,7 +143,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			if(findAll != null && findAll.size() > 0){
 				for (Operatore entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -459,7 +459,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			URI cancellazione = null;
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -495,7 +495,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 					if(findAll != null && findAll.size() > 0){
 						for (UnitaOperativa entry : findAll) {
-							Elemento elemento = uoDarsHandler.getElemento(entry, entry.getId(), uriDettaglioUoBuilder);
+							Elemento elemento = uoDarsHandler.getElemento(entry, entry.getId(), uriDettaglioUoBuilder,bd);
 							sezioneUo.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
 						}
 					}
@@ -524,7 +524,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 					if(findAll != null && findAll.size() > 0){
 						for (Applicazione entry : findAll) {
-							Elemento elemento = applicazioniDarsHandler.getElemento(entry, entry.getId(), uriDettaglioApplicazioniBuilder);
+							Elemento elemento = applicazioniDarsHandler.getElemento(entry, entry.getId(), uriDettaglioApplicazioniBuilder,bd);
 							sezioneApplicazioni.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
 						}
 					}
@@ -667,12 +667,12 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 
 	@Override
-	public String getTitolo(Operatore entry) {
+	public String getTitolo(Operatore entry, BasicBD bd) {
 		return entry.getPrincipal();
 	}
 
 	@Override
-	public String getSottotitolo(Operatore entry) {
+	public String getSottotitolo(Operatore entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));

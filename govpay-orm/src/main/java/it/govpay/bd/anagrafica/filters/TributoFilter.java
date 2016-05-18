@@ -38,7 +38,6 @@ import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Tributo;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.UoFieldConverter;
 
 public class TributoFilter extends AbstractFilter {
 	

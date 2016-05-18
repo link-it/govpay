@@ -38,10 +38,12 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.proxy.Server;
 
 public class VerificaClient extends BasicClient {
 
@@ -67,6 +69,10 @@ public class VerificaClient extends BasicClient {
 	 */
 	public Versamento invoke(String codVersamentoEnte, String iuv, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, GovPayException {
 		log.debug("Richiedo la verifica per il versamento ("+codVersamentoEnte+") in versione (" + versione.toString() + ") alla URL ("+url+")");
+		
+		Server server = new Server();
+		server.setName(codApplicazione);
+		GpThreadLocal.get().getTransaction().setServer(server);
 		
 		//Chiudo la connessione al DB prima della comunicazione HTTP
 		bd.closeConnection();

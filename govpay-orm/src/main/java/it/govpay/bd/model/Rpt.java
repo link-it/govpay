@@ -38,6 +38,8 @@ public class Rpt extends BasicModel{
 	
 	private static final long serialVersionUID = 1L;
 	public static final String VERSIONE = "6.2";
+	public static final int VERSIONE_ENCODED = 060200;
+	
 	public static final String CCP_NA = "n/a";
 	
 	public enum FirmaRichiesta {

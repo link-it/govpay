@@ -52,6 +52,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.utils.Utils;
 
 public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHandler<Rpt>{
@@ -124,22 +125,22 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			FilterSortWrapper rrFsw = new FilterSortWrapper();
 			rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
 			rrFsw.setSortOrder(SortOrder.DESC);
-			
+
 			Revoche revocheDars = new Revoche();
 			RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
 			UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
 
 			if(rpt != null && rpt.size() > 0){
 				for (Rpt entry : rpt) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder));
-					
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+
 					RrFilter rrFilter = rrBD.newFilter();
 					rrFilter.getFilterSortList().add(rrFsw);
 					rrFilter.setIdRpt(entry.getId()); 
 					List<Rr> findAll = rrBD.findAll(rrFilter);
 					if(findAll != null && findAll.size() > 0){
 						for (Rr rr : findAll) {
-							Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder);
+							Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder,bd);
 							elenco.getElenco().add(elemento);
 						}
 					}
@@ -173,7 +174,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, rptBD, id);
 
-			String titolo = this.getTitolo(rpt);
+			String titolo = this.getTitolo(rpt,bd);
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			// Sezione Rpt
@@ -306,6 +307,26 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 				sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rtAssente"), null);
 			}
 
+
+			//Eventi correlati
+			// Elementi correlati
+			String etichettaEventi = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.eventi.titolo");
+			Eventi eventiDars = new Eventi();
+			
+			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".codDominio.id");
+			String iuvId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".iuv.id");
+			String ccpId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".ccp.id");
+			String idTransazioneId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".idTransazione.id");
+
+		
+			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(eventiDars.getPathServizio())
+					.queryParam(codDominioId, rpt.getCodDominio())
+					.queryParam(iuvId, rpt.getIuv())
+					.queryParam(ccpId, rpt.getCcp())
+					.queryParam(idTransazioneId, rpt.getId());
+			
+			dettaglio.addElementoCorrelato(etichettaEventi, uriBuilder.build());
+
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
@@ -317,7 +338,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	}
 
 	@Override
-	public String getTitolo(Rpt entry) {
+	public String getTitolo(Rpt entry,BasicBD bd) {
 		Date dataMsgRichiesta = entry.getDataMsgRichiesta();
 		String iuv = entry.getIuv();
 		String ccp = entry.getCcp();
@@ -329,7 +350,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	}
 
 	@Override
-	public String getSottotitolo(Rpt entry) {
+	public String getSottotitolo(Rpt entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		// ricevuta RT
 		if(entry.getDataMsgRicevuta()!= null){
@@ -353,8 +374,8 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO");
 				break;
 			}
-			
-			
+
+
 			BigDecimal importoTotalePagato = entry.getImportoTotalePagato();
 			int compareTo = importoTotalePagato.compareTo(BigDecimal.ZERO);
 			if(compareTo > 0){
@@ -362,12 +383,12 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			} else{
 				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente",esitoPagamentoString));
 			}
-				
+
 		} else {
 			StatoRpt stato = entry.getStato();
 			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtAssente", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name())));
 		}
-	 
+
 		return sb.toString();
 	}
 

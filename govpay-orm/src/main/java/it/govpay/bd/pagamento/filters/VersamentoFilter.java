@@ -32,11 +32,13 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.FrApplicazione;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 
@@ -49,6 +51,8 @@ public class VersamentoFilter extends AbstractFilter {
 	private Date datainizio;
 	private Date dataFine;
 	private Long idVersamento= null;
+	private String iuv;
+	private String codVersamento = null;
 
 	public enum SortFields {
 		STATO
@@ -117,6 +121,20 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.equals(cf, this.idVersamento);
 				addAnd = true;
 			}
+			
+			if(this.iuv != null){
+				// collegamento alla tabella dei pagamenti?
+				
+			}
+			
+			if(this.codVersamento != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.ilike(Versamento.model().COD_VERSAMENTO_ENTE, this.codVersamento, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -178,6 +196,20 @@ public class VersamentoFilter extends AbstractFilter {
 		this.idVersamento = idVersamento;
 	}
 
+	public String getIuv() {
+		return iuv;
+	}
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
 
+	public String getCodVersamento() {
+		return codVersamento;
+	}
+
+	public void setCodVersamento(String codVersamento) {
+		this.codVersamento = codVersamento;
+	}
+	
 
 }

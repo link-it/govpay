@@ -21,7 +21,9 @@
 package it.govpay.bd.model;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.SingoliVersamentiBD;
+import it.govpay.orm.dao.jdbc.JDBCIUVService;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -92,5 +94,15 @@ public class RendicontazioneSenzaRpt extends BasicModel {
 			singoloVersamento = singoliVersamentiBD.getSingoloVersamento(idSingoloVersamento);
 		}
 		return singoloVersamento;
+	}
+	
+	private Iuv iuv;
+	
+	public Iuv getIuv(BasicBD bd) throws ServiceException {
+		if(iuv == null) {
+			IuvBD iuvBD = new IuvBD(bd);
+			iuv = iuvBD.getIuv(this.idIuv);
+		}
+		return iuv;
 	}
 }

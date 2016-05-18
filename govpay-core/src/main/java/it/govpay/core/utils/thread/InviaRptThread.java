@@ -20,13 +20,13 @@
  */
 package it.govpay.core.utils.thread;
 
-import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.proxy.Service;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.bd.BasicBD;
@@ -37,12 +37,13 @@ import it.govpay.bd.model.Rpt.StatoRpt;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.business.model.Risposta;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 
 public class InviaRptThread implements Runnable {
 	
 	private Rpt rpt;
-	
 	private static Logger log = LogManager.getLogger();
 	
 	public InviaRptThread(Rpt rpt, BasicBD bd) throws ServiceException {
@@ -57,11 +58,17 @@ public class InviaRptThread implements Runnable {
 	
 	@Override
 	public void run() {
-		String codOperazione = UUID.randomUUID().toString();
-		ThreadContext.put("op",  codOperazione);
 		BasicBD bd = null;
+		GpContext ctx = null;
 		
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "InviaRptThread");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("InviaRpt");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
 			
@@ -102,6 +109,8 @@ public class InviaRptThread implements Runnable {
 			bd.rollback();
 			bd.closeConnection();
 			return;
+		} finally {
+			if(ctx != null) ctx.log();
 		}
 	}
 }
