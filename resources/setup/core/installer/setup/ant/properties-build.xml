@@ -22,6 +22,12 @@
 			<param name="value" value="Generato con GovPay ${antinstaller_product_version}"/>
 		</antcall>
 
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="http://localhost:8080/openspcoop2/PD?wsdl"/>
+                        <param name="value" value="${antinstaller_pddcheck}"/>
+                </antcall>
+
 	</target>
 
 	<target name="govpay_orm_properties_settings">
