@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.Properties;
 
@@ -52,6 +53,7 @@ public class GovpayConfig {
 	}
 
 	private URI log4j2Config;
+	private URL urlPddVerifica;
 	private String logoDir;
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePool;
@@ -64,6 +66,7 @@ public class GovpayConfig {
 		this.versioneAvviso = VersioneAvviso.v002;
 		this.dimensionePool = 10;
 		this.log4j2Config = null;
+		this.urlPddVerifica = null;
 		this.ksAlias = null;
 		this.ksLocation = null;
 		this.ksPassword = null;
@@ -155,10 +158,21 @@ public class GovpayConfig {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePool = 10;
 			}
+			
+			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", props, true);
+			try {
+				this.urlPddVerifica = new URL(urlPddVerificaProperty.trim());
+			} catch (Exception e) {
+				throw new Exception("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
+			}
 
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
+	}
+
+	public URL getUrlPddVerifica() {
+		return urlPddVerifica;
 	}
 
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {

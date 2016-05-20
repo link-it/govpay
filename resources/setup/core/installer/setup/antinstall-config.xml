@@ -23,7 +23,17 @@
         
 	<comment displayText=""/>
 
+        <large-select defaultValue="jboss7" property="antinstaller_as" displayText="Application Server">
+            <option value="jboss7" text="JBoss 7.x"/>
+	    <option value="jboss7" text="JBoss EAP 6.x"/>
+        </large-select>
+
+	<comment displayText=""/>
+
 	<directory defaultValue="/var/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
+
+	<comment displayText=""/>
+
 	<directory defaultValue="/var/log/govpay" defaultValueWin="C:\govpay\log" displayText="Log Folder" checkExists="false" property="antinstaller_log_folder" />
 
         <large-select defaultValue="INFO" property="antinstaller_log_level" displayText="Log Level">
@@ -34,23 +44,6 @@
 	    <option value="ERROR" text="ERROR"/>
         </large-select>
 
-        <comment displayText=""/>
-        
-        <large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
-            <option value="postgresql" text="PostgreSQL"/>
-            <option value="mysql" text="MySQL"/>
-            <option value="oracle" text="Oracle"/>
-        </large-select>
-        
-        <comment displayText=""/>
-        
-        <large-select defaultValue="jboss7" property="antinstaller_as" displayText="Application Server">
-            <option value="jboss7" text="JBoss 7.x"/>
-	    <option value="jboss7" text="JBoss EAP 6.x"/>
-        </large-select>
-
-
-	<validated defaultValue="http://serviziclienti.link.it/" property="antinstaller_pubhost" displayText="Hostname Console" regex=".+"/>
     </page>
     
     <page name="informazioniApplicative" type="input" displayText="Informazioni Applicative">
@@ -58,9 +51,22 @@
 	<hidden property="antinstaller_ragione_sociale" value="GovPay Administrator"/>
 	<hidden property="antinstaller_cod_univoco" value="00000000000ADMIN"/>
 	<validated defaultValue="gpadmin" property="antinstaller_principal" displayText="Username Amministratore" regex=".+"/>
+	<validated defaultValue="http://serviziclienti.link.it/" property="antinstaller_pubhost" displayText="Hostname Console" regex=".+"/>
+
+	<comment displayText=""/>
+
+	<validated defaultValue="http://serviziclienti.link.it/openspcoop2/PD?wsdl" property="antinstaller_pddcheck" displayText="URL Verifica Porta di Dominio" regex=".+"/>
+
     </page>
 
     <page name="informazionidibasexml" type="input" displayText="Il Database">
+
+        <large-select defaultValue="postgresql" property="antinstaller_tipo_database" displayText="DB Platform">
+            <option value="postgresql" text="PostgreSQL"/>
+            <option value="mysql" text="MySQL"/>
+            <option value="oracle" text="Oracle"/>
+        </large-select>
+        
         <validated defaultValue="127.0.0.1" property="antinstaller_dbhost" displayText="Hostname" regex=".+"/>
         <conditional ifProperty="${antinstaller_tipo_database}=postgresql">
             <hidden property="porta-db" value="5432"/>
