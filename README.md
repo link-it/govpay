@@ -6,14 +6,15 @@ Di seguito un elenco delle principali funzionalità del prodotto.
 * supporto allo storno dei pagamenti.
 * supporto ai pagamenti su circuito MyBank.
 * supporto al pagamento della Marca da Bollo Telematica.
-* aggiornato alla versione 1.7.2 delle interfacce Nodo dei Pagamenti
+* aggiornato alla versione 1.7.2 delle interfacce Nodo dei Pagamenti.
 * integrazione con gli applicativi dell'Ente preposti alla gestione delle posizioni creditorie tramite Web API.
 * integrazione semplificata del/i portali cittadini dell'Ente.
-* implementazione di servizi accessori ai pagamenti 
+* implementazione di servizi accessori ai pagamenti.
   * servizio di generazione IUV
   * produzione codici per BarCode e QrCode
   * produzione tracciati di Iban Accredito e Tabella Controparti
   * gestione flussi rendicontazione
+  * gestione rendicontazione senza rpt
   * risoluzione pagamenti incompleti
   * giornale degli eventi
   * ...

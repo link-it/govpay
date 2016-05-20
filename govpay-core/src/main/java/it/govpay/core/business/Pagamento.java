@@ -33,6 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPT;
@@ -82,6 +83,7 @@ import it.govpay.core.utils.UrlUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
+import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -100,25 +102,9 @@ public class Pagamento extends BasicBD {
 		super(bd);
 	}
 	
-	public GpAvviaTransazionePagamentoResponse avviaTransazione(Portale portaleAutenticato, GpAvviaTransazionePagamento gpAvviaTransazionePagamento, Canale canale) throws GovPayException, ServiceException {
-		Portale portale = null;
+	public GpAvviaTransazionePagamentoResponse avviaTransazione(Portale portale, GpAvviaTransazionePagamento gpAvviaTransazionePagamento, Canale canale) throws GovPayException, ServiceException {
 
 		GpContext ctx = GpThreadLocal.get();
-		
-		try {
-			portale = AnagraficaManager.getPortale(this, gpAvviaTransazionePagamento.getCodPortale());
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.PRT_000, gpAvviaTransazionePagamento.getCodPortale());
-		}
-
-		if(!portale.isAbilitato())
-			throw new GovPayException(EsitoOperazione.PRT_001, gpAvviaTransazionePagamento.getCodPortale());
-
-		if(!portale.getCodPortale().equals(portaleAutenticato.getCodPortale()))
-			throw new GovPayException(EsitoOperazione.PRT_002, portaleAutenticato.getCodPortale(), gpAvviaTransazionePagamento.getCodPortale());
-		
-		ctx.log("integrazione.autorizzazionePortale");
-		
 		List<Versamento> versamenti = new ArrayList<Versamento>();
 		VersamentiBD versamentiBD = new VersamentiBD(this);
 		
@@ -167,18 +153,6 @@ public class Pagamento extends BasicBD {
 			rifTransazione.setCodVersamentoEnte(rpt.getVersamento(this).getCodVersamentoEnte());
 			rifTransazione.setIuv(rpt.getIuv());
 			response.getRifTransazione().add(rifTransazione);
-		}
-		
-		if(rpts.get(0).getPspRedirectURL() != null) {
-			if(rpts.size() == 1)
-				ctx.log("core.consegnaRptRedirect", rpts.get(0).getCodMsgRichiesta(), rpts.get(0).getPspRedirectURL());
-			else
-				ctx.log("core.consegnaCarrelloRptRedirect", rpts.get(0).getCodCarrello(), rpts.get(0).getPspRedirectURL());
-		} else {
-			if(rpts.size() == 1)
-				ctx.log("core.consegnaRptNoRedirect", rpts.get(0).getCodMsgRichiesta());
-			else
-				ctx.log("core.consegnaCarrelloRptNoRedirect", rpts.get(0).getCodCarrello());
 		}
 		
 		return response;
@@ -332,15 +306,22 @@ public class Pagamento extends BasicBD {
 				idTransaction = ctx.openTransaction();
 				
 				if(codCarrello != null) {
-					ctx.log("core.invioCarrelloRpt", codCarrello);
+					ctx.setupNodoClient(intermediario, Azione.nodoInviaCarrelloRPT);
+					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
+					ctx.log("core.invioCarrelloRpt");
 				} else {
-					ctx.log("core.invioRpt", rpts.get(0).getCodMsgRichiesta());
+					ctx.setupNodoClient(intermediario, Azione.nodoInviaRPT);
+					ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rpts.get(0).getCodDominio()));
+					ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rpts.get(0).getIuv()));
+					ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpts.get(0).getCcp()));
+					ctx.log("core.invioRpt");
 				}
 				
 				Risposta risposta = RptUtils.inviaRPT(intermediario, stazione, rpts, this);
 			
 				setupConnection();
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
+					
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
 					try {
@@ -361,6 +342,12 @@ public class Pagamento extends BasicBD {
 				} else {
 					// RPT accettata dal Nodo
 					// Aggiorno lo stato e ritorno
+					if(risposta.getUrl() != null) {
+						ctx.getContext().getResponse().addGenericProperty(new Property("redirectUrl", risposta.getUrl()));
+						ctx.log("core.invioRptOkRedirect");
+					} else {
+						ctx.log("core.invioRptOkNoRedirect");
+					}
 					return updateStatoRpt(rpts, StatoRpt.RPT_ACCETTATA_NODO, risposta.getUrl(), null);
 				}
 			} catch (ClientException e) {
@@ -368,6 +355,7 @@ public class Pagamento extends BasicBD {
 				//   - RPT non esistente: rendo un errore NDP per RPT non inviata
 				//   - RPT esistente: faccio come OK
 				//   - Errore nella richiesta: rendo un errore NDP per stato sconosciuto
+				ctx.log("core.invioRptKo");
 				NodoChiediStatoRPTRisposta risposta = null;
 				try {
 					risposta = RptUtils.chiediStatoRPT(intermediario, stazione, rpts.get(0), this);

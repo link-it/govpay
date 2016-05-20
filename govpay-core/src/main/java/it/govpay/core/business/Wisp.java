@@ -33,12 +33,16 @@ import it.govpay.bd.model.Canale.TipoVersamento;
 import it.govpay.core.business.model.SceltaWISP;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException.FaultNodo;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 
 public class Wisp extends BasicBD {
 	
@@ -47,7 +51,17 @@ public class Wisp extends BasicBD {
 	}
 
 	public SceltaWISP chiediScelta(Portale portaleAutenticato, Dominio dominio, String codKeyPA, String codKeyWISP) throws ServiceException, GovPayException {
+		String idTransaction = null;
+		GpContext ctx = GpThreadLocal.get();
 		try {
+			idTransaction = ctx.openTransaction();
+			ctx.setupNodoClient(dominio.getStazione(this).getIntermediario(this), Azione.nodoChiediSceltaWISP);
+			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", dominio.getCodDominio()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("codKeyPA", codKeyPA));
+			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codKeyWISP", codKeyWISP));
+			GpThreadLocal.get().log("integrazione.risoluzioneWisp");
+			
+			
 			Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
 			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
 			closeConnection();
@@ -65,16 +79,23 @@ public class Wisp extends BasicBD {
 				FaultNodo fault = FaultNodo.valueOf(risposta.getFault().getFaultCode());
 				switch (fault) {
 				case PPT_WISP_SESSIONE_SCONOSCIUTA:
+					ctx.log("integrazione.risoluzioneWispSconosciuta");
 					throw new GovPayException(EsitoOperazione.WISP_000);
 				case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
+					ctx.log("integrazione.risoluzioneWispTimeout");
 					throw new GovPayException(EsitoOperazione.WISP_001);
 				default:
+					ctx.log("integrazione.risoluzioneWispKo");
 					throw new GovPayException(EsitoOperazione.NDP_001, risposta.getFault().getFaultCode());
 				}
 			} else {
 				SceltaWISP scelta = new SceltaWISP();
 				switch (risposta.getEffettuazioneScelta()) {
 				case SI:
+					ctx.getContext().getResponse().addGenericProperty(new Property("codPsp", risposta.getIdentificativoPSP()));
+					ctx.getContext().getResponse().addGenericProperty(new Property("codCanale", risposta.getIdentificativoCanale()));
+					ctx.getContext().getResponse().addGenericProperty(new Property("tipoVersamento", risposta.getTipoVersamento().toString()));
+					ctx.log("integrazione.risoluzioneWispCanale");
 					try {
 						Canale canale = AnagraficaManager.getCanale(this,  risposta.getIdentificativoPSP(), risposta.getIdentificativoCanale(), TipoVersamento.toEnum(risposta.getTipoVersamento().toString()));
 						canale.setPsp(canale.getPsp(this));
@@ -86,10 +107,12 @@ public class Wisp extends BasicBD {
 					scelta.setSceltaEffettuata(true);
 					return scelta;
 				case NO:
+					ctx.log("integrazione.risoluzioneWispNoScelta");
 					scelta.setPagaDopo(false);
 					scelta.setSceltaEffettuata(false);
 					return scelta;
 				case PO:
+					ctx.log("integrazione.risoluzioneWispPagaDopo");
 					scelta.setPagaDopo(true);
 					scelta.setSceltaEffettuata(true);
 					return scelta;
@@ -99,6 +122,8 @@ public class Wisp extends BasicBD {
 		} 
 		catch (ClientException e) {
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
+		} finally {
+			ctx.closeTransaction(idTransaction);
 		}
 	}
 }
