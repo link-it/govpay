@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -45,7 +45,6 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -128,60 +127,102 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 	@Override
 	public List<IdPortale> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
+		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
 		List<IdPortale> list = new ArrayList<IdPortale>();
 
-		try {
+		try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(Portale.model().COD_PORTALE);
-	        
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-			
+        
 			for(Map<String, Object> map: returnMap) {
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Portale)this.getPortaleFetch().fetch(jdbcProperties.getDatabase(), Portale.model(), map)));
-			}
+	        }
 		} catch(NotFoundException e) {}
 
         return list;
-		
+
 	}
 	
 	@Override
 	public List<Portale> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
+		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
-        List<Portale> list = new ArrayList<Portale>();
         
+        List<Portale> list = new ArrayList<Portale>();
 
-		try {
+		try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id", Long.class, "id", this.getPortaleFieldConverter().toTable(Portale.model())));
 			fields.add(Portale.model().COD_PORTALE);
 			fields.add(Portale.model().DEFAULT_CALLBACK_URL);
 			fields.add(Portale.model().PRINCIPAL);
 			fields.add(Portale.model().ABILITATO);
-	        
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-			
+
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		
 
 			for(Map<String, Object> map: returnMap) {
 				Portale portale = (Portale)this.getPortaleFetch().fetch(jdbcProperties.getDatabase(), Portale.model(), map);
-				
-				portale.setPortaleApplicazioneList(this.getPortaleApplicazione(jdbcUtilities, jdbcProperties, log, connection, sqlQueryObject, portale.getId(), idMappingResolutionBehaviour));
+
+
+				// Object portale_portaleApplicazione
+				ISQLQueryObject sqlQueryObjectGet_portale_portaleApplicazione = sqlQueryObject.newSQLQueryObject();
+				sqlQueryObjectGet_portale_portaleApplicazione.setANDLogicOperator(true);
+				sqlQueryObjectGet_portale_portaleApplicazione.addFromTable(this.getPortaleFieldConverter().toTable(Portale.model().PORTALE_APPLICAZIONE));
+				sqlQueryObjectGet_portale_portaleApplicazione.addSelectField("id");
+				sqlQueryObjectGet_portale_portaleApplicazione.addWhereCondition("id_portale=?");
+
+				// Get portale_portaleApplicazione
+				java.util.List<Object> portale_portaleApplicazione_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_portale_portaleApplicazione.createSQLQuery(), jdbcProperties.isShowSql(), Portale.model().PORTALE_APPLICAZIONE, this.getPortaleFetch(),
+					new JDBCObject(portale.getId(),Long.class));
+
+				if(portale_portaleApplicazione_list != null) {
+					for (Object portale_portaleApplicazione_object: portale_portaleApplicazione_list) {
+						PortaleApplicazione portale_portaleApplicazione = (PortaleApplicazione) portale_portaleApplicazione_object;
+
+
+						if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							// Object _portale_portaleApplicazione_applicazione (recupero id)
+							ISQLQueryObject sqlQueryObjectGet_portale_portaleApplicazione_applicazione_readFkId = sqlQueryObject.newSQLQueryObject();
+							sqlQueryObjectGet_portale_portaleApplicazione_applicazione_readFkId.addFromTable(this.getPortaleFieldConverter().toTable(it.govpay.orm.Portale.model().PORTALE_APPLICAZIONE));
+							sqlQueryObjectGet_portale_portaleApplicazione_applicazione_readFkId.addSelectField("id_applicazione");
+							sqlQueryObjectGet_portale_portaleApplicazione_applicazione_readFkId.addWhereCondition("id=?");
+							sqlQueryObjectGet_portale_portaleApplicazione_applicazione_readFkId.setANDLogicOperator(true);
+							Long idFK_portale_portaleApplicazione_applicazione = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_portale_portaleApplicazione_applicazione_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+									new JDBCObject(portale_portaleApplicazione.getId(),Long.class));
+							
+							it.govpay.orm.IdApplicazione id_portale_portaleApplicazione_applicazione = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_portale_portaleApplicazione_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_portale_portaleApplicazione_applicazione, false);
+							}else{
+								id_portale_portaleApplicazione_applicazione = new it.govpay.orm.IdApplicazione();
+							}
+							id_portale_portaleApplicazione_applicazione.setId(idFK_portale_portaleApplicazione_applicazione);
+							portale_portaleApplicazione.setIdApplicazione(id_portale_portaleApplicazione_applicazione);
+						}
+
+						portale.addPortaleApplicazione(portale_portaleApplicazione);
+					}
+				}
+
 				list.add(portale);
-			}
+	        }
 		} catch(NotFoundException e) {}
-        return list;      
+
+        return list;
 		
 	}
 	
@@ -494,7 +535,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 	
 	private Portale _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		
 		IField idField = new CustomField("id", Long.class, "id", this.getPortaleFieldConverter().toTable(Portale.model()));
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
@@ -502,67 +542,19 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 		expression.offset(0);
 		expression.limit(2); //per verificare la multiple results
 		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
-		
 		List<Portale> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
-		
+				
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
+		
 
 		return lst.get(0);
-
 	
 	} 
 	
-	private List<PortaleApplicazione> getPortaleApplicazione(JDBCPreparedStatementUtilities jdbcUtilities, JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-		// Object portale_portaleApplicazione
-		ISQLQueryObject sqlQueryObjectGet_portale_portaleApplicazione = sqlQueryObject.newSQLQueryObject();
-		sqlQueryObjectGet_portale_portaleApplicazione.setANDLogicOperator(true);
-		sqlQueryObjectGet_portale_portaleApplicazione.addFromTable(this.getPortaleFieldConverter().toTable(Portale.model().PORTALE_APPLICAZIONE));
-		sqlQueryObjectGet_portale_portaleApplicazione.addSelectField("id");
-		sqlQueryObjectGet_portale_portaleApplicazione.addWhereCondition("id_portale=?");
-
-		// Get portale_portaleApplicazione
-		java.util.List<Object> portale_portaleApplicazione_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_portale_portaleApplicazione.createSQLQuery(), jdbcProperties.isShowSql(), Portale.model().PORTALE_APPLICAZIONE, this.getPortaleFetch(),
-			new JDBCObject(tableId,Long.class));
-
-		List<PortaleApplicazione> portaleLst = new ArrayList<PortaleApplicazione>();
-		if(portale_portaleApplicazione_list != null) {
-			for (Object portale_portaleApplicazione_object: portale_portaleApplicazione_list) {
-				PortaleApplicazione portale_portaleApplicazione = (PortaleApplicazione) portale_portaleApplicazione_object;
-
-
-				if(idMappingResolutionBehaviour==null ||
-					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-				){
-					// Object _portale_portaleApplicazione_ente (recupero id)
-					ISQLQueryObject sqlQueryObjectGet_portale_portaleApplicazione_ente_readFkId = sqlQueryObject.newSQLQueryObject();
-					sqlQueryObjectGet_portale_portaleApplicazione_ente_readFkId.addFromTable(this.getPortaleFieldConverter().toTable(it.govpay.orm.Portale.model().PORTALE_APPLICAZIONE));
-					sqlQueryObjectGet_portale_portaleApplicazione_ente_readFkId.addSelectField("id_applicazione");
-					sqlQueryObjectGet_portale_portaleApplicazione_ente_readFkId.addWhereCondition("id=?");
-					sqlQueryObjectGet_portale_portaleApplicazione_ente_readFkId.setANDLogicOperator(true);
-					Long idFK_portale_portaleApplicazione_applicazione = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_portale_portaleApplicazione_ente_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
-							new JDBCObject(portale_portaleApplicazione.getId(),Long.class));
-					
-					it.govpay.orm.IdApplicazione id_portale_portaleApplicazione_applicazione = null;
-					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_portale_portaleApplicazione_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_portale_portaleApplicazione_applicazione, false);
-					}else{
-						id_portale_portaleApplicazione_applicazione = new it.govpay.orm.IdApplicazione();
-					}
-					id_portale_portaleApplicazione_applicazione.setId(idFK_portale_portaleApplicazione_applicazione);
-					portale_portaleApplicazione.setIdApplicazione(id_portale_portaleApplicazione_applicazione);
-				}
-
-				portaleLst.add(portale_portaleApplicazione);
-			}
-		}
-		return portaleLst;
-
-	}
-
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
 		return this._exists(jdbcProperties, log, connection, sqlQueryObject, Long.valueOf(tableId));
@@ -597,25 +589,20 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 		if(expression.inUseModel(Portale.model().PORTALE_APPLICAZIONE,false)){
 			String tableName1 = this.getPortaleFieldConverter().toAliasTable(Portale.model());
 			String tableName2 = this.getPortaleFieldConverter().toAliasTable(Portale.model().PORTALE_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_portale="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE,false)){
-
-			if(!expression.inUseModel(Portale.model().PORTALE_APPLICAZIONE,false)){
-				String tableName1 = this.getPortaleFieldConverter().toAliasTable(Portale.model());
-				String tableName2 = this.getPortaleFieldConverter().toAliasTable(Portale.model().PORTALE_APPLICAZIONE);
-				sqlQueryObject.addFromTable(tableName2);
+			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_portale");
+			
+	        if(expression.inUseModel(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE,false)){
+				if(expression.inUseModel(Portale.model().PORTALE_APPLICAZIONE,false)==false){
+					sqlQueryObject.addFromTable(this.getPortaleFieldConverter().toTable(Portale.model().PORTALE_APPLICAZIONE));
+				}
 				
-				sqlQueryObject.addWhereCondition(tableName1+".id_portale="+tableName2+".id");
+				String tableName3 = this.getPortaleFieldConverter().toAliasTable(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_applicazione");
+
 			}
-			
-			
-			String tableName1 = this.getPortaleFieldConverter().toAliasTable(Portale.model().PORTALE_APPLICAZIONE);
-			String tableName2 = this.getPortaleFieldConverter().toAliasTable(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
+
 		}
-		
+        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPortale id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -641,7 +628,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 				new CustomField("id", Long.class, "id", converter.toTable(Portale.model()))
 			));
 
-
 		// Portale.model().PORTALE_APPLICAZIONE
 		mapTableToPKColumn.put(converter.toTable(Portale.model().PORTALE_APPLICAZIONE),
 			utilities.newList(
@@ -653,7 +639,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE))
 			));
-
 
         return mapTableToPKColumn;		
 	}
@@ -717,10 +702,6 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -744,6 +725,7 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 		// Object _portale
 		sqlQueryObjectGet.addFromTable(this.getPortaleFieldConverter().toTable(Portale.model()));
 		sqlQueryObjectGet.addSelectField(this.getPortaleFieldConverter().toColumn(Portale.model().COD_PORTALE,true));
+
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -763,6 +745,7 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 			}
 		}
 		else{
+			// set _portale
 			id_portale = new it.govpay.orm.IdPortale();
 			id_portale.setCodPortale((String)listaFieldId_portale.get(0));
 		}
@@ -804,7 +787,7 @@ public class JDBCPortaleServiceSearchImpl implements IJDBCServiceSearchWithId<Po
 
 		// Recupero _portale
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_portale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodPortale(),Portale.model().COD_PORTALE.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodPortale(),Portale.model().COD_PORTALE.getFieldType()),
 		};
 		Long id_portale = null;
 		try{

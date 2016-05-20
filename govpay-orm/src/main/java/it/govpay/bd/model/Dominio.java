@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,25 +21,28 @@
 
 package it.govpay.bd.model;
 
-import java.util.ArrayList;
-import java.util.List;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 
-/**
- * Rapppresenta un ente creditore
- */
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 public class Dominio extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
+	public static final String EC = "EC"; 
+	
 	private Long id; 
 	private long idStazione; 
+	private Long idApplicazioneDefault; 
 	private String codDominio;
 	private String ragioneSociale;
 	private String gln;
-	private String pluginClass;
+	private boolean riusoIuv;
+	private boolean customIuv;
 	private boolean abilitato;
-	private List<Disponibilita> disponibilita = new ArrayList<Disponibilita>();
-	
-	public Dominio (){}
+	private byte[] contiAccredito;
+	private byte[] tabellaControparti;
 	
 	public Long getId() {
 		return id;
@@ -65,50 +68,12 @@ public class Dominio extends BasicModel {
 		this.gln = gln;
 	}
 
-	
-	@Override
-	public boolean equals(Object obj) {
-		Dominio dominio = null;
-		if(obj instanceof Dominio) {
-			dominio = (Dominio) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal =
-				equals(codDominio, dominio.getCodDominio()) &&
-				equals(gln, dominio.getGln()) &&
-				equals(ragioneSociale, dominio.getRagioneSociale()) &&
-				equals(disponibilita, dominio.getDisponibilita()) &&
-				equals(pluginClass, dominio.getPluginClass()) &&
-				equals(abilitato, dominio.isAbilitato()) &&
-				idStazione == dominio.getIdStazione();
-		
-		return equal;
-	}
-
 	public String getRagioneSociale() {
 		return ragioneSociale;
 	}
 
 	public void setRagioneSociale(String ragioneSociale) {
 		this.ragioneSociale = ragioneSociale;
-	}
-
-	public List<Disponibilita> getDisponibilita() {
-		return disponibilita;
-	}
-
-	public void setDisponibilita(List<Disponibilita> disponibilita) {
-		this.disponibilita = disponibilita;
-	}
-
-	public String getPluginClass() {
-		return pluginClass;
-	}
-
-	public void setPluginClass(String pluginClass) {
-		this.pluginClass = pluginClass;
 	}
 
 	public boolean isAbilitato() {
@@ -125,6 +90,83 @@ public class Dominio extends BasicModel {
 
 	public void setIdStazione(long idStazione) {
 		this.idStazione = idStazione;
+	}
+
+	public byte[] getContiAccredito() {
+		return contiAccredito;
+	}
+
+	public void setContiAccredito(byte[] contiAccredito) {
+		this.contiAccredito = contiAccredito;
+	}
+
+	public byte[] getTabellaControparti() {
+		return tabellaControparti;
+	}
+
+	public void setTabellaControparti(byte[] tabellaControparti) {
+		this.tabellaControparti = tabellaControparti;
+	}
+	
+	public Long getIdApplicazioneDefault() {
+		return idApplicazioneDefault;
+	}
+
+	public void setIdApplicazioneDefault(Long idApplicazioneDefault) {
+		this.idApplicazioneDefault = idApplicazioneDefault;
+	}
+
+	
+	// Business
+	
+	private Anagrafica anagrafica;
+	private Stazione stazione;
+	private Applicazione applicazioneDefault;
+	
+	public Stazione getStazione(BasicBD bd) throws ServiceException {
+		if(stazione == null) {
+			stazione = AnagraficaManager.getStazione(bd, idStazione);
+		} 
+		return stazione;
+	}
+
+	public Anagrafica getAnagrafica(BasicBD bd) throws ServiceException, NotFoundException {
+		if(anagrafica == null) {
+			anagrafica = AnagraficaManager.getUnitaOperativa(bd, id, EC).getAnagrafica();
+		}
+		return anagrafica;
+	}
+
+	public void setAnagrafica(Anagrafica anagrafica) {
+		this.anagrafica = anagrafica;
+	}
+
+	public boolean isRiusoIuv() {
+		return riusoIuv;
+	}
+
+	public void setRiusoIuv(boolean riusoIuv) {
+		this.riusoIuv = riusoIuv;
+	}
+
+	public boolean isCustomIuv() {
+		return customIuv;
+	}
+
+	public void setCustomIuv(boolean customIuv) {
+		this.customIuv = customIuv;
+	}
+
+	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException, NotFoundException {
+		if(applicazioneDefault == null && idApplicazioneDefault != null) {
+			applicazioneDefault = AnagraficaManager.getApplicazione(bd, idApplicazioneDefault);
+		} 
+		return applicazioneDefault;
+	}
+
+	public void setApplicazioneDefault(Applicazione applicazioneDefault) {
+		this.applicazioneDefault = applicazioneDefault;
+		this.idApplicazioneDefault = applicazioneDefault.getId();
 	}
 
 

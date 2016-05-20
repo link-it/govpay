@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,13 +37,13 @@ import java.io.Serializable;
  * &lt;complexType name="Canale">
  * 		&lt;sequence>
  * 			&lt;element name="idPsp" type="{http://www.govpay.it/orm}id-psp" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codCanale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codIntermediario" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tipoVersamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="modelloPagamento" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codIntermediario" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="modelloPagamento" type="{http://www.govpay.it/orm}integer" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="disponibilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="descrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="condizioni" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="condizioni" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="urlInfo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -64,7 +64,7 @@ import java.io.Serializable;
   	"codCanale",
   	"codIntermediario",
   	"tipoVersamento",
-  	"modelloPagamento",
+  	"_decimalWrapper_modelloPagamento",
   	"disponibilita",
   	"descrizione",
   	"condizioni",
@@ -126,11 +126,17 @@ public class Canale extends org.openspcoop2.utils.beans.BaseBean implements Seri
   }
 
   public java.lang.Integer getModelloPagamento() {
-    return this.modelloPagamento;
+    if(this._decimalWrapper_modelloPagamento!=null){
+		return (java.lang.Integer) this._decimalWrapper_modelloPagamento.getObject(java.lang.Integer.class);
+	}else{
+		return this.modelloPagamento;
+	}
   }
 
   public void setModelloPagamento(java.lang.Integer modelloPagamento) {
-    this.modelloPagamento = modelloPagamento;
+    if(modelloPagamento!=null){
+		this._decimalWrapper_modelloPagamento = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,2,modelloPagamento);
+	}
   }
 
   public java.lang.String getDisponibilita() {
@@ -211,8 +217,12 @@ public class Canale extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @XmlElement(name="tipoVersamento",required=true,nillable=false)
   protected java.lang.String tipoVersamento;
 
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="modelloPagamento",required=true,nillable=false)
+  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_modelloPagamento = null;
+
+  @XmlTransient
   protected java.lang.Integer modelloPagamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")

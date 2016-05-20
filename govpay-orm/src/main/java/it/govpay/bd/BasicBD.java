@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,81 +20,57 @@
  */
 package it.govpay.bd;
 
-import it.govpay.orm.dao.IAnagraficaService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.ICanaleService;
-import it.govpay.orm.dao.ICarrelloService;
 import it.govpay.orm.dao.IConnettoreService;
-import it.govpay.orm.dao.IContoAccreditoService;
-import it.govpay.orm.dao.IDBAnagraficaService;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.dao.IDBCanaleService;
-import it.govpay.orm.dao.IDBCarrelloService;
 import it.govpay.orm.dao.IDBConnettoreService;
-import it.govpay.orm.dao.IDBContoAccreditoService;
 import it.govpay.orm.dao.IDBDominioService;
-import it.govpay.orm.dao.IDBERService;
-import it.govpay.orm.dao.IDBEnteService;
-import it.govpay.orm.dao.IDBEsitoService;
 import it.govpay.orm.dao.IDBEventoService;
 import it.govpay.orm.dao.IDBFRService;
+import it.govpay.orm.dao.IDBFrApplicazioneService;
 import it.govpay.orm.dao.IDBIUVService;
 import it.govpay.orm.dao.IDBIbanAccreditoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
-import it.govpay.orm.dao.IDBMailService;
-import it.govpay.orm.dao.IDBMailTemplateService;
-import it.govpay.orm.dao.IDBMediaRilevamentoService;
+import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
+import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPortaleService;
 import it.govpay.orm.dao.IDBPspService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
-import it.govpay.orm.dao.IDBRTService;
-import it.govpay.orm.dao.IDBRilevamentoService;
-import it.govpay.orm.dao.IDBSLAService;
-import it.govpay.orm.dao.IDBSingolaRendicontazioneService;
-import it.govpay.orm.dao.IDBSingolaRevocaService;
+import it.govpay.orm.dao.IDBRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
-import it.govpay.orm.dao.IDBTabellaContropartiService;
-import it.govpay.orm.dao.IDBTracciatoXMLService;
 import it.govpay.orm.dao.IDBTributoService;
+import it.govpay.orm.dao.IDBUoService;
 import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDominioService;
-import it.govpay.orm.dao.IERService;
-import it.govpay.orm.dao.IEnteService;
-import it.govpay.orm.dao.IEsitoService;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IFRService;
+import it.govpay.orm.dao.IFrApplicazioneService;
 import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIntermediarioService;
-import it.govpay.orm.dao.IMailService;
-import it.govpay.orm.dao.IMailTemplateService;
-import it.govpay.orm.dao.IMediaRilevamentoService;
+import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
+import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IRTService;
-import it.govpay.orm.dao.IRilevamentoService;
-import it.govpay.orm.dao.ISLAService;
-import it.govpay.orm.dao.ISingolaRendicontazioneService;
-import it.govpay.orm.dao.ISingolaRevocaService;
+import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
-import it.govpay.orm.dao.ITabellaContropartiService;
-import it.govpay.orm.dao.ITracciatoXMLService;
 import it.govpay.orm.dao.ITributoService;
+import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.UUID;
 
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -105,43 +81,31 @@ public class BasicBD {
 	private JDBCServiceManager serviceManager;
 	private JDBCServiceManagerProperties jdbcProperties;
 	
-	private IAnagraficaService anagraficaService;
 	private IApplicazioneService applicazioneService;
 	private ICanaleService canaleService;
-	private ICarrelloService carrelloService;
 	private IConnettoreService connettoreService;
-	private IContoAccreditoService contoAccreditoService;
 	private IDominioService dominioService;
-	private IEnteService enteService;
-	private IERService erService;
-	private IEsitoService esitoService;
 	private IEventoService eventoService;
 	private IFRService frService;
+	private IFrApplicazioneService frApplicazioneService;
 	private IIbanAccreditoService ibanAccreditoService;
 	private IIntermediarioService intermediarioService;
 	private IIUVService iuvService;
-	private IMailService mailService;
-	private IMailTemplateService mailTemplateService;
-	private IMediaRilevamentoService mediaRilevamentoService;
+	private INotificaService notificaService;
 	private IOperatoreService operatoreService;
+	private IPagamentoService pagamentoService;
 	private IPortaleService portaleService;
 	private IPspService pspService;
-	private IRilevamentoService rilevamentoService;
+	private IRendicontazioneSenzaRPTService rendicontazioneSenzaRPTService;
 	private IRPTService rptService;
 	private IRRService rrService;
-	private IRTService rtService;
-	private ISingolaRendicontazioneService singolaRendicontazioneService;
-	private ISingolaRevocaService singolaRevocaService;
 	private ISingoloVersamentoService singoloVersamentoService;
-	private ISLAService slaService;
 	private IStazioneService stazioneService;
-	private ITabellaContropartiService tabellaContropartiService;
-	private ITracciatoXMLService tracciatoXMLService;
 	private ITributoService tributoService;
+	private IUoService uoService;
 	private IVersamentoService versamentoService;
 	
 	private Connection connection;
-	private String token;
 	private boolean isClosed;
 	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
 	
@@ -167,73 +131,41 @@ public class BasicBD {
 		}
 		if(isClosed) {
 			this.connection = ConnectionManager.getConnection();
+			log.debug("[" + this.connection.toString() + "] !!OPEN!! " + getCaller() );
+			
 			this.serviceManager = new JDBCServiceManager(this.connection, ConnectionManager.getJDBCServiceManagerProperties(), log);
 			this.jdbcProperties = this.serviceManager.getJdbcProperties();
 			
 			try {
-				this.anagraficaService = this.serviceManager.getAnagraficaService();
 				this.applicazioneService = this.serviceManager.getApplicazioneService();
 				this.canaleService = this.serviceManager.getCanaleService();
-				this.carrelloService = this.serviceManager.getCarrelloService();
 				this.connettoreService = this.serviceManager.getConnettoreService();
-				this.contoAccreditoService = this.serviceManager.getContoAccreditoService();
 				this.dominioService = this.serviceManager.getDominioService();
-				this.enteService = this.serviceManager.getEnteService();
-				this.erService = this.serviceManager.getERService();
-				this.esitoService = this.serviceManager.getEsitoService();
 				this.eventoService = this.serviceManager.getEventoService();
 				this.frService = this.serviceManager.getFRService();
+				this.frApplicazioneService = this.serviceManager.getFrApplicazioneService();
 				this.ibanAccreditoService = this.serviceManager.getIbanAccreditoService();
 				this.intermediarioService = this.serviceManager.getIntermediarioService();
 				this.iuvService = this.serviceManager.getIUVService();
-				this.mailService = this.serviceManager.getMailService();
-				this.mailTemplateService = this.serviceManager.getMailTemplateService();
-				this.mediaRilevamentoService = this.serviceManager.getMediaRilevamentoService();
+				this.notificaService = this.serviceManager.getNotificaService();
 				this.operatoreService = this.serviceManager.getOperatoreService();
 				this.portaleService = this.serviceManager.getPortaleService();
+				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.pspService = this.serviceManager.getPspService();
-				this.rilevamentoService = this.serviceManager.getRilevamentoService();
+				this.rendicontazioneSenzaRPTService = this.serviceManager.getRendicontazioneSenzaRPTService();
 				this.rptService = this.serviceManager.getRPTService();
 				this.rrService = this.serviceManager.getRRService();
-				this.rtService = this.serviceManager.getRTService();
-				this.singolaRendicontazioneService = this.serviceManager.getSingolaRendicontazioneService();
-				this.singolaRevocaService = this.serviceManager.getSingolaRevocaService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
-				this.slaService = this.serviceManager.getSLAService();
 				this.stazioneService = this.serviceManager.getStazioneService();
-				this.tabellaContropartiService = this.serviceManager.getTabellaContropartiService();
-				this.tracciatoXMLService = this.serviceManager.getTracciatoXMLService();
 				this.tributoService = this.serviceManager.getTributoService();
+				this.uoService = this.serviceManager.getUoService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
 			this.isClosed = false;
-			if(log.getLevel().equals(Level.TRACE)) {
-				token = UUID.randomUUID().toString();
-				for(StackTraceElement ele : Thread.currentThread().getStackTrace()){
-					if(ele.getClassName().contains("it.govpay.batch")
-							|| ele.getClassName().contains("it.govpay.business") 
-							|| ele.getClassName().contains("it.govpay.exception") 
-							|| ele.getClassName().contains("it.govpay.plugin") 
-							|| ele.getClassName().contains("it.govpay.thread") 
-							|| ele.getClassName().contains("it.govpay.utils") 
-							|| ele.getClassName().contains("it.govpay.web")) {
-						log.trace("**" + token + "**: OPEN DB CONNECTION " + ele.getClassName() + ":" + ele.getLineNumber());
-						break;
-					}
-				}
-			}
 		}
 	}
-
-	
-//	public JDBCServiceManager getServiceManager() throws ServiceException{
-//		if(father != null) {
-//			return father.getServiceManager();
-//		}
-//		return this.serviceManager;
-//	}
 
 	
 	public void enableSelectForUpdate() throws ServiceException {
@@ -242,39 +174,28 @@ public class BasicBD {
 			return;
 		}
 		try {
-			((IDBAnagraficaService)this.anagraficaService).enableSelectForUpdate();
 			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
-			((IDBCarrelloService)this.carrelloService).enableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
-			((IDBContoAccreditoService)this.contoAccreditoService).enableSelectForUpdate();
 			((IDBDominioService)this.dominioService).enableSelectForUpdate();
-			((IDBEnteService)this.enteService).enableSelectForUpdate();
-			((IDBERService)this.erService).enableSelectForUpdate();
-			((IDBEsitoService)this.esitoService).enableSelectForUpdate();
 			((IDBEventoService)this.eventoService).enableSelectForUpdate();
 			((IDBFRService)this.frService).enableSelectForUpdate();
+			((IDBFrApplicazioneService)this.frApplicazioneService).enableSelectForUpdate();
 			((IDBIbanAccreditoService)this.ibanAccreditoService).enableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).enableSelectForUpdate();
 			((IDBIUVService)this.iuvService).enableSelectForUpdate();
-			((IDBMailService)this.mailService).enableSelectForUpdate();
-			((IDBMailTemplateService)this.mailTemplateService).enableSelectForUpdate();
-			((IDBMediaRilevamentoService)this.mediaRilevamentoService).enableSelectForUpdate();
+			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
+			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
 			((IDBPspService)this.pspService).enableSelectForUpdate();
-			((IDBRilevamentoService)this.rilevamentoService).enableSelectForUpdate();
+			((IDBRendicontazioneSenzaRPTService)this.rendicontazioneSenzaRPTService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBRRService)this.rrService).enableSelectForUpdate();
-			((IDBRTService)this.rtService).enableSelectForUpdate();
-			((IDBSingolaRendicontazioneService)this.singolaRendicontazioneService).enableSelectForUpdate();
-			((IDBSingolaRevocaService)this.singolaRevocaService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
-			((IDBSLAService)this.slaService).enableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
-			((IDBTabellaContropartiService)this.tabellaContropartiService).enableSelectForUpdate();
-			((IDBTracciatoXMLService)this.tracciatoXMLService).enableSelectForUpdate();
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
+			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
@@ -287,52 +208,34 @@ public class BasicBD {
 			return;
 		}
 		try {
-			((IDBAnagraficaService)this.anagraficaService).disableSelectForUpdate();
 			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
-			((IDBCarrelloService)this.carrelloService).disableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
-			((IDBContoAccreditoService)this.contoAccreditoService).disableSelectForUpdate();
 			((IDBDominioService)this.dominioService).disableSelectForUpdate();
-			((IDBEnteService)this.enteService).disableSelectForUpdate();
-			((IDBERService)this.erService).disableSelectForUpdate();
-			((IDBEsitoService)this.esitoService).disableSelectForUpdate();
 			((IDBEventoService)this.eventoService).disableSelectForUpdate();
 			((IDBFRService)this.frService).disableSelectForUpdate();
+			((IDBFrApplicazioneService)this.frApplicazioneService).disableSelectForUpdate();
 			((IDBIbanAccreditoService)this.ibanAccreditoService).disableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).disableSelectForUpdate();
 			((IDBIUVService)this.iuvService).disableSelectForUpdate();
-			((IDBMailService)this.mailService).disableSelectForUpdate();
-			((IDBMailTemplateService)this.mailTemplateService).disableSelectForUpdate();
-			((IDBMediaRilevamentoService)this.mediaRilevamentoService).disableSelectForUpdate();
+			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
+			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
 			((IDBPspService)this.pspService).disableSelectForUpdate();
-			((IDBRilevamentoService)this.rilevamentoService).disableSelectForUpdate();
+			((IDBRendicontazioneSenzaRPTService)this.rendicontazioneSenzaRPTService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBRRService)this.rrService).disableSelectForUpdate();
-			((IDBRTService)this.rtService).disableSelectForUpdate();
-			((IDBSingolaRendicontazioneService)this.singolaRendicontazioneService).disableSelectForUpdate();
-			((IDBSingolaRevocaService)this.singolaRevocaService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
-			((IDBSLAService)this.slaService).disableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
-			((IDBTabellaContropartiService)this.tabellaContropartiService).disableSelectForUpdate();
-			((IDBTracciatoXMLService)this.tracciatoXMLService).disableSelectForUpdate();
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
+			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
-	public IAnagraficaService getAnagraficaService() {
-		if(father != null) {
-			return father.getAnagraficaService();
-		}
-		return anagraficaService;
-	}
-
 	public IApplicazioneService getApplicazioneService() {
 		if(father != null) {
 			return father.getApplicazioneService();
@@ -347,25 +250,11 @@ public class BasicBD {
 		return canaleService;
 	}
 
-	public ICarrelloService getCarrelloService() {
-		if(father != null) {
-			return father.getCarrelloService();
-		}
-		return carrelloService;
-	}
-
 	public IConnettoreService getConnettoreService() {
 		if(father != null) {
 			return father.getConnettoreService();
 		}
 		return connettoreService;
-	}
-
-	public IContoAccreditoService getContoAccreditoService() {
-		if(father != null) {
-			return father.getContoAccreditoService();
-		}
-		return contoAccreditoService;
 	}
 
 	public IDominioService getDominioService() {
@@ -374,28 +263,7 @@ public class BasicBD {
 		}
 		return dominioService;
 	}
-
-	public IEnteService getEnteService() {
-		if(father != null) {
-			return father.getEnteService();
-		}
-		return enteService;
-	}
-
-	public IERService getErService() {
-		if(father != null) {
-			return father.getErService();
-		}
-		return erService;
-	}
-
-	public IEsitoService getEsitoService() {
-		if(father != null) {
-			return father.getEsitoService();
-		}
-		return esitoService;
-	}
-
+	
 	public IEventoService getEventoService() {
 		if(father != null) {
 			return father.getEventoService();
@@ -408,6 +276,13 @@ public class BasicBD {
 			return father.getFrService();
 		}
 		return frService;
+	}
+
+	public IFrApplicazioneService getFrApplicazioneService() {
+		if(father != null) {
+			return father.getFrApplicazioneService();
+		}
+		return frApplicazioneService;
 	}
 
 	public IIbanAccreditoService getIbanAccreditoService() {
@@ -431,26 +306,12 @@ public class BasicBD {
 		}
 		return iuvService;
 	}
-
-	public IMailService getMailService() {
+	
+	public INotificaService getNotificaService() {
 		if(father != null) {
-			return father.getMailService();
+			return father.getNotificaService();
 		}
-		return mailService;
-	}
-
-	public IMailTemplateService getMailTemplateService() {
-		if(father != null) {
-			return father.getMailTemplateService();
-		}
-		return mailTemplateService;
-	}
-
-	public IMediaRilevamentoService getMediaRilevamentoService() {
-		if(father != null) {
-			return father.getMediaRilevamentoService();
-		}
-		return mediaRilevamentoService;
+		return notificaService;
 	}
 
 	public IOperatoreService getOperatoreService() {
@@ -458,6 +319,13 @@ public class BasicBD {
 			return father.getOperatoreService();
 		}
 		return operatoreService;
+	}
+	
+	public IPagamentoService getPagamentoService() {
+		if(father != null) {
+			return father.getPagamentoService();
+		}
+		return pagamentoService;
 	}
 
 	public IPortaleService getPortaleService() {
@@ -473,12 +341,12 @@ public class BasicBD {
 		}
 		return pspService;
 	}
-
-	public IRilevamentoService getRilevamentoService() {
+	
+	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() {
 		if(father != null) {
-			return father.getRilevamentoService();
+			return father.getRendicontazioneSenzaRPTService();
 		}
-		return rilevamentoService;
+		return rendicontazioneSenzaRPTService;
 	}
 
 	public IRPTService getRptService() {
@@ -487,33 +355,12 @@ public class BasicBD {
 		}
 		return rptService;
 	}
-
+	
 	public IRRService getRrService() {
 		if(father != null) {
 			return father.getRrService();
 		}
 		return rrService;
-	}
-
-	public IRTService getRtService() {
-		if(father != null) {
-			return father.getRtService();
-		}
-		return rtService;
-	}
-
-	public ISingolaRendicontazioneService getSingolaRendicontazioneService() {
-		if(father != null) {
-			return father.getSingolaRendicontazioneService();
-		}
-		return singolaRendicontazioneService;
-	}
-
-	public ISingolaRevocaService getSingolaRevocaService() {
-		if(father != null) {
-			return father.getSingolaRevocaService();
-		}
-		return singolaRevocaService;
 	}
 
 	public ISingoloVersamentoService getSingoloVersamentoService() {
@@ -523,13 +370,6 @@ public class BasicBD {
 		return singoloVersamentoService;
 	}
 
-	public ISLAService getSlaService() {
-		if(father != null) {
-			return father.getSlaService();
-		}
-		return slaService;
-	}
-
 	public IStazioneService getStazioneService() {
 		if(father != null) {
 			return father.getStazioneService();
@@ -537,25 +377,18 @@ public class BasicBD {
 		return stazioneService;
 	}
 
-	public ITabellaContropartiService getTabellaContropartiService() {
-		if(father != null) {
-			return father.getTabellaContropartiService();
-		}
-		return tabellaContropartiService;
-	}
-
-	public ITracciatoXMLService getTracciatoXMLService() {
-		if(father != null) {
-			return father.getTracciatoXMLService();
-		}
-		return tracciatoXMLService;
-	}
-
 	public ITributoService getTributoService() {
 		if(father != null) {
 			return father.getTributoService();
 		}
 		return tributoService;
+	}
+	
+	public IUoService getUoService() {
+		if(father != null) {
+			return father.getUoService();
+		}
+		return uoService;
 	}
 
 	public IVersamentoService getVersamentoService() {
@@ -570,43 +403,40 @@ public class BasicBD {
 			father.setAutoCommit(autoCommit);
 			return;
 		}
+		
 		try {
+			log.debug("[" + this.connection.toString() + "] !!AUTOCOMMIT(" + autoCommit + ")!! " + getCaller() );
 			this.connection.setAutoCommit(autoCommit);
 		} catch (SQLException e) {
-			log.error("Errore durante l'impostazione dell'AutoCommit a " + autoCommit, e);
-			throw new ServiceException("Errore durante la gestione dell'AutoCommit della connesione.");
+			throw new ServiceException("Errore durante la gestione dell'AutoCommit della connesione.", e);
 		}
 	}
 	
+	private String getCaller() {
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		for(int i=0; i < stackTraceElements.length; i++) {
+			if(stackTraceElements[i].getClassName().startsWith("it.govpay.core") 
+					|| stackTraceElements[i].getClassName().startsWith("it.govpay.web") 
+					|| stackTraceElements[i].getClassName().startsWith("it.govpay.ejb"))
+				return stackTraceElements[i].getClassName() + ":" + stackTraceElements[i].getLineNumber();
+		}
+		return "?";
+	}
+
 	public void closeConnection() {
 		if(father != null) {
 			father.closeConnection();
 			return;
 		}
 		
+		log.debug("[" + this.connection.toString() + "] !!CLOSE!! " + getCaller() );
+		
 		try {
 			if(this.connection != null && !isClosed) {
 				this.connection.close();
 				isClosed = true;
-				if(log.getLevel().equals(Level.TRACE)) {
-					boolean logged = false;
-					for(StackTraceElement ele : Thread.currentThread().getStackTrace()){
-						if(ele.getClassName().contains("it.govpay.batch")
-								|| ele.getClassName().contains("it.govpay.business") 
-								|| ele.getClassName().contains("it.govpay.exception") 
-								|| ele.getClassName().contains("it.govpay.plugin") 
-								|| ele.getClassName().contains("it.govpay.thread") 
-								|| ele.getClassName().contains("it.govpay.utils") 
-								|| ele.getClassName().contains("it.govpay.web")) {
-							log.trace("**" + token + "**: CLOSE DB CONNECTION " + ele.getClassName() + ":" + ele.getLineNumber());
-							logged = true;
-							break;
-						}
-					}
-					if(!logged) log.trace(token + " CLOSE DB CONNECTION ");
-				}
 			}
-		} catch (SQLException e) {
+		} catch (Throwable e) {
 			log.error("Errore durante la chiusura della connessione.", e);
 		}
 	}
@@ -618,9 +448,10 @@ public class BasicBD {
 		}
 		
 		try {
+			log.debug("[" + this.connection.toString() + "] !!COMMIT!! " + getCaller() );
 			this.connection.commit();
-		} catch (SQLException e) {
-			log.error("Errore durante la commit.", e);
+		} catch (Throwable e) {
+			log.error("Errore durante la gestione della commit della connesione.", e);
 			throw new ServiceException("Errore durante la gestione della commit della connesione.", e);
 		}
 	}
@@ -634,7 +465,7 @@ public class BasicBD {
 		try {
 			if(this.connection != null && !this.connection.getAutoCommit() && !isClosed)
 				this.connection.rollback();
-		} catch (SQLException e) {
+		} catch (Throwable e) {
 			log.error("Errore durante la rollback.", e);
 		}
 	}
@@ -653,4 +484,18 @@ public class BasicBD {
 		return jdbcProperties;
 	}
 
+	public boolean isAutoCommit() throws ServiceException {
+		try {
+			return getConnection().getAutoCommit();
+		} catch (SQLException e) {
+			throw new ServiceException("Errore nell'identificazione dello stato di autocommit.", e);
+		}
+	}
+	
+	public boolean isClosed() throws ServiceException {
+		if(father != null) {
+			return father.isClosed();
+		}
+		return isClosed;
+	}
 }

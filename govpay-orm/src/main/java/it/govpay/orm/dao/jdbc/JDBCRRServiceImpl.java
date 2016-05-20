@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,35 +71,18 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _rt
-		Long id_rt = null;
-		it.govpay.orm.IdRt idLogic_rt = null;
-		idLogic_rt = rr.getIdRT();
-		if(idLogic_rt!=null){
+		// Object _rpt
+		Long id_rpt = null;
+		it.govpay.orm.IdRpt idLogic_rpt = null;
+		idLogic_rpt = rr.getIdRpt();
+		if(idLogic_rpt!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rt = ((JDBCRTServiceSearch)(this.getServiceManager().getRTServiceSearch())).findTableId(idLogic_rt, false);
+				id_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_rpt, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rt = idLogic_rt.getId();
-				if(id_rt==null || id_rt<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _tracciatoXML
-		Long id_tracciatoXML = null;
-		it.govpay.orm.IdTracciato idLogic_tracciatoXML = null;
-		idLogic_tracciatoXML = rr.getIdTracciatoXML();
-		if(idLogic_tracciatoXML!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findTableId(idLogic_tracciatoXML, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tracciatoXML = idLogic_tracciatoXML.getId();
-				if(id_tracciatoXML==null || id_tracciatoXML<=0){
+				id_rpt = idLogic_rpt.getId();
+				if(id_rpt==null || id_rpt<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -108,30 +91,41 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 
 		// Object rr
 		sqlQueryObjectInsert.addInsertTable(this.getRRFieldConverter().toTable(RR.model()));
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().COD_DOMINIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().CCP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().COD_MSG_REVOCA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().DATA_ORA_MSG_REVOCA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().IMPORTO_TOTALE_REVOCATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().DATA_MSG_REVOCA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().DATA_MSG_ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().DESCRIZIONE_STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().DATA_ORA_CREAZIONE,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_rt","?");
-		sqlQueryObjectInsert.addInsertField("id_tracciato_xml","?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().IMPORTO_TOTALE_RICHIESTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().COD_MSG_ESITO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().IMPORTO_TOTALE_REVOCATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().XML_RR,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().XML_ER,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 
 		// Insert rr
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getRRFetch().getKeyGeneratorObject(RR.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getCodDominio(),RR.model().COD_DOMINIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getIuv(),RR.model().IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getCcp(),RR.model().CCP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getCodMsgRevoca(),RR.model().COD_MSG_REVOCA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getDataOraMsgRevoca(),RR.model().DATA_ORA_MSG_REVOCA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getImportoTotaleRevocato(),RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getDataMsgRevoca(),RR.model().DATA_MSG_REVOCA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getDataMsgEsito(),RR.model().DATA_MSG_ESITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getStato(),RR.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getDescrizioneStato(),RR.model().DESCRIZIONE_STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getDataOraCreazione(),RR.model().DATA_ORA_CREAZIONE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rt,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciatoXML,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getImportoTotaleRichiesto(),RR.model().IMPORTO_TOTALE_RICHIESTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getCodMsgEsito(),RR.model().COD_MSG_ESITO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getImportoTotaleRevocato(),RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getXmlRR(),RR.model().XML_RR.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getXmlER(),RR.model().XML_ER.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
 		);
 		rr.setId(id);
 
-		
 	}
 
 	@Override
@@ -150,12 +144,12 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, rr, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, RR rr, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -175,35 +169,18 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _rr_rt
-		Long id_rr_rt = null;
-		it.govpay.orm.IdRt idLogic_rr_rt = null;
-		idLogic_rr_rt = rr.getIdRT();
-		if(idLogic_rr_rt!=null){
+		// Object _rr_rpt
+		Long id_rr_rpt = null;
+		it.govpay.orm.IdRpt idLogic_rr_rpt = null;
+		idLogic_rr_rpt = rr.getIdRpt();
+		if(idLogic_rr_rpt!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rr_rt = ((JDBCRTServiceSearch)(this.getServiceManager().getRTServiceSearch())).findTableId(idLogic_rr_rt, false);
+				id_rr_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findTableId(idLogic_rr_rpt, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rr_rt = idLogic_rr_rt.getId();
-				if(id_rr_rt==null || id_rr_rt<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _rr_tracciatoXML
-		Long id_rr_tracciatoXML = null;
-		it.govpay.orm.IdTracciato idLogic_rr_tracciatoXML = null;
-		idLogic_rr_tracciatoXML = rr.getIdTracciatoXML();
-		if(idLogic_rr_tracciatoXML!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rr_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findTableId(idLogic_rr_tracciatoXML, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rr_tracciatoXML = idLogic_rr_tracciatoXML.getId();
-				if(id_rr_tracciatoXML==null || id_rr_tracciatoXML<=0){
+				id_rr_rpt = idLogic_rr_rpt.getId();
+				if(id_rr_rpt==null || id_rr_rpt<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -215,29 +192,37 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 		sqlQueryObjectUpdate.addUpdateTable(this.getRRFieldConverter().toTable(RR.model()));
 		boolean isUpdate_rr = true;
 		java.util.List<JDBCObject> lstObjects_rr = new java.util.ArrayList<JDBCObject>();
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().COD_DOMINIO,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getCodDominio(), RR.model().COD_DOMINIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().IUV,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getIuv(), RR.model().IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().CCP,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getCcp(), RR.model().CCP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().COD_MSG_REVOCA,false), "?");
 		lstObjects_rr.add(new JDBCObject(rr.getCodMsgRevoca(), RR.model().COD_MSG_REVOCA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().DATA_ORA_MSG_REVOCA,false), "?");
-		lstObjects_rr.add(new JDBCObject(rr.getDataOraMsgRevoca(), RR.model().DATA_ORA_MSG_REVOCA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().IMPORTO_TOTALE_REVOCATO,false), "?");
-		lstObjects_rr.add(new JDBCObject(rr.getImportoTotaleRevocato(), RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().DATA_MSG_REVOCA,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getDataMsgRevoca(), RR.model().DATA_MSG_REVOCA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().DATA_MSG_ESITO,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getDataMsgEsito(), RR.model().DATA_MSG_ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().STATO,false), "?");
 		lstObjects_rr.add(new JDBCObject(rr.getStato(), RR.model().STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().DESCRIZIONE_STATO,false), "?");
 		lstObjects_rr.add(new JDBCObject(rr.getDescrizioneStato(), RR.model().DESCRIZIONE_STATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().DATA_ORA_CREAZIONE,false), "?");
-		lstObjects_rr.add(new JDBCObject(rr.getDataOraCreazione(), RR.model().DATA_ORA_CREAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().IMPORTO_TOTALE_RICHIESTO,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getImportoTotaleRichiesto(), RR.model().IMPORTO_TOTALE_RICHIESTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().COD_MSG_ESITO,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getCodMsgEsito(), RR.model().COD_MSG_ESITO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().IMPORTO_TOTALE_REVOCATO,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getImportoTotaleRevocato(), RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().XML_RR,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getXmlRR(), RR.model().XML_RR.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().XML_ER,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getXmlER(), RR.model().XML_ER.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_rt","?");
+			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_tracciato_xml","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rr.add(new JDBCObject(id_rr_rt, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rr.add(new JDBCObject(id_rr_tracciatoXML, Long.class));
+			lstObjects_rr.add(new JDBCObject(id_rr_rpt, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_rr.add(new JDBCObject(tableId, Long.class));

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /** <p>Java class for Dominio complex type.
@@ -39,12 +37,15 @@ import java.util.List;
  * &lt;complexType name="Dominio">
  * 		&lt;sequence>
  * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ragioneSociale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="gln" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="pluginClass" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="gln" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="Disponibilita" type="{http://www.govpay.it/orm}Disponibilita" minOccurs="0" maxOccurs="unbounded"/>
+ * 			&lt;element name="ragioneSociale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="xmlContiAccredito" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="xmlTabellaControparti" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="riusoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="customIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazioneDefault" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -61,11 +62,14 @@ import java.util.List;
   propOrder = {
   	"idStazione",
   	"codDominio",
-  	"ragioneSociale",
   	"gln",
-  	"pluginClass",
   	"abilitato",
-  	"disponibilita"
+  	"ragioneSociale",
+  	"xmlContiAccredito",
+  	"xmlTabellaControparti",
+  	"riusoIUV",
+  	"customIUV",
+  	"idApplicazioneDefault"
   }
 )
 
@@ -105,28 +109,12 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.codDominio = codDominio;
   }
 
-  public java.lang.String getRagioneSociale() {
-    return this.ragioneSociale;
-  }
-
-  public void setRagioneSociale(java.lang.String ragioneSociale) {
-    this.ragioneSociale = ragioneSociale;
-  }
-
   public java.lang.String getGln() {
     return this.gln;
   }
 
   public void setGln(java.lang.String gln) {
     this.gln = gln;
-  }
-
-  public java.lang.String getPluginClass() {
-    return this.pluginClass;
-  }
-
-  public void setPluginClass(java.lang.String pluginClass) {
-    this.pluginClass = pluginClass;
   }
 
   public boolean isAbilitato() {
@@ -141,28 +129,60 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.abilitato = abilitato;
   }
 
-  public void addDisponibilita(Disponibilita disponibilita) {
-    this.disponibilita.add(disponibilita);
+  public java.lang.String getRagioneSociale() {
+    return this.ragioneSociale;
   }
 
-  public Disponibilita getDisponibilita(int index) {
-    return this.disponibilita.get( index );
+  public void setRagioneSociale(java.lang.String ragioneSociale) {
+    this.ragioneSociale = ragioneSociale;
   }
 
-  public Disponibilita removeDisponibilita(int index) {
-    return this.disponibilita.remove( index );
+  public byte[] getXmlContiAccredito() {
+    return this.xmlContiAccredito;
   }
 
-  public List<Disponibilita> getDisponibilitaList() {
-    return this.disponibilita;
+  public void setXmlContiAccredito(byte[] xmlContiAccredito) {
+    this.xmlContiAccredito = xmlContiAccredito;
   }
 
-  public void setDisponibilitaList(List<Disponibilita> disponibilita) {
-    this.disponibilita=disponibilita;
+  public byte[] getXmlTabellaControparti() {
+    return this.xmlTabellaControparti;
   }
 
-  public int sizeDisponibilitaList() {
-    return this.disponibilita.size();
+  public void setXmlTabellaControparti(byte[] xmlTabellaControparti) {
+    this.xmlTabellaControparti = xmlTabellaControparti;
+  }
+
+  public boolean isRiusoIUV() {
+    return this.riusoIUV;
+  }
+
+  public boolean getRiusoIUV() {
+    return this.riusoIUV;
+  }
+
+  public void setRiusoIUV(boolean riusoIUV) {
+    this.riusoIUV = riusoIUV;
+  }
+
+  public boolean isCustomIUV() {
+    return this.customIUV;
+  }
+
+  public boolean getCustomIUV() {
+    return this.customIUV;
+  }
+
+  public void setCustomIUV(boolean customIUV) {
+    this.customIUV = customIUV;
+  }
+
+  public IdApplicazione getIdApplicazioneDefault() {
+    return this.idApplicazioneDefault;
+  }
+
+  public void setIdApplicazioneDefault(IdApplicazione idApplicazioneDefault) {
+    this.idApplicazioneDefault = idApplicazioneDefault;
   }
 
   private static final long serialVersionUID = 1L;
@@ -192,49 +212,34 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   protected java.lang.String codDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ragioneSociale",required=true,nillable=false)
-  protected java.lang.String ragioneSociale;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="gln",required=true,nillable=false)
   protected java.lang.String gln;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="pluginClass",required=false,nillable=false)
-  protected java.lang.String pluginClass;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
 
-  @XmlElement(name="Disponibilita",required=true,nillable=false)
-  protected List<Disponibilita> disponibilita = new ArrayList<Disponibilita>();
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ragioneSociale",required=true,nillable=false)
+  protected java.lang.String ragioneSociale;
 
-  /**
-   * @deprecated Use method getDisponibilitaList
-   * @return List<Disponibilita>
-  */
-  @Deprecated
-  public List<Disponibilita> getDisponibilita() {
-  	return this.disponibilita;
-  }
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="xmlContiAccredito",required=true,nillable=false)
+  protected byte[] xmlContiAccredito;
 
-  /**
-   * @deprecated Use method setDisponibilitaList
-   * @param disponibilita List<Disponibilita>
-  */
-  @Deprecated
-  public void setDisponibilita(List<Disponibilita> disponibilita) {
-  	this.disponibilita=disponibilita;
-  }
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="xmlTabellaControparti",required=true,nillable=false)
+  protected byte[] xmlTabellaControparti;
 
-  /**
-   * @deprecated Use method sizeDisponibilitaList
-   * @return lunghezza della lista
-  */
-  @Deprecated
-  public int sizeDisponibilita() {
-  	return this.disponibilita.size();
-  }
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="riusoIUV",required=true,nillable=false)
+  protected boolean riusoIUV;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="customIUV",required=true,nillable=false)
+  protected boolean customIUV;
+
+  @XmlElement(name="idApplicazioneDefault",required=false,nillable=false)
+  protected IdApplicazione idApplicazioneDefault;
 
 }

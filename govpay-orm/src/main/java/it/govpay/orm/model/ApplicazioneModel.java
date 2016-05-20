@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,13 +43,14 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		super();
 	
 		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Applicazione",Applicazione.class);
-		this.VERSIONE = new Field("versione",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.POLICY_RISPEDIZIONE = new Field("policyRispedizione",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.FIRMA_RICEVUTA = new Field("firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_ESITO = new Field("codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_VERIFICA = new Field("codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.TRUSTED = new Field("trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.APPLICAZIONE_TRIBUTO = new it.govpay.orm.model.ApplicazioneTributoModel(new Field("ApplicazioneTributo",it.govpay.orm.ApplicazioneTributo.class,"Applicazione",Applicazione.class));
+		this.APPLICAZIONE_DOMINIO = new it.govpay.orm.model.ApplicazioneDominioModel(new Field("ApplicazioneDominio",it.govpay.orm.ApplicazioneDominio.class,"Applicazione",Applicazione.class));
 	
 	}
 	
@@ -58,13 +59,14 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 		super(father);
 	
 		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Applicazione",Applicazione.class);
-		this.VERSIONE = new ComplexField(father,"versione",java.lang.String.class,"Applicazione",Applicazione.class);
-		this.POLICY_RISPEDIZIONE = new ComplexField(father,"policyRispedizione",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.FIRMA_RICEVUTA = new ComplexField(father,"firmaRicevuta",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_ESITO = new ComplexField(father,"codConnettoreEsito",java.lang.String.class,"Applicazione",Applicazione.class);
 		this.COD_CONNETTORE_VERIFICA = new ComplexField(father,"codConnettoreVerifica",java.lang.String.class,"Applicazione",Applicazione.class);
+		this.TRUSTED = new ComplexField(father,"trusted",boolean.class,"Applicazione",Applicazione.class);
 		this.APPLICAZIONE_TRIBUTO = new it.govpay.orm.model.ApplicazioneTributoModel(new ComplexField(father,"ApplicazioneTributo",it.govpay.orm.ApplicazioneTributo.class,"Applicazione",Applicazione.class));
+		this.APPLICAZIONE_DOMINIO = new it.govpay.orm.model.ApplicazioneDominioModel(new ComplexField(father,"ApplicazioneDominio",it.govpay.orm.ApplicazioneDominio.class,"Applicazione",Applicazione.class));
 	
 	}
 	
@@ -72,19 +74,21 @@ public class ApplicazioneModel extends AbstractModel<Applicazione> {
 
 	public IField COD_APPLICAZIONE = null;
 	 
-	public IField PRINCIPAL = null;
-	 
 	public IField ABILITATO = null;
 	 
-	public IField VERSIONE = null;
+	public IField PRINCIPAL = null;
 	 
-	public IField POLICY_RISPEDIZIONE = null;
+	public IField FIRMA_RICEVUTA = null;
 	 
 	public IField COD_CONNETTORE_ESITO = null;
 	 
 	public IField COD_CONNETTORE_VERIFICA = null;
 	 
+	public IField TRUSTED = null;
+	 
 	public it.govpay.orm.model.ApplicazioneTributoModel APPLICAZIONE_TRIBUTO = null;
+	 
+	public it.govpay.orm.model.ApplicazioneDominioModel APPLICAZIONE_DOMINIO = null;
 	 
 
 	@Override

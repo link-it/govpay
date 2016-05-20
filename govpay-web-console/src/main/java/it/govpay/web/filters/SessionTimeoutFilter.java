@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.web.filters;
 
 import java.io.IOException;
@@ -53,29 +73,29 @@ public class SessionTimeoutFilter implements Filter {
 			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 			
 			String requestPath = httpServletRequest.getRequestURI();
-			log.debug("Richiesta risorsa: " + requestPath);
+			this.log.debug("Richiesta risorsa: " + requestPath);
 			
 			String principal = null;
 			if(httpServletRequest.getUserPrincipal()!=null){
 				principal =  httpServletRequest.getUserPrincipal().getName();
 			}
 			
-			log.debug("Utente: " + principal);
+			this.log.debug("Utente: " + principal);
 
 			// is session expire control required for this request?
-			if (isSessionControlRequiredForThisResource(httpServletRequest)) {
+			if (this.isSessionControlRequiredForThisResource(httpServletRequest)) {
 				HttpSession sessione = httpServletRequest.getSession(false);
 				
-				log.debug("Session: " + (sessione != null ? sessione.getId() : "Null"));
+				this.log.debug("Session: " + (sessione != null ? sessione.getId() : "Null"));
 
 				// is session invalid?
-				if (isSessionInvalid(httpServletRequest)) {					
+				if (this.isSessionInvalid(httpServletRequest)) {					
 					String redirPageUrl = httpServletRequest.getContextPath() + "/";
 					
 					if(sessione!= null)
 						sessione.invalidate();
 					
-					log.debug("La sessione non e' valida, effettuo redirect...");
+					this.log.debug("La sessione non e' valida, effettuo redirect...");
 					
 					//se la pagina richiesta e' quella di login allora redirigo direttamente a quella, altrimenti a quella di timeout
 					//redirPageUrl += StringUtils.contains(httpServletRequest.getRequestURI(), getLoginPage()) ? getLoginPage() : getTimeoutPage();

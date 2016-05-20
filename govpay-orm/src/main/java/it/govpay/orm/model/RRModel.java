@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,14 +42,20 @@ public class RRModel extends AbstractModel<RR> {
 	
 		super();
 	
-		this.ID_RT = new it.govpay.orm.model.IdRtModel(new Field("idRT",it.govpay.orm.IdRt.class,"RR",RR.class));
-		this.ID_TRACCIATO_XML = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoXML",it.govpay.orm.IdTracciato.class,"RR",RR.class));
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRpt",it.govpay.orm.IdRpt.class,"RR",RR.class));
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"RR",RR.class);
+		this.IUV = new Field("iuv",java.lang.String.class,"RR",RR.class);
+		this.CCP = new Field("ccp",java.lang.String.class,"RR",RR.class);
 		this.COD_MSG_REVOCA = new Field("codMsgRevoca",java.lang.String.class,"RR",RR.class);
-		this.DATA_ORA_MSG_REVOCA = new Field("dataOraMsgRevoca",java.util.Date.class,"RR",RR.class);
-		this.IMPORTO_TOTALE_REVOCATO = new Field("importoTotaleRevocato",double.class,"RR",RR.class);
+		this.DATA_MSG_REVOCA = new Field("dataMsgRevoca",java.util.Date.class,"RR",RR.class);
+		this.DATA_MSG_ESITO = new Field("dataMsgEsito",java.util.Date.class,"RR",RR.class);
 		this.STATO = new Field("stato",java.lang.String.class,"RR",RR.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"RR",RR.class);
-		this.DATA_ORA_CREAZIONE = new Field("dataOraCreazione",java.util.Date.class,"RR",RR.class);
+		this.IMPORTO_TOTALE_RICHIESTO = new Field("importoTotaleRichiesto",double.class,"RR",RR.class);
+		this.COD_MSG_ESITO = new Field("codMsgEsito",java.lang.String.class,"RR",RR.class);
+		this.IMPORTO_TOTALE_REVOCATO = new Field("importoTotaleRevocato",java.lang.Double.class,"RR",RR.class);
+		this.XML_RR = new Field("xmlRR",byte[].class,"RR",RR.class);
+		this.XML_ER = new Field("xmlER",byte[].class,"RR",RR.class);
 	
 	}
 	
@@ -57,34 +63,52 @@ public class RRModel extends AbstractModel<RR> {
 	
 		super(father);
 	
-		this.ID_RT = new it.govpay.orm.model.IdRtModel(new ComplexField(father,"idRT",it.govpay.orm.IdRt.class,"RR",RR.class));
-		this.ID_TRACCIATO_XML = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoXML",it.govpay.orm.IdTracciato.class,"RR",RR.class));
+		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRpt",it.govpay.orm.IdRpt.class,"RR",RR.class));
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"RR",RR.class);
+		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"RR",RR.class);
+		this.CCP = new ComplexField(father,"ccp",java.lang.String.class,"RR",RR.class);
 		this.COD_MSG_REVOCA = new ComplexField(father,"codMsgRevoca",java.lang.String.class,"RR",RR.class);
-		this.DATA_ORA_MSG_REVOCA = new ComplexField(father,"dataOraMsgRevoca",java.util.Date.class,"RR",RR.class);
-		this.IMPORTO_TOTALE_REVOCATO = new ComplexField(father,"importoTotaleRevocato",double.class,"RR",RR.class);
+		this.DATA_MSG_REVOCA = new ComplexField(father,"dataMsgRevoca",java.util.Date.class,"RR",RR.class);
+		this.DATA_MSG_ESITO = new ComplexField(father,"dataMsgEsito",java.util.Date.class,"RR",RR.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"RR",RR.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"RR",RR.class);
-		this.DATA_ORA_CREAZIONE = new ComplexField(father,"dataOraCreazione",java.util.Date.class,"RR",RR.class);
+		this.IMPORTO_TOTALE_RICHIESTO = new ComplexField(father,"importoTotaleRichiesto",double.class,"RR",RR.class);
+		this.COD_MSG_ESITO = new ComplexField(father,"codMsgEsito",java.lang.String.class,"RR",RR.class);
+		this.IMPORTO_TOTALE_REVOCATO = new ComplexField(father,"importoTotaleRevocato",java.lang.Double.class,"RR",RR.class);
+		this.XML_RR = new ComplexField(father,"xmlRR",byte[].class,"RR",RR.class);
+		this.XML_ER = new ComplexField(father,"xmlER",byte[].class,"RR",RR.class);
 	
 	}
 	
 	
 
-	public it.govpay.orm.model.IdRtModel ID_RT = null;
+	public it.govpay.orm.model.IdRptModel ID_RPT = null;
 	 
-	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO_XML = null;
+	public IField COD_DOMINIO = null;
+	 
+	public IField IUV = null;
+	 
+	public IField CCP = null;
 	 
 	public IField COD_MSG_REVOCA = null;
 	 
-	public IField DATA_ORA_MSG_REVOCA = null;
+	public IField DATA_MSG_REVOCA = null;
 	 
-	public IField IMPORTO_TOTALE_REVOCATO = null;
+	public IField DATA_MSG_ESITO = null;
 	 
 	public IField STATO = null;
 	 
 	public IField DESCRIZIONE_STATO = null;
 	 
-	public IField DATA_ORA_CREAZIONE = null;
+	public IField IMPORTO_TOTALE_RICHIESTO = null;
+	 
+	public IField COD_MSG_ESITO = null;
+	 
+	public IField IMPORTO_TOTALE_REVOCATO = null;
+	 
+	public IField XML_RR = null;
+	 
+	public IField XML_ER = null;
 	 
 
 	@Override

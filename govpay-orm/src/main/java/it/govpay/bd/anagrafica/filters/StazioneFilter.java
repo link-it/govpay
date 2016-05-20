@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,6 +20,7 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -49,9 +50,9 @@ public class StazioneFilter extends AbstractFilter {
 	public IExpression toExpression() throws ServiceException {
 		try {
 			IExpression expr = this.newExpression();
-			if(this.getCodIntermediario() != null){
-				long id = Long.parseLong(this.getCodIntermediario());
-				expr.equals(Stazione.model().ID_INTERMEDIARIO.COD_INTERMEDIARIO, id);
+			if(StringUtils.isNotEmpty(this.getCodIntermediario())){
+				//long id = Long.parseLong(this.getCodIntermediario());
+				expr.equals(Stazione.model().ID_INTERMEDIARIO.COD_INTERMEDIARIO, this.getCodIntermediario());
 			} 
 			return expr;
 		} catch (NotImplementedException e) {

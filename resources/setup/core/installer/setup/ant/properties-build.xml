@@ -9,62 +9,19 @@
 	
 	<target name="govpay_properties_settings">
 
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="/var/govpay/"/>
+                        <param name="value" value="${antinstaller_work_folder}"/>
+                </antcall>
+
+
 		<antcall target="set_property">
 			<param name="file" value="${file}"/>
 			<param name="token" value="govpay.sourceCodeDisclaimer"/>
 			<param name="value" value="Generato con GovPay ${antinstaller_product_version}"/>
 		</antcall>
 
-		<!-- Server Mail -->
-		<if>
-			<not>
-				<equals arg1="${antinstaller_mail_host}" arg2="-" />
-			</not>
-			<then>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverHost"/>
-					<param name="value" value="${antinstaller_mail_host}"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverPort"/>
-					<param name="value" value="${antinstaller_mail_port}"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.username"/>
-					<param name="value" value="${antinstaller_mail_username}"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.password"/>
-					<param name="value" value="${antinstaller_mail_password}"/>
-				</antcall>
-			</then>
-			<else>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverHost"/>
-					<param name="value" value="MAIL_SERVER_HOST"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.serverPort"/>
-					<param name="value" value="25"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.username"/>
-					<param name="value" value="MAIL_SERVER_USERNAME"/>
-				</antcall>
-				<antcall target="set_property">
-					<param name="file" value="${file}"/>
-					<param name="token" value="govpay.batch.notificaMail.password"/>
-					<param name="value" value="MAIL_SERVER_PASSWORD"/>
-				</antcall>
-			</else>
-		</if>
 	</target>
 
 	<target name="govpay_orm_properties_settings">
@@ -134,6 +91,31 @@
 			<param name="token" value="/var/log/govpay"/>
 			<param name="value" value="${antinstaller_log_folder}"/>
 		</antcall>
+	</target>
+
+	<target name="govpay_console_properties_settings">
+		<condition property="pubhost_endWithSlash">
+	          <matches pattern="^https?://.+/$" string="${antinstaller_pubhost}" />
+        	</condition>
+        	<if>
+	          <equals arg1="${pubhost_endWithSlash}" arg2="true" />
+        	  <then>
+                	<echo>Correggo URL che termina con '/' </echo>
+	                 <propertyregex property="pubhost_noendslash"
+        	              input="${antinstaller_pubhost}"
+                	      regexp="^(https?://.+)/$"
+	                      select="\1"
+        	              casesensitive="false" />
+	          </then>
+        	  <else>
+	                <property name="pubhost_noendslash" value="${antinstaller_pubhost}"/>
+        	  </else>
+	        </if>
+                <antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="http://localhost:8080"/>
+                        <param name="value" value="${pubhost_noendslash}"/>
+                </antcall>
 	</target>
 	
 </project>

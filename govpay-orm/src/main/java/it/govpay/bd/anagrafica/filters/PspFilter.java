@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,8 +32,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 public class PspFilter extends AbstractFilter {
 
 	public enum SortFields {
-//TODO		COD_PSP, COD_FLUSSO
-		}
+	}
 	
 	public PspFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
@@ -50,17 +49,6 @@ public class PspFilter extends AbstractFilter {
 
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
-		
-		//TODO
-//		switch(field) {
-//		case COD_FLUSSO: filterSortWrapper.setField(Psp.model().COD_FLUSSO);
-//			break;
-//		case COD_PSP: filterSortWrapper.setField(Psp.model().COD_PSP);
-//			break;
-//		default:
-//			break;
-//		}
-		
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}

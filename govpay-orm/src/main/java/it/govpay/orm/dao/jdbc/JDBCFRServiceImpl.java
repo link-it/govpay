@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,31 +20,26 @@
  */
 package it.govpay.orm.dao.jdbc;
 
+import it.govpay.orm.FR;
+import it.govpay.orm.IdFr;
+
 import java.sql.Connection;
 
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
 import org.apache.log4j.Logger;
-
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdFr;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.beans.UpdateModel;
-
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCUtilities;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-
-import it.govpay.orm.FR;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * JDBCFRServiceImpl
@@ -70,23 +65,6 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
-
-		// Object _tracciatoXML
-		Long id_tracciatoXML = null;
-		it.govpay.orm.IdTracciato idLogic_tracciatoXML = null;
-		idLogic_tracciatoXML = fr.getIdTracciatoXML();
-		if(idLogic_tracciatoXML!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findTableId(idLogic_tracciatoXML, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tracciatoXML = idLogic_tracciatoXML.getId();
-				if(id_tracciatoXML==null || id_tracciatoXML<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 		// Object _psp
 		Long id_psp = null;
@@ -122,18 +100,20 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			}
 		}
 
+
 		// Object fr
 		sqlQueryObjectInsert.addInsertTable(this.getFRFieldConverter().toTable(FR.model()));
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().STATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DESCRIZIONE_STATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().IUR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().ANNO_RIFERIMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().IUR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_REGOLAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().NUMERO_PAGAMENTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().IMPORTO_TOTALE_PAGAMENTI,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DESCRIZIONE_STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_tracciato_xml","?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().COD_BIC_RIVERSAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().XML,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_psp","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
@@ -141,21 +121,25 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getFRFetch().getKeyGeneratorObject(FR.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getCodFlusso(),FR.model().COD_FLUSSO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getStato(),FR.model().STATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDescrizioneStato(),FR.model().DESCRIZIONE_STATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getIur(),FR.model().IUR.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getAnnoRiferimento(),FR.model().ANNO_RIFERIMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataOraFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getIur(),FR.model().IUR.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataRegolamento(),FR.model().DATA_REGOLAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getNumeroPagamenti(),FR.model().NUMERO_PAGAMENTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getImportoTotalePagamenti(),FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getStato(),FR.model().STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDescrizioneStato(),FR.model().DESCRIZIONE_STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciatoXML,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getCodBicRiversamento(),FR.model().COD_BIC_RIVERSAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getXml(),FR.model().XML.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_psp,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
 		fr.setId(id);
 
-		
+
+
+
+
 	}
 
 	@Override
@@ -174,12 +158,12 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, fr, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, FR fr, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -198,23 +182,6 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
-
-		// Object _fr_tracciatoXML
-		Long id_fr_tracciatoXML = null;
-		it.govpay.orm.IdTracciato idLogic_fr_tracciatoXML = null;
-		idLogic_fr_tracciatoXML = fr.getIdTracciatoXML();
-		if(idLogic_fr_tracciatoXML!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_fr_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findTableId(idLogic_fr_tracciatoXML, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_fr_tracciatoXML = idLogic_fr_tracciatoXML.getId();
-				if(id_fr_tracciatoXML==null || id_fr_tracciatoXML<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
 
 		// Object _fr_psp
 		Long id_fr_psp = null;
@@ -250,6 +217,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			}
 		}
 
+
 		// Object fr
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getFRFieldConverter().toTable(FR.model()));
@@ -257,33 +225,31 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_fr = new java.util.ArrayList<JDBCObject>();
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getCodFlusso(), FR.model().COD_FLUSSO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().STATO,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getStato(), FR.model().STATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DESCRIZIONE_STATO,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getDescrizioneStato(), FR.model().DESCRIZIONE_STATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().IUR,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getIur(), FR.model().IUR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().ANNO_RIFERIMENTO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getAnnoRiferimento(), FR.model().ANNO_RIFERIMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getDataOraFlusso(), FR.model().DATA_ORA_FLUSSO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().IUR,false), "?");
-		lstObjects_fr.add(new JDBCObject(fr.getIur(), FR.model().IUR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_REGOLAMENTO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getDataRegolamento(), FR.model().DATA_REGOLAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().NUMERO_PAGAMENTI,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getNumeroPagamenti(), FR.model().NUMERO_PAGAMENTI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().IMPORTO_TOTALE_PAGAMENTI,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getImportoTotalePagamenti(), FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().STATO,false), "?");
-		lstObjects_fr.add(new JDBCObject(fr.getStato(), FR.model().STATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DESCRIZIONE_STATO,false), "?");
-		lstObjects_fr.add(new JDBCObject(fr.getDescrizioneStato(), FR.model().DESCRIZIONE_STATO.getFieldType()));
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_tracciato_xml","?");
-		}
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().COD_BIC_RIVERSAMENTO,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getCodBicRiversamento(), FR.model().COD_BIC_RIVERSAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().XML,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getXml(), FR.model().XML.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_psp","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_fr.add(new JDBCObject(id_fr_tracciatoXML, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_fr.add(new JDBCObject(id_fr_psp, Long.class));
@@ -299,6 +265,10 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
 				lstObjects_fr.toArray(new JDBCObject[]{}));
 		}
+
+
+
+
 
 
 	}

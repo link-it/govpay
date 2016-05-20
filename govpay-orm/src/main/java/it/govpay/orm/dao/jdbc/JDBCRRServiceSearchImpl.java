@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -126,84 +126,82 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 	@Override
 	public List<IdRr> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
+
+		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
-		List<IdRr> list = new ArrayList<IdRr>();
+        List<IdRr> list = new ArrayList<IdRr>();
 
 		try{
 			List<IField> fields = new ArrayList<IField>();
-
-			fields.add(RR.model().COD_MSG_REVOCA);
+			fields.add(RR.model().COD_DOMINIO);
+			fields.add(RR.model().CCP);
+			fields.add(RR.model().IUV);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			for(Map<String, Object> map: returnMap) {
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (RR)this.getRRFetch().fetch(jdbcProperties.getDatabase(), RR.model(), map)));
-			}
+	        }
 		} catch(NotFoundException e) {}
 
         return list;
+
 		
 	}
 	
 	@Override
 	public List<RR> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
+		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
         List<RR> list = new ArrayList<RR>();
-        
+
 		try{
 			List<IField> fields = new ArrayList<IField>();
-
 			fields.add(new CustomField("id", Long.class, "id", this.getRRFieldConverter().toTable(RR.model())));
+			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getRRFieldConverter().toTable(RR.model())));
+			fields.add(RR.model().COD_DOMINIO);
+			fields.add(RR.model().IUV);
+			fields.add(RR.model().CCP);
 			fields.add(RR.model().COD_MSG_REVOCA);
-			fields.add(RR.model().DATA_ORA_MSG_REVOCA);
-			fields.add(RR.model().IMPORTO_TOTALE_REVOCATO);
+			fields.add(RR.model().DATA_MSG_REVOCA);
+			fields.add(RR.model().DATA_MSG_ESITO);
 			fields.add(RR.model().STATO);
 			fields.add(RR.model().DESCRIZIONE_STATO);
-			fields.add(RR.model().DATA_ORA_CREAZIONE);
-			fields.add(new CustomField("id_rt", Long.class, "id_rt", this.getRRFieldConverter().toTable(RR.model())));
-			fields.add(new CustomField("id_tracciato_xml", Long.class, "id_tracciato_xml", this.getRRFieldConverter().toTable(RR.model())));
-			
+			fields.add(RR.model().IMPORTO_TOTALE_RICHIESTO);
+			fields.add(RR.model().COD_MSG_ESITO);
+			fields.add(RR.model().IMPORTO_TOTALE_REVOCATO);
+			fields.add(RR.model().XML_RR);
+			fields.add(RR.model().XML_ER);
+
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			for(Map<String, Object> map: returnMap) {
-				Long id_rt = (Long) map.remove("id_rt");
-				Long id_tracciato_xml = (Long) map.remove("id_tracciato_xml");
-
-				RR er = (RR)this.getRRFetch().fetch(jdbcProperties.getDatabase(), RR.model(), map);
+				Long idRpt = (Long) map.remove("id_rpt");
+				RR rr = (RR)this.getRRFetch().fetch(jdbcProperties.getDatabase(), RR.model(), map);
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+					){
+						
+						it.govpay.orm.IdRpt id_rr_rpt = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_rr_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(idRpt, false);
+						}else{
+							id_rr_rpt = new it.govpay.orm.IdRpt();
+						}
+						id_rr_rpt.setId(idRpt);
+						rr.setIdRpt(id_rr_rpt);
+					}
 				
-				it.govpay.orm.IdRt id_er_rr = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_er_rr = ((JDBCRTServiceSearch)(this.getServiceManager().getRTServiceSearch())).findId(id_rt, false);
-				}else{
-					id_er_rr = new it.govpay.orm.IdRt();
-				}
-				id_er_rr.setId(id_rt);
-				er.setIdRT(id_er_rr);
-				
-				it.govpay.orm.IdTracciato id_er_tracciatoXML = null;
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_er_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findId(id_tracciato_xml, false);
-				}else{
-					id_er_tracciatoXML = new it.govpay.orm.IdTracciato();
-				}
-				id_er_tracciatoXML.setId(id_tracciato_xml);
-				er.setIdTracciatoXML(id_er_tracciatoXML);
-
-
-				list.add(er);
-			}
+				list.add(rr);
+	        }
 		} catch(NotFoundException e) {}
 
-        return list;      
+        return list;
 		
 	}
 	
@@ -482,13 +480,9 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdRT()!=null && 
-				imgSaved.getIdRT()!=null){
-			obj.getIdRT().setId(imgSaved.getIdRT().getId());
-		}
-		if(obj.getIdTracciatoXML()!=null && 
-				imgSaved.getIdTracciatoXML()!=null){
-			obj.getIdTracciatoXML().setId(imgSaved.getIdTracciatoXML().getId());
+		if(obj.getIdRpt()!=null && 
+				imgSaved.getIdRpt()!=null){
+			obj.getIdRpt().setId(imgSaved.getIdRpt().getId());
 		}
 
 	}
@@ -507,17 +501,18 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		expression.offset(0);
 		expression.limit(2); //per verificare la multiple results
 		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
-
 		List<RR> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
-		
+				
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
+		
 
 		return lst.get(0);
 
+	
 	} 
 	
 	@Override
@@ -536,7 +531,7 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getRRFieldConverter().toTable(RR.model()));
-		sqlQueryObject.addSelectField(this.getRRFieldConverter().toColumn(RR.model().COD_MSG_REVOCA,true));
+		sqlQueryObject.addSelectField(this.getRRFieldConverter().toColumn(RR.model().COD_DOMINIO,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -550,17 +545,11 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		
-		if(expression.inUseModel(RR.model().ID_RT,false)){
+	
+		if(expression.inUseModel(RR.model().ID_RPT,false)){
 			String tableName1 = this.getRRFieldConverter().toAliasTable(RR.model());
-			String tableName2 = this.getRRFieldConverter().toAliasTable(RR.model().ID_RT);
-			sqlQueryObject.addWhereCondition(tableName1+".id_rt="+tableName2+".id");
-		}
-		
-		if(expression.inUseModel(RR.model().ID_TRACCIATO_XML,false)){
-			String tableName1 = this.getRRFieldConverter().toAliasTable(RR.model());
-			String tableName2 = this.getRRFieldConverter().toAliasTable(RR.model().ID_TRACCIATO_XML);
-			sqlQueryObject.addWhereCondition(tableName1+".id_tracciato_xml="+tableName2+".id");
+			String tableName2 = this.getRRFieldConverter().toAliasTable(RR.model().ID_RPT);
+			sqlQueryObject.addWhereCondition(tableName1+".id_rpt="+tableName2+".id");
 		}
         
 	}
@@ -580,25 +569,18 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		//		  If a table doesn't have a primary key, don't add it to this map
-
 		// RR.model()
 		mapTableToPKColumn.put(converter.toTable(RR.model()),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(RR.model()))
 			));
 
-		// RR.model().ID_RT
-		mapTableToPKColumn.put(converter.toTable(RR.model().ID_RT),
+		// RR.model().ID_RPT
+		mapTableToPKColumn.put(converter.toTable(RR.model().ID_RPT),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RR.model().ID_RT))
+				new CustomField("id", Long.class, "id", converter.toTable(RR.model().ID_RPT))
 			));
 
-		// RR.model().ID_TRACCIATO_XML
-		mapTableToPKColumn.put(converter.toTable(RR.model().ID_TRACCIATO_XML),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RR.model().ID_TRACCIATO_XML))
-			));
 
         return mapTableToPKColumn;		
 	}
@@ -662,10 +644,6 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -689,6 +667,7 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		// Object _rr
 		sqlQueryObjectGet.addFromTable(this.getRRFieldConverter().toTable(RR.model()));
 		sqlQueryObjectGet.addSelectField(this.getRRFieldConverter().toColumn(RR.model().COD_MSG_REVOCA,true));
+
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -698,7 +677,6 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		};
 		List<Class<?>> listaFieldIdReturnType_rr = new ArrayList<Class<?>>();
 		listaFieldIdReturnType_rr.add(RR.model().COD_MSG_REVOCA.getFieldType());
-
 		it.govpay.orm.IdRr id_rr = null;
 		List<Object> listaFieldId_rr = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_rr, searchParams_rr);
@@ -709,7 +687,7 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 		}
 		else{
 			id_rr = new it.govpay.orm.IdRr();
-			id_rr.setCodMsgRevoca((String) listaFieldId_rr.get(0));
+			id_rr.setCodMsgRevoca((String)listaFieldId_rr.get(0));
 		}
 		
 		return id_rr;
@@ -735,6 +713,10 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 	
 	protected Long findIdRR(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdRr id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
+		if(id!=null && id.getId()>0){
+			return id.getId();
+		}
+		
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
@@ -749,8 +731,8 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 
 		// Recupero _rr
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_rr = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodMsgRevoca(), RR.model().COD_MSG_REVOCA.getFieldType())
-		};
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodMsgRevoca(),RR.model().COD_MSG_REVOCA.getFieldType()),
+				};
 		Long id_rr = null;
 		try{
 			id_rr = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,13 +20,27 @@
  */
 package it.govpay.bd.model;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Canale.ModelloPagamento;
+import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.VersamentiBD;
+
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Rpt extends BasicModel{
+	
 	private static final long serialVersionUID = 1L;
+	public static final String VERSIONE = "6.2";
+	public static final int VERSIONE_ENCODED = 060200;
+	
+	public static final String CCP_NA = "n/a";
 	
 	public enum FirmaRichiesta {
 	    CA_DES("1"),
@@ -44,24 +58,57 @@ public class Rpt extends BasicModel{
 		}
 		
 		public static FirmaRichiesta toEnum(String codifica) throws ServiceException {
-			
-			// Workaround violazione delle specifiche
-			if(codifica == null || codifica.equals(""))
-				return FirmaRichiesta.NESSUNA;
+			// FIX Bug Nodo che imposta firma vuota in caso di NESSUNA
+			if(codifica.isEmpty())
+				return NESSUNA;
 			
 			for(FirmaRichiesta p : FirmaRichiesta.values()){
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
+			
 			throw new ServiceException("Codifica inesistente per FirmaRichiesta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(FirmaRichiesta.values()));
 		}
 	}
-	public static String NdPFaultId = "NodoDeiPagamentiSPC";
+	
+	public enum EsitoPagamento {
+		PAGAMENTO_ESEGUITO(0), 
+		PAGAMENTO_NON_ESEGUITO(1),
+		PAGAMENTO_PARZIALMENTE_ESEGUITO(2),
+		DECORRENZA_TERMINI(3), 
+		DECORRENZA_TERMINI_PARZIALE(4);
+
+		private int codifica;
+
+		EsitoPagamento(int codifica) {
+			this.codifica = codifica;
+		}
+
+		public int getCodifica() {
+			return codifica;
+		}
+
+		public static EsitoPagamento toEnum(String codifica) throws ServiceException {
+			try {
+				int codifica2 = Integer.parseInt(codifica);
+				return toEnum(codifica2);
+			} catch (NumberFormatException e) {
+				throw new ServiceException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+			}
+		}
+
+		public static EsitoPagamento toEnum(int codifica) throws ServiceException {
+			for(EsitoPagamento p : EsitoPagamento.values()){
+				if(p.getCodifica() == codifica)
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per EsitoPagamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoPagamento.values()));
+		}
+	}
 	
 	public enum StatoRpt {
-		RPT_ATTIVATA,// RPT Attivata, con tracciato XML e da spedire
-		RPT_ERRORE_INVIO_A_NODO, // RPT Inviata con eccezione. Non so se e' stata consegnata
-		RPT_INVIO_A_NODO_FALLITO, // RPT Inviata con eccezione e verificato che al nodo non e' arrivata 
+		RPT_ATTIVATA,
+		RPT_ERRORE_INVIO_A_NODO, 
 		RPT_RICEVUTA_NODO, 
 		RPT_RIFIUTATA_NODO, 
 		RPT_ACCETTATA_NODO, 
@@ -75,128 +122,36 @@ public class Rpt extends BasicModel{
 		RT_ACCETTATA_NODO,
 		RT_ACCETTATA_PA,
 		RT_RIFIUTATA_PA,
-		RT_ESITO_SCONOSCIUTO_PA;
+		RT_ESITO_SCONOSCIUTO_PA,
+		PROCESSED;
 	}
-	
-	public enum TipoVersamento {
-		BONIFICO_BANCARIO_TESORERIA("BBT"), 
-		BOLLETTINO_POSTALE("BP"), 
-		ADDEBITO_DIRETTO("AD"), 
-		CARTA_PAGAMENTO("CP"), 
-		MYBANK("OBEP"), 
-		ATTIVATO_PRESSO_PSP("PO"), 
-		SCONOSCIUTO ("SCONOSCIUTO");
-		
-		private String codifica;
-
-		TipoVersamento(String codifica) {
-			this.codifica = codifica;
-		}
-		public String getCodifica() {
-			return codifica;
-		}
-		
-		public static TipoVersamento toEnum(String codifica) throws ServiceException {
-			for(TipoVersamento p : TipoVersamento.values()){
-				if(p.getCodifica().equals(codifica))
-					return p;
-			}
-			throw new ServiceException("Codifica inesistente per TipoVersamento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoVersamento.values()));
-		}
-	}
-	
-	public enum Autenticazione {
-		CNS("CNS"), 
-		USR("USR"), 
-		OTH("OTH"), 
-		N_A("N/A");
-		
-		private String codifica;
-
-		Autenticazione(String codifica) {
-			this.codifica = codifica;
-		}
-		public String getCodifica() {
-			return codifica;
-		}
-		
-		public static Autenticazione toEnum(String codifica) throws ServiceException {
-			for(Autenticazione p : Autenticazione.values()){
-				if(p.getCodifica().equals(codifica))
-					return p;
-			}
-			throw new ServiceException("Codifica inesistente per Autenticazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(Autenticazione.values()));
-		}
-	}
-	
-	public enum FaultNodo implements NdpFaultCode {
-		PPT_SINTASSI_XSD,
-		PPT_SINTASSI_EXTRAXSD,
-		PPT_SEMANTICA,
-		PPT_AUTENTICAZIONE,
-		PPT_AUTORIZZAZIONE,
-		PPT_DOMINIO_SCONOSCIUTO,
-		PPT_DOMINIO_DISABILITATO,
-		PPT_STAZIONE_INT_PA_SCONOSCIUTA,
-		PPT_STAZIONE_INT_PA_DISABILITATA,
-		PPT_STAZIONE_INT_PA_IRRAGGIUNGIBILE,
-		PPT_STAZIONE_INT_PA_SERVIZIO_NONATTIVO,
-		PPT_CANALE_SCONOSCIUTO,
-		PPT_CANALE_IRRAGGIUNGIBILE,
-		PPT_CANALE_SERVIZIO_NONATTIVO,
-		PPT_CANALE_TIMEOUT,
-		PPT_CANALE_DISABILITATO,
-		PPT_CANALE_NONRISOLVIBILE,
-		PPT_CANALE_INDISPONIBILE,
-		PPT_CANALE_ERRORE,
-		PPT_CANALE_ERR_PARAM_PAG_IMM,
-		PPT_CANALE_ERRORE_RESPONSE,
-		PPT_PSP_SCONOSCIUTO,
-		PPT_PSP_DISABILITATO,
-		PPT_RPT_DUPLICATA,
-		PPT_RPT_SCONOSCIUTA,
-		PPT_RT_SCONOSCIUTA,
-		PPT_RT_NONDISPONIBILE,
-		PPT_SUPERAMENTOSOGLIA,
-		PPT_TIPOFIRMA_SCONOSCIUTO,
-		PPT_ERRORE_FORMATO_BUSTA_FIRMATA,
-		PPT_FIRMA_INDISPONIBILE,
-		PPT_CODIFICA_PSP_SCONOSCIUTA,
-		PPT_ID_FLUSSO_SCONOSCIUTO,
-		PPT_ERRORE_EMESSO_DA_PAA,
-		PPT_SYSTEM_ERROR,
-		PPT_WISP_SESSIONE_SCONOSCIUTA,
-		PPT_WISP_TIMEOUT_RECUPERO_SCELTA;
-	}
-
-	public static final String CCP_NA = "n/a";
 	
 	private Long id;
 	private long idVersamento;
+	private long idCanale;
 	private Long idPortale;
-	private Long idStazione;
-	private Long idPsp;
-	private Long idCanale;
 	private String ccp;
-	
 	private String codCarrello;
-	private String codSessione;
+	private String codStazione;
 	private String codDominio;
 	private String iuv;
-	private TipoVersamento tipoVersamento;
-	private Anagrafica anagraficaVersante;
-	private Date dataOraMsgRichiesta;
-	private Date dataOraCreazione;
 	private String codMsgRichiesta;
-	private String ibanAddebito;
-	private FirmaRichiesta firmaRichiesta;
-	private Autenticazione autenticazioneSoggetto;
-	private StatoRpt statoRpt;
-	private FaultNodo faultCode;
+	private Date dataMsgRichiesta;
+	private StatoRpt stato;
 	private String descrizioneStato;
-	private String callbackURL;
+	private String codSessione;
 	private String pspRedirectURL;
-	private Long idTracciatoXML;
+	private byte[] xmlRpt;
+	private Date dataAggiornamento;
+	private String callbackURL;
+	private ModelloPagamento modelloPagamento;
+	private FirmaRichiesta firmaRichiesta;
+	
+	private String codMsgRicevuta;
+	private Date dataMsgRicevuta;
+	private EsitoPagamento esitoPagamento;
+	private BigDecimal importoTotalePagato;
+	private byte[] xmlRt;
 	
 	public Long getId() {
 		return id;
@@ -210,11 +165,17 @@ public class Rpt extends BasicModel{
 	public void setIdVersamento(long idVersamento) {
 		this.idVersamento = idVersamento;
 	}
-	public String getCodCarrello() {
-		return codCarrello;
+	public long getIdCanale() {
+		return idCanale;
 	}
-	public void setCodCarrello(String codCarrello) {
-		this.codCarrello = codCarrello;
+	public void setIdCanale(long idCanale) {
+		this.idCanale = idCanale;
+	}
+	public Long getIdPortale() {
+		return idPortale;
+	}
+	public void setIdPortale(Long idPortale) {
+		this.idPortale = idPortale;
 	}
 	public String getCcp() {
 		return ccp;
@@ -222,95 +183,17 @@ public class Rpt extends BasicModel{
 	public void setCcp(String ccp) {
 		this.ccp = ccp;
 	}
-	public long getIdPsp() {
-		return idPsp;
+	public String getCodCarrello() {
+		return codCarrello;
 	}
-	public void setIdPsp(long idPsp) {
-		this.idPsp = idPsp;
+	public void setCodCarrello(String codCarrello) {
+		this.codCarrello = codCarrello;
 	}
-	public Date getDataOraMsgRichiesta() {
-		return dataOraMsgRichiesta;
+	public String getCodStazione() {
+		return codStazione;
 	}
-	public void setDataOraMsgRichiesta(Date dataOraMsgRichiesta) {
-		this.dataOraMsgRichiesta = dataOraMsgRichiesta;
-	}
-	public String getCodMsgRichiesta() {
-		return codMsgRichiesta;
-	}
-	public void setCodMsgRichiesta(String codMsgRichiesta) {
-		this.codMsgRichiesta = codMsgRichiesta;
-	}
-	public String getIbanAddebito() {
-		return ibanAddebito;
-	}
-	public void setIbanAddebito(String ibanAddebito) {
-		this.ibanAddebito = ibanAddebito;
-	}
-	public StatoRpt getStatoRpt() {
-		return statoRpt;
-	}
-	public void setStatoRpt(StatoRpt statoRpt) {
-		this.statoRpt = statoRpt;
-	}
-	public String getDescrizioneStato() {
-		return descrizioneStato;
-	}
-	public void setDescrizioneStato(String descrizioneStato) {
-		this.descrizioneStato = descrizioneStato;
-	}
-	public Long getIdTracciatoXML() {
-		return idTracciatoXML;
-	}
-	public void setIdTracciatoXML(Long idTracciatoXML) {
-		this.idTracciatoXML = idTracciatoXML;
-	}
-	public FirmaRichiesta getFirmaRichiesta() {
-		return firmaRichiesta;
-	}
-	public void setFirmaRichiesta(FirmaRichiesta firmaRichiesta) {
-		this.firmaRichiesta = firmaRichiesta;
-	}
-	public TipoVersamento getTipoVersamento() {
-		return tipoVersamento;
-	}
-	public void setTipoVersamento(TipoVersamento tipoVersamento) {
-		this.tipoVersamento = tipoVersamento;
-	}
-	public Autenticazione getAutenticazioneSoggetto() {
-		return autenticazioneSoggetto;
-	}
-	public void setAutenticazioneSoggetto(Autenticazione autenticazioneSoggetto) {
-		this.autenticazioneSoggetto = autenticazioneSoggetto;
-	}
-	public Anagrafica getAnagraficaVersante() {
-		return anagraficaVersante;
-	}
-	public void setAnagraficaVersante(Anagrafica anagraficaVersante) {
-		this.anagraficaVersante = anagraficaVersante;
-	}
-	public FaultNodo getFaultCode() {
-		return faultCode;
-	}
-	public void setFaultCode(FaultNodo faultCode) {
-		this.faultCode = faultCode;
-	}
-	public String getCodSessione() {
-		return codSessione;
-	}
-	public void setCodSessione(String codSessione) {
-		this.codSessione = codSessione;
-	}
-	public String getCallbackURL() {
-		return callbackURL;
-	}
-	public void setCallbackURL(String callbackURL) {
-		this.callbackURL = callbackURL;
-	}
-	public Long getIdPortale() {
-		return idPortale;
-	}
-	public void setIdPortale(Long idPortale) {
-		this.idPortale = idPortale;
+	public void setCodStazione(String codStazione) {
+		this.codStazione = codStazione;
 	}
 	public String getCodDominio() {
 		return codDominio;
@@ -324,54 +207,35 @@ public class Rpt extends BasicModel{
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
 	}
-	public void setIdStazione(Long idStazione) {
-		this.idStazione = idStazione;
+	public String getCodMsgRichiesta() {
+		return codMsgRichiesta;
 	}
-	public void setIdPsp(Long idPsp) {
-		this.idPsp = idPsp;
+	public void setCodMsgRichiesta(String codMsgRichiesta) {
+		this.codMsgRichiesta = codMsgRichiesta;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		Rpt rpt = null;
-		if(obj instanceof Rpt) {
-			rpt = (Rpt) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal =
-				equals(codCarrello, rpt.getCodCarrello()) &&
-				equals(codSessione, rpt.getCodSessione()) &&
-				equals(codDominio, rpt.getCodDominio()) &&
-				equals(iuv, rpt.getIuv()) &&
-				equals(ccp, rpt.getCcp()) &&
-				equals(tipoVersamento, rpt.getTipoVersamento()) &&
-				equals(anagraficaVersante, rpt.getAnagraficaVersante()) &&
-				equals(dataOraMsgRichiesta, rpt.getDataOraMsgRichiesta()) &&
-				equals(dataOraCreazione, rpt.getDataOraCreazione()) &&
-				equals(codMsgRichiesta, rpt.getCodMsgRichiesta()) &&
-				equals(ibanAddebito, rpt.getIbanAddebito()) &&
-				equals(firmaRichiesta, rpt.getFirmaRichiesta()) &&
-				equals(autenticazioneSoggetto, rpt.getAutenticazioneSoggetto()) &&
-				equals(statoRpt, rpt.getStatoRpt()) &&
-				equals(faultCode, rpt.getFaultCode()) &&
-				equals(descrizioneStato, rpt.getDescrizioneStato()) &&
-				equals(callbackURL, rpt.getCallbackURL()) &&
-				equals(pspRedirectURL, rpt.getPspRedirectURL()) &&
-				equals(idTracciatoXML, rpt.getIdTracciatoXML()) &&
-				equals(idPortale, rpt.getIdPortale()) &&
-				equals(idPsp, rpt.getIdPsp()) &&
-				equals(idStazione, rpt.getIdStazione()) &&
-				equals(idCanale, rpt.getIdCanale()) &&
-				idVersamento == rpt.getIdVersamento();
-		return equal;
+	public Date getDataMsgRichiesta() {
+		return dataMsgRichiesta;
 	}
-	public Date getDataOraCreazione() {
-		return dataOraCreazione;
+	public void setDataMsgRichiesta(Date dataMsgRichiesta) {
+		this.dataMsgRichiesta = dataMsgRichiesta;
 	}
-	public void setDataOraCreazione(Date dataOraCreazione) {
-		this.dataOraCreazione = dataOraCreazione;
+	public StatoRpt getStato() {
+		return stato;
+	}
+	public void setStato(StatoRpt stato) {
+		this.stato = stato;
+	}
+	public String getDescrizioneStato() {
+		return descrizioneStato;
+	}
+	public void setDescrizioneStato(String descrizioneStato) {
+		this.descrizioneStato = descrizioneStato;
+	}
+	public String getCodSessione() {
+		return codSessione;
+	}
+	public void setCodSessione(String codSessione) {
+		this.codSessione = codSessione;
 	}
 	public String getPspRedirectURL() {
 		return pspRedirectURL;
@@ -379,18 +243,149 @@ public class Rpt extends BasicModel{
 	public void setPspRedirectURL(String pspRedirectURL) {
 		this.pspRedirectURL = pspRedirectURL;
 	}
-	public long getIdStazione() {
-		return idStazione;
+	public byte[] getXmlRpt() {
+		return xmlRpt;
 	}
-	public void setIdStazione(long idStazione) {
-		this.idStazione = idStazione;
+	public void setXmlRpt(byte[] xml) {
+		this.xmlRpt = xml;
 	}
-	public Long getIdCanale() {
-		return idCanale;
+	public Date getDataAggiornamento() {
+		return dataAggiornamento;
 	}
-	public void setIdCanale(Long idCanale) {
-		this.idCanale = idCanale;
+	public void setDataAggiornamento(Date dataAggiornamento) {
+		this.dataAggiornamento = dataAggiornamento;
 	}
+	public String getCallbackURL() {
+		return callbackURL;
+	}
+	public void setCallbackURL(String callbackURL) {
+		this.callbackURL = callbackURL;
+	}
+	public ModelloPagamento getModelloPagamento() {
+		return modelloPagamento;
+	}
+	public void setModelloPagamento(ModelloPagamento modelloPagamento) {
+		this.modelloPagamento = modelloPagamento;
+	}
+	public FirmaRichiesta getFirmaRichiesta() {
+		return firmaRichiesta;
+	}
+	public void setFirmaRichiesta(FirmaRichiesta firmaRichiesta) {
+		this.firmaRichiesta = firmaRichiesta;
+	}
+	public Date getDataMsgRicevuta() {
+		return dataMsgRicevuta;
+	}
+	public void setDataMsgRicevuta(Date dataMsgRicevuta) {
+		this.dataMsgRicevuta = dataMsgRicevuta;
+	}
+	public String getCodMsgRicevuta() {
+		return codMsgRicevuta;
+	}
+	public void setCodMsgRicevuta(String codMsgRicevuta) {
+		this.codMsgRicevuta = codMsgRicevuta;
+	}
+	public EsitoPagamento getEsitoPagamento() {
+		return esitoPagamento;
+	}
+	public void setEsitoPagamento(EsitoPagamento esitoPagamento) {
+		this.esitoPagamento = esitoPagamento;
+	}
+	public BigDecimal getImportoTotalePagato() {
+		return importoTotalePagato;
+	}
+	public void setImportoTotalePagato(BigDecimal importoTotalePagato) {
+		this.importoTotalePagato = importoTotalePagato;
+	}
+	public byte[] getXmlRt() {
+		return xmlRt;
+	}
+	public void setXmlRt(byte[] xml) {
+		this.xmlRt = xml;
+	}
+	// Business
+	
+	private Versamento versamento;
+	private Stazione stazione;
+	private Intermediario intermediario;
+	private Canale canale;
+	private Psp psp;
+	private List<Pagamento> pagamenti;
+	
+	
+	public Versamento getVersamento(BasicBD bd) throws ServiceException {
+		if(this.versamento == null) {
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			this.versamento = versamentiBD.getVersamento(getIdVersamento());
+		}
+		return this.versamento;
+	}
+	
+	public void setVersamento(Versamento versamento) {
+		this.versamento = versamento;
+	}
+	
+	public Stazione getStazione(BasicBD bd) throws ServiceException, NotFoundException {
+		if(this.stazione == null) {
+			this.stazione = AnagraficaManager.getStazione(bd, getCodStazione());
+		}
+		return this.stazione;
+	}
+	
+	public void setStazione(Stazione stazione) {
+		this.stazione = stazione;
+	}
+	
+	public Intermediario getIntermediario(BasicBD bd) throws ServiceException, NotFoundException {
+		if(this.intermediario == null) {
+			this.intermediario = AnagraficaManager.getIntermediario(bd, getStazione(bd).getIdIntermediario());
+		}
+		return this.intermediario;
+	}
+	public void setIntermediario(Intermediario intermediario) {
+		this.intermediario = intermediario;
+	}
+	
+	public Canale getCanale(BasicBD bd) throws ServiceException {
+		if(canale == null)
+			canale = AnagraficaManager.getCanale(bd, getIdCanale());
+		return canale;
+	}
+	public void setCanale(Canale canale) {
+		this.canale = canale;
+	}
+	
+	public Psp getPsp(BasicBD bd) throws ServiceException {
+		if(psp == null) 
+			psp = AnagraficaManager.getPsp(bd, getCanale(bd).getIdPsp());
+		return psp;
+	}
+	public void setPsp(Psp psp) {
+		this.psp = psp;
+	}
+	
+	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
+		if(pagamenti == null) {
+			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			pagamenti = pagamentiBD.getPagamenti(getId());
+		}
+		return pagamenti;
+	}
+	
+	public Pagamento getPagamento(String iur, BasicBD bd) throws ServiceException, NotFoundException {
+		List<Pagamento> pagamenti = getPagamenti(bd);
+		for(Pagamento pagamento : pagamenti) {
+			if(pagamento.getIur().equals(iur))
+				return pagamento;
+		}
+		throw new NotFoundException();
+	}
+	
+	public void setPagamenti(List<Pagamento> pagamenti) {
+		this.pagamenti = pagamenti;
+	}
+	
+
 
 	
 }

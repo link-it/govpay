@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,24 +57,38 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodVersamentoEnte", Versamento.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Versamento.model().COD_VERSAMENTO_ENTE.getFieldType()));
-				setParameter(object, "setCodDominio", Versamento.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Versamento.model().COD_DOMINIO.getFieldType()));
-				setParameter(object, "setIuv", Versamento.model().IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", Versamento.model().IUV.getFieldType()));
 				setParameter(object, "setImportoTotale", Versamento.model().IMPORTO_TOTALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_totale", Versamento.model().IMPORTO_TOTALE.getFieldType()));
 				setParameter(object, "setStatoVersamento", Versamento.model().STATO_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato_versamento", Versamento.model().STATO_VERSAMENTO.getFieldType()));
 				setParameter(object, "setDescrizioneStato", Versamento.model().DESCRIZIONE_STATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", Versamento.model().DESCRIZIONE_STATO.getFieldType()));
-				setParameter(object, "setStatoRendicontazione", Versamento.model().STATO_RENDICONTAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato_rendicontazione", Versamento.model().STATO_RENDICONTAZIONE.getFieldType()));
-				setParameter(object, "setImportoPagato", Versamento.model().IMPORTO_PAGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Versamento.model().IMPORTO_PAGATO.getFieldType()));
+				setParameter(object, "setAggiornabile", Versamento.model().AGGIORNABILE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "aggiornabile", Versamento.model().AGGIORNABILE.getFieldType()));
+				setParameter(object, "setDataCreazione", Versamento.model().DATA_CREAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_creazione", Versamento.model().DATA_CREAZIONE.getFieldType()));
 				setParameter(object, "setDataScadenza", Versamento.model().DATA_SCADENZA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_scadenza", Versamento.model().DATA_SCADENZA.getFieldType()));
 				setParameter(object, "setDataOraUltimoAggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_ultimo_aggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType()));
+				setParameter(object, "setCausaleVersamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "causale_versamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType()));
+				setParameter(object, "setDebitoreIdentificativo", Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_identificativo", Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
+				setParameter(object, "setDebitoreAnagrafica", Versamento.model().DEBITORE_ANAGRAFICA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_anagrafica", Versamento.model().DEBITORE_ANAGRAFICA.getFieldType()));
+				setParameter(object, "setDebitoreIndirizzo", Versamento.model().DEBITORE_INDIRIZZO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_indirizzo", Versamento.model().DEBITORE_INDIRIZZO.getFieldType()));
+				setParameter(object, "setDebitoreCivico", Versamento.model().DEBITORE_CIVICO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_civico", Versamento.model().DEBITORE_CIVICO.getFieldType()));
+				setParameter(object, "setDebitoreCap", Versamento.model().DEBITORE_CAP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_cap", Versamento.model().DEBITORE_CAP.getFieldType()));
+				setParameter(object, "setDebitoreLocalita", Versamento.model().DEBITORE_LOCALITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_localita", Versamento.model().DEBITORE_LOCALITA.getFieldType()));
+				setParameter(object, "setDebitoreProvincia", Versamento.model().DEBITORE_PROVINCIA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_provincia", Versamento.model().DEBITORE_PROVINCIA.getFieldType()));
+				setParameter(object, "setDebitoreNazione", Versamento.model().DEBITORE_NAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_nazione", Versamento.model().DEBITORE_NAZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -99,24 +113,38 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setCodVersamentoEnte", Versamento.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
-				setParameter(object, "setCodDominio", Versamento.model().COD_DOMINIO.getFieldType(),
-					this.getObjectFromMap(map,"codDominio"));
-				setParameter(object, "setIuv", Versamento.model().IUV.getFieldType(),
-					this.getObjectFromMap(map,"iuv"));
 				setParameter(object, "setImportoTotale", Versamento.model().IMPORTO_TOTALE.getFieldType(),
 					this.getObjectFromMap(map,"importoTotale"));
 				setParameter(object, "setStatoVersamento", Versamento.model().STATO_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"statoVersamento"));
 				setParameter(object, "setDescrizioneStato", Versamento.model().DESCRIZIONE_STATO.getFieldType(),
 					this.getObjectFromMap(map,"descrizioneStato"));
-				setParameter(object, "setStatoRendicontazione", Versamento.model().STATO_RENDICONTAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"statoRendicontazione"));
-				setParameter(object, "setImportoPagato", Versamento.model().IMPORTO_PAGATO.getFieldType(),
-					this.getObjectFromMap(map,"importoPagato"));
+				setParameter(object, "setAggiornabile", Versamento.model().AGGIORNABILE.getFieldType(),
+					this.getObjectFromMap(map,"aggiornabile"));
+				setParameter(object, "setDataCreazione", Versamento.model().DATA_CREAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataCreazione"));
 				setParameter(object, "setDataScadenza", Versamento.model().DATA_SCADENZA.getFieldType(),
 					this.getObjectFromMap(map,"dataScadenza"));
 				setParameter(object, "setDataOraUltimoAggiornamento", Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraUltimoAggiornamento"));
+				setParameter(object, "setCausaleVersamento", Versamento.model().CAUSALE_VERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"causaleVersamento"));
+				setParameter(object, "setDebitoreIdentificativo", Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType(),
+					this.getObjectFromMap(map,"debitoreIdentificativo"));
+				setParameter(object, "setDebitoreAnagrafica", Versamento.model().DEBITORE_ANAGRAFICA.getFieldType(),
+					this.getObjectFromMap(map,"debitoreAnagrafica"));
+				setParameter(object, "setDebitoreIndirizzo", Versamento.model().DEBITORE_INDIRIZZO.getFieldType(),
+					this.getObjectFromMap(map,"debitoreIndirizzo"));
+				setParameter(object, "setDebitoreCivico", Versamento.model().DEBITORE_CIVICO.getFieldType(),
+					this.getObjectFromMap(map,"debitoreCivico"));
+				setParameter(object, "setDebitoreCap", Versamento.model().DEBITORE_CAP.getFieldType(),
+					this.getObjectFromMap(map,"debitoreCap"));
+				setParameter(object, "setDebitoreLocalita", Versamento.model().DEBITORE_LOCALITA.getFieldType(),
+					this.getObjectFromMap(map,"debitoreLocalita"));
+				setParameter(object, "setDebitoreProvincia", Versamento.model().DEBITORE_PROVINCIA.getFieldType(),
+					this.getObjectFromMap(map,"debitoreProvincia"));
+				setParameter(object, "setDebitoreNazione", Versamento.model().DEBITORE_NAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"debitoreNazione"));
 				return object;
 			}
 			

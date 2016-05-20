@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,28 +57,23 @@ public class ApplicazioniBD extends BasicBD {
 	 * @throws ServiceException in caso di errore DB.
 	 */
 	public Applicazione getApplicazione(Long idApplicazione) throws NotFoundException, ServiceException, MultipleResultException {
-		
+
 		if(idApplicazione == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		
+
 		long id = idApplicazione.longValue();
 
 		try {
 			it.govpay.orm.Applicazione applicazioneVO = ((JDBCApplicazioneServiceSearch)this.getApplicazioneService()).get(id);
 			Applicazione applicazione = getApplicazione(applicazioneVO);
-			
+
 			return applicazione;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
 		}
-
 	}
-	
+
 	/**
 	 * Recupera l'applicazione tramite l'id logico
 	 * 
@@ -94,38 +89,12 @@ public class ApplicazioniBD extends BasicBD {
 			id.setCodApplicazione(codApplicazione);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().get(id);
 			Applicazione applicazione = getApplicazione(applicazioneVO);
-			
 			return applicazione;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
 		}
 	}
 
-	private Applicazione getApplicazione(it.govpay.orm.Applicazione applicazioneVO) throws ServiceException,
-			NotImplementedException, ExpressionNotImplementedException,
-			ExpressionException {
-		Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO);
-		if(applicazioneVO.getCodConnettoreEsito()!= null) {
-			IPaginatedExpression expEsito = this.getConnettoreService().newPaginatedExpression();
-			expEsito.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazioneVO.getCodConnettoreEsito());
-			Connettore connettoreEsito = ConnettoreConverter.toDTO(this.getConnettoreService().findAll(expEsito));
-			applicazione.setConnettoreEsito(connettoreEsito);
-		}
-
-		if(applicazioneVO.getCodConnettoreVerifica()!= null) {
-			IPaginatedExpression expVerifica = this.getConnettoreService().newPaginatedExpression();
-			expVerifica.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazioneVO.getCodConnettoreVerifica());
-			Connettore connettoreVerifica = ConnettoreConverter.toDTO(this.getConnettoreService().findAll(expVerifica));
-			applicazione.setConnettoreVerifica(connettoreVerifica);
-		}
-		return applicazione;
-	}
-	
-	
 	/**
 	 * Recupera l'applicazione identificata dal Principal fornito
 	 * 
@@ -140,7 +109,7 @@ public class ApplicazioniBD extends BasicBD {
 			exp.equals(it.govpay.orm.Applicazione.model().PRINCIPAL, principal);
 			it.govpay.orm.Applicazione applicazioneVO = this.getApplicazioneService().find(exp);
 			Applicazione applicazione = getApplicazione(applicazioneVO);
-			
+
 			return applicazione;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -151,7 +120,7 @@ public class ApplicazioniBD extends BasicBD {
 		}
 
 	}
-	
+
 	/**
 	 * Aggiorna l'applicazione con i dati forniti
 	 * @param ente
@@ -162,41 +131,43 @@ public class ApplicazioniBD extends BasicBD {
 		try {
 			it.govpay.orm.Applicazione vo = ApplicazioneConverter.toVO(applicazione);
 			IdApplicazione id = this.getApplicazioneService().convertToId(vo);
-			
+
 			if(!this.getApplicazioneService().exists(id)) {
 				throw new NotFoundException("Applicazione con id ["+id+"] non esiste.");
 			}
-			
+
 			this.getApplicazioneService().update(id, vo);
 			applicazione.setId(vo.getId());
 
-			if(applicazione.getConnettoreEsito() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreConverter.toVOList(applicazione.getConnettoreEsito());
+			if(applicazione.getConnettoreNotifica() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreConverter.toVOList(applicazione.getConnettoreNotifica());
 
 				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazione.getConnettoreEsito().getIdConnettore());
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazione.getConnettoreNotifica().getIdConnettore());
 				this.getConnettoreService().deleteAll(expDelete);
 
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
-					
+
 					this.getConnettoreService().create(connettore);
 				}
 			}
-			
+
 			if(applicazione.getConnettoreVerifica() != null) {
 				List<it.govpay.orm.Connettore> voConnettoreVerificaLst = ConnettoreConverter.toVOList(applicazione.getConnettoreVerifica());
-				
+
 				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazione.getConnettoreVerifica().getIdConnettore());
 				this.getConnettoreService().deleteAll(expDelete);
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreVerificaLst) {
-					
+
 					this.getConnettoreService().create(connettore);
 				}
 			}
-			
+
+			AnagraficaManager.removeFromCache(applicazione);
+
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -208,7 +179,7 @@ public class ApplicazioniBD extends BasicBD {
 		}
 
 	}
-	
+
 	/**
 	 * Crea una nuova applicazione con i dati forniti
 	 * @param applicazione
@@ -220,30 +191,30 @@ public class ApplicazioniBD extends BasicBD {
 			this.getApplicazioneService().create(vo);
 			applicazione.setId(vo.getId());
 
-			if(applicazione.getConnettoreEsito() != null) {
-				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreConverter.toVOList(applicazione.getConnettoreEsito());
-				
+			if(applicazione.getConnettoreNotifica() != null) {
+				List<it.govpay.orm.Connettore> voConnettoreEsitoLst = ConnettoreConverter.toVOList(applicazione.getConnettoreNotifica());
+
 				IExpression expDelete = this.getConnettoreService().newExpression();
-				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazione.getConnettoreEsito().getIdConnettore());
+				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazione.getConnettoreNotifica().getIdConnettore());
 				this.getConnettoreService().deleteAll(expDelete);
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreEsitoLst) {
 					this.getConnettoreService().create(connettore);
 				}
 			}
-			
+
 			if(applicazione.getConnettoreVerifica() != null) {
 				List<it.govpay.orm.Connettore> voConnettoreVerificaLst = ConnettoreConverter.toVOList(applicazione.getConnettoreVerifica());
 
 				IExpression expDelete = this.getConnettoreService().newExpression();
 				expDelete.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazione.getConnettoreVerifica().getIdConnettore());
 				this.getConnettoreService().deleteAll(expDelete);
-				
+
 				for(it.govpay.orm.Connettore connettore: voConnettoreVerificaLst) {
 					this.getConnettoreService().create(connettore);
 				}
 			}
-			
+
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -253,8 +224,8 @@ public class ApplicazioniBD extends BasicBD {
 		}
 	}
 
-	
-	
+
+
 	public ApplicazioneFilter newFilter() throws ServiceException {
 		return new ApplicazioneFilter(this.getApplicazioneService());
 	}
@@ -269,7 +240,7 @@ public class ApplicazioniBD extends BasicBD {
 
 	public List<Applicazione> findAll(ApplicazioneFilter filter) throws ServiceException {
 		try {
-			
+
 			List<Applicazione> dtoList = new ArrayList<Applicazione>();
 			for(it.govpay.orm.Applicazione vo: this.getApplicazioneService().findAll(filter.toPaginatedExpression())) {
 				dtoList.add(getApplicazione(vo));
@@ -277,12 +248,33 @@ public class ApplicazioniBD extends BasicBD {
 			return dtoList;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		}
+	}
+
+	private Applicazione getApplicazione(it.govpay.orm.Applicazione applicazioneVO) throws ServiceException {
+		try {
+			Connettore connettoreNotifica = null;
+			if(applicazioneVO.getCodConnettoreEsito()!= null) {
+				IPaginatedExpression expEsito = this.getConnettoreService().newPaginatedExpression();
+				expEsito.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazioneVO.getCodConnettoreEsito());
+				connettoreNotifica = ConnettoreConverter.toDTO(this.getConnettoreService().findAll(expEsito));
+			}
+	
+			Connettore connettoreVerifica = null;
+			if(applicazioneVO.getCodConnettoreVerifica()!= null) {
+				IPaginatedExpression expVerifica = this.getConnettoreService().newPaginatedExpression();
+				expVerifica.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazioneVO.getCodConnettoreVerifica());
+				connettoreVerifica = ConnettoreConverter.toDTO(this.getConnettoreService().findAll(expVerifica));
+			}
+	
+			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica);
+			return applicazione;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
 		}
 	}
-
-	
 }

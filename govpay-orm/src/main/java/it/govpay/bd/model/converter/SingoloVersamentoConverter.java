@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,15 +22,21 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.bd.model.SingoloVersamento.TipoBollo;
+import it.govpay.bd.model.Tributo.TipoContabilta;
+import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdTributo;
+import it.govpay.orm.IdVersamento;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 public class SingoloVersamentoConverter {
 
-	public static List<SingoloVersamento> toDTOList(List<it.govpay.orm.SingoloVersamento> applicazioneLst) {
+	public static List<SingoloVersamento> toDTO(List<it.govpay.orm.SingoloVersamento> applicazioneLst) throws ServiceException {
 		List<SingoloVersamento> lstDTO = new ArrayList<SingoloVersamento>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.SingoloVersamento vo: applicazioneLst){
@@ -40,60 +46,57 @@ public class SingoloVersamentoConverter {
 		return lstDTO;
 	}
 
-	public static SingoloVersamento toDTO(it.govpay.orm.SingoloVersamento vo) {
+	public static SingoloVersamento toDTO(it.govpay.orm.SingoloVersamento vo) throws ServiceException {
 		SingoloVersamento dto = new SingoloVersamento();
-
 		dto.setId(vo.getId());
-		dto.setAnnoRiferimento(vo.getAnnoRiferimento());
-		dto.setCausaleVersamento(vo.getCausaleVersamento());
-		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
-		dto.setDataEsitoSingoloPagamento(vo.getDataEsitoSingoloPagamento());
-		dto.setDatiSpecificiRiscossione(vo.getDatiSpecificiRiscossione());
-		dto.setEsitoSingoloPagamento(vo.getEsitoSingoloPagamento());
-		dto.setIbanAccredito(vo.getIbanAccredito());
-
-		if(vo.getImportoCommissioniPA()!= null)
-			dto.setImportoCommissioniPA(BigDecimal.valueOf(vo.getImportoCommissioniPA()));
-
+		if(vo.getIdTributo() != null)
+			dto.setIdTributo(vo.getIdTributo().getId());
+		if(vo.getIdIbanAccredito() != null)
+			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
+		dto.setIdVersamento(vo.getIdVersamento().getId());
 		dto.setImportoSingoloVersamento(BigDecimal.valueOf(vo.getImportoSingoloVersamento()));
-		
-		if(vo.getSingoloImportoPagato()!=null)
-			dto.setSingoloImportoPagato(BigDecimal.valueOf(vo.getSingoloImportoPagato()));
-		
-		dto.setIndice(vo.getIndice());
-		dto.setIur(vo.getIur());
+		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
+		dto.setCodContabilita(vo.getCodiceContabilita());
 		dto.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf(vo.getStatoSingoloVersamento()));
-		dto.setIdTributo(vo.getIdTributo().getId());
-
+		if(vo.getTipoBollo() != null)
+			dto.setTipoBollo(TipoBollo.toEnum(vo.getTipoBollo()));
+		if(vo.getTipoContabilita() != null)
+			dto.setTipoContabilita(TipoContabilta.toEnum(vo.getTipoContabilita()));
+		dto.setHashDocumento(vo.getHashDocumento());
+		dto.setProvinciaResidenza(vo.getProvinciaResidenza());
 		return dto;
 	}
 
 	public static it.govpay.orm.SingoloVersamento toVO(SingoloVersamento dto) {
 		it.govpay.orm.SingoloVersamento vo = new it.govpay.orm.SingoloVersamento();
-
-		vo.setAnnoRiferimento(dto.getAnnoRiferimento());
-		vo.setCausaleVersamento(dto.getCausaleVersamento());
-		vo.setCodSingoloVersamentoEnte(dto.getCodSingoloVersamentoEnte());
-		vo.setDataEsitoSingoloPagamento(dto.getDataEsitoSingoloPagamento());
-		vo.setDatiSpecificiRiscossione(dto.getDatiSpecificiRiscossione());
-		vo.setEsitoSingoloPagamento(dto.getEsitoSingoloPagamento());
-		vo.setIbanAccredito(dto.getIbanAccredito());
 		vo.setId(dto.getId());
-		if(dto.getImportoCommissioniPA() != null)
-			vo.setImportoCommissioniPA(dto.getImportoCommissioniPA().doubleValue());
-
-		vo.setImportoSingoloVersamento(dto.getImportoSingoloVersamento().doubleValue());
-
-		if(dto.getSingoloImportoPagato() != null)
-			vo.setSingoloImportoPagato(dto.getSingoloImportoPagato().doubleValue());
-		vo.setIndice(dto.getIndice());
-		vo.setIur(dto.getIur());
+		
+		if(dto.getIdIbanAccredito() != null) {
+			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
+			idIbanAccredito.setId(dto.getIdIbanAccredito());
+			vo.setIdIbanAccredito(idIbanAccredito);
+		}
+		
+		if(dto.getIdTributo() != null) {
+			IdTributo idTributo = new IdTributo();
+			idTributo.setId(dto.getIdTributo());
+			vo.setIdTributo(idTributo);
+		}
+		
+		IdVersamento idVersamento = new IdVersamento();
+		idVersamento.setId(dto.getIdVersamento());
+		vo.setIdVersamento(idVersamento);
+		
+		vo.setCodSingoloVersamentoEnte(dto.getCodSingoloVersamentoEnte());
+		vo.setCodiceContabilita(dto.getCodContabilita());
 		vo.setStatoSingoloVersamento(dto.getStatoSingoloVersamento().toString());
-		IdTributo idTributo = new IdTributo();
-		idTributo.setId(dto.getIdTributo());
-
-		vo.setIdTributo(idTributo);
-
+		vo.setImportoSingoloVersamento(dto.getImportoSingoloVersamento().doubleValue());
+		if(dto.getTipoBollo() != null)
+			vo.setTipoBollo(dto.getTipoBollo().getCodifica());
+		if(dto.getTipoContabilita() != null)
+			vo.setTipoContabilita(dto.getTipoContabilita().getCodifica());
+		vo.setHashDocumento(dto.getHashDocumento());
+		vo.setProvinciaResidenza(dto.getProvinciaResidenza());
 		return vo;
 	}
 }

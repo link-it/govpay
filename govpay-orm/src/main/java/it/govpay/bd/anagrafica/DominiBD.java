@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -133,7 +133,7 @@ public class DominiBD extends BasicBD {
 			
 			this.getDominioService().update(id, vo);
 			dominio.setId(vo.getId());
-			
+			AnagraficaManager.removeFromCache(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-singolo-versamento">
  * 		&lt;sequence>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="indice" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,7 +53,7 @@ import java.io.Serializable;
 @XmlType(name = "id-singolo-versamento", 
   propOrder = {
   	"idVersamento",
-  	"indice"
+  	"codSingoloVersamentoEnte"
   }
 )
 
@@ -85,12 +85,12 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
     this.idVersamento = idVersamento;
   }
 
-  public int getIndice() {
-    return this.indice;
+  public java.lang.String getCodSingoloVersamentoEnte() {
+    return this.codSingoloVersamentoEnte;
   }
 
-  public void setIndice(int indice) {
-    this.indice = indice;
+  public void setCodSingoloVersamentoEnte(java.lang.String codSingoloVersamentoEnte) {
+    this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
   }
 
   private static final long serialVersionUID = 1L;
@@ -103,8 +103,8 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
   @XmlElement(name="idVersamento",required=true,nillable=false)
   protected IdVersamento idVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
-  @XmlElement(name="indice",required=true,nillable=false)
-  protected int indice;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
+  protected java.lang.String codSingoloVersamentoEnte;
 
 }

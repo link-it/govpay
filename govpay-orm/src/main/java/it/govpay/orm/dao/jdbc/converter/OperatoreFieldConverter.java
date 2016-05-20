@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,11 +96,18 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 				return "abilitato";
 			}
 		}
-		if(field.equals(Operatore.model().OPERATORE_ENTE.ID_ENTE.COD_ENTE)){
+		if(field.equals(Operatore.model().OPERATORE_UO.ID_UO.COD_UO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_ente";
+				return this.toAliasTable(field)+".cod_uo";
 			}else{
-				return "cod_ente";
+				return "cod_uo";
+			}
+		}
+		if(field.equals(Operatore.model().OPERATORE_UO.ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
 			}
 		}
 		if(field.equals(Operatore.model().OPERATORE_APPLICAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
@@ -108,6 +115,13 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
 				return "cod_applicazione";
+			}
+		}
+		if(field.equals(Operatore.model().OPERATORE_PORTALE.ID_PORTALE.COD_PORTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_portale";
+			}else{
+				return "cod_portale";
 			}
 		}
 
@@ -135,11 +149,17 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Operatore.model().ABILITATO)){
 			return this.toTable(Operatore.model(), returnAlias);
 		}
-		if(field.equals(Operatore.model().OPERATORE_ENTE.ID_ENTE.COD_ENTE)){
-			return this.toTable(Operatore.model().OPERATORE_ENTE.ID_ENTE, returnAlias);
+		if(field.equals(Operatore.model().OPERATORE_UO.ID_UO.COD_UO)){
+			return this.toTable(Operatore.model().OPERATORE_UO.ID_UO, returnAlias);
+		}
+		if(field.equals(Operatore.model().OPERATORE_UO.ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Operatore.model().OPERATORE_UO.ID_UO.ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(Operatore.model().OPERATORE_APPLICAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Operatore.model().OPERATORE_APPLICAZIONE.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(Operatore.model().OPERATORE_PORTALE.ID_PORTALE.COD_PORTALE)){
+			return this.toTable(Operatore.model().OPERATORE_PORTALE.ID_PORTALE, returnAlias);
 		}
 
 
@@ -157,17 +177,26 @@ public class OperatoreFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(Operatore.model())){
 			return "operatori";
 		}
-		if(model.equals(Operatore.model().OPERATORE_ENTE)){
-			return "operatori_enti";
+		if(model.equals(Operatore.model().OPERATORE_UO)){
+			return "operatori_uo";
 		}
-		if(model.equals(Operatore.model().OPERATORE_ENTE.ID_ENTE)){
-			return "enti";
+		if(model.equals(Operatore.model().OPERATORE_UO.ID_UO)){
+			return "uo";
+		}
+		if(model.equals(Operatore.model().OPERATORE_UO.ID_UO.ID_DOMINIO)){
+			return "id_dominio";
 		}
 		if(model.equals(Operatore.model().OPERATORE_APPLICAZIONE)){
 			return "operatori_applicazioni";
 		}
 		if(model.equals(Operatore.model().OPERATORE_APPLICAZIONE.ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Operatore.model().OPERATORE_PORTALE)){
+			return "operatori_portali";
+		}
+		if(model.equals(Operatore.model().OPERATORE_PORTALE.ID_PORTALE)){
+			return "portali";
 		}
 
 

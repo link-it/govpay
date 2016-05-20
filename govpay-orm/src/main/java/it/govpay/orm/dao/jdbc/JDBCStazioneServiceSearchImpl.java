@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,38 +20,43 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IdStazione;
-import it.govpay.orm.Stazione;
-import it.govpay.orm.dao.jdbc.converter.StazioneFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.StazioneFetch;
-
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
+import java.sql.Connection;
+
 import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.FunctionField;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import it.govpay.orm.IdStazione;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import it.govpay.orm.dao.jdbc.converter.StazioneFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.StazioneFetch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+
+import it.govpay.orm.Stazione;
 
 /**     
  * JDBCStazioneServiceSearchImpl
@@ -125,7 +130,6 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 	
 	@Override
 	public List<IdStazione> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-
         // default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
@@ -138,10 +142,10 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 			fields.add(Stazione.model().COD_STAZIONE);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			for(Map<String, Object> map: returnMap) {
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Stazione)this.getStazioneFetch().fetch(jdbcProperties.getDatabase(), Stazione.model(), map)));
-			}
+        }
 		} catch(NotFoundException e) {}
 
         return list;
@@ -155,12 +159,12 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
         List<Stazione> list = new ArrayList<Stazione>();
         
         try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id", Long.class, "id", this.getStazioneFieldConverter().toTable(Stazione.model())));
+
 			fields.add(Stazione.model().COD_STAZIONE);
 			fields.add(Stazione.model().PASSWORD);
 			fields.add(Stazione.model().ABILITATO);
@@ -168,7 +172,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 			fields.add(new CustomField("id_intermediario", Long.class, "id_intermediario", this.getStazioneFieldConverter().toTable(Stazione.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			for(Map<String, Object> map: returnMap) {
 				Long id_intermediario = (Long) map.remove("id_intermediario");
 				Stazione stazione = (Stazione)this.getStazioneFetch().fetch(jdbcProperties.getDatabase(), Stazione.model(), map);
@@ -177,7 +181,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 					id_stazione_intermediario = ((JDBCIntermediarioServiceSearch)(this.getServiceManager().getIntermediarioServiceSearch())).findId(id_intermediario, false);
 				}else{
 					id_stazione_intermediario = new it.govpay.orm.IdIntermediario();
-				}
+        }
 				id_stazione_intermediario.setId(id_intermediario);
 				stazione.setIdIntermediario(id_stazione_intermediario);
 
@@ -485,9 +489,9 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 		expression.offset(0);
 		expression.limit(2); //per verificare la multiple results
 		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
-
-		List<Stazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
+		List<Stazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+				
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
 		
@@ -495,8 +499,6 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 			throw new MultipleResultException("Id ["+tableId+"]");
 
 		return lst.get(0);
-
-	
 	} 
 	
 	@Override
@@ -529,7 +531,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-
+	
 		if(expression.inUseModel(Stazione.model().ID_INTERMEDIARIO,false)){
 			String tableName1 = this.getStazioneFieldConverter().toAliasTable(Stazione.model());
 			String tableName2 = this.getStazioneFieldConverter().toAliasTable(Stazione.model().ID_INTERMEDIARIO);
@@ -543,6 +545,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
 		Long longId = this.findIdStazione(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
+        
         
         return rootTableIdValues;
 	}
@@ -567,6 +570,8 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 				new CustomField("id", Long.class, "id", converter.toTable(Stazione.model().ID_INTERMEDIARIO))
 			));
 
+
+        
         return mapTableToPKColumn;		
 	}
 	
@@ -629,10 +634,6 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -653,6 +654,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
+
 		// Object _stazione
 		sqlQueryObjectGet.addFromTable(this.getStazioneFieldConverter().toTable(Stazione.model()));
 		sqlQueryObjectGet.addSelectField(this.getStazioneFieldConverter().toColumn(Stazione.model().COD_STAZIONE,true));
@@ -664,8 +666,6 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_stazione = new ArrayList<Class<?>>();
-		listaFieldIdReturnType_stazione.add(Stazione.model().COD_STAZIONE.getFieldType());
-
 		it.govpay.orm.IdStazione id_stazione = null;
 		List<Object> listaFieldId_stazione = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_stazione, searchParams_stazione);
@@ -706,6 +706,7 @@ public class JDBCStazioneServiceSearchImpl implements IJDBCServiceSearchWithId<S
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+
 
 		// Object _stazione
 		sqlQueryObjectGet.addFromTable(this.getStazioneFieldConverter().toTable(Stazione.model()));

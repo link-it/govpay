@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,6 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Fr.StatoFr;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdPsp;
-import it.govpay.orm.IdTracciato;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,47 +45,46 @@ public class FrConverter {
 	public static Fr toDTO(it.govpay.orm.FR vo) throws ServiceException {
 		Fr dto = new Fr();
 		dto.setAnnoRiferimento(vo.getAnnoRiferimento());
-		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
-		dto.setStato(StatoFr.valueOf(vo.getStato()));
+		dto.setCodBicRiversamento(vo.getCodBicRiversamento());
+		dto.setCodFlusso(vo.getCodFlusso());
+		dto.setDataFlusso(vo.getDataOraFlusso());
+		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
-		dto.setIur(vo.getIur());
-		dto.setCodFlusso(vo.getCodFlusso());
 		dto.setIdPsp(vo.getIdPsp().getId());
-		dto.setDataOraFlusso(vo.getDataOraFlusso());
-		dto.setIdTracciatoXML(vo.getIdTracciatoXML().getId());
-		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
-		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setIdDominio(vo.getIdDominio().getId());
+		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
+		dto.setIur(vo.getIur());
+		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
+		dto.setStato(StatoFr.valueOf(vo.getStato()));
+		dto.setXml(vo.getXml());
+		
 		return dto;
 	}
 
 	public static it.govpay.orm.FR toVO(Fr dto) {
 		it.govpay.orm.FR vo = new it.govpay.orm.FR();
 		vo.setAnnoRiferimento(dto.getAnnoRiferimento());
-		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
-		vo.setStato(dto.getStato().toString());
+		vo.setCodBicRiversamento(dto.getCodBicRiversamento());
+		vo.setCodFlusso(dto.getCodFlusso());
+		vo.setDataOraFlusso(dto.getDataFlusso());
+		vo.setDataRegolamento(dto.getDataRegolamento());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
-		vo.setIur(dto.getIur());
-		vo.setCodFlusso(dto.getCodFlusso());
-		
-		IdPsp idPsp = new IdPsp();
-		idPsp.setId(dto.getIdPsp());
-		vo.setIdPsp(idPsp);
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());
 		vo.setIdDominio(idDominio);
 		
-		vo.setDataOraFlusso(dto.getDataOraFlusso());
+		IdPsp idPsp = new IdPsp();
+		idPsp.setId(dto.getIdPsp());
+		vo.setIdPsp(idPsp);
 		
-		IdTracciato idTracciato = new IdTracciato();
-		idTracciato.setId(dto.getIdTracciatoXML());
-		vo.setIdTracciatoXML(idTracciato);
-
 		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti());
-		vo.setDataRegolamento(dto.getDataRegolamento());
+		vo.setIur(dto.getIur());
+		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
+		vo.setStato(dto.getStato().toString());
+		vo.setXml(dto.getXml());
 		return vo;
 	}
 

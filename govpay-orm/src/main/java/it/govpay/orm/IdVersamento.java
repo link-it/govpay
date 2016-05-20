@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,7 +37,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-versamento">
  * 		&lt;sequence>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,7 +53,7 @@ import java.io.Serializable;
 @XmlType(name = "id-versamento", 
   propOrder = {
   	"codVersamentoEnte",
-  	"codDominio"
+  	"idApplicazione"
   }
 )
 
@@ -85,12 +85,12 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
     this.codVersamentoEnte = codVersamentoEnte;
   }
 
-  public java.lang.String getCodDominio() {
-    return this.codDominio;
+  public IdApplicazione getIdApplicazione() {
+    return this.idApplicazione;
   }
 
-  public void setCodDominio(java.lang.String codDominio) {
-    this.codDominio = codDominio;
+  public void setIdApplicazione(IdApplicazione idApplicazione) {
+    this.idApplicazione = idApplicazione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -104,8 +104,7 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
   @XmlElement(name="codVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codVersamentoEnte;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codDominio",required=true,nillable=false)
-  protected java.lang.String codDominio;
+  @XmlElement(name="idApplicazione",required=true,nillable=false)
+  protected IdApplicazione idApplicazione;
 
 }

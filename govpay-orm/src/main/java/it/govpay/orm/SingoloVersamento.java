@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,20 +37,17 @@ import java.io.Serializable;
  * &lt;complexType name="SingoloVersamento">
  * 		&lt;sequence>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="indice" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ibanAccredito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="statoSingoloVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importoSingoloVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="importoCommissioniPA" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="singoloImportoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="causaleVersamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="datiSpecificiRiscossione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="statoSingoloVersamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="esitoSingoloPagamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataEsitoSingoloPagamento" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="iur" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoBollo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="hashDocumento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="provinciaResidenza" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -66,20 +63,17 @@ import java.io.Serializable;
 @XmlType(name = "SingoloVersamento", 
   propOrder = {
   	"idVersamento",
-  	"indice",
-  	"codSingoloVersamentoEnte",
   	"idTributo",
-  	"annoRiferimento",
-  	"ibanAccredito",
-  	"importoSingoloVersamento",
-  	"importoCommissioniPA",
-  	"singoloImportoPagato",
-  	"causaleVersamento",
-  	"datiSpecificiRiscossione",
+  	"codSingoloVersamentoEnte",
   	"statoSingoloVersamento",
-  	"esitoSingoloPagamento",
-  	"dataEsitoSingoloPagamento",
-  	"iur"
+  	"importoSingoloVersamento",
+  	"annoRiferimento",
+  	"tipoBollo",
+  	"hashDocumento",
+  	"provinciaResidenza",
+  	"idIbanAccredito",
+  	"tipoContabilita",
+  	"codiceContabilita"
   }
 )
 
@@ -111,12 +105,12 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.idVersamento = idVersamento;
   }
 
-  public int getIndice() {
-    return this.indice;
+  public IdTributo getIdTributo() {
+    return this.idTributo;
   }
 
-  public void setIndice(int indice) {
-    this.indice = indice;
+  public void setIdTributo(IdTributo idTributo) {
+    this.idTributo = idTributo;
   }
 
   public java.lang.String getCodSingoloVersamentoEnte() {
@@ -127,28 +121,12 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
   }
 
-  public IdTributo getIdTributo() {
-    return this.idTributo;
+  public java.lang.String getStatoSingoloVersamento() {
+    return this.statoSingoloVersamento;
   }
 
-  public void setIdTributo(IdTributo idTributo) {
-    this.idTributo = idTributo;
-  }
-
-  public int getAnnoRiferimento() {
-    return this.annoRiferimento;
-  }
-
-  public void setAnnoRiferimento(int annoRiferimento) {
-    this.annoRiferimento = annoRiferimento;
-  }
-
-  public java.lang.String getIbanAccredito() {
-    return this.ibanAccredito;
-  }
-
-  public void setIbanAccredito(java.lang.String ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
+  public void setStatoSingoloVersamento(java.lang.String statoSingoloVersamento) {
+    this.statoSingoloVersamento = statoSingoloVersamento;
   }
 
   public double getImportoSingoloVersamento() {
@@ -159,68 +137,60 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.importoSingoloVersamento = importoSingoloVersamento;
   }
 
-  public java.lang.Double getImportoCommissioniPA() {
-    return this.importoCommissioniPA;
+  public int getAnnoRiferimento() {
+    return this.annoRiferimento;
   }
 
-  public void setImportoCommissioniPA(java.lang.Double importoCommissioniPA) {
-    this.importoCommissioniPA = importoCommissioniPA;
+  public void setAnnoRiferimento(int annoRiferimento) {
+    this.annoRiferimento = annoRiferimento;
   }
 
-  public java.lang.Double getSingoloImportoPagato() {
-    return this.singoloImportoPagato;
+  public java.lang.String getTipoBollo() {
+    return this.tipoBollo;
   }
 
-  public void setSingoloImportoPagato(java.lang.Double singoloImportoPagato) {
-    this.singoloImportoPagato = singoloImportoPagato;
+  public void setTipoBollo(java.lang.String tipoBollo) {
+    this.tipoBollo = tipoBollo;
   }
 
-  public java.lang.String getCausaleVersamento() {
-    return this.causaleVersamento;
+  public java.lang.String getHashDocumento() {
+    return this.hashDocumento;
   }
 
-  public void setCausaleVersamento(java.lang.String causaleVersamento) {
-    this.causaleVersamento = causaleVersamento;
+  public void setHashDocumento(java.lang.String hashDocumento) {
+    this.hashDocumento = hashDocumento;
   }
 
-  public java.lang.String getDatiSpecificiRiscossione() {
-    return this.datiSpecificiRiscossione;
+  public java.lang.String getProvinciaResidenza() {
+    return this.provinciaResidenza;
   }
 
-  public void setDatiSpecificiRiscossione(java.lang.String datiSpecificiRiscossione) {
-    this.datiSpecificiRiscossione = datiSpecificiRiscossione;
+  public void setProvinciaResidenza(java.lang.String provinciaResidenza) {
+    this.provinciaResidenza = provinciaResidenza;
   }
 
-  public java.lang.String getStatoSingoloVersamento() {
-    return this.statoSingoloVersamento;
+  public IdIbanAccredito getIdIbanAccredito() {
+    return this.idIbanAccredito;
   }
 
-  public void setStatoSingoloVersamento(java.lang.String statoSingoloVersamento) {
-    this.statoSingoloVersamento = statoSingoloVersamento;
+  public void setIdIbanAccredito(IdIbanAccredito idIbanAccredito) {
+    this.idIbanAccredito = idIbanAccredito;
   }
 
-  public java.lang.String getEsitoSingoloPagamento() {
-    return this.esitoSingoloPagamento;
+  public java.lang.String getTipoContabilita() {
+    return this.tipoContabilita;
   }
 
-  public void setEsitoSingoloPagamento(java.lang.String esitoSingoloPagamento) {
-    this.esitoSingoloPagamento = esitoSingoloPagamento;
+  public void setTipoContabilita(java.lang.String tipoContabilita) {
+    this.tipoContabilita = tipoContabilita;
   }
 
-  public java.util.Date getDataEsitoSingoloPagamento() {
-    return this.dataEsitoSingoloPagamento;
+  public java.lang.String getCodiceContabilita() {
+    return this.codiceContabilita;
   }
 
-  public void setDataEsitoSingoloPagamento(java.util.Date dataEsitoSingoloPagamento) {
-    this.dataEsitoSingoloPagamento = dataEsitoSingoloPagamento;
-  }
-
-  public java.lang.String getIur() {
-    return this.iur;
-  }
-
-  public void setIur(java.lang.String iur) {
-    this.iur = iur;
+  public void setCodiceContabilita(java.lang.String codiceContabilita) {
+    this.codiceContabilita = codiceContabilita;
   }
 
   private static final long serialVersionUID = 1L;
@@ -245,60 +215,46 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @XmlElement(name="idVersamento",required=true,nillable=false)
   protected IdVersamento idVersamento;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
-  @XmlElement(name="indice",required=true,nillable=false)
-  protected int indice;
+  @XmlElement(name="idTributo",required=false,nillable=false)
+  protected IdTributo idTributo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codSingoloVersamentoEnte",required=false,nillable=false)
+  @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codSingoloVersamentoEnte;
 
-  @XmlElement(name="idTributo",required=true,nillable=false)
-  protected IdTributo idTributo;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="statoSingoloVersamento",required=true,nillable=false)
+  protected java.lang.String statoSingoloVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="importoSingoloVersamento",required=true,nillable=false)
+  protected double importoSingoloVersamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="annoRiferimento",required=false,nillable=false)
   protected int annoRiferimento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ibanAccredito",required=false,nillable=false)
-  protected java.lang.String ibanAccredito;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="double")
-  @XmlElement(name="importoSingoloVersamento",required=true,nillable=false)
-  protected double importoSingoloVersamento;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
-  @XmlElement(name="importoCommissioniPA",required=false,nillable=false)
-  protected java.lang.Double importoCommissioniPA;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
-  @XmlElement(name="singoloImportoPagato",required=false,nillable=false)
-  protected java.lang.Double singoloImportoPagato;
+  @XmlElement(name="tipoBollo",required=false,nillable=false)
+  protected java.lang.String tipoBollo;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="causaleVersamento",required=false,nillable=false)
-  protected java.lang.String causaleVersamento;
+  @XmlElement(name="hashDocumento",required=false,nillable=false)
+  protected java.lang.String hashDocumento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="datiSpecificiRiscossione",required=false,nillable=false)
-  protected java.lang.String datiSpecificiRiscossione;
+  @XmlElement(name="provinciaResidenza",required=false,nillable=false)
+  protected java.lang.String provinciaResidenza;
+
+  @XmlElement(name="idIbanAccredito",required=false,nillable=false)
+  protected IdIbanAccredito idIbanAccredito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="statoSingoloVersamento",required=false,nillable=false)
-  protected java.lang.String statoSingoloVersamento;
+  @XmlElement(name="tipoContabilita",required=false,nillable=false)
+  protected java.lang.String tipoContabilita;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="esitoSingoloPagamento",required=false,nillable=false)
-  protected java.lang.String esitoSingoloPagamento;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Date2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="date")
-  @XmlElement(name="dataEsitoSingoloPagamento",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataEsitoSingoloPagamento;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="iur",required=false,nillable=false)
-  protected java.lang.String iur;
+  @XmlElement(name="codiceContabilita",required=false,nillable=false)
+  protected java.lang.String codiceContabilita;
 
 }

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,13 +68,6 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(Evento.model().DATA_ORA_EVENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_ora_evento";
-			}else{
-				return "data_ora_evento";
-			}
-		}
 		if(field.equals(Evento.model().COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -87,13 +80,6 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".iuv";
 			}else{
 				return "iuv";
-			}
-		}
-		if(field.equals(Evento.model().ID_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_applicazione";
-			}else{
-				return "id_applicazione";
 			}
 		}
 		if(field.equals(Evento.model().CCP)){
@@ -145,18 +131,18 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "sottotipo_evento";
 			}
 		}
-		if(field.equals(Evento.model().COD_FRUITORE)){
+		if(field.equals(Evento.model().EROGATORE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_fruitore";
+				return this.toAliasTable(field)+".erogatore";
 			}else{
-				return "cod_fruitore";
+				return "erogatore";
 			}
 		}
-		if(field.equals(Evento.model().COD_EROGATORE)){
+		if(field.equals(Evento.model().FRUITORE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_erogatore";
+				return this.toAliasTable(field)+".fruitore";
 			}else{
-				return "cod_erogatore";
+				return "fruitore";
 			}
 		}
 		if(field.equals(Evento.model().COD_STAZIONE)){
@@ -166,18 +152,25 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_stazione";
 			}
 		}
-		if(field.equals(Evento.model().CANALE_PAGAMENTO)){
+		if(field.equals(Evento.model().COD_CANALE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".canale_pagamento";
+				return this.toAliasTable(field)+".cod_canale";
 			}else{
-				return "canale_pagamento";
+				return "cod_canale";
 			}
 		}
-		if(field.equals(Evento.model().ALTRI_PARAMETRI)){
+		if(field.equals(Evento.model().PARAMETRI_1)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".altri_parametri";
+				return this.toAliasTable(field)+".parametri_1";
 			}else{
-				return "altri_parametri";
+				return "parametri_1";
+			}
+		}
+		if(field.equals(Evento.model().PARAMETRI_2)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".parametri_2";
+			}else{
+				return "parametri_2";
 			}
 		}
 		if(field.equals(Evento.model().ESITO)){
@@ -185,6 +178,20 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".esito";
 			}else{
 				return "esito";
+			}
+		}
+		if(field.equals(Evento.model().DATA_1)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_1";
+			}else{
+				return "data_1";
+			}
+		}
+		if(field.equals(Evento.model().DATA_2)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_2";
+			}else{
+				return "data_2";
 			}
 		}
 
@@ -200,16 +207,10 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(Evento.model().DATA_ORA_EVENTO)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
 		if(field.equals(Evento.model().COD_DOMINIO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().IUV)){
-			return this.toTable(Evento.model(), returnAlias);
-		}
-		if(field.equals(Evento.model().ID_APPLICAZIONE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().CCP)){
@@ -233,22 +234,31 @@ public class EventoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Evento.model().SOTTOTIPO_EVENTO)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().COD_FRUITORE)){
+		if(field.equals(Evento.model().EROGATORE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().COD_EROGATORE)){
+		if(field.equals(Evento.model().FRUITORE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().COD_STAZIONE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().CANALE_PAGAMENTO)){
+		if(field.equals(Evento.model().COD_CANALE)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
-		if(field.equals(Evento.model().ALTRI_PARAMETRI)){
+		if(field.equals(Evento.model().PARAMETRI_1)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().PARAMETRI_2)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 		if(field.equals(Evento.model().ESITO)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().DATA_1)){
+			return this.toTable(Evento.model(), returnAlias);
+		}
+		if(field.equals(Evento.model().DATA_2)){
 			return this.toTable(Evento.model(), returnAlias);
 		}
 

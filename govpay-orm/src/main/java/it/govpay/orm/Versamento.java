@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,19 +36,25 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Versamento">
  * 		&lt;sequence>
- * 			&lt;element name="codVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="iuv" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idEnte" type="{http://www.govpay.it/orm}id-ente" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idUo" type="{http://www.govpay.it/orm}id-uo" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idAnagraficaDebitore" type="{http://www.govpay.it/orm}id-anagrafica" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="statoVersamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="statoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="statoRendicontazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="aggiornabile" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataScadenza" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataOraUltimoAggiornamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="causaleVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="debitoreIndirizzo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreCivico" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreCap" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreLocalita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreProvincia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreNazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -64,18 +70,24 @@ import java.io.Serializable;
 @XmlType(name = "Versamento", 
   propOrder = {
   	"codVersamentoEnte",
-  	"codDominio",
-  	"iuv",
-  	"idEnte",
+  	"idUo",
   	"idApplicazione",
-  	"idAnagraficaDebitore",
   	"importoTotale",
   	"statoVersamento",
   	"descrizioneStato",
-  	"statoRendicontazione",
-  	"importoPagato",
+  	"aggiornabile",
+  	"dataCreazione",
   	"dataScadenza",
-  	"dataOraUltimoAggiornamento"
+  	"dataOraUltimoAggiornamento",
+  	"causaleVersamento",
+  	"debitoreIdentificativo",
+  	"debitoreAnagrafica",
+  	"debitoreIndirizzo",
+  	"debitoreCivico",
+  	"debitoreCap",
+  	"debitoreLocalita",
+  	"debitoreProvincia",
+  	"debitoreNazione"
   }
 )
 
@@ -107,28 +119,12 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.codVersamentoEnte = codVersamentoEnte;
   }
 
-  public java.lang.String getCodDominio() {
-    return this.codDominio;
+  public IdUo getIdUo() {
+    return this.idUo;
   }
 
-  public void setCodDominio(java.lang.String codDominio) {
-    this.codDominio = codDominio;
-  }
-
-  public java.lang.String getIuv() {
-    return this.iuv;
-  }
-
-  public void setIuv(java.lang.String iuv) {
-    this.iuv = iuv;
-  }
-
-  public IdEnte getIdEnte() {
-    return this.idEnte;
-  }
-
-  public void setIdEnte(IdEnte idEnte) {
-    this.idEnte = idEnte;
+  public void setIdUo(IdUo idUo) {
+    this.idUo = idUo;
   }
 
   public IdApplicazione getIdApplicazione() {
@@ -137,14 +133,6 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setIdApplicazione(IdApplicazione idApplicazione) {
     this.idApplicazione = idApplicazione;
-  }
-
-  public IdAnagrafica getIdAnagraficaDebitore() {
-    return this.idAnagraficaDebitore;
-  }
-
-  public void setIdAnagraficaDebitore(IdAnagrafica idAnagraficaDebitore) {
-    this.idAnagraficaDebitore = idAnagraficaDebitore;
   }
 
   public double getImportoTotale() {
@@ -171,20 +159,24 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.descrizioneStato = descrizioneStato;
   }
 
-  public java.lang.String getStatoRendicontazione() {
-    return this.statoRendicontazione;
+  public boolean isAggiornabile() {
+    return this.aggiornabile;
   }
 
-  public void setStatoRendicontazione(java.lang.String statoRendicontazione) {
-    this.statoRendicontazione = statoRendicontazione;
+  public boolean getAggiornabile() {
+    return this.aggiornabile;
   }
 
-  public java.lang.Double getImportoPagato() {
-    return this.importoPagato;
+  public void setAggiornabile(boolean aggiornabile) {
+    this.aggiornabile = aggiornabile;
   }
 
-  public void setImportoPagato(java.lang.Double importoPagato) {
-    this.importoPagato = importoPagato;
+  public java.util.Date getDataCreazione() {
+    return this.dataCreazione;
+  }
+
+  public void setDataCreazione(java.util.Date dataCreazione) {
+    this.dataCreazione = dataCreazione;
   }
 
   public java.util.Date getDataScadenza() {
@@ -201,6 +193,78 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setDataOraUltimoAggiornamento(java.util.Date dataOraUltimoAggiornamento) {
     this.dataOraUltimoAggiornamento = dataOraUltimoAggiornamento;
+  }
+
+  public java.lang.String getCausaleVersamento() {
+    return this.causaleVersamento;
+  }
+
+  public void setCausaleVersamento(java.lang.String causaleVersamento) {
+    this.causaleVersamento = causaleVersamento;
+  }
+
+  public java.lang.String getDebitoreIdentificativo() {
+    return this.debitoreIdentificativo;
+  }
+
+  public void setDebitoreIdentificativo(java.lang.String debitoreIdentificativo) {
+    this.debitoreIdentificativo = debitoreIdentificativo;
+  }
+
+  public java.lang.String getDebitoreAnagrafica() {
+    return this.debitoreAnagrafica;
+  }
+
+  public void setDebitoreAnagrafica(java.lang.String debitoreAnagrafica) {
+    this.debitoreAnagrafica = debitoreAnagrafica;
+  }
+
+  public java.lang.String getDebitoreIndirizzo() {
+    return this.debitoreIndirizzo;
+  }
+
+  public void setDebitoreIndirizzo(java.lang.String debitoreIndirizzo) {
+    this.debitoreIndirizzo = debitoreIndirizzo;
+  }
+
+  public java.lang.String getDebitoreCivico() {
+    return this.debitoreCivico;
+  }
+
+  public void setDebitoreCivico(java.lang.String debitoreCivico) {
+    this.debitoreCivico = debitoreCivico;
+  }
+
+  public java.lang.String getDebitoreCap() {
+    return this.debitoreCap;
+  }
+
+  public void setDebitoreCap(java.lang.String debitoreCap) {
+    this.debitoreCap = debitoreCap;
+  }
+
+  public java.lang.String getDebitoreLocalita() {
+    return this.debitoreLocalita;
+  }
+
+  public void setDebitoreLocalita(java.lang.String debitoreLocalita) {
+    this.debitoreLocalita = debitoreLocalita;
+  }
+
+  public java.lang.String getDebitoreProvincia() {
+    return this.debitoreProvincia;
+  }
+
+  public void setDebitoreProvincia(java.lang.String debitoreProvincia) {
+    this.debitoreProvincia = debitoreProvincia;
+  }
+
+  public java.lang.String getDebitoreNazione() {
+    return this.debitoreNazione;
+  }
+
+  public void setDebitoreNazione(java.lang.String debitoreNazione) {
+    this.debitoreNazione = debitoreNazione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -226,22 +290,11 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="codVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codVersamentoEnte;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codDominio",required=true,nillable=false)
-  protected java.lang.String codDominio;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="iuv",required=true,nillable=false)
-  protected java.lang.String iuv;
-
-  @XmlElement(name="idEnte",required=true,nillable=false)
-  protected IdEnte idEnte;
+  @XmlElement(name="idUo",required=true,nillable=false)
+  protected IdUo idUo;
 
   @XmlElement(name="idApplicazione",required=true,nillable=false)
   protected IdApplicazione idApplicazione;
-
-  @XmlElement(name="idAnagraficaDebitore",required=true,nillable=false)
-  protected IdAnagrafica idAnagraficaDebitore;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoTotale",required=true,nillable=false)
@@ -255,22 +308,59 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="descrizioneStato",required=false,nillable=false)
   protected java.lang.String descrizioneStato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="statoRendicontazione",required=false,nillable=false)
-  protected java.lang.String statoRendicontazione;
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="aggiornabile",required=true,nillable=false)
+  protected boolean aggiornabile;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
-  @XmlElement(name="importoPagato",required=false,nillable=false)
-  protected java.lang.Double importoPagato;
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataCreazione",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataCreazione;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Date2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="date")
-  @XmlElement(name="dataScadenza",required=true,nillable=false,type=java.lang.String.class)
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataScadenza",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataScadenza;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataOraUltimoAggiornamento",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataOraUltimoAggiornamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="causaleVersamento",required=false,nillable=false)
+  protected java.lang.String causaleVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreIdentificativo",required=true,nillable=false)
+  protected java.lang.String debitoreIdentificativo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreAnagrafica",required=true,nillable=false)
+  protected java.lang.String debitoreAnagrafica;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreIndirizzo",required=false,nillable=false)
+  protected java.lang.String debitoreIndirizzo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreCivico",required=false,nillable=false)
+  protected java.lang.String debitoreCivico;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreCap",required=false,nillable=false)
+  protected java.lang.String debitoreCap;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreLocalita",required=false,nillable=false)
+  protected java.lang.String debitoreLocalita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreProvincia",required=false,nillable=false)
+  protected java.lang.String debitoreProvincia;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreNazione",required=false,nillable=false)
+  protected java.lang.String debitoreNazione;
 
 }

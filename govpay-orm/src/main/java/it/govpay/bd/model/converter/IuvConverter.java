@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,14 +21,18 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Iuv;
+import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IdDominio;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 public class IuvConverter {
 
-	public static List<Iuv> toDTOList(List<it.govpay.orm.IUV> applicazioneLst) {
+	public static List<Iuv> toDTOList(List<it.govpay.orm.IUV> applicazioneLst) throws ServiceException {
 		List<Iuv> lstDTO = new ArrayList<Iuv>();
 		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
 			for(it.govpay.orm.IUV applicazione: applicazioneLst){
@@ -38,37 +42,37 @@ public class IuvConverter {
 		return lstDTO;
 	}
 
-	public static Iuv toDTO(it.govpay.orm.IUV vo) {
+	public static Iuv toDTO(it.govpay.orm.IUV vo) throws ServiceException {
 		Iuv dto = new Iuv();
 		dto.setId(vo.getId());
-		dto.setCodDominio(vo.getCodDominio());
+		dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setPrg(vo.getPrg());
-
 		dto.setDataGenerazione(vo.getDataGenerazione());
 		dto.setIdApplicazione(vo.getIdApplicazione().getId());
 		dto.setIuv(vo.getIuv());
+		dto.setTipo(TipoIUV.toEnum(vo.getTipoIuv()));
+		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 		dto.setApplicationCode(vo.getApplicationCode());
-		dto.setAuxDigit(vo.getAuxDigit());
-		
 		return dto;
 	}
 
 	public static it.govpay.orm.IUV toVO(Iuv dto) {
 		it.govpay.orm.IUV vo = new it.govpay.orm.IUV();
 		vo.setId(dto.getId());
-		vo.setId(dto.getId());
-		vo.setCodDominio(dto.getCodDominio());
 		vo.setPrg(dto.getPrg());
-
 		vo.setDataGenerazione(dto.getDataGenerazione());
-		IdApplicazione idApp = new IdApplicazione();
-		idApp.setId(dto.getIdApplicazione());
-		vo.setIdApplicazione(idApp);
 		vo.setIuv(dto.getIuv());
+		vo.setTipoIuv(dto.getTipo().getCodifica());
+		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
 		vo.setApplicationCode(dto.getApplicationCode());
-		vo.setAuxDigit(dto.getAuxDigit());
-				
+		IdApplicazione idApplicazione = new IdApplicazione();
+		idApplicazione.setId(dto.getIdApplicazione());
+		vo.setIdApplicazione(idApplicazione);
 		
+		IdDominio idDominio = new IdDominio();
+		idDominio.setId(dto.getIdDominio());
+		vo.setIdDominio(idDominio);
+				
 		return vo;
 	}
 

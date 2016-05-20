@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,22 +20,21 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
-import it.govpay.bd.model.IbanAccredito;
-import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.orm.IdIbanAccredito;
-import it.govpay.orm.dao.jdbc.JDBCIbanAccreditoServiceSearch;
-
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
+import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
+import it.govpay.bd.model.IbanAccredito;
+import it.govpay.bd.model.converter.IbanAccreditoConverter;
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdIbanAccredito;
+import it.govpay.orm.dao.jdbc.JDBCIbanAccreditoServiceSearch;
 
 public class IbanAccreditoBD extends BasicBD {
 
@@ -61,17 +60,12 @@ public class IbanAccreditoBD extends BasicBD {
 
 		try {
 			it.govpay.orm.IbanAccredito ibanAccreditoVO = ((JDBCIbanAccreditoServiceSearch)this.getIbanAccreditoService()).get(id);
-			IbanAccredito ibanAccredito = getIbanAccredito(ibanAccreditoVO);
+			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
 			
 			return ibanAccredito;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
-
+		} 
 	}
 	
 	/**
@@ -83,30 +77,21 @@ public class IbanAccreditoBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public IbanAccredito getIbanAccredito(String codIban) throws NotFoundException, ServiceException, MultipleResultException {
+	public IbanAccredito getIbanAccredito(Long idDominio, String codIban) throws NotFoundException, ServiceException, MultipleResultException {
 		try {
 			IdIbanAccredito id = new IdIbanAccredito();
 			id.setCodIban(codIban);
-			
+			IdDominio idDominioVo = new IdDominio();
+			idDominioVo.setId(idDominio);
+			id.setIdDominio(idDominioVo);
 			it.govpay.orm.IbanAccredito ibanAccreditoVO = this.getIbanAccreditoService().get(id);
-			IbanAccredito ibanAccredito = getIbanAccredito(ibanAccreditoVO);
-			
+			IbanAccredito ibanAccredito = IbanAccreditoConverter.toDTO(ibanAccreditoVO);
 			return ibanAccredito;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
-
+		} 
 	}
 	
-	private IbanAccredito getIbanAccredito(it.govpay.orm.IbanAccredito ibanAccreditoVO) throws ServiceException,
-			NotImplementedException, ExpressionNotImplementedException,
-			ExpressionException {
-		return IbanAccreditoConverter.toDTO(ibanAccreditoVO);
-	}
 	
 	/**
 	 * Aggiorna l'ibanAccredito con i dati forniti
@@ -118,14 +103,12 @@ public class IbanAccreditoBD extends BasicBD {
 		try {
 			it.govpay.orm.IbanAccredito vo = IbanAccreditoConverter.toVO(ibanAccredito);
 			IdIbanAccredito id = this.getIbanAccreditoService().convertToId(vo);
-			
 			if(!this.getIbanAccreditoService().exists(id)) {
 				throw new NotFoundException("IbanAccredito con id ["+id+"] non esiste.");
 			}
-			
 			this.getIbanAccreditoService().update(id, vo);
 			ibanAccredito.setId(vo.getId());
-			
+			AnagraficaManager.removeFromCache(ibanAccredito);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -150,18 +133,8 @@ public class IbanAccreditoBD extends BasicBD {
 		}
 	}
 	
-	public IFilter newFilter() throws ServiceException {
-		return new it.govpay.bd.AbstractFilter(this.getIbanAccreditoService()) {
-			
-			@Override
-			public IExpression toExpression() throws ServiceException {
-				try {
-					return newExpression();
-				} catch (NotImplementedException e) {
-					throw new ServiceException(e);
-				}
-			}
-		};
+	public IbanAccreditoFilter newFilter() throws ServiceException {
+		return new IbanAccreditoFilter(this.getIbanAccreditoService());
 	}
 
 	public long count(IFilter filter) throws ServiceException {

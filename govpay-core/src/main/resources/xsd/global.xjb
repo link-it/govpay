@@ -5,11 +5,10 @@
 
 	<jaxb:globalBindings>
 		<xjc:simple />
-		<xjc:javaType name="java.util.Date" xmlType="xs:time" adapter="it.govpay.web.adapter.TimeAdapter" />
-		<xjc:javaType name="java.util.Date" xmlType="xs:dateTime" adapter="it.govpay.web.adapter.DateTimeAdapter" />
-		<xjc:javaType name="java.util.Date" xmlType="xs:date" adapter="it.govpay.web.adapter.DateAdapter" />
-		<xjc:javaType name="java.lang.Integer" xmlType="xs:gYear" adapter="it.govpay.web.adapter.YearAdapter" />
-		<xjc:javaType name="java.math.BigDecimal" xmlType="xs:decimal"  adapter="it.govpay.web.adapter.DecimalAdapter" />
-		
+		<xjc:javaType name="java.util.Date" xmlType="xs:time" adapter="it.govpay.core.utils.adapter.TimeAdapter" />
+		<xjc:javaType name="java.util.Date" xmlType="xs:dateTime" adapter="it.govpay.core.utils.adapter.DateTimeAdapter" />
+		<xjc:javaType name="java.util.Date" xmlType="xs:date" adapter="it.govpay.core.utils.adapter.DateAdapter" />
+		<xjc:javaType name="java.lang.Integer" xmlType="xs:gYear" adapter="it.govpay.core.utils.adapter.YearAdapter" />
+		<xjc:javaType name="java.math.BigDecimal" xmlType="xs:decimal"  adapter="it.govpay.core.utils.adapter.DecimalAdapter" />
 	</jaxb:globalBindings>
 </jaxb:bindings>

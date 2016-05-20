@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,24 +25,14 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.utils.ServiceManagerProperties;
 
-import it.govpay.orm.dao.ITracciatoXMLServiceSearch;
-import it.govpay.orm.dao.ITracciatoXMLService;
 import it.govpay.orm.dao.IDominioServiceSearch;
 import it.govpay.orm.dao.IDominioService;
-import it.govpay.orm.dao.ITabellaContropartiServiceSearch;
-import it.govpay.orm.dao.ITabellaContropartiService;
-import it.govpay.orm.dao.IContoAccreditoServiceSearch;
-import it.govpay.orm.dao.IContoAccreditoService;
 import it.govpay.orm.dao.IPspServiceSearch;
 import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.ICanaleServiceSearch;
 import it.govpay.orm.dao.ICanaleService;
-import it.govpay.orm.dao.IAnagraficaServiceSearch;
-import it.govpay.orm.dao.IAnagraficaService;
-import it.govpay.orm.dao.IMailTemplateServiceSearch;
-import it.govpay.orm.dao.IMailTemplateService;
-import it.govpay.orm.dao.IEnteServiceSearch;
-import it.govpay.orm.dao.IEnteService;
+import it.govpay.orm.dao.IUoServiceSearch;
+import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IPortaleServiceSearch;
 import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IConnettoreServiceSearch;
@@ -63,36 +53,24 @@ import it.govpay.orm.dao.IIUVServiceSearch;
 import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
+import it.govpay.orm.dao.IEventoServiceSearch;
+import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IRPTServiceSearch;
 import it.govpay.orm.dao.IRPTService;
-import it.govpay.orm.dao.ICarrelloServiceSearch;
-import it.govpay.orm.dao.ICarrelloService;
-import it.govpay.orm.dao.IRTServiceSearch;
-import it.govpay.orm.dao.IRTService;
-import it.govpay.orm.dao.IEsitoServiceSearch;
-import it.govpay.orm.dao.IEsitoService;
-import it.govpay.orm.dao.IEventoServiceSearch;
-import it.govpay.orm.dao.IEventoService;
-import it.govpay.orm.dao.ISLAServiceSearch;
-import it.govpay.orm.dao.ISLAService;
-import it.govpay.orm.dao.IRilevamentoServiceSearch;
-import it.govpay.orm.dao.IRilevamentoService;
-import it.govpay.orm.dao.IMediaRilevamentoServiceSearch;
-import it.govpay.orm.dao.IMediaRilevamentoService;
 import it.govpay.orm.dao.IRRServiceSearch;
 import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IERServiceSearch;
-import it.govpay.orm.dao.IERService;
-import it.govpay.orm.dao.ISingolaRevocaServiceSearch;
-import it.govpay.orm.dao.ISingolaRevocaService;
+import it.govpay.orm.dao.IPagamentoServiceSearch;
+import it.govpay.orm.dao.IPagamentoService;
+import it.govpay.orm.dao.INotificaServiceSearch;
+import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IFRServiceSearch;
 import it.govpay.orm.dao.IFRService;
-import it.govpay.orm.dao.ISingolaRendicontazioneServiceSearch;
-import it.govpay.orm.dao.ISingolaRendicontazioneService;
-import it.govpay.orm.dao.IMailServiceSearch;
-import it.govpay.orm.dao.IMailService;
+import it.govpay.orm.dao.IFrApplicazioneServiceSearch;
+import it.govpay.orm.dao.IFrApplicazioneService;
+import it.govpay.orm.dao.IRendicontazioneSenzaRPTServiceSearch;
+import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
 
 import it.govpay.orm.dao.IServiceManager;
 
@@ -216,38 +194,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:TracciatoXML type:TracciatoXML
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoXML}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoXML}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ITracciatoXMLServiceSearch getTracciatoXMLServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCTracciatoXMLServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoXML}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoXML}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ITracciatoXMLService getTracciatoXMLService() throws ServiceException,NotImplementedException{
-		return new JDBCTracciatoXMLService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:Dominio type:Dominio
 	 =====================================================================================================================
 	*/
@@ -274,70 +220,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IDominioService getDominioService() throws ServiceException,NotImplementedException{
 		return new JDBCDominioService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:TabellaControparti type:TabellaControparti
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TabellaControparti}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TabellaControparti}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ITabellaContropartiServiceSearch getTabellaContropartiServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCTabellaContropartiServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TabellaControparti}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TabellaControparti}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ITabellaContropartiService getTabellaContropartiService() throws ServiceException,NotImplementedException{
-		return new JDBCTabellaContropartiService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:ContoAccredito type:ContoAccredito
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.ContoAccredito}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.ContoAccredito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IContoAccreditoServiceSearch getContoAccreditoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCContoAccreditoServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.ContoAccredito}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.ContoAccredito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IContoAccreditoService getContoAccreditoService() throws ServiceException,NotImplementedException{
-		return new JDBCContoAccreditoService(this);
 	}
 	
 	
@@ -408,96 +290,32 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Anagrafica type:Anagrafica
+	 Services relating to the object with name:Uo type:Uo
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Anagrafica}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Uo}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Anagrafica}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Uo}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IAnagraficaServiceSearch getAnagraficaServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCAnagraficaServiceSearch(this);
+	public IUoServiceSearch getUoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCUoServiceSearch(this);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Anagrafica}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Uo}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Anagrafica}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Uo}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IAnagraficaService getAnagraficaService() throws ServiceException,NotImplementedException{
-		return new JDBCAnagraficaService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:MailTemplate type:MailTemplate
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.MailTemplate}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.MailTemplate}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IMailTemplateServiceSearch getMailTemplateServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCMailTemplateServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.MailTemplate}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.MailTemplate}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IMailTemplateService getMailTemplateService() throws ServiceException,NotImplementedException{
-		return new JDBCMailTemplateService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Ente type:Ente
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Ente}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Ente}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEnteServiceSearch getEnteServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCEnteServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ente}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ente}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEnteService getEnteService() throws ServiceException,NotImplementedException{
-		return new JDBCEnteService(this);
+	public IUoService getUoService() throws ServiceException,NotImplementedException{
+		return new JDBCUoService(this);
 	}
 	
 	
@@ -824,6 +642,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:Evento type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IEventoServiceSearch getEventoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCEventoServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IEventoService getEventoService() throws ServiceException,NotImplementedException{
+		return new JDBCEventoService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:SingoloVersamento type:SingoloVersamento
 	 =====================================================================================================================
 	*/
@@ -888,230 +738,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Carrello type:Carrello
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Carrello}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Carrello}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ICarrelloServiceSearch getCarrelloServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCCarrelloServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Carrello}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Carrello}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ICarrelloService getCarrelloService() throws ServiceException,NotImplementedException{
-		return new JDBCCarrelloService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RT type:RT
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RT}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRTServiceSearch getRTServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRTServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RT}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRTService getRTService() throws ServiceException,NotImplementedException{
-		return new JDBCRTService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Esito type:Esito
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Esito}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Esito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEsitoServiceSearch getEsitoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCEsitoServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Esito}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Esito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEsitoService getEsitoService() throws ServiceException,NotImplementedException{
-		return new JDBCEsitoService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Evento type:Evento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEventoServiceSearch getEventoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCEventoServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IEventoService getEventoService() throws ServiceException,NotImplementedException{
-		return new JDBCEventoService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:SLA type:SLA
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.SLA}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.SLA}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ISLAServiceSearch getSLAServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCSLAServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.SLA}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.SLA}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public ISLAService getSLAService() throws ServiceException,NotImplementedException{
-		return new JDBCSLAService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Rilevamento type:Rilevamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Rilevamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Rilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRilevamentoServiceSearch getRilevamentoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRilevamentoServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rilevamento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRilevamentoService getRilevamentoService() throws ServiceException,NotImplementedException{
-		return new JDBCRilevamentoService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:MediaRilevamento type:MediaRilevamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IMediaRilevamentoServiceSearch getMediaRilevamentoServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCMediaRilevamentoServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IMediaRilevamentoService getMediaRilevamentoService() throws ServiceException,NotImplementedException{
-		return new JDBCMediaRilevamentoService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:RR type:RR
 	 =====================================================================================================================
 	*/
@@ -1144,64 +770,64 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:ER type:ER
+	 Services relating to the object with name:Pagamento type:Pagamento
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.ER}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Pagamento}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.ER}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Pagamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IERServiceSearch getERServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCERServiceSearch(this);
+	public IPagamentoServiceSearch getPagamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCPagamentoServiceSearch(this);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.ER}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Pagamento}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.ER}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Pagamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IERService getERService() throws ServiceException,NotImplementedException{
-		return new JDBCERService(this);
+	public IPagamentoService getPagamentoService() throws ServiceException,NotImplementedException{
+		return new JDBCPagamentoService(this);
 	}
 	
 	
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:SingolaRevoca type:SingolaRevoca
+	 Services relating to the object with name:Notifica type:Notifica
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Notifica}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Notifica}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public ISingolaRevocaServiceSearch getSingolaRevocaServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCSingolaRevocaServiceSearch(this);
+	public INotificaServiceSearch getNotificaServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCNotificaServiceSearch(this);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Notifica}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Notifica}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public ISingolaRevocaService getSingolaRevocaService() throws ServiceException,NotImplementedException{
-		return new JDBCSingolaRevocaService(this);
+	public INotificaService getNotificaService() throws ServiceException,NotImplementedException{
+		return new JDBCNotificaService(this);
 	}
 	
 	
@@ -1240,64 +866,64 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:SingolaRendicontazione type:SingolaRendicontazione
+	 Services relating to the object with name:FrApplicazione type:FrApplicazione
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public ISingolaRendicontazioneServiceSearch getSingolaRendicontazioneServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCSingolaRendicontazioneServiceSearch(this);
+	public IFrApplicazioneServiceSearch getFrApplicazioneServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCFrApplicazioneServiceSearch(this);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public ISingolaRendicontazioneService getSingolaRendicontazioneService() throws ServiceException,NotImplementedException{
-		return new JDBCSingolaRendicontazioneService(this);
+	public IFrApplicazioneService getFrApplicazioneService() throws ServiceException,NotImplementedException{
+		return new JDBCFrApplicazioneService(this);
 	}
 	
 	
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Mail type:Mail
+	 Services relating to the object with name:RendicontazioneSenzaRPT type:RendicontazioneSenzaRPT
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Mail}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Mail}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IMailServiceSearch getMailServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCMailServiceSearch(this);
+	public IRendicontazioneSenzaRPTServiceSearch getRendicontazioneSenzaRPTServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCRendicontazioneSenzaRPTServiceSearch(this);
 	}
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Mail}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Mail}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	@Override
-	public IMailService getMailService() throws ServiceException,NotImplementedException{
-		return new JDBCMailService(this);
+	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() throws ServiceException,NotImplementedException{
+		return new JDBCRendicontazioneSenzaRPTService(this);
 	}
 	
 	

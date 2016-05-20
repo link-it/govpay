@@ -1,14 +1,4 @@
-<!--
-@license
-Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
-<style is="custom-style">
+<link rel="import" href="../bower_components/polymer/polymer.html"><style is="custom-style">
 
   /*
    Polymer includes a shim for CSS Custom Properties that we can use for application theming.
@@ -22,18 +12,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* Application theme */
 
   :root {
-    --dark-primary-color: #303F9F;
-    --default-primary-color: rgb(63,81,181);
-    --light-primary-color: #C5CAE9;
-    --text-primary-color: #ffffff; /*text/icons*/
-    --accent-color: rgb(100,221,24);
-    --primary-background-color: rgb(238,238,238);
     --primary-text-color: #212121;
-    --secondary-text-color: #727272;
-    --disabled-text-color: #bdbdbd;
-    --divider-color: #B6B6B6;
-
-
+    --primary-background-color: #ffffff;
+    --secondary-text-color: #9e9e9e;
+    --disabled-text-color: #9b9b9b;
+    --divider-color: #dbdbdb;
+    --primary-color: #98dc2d;
+    --toolbar-color: #3f51b5;
+    --light-primary-color: #c5cae9;
+    --dark-primary-color: #303f9f;
+    --accent-color: #98dc2d;
+    --light-accent-color: #ff80ab;
+    --dark-accent-color: #f50057;
 
     /* Components */
 
@@ -45,146 +35,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     /* paper-menu */
     --paper-menu-background-color: #fff;
     --menu-link-color: #111111;
-
-    /** paper-toolbar */
-    --paper-toolbar-background: var(--default-primary-color);
-
-  --paper-toggle-button-checked-bar-color: var(--accent-color);
-  --paper-toggle-button-checked-button-color: var(--accent-color);
-  --paper-toggle-button-checked-ink-color: var(--accent-color);
-  }
-
-  /* General styles */
-
-  #drawerToolbar {
-    color: var(--secondary-text-color);
-    background-color: var(--drawer-menu-color);
-    border-bottom: var(--drawer-toolbar-border-color);
-  }
-
-  paper-scroll-header-panel {
-    height: 100%;
-  }
-
-  paper-material {
-    border-radius: 2px;
-    height: 100%;
-    padding: 16px 0 16px 0;
-    width: calc(98.66% - 16px);
-    margin: 16px auto;
-    background: white;
-  }
-
-  paper-menu iron-icon {
-    margin-right: 33px;
-    opacity: 0.54;
-  }
-
-  .paper-menu > .iron-selected {
-    color: var(--default-primary-color);
-  }
-
-  paper-menu a {
-    text-decoration: none;
-    color: var(--menu-link-color);
-    display: -ms-flexbox;
-    display: -webkit-flex;
-    display: flex;
-    -ms-flex-direction: row;
-    -webkit-flex-direction: row;
-    flex-direction: row;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
-    align-items: center;
-    font-family: 'Roboto', 'Noto', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 24px;
-    min-height: 48px;
-    padding: 0 16px;
-  }
-
-  paper-toolbar.tall .app-name {
-    font-size: 40px;
-    font-weight: 300;
-    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
-    -webkit-transform-origin: left center;
-    transform-origin: left center;
-  }
-
-  #mainToolbar .middle-container  {
-    height: 100%;
-    margin-left: 48px;
-  }
-
-  #mainToolbar:not(.tall) .middle {
-    font-size: 18px;
-    padding-bottom: 0;
-  }
-
-  #mainToolbar .bottom {
-    margin-left: 48px;
-    /* Required for main area's paper-scroll-header-panel custom condensing transformation */
-    -webkit-transform-origin: left center;
-    transform-origin: left center;
-  }
-
-  /* Height of the scroll area */
-  .content {
-    height: 900px;
-  }
-
-  /* Breakpoints */
-
-  /* Small */
-  @media (max-width: 600px) {
-
-    paper-material {
-      --menu-container-display: none;
-      width: calc(97.33% - 32px);
-      padding-left: 16px;
-      padding-right: 16px;
-    }
-
-    paper-toolbar.tall .app-name {
-      font-size: 24px;
-      font-weight: 400;
-    }
-
-    #drawer .paper-toolbar {
-      margin-left: 16px;
-    }
-
-    #overlay {
-      min-width: 360px;
-    }
-
-    .bg {
-      background: white;
-    }
-
-  }
-
-  /* Tablet+ */
-  @media (min-width: 601px) {
-
-    paper-material {
-      width: calc(98% - 46px);
-      margin-bottom: 32px;
-      padding-left: 30px;
-      padding-right: 30px;
-    }
-
-    #drawer.paper-drawer-panel > [drawer] {
-      border-right: 1px solid rgba(0, 0, 0, 0.14);
-    }
-
-    iron-pages {
-      padding: 0 24px;
-    }
-
   }
 
   /* Material Design Adaptive Breakpoints */

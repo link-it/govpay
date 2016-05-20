@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,8 @@ package it.govpay.orm.dao.jdbc;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.Operatore;
 import it.govpay.orm.OperatoreApplicazione;
-import it.govpay.orm.OperatoreEnte;
+import it.govpay.orm.OperatorePortale;
+import it.govpay.orm.OperatoreUo;
 import it.govpay.orm.dao.jdbc.converter.OperatoreFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.OperatoreFetch;
 
@@ -46,7 +47,6 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -129,23 +129,21 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	@Override
 	public List<IdOperatore> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
+		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
 		List<IdOperatore> list = new ArrayList<IdOperatore>();
 
 		try{
 			List<IField> fields = new ArrayList<IField>();
-
 			fields.add(Operatore.model().PRINCIPAL);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			for(Map<String, Object> map: returnMap) {
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Operatore)this.getOperatoreFetch().fetch(jdbcProperties.getDatabase(), Operatore.model(), map)));
-			}
+	        }
 		} catch(NotFoundException e) {}
 
         return list;
@@ -155,36 +153,162 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	@Override
 	public List<Operatore> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
+		// default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
+		List<Operatore> list = new ArrayList<Operatore>();
 
-        List<Operatore> list = new ArrayList<Operatore>();
-		try {
+		try{
 			List<IField> fields = new ArrayList<IField>();
-
 			fields.add(new CustomField("id", Long.class, "id", this.getOperatoreFieldConverter().toTable(Operatore.model())));
+
 			fields.add(Operatore.model().PRINCIPAL);
+			fields.add(Operatore.model().NOME);
 			fields.add(Operatore.model().PROFILO);
 			fields.add(Operatore.model().ABILITATO);
-			fields.add(Operatore.model().NOME);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		
 
 			for(Map<String, Object> map: returnMap) {
+				
 				Operatore operatore = (Operatore)this.getOperatoreFetch().fetch(jdbcProperties.getDatabase(), Operatore.model(), map);
-				operatore.setOperatoreEnteList(this.getOperatoreEnteByOperatore(jdbcUtilities, jdbcProperties, log, connection, sqlQueryObject, operatore.getId(), idMappingResolutionBehaviour));
-				operatore.setOperatoreApplicazioneList(this.getOperatoreApplicazioneByOperatore(jdbcUtilities, jdbcProperties, log, connection, sqlQueryObject, operatore.getId(), idMappingResolutionBehaviour));
+				
+				// Object operatore_operatoreUo
+				ISQLQueryObject sqlQueryObjectGet_operatore_operatoreUo = sqlQueryObject.newSQLQueryObject();
+				sqlQueryObjectGet_operatore_operatoreUo.setANDLogicOperator(true);
+				sqlQueryObjectGet_operatore_operatoreUo.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+				sqlQueryObjectGet_operatore_operatoreUo.addSelectField("id");
+				sqlQueryObjectGet_operatore_operatoreUo.addWhereCondition("id_operatore=?");
+
+				// Get operatore_operatoreUo
+				java.util.List<Object> operatore_operatoreUo_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatoreUo.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_UO, this.getOperatoreFetch(),
+					new JDBCObject(operatore.getId(),Long.class));
+
+				if(operatore_operatoreUo_list != null) {
+					for (Object operatore_operatoreUo_object: operatore_operatoreUo_list) {
+						OperatoreUo operatore_operatoreUo = (OperatoreUo) operatore_operatoreUo_object;
+
+
+						if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							// Object _operatore_operatoreUo_uo (recupero id)
+							ISQLQueryObject sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId = sqlQueryObject.newSQLQueryObject();
+							sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.addFromTable(this.getOperatoreFieldConverter().toTable(it.govpay.orm.Operatore.model().OPERATORE_UO));
+							sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.addSelectField("id_uo");
+							sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.addWhereCondition("id=?");
+							sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.setANDLogicOperator(true);
+							Long idFK_operatore_operatoreUo_uo = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+									new JDBCObject(operatore_operatoreUo.getId(),Long.class));
+							
+							it.govpay.orm.IdUo id_operatore_operatoreUo_uo = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_operatore_operatoreUo_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idFK_operatore_operatoreUo_uo, false);
+							}else{
+								id_operatore_operatoreUo_uo = new it.govpay.orm.IdUo();
+							}
+							id_operatore_operatoreUo_uo.setId(idFK_operatore_operatoreUo_uo);
+							operatore_operatoreUo.setIdUo(id_operatore_operatoreUo_uo);
+						}
+
+						operatore.addOperatoreUo(operatore_operatoreUo);
+					}
+				}
+
+				// Object operatore_operatoreApplicazione
+				ISQLQueryObject sqlQueryObjectGet_operatore_operatoreApplicazione = sqlQueryObject.newSQLQueryObject();
+				sqlQueryObjectGet_operatore_operatoreApplicazione.setANDLogicOperator(true);
+				sqlQueryObjectGet_operatore_operatoreApplicazione.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_APPLICAZIONE));
+				sqlQueryObjectGet_operatore_operatoreApplicazione.addSelectField("id");
+				sqlQueryObjectGet_operatore_operatoreApplicazione.addWhereCondition("id_operatore=?");
+
+				// Get operatore_operatoreApplicazione
+				java.util.List<Object> operatore_operatoreApplicazione_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatoreApplicazione.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_APPLICAZIONE, this.getOperatoreFetch(),
+					new JDBCObject(operatore.getId(),Long.class));
+
+				if(operatore_operatoreApplicazione_list != null) {
+					for (Object operatore_operatoreApplicazione_object: operatore_operatoreApplicazione_list) {
+						OperatoreApplicazione operatore_operatoreApplicazione = (OperatoreApplicazione) operatore_operatoreApplicazione_object;
+
+
+						if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							// Object _operatore_operatoreApplicazione_applicazione (recupero id)
+							ISQLQueryObject sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId = sqlQueryObject.newSQLQueryObject();
+							sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.addFromTable(this.getOperatoreFieldConverter().toTable(it.govpay.orm.Operatore.model().OPERATORE_APPLICAZIONE));
+							sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.addSelectField("id_applicazione");
+							sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.addWhereCondition("id=?");
+							sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.setANDLogicOperator(true);
+							Long idFK_operatore_operatoreApplicazione_applicazione = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+									new JDBCObject(operatore_operatoreApplicazione.getId(),Long.class));
+							
+							it.govpay.orm.IdApplicazione id_operatore_operatoreApplicazione_applicazione = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_operatore_operatoreApplicazione_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_operatore_operatoreApplicazione_applicazione, false);
+							}else{
+								id_operatore_operatoreApplicazione_applicazione = new it.govpay.orm.IdApplicazione();
+							}
+							id_operatore_operatoreApplicazione_applicazione.setId(idFK_operatore_operatoreApplicazione_applicazione);
+							operatore_operatoreApplicazione.setIdApplicazione(id_operatore_operatoreApplicazione_applicazione);
+						}
+
+						operatore.addOperatoreApplicazione(operatore_operatoreApplicazione);
+					}
+				}
+
+				// Object operatore_operatorePortale
+				ISQLQueryObject sqlQueryObjectGet_operatore_operatorePortale = sqlQueryObject.newSQLQueryObject();
+				sqlQueryObjectGet_operatore_operatorePortale.setANDLogicOperator(true);
+				sqlQueryObjectGet_operatore_operatorePortale.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+				sqlQueryObjectGet_operatore_operatorePortale.addSelectField("id");
+				sqlQueryObjectGet_operatore_operatorePortale.addWhereCondition("id_operatore=?");
+
+				// Get operatore_operatorePortale
+				java.util.List<Object> operatore_operatorePortale_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatorePortale.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_PORTALE, this.getOperatoreFetch(),
+					new JDBCObject(operatore.getId(),Long.class));
+
+				if(operatore_operatorePortale_list != null) {
+					for (Object operatore_operatorePortale_object: operatore_operatorePortale_list) {
+						OperatorePortale operatore_operatorePortale = (OperatorePortale) operatore_operatorePortale_object;
+
+
+						if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							// Object _operatore_operatorePortale_portale (recupero id)
+							ISQLQueryObject sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId = sqlQueryObject.newSQLQueryObject();
+							sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.addFromTable(this.getOperatoreFieldConverter().toTable(it.govpay.orm.Operatore.model().OPERATORE_PORTALE));
+							sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.addSelectField("id_portale");
+							sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.addWhereCondition("id=?");
+							sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.setANDLogicOperator(true);
+							Long idFK_operatore_operatorePortale_portale = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+									new JDBCObject(operatore_operatorePortale.getId(),Long.class));
+							
+							it.govpay.orm.IdPortale id_operatore_operatorePortale_portale = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_operatore_operatorePortale_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findId(idFK_operatore_operatorePortale_portale, false);
+							}else{
+								id_operatore_operatorePortale_portale = new it.govpay.orm.IdPortale();
+							}
+							id_operatore_operatorePortale_portale.setId(idFK_operatore_operatorePortale_portale);
+							operatore_operatorePortale.setIdPortale(id_operatore_operatorePortale_portale);
+						}
+
+						operatore.addOperatorePortale(operatore_operatorePortale);
+					}
+				}
 
 				list.add(operatore);
-			}
+	        }
 		} catch(NotFoundException e) {}
 
-        return list;      
+        return list;     
 		
 	}
 	
@@ -463,15 +587,15 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getOperatoreEnteList()!=null){
-			List<it.govpay.orm.OperatoreEnte> listObj_ = obj.getOperatoreEnteList();
-			for(it.govpay.orm.OperatoreEnte itemObj_ : listObj_){
-				it.govpay.orm.OperatoreEnte itemAlreadySaved_ = null;
-				if(imgSaved.getOperatoreEnteList()!=null){
-					List<it.govpay.orm.OperatoreEnte> listImgSaved_ = imgSaved.getOperatoreEnteList();
-					for(it.govpay.orm.OperatoreEnte itemImgSaved_ : listImgSaved_){
+		if(obj.getOperatoreUoList()!=null){
+			List<it.govpay.orm.OperatoreUo> listObj_ = obj.getOperatoreUoList();
+			for(it.govpay.orm.OperatoreUo itemObj_ : listObj_){
+				it.govpay.orm.OperatoreUo itemAlreadySaved_ = null;
+				if(imgSaved.getOperatoreUoList()!=null){
+					List<it.govpay.orm.OperatoreUo> listImgSaved_ = imgSaved.getOperatoreUoList();
+					for(it.govpay.orm.OperatoreUo itemImgSaved_ : listImgSaved_){
 						boolean objEqualsToImgSaved_ = false;
-						objEqualsToImgSaved_ = org.openspcoop2.generic_project.utils.Utilities.equals(itemObj_.getIdEnte(),itemImgSaved_.getIdEnte());
+						objEqualsToImgSaved_ = org.openspcoop2.generic_project.utils.Utilities.equals(itemObj_.getIdUo(),itemImgSaved_.getIdUo());
 						if(objEqualsToImgSaved_){
 							itemAlreadySaved_=itemImgSaved_;
 							break;
@@ -480,9 +604,13 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 				}
 				if(itemAlreadySaved_!=null){
 					itemObj_.setId(itemAlreadySaved_.getId());
-					if(itemObj_.getIdEnte()!=null && 
-							itemAlreadySaved_.getIdEnte()!=null){
-						itemObj_.getIdEnte().setId(itemAlreadySaved_.getIdEnte().getId());
+					if(itemObj_.getIdUo()!=null && 
+							itemAlreadySaved_.getIdUo()!=null){
+						itemObj_.getIdUo().setId(itemAlreadySaved_.getIdUo().getId());
+						if(itemObj_.getIdUo().getIdDominio()!=null && 
+								itemAlreadySaved_.getIdUo().getIdDominio()!=null){
+							itemObj_.getIdUo().getIdDominio().setId(itemAlreadySaved_.getIdUo().getIdDominio().getId());
+						}
 					}
 				}
 			}
@@ -511,6 +639,30 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 				}
 			}
 		}
+		if(obj.getOperatorePortaleList()!=null){
+			List<it.govpay.orm.OperatorePortale> listObj_ = obj.getOperatorePortaleList();
+			for(it.govpay.orm.OperatorePortale itemObj_ : listObj_){
+				it.govpay.orm.OperatorePortale itemAlreadySaved_ = null;
+				if(imgSaved.getOperatorePortaleList()!=null){
+					List<it.govpay.orm.OperatorePortale> listImgSaved_ = imgSaved.getOperatorePortaleList();
+					for(it.govpay.orm.OperatorePortale itemImgSaved_ : listImgSaved_){
+						boolean objEqualsToImgSaved_ = false;
+						objEqualsToImgSaved_ = org.openspcoop2.generic_project.utils.Utilities.equals(itemObj_.getIdPortale(),itemImgSaved_.getIdPortale());
+						if(objEqualsToImgSaved_){
+							itemAlreadySaved_=itemImgSaved_;
+							break;
+						}
+					}
+				}
+				if(itemAlreadySaved_!=null){
+					itemObj_.setId(itemAlreadySaved_.getId());
+					if(itemObj_.getIdPortale()!=null && 
+							itemAlreadySaved_.getIdPortale()!=null){
+						itemObj_.getIdPortale().setId(itemAlreadySaved_.getIdPortale().getId());
+					}
+				}
+			}
+		}
 
 	}
 	
@@ -521,92 +673,106 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	
 	private Operatore _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		IField idField = new CustomField("id", Long.class, "id", this.getOperatoreFieldConverter().toTable(Operatore.model()));
-		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
-		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
-		List<Operatore> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
 		
-		if(lst.size() <=0)
-			throw new NotFoundException("Id ["+tableId+"]");
+		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+				
+		Operatore operatore = new Operatore();
 		
-		if(lst.size() > 1)
-			throw new MultipleResultException("Id ["+tableId+"]");
 
-		return lst.get(0);
+		// Object operatore
+		ISQLQueryObject sqlQueryObjectGet_operatore = sqlQueryObjectGet.newSQLQueryObject();
+		sqlQueryObjectGet_operatore.setANDLogicOperator(true);
+		sqlQueryObjectGet_operatore.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
+		sqlQueryObjectGet_operatore.addSelectField("id");
+		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,true));
+		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().NOME,true));
+		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PROFILO,true));
+		sqlQueryObjectGet_operatore.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().ABILITATO,true));
+		sqlQueryObjectGet_operatore.addWhereCondition("id=?");
 
-	
-	} 
-	
-	private List<OperatoreEnte> getOperatoreEnteByOperatore(JDBCPreparedStatementUtilities jdbcUtilities, JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-
-		// Object operatore_operatoreEnte
-		ISQLQueryObject sqlQueryObjectGet_operatore_operatoreEnte = sqlQueryObject.newSQLQueryObject();
-		sqlQueryObjectGet_operatore_operatoreEnte.setANDLogicOperator(true);
-		sqlQueryObjectGet_operatore_operatoreEnte.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_ENTE));
-		sqlQueryObjectGet_operatore_operatoreEnte.addSelectField("id_ente");
-		sqlQueryObjectGet_operatore_operatoreEnte.addWhereCondition("id_operatore=?");
-
-		// Get operatore_operatoreEnte
-		java.util.List<Object> operatore_operatoreEnte_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatoreEnte.createSQLQuery(), jdbcProperties.isShowSql(), Long.class,
+		// Get operatore
+		operatore = (Operatore) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model(), this.getOperatoreFetch(),
 			new JDBCObject(tableId,Long.class));
 
-		List<OperatoreEnte> operatoreLst = new ArrayList<OperatoreEnte>();
-		if(operatore_operatoreEnte_list != null) {
-			for (Object operatore_operatoreEnte_object: operatore_operatoreEnte_list) {
-				Long idFK_operatore_operatoreEnte_ente = (Long) operatore_operatoreEnte_object;
 
 
-				OperatoreEnte operatore_operatoreEnte = new OperatoreEnte();
+		// Object operatore_operatoreUo
+		ISQLQueryObject sqlQueryObjectGet_operatore_operatoreUo = sqlQueryObjectGet.newSQLQueryObject();
+		sqlQueryObjectGet_operatore_operatoreUo.setANDLogicOperator(true);
+		sqlQueryObjectGet_operatore_operatoreUo.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+		sqlQueryObjectGet_operatore_operatoreUo.addSelectField("id");
+		sqlQueryObjectGet_operatore_operatoreUo.addWhereCondition("id_operatore=?");
+
+		// Get operatore_operatoreUo
+		java.util.List<Object> operatore_operatoreUo_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatoreUo.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_UO, this.getOperatoreFetch(),
+			new JDBCObject(operatore.getId(),Long.class));
+
+		if(operatore_operatoreUo_list != null) {
+			for (Object operatore_operatoreUo_object: operatore_operatoreUo_list) {
+				OperatoreUo operatore_operatoreUo = (OperatoreUo) operatore_operatoreUo_object;
+
+
 				if(idMappingResolutionBehaviour==null ||
 					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 				){
-
-					it.govpay.orm.IdEnte id_operatore_operatoreEnte_ente = null;
+					// Object _operatore_operatoreUo_uo (recupero id)
+					ISQLQueryObject sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId = sqlQueryObjectGet.newSQLQueryObject();
+					sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.addFromTable(this.getOperatoreFieldConverter().toTable(it.govpay.orm.Operatore.model().OPERATORE_UO));
+					sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.addSelectField("id_uo");
+					sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.addWhereCondition("id=?");
+					sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.setANDLogicOperator(true);
+					Long idFK_operatore_operatoreUo_uo = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore_operatoreUo_uo_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+							new JDBCObject(operatore_operatoreUo.getId(),Long.class));
+					
+					it.govpay.orm.IdUo id_operatore_operatoreUo_uo = null;
 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-						id_operatore_operatoreEnte_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findId(idFK_operatore_operatoreEnte_ente, false);
+						id_operatore_operatoreUo_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findId(idFK_operatore_operatoreUo_uo, false);
 					}else{
-						id_operatore_operatoreEnte_ente = new it.govpay.orm.IdEnte();
+						id_operatore_operatoreUo_uo = new it.govpay.orm.IdUo();
 					}
-					id_operatore_operatoreEnte_ente.setId(idFK_operatore_operatoreEnte_ente);
-					operatore_operatoreEnte.setIdEnte(id_operatore_operatoreEnte_ente);
+					id_operatore_operatoreUo_uo.setId(idFK_operatore_operatoreUo_uo);
+					operatore_operatoreUo.setIdUo(id_operatore_operatoreUo_uo);
 				}
 
-				operatoreLst.add(operatore_operatoreEnte);
+				operatore.addOperatoreUo(operatore_operatoreUo);
 			}
 		}
-		return operatoreLst;
 
-	}
-	
-	
-	private List<OperatoreApplicazione> getOperatoreApplicazioneByOperatore(JDBCPreparedStatementUtilities jdbcUtilities, JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-
-		// Object operatore_operatoreEnte
-		ISQLQueryObject sqlQueryObjectGet_operatore_operatoreApplicazione = sqlQueryObject.newSQLQueryObject();
+		// Object operatore_operatoreApplicazione
+		ISQLQueryObject sqlQueryObjectGet_operatore_operatoreApplicazione = sqlQueryObjectGet.newSQLQueryObject();
 		sqlQueryObjectGet_operatore_operatoreApplicazione.setANDLogicOperator(true);
 		sqlQueryObjectGet_operatore_operatoreApplicazione.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_APPLICAZIONE));
-		sqlQueryObjectGet_operatore_operatoreApplicazione.addSelectField("id_applicazione");
+		sqlQueryObjectGet_operatore_operatoreApplicazione.addSelectField("id");
 		sqlQueryObjectGet_operatore_operatoreApplicazione.addWhereCondition("id_operatore=?");
 
-		// Get operatore_operatoreEnte
-		java.util.List<Object> operatore_operatoreApplicazione_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatoreApplicazione.createSQLQuery(), jdbcProperties.isShowSql(), Long.class,
-			new JDBCObject(tableId,Long.class));
+		// Get operatore_operatoreApplicazione
+		java.util.List<Object> operatore_operatoreApplicazione_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatoreApplicazione.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_APPLICAZIONE, this.getOperatoreFetch(),
+			new JDBCObject(operatore.getId(),Long.class));
 
-		List<OperatoreApplicazione> operatoreLst = new ArrayList<OperatoreApplicazione>();
 		if(operatore_operatoreApplicazione_list != null) {
 			for (Object operatore_operatoreApplicazione_object: operatore_operatoreApplicazione_list) {
-				Long idFK_operatore_operatoreApplicazione_applicazione = (Long) operatore_operatoreApplicazione_object;
+				OperatoreApplicazione operatore_operatoreApplicazione = (OperatoreApplicazione) operatore_operatoreApplicazione_object;
 
 
-				OperatoreApplicazione operatore_operatoreApplicazione = new OperatoreApplicazione();
 				if(idMappingResolutionBehaviour==null ||
 					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 				){
-
+					// Object _operatore_operatoreApplicazione_applicazione (recupero id)
+					ISQLQueryObject sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId = sqlQueryObjectGet.newSQLQueryObject();
+					sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.addFromTable(this.getOperatoreFieldConverter().toTable(it.govpay.orm.Operatore.model().OPERATORE_APPLICAZIONE));
+					sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.addSelectField("id_applicazione");
+					sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.addWhereCondition("id=?");
+					sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.setANDLogicOperator(true);
+					Long idFK_operatore_operatoreApplicazione_applicazione = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore_operatoreApplicazione_applicazione_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+							new JDBCObject(operatore_operatoreApplicazione.getId(),Long.class));
+					
 					it.govpay.orm.IdApplicazione id_operatore_operatoreApplicazione_applicazione = null;
 					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
 						id_operatore_operatoreApplicazione_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_operatore_operatoreApplicazione_applicazione, false);
@@ -617,12 +783,55 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 					operatore_operatoreApplicazione.setIdApplicazione(id_operatore_operatoreApplicazione_applicazione);
 				}
 
-				operatoreLst.add(operatore_operatoreApplicazione);
+				operatore.addOperatoreApplicazione(operatore_operatoreApplicazione);
 			}
 		}
-		return operatoreLst;
 
-	}
+		// Object operatore_operatorePortale
+		ISQLQueryObject sqlQueryObjectGet_operatore_operatorePortale = sqlQueryObjectGet.newSQLQueryObject();
+		sqlQueryObjectGet_operatore_operatorePortale.setANDLogicOperator(true);
+		sqlQueryObjectGet_operatore_operatorePortale.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+		sqlQueryObjectGet_operatore_operatorePortale.addSelectField("id");
+		sqlQueryObjectGet_operatore_operatorePortale.addWhereCondition("id_operatore=?");
+
+		// Get operatore_operatorePortale
+		java.util.List<Object> operatore_operatorePortale_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_operatore_operatorePortale.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_PORTALE, this.getOperatoreFetch(),
+			new JDBCObject(operatore.getId(),Long.class));
+
+		if(operatore_operatorePortale_list != null) {
+			for (Object operatore_operatorePortale_object: operatore_operatorePortale_list) {
+				OperatorePortale operatore_operatorePortale = (OperatorePortale) operatore_operatorePortale_object;
+
+
+				if(idMappingResolutionBehaviour==null ||
+					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+				){
+					// Object _operatore_operatorePortale_portale (recupero id)
+					ISQLQueryObject sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId = sqlQueryObjectGet.newSQLQueryObject();
+					sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.addFromTable(this.getOperatoreFieldConverter().toTable(it.govpay.orm.Operatore.model().OPERATORE_PORTALE));
+					sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.addSelectField("id_portale");
+					sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.addWhereCondition("id=?");
+					sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.setANDLogicOperator(true);
+					Long idFK_operatore_operatorePortale_portale = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_operatore_operatorePortale_portale_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+							new JDBCObject(operatore_operatorePortale.getId(),Long.class));
+					
+					it.govpay.orm.IdPortale id_operatore_operatorePortale_portale = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_operatore_operatorePortale_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findId(idFK_operatore_operatorePortale_portale, false);
+					}else{
+						id_operatore_operatorePortale_portale = new it.govpay.orm.IdPortale();
+					}
+					id_operatore_operatorePortale_portale.setId(idFK_operatore_operatorePortale_portale);
+					operatore_operatorePortale.setIdPortale(id_operatore_operatorePortale_portale);
+				}
+
+				operatore.addOperatorePortale(operatore_operatorePortale);
+			}
+		}
+
+        return operatore;  
+	
+	} 
 	
 	@Override
 	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId) throws MultipleResultException, NotImplementedException, ServiceException, Exception {
@@ -654,26 +863,55 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-
-		if(expression.inUseModel(Operatore.model().OPERATORE_ENTE,false)){
+	
+		if(expression.inUseModel(Operatore.model().OPERATORE_UO,false)){
 			String tableName1 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model());
-			String tableName2 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_ENTE);
+			String tableName2 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_UO);
 			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_operatore");
-		}
+			
+	        if(expression.inUseModel(Operatore.model().OPERATORE_UO.ID_UO,false)){
+				if(expression.inUseModel(Operatore.model().OPERATORE_UO,false)==false){
+					sqlQueryObject.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+				}
+				String tableName3 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_UO.ID_UO);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_uo");
 
-		if(expression.inUseModel(Operatore.model().OPERATORE_ENTE.ID_ENTE,false)){
-
-			if(!expression.inUseModel(Operatore.model().OPERATORE_ENTE,false)){
-				String tableName1 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model());
-				String tableName2 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_ENTE);
-				sqlQueryObject.addFromTable(tableName2);
-				sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_operatore");
 			}
 
-			String tableName1 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_ENTE);
-			String tableName2 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_ENTE.ID_ENTE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_ente="+tableName2+".id");
 		}
+		
+		if(expression.inUseModel(Operatore.model().OPERATORE_PORTALE,false)){
+			String tableName1 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model());
+			String tableName2 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_PORTALE);
+			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_operatore");
+			
+	        if(expression.inUseModel(Operatore.model().OPERATORE_PORTALE.ID_PORTALE,false)){
+				if(expression.inUseModel(Operatore.model().OPERATORE_PORTALE,false)==false){
+					sqlQueryObject.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+				}
+				String tableName3 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_PORTALE.ID_PORTALE);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_portale");
+
+			}
+
+		}
+		
+		if(expression.inUseModel(Operatore.model().OPERATORE_APPLICAZIONE,false)){
+			String tableName1 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model());
+			String tableName2 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_operatore");
+			
+	        if(expression.inUseModel(Operatore.model().OPERATORE_APPLICAZIONE.ID_APPLICAZIONE,false)){
+				if(expression.inUseModel(Operatore.model().OPERATORE_APPLICAZIONE,false)==false){
+					sqlQueryObject.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_APPLICAZIONE));
+				}
+				String tableName3 = this.getOperatoreFieldConverter().toAliasTable(Operatore.model().OPERATORE_APPLICAZIONE.ID_APPLICAZIONE);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_applicazione");
+
+			}
+
+		}
+        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdOperatore id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -699,17 +937,22 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model()))
 			));
 
-
-		// Operatore.model().OPERATORE_ENTE
-		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_ENTE),
+		// Operatore.model().OPERATORE_UO
+		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_UO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_ENTE))
+				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_UO))
 			));
 
-		// Operatore.model().OPERATORE_ENTE.ID_ENTE
-		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_ENTE.ID_ENTE),
+		// Operatore.model().OPERATORE_UO.ID_UO
+		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_UO.ID_UO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_ENTE.ID_ENTE))
+				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_UO.ID_UO))
+			));
+
+		// Operatore.model().OPERATORE_UO.ID_UO.ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_UO.ID_UO.ID_DOMINIO),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_UO.ID_UO.ID_DOMINIO))
 			));
 
 		// Operatore.model().OPERATORE_APPLICAZIONE
@@ -724,13 +967,18 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_APPLICAZIONE.ID_APPLICAZIONE))
 			));
 
+		// Operatore.model().OPERATORE_PORTALE
+		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_PORTALE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_PORTALE))
+			));
 
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
+		// Operatore.model().OPERATORE_PORTALE.ID_PORTALE
+		mapTableToPKColumn.put(converter.toTable(Operatore.model().OPERATORE_PORTALE.ID_PORTALE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Operatore.model().OPERATORE_PORTALE.ID_PORTALE))
+			));
+
         return mapTableToPKColumn;		
 	}
 	
@@ -793,10 +1041,6 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -820,6 +1064,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 		// Object _operatore
 		sqlQueryObjectGet.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model()));
 		sqlQueryObjectGet.addSelectField(this.getOperatoreFieldConverter().toColumn(Operatore.model().PRINCIPAL,true));
+
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -880,7 +1125,7 @@ public class JDBCOperatoreServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 		// Recupero _operatore
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_operatore = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getPrincipal(),Operatore.model().PRINCIPAL.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getPrincipal(),Operatore.model().PRINCIPAL.getFieldType()),
 		};
 		Long id_operatore = null;
 		try{

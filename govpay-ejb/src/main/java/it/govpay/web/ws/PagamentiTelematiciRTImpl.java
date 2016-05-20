@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
  */
 package it.govpay.web.ws;
 
+import java.util.Date;
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.ws.nodo.EsitoPaaInviaRT;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRT;
 import it.gov.digitpa.schemas._2011.ws.nodo.PaaInviaRTRisposta;
@@ -30,34 +30,38 @@ import it.gov.digitpa.schemas._2011.ws.nodo.FaultBean;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Rpt.FirmaRichiesta;
-import it.govpay.bd.model.Rt.FaultPa;
-import it.govpay.business.Pagamenti;
-import it.govpay.exception.GovPayException;
-import it.govpay.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.exception.GovPayNdpException;
-import it.govpay.utils.JaxbUtils;
-import it.govpay.utils.NdpUtils;
-import it.govpay.utils.ValidatoreRT;
-
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Evento.TipoEvento;
+import it.govpay.bd.model.Stazione;
+import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.exceptions.NdpException;
+import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.RrUtils;
+import it.govpay.core.utils.RtUtils;
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
 
+import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 @WebService(serviceName = "PagamentiTelematiciRTservice",
 endpointInterface = "it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT",
 targetNamespace = "http://NodoPagamentiSPC.spcoop.gov.it/servizi/PagamentiTelematiciRT",
-portName = "PPTPort")
+portName = "PPTPort",
+wsdlLocation = "classpath:wsdl/PaPerNodo.wsdl")
 
-@HandlerChain(file="../../../../handler-chains/ws-ndp-handler-chain.xml")
+@org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
+
+@HandlerChain(file="../../../../handler-chains/handler-chain.xml")
+
 public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
 	@Resource
@@ -72,113 +76,185 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			String identificativoDominio,
 			String identificativoUnivocoVersamento,
 			String codiceContestoPagamento, byte[] er) {
-		return null;
+		log.info("Ricevuta richiesta di acquisizione ER [" + identificativoDominio + "][" + identificativoUnivocoVersamento + "][" + codiceContestoPagamento + "]");
+		
+		TipoInviaEsitoStornoRisposta response = new TipoInviaEsitoStornoRisposta();
+		
+		BasicBD bd = null;
+		
+		Evento evento = new Evento();
+		evento.setCodStazione(identificativoStazioneIntermediarioPA);
+		evento.setCodDominio(identificativoDominio);
+		evento.setIuv(identificativoUnivocoVersamento);
+		evento.setCcp(codiceContestoPagamento);
+		evento.setTipoEvento(TipoEvento.paaInviaEsitoStorno);
+		evento.setFruitore("NodoDeiPagamentiSPC");
+		
+		try {
+			bd = BasicBD.newInstance();
+			
+			Dominio dominio = null;
+			try {
+				dominio = AnagraficaManager.getDominio(bd, identificativoDominio);
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, identificativoDominio);
+			}
+			
+			Intermediario intermediario = null;
+			try {
+				intermediario = AnagraficaManager.getIntermediario(bd, identificativoIntermediarioPA);
+				evento.setErogatore(intermediario.getDenominazione());
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, identificativoDominio);
+			}
+			
+			Stazione stazione = null;
+			try {
+				stazione = AnagraficaManager.getStazione(bd, identificativoStazioneIntermediarioPA);
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, identificativoDominio);
+			}
+			
+			if(stazione.getIdIntermediario() != intermediario.getId()) {
+				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, identificativoDominio);
+			}
+			
+			if(dominio.getIdStazione() != stazione.getId()) {
+				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, identificativoDominio);
+			}
+			
+			Rr rr = RrUtils.acquisisciEr(identificativoDominio, identificativoUnivocoVersamento, codiceContestoPagamento, er, bd);
+			evento.setCodCanale(rr.getRpt(bd).getCanale(bd).getCodCanale());
+			evento.setTipoVersamento(rr.getRpt(bd).getCanale(bd).getTipoVersamento());
+			response.setEsito("OK");
+		} catch (NdpException e) {
+			if(bd != null) bd.rollback();
+			response = buildRisposta(e, response);
+		} catch (Exception e) {
+			if(bd != null) bd.rollback();
+			response = buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, identificativoDominio, e.getMessage(), e), response);
+		} finally {
+			GiornaleEventi ge = new GiornaleEventi(bd);
+			evento.setEsito(response.getEsito());
+			evento.setDataRisposta(new Date());
+			ge.registraEvento(evento);
+			
+			if(bd != null) bd.closeConnection();
+		}
+		return response;
 	}
-
+	
 	@Override
 	public PaaInviaRTRisposta paaInviaRT(PaaInviaRT bodyrichiesta, IntestazionePPT header) {
 		String ccp = header.getCodiceContestoPagamento();
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		
+		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "][" + ccp + "]");
+		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
+		
 		BasicBD bd = null;
+		
+		Evento evento = new Evento();
+		evento.setCodStazione(header.getIdentificativoStazioneIntermediarioPA());
+		evento.setCodDominio(codDominio);
+		evento.setIuv(iuv);
+		evento.setCcp(ccp);
+		evento.setTipoEvento(TipoEvento.paaInviaRT);
+		evento.setFruitore("NodoDeiPagamentiSPC");
+		
 		try {
+			bd = BasicBD.newInstance();
+			
+			Dominio dominio = null;
 			try {
-				bd = BasicBD.newInstance();
-				Intermediario intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
-				NdpUtils.setThreadContextNdpParams(codDominio, iuv, ccp, null, null, header.getIdentificativoStazioneIntermediarioPA(), null, null, "paaInviaRT", intermediario.getDenominazione());
-			} catch (ServiceException e) {
-				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_INTERNO, FaultPa.PAA_ERRORE_INTERNO, "Impossibile stabilire una connessione con db", e);
+				dominio = AnagraficaManager.getDominio(bd, codDominio);
 			} catch (NotFoundException e) {
-				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_INTERNO, FaultPa.PAA_ERRORE_INTERNO, "Impossibile trovare l'intermediario ["+header.getIdentificativoIntermediarioPA()+"] sul db", e);
-			} catch (MultipleResultException e) {
-				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_INTERNO, FaultPa.PAA_ERRORE_INTERNO, "Impossibile trovare l'intermediario ["+header.getIdentificativoIntermediarioPA()+"] sul db", e);
+				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
-		} catch (GovPayNdpException gpndp) {
-			PaaInviaRTRisposta risposta = new PaaInviaRTRisposta();
+			
+			Intermediario intermediario = null;
+			try {
+				intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
+				evento.setErogatore(intermediario.getDenominazione());
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
+			}
+			
+			Stazione stazione = null;
+			try {
+				stazione = AnagraficaManager.getStazione(bd, header.getIdentificativoStazioneIntermediarioPA());
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
+			}
+			
+			if(stazione.getIdIntermediario() != intermediario.getId()) {
+				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
+			}
+			
+			if(dominio.getIdStazione() != stazione.getId()) {
+				throw new NdpException(FaultPa.PAA_STAZIONE_INT_ERRATA, codDominio);
+			}
+			
+			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getTipoFirma(), bodyrichiesta.getRt(), bd);
+			evento.setCodCanale(rpt.getCanale(bd).getCodCanale());
+			evento.setTipoVersamento(rpt.getCanale(bd).getTipoVersamento());
+			
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
-			esito.setEsito("KO");
-			FaultBean fault = new FaultBean();
-			fault.setId(codDominio);
-			fault.setFaultCode(gpndp.getFaultCode().toString());
-			fault.setDescription(gpndp.getMessage());
-			esito.setFault(fault);
-			risposta.setPaaInviaRTRisposta(esito);
-			return risposta;
+			esito.setEsito("OK");
+			response.setPaaInviaRTRisposta(esito);
+		} catch (NdpException e) {
+			if(bd != null) bd.rollback();
+			response = buildRisposta(e, response);
+		} catch (Exception e) {
+			if(bd != null) bd.rollback();
+			response = buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
 		} finally {
+			GiornaleEventi ge = new GiornaleEventi(bd);
+			evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
+			evento.setDataRisposta(new Date());
+			ge.registraEvento(evento);
+			
 			if(bd != null) bd.closeConnection();
 		}
-		
-		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "][" + ccp + "]");
-		
-		FirmaRichiesta firma = null;
-		try {
-			firma = FirmaRichiesta.toEnum(bodyrichiesta.getTipoFirma());
-		} catch (ServiceException e) {
-			log.error("Ricevuto TipoFirma non gestito [" + bodyrichiesta.getTipoFirma() + "]");
-			PaaInviaRTRisposta risposta = new PaaInviaRTRisposta();
-			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
-			esito.setEsito("KO");
-			FaultBean fault = new FaultBean();
-			fault.setId(codDominio);
-			fault.setFaultCode(FaultPa.PAA_FIRMA_ERRATA.toString());
-			fault.setDescription("Ricevuto TipoFirma non gestito [" + bodyrichiesta.getTipoFirma() + "]");
-			esito.setFault(fault);
-			risposta.setPaaInviaRTRisposta(esito);
-			return risposta;
-		}
-		
-		try {
-			ValidatoreRT validatoreRT = new ValidatoreRT();
+		return response;
+	}
+
+	private <T> T buildRisposta(NdpException e, T r) {
+		if(r instanceof PaaInviaRTRisposta) {
+			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR))
+				log.error("Rifiutata RT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
+			else
+				log.error("Rifiutata RT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 			
-			log.info("Verifica della firma della Ricevuta Telematica");
-			byte[] ctRtByte = validatoreRT.validaFirma(firma, bodyrichiesta.getRt());
-			
-			log.info("Validazione della Ricevuta Telematica");
-			CtRicevutaTelematica ctRt = null;
-			try {
-				ctRt = JaxbUtils.toRT(ctRtByte);
-			} catch (Exception e) {
-				log.error("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
-				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_VALIDAZIONE_NDP, FaultPa.PAA_SINTASSI_XSD, e.getMessage());
-			}
-			try {
-				bd = BasicBD.newInstance();
-			} catch (ServiceException e) {
-				throw new GovPayNdpException(GovPayExceptionEnum.ERRORE_INTERNO, FaultPa.PAA_ERRORE_INTERNO, "Impossibile stabilire una connessione con db", e);
-			}
-			Pagamenti pagamenti = new Pagamenti(bd);
-			pagamenti.acquisisciRT(codDominio, iuv, ccp, ctRt, bodyrichiesta.getRt());
-		} catch (GovPayNdpException gpndp) {
-			PaaInviaRTRisposta risposta = new PaaInviaRTRisposta();
+			PaaInviaRTRisposta risposta = (PaaInviaRTRisposta) r;
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("KO");
 			FaultBean fault = new FaultBean();
-			fault.setId(codDominio);
-			fault.setFaultCode(gpndp.getFaultCode().toString());
-			fault.setDescription(gpndp.getMessage());
-			esito.setFault(fault);
-			risposta.setPaaInviaRTRisposta(esito);
-			return risposta;
-		} catch (GovPayException e) {
-			PaaInviaRTRisposta risposta = new PaaInviaRTRisposta();
-			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
-			esito.setEsito("KO");
-			FaultBean fault = new FaultBean();
-			fault.setId(codDominio);
-			fault.setFaultCode(FaultPa.PAA_ERRORE_INTERNO.toString());
+			fault.setId(e.getCodDominio());
+			fault.setFaultCode(e.getFault().toString());
 			fault.setDescription(e.getDescrizione());
+			fault.setFaultString(e.getFault().getFaultString());
 			esito.setFault(fault);
 			risposta.setPaaInviaRTRisposta(esito);
-			return risposta;
-		} finally {
-			if(bd!= null) bd.closeConnection();
 		}
-		
-		PaaInviaRTRisposta risposta = new PaaInviaRTRisposta();
-		EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
-		esito.setEsito("OK");
-		risposta.setPaaInviaRTRisposta(esito);
-		return risposta;
+
+		if(r instanceof TipoInviaEsitoStornoRisposta) {
+			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR))
+				log.error("Rifiutata ER con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
+			else
+				log.error("Rifiutata ER con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			
+			TipoInviaEsitoStornoRisposta risposta = (TipoInviaEsitoStornoRisposta) r;
+			risposta.setEsito("KO");
+			FaultBean fault = new FaultBean();
+			fault.setId(e.getCodDominio());
+			fault.setFaultCode(e.getFault().toString());
+			fault.setDescription(e.getDescrizione());
+			fault.setFaultString(e.getFault().getFaultString());
+			risposta.setFault(fault);
+		}
+
+		return r;
 	}
 }

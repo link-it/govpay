@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,8 @@ public class IdRptModel extends AbstractModel<IdRpt> {
 		super();
 	
 		this.COD_MSG_RICHIESTA = new Field("codMsgRichiesta",java.lang.String.class,"id-rpt",IdRpt.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"id-rpt",IdRpt.class);
+		this.IUV = new Field("iuv",java.lang.String.class,"id-rpt",IdRpt.class);
 	
 	}
 	
@@ -51,12 +53,18 @@ public class IdRptModel extends AbstractModel<IdRpt> {
 		super(father);
 	
 		this.COD_MSG_RICHIESTA = new ComplexField(father,"codMsgRichiesta",java.lang.String.class,"id-rpt",IdRpt.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"id-rpt",IdRpt.class);
+		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"id-rpt",IdRpt.class);
 	
 	}
 	
 	
 
 	public IField COD_MSG_RICHIESTA = null;
+	 
+	public IField COD_DOMINIO = null;
+	 
+	public IField IUV = null;
 	 
 
 	@Override

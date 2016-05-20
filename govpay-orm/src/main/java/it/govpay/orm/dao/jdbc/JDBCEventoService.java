@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,7 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
-import it.govpay.orm.IdEvento;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -55,7 +54,7 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
 public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEventoService {
 
 
-	private IJDBCServiceCRUDWithId<Evento, IdEvento, JDBCServiceManager> serviceCRUD = null;
+	private IJDBCServiceCRUDWithoutId<Evento, JDBCServiceManager> serviceCRUD = null;
 	public JDBCEventoService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
 		this.log.debug(JDBCEventoService.class.getName()+ " initialized");
@@ -159,9 +158,9 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 
 	@Override
-	public void update(IdEvento oldId, Evento evento) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(Evento evento) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(oldId, evento, false, null);
+			this.update(evento, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -169,9 +168,9 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 	
 	@Override
-	public void update(IdEvento oldId, Evento evento, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(Evento evento, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(oldId, evento, false, idMappingResolutionBehaviour);
+			this.update(evento, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -179,12 +178,12 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 	
 	@Override
-	public void update(IdEvento oldId, Evento evento, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(oldId, evento, validate, null);
+	public void update(Evento evento, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(evento, validate, null);
 	}
 		
 	@Override
-	public void update(IdEvento oldId, Evento evento, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(Evento evento, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -194,9 +193,6 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 			// check parameters
 			if(evento==null){
 				throw new Exception("Parameter (type:"+Evento.class.getName()+") 'evento' is null");
-			}
-			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdEvento.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
@@ -216,7 +212,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,evento,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,evento,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -359,7 +355,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 	
 	@Override
-	public void updateFields(IdEvento id, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(Evento evento, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -367,8 +363,8 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 		try{
 			
 			// check parameters
-			if(id==null){
-				throw new Exception("Parameter (type:"+IdEvento.class.getName()+") 'id' is null");
+			if(evento==null){
+				throw new Exception("Parameter (type:"+Evento.class.getName()+") 'evento' is null");
 			}
 			if(updateFields==null){
 				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
@@ -386,7 +382,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,evento,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -426,7 +422,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 	
 	@Override
-	public void updateFields(IdEvento id, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(Evento evento, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -434,8 +430,8 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 		try{
 			
 			// check parameters
-			if(id==null){
-				throw new Exception("Parameter (type:"+IdEvento.class.getName()+") 'id' is null");
+			if(evento==null){
+				throw new Exception("Parameter (type:"+Evento.class.getName()+") 'evento' is null");
 			}
 			if(condition==null){
 				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
@@ -456,7 +452,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,condition,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,evento,condition,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -496,7 +492,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 
 	@Override
-	public void updateFields(IdEvento id, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(Evento evento, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -504,8 +500,8 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 		try{
 			
 			// check parameters
-			if(id==null){
-				throw new Exception("Parameter (type:"+IdEvento.class.getName()+") 'id' is null");
+			if(evento==null){
+				throw new Exception("Parameter (type:"+Evento.class.getName()+") 'evento' is null");
 			}
 			if(updateModels==null){
 				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
@@ -523,7 +519,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateModels);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,evento,updateModels);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -767,9 +763,9 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 
 	@Override
-	public void updateOrCreate(IdEvento oldId, Evento evento) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(Evento evento) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(oldId, evento, false, null);
+			this.updateOrCreate(evento, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -777,9 +773,9 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 	
 	@Override
-	public void updateOrCreate(IdEvento oldId, Evento evento, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(Evento evento, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(oldId, evento, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(evento, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -787,12 +783,12 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 
 	@Override
-	public void updateOrCreate(IdEvento oldId, Evento evento, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(oldId, evento, validate, null);
+	public void updateOrCreate(Evento evento, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(evento, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(IdEvento oldId, Evento evento, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(Evento evento, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -802,9 +798,6 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 			// check parameters
 			if(evento==null){
 				throw new Exception("Parameter (type:"+Evento.class.getName()+") 'evento' is null");
-			}
-			if(oldId==null){
-				throw new Exception("Parameter (type:"+IdEvento.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
@@ -824,7 +817,7 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,evento,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,evento,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -1022,66 +1015,6 @@ public class JDBCEventoService extends JDBCEventoServiceSearch  implements IDBEv
 	}
 	
 
-	@Override
-	public void deleteById(IdEvento id) throws ServiceException, NotImplementedException {
-
-		Connection connection = null;
-		boolean oldValueAutoCommit = false;
-		boolean rollback = false;
-		try{
-			
-			// check parameters
-			if(id==null){
-				throw new Exception("Parameter (type:"+IdEvento.class.getName()+") 'id' is null");
-			}
-
-			// ISQLQueryObject
-			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
-			sqlQueryObject.setANDLogicOperator(true);
-			// Connection sql
-			connection = this.jdbcServiceManager.getConnection();
-
-			// transaction
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				oldValueAutoCommit = connection.getAutoCommit();
-				connection.setAutoCommit(false);
-			}
-
-			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,id);			
-
-		}catch(ServiceException e){
-			rollback = true;
-			this.log.error(e,e); throw e;
-		}catch(NotImplementedException e){
-			rollback = true;
-			this.log.error(e,e); throw e;
-		}catch(Exception e){
-			rollback = true;
-			this.log.error(e,e); throw new ServiceException("DeleteById not completed: "+e.getMessage(),e);
-		}finally{
-			if(this.jdbcProperties.isAutomaticTransactionManagement()){
-				if(rollback){
-					try{
-						if(connection!=null)
-							connection.rollback();
-					}catch(Exception eIgnore){}
-				}else{
-					try{
-						if(connection!=null)
-							connection.commit();
-					}catch(Exception eIgnore){}
-				}
-				try{
-					if(connection!=null)
-						connection.setAutoCommit(oldValueAutoCommit);
-				}catch(Exception eIgnore){}
-			}
-			if(connection!=null){
-				this.jdbcServiceManager.closeConnection(connection);
-			}
-		}
-
-	}
 
 	@Override
 	public NonNegativeNumber deleteAll() throws ServiceException, NotImplementedException {

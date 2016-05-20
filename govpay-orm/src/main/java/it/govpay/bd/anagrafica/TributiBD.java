@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.converter.TributoConverter;
-import it.govpay.orm.IdEnte;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.dao.jdbc.JDBCTributoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
@@ -80,20 +80,17 @@ public class TributiBD extends BasicBD {
 	 * @throws MultipleResultException
 	 * @throws ServiceException
 	 */
-	public Tributo getTributo(Long longIdEnte, String codTributo) throws NotFoundException, MultipleResultException, ServiceException {
-		if(longIdEnte == null) {
-			throw new ServiceException("Parameter 'idEnte' cannot be NULL");
+	public Tributo getTributo(Long idDominio, String codTributo) throws NotFoundException, MultipleResultException, ServiceException {
+		if(idDominio == null) {
+			throw new ServiceException("Parameter 'idDominio' cannot be NULL");
 		}
-		
-		long idEnte = longIdEnte.longValue();
 		
 		try {
 			IdTributo idTributo = new IdTributo();
-			IdEnte logicIdEnte = new IdEnte();
-			logicIdEnte.setId(idEnte);
-			idTributo.setIdEnte(logicIdEnte);
+			IdDominio idDominioOrm = new IdDominio();
+			idDominioOrm.setId(idDominio);
+			idTributo.setIdDominio(idDominioOrm);
 			idTributo.setCodTributo(codTributo);
-			
 			return TributoConverter.toDTO(this.getTributoService().get(idTributo));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -109,13 +106,10 @@ public class TributiBD extends BasicBD {
 	 */
 	public List<Tributo> getTributi(long idApplicazione) throws NotFoundException, ServiceException {
 		try {
-			
 			IPaginatedExpression exp = this.getTributoService().newPaginatedExpression();
 			ApplicazioneFieldConverter fieldConverter = new ApplicazioneFieldConverter(this.getJdbcProperties().getDatabase());
 			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Applicazione.model().APPLICAZIONE_TRIBUTO)), idApplicazione);
-			
 			return TributoConverter.toDTOList(this.getTributoService().findAll(exp));
-			
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
@@ -135,16 +129,13 @@ public class TributiBD extends BasicBD {
 	public void updateTributo(Tributo tributo) throws NotFoundException, ServiceException {
 		try {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
-			
 			IdTributo idVO = this.getTributoService().convertToId(vo);
-			
 			if(!this.getTributoService().exists(idVO)) {
 				throw new NotFoundException("Tributo con id ["+idVO.toJson()+"] non trovato.");
 			}
-			
 			this.getTributoService().update(idVO, vo);
 			tributo.setId(vo.getId());
-			
+			AnagraficaManager.removeFromCache(tributo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
@@ -165,16 +156,12 @@ public class TributiBD extends BasicBD {
 	public void insertTributo(Tributo tributo) throws ServiceException {
 		try {
 			it.govpay.orm.Tributo vo = TributoConverter.toVO(tributo);
-			
 			this.getTributoService().create(vo);
 			tributo.setId(vo.getId());
-
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
-
 	}
-	
 	
 	public TributoFilter newFilter() throws ServiceException {
 		return new TributoFilter(this.getTributoService());
@@ -195,6 +182,4 @@ public class TributiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-
-	
 }

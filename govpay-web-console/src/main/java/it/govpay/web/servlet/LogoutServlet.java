@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.web.servlet;
 
 import java.io.IOException;
@@ -33,43 +53,16 @@ public class LogoutServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try{
-			HttpSession session = req.getSession(false);
-//			boolean doRedirect = false;
-//			String logout = req.getParameter("logout");
-
-			// chiamata di logout
-//			if(logout != null){
-				initLogger("logout", resp);
-				log.debug("Logout in corso...");
-				session.invalidate();
-//				doRedirect = true;
-//			} 
+			this.initLogger("logout", resp);
+			this.log.debug("Logout in corso...");
 			
-//			else {
-//				initLogger("checkSession", resp);
-//				log.debug("Controllo della sessione in corso...");
-//				// controllo se la sessione e' valida.
-//				if (req.getRequestedSessionId() != null
-//						&& !req.isRequestedSessionIdValid()) {
-//					// Session is expired
-//					doRedirect = true;
-//					log.debug("Controllo sessione completato, sessione non valida.");
-//				} else {
-//					log.debug("Controllo sessione completato, la sessione e' valida.");
-//				}
-//			}
-
-//			if(doRedirect){
-				String location = req.getContextPath() ;//+ "/public/login.html";
-//				log.debug("Effetto redirect alla location: " + location);
-				resp.sendRedirect(location);
-//			}else 
-//			{
-//				resp.setStatus(200);
-//				resp.getOutputStream().write("".getBytes()); 
-//			}
+			HttpSession session = req.getSession(false);
+			if(session != null)
+				session.invalidate();
+			String location = req.getContextPath() ;//+ "/public/login.html";
+			resp.sendRedirect(location);
 		}catch(Exception e){
-
+			this.log.error("Si e' verificato un errore durante il logout: "+e.getMessage(),e);
 		}
 	}
 

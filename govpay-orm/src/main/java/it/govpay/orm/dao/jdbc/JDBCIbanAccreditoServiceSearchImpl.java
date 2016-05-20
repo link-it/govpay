@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,38 +20,43 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IbanAccredito;
-import it.govpay.orm.IdIbanAccredito;
-import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.IbanAccreditoFetch;
-
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+import java.sql.Connection;
 
 import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.FunctionField;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdIbanAccredito;
+
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+
+import it.govpay.orm.dao.IDBDominioServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.IbanAccreditoFetch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.IbanAccredito;
 
 /**     
  * JDBCIbanAccreditoServiceSearchImpl
@@ -103,6 +108,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 	
 		IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
 		idIbanAccredito.setCodIban(ibanAccredito.getCodIban());
+		idIbanAccredito.setIdDominio(ibanAccredito.getIdDominio());
 	
 		return idIbanAccredito;
 	}
@@ -130,18 +136,40 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
 		List<IdIbanAccredito> list = new ArrayList<IdIbanAccredito>();
 		try{
 			List<IField> fields = new ArrayList<IField>();
 
 			fields.add(IbanAccredito.model().COD_IBAN);
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(IbanAccredito.model())));
+			
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			for(Map<String, Object> map: returnMap) {
+				
+				IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
+				idIbanAccredito.setCodIban((String) map.remove(IbanAccredito.model().COD_IBAN.getFieldName()));
+				
+				
+				Long idDominio = (Long) map.remove("id_dominio");
+
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+					it.govpay.orm.IdDominio id_ibanAccredito_dominio = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_ibanAccredito_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
+					}else{
+						id_ibanAccredito_dominio = new it.govpay.orm.IdDominio();
+					}
+					id_ibanAccredito_dominio.setId(idDominio);
+					idIbanAccredito.setIdDominio(id_ibanAccredito_dominio);
+				}
+
+				
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (IbanAccredito)this.getIbanAccreditoFetch().fetch(jdbcProperties.getDatabase(), IbanAccredito.model(), map)));
-			}
+        }
 		} catch(NotFoundException e) {}
 
         return list;
@@ -155,7 +183,6 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
         List<IbanAccredito> list = new ArrayList<IbanAccredito>();
         
 		try{
@@ -169,7 +196,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(IbanAccredito.model().BIC_ACCREDITO);
 			fields.add(IbanAccredito.model().IBAN_APPOGGIO);
 			fields.add(IbanAccredito.model().BIC_APPOGGIO);
-
+        
 			fields.add(IbanAccredito.model().ATTIVATO);
 			fields.add(IbanAccredito.model().ABILITATO);
 
@@ -189,7 +216,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 							id_ibanAccredito_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
 						}else{
 							id_ibanAccredito_dominio = new it.govpay.orm.IdDominio();
-						}
+        }
 						id_ibanAccredito_dominio.setId(idDominio);
 						ibanAccredito.setIdDominio(id_ibanAccredito_dominio);
 					}
@@ -491,23 +518,64 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 	
 	private IbanAccredito _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
-		IField idField = new CustomField("id", Long.class, "id", this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
-		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
 		
-		expression.equals(idField, tableId);
-		expression.offset(0);
-		expression.limit(2); //per verificare la multiple results
-		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
-		List<IbanAccredito> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+				
+		IbanAccredito ibanAccredito = new IbanAccredito();
 		
-		if(lst.size() <=0)
-			throw new NotFoundException("Id ["+tableId+"]");
-		
-		if(lst.size() > 1)
-			throw new MultipleResultException("Id ["+tableId+"]");
 
-		return lst.get(0);
+		// Object ibanAccredito
+		ISQLQueryObject sqlQueryObjectGet_ibanAccredito = sqlQueryObjectGet.newSQLQueryObject();
+		sqlQueryObjectGet_ibanAccredito.setANDLogicOperator(true);
+		sqlQueryObjectGet_ibanAccredito.addFromTable(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
+		sqlQueryObjectGet_ibanAccredito.addSelectField("id");
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ID_SELLER_BANK,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ID_NEGOZIO,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().BIC_ACCREDITO,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().IBAN_APPOGGIO,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().BIC_APPOGGIO,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().POSTALE,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ATTIVATO,true));
+		sqlQueryObjectGet_ibanAccredito.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().ABILITATO,true));
+		sqlQueryObjectGet_ibanAccredito.addWhereCondition("id=?");
+
+		// Get ibanAccredito
+		ibanAccredito = (IbanAccredito) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_ibanAccredito.createSQLQuery(), jdbcProperties.isShowSql(), IbanAccredito.model(), this.getIbanAccreditoFetch(),
+			new JDBCObject(tableId,Long.class));
+
+
+		if(idMappingResolutionBehaviour==null ||
+			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+		){
+			// Object _ibanAccredito_dominio (recupero id)
+			ISQLQueryObject sqlQueryObjectGet_ibanAccredito_dominio_readFkId = sqlQueryObjectGet.newSQLQueryObject();
+			sqlQueryObjectGet_ibanAccredito_dominio_readFkId.addFromTable(this.getIbanAccreditoFieldConverter().toTable(it.govpay.orm.IbanAccredito.model()));
+			sqlQueryObjectGet_ibanAccredito_dominio_readFkId.addSelectField("id_dominio");
+			sqlQueryObjectGet_ibanAccredito_dominio_readFkId.addWhereCondition("id=?");
+			sqlQueryObjectGet_ibanAccredito_dominio_readFkId.setANDLogicOperator(true);
+			Long idFK_ibanAccredito_dominio = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_ibanAccredito_dominio_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
+					new JDBCObject(ibanAccredito.getId(),Long.class));
+			
+			it.govpay.orm.IdDominio id_ibanAccredito_dominio = null;
+			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+				id_ibanAccredito_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idFK_ibanAccredito_dominio, false);
+			}else{
+				id_ibanAccredito_dominio = new it.govpay.orm.IdDominio();
+			}
+			id_ibanAccredito_dominio.setId(idFK_ibanAccredito_dominio);
+			ibanAccredito.setIdDominio(id_ibanAccredito_dominio);
+		}
+		
+        return ibanAccredito;  
+	
 	} 
 	
 	@Override
@@ -540,12 +608,13 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		
+
 		if(expression.inUseModel(IbanAccredito.model().ID_DOMINIO,false)){
 			String tableName1 = this.getIbanAccreditoFieldConverter().toAliasTable(IbanAccredito.model());
 			String tableName2 = this.getIbanAccreditoFieldConverter().toAliasTable(IbanAccredito.model().ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
+        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIbanAccredito id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -563,6 +632,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
+		//		  If a table doesn't have a primary key, don't add it to this map
 
 		// IbanAccredito.model()
 		mapTableToPKColumn.put(converter.toTable(IbanAccredito.model()),
@@ -576,13 +646,7 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 				new CustomField("id", Long.class, "id", converter.toTable(IbanAccredito.model().ID_DOMINIO))
 			));
 
-
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
+        
         return mapTableToPKColumn;		
 	}
 	
@@ -645,10 +709,6 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -669,10 +729,11 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
+
 		// Object _ibanAccredito
 		sqlQueryObjectGet.addFromTable(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
 		sqlQueryObjectGet.addSelectField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,true));
-
+		sqlQueryObjectGet.addSelectField("id_dominio");
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -682,7 +743,8 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 		};
 		List<Class<?>> listaFieldIdReturnType_ibanAccredito = new ArrayList<Class<?>>();
 		listaFieldIdReturnType_ibanAccredito.add(IbanAccredito.model().COD_IBAN.getFieldType());
-
+		listaFieldIdReturnType_ibanAccredito.add(Long.class);
+		
 		it.govpay.orm.IdIbanAccredito id_ibanAccredito = null;
 		List<Object> listaFieldId_ibanAccredito = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_ibanAccredito, searchParams_ibanAccredito);
@@ -694,6 +756,9 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 		else{
 			id_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
 			id_ibanAccredito.setCodIban((String)listaFieldId_ibanAccredito.get(0));
+			IdDominio idDominio = new IdDominio();
+			idDominio.setId((Long)listaFieldId_ibanAccredito.get(1));
+			id_ibanAccredito.setIdDominio(idDominio);
 		}
 		
 		return id_ibanAccredito;
@@ -724,6 +789,17 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
+		if(id.getId() != null && id.getId().longValue() > 0)
+			return id.getId(); 
+
+		Long idDominio = null;
+		
+		if(id.getIdDominio().getId() != null && id.getIdDominio().getId().longValue() > 0) {
+			idDominio = id.getIdDominio().getId();
+		} else {
+			idDominio = ((IDBDominioServiceSearch)this.getServiceManager().getDominioServiceSearch()).findTableId(id.getIdDominio(), throwNotFound);
+		}
+		
 		// Object _ibanAccredito
 		sqlQueryObjectGet.addFromTable(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
 		sqlQueryObjectGet.addSelectField("id");
@@ -731,10 +807,12 @@ public class JDBCIbanAccreditoServiceSearchImpl implements IJDBCServiceSearchWit
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition("id_dominio=?");
 
 		// Recupero _ibanAccredito
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_ibanAccredito = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodIban(),IbanAccredito.model().COD_IBAN.getFieldType())
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodIban(),IbanAccredito.model().COD_IBAN.getFieldType()),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(idDominio,Long.class)
 		};
 		Long id_ibanAccredito = null;
 		try{

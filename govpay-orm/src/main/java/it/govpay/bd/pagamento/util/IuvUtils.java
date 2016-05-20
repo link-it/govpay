@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,5 +88,11 @@ public class IuvUtils {
 		BigInteger mod97 = base.mod(BigInteger.valueOf(97));
 		int diff98 = 98 - mod97.intValue();
 		return String.format("%02d", diff98);
+	}
+	
+	public static String buildIuvNumerico(long prg, int auxDigit, int applicationCode) {
+		String reference = String.format("%013d", prg);
+		long resto93 = (Long.parseLong(String.valueOf(auxDigit) + String.format("%02d", applicationCode) + reference)) % 93;
+		return reference + String.format("%02d", resto93);
 	}
 }

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,22 +57,26 @@ public class FRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				setParameter(object, "setCodFlusso", FR.model().COD_FLUSSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_flusso", FR.model().COD_FLUSSO.getFieldType()));
+				setParameter(object, "setStato", FR.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", FR.model().STATO.getFieldType()));
+				setParameter(object, "setDescrizioneStato", FR.model().DESCRIZIONE_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", FR.model().DESCRIZIONE_STATO.getFieldType()));
+				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iur", FR.model().IUR.getFieldType()));
 				setParameter(object, "setAnnoRiferimento", FR.model().ANNO_RIFERIMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", FR.model().ANNO_RIFERIMENTO.getFieldType()));
 				setParameter(object, "setDataOraFlusso", FR.model().DATA_ORA_FLUSSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_flusso", FR.model().DATA_ORA_FLUSSO.getFieldType()));
-				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iur", FR.model().IUR.getFieldType()));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_regolamento", FR.model().DATA_REGOLAMENTO.getFieldType()));
 				setParameter(object, "setNumeroPagamenti", FR.model().NUMERO_PAGAMENTI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "numero_pagamenti", FR.model().NUMERO_PAGAMENTI.getFieldType()));
 				setParameter(object, "setImportoTotalePagamenti", FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_totale_pagamenti", FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()));
-				setParameter(object, "setStato", FR.model().STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", FR.model().STATO.getFieldType()));
-				setParameter(object, "setDescrizioneStato", FR.model().DESCRIZIONE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", FR.model().DESCRIZIONE_STATO.getFieldType()));
+				setParameter(object, "setCodBicRiversamento", FR.model().COD_BIC_RIVERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_bic_riversamento", FR.model().COD_BIC_RIVERSAMENTO.getFieldType()));
+				setParameter(object, "setXml", FR.model().XML.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "xml", FR.model().XML.getFieldType()));
 				return object;
 			}
 			
@@ -97,22 +101,26 @@ public class FRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"id"));
 				setParameter(object, "setCodFlusso", FR.model().COD_FLUSSO.getFieldType(),
 					this.getObjectFromMap(map,"codFlusso"));
+				setParameter(object, "setStato", FR.model().STATO.getFieldType(),
+					this.getObjectFromMap(map,"stato"));
+				setParameter(object, "setDescrizioneStato", FR.model().DESCRIZIONE_STATO.getFieldType(),
+					this.getObjectFromMap(map,"descrizioneStato"));
+				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
+					this.getObjectFromMap(map,"iur"));
 				setParameter(object, "setAnnoRiferimento", FR.model().ANNO_RIFERIMENTO.getFieldType(),
 					this.getObjectFromMap(map,"annoRiferimento"));
 				setParameter(object, "setDataOraFlusso", FR.model().DATA_ORA_FLUSSO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraFlusso"));
-				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
-					this.getObjectFromMap(map,"iur"));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataRegolamento"));
 				setParameter(object, "setNumeroPagamenti", FR.model().NUMERO_PAGAMENTI.getFieldType(),
 					this.getObjectFromMap(map,"numeroPagamenti"));
 				setParameter(object, "setImportoTotalePagamenti", FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType(),
 					this.getObjectFromMap(map,"importoTotalePagamenti"));
-				setParameter(object, "setStato", FR.model().STATO.getFieldType(),
-					this.getObjectFromMap(map,"stato"));
-				setParameter(object, "setDescrizioneStato", FR.model().DESCRIZIONE_STATO.getFieldType(),
-					this.getObjectFromMap(map,"descrizioneStato"));
+				setParameter(object, "setCodBicRiversamento", FR.model().COD_BIC_RIVERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"codBicRiversamento"));
+				setParameter(object, "setXml", FR.model().XML.getFieldType(),
+					this.getObjectFromMap(map,"xml"));
 				return object;
 			}
 			

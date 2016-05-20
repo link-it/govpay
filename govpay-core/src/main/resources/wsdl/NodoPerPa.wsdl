@@ -2,7 +2,7 @@
 <!--
   Questo WSDL rappresenta l'interfaccia esposta dal Nodo dei Pagamenti
   per la ricezione delle RPT.
-  Versione 6.0.1 di RPT/RT.
+  Versione 6.2.0 di RPT/RT.
   Renaming delle primitive.
 -->
 <wsdl:definitions 
@@ -20,35 +20,35 @@
 	jaxb:version="2.0">
 	<wsdl:types>
 		<xsd:schema version="1.0" targetNamespace="http://ws.pagamenti.telematici.gov/ppthead">
-			<xsd:import schemaLocation="http://schemas.xmlsoap.org/soap/envelope/" namespace="http://schemas.xmlsoap.org/soap/envelope/" />
+			<xsd:import schemaLocation="http://schemas.xmlsoap.org/soap/envelope/" namespace="http://schemas.xmlsoap.org/soap/envelope/"/>
 			<xsd:simpleType name="stText35">
 				<xsd:restriction base="xsd:string">
-					<xsd:minLength value="1" />
-					<xsd:maxLength value="35" />
+					<xsd:minLength value="1"/>
+					<xsd:maxLength value="35"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 			<xsd:element name="intestazionePPT" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="identificativoIntermediarioPA" type="ppthead:stText35" />
-						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35" />
-						<xsd:element name="identificativoDominio" type="ppthead:stText35" />
-						<xsd:element name="identificativoUnivocoVersamento" type="ppthead:stText35" />
-						<xsd:element name="codiceContestoPagamento" type="ppthead:stText35" />
+						<xsd:element name="identificativoIntermediarioPA" type="ppthead:stText35"/>
+						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35"/>
+						<xsd:element name="identificativoDominio" type="ppthead:stText35"/>
+						<xsd:element name="identificativoUnivocoVersamento" type="ppthead:stText35"/>
+						<xsd:element name="codiceContestoPagamento" type="ppthead:stText35"/>
 					</xsd:sequence>
-					<xsd:attribute ref="soapenv:actor" use="optional" />
-					<xsd:attribute ref="soapenv:mustUnderstand" use="optional" />
+					<xsd:attribute ref="soapenv:actor" use="optional"/>
+					<xsd:attribute ref="soapenv:mustUnderstand" use="optional"/>
 				</xsd:complexType>
 			</xsd:element>
 			<xsd:element name="intestazioneCarrelloPPT" xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="identificativoIntermediarioPA" type="ppthead:stText35" />
-						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35" />
-						<xsd:element name="identificativoCarrello" type="ppthead:stText35" />
+						<xsd:element name="identificativoIntermediarioPA" type="ppthead:stText35"/>
+						<xsd:element name="identificativoStazioneIntermediarioPA" type="ppthead:stText35"/>
+						<xsd:element name="identificativoCarrello" type="ppthead:stText35"/>
 					</xsd:sequence>
-					<xsd:attribute ref="soapenv:actor" use="optional" />
-					<xsd:attribute ref="soapenv:mustUnderstand" use="optional" />
+					<xsd:attribute ref="soapenv:actor" use="optional"/>
+					<xsd:attribute ref="soapenv:mustUnderstand" use="optional"/>
 				</xsd:complexType>
 			</xsd:element>
 		</xsd:schema>
@@ -62,21 +62,28 @@
 			</xsd:annotation>
 			<xsd:simpleType name="stText35">
 				<xsd:restriction base="xsd:string">
-					<xsd:minLength value="1" />
-					<xsd:maxLength value="35" />
+					<xsd:minLength value="1"/>
+					<xsd:maxLength value="35"/>
 				</xsd:restriction>
 			</xsd:simpleType>
+			<xsd:simpleType name="stText40">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1"/>
+					<xsd:maxLength value="40"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			
 			<xsd:simpleType name="stPassword">
 				<xsd:restriction base="xsd:string">
-					<xsd:minLength value="8" />
-					<xsd:maxLength value="15" />
+					<xsd:minLength value="8"/>
+					<xsd:maxLength value="15"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 			<xsd:simpleType name="stEffettuazioneScelta">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="SI"></xsd:enumeration>
-					<xsd:enumeration value="NO"></xsd:enumeration>
-					<xsd:enumeration value="PO"></xsd:enumeration>
+					<xsd:enumeration value="SI"/>
+					<xsd:enumeration value="NO"/>
+					<xsd:enumeration value="PO"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 			<xsd:simpleType name="stTipoVersamento">
@@ -90,66 +97,66 @@
 		            <xsd:maxLength value="4"/>
 				</xsd:restriction>
 			</xsd:simpleType>
-			<xsd:element name="nodoChiediCopiaRT" type="ppt:nodoChiediCopiaRT" />
-			<xsd:element name="nodoChiediCopiaRTRisposta" type="ppt:nodoChiediCopiaRTRisposta" />
+			<xsd:element name="nodoChiediCopiaRT" type="ppt:nodoChiediCopiaRT"/>
+			<xsd:element name="nodoChiediCopiaRTRisposta" type="ppt:nodoChiediCopiaRTRisposta"/>
 			
-			<xsd:element name="nodoInviaRichiestaStorno" type="ppt:nodoInviaRichiestaStorno" />
-			<xsd:element name="nodoInviaRichiestaStornoRisposta" type="ppt:nodoInviaRichiestaStornoRisposta" />
+			<xsd:element name="nodoInviaRichiestaStorno" type="ppt:nodoInviaRichiestaStorno"/>
+			<xsd:element name="nodoInviaRichiestaStornoRisposta" type="ppt:nodoInviaRichiestaStornoRisposta"/>
 			
-			<xsd:element name="nodoChiediListaPendentiRPT" type="ppt:nodoChiediListaPendentiRPT" />
-			<xsd:element name="nodoChiediListaPendentiRPTRisposta" type="ppt:nodoChiediListaPendentiRPTRisposta" />
+			<xsd:element name="nodoChiediListaPendentiRPT" type="ppt:nodoChiediListaPendentiRPT"/>
+			<xsd:element name="nodoChiediListaPendentiRPTRisposta" type="ppt:nodoChiediListaPendentiRPTRisposta"/>
 			
-			<xsd:element name="nodoChiediStatoRPT" type="ppt:nodoChiediStatoRPT" />
-			<xsd:element name="nodoChiediStatoRPTRisposta" type="ppt:nodoChiediStatoRPTRisposta" />
+			<xsd:element name="nodoChiediStatoRPT" type="ppt:nodoChiediStatoRPT"/>
+			<xsd:element name="nodoChiediStatoRPTRisposta" type="ppt:nodoChiediStatoRPTRisposta"/>
 			
-			<xsd:element name="nodoInviaRPT" type="ppt:nodoInviaRPT" />
-			<xsd:element name="nodoInviaRPTRisposta" type="ppt:nodoInviaRPTRisposta" />
+			<xsd:element name="nodoInviaRPT" type="ppt:nodoInviaRPT"/>
+			<xsd:element name="nodoInviaRPTRisposta" type="ppt:nodoInviaRPTRisposta"/>
 			
-			<xsd:element name="nodoInviaCarrelloRPT" type="ppt:nodoInviaCarrelloRPT" />
-			<xsd:element name="nodoInviaCarrelloRPTRisposta" type="ppt:nodoInviaCarrelloRPTRisposta" />
+			<xsd:element name="nodoInviaCarrelloRPT" type="ppt:nodoInviaCarrelloRPT"/>
+			<xsd:element name="nodoInviaCarrelloRPTRisposta" type="ppt:nodoInviaCarrelloRPTRisposta"/>
 			
-			<xsd:element name="nodoChiediInformativaPSP" type="ppt:nodoChiediInformativaPSP" />
+			<xsd:element name="nodoChiediInformativaPSP" type="ppt:nodoChiediInformativaPSP"/>
 			<xsd:element name="nodoChiediInformativaPSPRisposta" type="ppt:nodoChiediInformativaPSPRisposta"/>
 
-        	<xsd:element name="nodoChiediElencoQuadraturePA" type="ppt:nodoChiediElencoQuadraturePA" />
-        	<xsd:element name="nodoChiediElencoQuadraturePARisposta" type="ppt:nodoChiediElencoQuadraturePARisposta" />
+        	<xsd:element name="nodoChiediElencoQuadraturePA" type="ppt:nodoChiediElencoQuadraturePA"/>
+        	<xsd:element name="nodoChiediElencoQuadraturePARisposta" type="ppt:nodoChiediElencoQuadraturePARisposta"/>
         	
-        	<xsd:element name="nodoChiediQuadraturaPA" type="ppt:nodoChiediQuadraturaPA" />
-        	<xsd:element name="nodoChiediQuadraturaPARisposta" type="ppt:nodoChiediQuadraturaPARisposta" />
+        	<xsd:element name="nodoChiediQuadraturaPA" type="ppt:nodoChiediQuadraturaPA"/>
+        	<xsd:element name="nodoChiediQuadraturaPARisposta" type="ppt:nodoChiediQuadraturaPARisposta"/>
         	
-        	<xsd:element name="nodoChiediElencoFlussiRendicontazione" type="ppt:nodoChiediElencoFlussiRendicontazione" />
-        	<xsd:element name="nodoChiediElencoFlussiRendicontazioneRisposta" type="ppt:nodoChiediElencoFlussiRendicontazioneRisposta" />
+        	<xsd:element name="nodoChiediElencoFlussiRendicontazione" type="ppt:nodoChiediElencoFlussiRendicontazione"/>
+        	<xsd:element name="nodoChiediElencoFlussiRendicontazioneRisposta" type="ppt:nodoChiediElencoFlussiRendicontazioneRisposta"/>
         	
-        	<xsd:element name="nodoChiediFlussoRendicontazione" type="ppt:nodoChiediFlussoRendicontazione" />
-        	<xsd:element name="nodoChiediFlussoRendicontazioneRisposta" type="ppt:nodoChiediFlussoRendicontazioneRisposta" />
+        	<xsd:element name="nodoChiediFlussoRendicontazione" type="ppt:nodoChiediFlussoRendicontazione"/>
+        	<xsd:element name="nodoChiediFlussoRendicontazioneRisposta" type="ppt:nodoChiediFlussoRendicontazioneRisposta"/>
     		
-    		<xsd:element name="nodoChiediSceltaWISP" type="ppt:nodoChiediSceltaWISP" />
-			<xsd:element name="nodoChiediSceltaWISPRisposta" type="ppt:nodoChiediSceltaWISPRisposta" />
+    		<xsd:element name="nodoChiediSceltaWISP" type="ppt:nodoChiediSceltaWISP"/>
+			<xsd:element name="nodoChiediSceltaWISPRisposta" type="ppt:nodoChiediSceltaWISPRisposta"/>
 			
 			<xsd:complexType name="risposta">
 				<xsd:sequence>
-					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0" />
+					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0"/>
 				</xsd:sequence>
 			</xsd:complexType>
 			
 			<xsd:complexType name="faultBean">
 				<xsd:sequence>
-					<xsd:element name="faultCode" type="xsd:string" />
-					<xsd:element name="faultString" type="xsd:string" />
-					<xsd:element name="id" type="xsd:string" />
-					<xsd:element name="description" type="xsd:string" minOccurs="0" />
-					<xsd:element name="serial" type="xsd:int" minOccurs="0" />
+					<xsd:element name="faultCode" type="xsd:string"/>
+					<xsd:element name="faultString" type="xsd:string"/>
+					<xsd:element name="id" type="xsd:string"/>
+					<xsd:element name="description" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="serial" type="xsd:int" minOccurs="0"/>
 				</xsd:sequence>
 			</xsd:complexType>
         	
 			<xsd:complexType name="nodoChiediStatoRPT">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
-					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35" />
-					<xsd:element name="codiceContestoPagamento" type="ppt:stText35" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
+					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35"/>
+					<xsd:element name="codiceContestoPagamento" type="ppt:stText35"/>
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -157,7 +164,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="ppt:esitoChiediStatoRPT" minOccurs="0" />
+							<xsd:element name="esito" type="ppt:esitoChiediStatoRPT" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -165,39 +172,39 @@
 	
 			<xsd:complexType name="esitoChiediStatoRPT">
 				<xsd:sequence>
-					<xsd:element name="stato" type="xsd:string" />
-					<xsd:element name="redirect" type="xsd:int" default="0" minOccurs="0" />
-					<xsd:element name="url" type="xsd:string" default="" minOccurs="0" />
-					<xsd:element name="elementoStoricoRPT" type="ppt:tipoStoricoRPT" nillable="true" minOccurs="0" maxOccurs="unbounded" />
-					<xsd:element name="elementoStoricoVersamento" type="ppt:tipoStoricoVersamento" nillable="true" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="stato" type="xsd:string"/>
+					<xsd:element name="redirect" type="xsd:int" default="0" minOccurs="0"/>
+					<xsd:element name="url" type="xsd:string" default="" minOccurs="0"/>
+					<xsd:element name="elementoStoricoRPT" type="ppt:tipoStoricoRPT" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+					<xsd:element name="elementoStoricoVersamento" type="ppt:tipoStoricoVersamento" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:complexType>
 
 			<xsd:complexType name="tipoStoricoRPT">
 				<xsd:sequence>
-					<xsd:element name="data" type="xsd:dateTime" />
-					<xsd:element name="stato" type="xsd:string" />
-					<xsd:element name="descrizione" type="xsd:string" />
+					<xsd:element name="data" type="xsd:dateTime"/>
+					<xsd:element name="stato" type="xsd:string"/>
+					<xsd:element name="descrizione" type="xsd:string"/>
 				</xsd:sequence>
 			</xsd:complexType>
 			
 			<xsd:complexType name="tipoStoricoVersamento">
 				<xsd:sequence>
-					<xsd:element name="progressivo" type="xsd:int" />
-					<xsd:element name="data" type="xsd:dateTime" />
-					<xsd:element name="stato" type="xsd:string" />
-					<xsd:element name="descrizione" type="xsd:string" />
+					<xsd:element name="progressivo" type="xsd:int"/>
+					<xsd:element name="data" type="xsd:dateTime"/>
+					<xsd:element name="stato" type="xsd:string"/>
+					<xsd:element name="descrizione" type="xsd:string"/>
 				</xsd:sequence>
 			</xsd:complexType>
 	
 			<xsd:complexType name="nodoChiediCopiaRT">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
-					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35" />
-					<xsd:element name="codiceContestoPagamento" type="ppt:stText35" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
+					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35"/>
+					<xsd:element name="codiceContestoPagamento" type="ppt:stText35"/>
 				</xsd:sequence>
 			</xsd:complexType>
 						
@@ -205,8 +212,8 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="tipoFirma" type="xsd:string" minOccurs="0" />
-							<xsd:element name="rt" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" />
+							<xsd:element name="tipoFirma" type="xsd:string" minOccurs="0"/>
+							<xsd:element name="rt" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -214,13 +221,13 @@
 			
 			<xsd:complexType name="nodoInviaRichiestaStorno">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
-					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35" />
-					<xsd:element name="codiceContestoPagamento" type="ppt:stText35" />
-					<xsd:element name="rr" type="xsd:base64Binary" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
+					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35"/>
+					<xsd:element name="codiceContestoPagamento" type="ppt:stText35"/>
+					<xsd:element name="rr" type="xsd:base64Binary"/>
 				</xsd:sequence>
 			</xsd:complexType>
 						
@@ -228,7 +235,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
+							<xsd:element name="esito" type="xsd:string" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -236,12 +243,12 @@
 			
 			<xsd:complexType name="nodoInviaRPT">
 				<xsd:sequence>
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoPSP" type="ppt:stText35" />
-					<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="identificativoCanale" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="tipoFirma" type="xsd:string" />
-					<xsd:element name="rpt" type="xsd:base64Binary" />
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoPSP" type="ppt:stText35"/>
+					<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="identificativoCanale" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="tipoFirma" type="xsd:string"/>
+					<xsd:element name="rpt" type="xsd:base64Binary"/>
 				</xsd:sequence>
 			</xsd:complexType>
 		
@@ -249,9 +256,9 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esito" type="xsd:string" minOccurs="0" />
-							<xsd:element name="redirect" type="xsd:int" default="0" minOccurs="0" />
-							<xsd:element name="url" type="xsd:string" default="" minOccurs="0" />
+							<xsd:element name="esito" type="xsd:string" minOccurs="0"/>
+							<xsd:element name="redirect" type="xsd:int" default="0" minOccurs="0"/>
+							<xsd:element name="url" type="xsd:string" default="" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -259,27 +266,27 @@
 
 			<xsd:complexType name="nodoInviaCarrelloRPT">
 				<xsd:sequence>
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoPSP" type="ppt:stText35" />
-					<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="identificativoCanale" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="listaRPT" type="ppt:tipoListaRPT" />
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoPSP" type="ppt:stText35"/>
+					<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="identificativoCanale" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="listaRPT" type="ppt:tipoListaRPT"/>
 				</xsd:sequence>
 			</xsd:complexType>
 			
 			<xsd:complexType name="tipoListaRPT">
 				<xsd:sequence>
-					<xsd:element name="elementoListaRPT" type="ppt:tipoElementoListaRPT" minOccurs="1" maxOccurs="unbounded" />
+					<xsd:element name="elementoListaRPT" type="ppt:tipoElementoListaRPT" minOccurs="1" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:complexType>
 			
 			<xsd:complexType name="tipoElementoListaRPT">
 				<xsd:sequence>
 					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
-					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35" />
-					<xsd:element name="codiceContestoPagamento" type="ppt:stText35" />
-					<xsd:element name="tipoFirma" type="xsd:string" minOccurs="0" />
-					<xsd:element name="rpt" type="xsd:base64Binary" />
+					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35"/>
+					<xsd:element name="codiceContestoPagamento" type="ppt:stText35"/>
+					<xsd:element name="tipoFirma" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="rpt" type="xsd:base64Binary"/>
 				</xsd:sequence>
 			</xsd:complexType>
 			
@@ -287,9 +294,9 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="esitoComplessivoOperazione" type="xsd:string" />
-							<xsd:element name="url" type="xsd:string" default="" minOccurs="0" />
-							<xsd:element name="listaErroriRPT" type="ppt:listaErroriRPT" minOccurs="0" />
+							<xsd:element name="esitoComplessivoOperazione" type="xsd:string"/>
+							<xsd:element name="url" type="xsd:string" default="" minOccurs="0"/>
+							<xsd:element name="listaErroriRPT" type="ppt:listaErroriRPT" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>	
 				</xsd:complexContent>
@@ -297,19 +304,19 @@
 			
 			<xsd:complexType name="listaErroriRPT">
 				<xsd:sequence>
-					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="fault" type="ppt:faultBean" minOccurs="0" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:complexType>
 			
 			<xsd:complexType name="nodoChiediListaPendentiRPT">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="rangeDa" type="xsd:dateTime" minOccurs="0" />
-					<xsd:element name="rangeA" type="xsd:dateTime" minOccurs="0" />
-					<xsd:element name="dimensioneLista" type="xsd:positiveInteger" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="rangeDa" type="xsd:dateTime" minOccurs="0"/>
+					<xsd:element name="rangeA" type="xsd:dateTime" minOccurs="0"/>
+					<xsd:element name="dimensioneLista" type="xsd:positiveInteger"/>
 				</xsd:sequence>
 			</xsd:complexType>
 		
@@ -317,7 +324,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="listaRPTPendenti" type="ppt:tipoListaRPTPendenti" minOccurs="0" />
+							<xsd:element name="listaRPTPendenti" type="ppt:tipoListaRPTPendenti" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -325,25 +332,25 @@
 		
 			<xsd:complexType name="tipoListaRPTPendenti">
 				<xsd:sequence>
-					<xsd:element name="totRestituiti" type="xsd:int" />
-					<xsd:element name="rptPendente" type="ppt:tipoRPTPendente" nillable="true" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="totRestituiti" type="xsd:int"/>
+					<xsd:element name="rptPendente" type="ppt:tipoRPTPendente" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:complexType>
 		
 			<xsd:complexType name="tipoRPTPendente">
 				<xsd:sequence>
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
-					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35" />
-					<xsd:element name="codiceContestoPagamento" type="ppt:stText35" />
-					<xsd:element name="stato" type="xsd:string" />
+					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
+					<xsd:element name="identificativoUnivocoVersamento" type="ppt:stText35"/>
+					<xsd:element name="codiceContestoPagamento" type="ppt:stText35"/>
+					<xsd:element name="stato" type="xsd:string"/>
 				</xsd:sequence>
 			</xsd:complexType>
 
 			<xsd:complexType name="nodoChiediInformativaPSP">
 				<xsd:sequence>
 					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
 					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0"/>
 					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0"/>
 				</xsd:sequence>
@@ -353,7 +360,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="xmlInformativa" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" />
+							<xsd:element name="xmlInformativa" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -361,10 +368,10 @@
 
 			<xsd:complexType name="nodoChiediElencoQuadraturePA">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0"/>
 				</xsd:sequence>
 			</xsd:complexType>
 		
@@ -372,7 +379,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="listaQuadrature" type="ppt:tipoListaQuadrature" minOccurs="0" />
+							<xsd:element name="listaQuadrature" type="ppt:tipoListaQuadrature" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -380,25 +387,25 @@
 		
 			<xsd:complexType name="tipoListaQuadrature">
 				<xsd:sequence>
-					<xsd:element name="totRestituiti" type="xsd:int" />
-					<xsd:element name="idQuadratura" type="ppt:tipoIdQuadratura" nillable="true" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="totRestituiti" type="xsd:int"/>
+					<xsd:element name="idQuadratura" type="ppt:tipoIdQuadratura" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:complexType>
 		
 			<xsd:complexType name="tipoIdQuadratura">
 				<xsd:sequence>
-					<xsd:element name="identificativoFlusso" type="xsd:string" />
-					<xsd:element name="dataOraFlusso" type="xsd:dateTime" />
+					<xsd:element name="identificativoFlusso" type="xsd:string"/>
+					<xsd:element name="dataOraFlusso" type="xsd:dateTime"/>
 				</xsd:sequence>
 			</xsd:complexType>
 	
 			<xsd:complexType name="nodoChiediQuadraturaPA">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="identificativoFlusso" type="xsd:string" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="identificativoFlusso" type="xsd:string"/>
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -406,7 +413,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="xmlQuadratura" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" />
+							<xsd:element name="xmlQuadratura" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -414,11 +421,11 @@
 
 			<xsd:complexType name="nodoChiediElencoFlussiRendicontazione">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0"/>
 				</xsd:sequence>
 			</xsd:complexType>
 		
@@ -426,7 +433,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="elencoFlussiRendicontazione" type="ppt:tipoElencoFlussiRendicontazione" minOccurs="0" />
+							<xsd:element name="elencoFlussiRendicontazione" type="ppt:tipoElencoFlussiRendicontazione" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -434,26 +441,26 @@
 		
 			<xsd:complexType name="tipoElencoFlussiRendicontazione">
 				<xsd:sequence>
-					<xsd:element name="totRestituiti" type="xsd:int" />
-					<xsd:element name="idRendicontazione" type="ppt:tipoIdRendicontazione" nillable="true" minOccurs="0" maxOccurs="unbounded" />
+					<xsd:element name="totRestituiti" type="xsd:int"/>
+					<xsd:element name="idRendicontazione" type="ppt:tipoIdRendicontazione" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
 				</xsd:sequence>
 			</xsd:complexType>
 		
 			<xsd:complexType name="tipoIdRendicontazione">
 				<xsd:sequence>
-					<xsd:element name="identificativoFlusso" type="xsd:string" />
-					<xsd:element name="dataOraFlusso" type="xsd:dateTime" />
+					<xsd:element name="identificativoFlusso" type="xsd:string"/>
+					<xsd:element name="dataOraFlusso" type="xsd:dateTime"/>
 				</xsd:sequence>
 			</xsd:complexType>
 			
 			<xsd:complexType name="nodoChiediFlussoRendicontazione">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0" />
-					<xsd:element name="identificativoFlusso" type="xsd:string" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="identificativoPSP" type="ppt:stText35" minOccurs="0"/>
+					<xsd:element name="identificativoFlusso" type="xsd:string"/>
 				</xsd:sequence>
 			</xsd:complexType>
 
@@ -461,7 +468,7 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="xmlRendicontazione" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime" />
+							<xsd:element name="xmlRendicontazione" type="xsd:base64Binary" minOccurs="0" xmime:expectedContentTypes="application/octet-stream" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -469,12 +476,12 @@
 			
 			<xsd:complexType name="nodoChiediSceltaWISP">
 				<xsd:sequence>
-					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35" />
-					<xsd:element name="password" type="ppt:stPassword" />
-					<xsd:element name="identificativoDominio" type="ppt:stText35" />
-					<xsd:element name="keyPA" type="ppt:stText35" />
-					<xsd:element name="keyWISP" type="ppt:stText35" />
+					<xsd:element name="identificativoIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="identificativoStazioneIntermediarioPA" type="ppt:stText35"/>
+					<xsd:element name="password" type="ppt:stPassword"/>
+					<xsd:element name="identificativoDominio" type="ppt:stText35"/>
+					<xsd:element name="keyPA" type="ppt:stText40"/>
+					<xsd:element name="keyWISP" type="ppt:stText40"/>
 				</xsd:sequence>
 			</xsd:complexType>
 						
@@ -482,11 +489,11 @@
 				<xsd:complexContent>
 					<xsd:extension base="ppt:risposta">
 						<xsd:sequence>
-							<xsd:element name="effettuazioneScelta" type="ppt:stEffettuazioneScelta" minOccurs="0" />
+							<xsd:element name="effettuazioneScelta" type="ppt:stEffettuazioneScelta" minOccurs="0"/>
 							<xsd:element name="identificativoPSP" type="ppt:stText35"  minOccurs="0" />
-							<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" minOccurs="0" />
-							<xsd:element name="identificativoCanale" type="ppt:stText35" minOccurs="0" />
-							<xsd:element name="tipoVersamento" type="ppt:stTipoVersamento" minOccurs="0" />
+							<xsd:element name="identificativoIntermediarioPSP" type="ppt:stText35" minOccurs="0"/>
+							<xsd:element name="identificativoCanale" type="ppt:stText35" minOccurs="0"/>
+							<xsd:element name="tipoVersamento" type="ppt:stTipoVersamento" minOccurs="0"/>
 						</xsd:sequence>
 					</xsd:extension>
 				</xsd:complexContent>
@@ -545,46 +552,46 @@
 	</wsdl:message>
 	
 	<wsdl:message name="nodoChiediInformativaPSP">
-		<wsdl:part name="bodyrichiesta" element="ppt:nodoChiediInformativaPSP"></wsdl:part>
+		<wsdl:part name="bodyrichiesta" element="ppt:nodoChiediInformativaPSP"/>
 	</wsdl:message>
 
 	<wsdl:message name="nodoChiediInformativaPSPResponse">
-		<wsdl:part name="bodyrisposta" element="ppt:nodoChiediInformativaPSPRisposta"></wsdl:part>
+		<wsdl:part name="bodyrisposta" element="ppt:nodoChiediInformativaPSPRisposta"/>
 	</wsdl:message>
 	
 	<wsdl:message name="nodoChiediElencoQuadraturePA">
-		<wsdl:part name="bodyrichiesta" element="ppt:nodoChiediElencoQuadraturePA"></wsdl:part>
+		<wsdl:part name="bodyrichiesta" element="ppt:nodoChiediElencoQuadraturePA"/>
 	</wsdl:message>
 	<wsdl:message name="nodoChiediElencoQuadraturePAResponse">
-		<wsdl:part name="bodyrisposta" element="ppt:nodoChiediElencoQuadraturePARisposta"></wsdl:part>
+		<wsdl:part name="bodyrisposta" element="ppt:nodoChiediElencoQuadraturePARisposta"/>
 	</wsdl:message>
 	
 	<wsdl:message name="nodoChiediQuadraturaPA">
-		<wsdl:part name="parameters" element="ppt:nodoChiediQuadraturaPA"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoChiediQuadraturaPA"/>
 	</wsdl:message>
 	<wsdl:message name="nodoChiediQuadraturaPAResponse">
-		<wsdl:part name="parameters" element="ppt:nodoChiediQuadraturaPARisposta"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoChiediQuadraturaPARisposta"/>
 	</wsdl:message>
 	
 	<wsdl:message name="nodoChiediElencoFlussiRendicontazione">
-		<wsdl:part name="parameters" element="ppt:nodoChiediElencoFlussiRendicontazione"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoChiediElencoFlussiRendicontazione"/>
 	</wsdl:message>
 	<wsdl:message name="nodoChiediElencoFlussiRendicontazioneResponse">
-		<wsdl:part name="parameters" element="ppt:nodoChiediElencoFlussiRendicontazioneRisposta"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoChiediElencoFlussiRendicontazioneRisposta"/>
 	</wsdl:message>
 	
 	<wsdl:message name="nodoChiediFlussoRendicontazione">
-		<wsdl:part name="parameters" element="ppt:nodoChiediFlussoRendicontazione"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoChiediFlussoRendicontazione"/>
 	</wsdl:message>
 	<wsdl:message name="nodoChiediFlussoRendicontazioneResponse">
-		<wsdl:part name="parameters" element="ppt:nodoChiediFlussoRendicontazioneRisposta"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoChiediFlussoRendicontazioneRisposta"/>
 	</wsdl:message>
 	
 	<wsdl:message name="nodoInviaRichiestaStorno">
-		<wsdl:part name="parameters" element="ppt:nodoInviaRichiestaStorno"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoInviaRichiestaStorno"/>
 	</wsdl:message>
 	<wsdl:message name="nodoInviaRichiestaStornoResponse">
-		<wsdl:part name="parameters" element="ppt:nodoInviaRichiestaStornoRisposta"></wsdl:part>
+		<wsdl:part name="parameters" element="ppt:nodoInviaRichiestaStornoRisposta"/>
 	</wsdl:message>
 	
 	<wsdl:message name="nodoChiediSceltaWISP">
@@ -631,29 +638,29 @@
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediInformativaPSP">
-			<wsdl:input name="nodoChiediInformativaPSP" message="tns:nodoChiediInformativaPSP" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRichiesta"></wsdl:input>
-			<wsdl:output name="nodoChiediInformativaPSPResponse" message="tns:nodoChiediInformativaPSPResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRisposta"></wsdl:output>
+			<wsdl:input name="nodoChiediInformativaPSP" message="tns:nodoChiediInformativaPSP" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRichiesta"/>
+			<wsdl:output name="nodoChiediInformativaPSPResponse" message="tns:nodoChiediInformativaPSPResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediInformativaPSPRisposta"/>
 		</wsdl:operation>
 
 		<wsdl:operation name="nodoChiediElencoQuadraturePA">
-			<wsdl:input name="nodoChiediElencoQuadraturePA" message="tns:nodoChiediElencoQuadraturePA" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARichiesta"></wsdl:input>
-			<wsdl:output name="nodoChiediElencoQuadraturePAResponse" message="tns:nodoChiediElencoQuadraturePAResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARisposta"></wsdl:output>
+			<wsdl:input name="nodoChiediElencoQuadraturePA" message="tns:nodoChiediElencoQuadraturePA" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARichiesta"/>
+			<wsdl:output name="nodoChiediElencoQuadraturePAResponse" message="tns:nodoChiediElencoQuadraturePAResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoQuadraturePARisposta"/>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediQuadraturaPA">
-			<wsdl:input name="nodoChiediQuadraturaPA" message="tns:nodoChiediQuadraturaPA" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARichiesta"></wsdl:input>
-			<wsdl:output name="nodoChiediQuadraturaPAResponse" message="tns:nodoChiediQuadraturaPAResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARisposta"></wsdl:output>
+			<wsdl:input name="nodoChiediQuadraturaPA" message="tns:nodoChiediQuadraturaPA" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARichiesta"/>
+			<wsdl:output name="nodoChiediQuadraturaPAResponse" message="tns:nodoChiediQuadraturaPAResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediQuadraturaPARisposta"/>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediElencoFlussiRendicontazione">
-			<wsdl:input name="nodoChiediElencoFlussiRendicontazione" message="tns:nodoChiediElencoFlussiRendicontazione" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRichiesta"></wsdl:input>
-			<wsdl:output name="nodoChiediElencoFlussiRendicontazioneResponse" message="tns:nodoChiediElencoFlussiRendicontazioneResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRisposta"></wsdl:output>
+			<wsdl:input name="nodoChiediElencoFlussiRendicontazione" message="tns:nodoChiediElencoFlussiRendicontazione" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRichiesta"/>
+			<wsdl:output name="nodoChiediElencoFlussiRendicontazioneResponse" message="tns:nodoChiediElencoFlussiRendicontazioneResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediElencoFlussiRendicontazioneRisposta"/>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediFlussoRendicontazione">
-			<wsdl:input name="nodoChiediFlussoRendicontazione" message="tns:nodoChiediFlussoRendicontazione" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRichiesta"></wsdl:input>
-			<wsdl:output name="nodoChiediFlussoRendicontazioneResponse" message="tns:nodoChiediFlussoRendicontazioneResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRisposta"></wsdl:output>
+			<wsdl:input name="nodoChiediFlussoRendicontazione" message="tns:nodoChiediFlussoRendicontazione" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRichiesta"/>
+			<wsdl:output name="nodoChiediFlussoRendicontazioneResponse" message="tns:nodoChiediFlussoRendicontazioneResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediFlussoRendicontazioneRisposta"/>
 		</wsdl:operation>
 		<wsdl:operation name="nodoInviaRichiestaStorno">
-			<wsdl:input name="nodoInviaRichiestaStorno" message="tns:nodoInviaRichiestaStorno" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStorno" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStorno"></wsdl:input>
-			<wsdl:output name="nodoInviaRichiestaStornoResponse" message="tns:nodoInviaRichiestaStornoResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStornoRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStornoRisposta"></wsdl:output>
+			<wsdl:input name="nodoInviaRichiestaStorno" message="tns:nodoInviaRichiestaStorno" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStorno" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStorno"/>
+			<wsdl:output name="nodoInviaRichiestaStornoResponse" message="tns:nodoInviaRichiestaStornoResponse" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStornoRisposta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoInviaRichiestaStornoRisposta"/>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediSceltaWISP">
 			<wsdl:input name="nodoChiediSceltaWISP" message="tns:nodoChiediSceltaWISP" wsam:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediSceltaWISPRichiesta" wsaw:Action="http://ws.pagamenti.telematici.gov/PPT/nodoChiediSceltaWISPRichiesta">
@@ -664,124 +671,125 @@
 	</wsdl:portType>
 	
 	<wsdl:binding name="PagamentiTelematiciRPTbinding" type="tns:PagamentiTelematiciRPT">
-		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
 		<wsdl:operation name="nodoChiediStatoRPT">
-			<soap:operation soapAction="nodoChiediStatoRPT" style="document" />
+			<soap:operation soapAction="nodoChiediStatoRPT" style="document"/>
 			<wsdl:input name="nodoChiediStatoRPT">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediStatoRPTResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 			
 		<wsdl:operation name="nodoChiediListaPendentiRPT">
-			<soap:operation soapAction="nodoChiediListaPendentiRPT" style="document" />
+			<soap:operation soapAction="nodoChiediListaPendentiRPT" style="document"/>
 			<wsdl:input name="nodoChiediListaPendentiRPT">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediListaPendentiRPTResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoInviaRPT">
-			<soap:operation soapAction="nodoInviaRPT" style="document" />
+			<soap:operation soapAction="nodoInviaRPT" style="document"/>
 			<wsdl:input name="nodoInviaRPT">
 				<soap:header message="tns:nodoInviaRPT" part="header" use="literal">
 				</soap:header>
-				<soap:body parts="bodyrichiesta" use="literal" />
+				<soap:body parts="bodyrichiesta" use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoInviaRPTResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoInviaCarrelloRPT">
-			<soap:operation soapAction="nodoInviaCarrelloRPT" style="document" />
+			<soap:operation soapAction="nodoInviaCarrelloRPT" style="document"/>
 			<wsdl:input name="nodoInviaCarrelloRPT">
 				<soap:header message="tns:nodoInviaCarrelloRPT" part="header" use="literal">
 				</soap:header>
-				<soap:body parts="bodyrichiesta" use="literal" />
+				<soap:body parts="bodyrichiesta" use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoInviaCarrelloRPTResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediCopiaRT">
-			<soap:operation soapAction="nodoChiediCopiaRT" style="document" />
+			<soap:operation soapAction="nodoChiediCopiaRT" style="document"/>
 			<wsdl:input name="nodoChiediCopiaRT">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediCopiaRTResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediInformativaPSP">
-			<soap:operation soapAction="nodoChiediInformativaPSP" style="document" />
+			<soap:operation soapAction="nodoChiediInformativaPSP" style="document"/>
 			<wsdl:input name="nodoChiediInformativaPSP">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediInformativaPSPResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediElencoQuadraturePA">
-			<soap:operation soapAction="nodoChiediElencoQuadraturePA" style="document" />
+			<soap:operation soapAction="nodoChiediElencoQuadraturePA" style="document"/>
 			<wsdl:input name="nodoChiediElencoQuadraturePA">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediElencoQuadraturePAResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediQuadraturaPA">
-			<soap:operation soapAction="nodoChiediQuadraturaPA" style="document" />
+			<soap:operation soapAction="nodoChiediQuadraturaPA" style="document"/>
 			<wsdl:input name="nodoChiediQuadraturaPA">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediQuadraturaPAResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediElencoFlussiRendicontazione">
-			<soap:operation soapAction="nodoChiediElencoFlussiRendicontazione" style="document" />
+			<soap:operation soapAction="nodoChiediElencoFlussiRendicontazione" style="document"/>
 			<wsdl:input name="nodoChiediElencoFlussiRendicontazione">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediElencoFlussiRendicontazioneResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediFlussoRendicontazione">
-			<soap:operation soapAction="nodoChiediFlussoRendicontazione" style="document" />
+			<soap:operation soapAction="nodoChiediFlussoRendicontazione" style="document"/>
 			<wsdl:input name="nodoChiediFlussoRendicontazione">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediFlussoRendicontazioneResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoInviaRichiestaStorno">
-			<soap:operation soapAction="nodoInviaRichiestaStorno" style="document" />
+			<soap:operation soapAction="nodoInviaRichiestaStorno" style="document"/>
 			<wsdl:input name="nodoInviaRichiestaStorno">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoInviaRichiestaStornoResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 		<wsdl:operation name="nodoChiediSceltaWISP">
-			<soap:operation soapAction="nodoChiediSceltaWISP" style="document" />
+			<soap:operation soapAction="nodoChiediSceltaWISP" style="document"/>
 			<wsdl:input name="nodoChiediSceltaWISP">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:input>
 			<wsdl:output name="nodoChiediSceltaWISPResponse">
-				<soap:body use="literal" />
+				<soap:body use="literal"/>
 			</wsdl:output>
 		</wsdl:operation>
 	</wsdl:binding>
 	<wsdl:service name="PagamentiTelematiciRPTservice">
 		<wsdl:port name="PagamentiTelematiciRPTPort" binding="tns:PagamentiTelematiciRPTbinding">
-			<soap:address location="http://NodoPagamentiSPC.spcoop.gov.it/" />
+			<soap:address location="http://NodoPagamentiSPC.spcoop.gov.it/"/>
 		</wsdl:port>
 	</wsdl:service>
 </wsdl:definitions>
+

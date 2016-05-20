@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,39 +20,42 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IdEnte;
-import it.govpay.orm.IdTributo;
-import it.govpay.orm.Tributo;
-import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.TributoFetch;
-
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+import java.sql.Connection;
 
 import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.FunctionField;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+
+import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdTributo;
+
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+
+import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.TributoFetch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.Tributo;
 
 /**     
  * JDBCTributoServiceSearchImpl
@@ -104,7 +107,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	
 		IdTributo idTributo = new IdTributo();
 		idTributo.setCodTributo(tributo.getCodTributo());
-		idTributo.setIdEnte(tributo.getIdEnte());
+		idTributo.setIdDominio(tributo.getIdDominio());
 	
 		return idTributo;
 	}
@@ -127,7 +130,6 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	
 	@Override
 	public List<IdTributo> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-
         // default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
@@ -138,26 +140,27 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(Tributo.model().COD_TRIBUTO);
-			fields.add(new CustomField("id_ente", Long.class, "id_ente", this.getTributoFieldConverter().toTable(Tributo.model())));
+
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
+        
 			for(Map<String, Object> map: returnMap) {
 				IdTributo idtributo = new IdTributo();
 				idtributo.setCodTributo((String) map.get("codTributo"));
-				Long idEnte = (Long) map.get("id_ente");
+				Long idUo = (Long) map.get("id_dominio");
 
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 					){
-						it.govpay.orm.IdEnte id_tributo_ente = null;
+						it.govpay.orm.IdDominio id_tributo_ente = null;
 						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_tributo_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findId(idEnte, false);
+							id_tributo_ente = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idUo, false);
 						}else{
-							id_tributo_ente = new it.govpay.orm.IdEnte();
-						}
-						id_tributo_ente.setId(idEnte);
-						idtributo.setIdEnte(id_tributo_ente);
+							id_tributo_ente = new it.govpay.orm.IdDominio();
+        }
+						id_tributo_ente.setId(idUo);
+						idtributo.setIdDominio(id_tributo_ente);
 					}
 
 				list.add(idtributo);
@@ -175,7 +178,6 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
         List<Tributo> list = new ArrayList<Tributo>();
 		try{
 			List<IField> fields = new ArrayList<IField>();
@@ -185,36 +187,42 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(Tributo.model().DESCRIZIONE);
 			fields.add(Tributo.model().TIPO_CONTABILITA);
 			fields.add(Tributo.model().CODICE_CONTABILITA);
-			fields.add(new CustomField("id_ente", Long.class, "id_ente", this.getTributoFieldConverter().toTable(Tributo.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getTributoFieldConverter().toTable(Tributo.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				Long idEnte = (Long) map.remove("id_ente");
-				Long idIbanAccredito = (Long) map.remove("id_iban_accredito");
+				Long idDominio = (Long) map.remove("id_dominio");
+				Object idIbanAccreditoObj = map.remove("id_iban_accredito");
+				Long idIbanAccredito = null;
+				if(idIbanAccreditoObj instanceof Long)
+					idIbanAccredito = (Long) idIbanAccreditoObj;
+				
+				
 				Tributo tributo = (Tributo)this.getTributoFetch().fetch(jdbcProperties.getDatabase(), Tributo.model(), map);
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 					){
-						it.govpay.orm.IdEnte id_tributo_ente = null;
+						it.govpay.orm.IdDominio id_tributo_Dominio = null;
 						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_tributo_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findId(idEnte, false);
+							id_tributo_Dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
 						}else{
-							id_tributo_ente = new it.govpay.orm.IdEnte();
+							id_tributo_Dominio = new it.govpay.orm.IdDominio();
 						}
-						id_tributo_ente.setId(idEnte);
-						tributo.setIdEnte(id_tributo_ente);
-						
-						it.govpay.orm.IdIbanAccredito id_tributo_ibanAccredito = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_tributo_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAccredito, false);
-						}else{
-							id_tributo_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
+						id_tributo_Dominio.setId(idDominio);
+						tributo.setIdDominio(id_tributo_Dominio);
+        
+						if(idIbanAccredito != null) {
+							it.govpay.orm.IdIbanAccredito id_tributo_ibanAccredito = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_tributo_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idIbanAccredito, false);
+							}else{
+								id_tributo_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
+							}
+							id_tributo_ibanAccredito.setId(idIbanAccredito);
+							tributo.setIdIbanAccredito(id_tributo_ibanAccredito);
 						}
-						id_tributo_ibanAccredito.setId(idIbanAccredito);
-						tributo.setIbanAccredito(id_tributo_ibanAccredito);
-
 					}
 
 				list.add(tributo);
@@ -500,13 +508,13 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdEnte()!=null && 
-				imgSaved.getIdEnte()!=null){
-			obj.getIdEnte().setId(imgSaved.getIdEnte().getId());
+		if(obj.getIdDominio()!=null && 
+				imgSaved.getIdDominio()!=null){
+			obj.getIdDominio().setId(imgSaved.getIdDominio().getId());
 		}
-		if(obj.getIbanAccredito()!=null && 
-				imgSaved.getIbanAccredito()!=null){
-			obj.getIbanAccredito().setId(imgSaved.getIbanAccredito().getId());
+		if(obj.getIdIbanAccredito()!=null && 
+				imgSaved.getIdIbanAccredito()!=null){
+			obj.getIdIbanAccredito().setId(imgSaved.getIdIbanAccredito().getId());
 		}
 
 	}
@@ -518,95 +526,21 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	
 	private Tributo _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-//		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-//					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-//		
-//		// default behaviour (id-mapping)
-//		if(idMappingResolutionBehaviour==null){
-//			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-//		}
-//		
-//		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-//				
-//		Tributo tributo = new Tributo();
-//		
-//
-//		// Object tributo
-//		ISQLQueryObject sqlQueryObjectGet_tributo = sqlQueryObjectGet.newSQLQueryObject();
-//		sqlQueryObjectGet_tributo.setANDLogicOperator(true);
-//		sqlQueryObjectGet_tributo.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model()));
-//		sqlQueryObjectGet_tributo.addSelectField("id");
-//		sqlQueryObjectGet_tributo.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO,true));
-//		sqlQueryObjectGet_tributo.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().ABILITATO,true));
-//		sqlQueryObjectGet_tributo.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().DESCRIZIONE,true));
-//		sqlQueryObjectGet_tributo.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().TIPO_CONTABILITA,true));
-//		sqlQueryObjectGet_tributo.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,true));
-//		sqlQueryObjectGet_tributo.addWhereCondition("id=?");
-//
-//		// Get tributo
-//		tributo = (Tributo) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_tributo.createSQLQuery(), jdbcProperties.isShowSql(), Tributo.model(), this.getTributoFetch(),
-//			new JDBCObject(tableId,Long.class));
-//
-//
-//		if(idMappingResolutionBehaviour==null ||
-//			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-//		){
-//			// Object _tributo_ente (recupero id)
-//			ISQLQueryObject sqlQueryObjectGet_tributo_ente_readFkId = sqlQueryObjectGet.newSQLQueryObject();
-//			sqlQueryObjectGet_tributo_ente_readFkId.addFromTable(this.getTributoFieldConverter().toTable(it.govpay.orm.Tributo.model()));
-//			sqlQueryObjectGet_tributo_ente_readFkId.addSelectField("id_ente");
-//			sqlQueryObjectGet_tributo_ente_readFkId.addWhereCondition("id=?");
-//			sqlQueryObjectGet_tributo_ente_readFkId.setANDLogicOperator(true);
-//			Long idFK_tributo_ente = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_tributo_ente_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
-//					new JDBCObject(tributo.getId(),Long.class));
-//			
-//			it.govpay.orm.IdEnte id_tributo_ente = null;
-//			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-//				id_tributo_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findId(idFK_tributo_ente, false);
-//			}else{
-//				id_tributo_ente = new it.govpay.orm.IdEnte();
-//			}
-//			id_tributo_ente.setId(idFK_tributo_ente);
-//			tributo.setIdEnte(id_tributo_ente);
-//		}
-//		if(idMappingResolutionBehaviour==null ||
-//			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-//		){
-//			// Object _tributo_ibanAccredito (recupero id)
-//			ISQLQueryObject sqlQueryObjectGet_tributo_ibanAccredito_readFkId = sqlQueryObjectGet.newSQLQueryObject();
-//			sqlQueryObjectGet_tributo_ibanAccredito_readFkId.addFromTable(this.getTributoFieldConverter().toTable(it.govpay.orm.Tributo.model()));
-//			sqlQueryObjectGet_tributo_ibanAccredito_readFkId.addSelectField("id_iban_accredito");
-//			sqlQueryObjectGet_tributo_ibanAccredito_readFkId.addWhereCondition("id=?");
-//			sqlQueryObjectGet_tributo_ibanAccredito_readFkId.setANDLogicOperator(true);
-//			Long idFK_tributo_ibanAccredito = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_tributo_ibanAccredito_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
-//					new JDBCObject(tributo.getId(),Long.class));
-//			
-//			it.govpay.orm.IdIbanAccredito id_tributo_ibanAccredito = null;
-//			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-//				id_tributo_ibanAccredito = ((JDBCIbanAccreditoServiceSearch)(this.getServiceManager().getIbanAccreditoServiceSearch())).findId(idFK_tributo_ibanAccredito, false);
-//			}else{
-//				id_tributo_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
-//			}
-//			id_tributo_ibanAccredito.setId(idFK_tributo_ibanAccredito);
-//			tributo.setIbanAccredito(id_tributo_ibanAccredito);
-//		}
-//
-//        return tributo;
-		
 		IField idField = new CustomField("id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model()));
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
 		expression.equals(idField, tableId);
 		expression.offset(0);
 		expression.limit(2);expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC); //per verificare la multiple results
-
+				
 		List<Tributo> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
-		
+
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
+
 
 		return lst.get(0);
 
@@ -643,25 +577,23 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-
+	
 		if(expression.inUseField(new CustomField("id_applicazione", Long.class, "id_applicazione", "applicazioni_tributi"), false)) {
 			sqlQueryObject.addWhereCondition("applicazioni_tributi.id_tributo=tributi.id");
 		}
 
-		if(expression.inUseModel(Tributo.model().ID_ENTE, false)) {
+		if(expression.inUseModel(Tributo.model().ID_DOMINIO, false)) {
 			String tableName1 = this.getTributoFieldConverter().toAliasTable(Tributo.model());
-			String tableName2 = this.getTributoFieldConverter().toAliasTable(Tributo.model().ID_ENTE);
-			sqlQueryObject.addWhereCondition(tableName1+".id_ente="+tableName2+".id");
-
+			String tableName2 = this.getTributoFieldConverter().toAliasTable(Tributo.model().ID_DOMINIO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(Tributo.model().IBAN_ACCREDITO, false)) {
+		if(expression.inUseModel(Tributo.model().ID_IBAN_ACCREDITO, false)) {
 			String tableName1 = this.getTributoFieldConverter().toAliasTable(Tributo.model());
-			String tableName2 = this.getTributoFieldConverter().toAliasTable(Tributo.model().IBAN_ACCREDITO);
+			String tableName2 = this.getTributoFieldConverter().toAliasTable(Tributo.model().ID_IBAN_ACCREDITO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_iban_accredito="+tableName2+".id");
-
 		}
-		
+        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdTributo id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -669,6 +601,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
 		Long longId = this.findIdTributo(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
+        
         
         return rootTableIdValues;
 	}
@@ -687,26 +620,18 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 				new CustomField("id", Long.class, "id", converter.toTable(Tributo.model()))
 			));
 
-		// Tributo.model().ID_ENTE
-		mapTableToPKColumn.put(converter.toTable(Tributo.model().ID_ENTE),
+		// Tributo.model().ID_DOMINIO
+		mapTableToPKColumn.put(converter.toTable(Tributo.model().ID_DOMINIO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Tributo.model().ID_ENTE))
+				new CustomField("id", Long.class, "id", converter.toTable(Tributo.model().ID_DOMINIO))
 			));
 
-		// Tributo.model().IBAN_ACCREDITO
-		mapTableToPKColumn.put(converter.toTable(Tributo.model().IBAN_ACCREDITO),
+		// Tributo.model().ID_IBAN_ACCREDITO
+		mapTableToPKColumn.put(converter.toTable(Tributo.model().ID_IBAN_ACCREDITO),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Tributo.model().IBAN_ACCREDITO))
+				new CustomField("id", Long.class, "id", converter.toTable(Tributo.model().ID_IBAN_ACCREDITO))
 			));
 
-
-
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
 
         return mapTableToPKColumn;		
 	}
@@ -770,10 +695,6 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -796,12 +717,12 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 
 		// Object _tributo
 		sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model()));
-		sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model().ID_ENTE));
+		sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model().ID_DOMINIO));
 		sqlQueryObjectGet.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO,true));
-		sqlQueryObjectGet.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().ID_ENTE.COD_ENTE,true));
+		sqlQueryObjectGet.addSelectField(this.getTributoFieldConverter().toColumn(Tributo.model().ID_DOMINIO.COD_DOMINIO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toTable(Tributo.model())+".id=?");
-		sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toTable(Tributo.model())+".id_ente="+this.getTributoFieldConverter().toTable(Tributo.model().ID_ENTE)+".id");
+		sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toTable(Tributo.model().ID_DOMINIO)+".id="+this.getTributoFieldConverter().toTable(Tributo.model().ID_DOMINIO)+".id_dominio");
 
 		// Recupero _tributo
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tributo = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
@@ -809,8 +730,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		};
 		List<Class<?>> listaFieldIdReturnType_tributo = new ArrayList<Class<?>>();
 		listaFieldIdReturnType_tributo.add(Tributo.model().COD_TRIBUTO.getFieldType());
-		listaFieldIdReturnType_tributo.add(Tributo.model().ID_ENTE.COD_ENTE.getFieldType());
-
+		listaFieldIdReturnType_tributo.add(Tributo.model().ID_DOMINIO.COD_DOMINIO.getFieldType());
 		it.govpay.orm.IdTributo id_tributo = null;
 		List<Object> listaFieldId_tributo = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_tributo, searchParams_tributo);
@@ -822,11 +742,10 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		else{
 			id_tributo = new it.govpay.orm.IdTributo();
 			id_tributo.setCodTributo((String)listaFieldId_tributo.get(0));
+			IdDominio idUo = new IdDominio();
+			idUo.setCodDominio((String)listaFieldId_tributo.get(1));
 			
-			IdEnte idEnte = new IdEnte();
-			idEnte.setCodEnte((String)listaFieldId_tributo.get(1));
-			
-			id_tributo.setIdEnte(idEnte);
+			id_tributo.setIdDominio(idUo);
 		}
 		
 		return id_tributo;
@@ -858,38 +777,35 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_tributo = null;
-		if(id.getIdEnte().getId() != null && id.getIdEnte().getId() > 0) {
+		if(id.getIdDominio().getId() != null && id.getIdDominio().getId() > 0) {
 			// Object _tributo
 			sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model()));
 			sqlQueryObjectGet.addSelectField("id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
 			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO,true)+"=?");
-			sqlQueryObjectGet.addWhereCondition("id_ente=?");
+			sqlQueryObjectGet.addWhereCondition("id_dominio=?");
 
 			// Recupero _tributo
 			searchParams_tributo = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodTributo(),Tributo.model().COD_TRIBUTO.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdEnte().getId(),Long.class)
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdDominio().getId(),Long.class)
 			};
-			
+
 		} else {
-			// Object _tributo
+			//Object _tributo
 			sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model()));
-			sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model().ID_ENTE));
+			sqlQueryObjectGet.addFromTable(this.getTributoFieldConverter().toTable(Tributo.model().ID_DOMINIO));
 			sqlQueryObjectGet.addSelectField(this.getTributoFieldConverter().toTable(Tributo.model())+".id");
 			sqlQueryObjectGet.setANDLogicOperator(true);
 			sqlQueryObjectGet.setSelectDistinct(true);
 			sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO,true)+"=?");
-			sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toColumn(Tributo.model().ID_ENTE.COD_ENTE,true)+"=?");
-			sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toTable(Tributo.model())+".id_ente="+this.getTributoFieldConverter().toTable(Tributo.model().ID_ENTE)+".id");
+			sqlQueryObjectGet.addWhereCondition(this.getTributoFieldConverter().toTable(Tributo.model())+".id_dominio="+this.getTributoFieldConverter().toTable(Tributo.model().ID_DOMINIO)+".id");
 
-			// Recupero _tributo
+			//Recupero _tributo
 			searchParams_tributo = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodTributo(),Tributo.model().COD_TRIBUTO.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdEnte().getCodEnte(),Tributo.model().ID_ENTE.COD_ENTE.getFieldType())
 			};
-			
 		}
 		Long id_tributo = null;
 		try{

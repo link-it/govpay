@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ import org.apache.log4j.Logger;
 import org.openspcoop2.utils.xml.AbstractValidatoreXSD;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.orm.TracciatoXML;
+import it.govpay.orm.Dominio;
 
 /** 
  * XSD Validator    
@@ -41,7 +41,7 @@ public class XSDValidator {
 	
 	private static synchronized void initValidator(Class<?> validatorImpl,Logger log) throws ServiceException{
 		if(validator==null){
-			validator = new org.openspcoop2.generic_project.utils.XSDValidator(log,TracciatoXML.class, 
+			validator = new org.openspcoop2.generic_project.utils.XSDValidator(log,Dominio.class, 
 				"/govpay.xsd"
 				// elencare in questa posizione altri schemi xsd che vengono inclusi/importati dallo schema /govpay.xsd
 			);

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ public class IdSingoloVersamentoModel extends AbstractModel<IdSingoloVersamento>
 		super();
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"id-singolo-versamento",IdSingoloVersamento.class));
-		this.INDICE = new Field("indice",int.class,"id-singolo-versamento",IdSingoloVersamento.class);
+		this.COD_SINGOLO_VERSAMENTO_ENTE = new Field("codSingoloVersamentoEnte",java.lang.String.class,"id-singolo-versamento",IdSingoloVersamento.class);
 	
 	}
 	
@@ -52,7 +52,7 @@ public class IdSingoloVersamentoModel extends AbstractModel<IdSingoloVersamento>
 		super(father);
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"id-singolo-versamento",IdSingoloVersamento.class));
-		this.INDICE = new ComplexField(father,"indice",int.class,"id-singolo-versamento",IdSingoloVersamento.class);
+		this.COD_SINGOLO_VERSAMENTO_ENTE = new ComplexField(father,"codSingoloVersamentoEnte",java.lang.String.class,"id-singolo-versamento",IdSingoloVersamento.class);
 	
 	}
 	
@@ -60,7 +60,7 @@ public class IdSingoloVersamentoModel extends AbstractModel<IdSingoloVersamento>
 
 	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
 	 
-	public IField INDICE = null;
+	public IField COD_SINGOLO_VERSAMENTO_ENTE = null;
 	 
 
 	@Override

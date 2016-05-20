@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,17 +29,20 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.Applicazione;
 import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
 
 public class ApplicazioneFilter extends AbstractFilter {
 
 	private List<Long> listaIdApplicazioni = null;
 	private CustomField cf;
+	private String codApplicazione = null;
 	
 	public enum SortFields {
 	}
@@ -59,10 +62,19 @@ public class ApplicazioneFilter extends AbstractFilter {
 	public IExpression toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression(); 
-			
+			boolean addAnd = false;
 			if(this.listaIdApplicazioni != null && this.listaIdApplicazioni.size() > 0){
-				newExpression.in(cf, listaIdApplicazioni);				
+				newExpression.in(cf, listaIdApplicazioni);
+				addAnd = true;
 			}
+			
+			if(this.codApplicazione != null){
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -85,6 +97,14 @@ public class ApplicazioneFilter extends AbstractFilter {
 
 	public void setListaIdApplicazioni(List<Long> listaIdApplicazioni) {
 		this.listaIdApplicazioni = listaIdApplicazioni;
+	}
+
+	public String getCodApplicazione() {
+		return codApplicazione;
+	}
+
+	public void setCodApplicazione(String codApplicazione) {
+		this.codApplicazione = codApplicazione;
 	}
 
 	

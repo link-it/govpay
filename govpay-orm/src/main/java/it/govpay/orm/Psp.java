@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,12 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Psp">
  * 		&lt;sequence>
- * 			&lt;element name="codPsp" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ragioneSociale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codFlusso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ragioneSociale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="urlInfo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="storno" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="marcaBollo" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -60,12 +58,10 @@ import java.io.Serializable;
   propOrder = {
   	"codPsp",
   	"ragioneSociale",
-  	"codFlusso",
   	"urlInfo",
   	"abilitato",
   	"storno",
-  	"marcaBollo",
-  	"idTracciato"
+  	"marcaBollo"
   }
 )
 
@@ -103,14 +99,6 @@ public class Psp extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   public void setRagioneSociale(java.lang.String ragioneSociale) {
     this.ragioneSociale = ragioneSociale;
-  }
-
-  public java.lang.String getCodFlusso() {
-    return this.codFlusso;
-  }
-
-  public void setCodFlusso(java.lang.String codFlusso) {
-    this.codFlusso = codFlusso;
   }
 
   public java.lang.String getUrlInfo() {
@@ -157,14 +145,6 @@ public class Psp extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.marcaBollo = marcaBollo;
   }
 
-  public IdTracciato getIdTracciato() {
-    return this.idTracciato;
-  }
-
-  public void setIdTracciato(IdTracciato idTracciato) {
-    this.idTracciato = idTracciato;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -193,10 +173,6 @@ public class Psp extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   protected java.lang.String ragioneSociale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codFlusso",required=true,nillable=false)
-  protected java.lang.String codFlusso;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="urlInfo",required=false,nillable=false)
   protected java.lang.String urlInfo;
 
@@ -211,8 +187,5 @@ public class Psp extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="marcaBollo",required=true,nillable=false)
   protected boolean marcaBollo;
-
-  @XmlElement(name="idTracciato",required=true,nillable=false)
-  protected IdTracciato idTracciato;
 
 }

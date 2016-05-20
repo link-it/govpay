@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,25 +21,17 @@
 package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.converter.AnagraficaConverter;
 import it.govpay.bd.model.converter.RptConverter;
-import it.govpay.bd.pagamento.TracciatiBD.TipoTracciato;
-import it.govpay.orm.Carrello;
-import it.govpay.orm.IdAnagrafica;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.orm.IdRpt;
-import it.govpay.orm.IdTracciato;
 import it.govpay.orm.RPT;
-import it.govpay.orm.TracciatoXML;
 import it.govpay.orm.dao.jdbc.JDBCRPTServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -47,8 +39,8 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
-import org.openspcoop2.generic_project.expression.SortOrder;
 
 public class RptBD extends BasicBD {
 
@@ -65,13 +57,15 @@ public class RptBD extends BasicBD {
 	 * @throws MultipleResultException
 	 * @throws ServiceException
 	 */
-	public Rpt getRpt(long idRpt) throws NotFoundException, ServiceException {
+	public Rpt getRpt(long idRpt) throws ServiceException {
 		try {
 			RPT rptVO = ((JDBCRPTServiceSearch)this.getRptService()).get(idRpt);
-			return toRpt(rptVO);
+			return RptConverter.toDTO(rptVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -90,8 +84,7 @@ public class RptBD extends BasicBD {
 			IdRpt id = new IdRpt();
 			id.setCodMsgRichiesta(codMsgRichiesta);
 			RPT rptVO = this.getRptService().get(id);
-			return toRpt(rptVO);
-
+			return RptConverter.toDTO(rptVO);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -99,65 +92,25 @@ public class RptBD extends BasicBD {
 		}
 	}
 	
-
-	/**
-	 * Recupera l'RPT afferente ad un Tributo con indice maggiore.
-	 * @param idVersamento
-	 * @return
-	 * @throws NotFoundException
-	 * @throws ServiceException
-	 */
-	public Rpt getLastRpt(long idVersamento) throws NotFoundException, ServiceException {
+	public Rpt getRpt(String codDominio, String iuv, String ccp) throws NotFoundException, ServiceException {
 		try {
-			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
-			RPTFieldConverter fieldConverter = new RPTFieldConverter(this.getJdbcProperties().getDatabaseType());
-			exp.equals(new CustomField("id_versamento", Long.class, "id_versamento", fieldConverter.toTable(it.govpay.orm.RPT.model())), idVersamento);
-			exp.sortOrder(SortOrder.DESC);
-			exp.addOrder(RPT.model().DATA_ORA_CREAZIONE);
-			exp.offset(0);
-			exp.limit(1);
-			List<RPT> rptLst = this.getRptService().findAll(exp);
-
-			if(rptLst.size() <= 0) {
-				throw new NotFoundException("Impossibile trovate un RPT con id versamento["+idVersamento+"]");	
-			}
-
-			return toRpt(rptLst.get(0));
-
+			IExpression exp = this.getRptService().newExpression();
+			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.equals(RPT.model().IUV, iuv);
+			exp.equals(RPT.model().CCP, ccp);
+			RPT rptVO = this.getRptService().find(exp);
+			return RptConverter.toDTO(rptVO);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
-		} 
-
+		}
 	}
-
-	public Rpt getRptByCodSessione(String codSessione) throws NotFoundException, ServiceException {
-		try {
-			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
-			exp.equals(it.govpay.orm.RPT.model().COD_SESSIONE, codSessione);
-			exp.sortOrder(SortOrder.DESC);
-			exp.addOrder(RPT.model().DATA_ORA_CREAZIONE);
-			exp.offset(0);
-			exp.limit(1);
-			List<RPT> rptLst = this.getRptService().findAll(exp);
-
-			if(rptLst.size() <= 0) {
-				throw new NotFoundException("Impossibile trovate un RPT con cod sessione["+codSessione+"]");	
-			}
-
-			return toRpt(rptLst.get(0));
-
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} 
-	}
+	
 
 	/**
 	 * Inserisce l'RPT.
@@ -167,43 +120,11 @@ public class RptBD extends BasicBD {
 	 * @throws NotFoundException
 	 * @throws ServiceException
 	 */
-	public void insertRpt(Rpt rpt, byte[] documento) throws NotFoundException, ServiceException {
+	public void insertRpt(Rpt rpt) throws ServiceException {
 		try {
 			RPT rptVo = RptConverter.toVO(rpt);
-			rptVo.setIdTracciatoXML(insertTracciato(rptVo.getCodMsgRichiesta(), documento));
-			if(rpt.getAnagraficaVersante() != null) {
-				rptVo.setIdAnagraficaVersante(insertAnagrafica(rpt.getAnagraficaVersante()));
-			}
 			this.getRptService().create(rptVo);
 			rpt.setId(rptVo.getId());
-			rpt.setIdTracciatoXML(rptVo.getIdTracciatoXML().getId());
-
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
-
-	
-	/**
-	 * Inserisce un carrello di RPT
-	 * 
-	 * @param codCarrello
-	 * @param idsRpt
-	 * @throws NotFoundException
-	 * @throws ServiceException
-	 */
-	public void insertCarrelloRpt(String codCarrello, List<Long> idsRpt) throws NotFoundException, ServiceException {
-		try {
-
-			for(Long rpt: idsRpt) {
-				Carrello carrello = new Carrello();
-				carrello.setCodCarrello(codCarrello);
-				IdRpt idRpt = new IdRpt();
-				idRpt.setId(rpt);
-				carrello.setIdRpt(idRpt);
-				this.getCarrelloService().create(carrello);
-			}
-
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -216,98 +137,32 @@ public class RptBD extends BasicBD {
 	 * @throws NotPermittedException
 	 * @throws ServiceException
 	 */
-	public void updateStatoRpt(long idRpt, Rpt.StatoRpt stato, Rpt.FaultNodo fault, String descrizione) throws NotFoundException, ServiceException{
+	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl) throws NotFoundException, ServiceException{
 		try {
-			if(!((JDBCRPTServiceSearch)this.getRptService()).exists(idRpt)) {
-				throw new NotFoundException("RPT con id ["+idRpt+"] non trovato.");
-			}
 			IdRpt idVO = ((JDBCRPTServiceSearch)this.getRptService()).findId(idRpt, true);
-
 			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
-
-			if(stato != null) {
-				lstUpdateFields.add(new UpdateField(RPT.model().STATO, stato.toString()));
-			}
-
-			if(fault != null) {
-				lstUpdateFields.add(new UpdateField(RPT.model().COD_FAULT, fault.toString()));
-			}
-
-			if(descrizione != null) {
-				lstUpdateFields.add(new UpdateField(RPT.model().DESCRIZIONE_STATO, descrizione));
-			}
+			lstUpdateFields.add(new UpdateField(RPT.model().STATO, stato.toString()));
+			lstUpdateFields.add(new UpdateField(RPT.model().DESCRIZIONE_STATO, descrizione));
+			lstUpdateFields.add(new UpdateField(RPT.model().DATA_AGGIORNAMENTO_STATO, new Date()));
+			if(codSessione != null)
+				lstUpdateFields.add(new UpdateField(RPT.model().COD_SESSIONE, codSessione));
+			if(pspRedirectUrl != null)
+				lstUpdateFields.add(new UpdateField(RPT.model().PSP_REDIRECT_URL, pspRedirectUrl));
 
 			this.getRptService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
-
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
-		}
-
-	}
-
-	public void updateRpt(long idRpt, String codSessione, String pspRedirectUrl) throws ServiceException, NotFoundException {
-		try {
-			if(!((JDBCRPTServiceSearch)this.getRptService()).exists(idRpt)) {
-				throw new NotFoundException("RPT con id ["+idRpt+"] non trovato.");
-			}
-			IdRpt idVO = ((JDBCRPTServiceSearch)this.getRptService()).findId(idRpt, true);
-
-			UpdateField sessioneField = new UpdateField(RPT.model().COD_SESSIONE, codSessione);
-			UpdateField pspRedirectUrlField = new UpdateField(RPT.model().PSP_REDIRECT_URL, pspRedirectUrl);
-			this.getRptService().updateFields(idVO, sessioneField, pspRedirectUrlField);
-
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
 	
-	
-	
-	private IdTracciato insertTracciato(String codMsgRichiesta, byte[] xml) throws ServiceException, NotImplementedException {
-		TracciatoXML tracciatoXML = new TracciatoXML();
-		tracciatoXML.setTipoTracciato(TipoTracciato.RPT.name());
-		tracciatoXML.setCodMessaggio(codMsgRichiesta);
-		tracciatoXML.setDataOraCreazione(new Date());
-		tracciatoXML.setXml(xml);
-
-		this.getTracciatoXMLService().create(tracciatoXML);
-
-		IdTracciato idTracciato = new IdTracciato();
-		idTracciato.setId(tracciatoXML.getId());
-
-		return idTracciato;
-	}
-	
-	private IdAnagrafica insertAnagrafica(Anagrafica anagraficaVersante)  throws ServiceException, NotImplementedException{
-		it.govpay.orm.Anagrafica voAnagrafica = AnagraficaConverter.toVO(anagraficaVersante);
-		this.getAnagraficaService().create(voAnagrafica);
-		IdAnagrafica idAnagrafica = new IdAnagrafica();
-		idAnagrafica.setId(voAnagrafica.getId());
-		return idAnagrafica;
-	}
-	
-	private Rpt toRpt(RPT rptVO) throws ServiceException, NotImplementedException {
-		return toRpt(rptVO, null);
-	}
-
-	private Rpt toRpt(RPT rptVO, it.govpay.orm.Anagrafica anagraficaVersante) throws ServiceException, NotImplementedException {
+	public void updateRpt(Long id, Rpt rpt) throws ServiceException {
 		try {
-			Rpt rpt = RptConverter.toDTO(rptVO);
-			if(rptVO.getIdAnagraficaVersante() != null && anagraficaVersante == null) {
-				IdAnagrafica idAnagrafica = new IdAnagrafica();
-				idAnagrafica.setId(rptVO.getIdAnagraficaVersante().getId());
-				anagraficaVersante = this.getAnagraficaService().get(idAnagrafica);
-			}
-			if(anagraficaVersante != null)
-				rpt.setAnagraficaVersante(AnagraficaConverter.toDTO(anagraficaVersante));
-			return rpt;
-		} catch (MultipleResultException e) {
-			throw new ServiceException(e);
+			it.govpay.orm.RPT vo = RptConverter.toVO(rpt);
+			IdRpt idRpt = this.getRptService().convertToId(vo);
+			this.getRptService().update(idRpt, vo);
 		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -317,20 +172,57 @@ public class RptBD extends BasicBD {
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
 			
 			exp.equals(RPT.model().COD_DOMINIO, codDominio);
-			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_INVIO_A_NODO_FALLITO.toString());
+			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_PSP.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RT_ACCETTATA_PA.toString());
 			
 			List<RPT> findAll = this.getRptService().findAll(exp);
-			List<Rpt> findAllDTO = new ArrayList<Rpt>();
-			if(findAll != null) {
-				for(RPT rpt: findAll) {
-					findAllDTO.add(toRpt(rpt));
-				}
+			return RptConverter.toDTOList(findAll);
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public RptFilter newFilter() throws ServiceException {
+		return new RptFilter(this.getRptService());
+	}
+
+	public long count(RptFilter filter) throws ServiceException {
+		try {
+			return this.getRptService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<Rpt> findAll(RptFilter filter) throws ServiceException {
+		try {
+			List<Rpt> rptLst = new ArrayList<Rpt>();
+			List<it.govpay.orm.RPT> rptVOLst = this.getRptService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.RPT rptVO: rptVOLst) {
+				rptLst.add(RptConverter.toDTO(rptVO));
 			}
-			return findAllDTO;
+			return rptLst;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public Rpt getRptByCodSessione(String codDominio, String idSession) throws ServiceException, NotFoundException, MultipleResultException {
+		try {
+			IExpression exp = this.getRptService().newExpression();
+			
+			if(codDominio != null) exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.equals(RPT.model().COD_SESSIONE, idSession);
+			
+			RPT vo = this.getRptService().find(exp);
+			return RptConverter.toDTO(vo);
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

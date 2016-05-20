@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 			}
 		}
 
+
 		// Object ibanAccredito
 		sqlQueryObjectInsert.addInsertTable(this.getIbanAccreditoFieldConverter().toTable(IbanAccredito.model()));
 		sqlQueryObjectInsert.addInsertField(this.getIbanAccreditoFieldConverter().toColumn(IbanAccredito.model().COD_IBAN,false),"?");
@@ -117,7 +118,6 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		);
 		ibanAccredito.setId(id);
 
-		
 	}
 
 	@Override
@@ -136,12 +136,12 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, ibanAccredito, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IbanAccredito ibanAccredito, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -177,6 +177,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 				}
 			}
 		}
+
 
 		// Object ibanAccredito
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -280,7 +281,7 @@ public class JDBCIbanAccreditoServiceImpl extends JDBCIbanAccreditoServiceSearch
 				this._getMapTableToPKColumn(), 
 				ids,
 				this.getIbanAccreditoFieldConverter(), this, updateModels);
-	}	
+	}
 	
 	@Override
 	public void updateOrCreate(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIbanAccredito oldId, IbanAccredito ibanAccredito, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException,ServiceException,Exception {

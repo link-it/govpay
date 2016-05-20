@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,18 +21,15 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rpt.Autenticazione;
-import it.govpay.bd.model.Rpt.FaultNodo;
+import it.govpay.bd.model.Canale.ModelloPagamento;
+import it.govpay.bd.model.Rpt.EsitoPagamento;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Rpt.StatoRpt;
-import it.govpay.bd.model.Rpt.TipoVersamento;
 import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPortale;
-import it.govpay.orm.IdPsp;
-import it.govpay.orm.IdStazione;
-import it.govpay.orm.IdTracciato;
 import it.govpay.orm.IdVersamento;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,118 +49,74 @@ public class RptConverter {
 
 	public static Rpt toDTO(it.govpay.orm.RPT vo) throws ServiceException {
 		Rpt dto = new Rpt();
-		dto.setId(vo.getId());
-		dto.setIuv(vo.getIuv());
+		dto.setCallbackURL(vo.getCallbackURL());
+		dto.setCcp(vo.getCcp());
+		dto.setCodCarrello(vo.getCodCarrello());
 		dto.setCodDominio(vo.getCodDominio());
-		dto.setIdVersamento(vo.getIdVersamento().getId());
-		if(vo.getIdTracciatoXML() != null)
-			dto.setIdTracciatoXML(vo.getIdTracciatoXML().getId());
-		
-		if(vo.getIdPsp() != null)
-			dto.setIdPsp(vo.getIdPsp().getId());
-		
-		if(vo.getIdCanale() != null)
-			dto.setIdCanale(vo.getIdCanale().getId());
-		
+		dto.setCodMsgRichiesta(vo.getCodMsgRichiesta());
+		dto.setCodMsgRicevuta(vo.getCodMsgRicevuta());
+		dto.setCodSessione(vo.getCodSessione());
+		dto.setCodStazione(vo.getCodStazione());
+		dto.setDataAggiornamento(vo.getDataAggiornamentoStato());
+		dto.setDataMsgRichiesta(vo.getDataMsgRichiesta());
+		dto.setDataMsgRicevuta(vo.getDataMsgRicevuta());
+		dto.setDescrizioneStato(vo.getDescrizioneStato());
+		if(vo.getCodEsitoPagamento() != null)
+			dto.setEsitoPagamento(EsitoPagamento.toEnum(vo.getCodEsitoPagamento()));
+		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRicevuta()));
+		dto.setId(vo.getId());
+		dto.setIdCanale(vo.getIdCanale().getId());
 		if(vo.getIdPortale() != null)
 			dto.setIdPortale(vo.getIdPortale().getId());
-		
-		if(vo.getIdStazione() != null)
-			dto.setIdStazione(vo.getIdStazione().getId());
-		
-		dto.setCodCarrello(vo.getCodCarrello());
-		dto.setCcp(vo.getCcp());
-		dto.setCodSessione(vo.getCodSessione());
-		dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
-		dto.setDataOraMsgRichiesta(vo.getDataOraMsgRichiesta());
-		dto.setDataOraCreazione(vo.getDataOraCreazione());
-		dto.setCodMsgRichiesta(vo.getCodMsgRichiesta());
-		dto.setIbanAddebito(vo.getIbanAddebito());
-		dto.setAutenticazioneSoggetto(Autenticazione.toEnum(vo.getAutenticazioneSoggetto()));
-		dto.setFirmaRichiesta(FirmaRichiesta.toEnum(vo.getFirmaRT()));
-		dto.setStatoRpt(StatoRpt.valueOf(vo.getStato()));
-		dto.setDescrizioneStato(vo.getDescrizioneStato());
-		if(vo.getCodFault() != null)
-			dto.setFaultCode(FaultNodo.valueOf(vo.getCodFault()));
-		dto.setCallbackURL(vo.getCallbackURL());
-
+		dto.setIdVersamento(vo.getIdVersamento().getId());
+		if(vo.getImportoTotalePagato() != null)
+			dto.setImportoTotalePagato(BigDecimal.valueOf(vo.getImportoTotalePagato()));
+		dto.setIuv(vo.getIuv());
+		dto.setModelloPagamento(ModelloPagamento.toEnum(Integer.parseInt(vo.getModelloPagamento())));
+		dto.setPspRedirectURL(vo.getPspRedirectURL());
+		dto.setStato(StatoRpt.valueOf(vo.getStato()));
+		dto.setXmlRpt(vo.getXmlRPT());
+		dto.setXmlRt(vo.getXmlRT());
 		return dto;
 	}
 
 	public static it.govpay.orm.RPT toVO(Rpt dto) {
 		it.govpay.orm.RPT vo = new it.govpay.orm.RPT();
-		vo.setId(dto.getId());
-		vo.setIuv(dto.getIuv());
+		vo.setCallbackURL(dto.getCallbackURL());
+		vo.setCcp(dto.getCcp());
+		vo.setCodCarrello(dto.getCodCarrello());
 		vo.setCodDominio(dto.getCodDominio());
-		
-		IdVersamento idVersamento = new IdVersamento();
-		idVersamento.setId(dto.getIdVersamento());
-		vo.setIdVersamento(idVersamento);
-		
-		if(dto.getIdTracciatoXML() != null) {
-			IdTracciato idTracciato = new IdTracciato();
-			idTracciato.setId(dto.getIdTracciatoXML());
-			vo.setIdTracciatoXML(idTracciato);
-		}
-		
-		
-		
-		IdPsp idPsp = new IdPsp();
-		idPsp.setId(dto.getIdPsp());
-		vo.setIdPsp(idPsp);
-		
+		if(dto.getEsitoPagamento() != null)
+			vo.setCodEsitoPagamento(dto.getEsitoPagamento().getCodifica());
+		vo.setCodMsgRichiesta(dto.getCodMsgRichiesta());
+		vo.setCodMsgRicevuta(dto.getCodMsgRicevuta());
+		vo.setCodSessione(dto.getCodSessione());
+		vo.setCodStazione(dto.getCodStazione());
+		vo.setDataAggiornamentoStato(dto.getDataAggiornamento());
+		vo.setDataMsgRichiesta(dto.getDataMsgRichiesta());
+		vo.setDataMsgRicevuta(dto.getDataMsgRicevuta());
+		vo.setDescrizioneStato(dto.getDescrizioneStato());
+		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
+		vo.setId(dto.getId());
+		IdCanale idCanale = new IdCanale();
+		idCanale.setId(dto.getIdCanale());
+		vo.setIdCanale(idCanale);
 		if(dto.getIdPortale() != null) {
 			IdPortale idPortale = new IdPortale();
 			idPortale.setId(dto.getIdPortale());
 			vo.setIdPortale(idPortale);
 		}
-		
-		
-		IdStazione idStazione = new IdStazione();
-		idStazione.setId(dto.getIdStazione());
-		vo.setIdStazione(idStazione);
-		
-		vo.setCodCarrello(dto.getCodCarrello());
-		vo.setCcp(dto.getCcp());
-		vo.setCodSessione(dto.getCodSessione());
-		if(dto.getTipoVersamento() != null) {
-			vo.setTipoVersamento(dto.getTipoVersamento().getCodifica());
-		} else {
-			vo.setTipoVersamento(null);
-		}
-		vo.setDataOraMsgRichiesta(dto.getDataOraMsgRichiesta());
-		vo.setDataOraCreazione(dto.getDataOraCreazione());
-		vo.setCodMsgRichiesta(dto.getCodMsgRichiesta());
-		vo.setIbanAddebito(dto.getIbanAddebito());
-		if(dto.getAutenticazioneSoggetto() != null) {
-			vo.setAutenticazioneSoggetto(dto.getAutenticazioneSoggetto().getCodifica());
-		} else {
-			vo.setAutenticazioneSoggetto(null);
-		}
-		if(dto.getFirmaRichiesta() != null) {
-			vo.setFirmaRT(dto.getFirmaRichiesta().getCodifica());
-		} else {
-			vo.setFirmaRT(null);
-		}
-		if(dto.getStatoRpt() != null) {
-			vo.setStato(dto.getStatoRpt().name());
-		} else {
-			vo.setStato(null);
-		}
-		
-		if(dto.getIdCanale() != null) {
-			IdCanale idCanale = new IdCanale();
-			idCanale.setId(dto.getIdCanale());
-			vo.setIdCanale(idCanale);
-		}
-		
-		vo.setDescrizioneStato(dto.getDescrizioneStato());
-		if(dto.getFaultCode() != null)
-			vo.setCodFault(dto.getFaultCode().name());
-		else
-			vo.setCodFault(null);
-		vo.setCallbackURL(dto.getCallbackURL());
-
+		IdVersamento idVersamento = new IdVersamento();
+		idVersamento.setId(dto.getIdVersamento());
+		vo.setIdVersamento(idVersamento);
+		if(dto.getImportoTotalePagato() != null)
+			vo.setImportoTotalePagato(dto.getImportoTotalePagato().doubleValue());
+		vo.setIuv(dto.getIuv());
+		vo.setModelloPagamento(Integer.toString(dto.getModelloPagamento().getCodifica()));
+		vo.setPspRedirectURL(dto.getCallbackURL());
+		vo.setStato(dto.getStato().toString());
+		vo.setXmlRPT(dto.getXmlRpt());
+		vo.setXmlRT(dto.getXmlRt());
 		return vo;
 	}
 

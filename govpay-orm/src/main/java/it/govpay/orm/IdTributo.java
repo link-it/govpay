@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="id-tributo">
  * 		&lt;sequence>
- * 			&lt;element name="idEnte" type="{http://www.govpay.it/orm}id-ente" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codTributo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -52,7 +52,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-tributo", 
   propOrder = {
-  	"idEnte",
+  	"idDominio",
   	"codTributo"
   }
 )
@@ -77,12 +77,12 @@ public class IdTributo extends org.openspcoop2.utils.beans.BaseBean implements S
 		this.id=new Long(-1);
   }
 
-  public IdEnte getIdEnte() {
-    return this.idEnte;
+  public IdDominio getIdDominio() {
+    return this.idDominio;
   }
 
-  public void setIdEnte(IdEnte idEnte) {
-    this.idEnte = idEnte;
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
   }
 
   public java.lang.String getCodTributo() {
@@ -100,8 +100,8 @@ public class IdTributo extends org.openspcoop2.utils.beans.BaseBean implements S
 
 
 
-  @XmlElement(name="idEnte",required=true,nillable=false)
-  protected IdEnte idEnte;
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codTributo",required=true,nillable=false)

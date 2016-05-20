@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,29 +37,29 @@ import java.io.Serializable;
  * &lt;complexType name="RPT">
  * 		&lt;sequence>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idPsp" type="{http://www.govpay.it/orm}id-psp" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idCanale" type="{http://www.govpay.it/orm}id-canale" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idCanale" type="{http://www.govpay.it/orm}id-canale" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idPortale" type="{http://www.govpay.it/orm}id-portale" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idTracciatoXML" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idStazione" type="{http://www.govpay.it/orm}id-stazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codCarrello" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="iuv" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ccp" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tipoVersamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idAnagraficaVersante" type="{http://www.govpay.it/orm}id-anagrafica" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataOraMsgRichiesta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataOraCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codMsgRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ibanAddebito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="autenticazioneSoggetto" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="firmaRT" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codFault" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="callbackURL" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codCarrello" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codMsgRichiesta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataMsgRichiesta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codSessione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pspRedirectURL" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="xmlRPT" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataAggiornamentoStato" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="callbackURL" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="modelloPagamento" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codMsgRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataMsgRicevuta" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codEsitoPagamento" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoTotalePagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="xmlRT" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codStazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -75,29 +75,29 @@ import java.io.Serializable;
 @XmlType(name = "RPT", 
   propOrder = {
   	"idVersamento",
-  	"idPsp",
   	"idCanale",
   	"idPortale",
-  	"idTracciatoXML",
-  	"idStazione",
   	"codCarrello",
   	"iuv",
   	"ccp",
   	"codDominio",
-  	"tipoVersamento",
-  	"idAnagraficaVersante",
-  	"dataOraMsgRichiesta",
-  	"dataOraCreazione",
   	"codMsgRichiesta",
-  	"ibanAddebito",
-  	"autenticazioneSoggetto",
-  	"firmaRT",
+  	"dataMsgRichiesta",
   	"stato",
   	"descrizioneStato",
-  	"codFault",
-  	"callbackURL",
   	"codSessione",
-  	"pspRedirectURL"
+  	"pspRedirectURL",
+  	"xmlRPT",
+  	"dataAggiornamentoStato",
+  	"callbackURL",
+  	"modelloPagamento",
+  	"codMsgRicevuta",
+  	"dataMsgRicevuta",
+  	"firmaRicevuta",
+  	"_decimalWrapper_codEsitoPagamento",
+  	"importoTotalePagato",
+  	"xmlRT",
+  	"codStazione"
   }
 )
 
@@ -129,14 +129,6 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.idVersamento = idVersamento;
   }
 
-  public IdPsp getIdPsp() {
-    return this.idPsp;
-  }
-
-  public void setIdPsp(IdPsp idPsp) {
-    this.idPsp = idPsp;
-  }
-
   public IdCanale getIdCanale() {
     return this.idCanale;
   }
@@ -151,22 +143,6 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   public void setIdPortale(IdPortale idPortale) {
     this.idPortale = idPortale;
-  }
-
-  public IdTracciato getIdTracciatoXML() {
-    return this.idTracciatoXML;
-  }
-
-  public void setIdTracciatoXML(IdTracciato idTracciatoXML) {
-    this.idTracciatoXML = idTracciatoXML;
-  }
-
-  public IdStazione getIdStazione() {
-    return this.idStazione;
-  }
-
-  public void setIdStazione(IdStazione idStazione) {
-    this.idStazione = idStazione;
   }
 
   public java.lang.String getCodCarrello() {
@@ -201,38 +177,6 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.codDominio = codDominio;
   }
 
-  public java.lang.String getTipoVersamento() {
-    return this.tipoVersamento;
-  }
-
-  public void setTipoVersamento(java.lang.String tipoVersamento) {
-    this.tipoVersamento = tipoVersamento;
-  }
-
-  public IdAnagrafica getIdAnagraficaVersante() {
-    return this.idAnagraficaVersante;
-  }
-
-  public void setIdAnagraficaVersante(IdAnagrafica idAnagraficaVersante) {
-    this.idAnagraficaVersante = idAnagraficaVersante;
-  }
-
-  public java.util.Date getDataOraMsgRichiesta() {
-    return this.dataOraMsgRichiesta;
-  }
-
-  public void setDataOraMsgRichiesta(java.util.Date dataOraMsgRichiesta) {
-    this.dataOraMsgRichiesta = dataOraMsgRichiesta;
-  }
-
-  public java.util.Date getDataOraCreazione() {
-    return this.dataOraCreazione;
-  }
-
-  public void setDataOraCreazione(java.util.Date dataOraCreazione) {
-    this.dataOraCreazione = dataOraCreazione;
-  }
-
   public java.lang.String getCodMsgRichiesta() {
     return this.codMsgRichiesta;
   }
@@ -241,28 +185,12 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.codMsgRichiesta = codMsgRichiesta;
   }
 
-  public java.lang.String getIbanAddebito() {
-    return this.ibanAddebito;
+  public java.util.Date getDataMsgRichiesta() {
+    return this.dataMsgRichiesta;
   }
 
-  public void setIbanAddebito(java.lang.String ibanAddebito) {
-    this.ibanAddebito = ibanAddebito;
-  }
-
-  public java.lang.String getAutenticazioneSoggetto() {
-    return this.autenticazioneSoggetto;
-  }
-
-  public void setAutenticazioneSoggetto(java.lang.String autenticazioneSoggetto) {
-    this.autenticazioneSoggetto = autenticazioneSoggetto;
-  }
-
-  public java.lang.String getFirmaRT() {
-    return this.firmaRT;
-  }
-
-  public void setFirmaRT(java.lang.String firmaRT) {
-    this.firmaRT = firmaRT;
+  public void setDataMsgRichiesta(java.util.Date dataMsgRichiesta) {
+    this.dataMsgRichiesta = dataMsgRichiesta;
   }
 
   public java.lang.String getStato() {
@@ -281,22 +209,6 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.descrizioneStato = descrizioneStato;
   }
 
-  public java.lang.String getCodFault() {
-    return this.codFault;
-  }
-
-  public void setCodFault(java.lang.String codFault) {
-    this.codFault = codFault;
-  }
-
-  public java.lang.String getCallbackURL() {
-    return this.callbackURL;
-  }
-
-  public void setCallbackURL(java.lang.String callbackURL) {
-    this.callbackURL = callbackURL;
-  }
-
   public java.lang.String getCodSessione() {
     return this.codSessione;
   }
@@ -311,6 +223,100 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   public void setPspRedirectURL(java.lang.String pspRedirectURL) {
     this.pspRedirectURL = pspRedirectURL;
+  }
+
+  public byte[] getXmlRPT() {
+    return this.xmlRPT;
+  }
+
+  public void setXmlRPT(byte[] xmlRPT) {
+    this.xmlRPT = xmlRPT;
+  }
+
+  public java.util.Date getDataAggiornamentoStato() {
+    return this.dataAggiornamentoStato;
+  }
+
+  public void setDataAggiornamentoStato(java.util.Date dataAggiornamentoStato) {
+    this.dataAggiornamentoStato = dataAggiornamentoStato;
+  }
+
+  public java.lang.String getCallbackURL() {
+    return this.callbackURL;
+  }
+
+  public void setCallbackURL(java.lang.String callbackURL) {
+    this.callbackURL = callbackURL;
+  }
+
+  public java.lang.String getModelloPagamento() {
+    return this.modelloPagamento;
+  }
+
+  public void setModelloPagamento(java.lang.String modelloPagamento) {
+    this.modelloPagamento = modelloPagamento;
+  }
+
+  public java.lang.String getCodMsgRicevuta() {
+    return this.codMsgRicevuta;
+  }
+
+  public void setCodMsgRicevuta(java.lang.String codMsgRicevuta) {
+    this.codMsgRicevuta = codMsgRicevuta;
+  }
+
+  public java.util.Date getDataMsgRicevuta() {
+    return this.dataMsgRicevuta;
+  }
+
+  public void setDataMsgRicevuta(java.util.Date dataMsgRicevuta) {
+    this.dataMsgRicevuta = dataMsgRicevuta;
+  }
+
+  public java.lang.String getFirmaRicevuta() {
+    return this.firmaRicevuta;
+  }
+
+  public void setFirmaRicevuta(java.lang.String firmaRicevuta) {
+    this.firmaRicevuta = firmaRicevuta;
+  }
+
+  public java.lang.Integer getCodEsitoPagamento() {
+    if(this._decimalWrapper_codEsitoPagamento!=null){
+		return (java.lang.Integer) this._decimalWrapper_codEsitoPagamento.getObject(java.lang.Integer.class);
+	}else{
+		return this.codEsitoPagamento;
+	}
+  }
+
+  public void setCodEsitoPagamento(java.lang.Integer codEsitoPagamento) {
+    if(codEsitoPagamento!=null){
+		this._decimalWrapper_codEsitoPagamento = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,codEsitoPagamento);
+	}
+  }
+
+  public java.lang.Double getImportoTotalePagato() {
+    return this.importoTotalePagato;
+  }
+
+  public void setImportoTotalePagato(java.lang.Double importoTotalePagato) {
+    this.importoTotalePagato = importoTotalePagato;
+  }
+
+  public byte[] getXmlRT() {
+    return this.xmlRT;
+  }
+
+  public void setXmlRT(byte[] xmlRT) {
+    this.xmlRT = xmlRT;
+  }
+
+  public java.lang.String getCodStazione() {
+    return this.codStazione;
+  }
+
+  public void setCodStazione(java.lang.String codStazione) {
+    this.codStazione = codStazione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -335,20 +341,11 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @XmlElement(name="idVersamento",required=true,nillable=false)
   protected IdVersamento idVersamento;
 
-  @XmlElement(name="idPsp",required=false,nillable=false)
-  protected IdPsp idPsp;
-
-  @XmlElement(name="idCanale",required=false,nillable=false)
+  @XmlElement(name="idCanale",required=true,nillable=false)
   protected IdCanale idCanale;
 
   @XmlElement(name="idPortale",required=false,nillable=false)
   protected IdPortale idPortale;
-
-  @XmlElement(name="idTracciatoXML",required=false,nillable=false)
-  protected IdTracciato idTracciatoXML;
-
-  @XmlElement(name="idStazione",required=false,nillable=false)
-  protected IdStazione idStazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codCarrello",required=false,nillable=false)
@@ -367,37 +364,13 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   protected java.lang.String codDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="tipoVersamento",required=false,nillable=false)
-  protected java.lang.String tipoVersamento;
-
-  @XmlElement(name="idAnagraficaVersante",required=false,nillable=false)
-  protected IdAnagrafica idAnagraficaVersante;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataOraMsgRichiesta",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataOraMsgRichiesta;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataOraCreazione",required=true,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataOraCreazione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codMsgRichiesta",required=true,nillable=false)
   protected java.lang.String codMsgRichiesta;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="ibanAddebito",required=false,nillable=false)
-  protected java.lang.String ibanAddebito;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="autenticazioneSoggetto",required=false,nillable=false)
-  protected java.lang.String autenticazioneSoggetto;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="firmaRT",required=true,nillable=false)
-  protected java.lang.String firmaRT;
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataMsgRichiesta",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataMsgRichiesta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
@@ -408,19 +381,61 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   protected java.lang.String descrizioneStato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codFault",required=false,nillable=false)
-  protected java.lang.String codFault;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="callbackURL",required=false,nillable=false)
-  protected java.lang.String callbackURL;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSessione",required=false,nillable=false)
   protected java.lang.String codSessione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pspRedirectURL",required=false,nillable=false)
   protected java.lang.String pspRedirectURL;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="xmlRPT",required=true,nillable=false)
+  protected byte[] xmlRPT;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataAggiornamentoStato",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataAggiornamentoStato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="callbackURL",required=false,nillable=false)
+  protected java.lang.String callbackURL;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="modelloPagamento",required=true,nillable=false)
+  protected java.lang.String modelloPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codMsgRicevuta",required=false,nillable=false)
+  protected java.lang.String codMsgRicevuta;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataMsgRicevuta",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataMsgRicevuta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="firmaRicevuta",required=true,nillable=false)
+  protected java.lang.String firmaRicevuta;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
+  @XmlElement(name="codEsitoPagamento",required=false,nillable=false)
+  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_codEsitoPagamento = null;
+
+  @XmlTransient
+  protected java.lang.Integer codEsitoPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @XmlElement(name="importoTotalePagato",required=false,nillable=false)
+  protected java.lang.Double importoTotalePagato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="xmlRT",required=false,nillable=false)
+  protected byte[] xmlRT;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codStazione",required=true,nillable=false)
+  protected java.lang.String codStazione;
 
 }

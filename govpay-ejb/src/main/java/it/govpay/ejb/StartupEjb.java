@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +23,16 @@ package it.govpay.ejb;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.business.Pagamenti;
-import it.govpay.business.RegistroPSP;
-import it.govpay.business.Rendicontazioni;
-import it.govpay.thread.ThreadExecutorManager;
-import it.govpay.utils.JaxbUtils;
+import it.govpay.core.business.Psp;
+import it.govpay.core.business.Rendicontazioni;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
 
+import java.io.File;
+import java.net.URI;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
@@ -39,6 +43,11 @@ import javax.ejb.Startup;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.apache.logging.log4j.core.LoggerContext;
+import org.openspcoop2.utils.logger.LoggerFactory;
+import org.openspcoop2.utils.logger.beans.proxy.Service;
+import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
+import org.openspcoop2.utils.logger.log4j.Log4jType;
 
 @Startup
 @Singleton
@@ -48,8 +57,51 @@ public class StartupEjb {
 	
 	@PostConstruct
 	public void init() {
-		ThreadContext.put("cmd", "Startup");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
+		
+		// Gestione della configurazione di Log4J
+		URI log4j2Config = null;
+		try {
+			log4j2Config = GovpayConfig.newInstance().getLog4j2Config();
+			if(log4j2Config != null) {
+				LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+				context.setConfigLocation(log4j2Config);
+			}
+		} catch (Exception e) {
+			log.warn("Errore durante la configurazione del Logger: " + e);
+		}
+		
+		try {
+			if(log4j2Config != null) {
+				LoggerFactory.initialize(Log4JLoggerWithProxyContext.class.getName(),
+						"/msgDiagnostici.properties",
+						false,
+						new File(log4j2Config), Log4jType.LOG4Jv2);
+			} else {
+				LoggerFactory.initialize(Log4JLoggerWithProxyContext.class.getName(),
+						"/msgDiagnostici.properties",
+						false,
+						"/log4j2.xml", Log4jType.LOG4Jv2);
+			}
+		} catch (Exception e) {
+			log.error("Errore durante la configurazione dei diagnostici", e);
+			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
+		}
+		
+		GpContext ctx = null;
+		
+		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "Inizializzazione");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Inizializzazione");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
+		} catch (Exception e) {
+			log.error("Errore durante predisposizione del contesto: " + e);
+			if(ctx != null) ctx.log();
+			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
+		}
 		
 		try {
 			AnagraficaManager.newInstance();
@@ -60,13 +112,14 @@ public class StartupEjb {
 		} catch (Exception e) {
 			log.error("Inizializzazione fallita", e);
 			shutdown();
+			ctx.log();
 			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
 		}
 		
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance();
-			new RegistroPSP(bd).aggiornaRegistro();
+			new Psp(bd).aggiornaRegistro();
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito",e);
 		} finally {
@@ -82,14 +135,7 @@ public class StartupEjb {
 			if(bd != null) bd.closeConnection();
 		}
 		
-		try {
-			bd = BasicBD.newInstance();
-			new Pagamenti(bd).verificaRptPedenti();
-		} catch (Exception e) {
-			log.info("Acquisizione Rpt pendenti fallita", e);
-		} finally {
-			if(bd != null) bd.closeConnection();
-		}
+		ctx.log();
 	}
 	
 	@PreDestroy
@@ -100,7 +146,7 @@ public class StartupEjb {
 		AnagraficaManager.unregister();
 		log.info("Shutdown pool thread esiti");
 		try {
-			ThreadExecutorManager.shutdown();
+//			ThreadExecutorManager.shutdown();
 		} catch (Exception e) {
 			log.warn("Shutdown pool thread esiti fallito:" + e);
 		}

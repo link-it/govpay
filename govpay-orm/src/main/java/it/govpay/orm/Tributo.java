@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,12 +36,12 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Tributo">
  * 		&lt;sequence>
- * 			&lt;element name="idEnte" type="{http://www.govpay.it/orm}id-ente" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codTributo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codTributo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ibanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -57,11 +57,11 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Tributo", 
   propOrder = {
-  	"idEnte",
+  	"idDominio",
   	"codTributo",
   	"abilitato",
   	"descrizione",
-  	"ibanAccredito",
+  	"idIbanAccredito",
   	"tipoContabilita",
   	"codiceContabilita"
   }
@@ -87,12 +87,12 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
 		this.id=new Long(-1);
   }
 
-  public IdEnte getIdEnte() {
-    return this.idEnte;
+  public IdDominio getIdDominio() {
+    return this.idDominio;
   }
 
-  public void setIdEnte(IdEnte idEnte) {
-    this.idEnte = idEnte;
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
   }
 
   public java.lang.String getCodTributo() {
@@ -123,12 +123,12 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.descrizione = descrizione;
   }
 
-  public IdIbanAccredito getIbanAccredito() {
-    return this.ibanAccredito;
+  public IdIbanAccredito getIdIbanAccredito() {
+    return this.idIbanAccredito;
   }
 
-  public void setIbanAccredito(IdIbanAccredito ibanAccredito) {
-    this.ibanAccredito = ibanAccredito;
+  public void setIdIbanAccredito(IdIbanAccredito idIbanAccredito) {
+    this.idIbanAccredito = idIbanAccredito;
   }
 
   public java.lang.String getTipoContabilita() {
@@ -166,8 +166,8 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   }
 
 
-  @XmlElement(name="idEnte",required=true,nillable=false)
-  protected IdEnte idEnte;
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codTributo",required=true,nillable=false)
@@ -181,8 +181,8 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="descrizione",required=false,nillable=false)
   protected java.lang.String descrizione;
 
-  @XmlElement(name="ibanAccredito",required=false,nillable=false)
-  protected IdIbanAccredito ibanAccredito;
+  @XmlElement(name="idIbanAccredito",required=false,nillable=false)
+  protected IdIbanAccredito idIbanAccredito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="tipoContabilita",required=true,nillable=false)

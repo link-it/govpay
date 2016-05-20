@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -46,8 +46,7 @@ public class PspConverter {
 		dto.setCodPsp(vo.getCodPsp());
 		dto.setRagioneSociale(vo.getRagioneSociale());
 		dto.setUrlInfo(vo.getUrlInfo());
-		dto.setAttivo(vo.isAbilitato());
-		dto.setCodFlusso(vo.getCodFlusso());
+		dto.setAbilitato(vo.isAbilitato());
 		dto.setBolloGestito(vo.getMarcaBollo());
 		dto.setStornoGestito(vo.getStorno());
 
@@ -59,8 +58,7 @@ public class PspConverter {
 		vo.setCodPsp(dto.getCodPsp());
 		vo.setRagioneSociale(dto.getRagioneSociale());
 		vo.setUrlInfo(dto.getUrlInfo());
-		vo.setAbilitato(dto.isAttivo());
-		vo.setCodFlusso(dto.getCodFlusso());
+		vo.setAbilitato(dto.isAbilitato());
 		vo.setMarcaBollo(dto.isBolloGestito());
 		vo.setStorno(dto.isStornoGestito());
 		

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -125,7 +125,7 @@ public class OperatoriBD extends BasicBD {
 
 			this.getOperatoreService().update(idOperatore, vo);
 			operatore.setId(vo.getId());
-			
+			AnagraficaManager.removeFromCache(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -170,7 +170,7 @@ public class OperatoriBD extends BasicBD {
 	public List<Operatore> findAll(OperatoreFilter filter) throws ServiceException {
 		try {
 			List<Operatore> lst = new ArrayList<Operatore>();
-			List<it.govpay.orm.Operatore> lstVO = this.getOperatoreService().findAll(this.getOperatoreService().newPaginatedExpression());
+			List<it.govpay.orm.Operatore> lstVO = this.getOperatoreService().findAll(filter.toPaginatedExpression());
 
 			for(it.govpay.orm.Operatore operatoreVO : lstVO) {
 				lst.add(getOperatore(operatoreVO));

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,29 +43,29 @@ public class RPTModel extends AbstractModel<RPT> {
 		super();
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"RPT",RPT.class));
-		this.ID_PSP = new it.govpay.orm.model.IdPspModel(new Field("idPsp",it.govpay.orm.IdPsp.class,"RPT",RPT.class));
 		this.ID_CANALE = new it.govpay.orm.model.IdCanaleModel(new Field("idCanale",it.govpay.orm.IdCanale.class,"RPT",RPT.class));
 		this.ID_PORTALE = new it.govpay.orm.model.IdPortaleModel(new Field("idPortale",it.govpay.orm.IdPortale.class,"RPT",RPT.class));
-		this.ID_TRACCIATO_XML = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciatoXML",it.govpay.orm.IdTracciato.class,"RPT",RPT.class));
-		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new Field("idStazione",it.govpay.orm.IdStazione.class,"RPT",RPT.class));
 		this.COD_CARRELLO = new Field("codCarrello",java.lang.String.class,"RPT",RPT.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"RPT",RPT.class);
 		this.CCP = new Field("ccp",java.lang.String.class,"RPT",RPT.class);
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"RPT",RPT.class);
-		this.TIPO_VERSAMENTO = new Field("tipoVersamento",java.lang.String.class,"RPT",RPT.class);
-		this.ID_ANAGRAFICA_VERSANTE = new it.govpay.orm.model.IdAnagraficaModel(new Field("idAnagraficaVersante",it.govpay.orm.IdAnagrafica.class,"RPT",RPT.class));
-		this.DATA_ORA_MSG_RICHIESTA = new Field("dataOraMsgRichiesta",java.util.Date.class,"RPT",RPT.class);
-		this.DATA_ORA_CREAZIONE = new Field("dataOraCreazione",java.util.Date.class,"RPT",RPT.class);
 		this.COD_MSG_RICHIESTA = new Field("codMsgRichiesta",java.lang.String.class,"RPT",RPT.class);
-		this.IBAN_ADDEBITO = new Field("ibanAddebito",java.lang.String.class,"RPT",RPT.class);
-		this.AUTENTICAZIONE_SOGGETTO = new Field("autenticazioneSoggetto",java.lang.String.class,"RPT",RPT.class);
-		this.FIRMA_RT = new Field("firmaRT",java.lang.String.class,"RPT",RPT.class);
+		this.DATA_MSG_RICHIESTA = new Field("dataMsgRichiesta",java.util.Date.class,"RPT",RPT.class);
 		this.STATO = new Field("stato",java.lang.String.class,"RPT",RPT.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"RPT",RPT.class);
-		this.COD_FAULT = new Field("codFault",java.lang.String.class,"RPT",RPT.class);
-		this.CALLBACK_URL = new Field("callbackURL",java.lang.String.class,"RPT",RPT.class);
 		this.COD_SESSIONE = new Field("codSessione",java.lang.String.class,"RPT",RPT.class);
 		this.PSP_REDIRECT_URL = new Field("pspRedirectURL",java.lang.String.class,"RPT",RPT.class);
+		this.XML_RPT = new Field("xmlRPT",byte[].class,"RPT",RPT.class);
+		this.DATA_AGGIORNAMENTO_STATO = new Field("dataAggiornamentoStato",java.util.Date.class,"RPT",RPT.class);
+		this.CALLBACK_URL = new Field("callbackURL",java.lang.String.class,"RPT",RPT.class);
+		this.MODELLO_PAGAMENTO = new Field("modelloPagamento",java.lang.String.class,"RPT",RPT.class);
+		this.COD_MSG_RICEVUTA = new Field("codMsgRicevuta",java.lang.String.class,"RPT",RPT.class);
+		this.DATA_MSG_RICEVUTA = new Field("dataMsgRicevuta",java.util.Date.class,"RPT",RPT.class);
+		this.FIRMA_RICEVUTA = new Field("firmaRicevuta",java.lang.String.class,"RPT",RPT.class);
+		this.COD_ESITO_PAGAMENTO = new Field("codEsitoPagamento",java.lang.Integer.class,"RPT",RPT.class);
+		this.IMPORTO_TOTALE_PAGATO = new Field("importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
+		this.XML_RT = new Field("xmlRT",byte[].class,"RPT",RPT.class);
+		this.COD_STAZIONE = new Field("codStazione",java.lang.String.class,"RPT",RPT.class);
 	
 	}
 	
@@ -74,29 +74,29 @@ public class RPTModel extends AbstractModel<RPT> {
 		super(father);
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"RPT",RPT.class));
-		this.ID_PSP = new it.govpay.orm.model.IdPspModel(new ComplexField(father,"idPsp",it.govpay.orm.IdPsp.class,"RPT",RPT.class));
 		this.ID_CANALE = new it.govpay.orm.model.IdCanaleModel(new ComplexField(father,"idCanale",it.govpay.orm.IdCanale.class,"RPT",RPT.class));
 		this.ID_PORTALE = new it.govpay.orm.model.IdPortaleModel(new ComplexField(father,"idPortale",it.govpay.orm.IdPortale.class,"RPT",RPT.class));
-		this.ID_TRACCIATO_XML = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciatoXML",it.govpay.orm.IdTracciato.class,"RPT",RPT.class));
-		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new ComplexField(father,"idStazione",it.govpay.orm.IdStazione.class,"RPT",RPT.class));
 		this.COD_CARRELLO = new ComplexField(father,"codCarrello",java.lang.String.class,"RPT",RPT.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"RPT",RPT.class);
 		this.CCP = new ComplexField(father,"ccp",java.lang.String.class,"RPT",RPT.class);
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"RPT",RPT.class);
-		this.TIPO_VERSAMENTO = new ComplexField(father,"tipoVersamento",java.lang.String.class,"RPT",RPT.class);
-		this.ID_ANAGRAFICA_VERSANTE = new it.govpay.orm.model.IdAnagraficaModel(new ComplexField(father,"idAnagraficaVersante",it.govpay.orm.IdAnagrafica.class,"RPT",RPT.class));
-		this.DATA_ORA_MSG_RICHIESTA = new ComplexField(father,"dataOraMsgRichiesta",java.util.Date.class,"RPT",RPT.class);
-		this.DATA_ORA_CREAZIONE = new ComplexField(father,"dataOraCreazione",java.util.Date.class,"RPT",RPT.class);
 		this.COD_MSG_RICHIESTA = new ComplexField(father,"codMsgRichiesta",java.lang.String.class,"RPT",RPT.class);
-		this.IBAN_ADDEBITO = new ComplexField(father,"ibanAddebito",java.lang.String.class,"RPT",RPT.class);
-		this.AUTENTICAZIONE_SOGGETTO = new ComplexField(father,"autenticazioneSoggetto",java.lang.String.class,"RPT",RPT.class);
-		this.FIRMA_RT = new ComplexField(father,"firmaRT",java.lang.String.class,"RPT",RPT.class);
+		this.DATA_MSG_RICHIESTA = new ComplexField(father,"dataMsgRichiesta",java.util.Date.class,"RPT",RPT.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"RPT",RPT.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"RPT",RPT.class);
-		this.COD_FAULT = new ComplexField(father,"codFault",java.lang.String.class,"RPT",RPT.class);
-		this.CALLBACK_URL = new ComplexField(father,"callbackURL",java.lang.String.class,"RPT",RPT.class);
 		this.COD_SESSIONE = new ComplexField(father,"codSessione",java.lang.String.class,"RPT",RPT.class);
 		this.PSP_REDIRECT_URL = new ComplexField(father,"pspRedirectURL",java.lang.String.class,"RPT",RPT.class);
+		this.XML_RPT = new ComplexField(father,"xmlRPT",byte[].class,"RPT",RPT.class);
+		this.DATA_AGGIORNAMENTO_STATO = new ComplexField(father,"dataAggiornamentoStato",java.util.Date.class,"RPT",RPT.class);
+		this.CALLBACK_URL = new ComplexField(father,"callbackURL",java.lang.String.class,"RPT",RPT.class);
+		this.MODELLO_PAGAMENTO = new ComplexField(father,"modelloPagamento",java.lang.String.class,"RPT",RPT.class);
+		this.COD_MSG_RICEVUTA = new ComplexField(father,"codMsgRicevuta",java.lang.String.class,"RPT",RPT.class);
+		this.DATA_MSG_RICEVUTA = new ComplexField(father,"dataMsgRicevuta",java.util.Date.class,"RPT",RPT.class);
+		this.FIRMA_RICEVUTA = new ComplexField(father,"firmaRicevuta",java.lang.String.class,"RPT",RPT.class);
+		this.COD_ESITO_PAGAMENTO = new ComplexField(father,"codEsitoPagamento",java.lang.Integer.class,"RPT",RPT.class);
+		this.IMPORTO_TOTALE_PAGATO = new ComplexField(father,"importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
+		this.XML_RT = new ComplexField(father,"xmlRT",byte[].class,"RPT",RPT.class);
+		this.COD_STAZIONE = new ComplexField(father,"codStazione",java.lang.String.class,"RPT",RPT.class);
 	
 	}
 	
@@ -104,15 +104,9 @@ public class RPTModel extends AbstractModel<RPT> {
 
 	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
 	 
-	public it.govpay.orm.model.IdPspModel ID_PSP = null;
-	 
 	public it.govpay.orm.model.IdCanaleModel ID_CANALE = null;
 	 
 	public it.govpay.orm.model.IdPortaleModel ID_PORTALE = null;
-	 
-	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO_XML = null;
-	 
-	public it.govpay.orm.model.IdStazioneModel ID_STAZIONE = null;
 	 
 	public IField COD_CARRELLO = null;
 	 
@@ -122,33 +116,39 @@ public class RPTModel extends AbstractModel<RPT> {
 	 
 	public IField COD_DOMINIO = null;
 	 
-	public IField TIPO_VERSAMENTO = null;
-	 
-	public it.govpay.orm.model.IdAnagraficaModel ID_ANAGRAFICA_VERSANTE = null;
-	 
-	public IField DATA_ORA_MSG_RICHIESTA = null;
-	 
-	public IField DATA_ORA_CREAZIONE = null;
-	 
 	public IField COD_MSG_RICHIESTA = null;
 	 
-	public IField IBAN_ADDEBITO = null;
-	 
-	public IField AUTENTICAZIONE_SOGGETTO = null;
-	 
-	public IField FIRMA_RT = null;
+	public IField DATA_MSG_RICHIESTA = null;
 	 
 	public IField STATO = null;
 	 
 	public IField DESCRIZIONE_STATO = null;
 	 
-	public IField COD_FAULT = null;
-	 
-	public IField CALLBACK_URL = null;
-	 
 	public IField COD_SESSIONE = null;
 	 
 	public IField PSP_REDIRECT_URL = null;
+	 
+	public IField XML_RPT = null;
+	 
+	public IField DATA_AGGIORNAMENTO_STATO = null;
+	 
+	public IField CALLBACK_URL = null;
+	 
+	public IField MODELLO_PAGAMENTO = null;
+	 
+	public IField COD_MSG_RICEVUTA = null;
+	 
+	public IField DATA_MSG_RICEVUTA = null;
+	 
+	public IField FIRMA_RICEVUTA = null;
+	 
+	public IField COD_ESITO_PAGAMENTO = null;
+	 
+	public IField IMPORTO_TOTALE_PAGATO = null;
+	 
+	public IField XML_RT = null;
+	 
+	public IField COD_STAZIONE = null;
 	 
 
 	@Override

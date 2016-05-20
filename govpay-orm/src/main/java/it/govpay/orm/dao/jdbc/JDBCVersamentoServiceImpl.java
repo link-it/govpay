@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -71,18 +71,18 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
 
-		// Object _ente
-		Long id_ente = null;
-		it.govpay.orm.IdEnte idLogic_ente = null;
-		idLogic_ente = versamento.getIdEnte();
-		if(idLogic_ente!=null){
+		// Object _uo
+		Long id_uo = null;
+		it.govpay.orm.IdUo idLogic_uo = null;
+		idLogic_uo = versamento.getIdUo();
+		if(idLogic_uo!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findTableId(idLogic_ente, false);
+				id_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findTableId(idLogic_uo, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_ente = idLogic_ente.getId();
-				if(id_ente==null || id_ente<=0){
+				id_uo = idLogic_uo.getId();
+				if(id_uo==null || id_uo<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -105,56 +105,51 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			}
 		}
 
-		// Object _anagrafica
-		Long id_anagrafica = null;
-		it.govpay.orm.IdAnagrafica idLogic_anagrafica = null;
-		idLogic_anagrafica = versamento.getIdAnagraficaDebitore();
-		if(idLogic_anagrafica!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_anagrafica = ((JDBCAnagraficaServiceSearch)(this.getServiceManager().getAnagraficaServiceSearch())).findTableId(idLogic_anagrafica, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_anagrafica = idLogic_anagrafica.getId();
-				if(id_anagrafica==null || id_anagrafica<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object versamento
 		sqlQueryObjectInsert.addInsertTable(this.getVersamentoFieldConverter().toTable(Versamento.model()));
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_VERSAMENTO_ENTE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_DOMINIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IMPORTO_TOTALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().STATO_VERSAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DESCRIZIONE_STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().STATO_RENDICONTAZIONE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IMPORTO_PAGATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AGGIORNABILE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_CREAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_SCADENZA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO,false),"?");
-		sqlQueryObjectInsert.addInsertField("id_ente","?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().CAUSALE_VERSAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_IDENTIFICATIVO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_ANAGRAFICA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_INDIRIZZO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_CIVICO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_CAP,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_LOCALITA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_PROVINCIA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_NAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField("id_uo","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
-		sqlQueryObjectInsert.addInsertField("id_anagrafica_debitore","?");
 
 		// Insert versamento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getVersamentoFetch().getKeyGeneratorObject(Versamento.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getCodVersamentoEnte(),Versamento.model().COD_VERSAMENTO_ENTE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getCodDominio(),Versamento.model().COD_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getIuv(),Versamento.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getImportoTotale(),Versamento.model().IMPORTO_TOTALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getStatoVersamento(),Versamento.model().STATO_VERSAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDescrizioneStato(),Versamento.model().DESCRIZIONE_STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getStatoRendicontazione(),Versamento.model().STATO_RENDICONTAZIONE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getImportoPagato(),Versamento.model().IMPORTO_PAGATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getAggiornabile(),Versamento.model().AGGIORNABILE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDataCreazione(),Versamento.model().DATA_CREAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDataScadenza(),Versamento.model().DATA_SCADENZA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDataOraUltimoAggiornamento(),Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ente,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_anagrafica,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getCausaleVersamento(),Versamento.model().CAUSALE_VERSAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreIdentificativo(),Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreAnagrafica(),Versamento.model().DEBITORE_ANAGRAFICA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreIndirizzo(),Versamento.model().DEBITORE_INDIRIZZO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreCivico(),Versamento.model().DEBITORE_CIVICO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreCap(),Versamento.model().DEBITORE_CAP.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreLocalita(),Versamento.model().DEBITORE_LOCALITA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreProvincia(),Versamento.model().DEBITORE_PROVINCIA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(versamento.getDebitoreNazione(),Versamento.model().DEBITORE_NAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_uo,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
 		versamento.setId(id);
 
@@ -176,12 +171,12 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, versamento, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Versamento versamento, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -201,18 +196,18 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
 
-		// Object _versamento_ente
-		Long id_versamento_ente = null;
-		it.govpay.orm.IdEnte idLogic_versamento_ente = null;
-		idLogic_versamento_ente = versamento.getIdEnte();
-		if(idLogic_versamento_ente!=null){
+		// Object _versamento_uo
+		Long id_versamento_uo = null;
+		it.govpay.orm.IdUo idLogic_versamento_uo = null;
+		idLogic_versamento_uo = versamento.getIdUo();
+		if(idLogic_versamento_uo!=null){
 			if(idMappingResolutionBehaviour==null ||
 				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_versamento_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findTableId(idLogic_versamento_ente, false);
+				id_versamento_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findTableId(idLogic_versamento_uo, false);
 			}
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_versamento_ente = idLogic_versamento_ente.getId();
-				if(id_versamento_ente==null || id_versamento_ente<=0){
+				id_versamento_uo = idLogic_versamento_uo.getId();
+				if(id_versamento_uo==null || id_versamento_uo<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -235,23 +230,6 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 			}
 		}
 
-		// Object _versamento_anagrafica
-		Long id_versamento_anagrafica = null;
-		it.govpay.orm.IdAnagrafica idLogic_versamento_anagrafica = null;
-		idLogic_versamento_anagrafica = versamento.getIdAnagraficaDebitore();
-		if(idLogic_versamento_anagrafica!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_versamento_anagrafica = ((JDBCAnagraficaServiceSearch)(this.getServiceManager().getAnagraficaServiceSearch())).findTableId(idLogic_versamento_anagrafica, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_versamento_anagrafica = idLogic_versamento_anagrafica.getId();
-				if(id_versamento_anagrafica==null || id_versamento_anagrafica<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object versamento
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -260,41 +238,49 @@ public class JDBCVersamentoServiceImpl extends JDBCVersamentoServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_versamento = new java.util.ArrayList<JDBCObject>();
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_VERSAMENTO_ENTE,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getCodVersamentoEnte(), Versamento.model().COD_VERSAMENTO_ENTE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().COD_DOMINIO,false), "?");
-		lstObjects_versamento.add(new JDBCObject(versamento.getCodDominio(), Versamento.model().COD_DOMINIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IUV,false), "?");
-		lstObjects_versamento.add(new JDBCObject(versamento.getIuv(), Versamento.model().IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IMPORTO_TOTALE,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getImportoTotale(), Versamento.model().IMPORTO_TOTALE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().STATO_VERSAMENTO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getStatoVersamento(), Versamento.model().STATO_VERSAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DESCRIZIONE_STATO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getDescrizioneStato(), Versamento.model().DESCRIZIONE_STATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().STATO_RENDICONTAZIONE,false), "?");
-		lstObjects_versamento.add(new JDBCObject(versamento.getStatoRendicontazione(), Versamento.model().STATO_RENDICONTAZIONE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().IMPORTO_PAGATO,false), "?");
-		lstObjects_versamento.add(new JDBCObject(versamento.getImportoPagato(), Versamento.model().IMPORTO_PAGATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().AGGIORNABILE,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getAggiornabile(), Versamento.model().AGGIORNABILE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_CREAZIONE,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDataCreazione(), Versamento.model().DATA_CREAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_SCADENZA,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getDataScadenza(), Versamento.model().DATA_SCADENZA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO,false), "?");
 		lstObjects_versamento.add(new JDBCObject(versamento.getDataOraUltimoAggiornamento(), Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().CAUSALE_VERSAMENTO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getCausaleVersamento(), Versamento.model().CAUSALE_VERSAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_IDENTIFICATIVO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreIdentificativo(), Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_ANAGRAFICA,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreAnagrafica(), Versamento.model().DEBITORE_ANAGRAFICA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_INDIRIZZO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreIndirizzo(), Versamento.model().DEBITORE_INDIRIZZO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_CIVICO,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreCivico(), Versamento.model().DEBITORE_CIVICO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_CAP,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreCap(), Versamento.model().DEBITORE_CAP.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_LOCALITA,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreLocalita(), Versamento.model().DEBITORE_LOCALITA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_PROVINCIA,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreProvincia(), Versamento.model().DEBITORE_PROVINCIA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getVersamentoFieldConverter().toColumn(Versamento.model().DEBITORE_NAZIONE,false), "?");
+		lstObjects_versamento.add(new JDBCObject(versamento.getDebitoreNazione(), Versamento.model().DEBITORE_NAZIONE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_ente","?");
+			sqlQueryObjectUpdate.addUpdateField("id_uo","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_anagrafica_debitore","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_versamento.add(new JDBCObject(id_versamento_ente, Long.class));
+			lstObjects_versamento.add(new JDBCObject(id_versamento_uo, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_versamento.add(new JDBCObject(id_versamento_applicazione, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_versamento.add(new JDBCObject(id_versamento_anagrafica, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_versamento.add(new JDBCObject(tableId, Long.class));

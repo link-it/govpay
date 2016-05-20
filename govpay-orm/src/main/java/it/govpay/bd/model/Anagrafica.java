@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,7 +23,6 @@ package it.govpay.bd.model;
 
 public class Anagrafica extends BasicModel {
 	private static final long serialVersionUID = 1L;
-	private long id;
 	private String ragioneSociale;
 	private String codUnivoco;
 	private String indirizzo;
@@ -37,12 +36,6 @@ public class Anagrafica extends BasicModel {
 	private String cellulare;
 	private String fax;
 	
-	public long getId() {
-		return id;
-	}
-	public void setId(long id) {
-		this.id = id;
-	}
 	public String getRagioneSociale() {
 		return ragioneSociale;
 	}

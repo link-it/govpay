@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,11 +29,13 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.Dominio;
 import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
 
 public class DominioFilter extends AbstractFilter {
@@ -42,9 +44,10 @@ public class DominioFilter extends AbstractFilter {
 	private List<Long> idDomini = null; 
 	private CustomField cf;
 	
+	private String codDominio = null;
+	
 	public enum SortFields {
-//TODO		COD_PSP, COD_FLUSSO
-		}
+	}
 	
 	public DominioFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
@@ -73,7 +76,31 @@ public class DominioFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.in(cf, idDomini);
+				addAnd = true;
 			}
+			
+			if(this.codDominio != null){
+				IExpression exp = this.newExpression();
+				//1 provo a convertirlo in un long
+				long l = -1l;
+				try{
+					l =Long.parseLong(this.codDominio);
+				}catch (NumberFormatException e){
+					l = -1l;
+				}
+
+				// se e' un numero valido maggiore di zero
+				if(l>0){
+					exp.equals(this.cf, l);
+					exp.or();
+				}
+				
+				// 2. metto in or l'eventuale stringa per il nome dell'dominio
+				exp.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
+				
+				newExpression.and(exp);
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -86,17 +113,6 @@ public class DominioFilter extends AbstractFilter {
 
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
-		
-		//TODO
-//		switch(field) {
-//		case COD_FLUSSO: filterSortWrapper.setField(Psp.model().COD_FLUSSO);
-//			break;
-//		case COD_PSP: filterSortWrapper.setField(Psp.model().COD_PSP);
-//			break;
-//		default:
-//			break;
-//		}
-		
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}
@@ -116,4 +132,14 @@ public class DominioFilter extends AbstractFilter {
 	public void setIdDomini(List<Long> idDomini) {
 		this.idDomini = idDomini;
 	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+	
+	
 }

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -59,8 +59,6 @@ public class PspFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_psp", Psp.model().COD_PSP.getFieldType()));
 				setParameter(object, "setRagioneSociale", Psp.model().RAGIONE_SOCIALE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ragione_sociale", Psp.model().RAGIONE_SOCIALE.getFieldType()));
-				setParameter(object, "setCodFlusso", Psp.model().COD_FLUSSO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_flusso", Psp.model().COD_FLUSSO.getFieldType()));
 				setParameter(object, "setUrlInfo", Psp.model().URL_INFO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "url_info", Psp.model().URL_INFO.getFieldType()));
 				setParameter(object, "setAbilitato", Psp.model().ABILITATO.getFieldType(),
@@ -95,8 +93,6 @@ public class PspFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codPsp"));
 				setParameter(object, "setRagioneSociale", Psp.model().RAGIONE_SOCIALE.getFieldType(),
 					this.getObjectFromMap(map,"ragioneSociale"));
-				setParameter(object, "setCodFlusso", Psp.model().COD_FLUSSO.getFieldType(),
-					this.getObjectFromMap(map,"codFlusso"));
 				setParameter(object, "setUrlInfo", Psp.model().URL_INFO.getFieldType(),
 					this.getObjectFromMap(map,"urlInfo"));
 				setParameter(object, "setAbilitato", Psp.model().ABILITATO.getFieldType(),

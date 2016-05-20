@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,7 +43,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		super();
 	
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"id-versamento",IdVersamento.class);
-		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"id-versamento",IdVersamento.class));
 	
 	}
 	
@@ -52,7 +52,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		super(father);
 	
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"id-versamento",IdVersamento.class);
-		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"id-versamento",IdVersamento.class));
 	
 	}
 	
@@ -60,7 +60,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 
 	public IField COD_VERSAMENTO_ENTE = null;
 	 
-	public IField COD_DOMINIO = null;
+	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 
 	@Override

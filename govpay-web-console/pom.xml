@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>it.govpay</groupId>
 		<artifactId>govpay</artifactId>
-		<version>2.0</version>
+		<version>2.1-rc1</version>
 	</parent>
 	<artifactId>govpay-web-console</artifactId>
 	<packaging>war</packaging>
@@ -75,127 +75,24 @@
 		</resources>
 		<plugins>
 			<plugin>
-				<groupId>com.github.eirslett</groupId>
-				<artifactId>frontend-maven-plugin</artifactId>
-				<!-- Use the latest released version: https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
-				<version>${frontend-maven-plugin-version}</version>
-
-				<configuration>
-					<workingDirectory>polymer</workingDirectory>
-					<installDirectory>polymer</installDirectory>
-				</configuration>
-
-				<executions>
-					<execution>
-						<id>gulp build</id>
-						<goals>
-							<goal>gulp</goal>
-						</goals>
-						<configuration>
-							<arguments>default</arguments>
-							<arguments>--no-color</arguments>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>2.1.1</version>
 				<configuration>
-					<warSourceExcludes>**</warSourceExcludes>
 					<failOnMissingWebXml>false</failOnMissingWebXml>
 					<webResources>
-						<resource>
-							<directory>polymer/dist</directory>
-							<excludes>
-								<exclude>**/bower_components</exclude>
-							</excludes>
-						</resource>
-
-						<resource>
-							<directory>src/main/webapp/WEB-INF</directory>
-							<targetPath>WEB-INF</targetPath>
-						</resource>
-					</webResources>
+			            <resource>
+			                <filtering>true</filtering>
+			                <directory>src/main/webapp/scripts</directory>
+			                <includes>
+			                    <include>*.js</include>
+			                </includes>
+			                <targetPath>scripts</targetPath>
+			            </resource>
+			        </webResources>
 				</configuration>
 			</plugin>
 		</plugins>
 		<finalName>govpayConsole</finalName>
 	</build>
-	<profiles>
-		<profile>
-			<id>init-polymer-resources</id>
-			<activation>
-				<property>
-					<name>initConsole</name>
-					<value>true</value>
-				</property>
-			</activation>
-			<build>
-				<filters>
-					<filter>../resources/filters/${env}.filter.properties</filter>
-				</filters>
-				<plugins>
-					<plugin>
-						<groupId>com.github.eirslett</groupId>
-						<artifactId>frontend-maven-plugin</artifactId>
-						<!-- Use the latest released version: https://repo1.maven.org/maven2/com/github/eirslett/frontend-maven-plugin/ -->
-						<version>${frontend-maven-plugin-version}</version>
-
-						<configuration>
-							<workingDirectory>polymer</workingDirectory>
-							<installDirectory>polymer</installDirectory>
-						</configuration>
-
-						<executions>
-							<execution>
-								<phase>initialize</phase>								
-								<id>install node and npm</id>
-								<goals>
-									<goal>install-node-and-npm</goal>
-								</goals>
-								<configuration>
-									<nodeVersion>v0.10.40</nodeVersion>
-									<npmVersion>3.3.8</npmVersion>
-								</configuration>
-							</execution>
-							<execution>
-								<phase>initialize</phase>
-								<id>npm install</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<!-- Optional configuration which provides for running any npm command -->
-								<configuration>
-									<arguments>install</arguments>
-								</configuration>
-							</execution>
-							<execution>
-								<phase>initialize</phase>
-								<id>npm install bower</id>
-								<goals>
-									<goal>npm</goal>
-								</goals>
-								<!-- Optional configuration which provides for running any npm command -->
-								<configuration>
-									<arguments>install bower</arguments>
-								</configuration>
-							</execution>
-							<execution>
-								<phase>initialize</phase>
-								<id>bower install</id>
-								<goals>
-									<goal>bower</goal>
-								</goals>
-								<configuration>
-									<arguments>install</arguments>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
 

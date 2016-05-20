@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ import java.io.Serializable;
  * &lt;complexType name="id-rpt">
  * 		&lt;sequence>
  * 			&lt;element name="codMsgRichiesta" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -51,7 +53,9 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-rpt", 
   propOrder = {
-  	"codMsgRichiesta"
+  	"codMsgRichiesta",
+  	"codDominio",
+  	"iuv"
   }
 )
 
@@ -83,6 +87,22 @@ public class IdRpt extends org.openspcoop2.utils.beans.BaseBean implements Seria
     this.codMsgRichiesta = codMsgRichiesta;
   }
 
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
+  }
+
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
+  }
+
+  public java.lang.String getIuv() {
+    return this.iuv;
+  }
+
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -93,5 +113,13 @@ public class IdRpt extends org.openspcoop2.utils.beans.BaseBean implements Seria
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codMsgRichiesta",required=true,nillable=false)
   protected java.lang.String codMsgRichiesta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=false,nillable=false)
+  protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=false,nillable=false)
+  protected java.lang.String iuv;
 
 }

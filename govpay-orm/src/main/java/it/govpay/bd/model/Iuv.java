@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,19 +22,47 @@ package it.govpay.bd.model;
 
 import java.util.Date;
 
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 public class Iuv extends BasicModel {
+	
+	public enum TipoIUV {
+		ISO11694("I"), 
+		NUMERICO("N");
+		
+		private String codifica;
+
+		TipoIUV(String codifica) {
+			this.codifica = codifica;
+		}
+		
+		public String getCodifica() {
+			return codifica;
+		}
+		
+		public static TipoIUV toEnum(String codifica) throws ServiceException {
+			for(TipoIUV p : TipoIUV.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per TipoIUV. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoIUV.values()));
+		}
+		
+	}
 	private static final long serialVersionUID = 1L;
 	
 	public static final int AUX_DIGIT = 0;
 	
 	private Long id;
 	private long idApplicazione;
-	private String codDominio;
+	private long idDominio;
 	private long prg;
 	private String iuv;
 	private Date dataGenerazione;
+	private TipoIUV tipo;
+	private String codVersamentoEnte;
 	private int applicationCode;
-	private int auxDigit;
 	
 	public Long getId() {
 		return id;
@@ -47,12 +75,6 @@ public class Iuv extends BasicModel {
 	}
 	public void setIdApplicazione(long idApplicazione) {
 		this.idApplicazione = idApplicazione;
-	}
-	public String getCodDominio() {
-		return codDominio;
-	}
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
 	}
 	public long getPrg() {
 		return prg;
@@ -72,25 +94,23 @@ public class Iuv extends BasicModel {
 	public void setDataGenerazione(Date dataGenerazione) {
 		this.dataGenerazione = dataGenerazione;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		Iuv iuv = null;
-		if(obj instanceof Iuv) {
-			iuv = (Iuv) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal =
-				equals(this.idApplicazione, iuv.getIdApplicazione()) &&
-				equals(this.codDominio, iuv.getCodDominio()) &&
-				equals(this.prg, iuv.getPrg()) &&
-				equals(this.iuv, iuv.getIuv()) &&
-				equals(this.dataGenerazione, iuv.getDataGenerazione()) &&
-				equals(this.auxDigit, iuv.getAuxDigit()) &&
-				equals(this.applicationCode, iuv.getApplicationCode());
-		return equal;
+	public long getIdDominio() {
+		return idDominio;
+	}
+	public void setIdDominio(long idDominio) {
+		this.idDominio = idDominio;
+	}
+	public TipoIUV getTipo() {
+		return tipo;
+	}
+	public void setTipo(TipoIUV tipo) {
+		this.tipo = tipo;
+	}
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
 	}
 	public int getApplicationCode() {
 		return applicationCode;
@@ -98,11 +118,5 @@ public class Iuv extends BasicModel {
 	public void setApplicationCode(int applicationCode) {
 		this.applicationCode = applicationCode;
 	}
-	public int getAuxDigit() {
-		return auxDigit;
-	}
-	public void setAuxDigit(int auxDigit) {
-		this.auxDigit = auxDigit;
-	}
-
+	
 }

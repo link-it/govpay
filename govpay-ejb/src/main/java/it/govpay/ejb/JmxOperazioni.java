@@ -1,3 +1,23 @@
+/*
+ * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
+ * http://www.gov4j.it/govpay
+ * 
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
 package it.govpay.ejb;
 
 import java.util.Iterator;
@@ -25,9 +45,8 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 
 	public final static String ACQUISIZIONE_RENDICONTAZIONI = "acquisizioneRendicontazioni";
 	public final static String AGGIORNAMENTO_REGISTRO_PSP = "aggiornamentoRegistroPsp";
-	public final static String NOTIFICHE_MAIL = "notificheMail";
 	public final static String RECUPERO_RPT_PENDENTI = "recuperoRptPendenti";
-	public final static String SPEDIZIONE_ESITI = "spedizioneEsiti";
+	public final static String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
 
 	/** getAttribute */
@@ -77,45 +96,22 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			throw new IllegalArgumentException("Nessuna operazione definita");
 
 		if(actionName.equals(ACQUISIZIONE_RENDICONTAZIONI)){
-			if(Operazioni.acquisizioneRendicontazioni())
-				return "Operazione di Acquisizione Rendicontazioni eseguita con successo.";
-			else
-				return "Operazione di Acquisizione Rendicontazioni fallita.";
+			 return Operazioni.acquisizioneRendicontazioni();
 		}
 
 		if(actionName.equals(AGGIORNAMENTO_REGISTRO_PSP)){
-			if(Operazioni.aggiornamentoRegistroPsp())
-				return "Operazione di Aggiornamento Registro Psp eseguita con successo.";
-			else
-				return "Operazione di AAggiornamento Registro Psp fallita.";
-		}
-
-		if(actionName.equals(NOTIFICHE_MAIL)){
-			if(Operazioni.notificheMail())
-				return "Operazione di Notifiche Mail eseguita con successo.";
-			else
-				return "Operazione di Notifiche Mail fallita.";
+			return Operazioni.aggiornamentoRegistroPsp();
 		}
 
 		if(actionName.equals(RECUPERO_RPT_PENDENTI)){
-			if(Operazioni.recuperoRptPendenti())
-				return "Operazione di Recupero RPT Pendenti eseguita con successo.";
-			else
-				return "Operazione di Recupero RPT Pendenti fallita.";
-		}
-
-		if(actionName.equals(SPEDIZIONE_ESITI)){
-			if(Operazioni.spedizioneEsiti())
-				return "Operazione di Spedizione Esiti eseguita con successo.";
-			else
-				return "Operazione di Spedizione Esiti fallita.";
+			return Operazioni.recuperoRptPendenti();
 		}
 
 		if(actionName.equals(RESET_CACHE_ANAGRAFICA)){
 			if(Operazioni.resetCacheAnagrafica())
-				return "Operazione di Reset Cache Anagrafica eseguita con successo.";
+				return "Reset Cache Anagrafica#eseguita con successo.";
 			else
-				return "Operazione di Reset Cache Anagrafica fallita.";
+				return "Reset Cache Anagrafica#fallita.";
 		}
 
 		throw new UnsupportedOperationException("Operazione "+actionName+" sconosciuta");
@@ -145,13 +141,6 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 					MBeanOperationInfo.ACTION);
 
 			// MetaData per l'operazione 
-			MBeanOperationInfo notificheMailOP
-			= new MBeanOperationInfo(NOTIFICHE_MAIL,"Notifica mail",
-					null,
-					String.class.getName(),
-					MBeanOperationInfo.ACTION);
-
-			// MetaData per l'operazione 
 			MBeanOperationInfo recuperoRptPendentiOP
 			= new MBeanOperationInfo(RECUPERO_RPT_PENDENTI,"Recupera RPT Pendenti",
 					null,
@@ -160,7 +149,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 
 			// MetaData per l'operazione 
 			MBeanOperationInfo spedizioneEsitiOP
-			= new MBeanOperationInfo(SPEDIZIONE_ESITI,"Spedisci esiti",
+			= new MBeanOperationInfo(SPEDIZIONE_NOTIFICHE,"Spedisci notifiche",
 					null,
 					String.class.getName(),
 					MBeanOperationInfo.ACTION);
@@ -179,7 +168,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			MBeanConstructorInfo[] constructors = new MBeanConstructorInfo[]{defaultConstructor};
 
 			// Lista operazioni
-			MBeanOperationInfo[] operations = new MBeanOperationInfo[]{acquisizioneRendicontazioniOP, aggiornamentoRegistroPspOP, notificheMailOP, recuperoRptPendentiOP, spedizioneEsitiOP, resetCacheAnagraficaOP};
+			MBeanOperationInfo[] operations = new MBeanOperationInfo[]{acquisizioneRendicontazioniOP, aggiornamentoRegistroPspOP, recuperoRptPendentiOP, spedizioneEsitiOP, resetCacheAnagraficaOP};
 
 			return new MBeanInfo(className,description,null,constructors,operations,null);
 
@@ -190,7 +179,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	
 	protected static void register() throws RisorseJMXException{
 		gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StartupEjb.class));
-		gestoreJMX.registerMBean(JmxOperazioni.class, "it.govpay", CostantiJMX.JMX_TYPE, "operazioni");
+		gestoreJMX.registerMBean(JmxOperazioni.class, "it.govpay.core", CostantiJMX.JMX_TYPE, "operazioni");
 	}
 	
 	protected static void unregister() throws RisorseJMXException{

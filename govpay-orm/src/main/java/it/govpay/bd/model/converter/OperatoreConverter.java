@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,9 +23,9 @@ package it.govpay.bd.model.converter;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdEnte;
+import it.govpay.orm.IdUo;
 import it.govpay.orm.OperatoreApplicazione;
-import it.govpay.orm.OperatoreEnte;
+import it.govpay.orm.OperatoreUo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,12 +51,12 @@ public class OperatoreConverter {
 		dto.setNome(vo.getNome());
 		dto.setProfilo(ProfiloOperatore.toEnum(vo.getProfilo()));
 		dto.setAbilitato(vo.isAbilitato());
-		if(vo.getOperatoreEnteList() != null && !vo.getOperatoreEnteList().isEmpty()) {
-			List<Long> operatoreEnteId = new ArrayList<Long>();
-			for(OperatoreEnte operatoreEnte: vo.getOperatoreEnteList()) {
-				operatoreEnteId.add(operatoreEnte.getIdEnte().getId());
+		if(vo.getOperatoreUoList() != null && !vo.getOperatoreUoList().isEmpty()) {
+			List<Long> operatoreUoId = new ArrayList<Long>();
+			for(OperatoreUo operatoreUo: vo.getOperatoreUoList()) {
+				operatoreUoId.add(operatoreUo.getIdUo().getId());
 			}
-			dto.setIdEnti(operatoreEnteId);
+			dto.setIdEnti(operatoreUoId);
 		}
 
 		if(vo.getOperatoreApplicazioneList() != null && !vo.getOperatoreApplicazioneList().isEmpty()) {
@@ -78,16 +78,16 @@ public class OperatoreConverter {
 		vo.setProfilo(dto.getProfilo().getCodifica());
 		vo.setAbilitato(dto.isAbilitato());
 		if(dto.getIdEnti() != null && dto.getIdEnti().size() > 0) {
-			List<OperatoreEnte> operatoreEnteLst = new ArrayList<OperatoreEnte>();
+			List<OperatoreUo> operatoreUoLst = new ArrayList<OperatoreUo>();
 			for(Long ente: dto.getIdEnti()) {
-				OperatoreEnte operatoreEnte = new OperatoreEnte();
-				IdEnte idEnte = new IdEnte();
-				idEnte.setId(ente);
+				OperatoreUo operatoreUo = new OperatoreUo();
+				IdUo idUo = new IdUo();
+				idUo.setId(ente);
 				
-				operatoreEnte.setIdEnte(idEnte);
-				operatoreEnteLst.add(operatoreEnte);
+				operatoreUo.setIdUo(idUo);
+				operatoreUoLst.add(operatoreUo);
 			}
-			vo.setOperatoreEnteList(operatoreEnteLst);
+			vo.setOperatoreUoList(operatoreUoLst);
 		}
 		
 		if(dto.getIdApplicazioni() != null && dto.getIdApplicazioni().size() > 0) {

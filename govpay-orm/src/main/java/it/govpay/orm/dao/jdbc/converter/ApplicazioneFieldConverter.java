@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,13 +75,6 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
-		if(field.equals(Applicazione.model().PRINCIPAL)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".principal";
-			}else{
-				return "principal";
-			}
-		}
 		if(field.equals(Applicazione.model().ABILITATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".abilitato";
@@ -89,18 +82,18 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "abilitato";
 			}
 		}
-		if(field.equals(Applicazione.model().VERSIONE)){
+		if(field.equals(Applicazione.model().PRINCIPAL)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".versione";
+				return this.toAliasTable(field)+".principal";
 			}else{
-				return "versione";
+				return "principal";
 			}
 		}
-		if(field.equals(Applicazione.model().POLICY_RISPEDIZIONE)){
+		if(field.equals(Applicazione.model().FIRMA_RICEVUTA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".policy_rispedizione";
+				return this.toAliasTable(field)+".firma_ricevuta";
 			}else{
-				return "policy_rispedizione";
+				return "firma_ricevuta";
 			}
 		}
 		if(field.equals(Applicazione.model().COD_CONNETTORE_ESITO)){
@@ -117,11 +110,18 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_connettore_verifica";
 			}
 		}
-		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_ENTE.COD_ENTE)){
+		if(field.equals(Applicazione.model().TRUSTED)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_ente";
+				return this.toAliasTable(field)+".trusted";
 			}else{
-				return "cod_ente";
+				return "trusted";
+			}
+		}
+		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
 			}
 		}
 		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.COD_TRIBUTO)){
@@ -129,6 +129,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_tributo";
 			}else{
 				return "cod_tributo";
+			}
+		}
+		if(field.equals(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
 			}
 		}
 
@@ -147,16 +154,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Applicazione.model().COD_APPLICAZIONE)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
-		if(field.equals(Applicazione.model().PRINCIPAL)){
-			return this.toTable(Applicazione.model(), returnAlias);
-		}
 		if(field.equals(Applicazione.model().ABILITATO)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
-		if(field.equals(Applicazione.model().VERSIONE)){
+		if(field.equals(Applicazione.model().PRINCIPAL)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
-		if(field.equals(Applicazione.model().POLICY_RISPEDIZIONE)){
+		if(field.equals(Applicazione.model().FIRMA_RICEVUTA)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().COD_CONNETTORE_ESITO)){
@@ -165,11 +169,17 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Applicazione.model().COD_CONNETTORE_VERIFICA)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
-		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_ENTE.COD_ENTE)){
-			return this.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_ENTE, returnAlias);
+		if(field.equals(Applicazione.model().TRUSTED)){
+			return this.toTable(Applicazione.model(), returnAlias);
+		}
+		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.COD_TRIBUTO)){
 			return this.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO, returnAlias);
 		}
 
 
@@ -193,8 +203,14 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO)){
 			return "tributi";
 		}
-		if(model.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_ENTE)){
-			return "id_ente";
+		if(model.equals(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO)){
+			return "id_dominio";
+		}
+		if(model.equals(Applicazione.model().APPLICAZIONE_DOMINIO)){
+			return "applicazioni_domini";
+		}
+		if(model.equals(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO)){
+			return "domini";
 		}
 
 

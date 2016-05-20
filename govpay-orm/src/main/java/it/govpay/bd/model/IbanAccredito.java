@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,11 +21,7 @@
 
 package it.govpay.bd.model;
 
-
-/**
- * Rapppresenta un ente creditore
- */
-public class IbanAccredito extends BasicModel implements Comparable<IbanAccredito>{
+public class IbanAccredito extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
 	private Long id; 
@@ -40,12 +36,9 @@ public class IbanAccredito extends BasicModel implements Comparable<IbanAccredit
 	private boolean abilitato;
 	private Long idDominio;
 	
-	public IbanAccredito() {}	
-	
 	public Long getId() {
 		return id;
 	}
-
 	public String getCodIban() {
 		return codIban;
 	}
@@ -85,29 +78,6 @@ public class IbanAccredito extends BasicModel implements Comparable<IbanAccredit
 	public void setId(Long id) {
 		this.id = id;
 	}
-	@Override
-	public boolean equals(Object obj) {
-		IbanAccredito iban = null;
-		if(obj instanceof IbanAccredito) {
-			iban = (IbanAccredito) obj;
-		} else {
-			return false;
-		}
-
-		boolean equal =
-				equals(codIban, iban.getCodIban()) &&
-				equals(codBicAccredito, iban.getCodBicAccredito()) &&
-				equals(codIbanAppoggio, iban.getCodIbanAppoggio()) &&
-				equals(codBicAppoggio, iban.getCodBicAppoggio()) &&
-				equals(idSellerBank, iban.getIdSellerBank()) &&
-				equals(idNegozio, iban.getIdNegozio()) &&
-				equals(postale, iban.isPostale()) &&
-				equals(attivatoObep, iban.isAttivatoObep()) &&
-				equals(abilitato, iban.isAbilitato()) && 
-				equals(idDominio, iban.getIdDominio());
-
-		return equal;
-	}
 	public String getCodBicAccredito() {
 		return codBicAccredito;
 	}
@@ -126,19 +96,11 @@ public class IbanAccredito extends BasicModel implements Comparable<IbanAccredit
 	public void setCodBicAppoggio(String codBicAppoggio) {
 		this.codBicAppoggio = codBicAppoggio;
 	}
-
 	public Long getIdDominio() {
 		return idDominio;
 	}
-
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
 	}
-
-	@Override
-	public int compareTo(IbanAccredito o) {
-		return this.codIban.compareTo(o.getCodIban()); 
-	}
-
 }
 

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,32 +37,6 @@ public interface IServiceManager {
 
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:TracciatoXML type:TracciatoXML
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoXML}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TracciatoXML}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ITracciatoXMLServiceSearch getTracciatoXMLServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoXML}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TracciatoXML}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ITracciatoXMLService getTracciatoXMLService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:Dominio type:Dominio
 	 =====================================================================================================================
 	*/
@@ -84,58 +58,6 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IDominioService getDominioService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:TabellaControparti type:TabellaControparti
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TabellaControparti}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TabellaControparti}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ITabellaContropartiServiceSearch getTabellaContropartiServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TabellaControparti}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TabellaControparti}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ITabellaContropartiService getTabellaContropartiService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:ContoAccredito type:ContoAccredito
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.ContoAccredito}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.ContoAccredito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IContoAccreditoServiceSearch getContoAccreditoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.ContoAccredito}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.ContoAccredito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IContoAccreditoService getContoAccreditoService() throws ServiceException,NotImplementedException;
 	
 	
 	
@@ -193,79 +115,27 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Anagrafica type:Anagrafica
+	 Services relating to the object with name:Uo type:Uo
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Anagrafica}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Uo}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Anagrafica}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Uo}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IAnagraficaServiceSearch getAnagraficaServiceSearch() throws ServiceException,NotImplementedException;
+	public IUoServiceSearch getUoServiceSearch() throws ServiceException,NotImplementedException;
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Anagrafica}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Uo}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Anagrafica}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Uo}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IAnagraficaService getAnagraficaService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:MailTemplate type:MailTemplate
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.MailTemplate}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.MailTemplate}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IMailTemplateServiceSearch getMailTemplateServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.MailTemplate}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.MailTemplate}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IMailTemplateService getMailTemplateService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Ente type:Ente
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Ente}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Ente}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IEnteServiceSearch getEnteServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ente}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ente}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IEnteService getEnteService() throws ServiceException,NotImplementedException;
+	public IUoService getUoService() throws ServiceException,NotImplementedException;
 	
 	
 	
@@ -531,6 +401,32 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:Evento type:Evento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IEventoServiceSearch getEventoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IEventoService getEventoService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:SingoloVersamento type:SingoloVersamento
 	 =====================================================================================================================
 	*/
@@ -583,188 +479,6 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Carrello type:Carrello
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Carrello}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Carrello}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ICarrelloServiceSearch getCarrelloServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Carrello}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Carrello}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ICarrelloService getCarrelloService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RT type:RT
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RT}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRTServiceSearch getRTServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RT}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRTService getRTService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Esito type:Esito
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Esito}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Esito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IEsitoServiceSearch getEsitoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Esito}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Esito}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IEsitoService getEsitoService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Evento type:Evento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IEventoServiceSearch getEventoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Evento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IEventoService getEventoService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:SLA type:SLA
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.SLA}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.SLA}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ISLAServiceSearch getSLAServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.SLA}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.SLA}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public ISLAService getSLAService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:Rilevamento type:Rilevamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Rilevamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Rilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRilevamentoServiceSearch getRilevamentoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rilevamento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRilevamentoService getRilevamentoService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:MediaRilevamento type:MediaRilevamento
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IMediaRilevamentoServiceSearch getMediaRilevamentoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.MediaRilevamento}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IMediaRilevamentoService getMediaRilevamentoService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:RR type:RR
 	 =====================================================================================================================
 	*/
@@ -791,53 +505,53 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:ER type:ER
+	 Services relating to the object with name:Pagamento type:Pagamento
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.ER}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Pagamento}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.ER}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Pagamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IERServiceSearch getERServiceSearch() throws ServiceException,NotImplementedException;
+	public IPagamentoServiceSearch getPagamentoServiceSearch() throws ServiceException,NotImplementedException;
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.ER}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Pagamento}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.ER}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Pagamento}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IERService getERService() throws ServiceException,NotImplementedException;
+	public IPagamentoService getPagamentoService() throws ServiceException,NotImplementedException;
 	
 	
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:SingolaRevoca type:SingolaRevoca
+	 Services relating to the object with name:Notifica type:Notifica
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Notifica}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Notifica}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public ISingolaRevocaServiceSearch getSingolaRevocaServiceSearch() throws ServiceException,NotImplementedException;
+	public INotificaServiceSearch getNotificaServiceSearch() throws ServiceException,NotImplementedException;
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Notifica}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRevoca}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Notifica}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public ISingolaRevocaService getSingolaRevocaService() throws ServiceException,NotImplementedException;
+	public INotificaService getNotificaService() throws ServiceException,NotImplementedException;
 	
 	
 	
@@ -869,53 +583,53 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:SingolaRendicontazione type:SingolaRendicontazione
+	 Services relating to the object with name:FrApplicazione type:FrApplicazione
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public ISingolaRendicontazioneServiceSearch getSingolaRendicontazioneServiceSearch() throws ServiceException,NotImplementedException;
+	public IFrApplicazioneServiceSearch getFrApplicazioneServiceSearch() throws ServiceException,NotImplementedException;
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.SingolaRendicontazione}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public ISingolaRendicontazioneService getSingolaRendicontazioneService() throws ServiceException,NotImplementedException;
+	public IFrApplicazioneService getFrApplicazioneService() throws ServiceException,NotImplementedException;
 	
 	
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:Mail type:Mail
+	 Services relating to the object with name:RendicontazioneSenzaRPT type:RendicontazioneSenzaRPT
 	 =====================================================================================================================
 	*/
 	
 	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Mail}
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
 	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Mail}	
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IMailServiceSearch getMailServiceSearch() throws ServiceException,NotImplementedException;
+	public IRendicontazioneSenzaRPTServiceSearch getRendicontazioneSenzaRPTServiceSearch() throws ServiceException,NotImplementedException;
 	
 	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Mail}
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
 	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Mail}	
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
 	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
-	public IMailService getMailService() throws ServiceException,NotImplementedException;
+	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() throws ServiceException,NotImplementedException;
 	
 	
 	

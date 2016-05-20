@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,10 @@
  */
 package it.govpay.bd.model.converter;
 
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Canale.ModelloPagamento;
+import it.govpay.bd.model.Canale.TipoVersamento;
 import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Psp.Canale;
-import it.govpay.bd.model.Psp.ModelloPagamento;
-import it.govpay.bd.model.Rpt.TipoVersamento;
 import it.govpay.orm.IdPsp;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class CanaleConverter {
 	}
 
 	public static Canale toDTO(it.govpay.orm.Canale vo, Psp pspDto) throws ServiceException {
-		Canale dto = new Psp().new Canale();
+		Canale dto = new Canale();
 		dto.setId(vo.getId());
 		dto.setCodCanale(vo.getCodCanale());
 		dto.setCodIntermediario(vo.getCodIntermediario());
@@ -56,7 +56,7 @@ public class CanaleConverter {
 		dto.setTipoVersamento(TipoVersamento.toEnum(vo.getTipoVersamento()));
 		dto.setUrlInfo(vo.getUrlInfo());
 		dto.setAbilitato(vo.isAbilitato());
-		dto.setPsp(pspDto);
+		dto.setIdPsp(pspDto.getId());
 		return dto;
 	}
 
@@ -75,7 +75,7 @@ public class CanaleConverter {
 		it.govpay.orm.Canale vo = new it.govpay.orm.Canale();
 		vo.setId(dto.getId());
 		IdPsp idPsp = new IdPsp();
-		idPsp.setId(dto.getPsp().getId());
+		idPsp.setId(dto.getIdPsp());
 		vo.setIdPsp(idPsp);
 		vo.setCodCanale(dto.getCodCanale());
 		vo.setCodIntermediario(dto.getCodIntermediario());

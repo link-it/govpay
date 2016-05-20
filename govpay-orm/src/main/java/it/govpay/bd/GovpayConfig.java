@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,8 +27,6 @@ public class GovpayConfig {
 	
 	private static final String PROPERTIES_FILE = "/govpay-orm.properties";
 
-	private static final String DEFAULT_PREFIX = "it.govpay.orm";
-	
 	private static GovpayConfig instance;
 	public static GovpayConfig getInstance() throws Exception {
 		if(instance == null) {
@@ -45,18 +43,13 @@ public class GovpayConfig {
 		InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
 		Properties props = new Properties();
 		props.load(is);
-		this.databaseType = getDefaultPrefixProperty("databaseType", props, true);
 		
-		String databaseShowSqlString = getDefaultPrefixProperty("showSql", props, true);
+		this.databaseType = getProperty("it.govpay.orm.databaseType", props, true);
+		String databaseShowSqlString = getProperty("it.govpay.orm.showSql", props, true);
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
-		
-		this.dataSourceJNDIName = getDefaultPrefixProperty("dataSourceJNDIName", props, true);
+		this.dataSourceJNDIName = getProperty("it.govpay.orm.dataSourceJNDIName", props, true);
 	}
 
-	private static String getDefaultPrefixProperty(String name, Properties props, boolean required) throws Exception {
-		return getProperty(DEFAULT_PREFIX+"."+name, props, required);
-	}
-	
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {
 		String value = props.getProperty(name);
 		if(value == null) {
@@ -72,24 +65,11 @@ public class GovpayConfig {
 		return databaseType;
 	}
 
-	public void setDatabaseType(String databaseType) {
-		this.databaseType = databaseType;
-	}
-
 	public boolean isDatabaseShowSql() {
 		return databaseShowSql;
-	}
-
-	public void setDatabaseShowSql(boolean databaseShowSql) {
-		this.databaseShowSql = databaseShowSql;
 	}
 
 	public String getDataSourceJNDIName() {
 		return dataSourceJNDIName;
 	}
-
-	public void setDataSourceJNDIName(String dataSourceJNDIName) {
-		this.dataSourceJNDIName = dataSourceJNDIName;
-	}
-
 }

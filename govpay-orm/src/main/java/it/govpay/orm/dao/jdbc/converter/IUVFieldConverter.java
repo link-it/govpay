@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,20 +68,6 @@ public class IUVFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(IUV.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
-		if(field.equals(IUV.model().COD_DOMINIO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_dominio";
-			}else{
-				return "cod_dominio";
-			}
-		}
 		if(field.equals(IUV.model().PRG)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".prg";
@@ -96,13 +82,6 @@ public class IUVFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv";
 			}
 		}
-		if(field.equals(IUV.model().DATA_GENERAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_generazione";
-			}else{
-				return "data_generazione";
-			}
-		}
 		if(field.equals(IUV.model().APPLICATION_CODE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".application_code";
@@ -110,11 +89,39 @@ public class IUVFieldConverter extends AbstractSQLFieldConverter {
 				return "application_code";
 			}
 		}
-		if(field.equals(IUV.model().AUX_DIGIT)){
+		if(field.equals(IUV.model().DATA_GENERAZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".aux_digit";
+				return this.toAliasTable(field)+".data_generazione";
 			}else{
-				return "aux_digit";
+				return "data_generazione";
+			}
+		}
+		if(field.equals(IUV.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
+		if(field.equals(IUV.model().TIPO_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_iuv";
+			}else{
+				return "tipo_iuv";
+			}
+		}
+		if(field.equals(IUV.model().ID_DOMINIO.COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(IUV.model().COD_VERSAMENTO_ENTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_ente";
+			}else{
+				return "cod_versamento_ente";
 			}
 		}
 
@@ -130,25 +137,28 @@ public class IUVFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(IUV.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(IUV.model().ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(IUV.model().COD_DOMINIO)){
-			return this.toTable(IUV.model(), returnAlias);
-		}
 		if(field.equals(IUV.model().PRG)){
 			return this.toTable(IUV.model(), returnAlias);
 		}
 		if(field.equals(IUV.model().IUV)){
 			return this.toTable(IUV.model(), returnAlias);
 		}
-		if(field.equals(IUV.model().DATA_GENERAZIONE)){
-			return this.toTable(IUV.model(), returnAlias);
-		}
 		if(field.equals(IUV.model().APPLICATION_CODE)){
 			return this.toTable(IUV.model(), returnAlias);
 		}
-		if(field.equals(IUV.model().AUX_DIGIT)){
+		if(field.equals(IUV.model().DATA_GENERAZIONE)){
+			return this.toTable(IUV.model(), returnAlias);
+		}
+		if(field.equals(IUV.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(IUV.model().ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(IUV.model().TIPO_IUV)){
+			return this.toTable(IUV.model(), returnAlias);
+		}
+		if(field.equals(IUV.model().ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(IUV.model().ID_DOMINIO, returnAlias);
+		}
+		if(field.equals(IUV.model().COD_VERSAMENTO_ENTE)){
 			return this.toTable(IUV.model(), returnAlias);
 		}
 
@@ -169,6 +179,9 @@ public class IUVFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(IUV.model().ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(IUV.model().ID_DOMINIO)){
+			return "domini";
 		}
 
 

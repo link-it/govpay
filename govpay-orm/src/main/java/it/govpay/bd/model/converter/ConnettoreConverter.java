@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Connettore;
+import it.govpay.bd.model.Connettore.Versione;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,6 +90,9 @@ public class ConnettoreConverter {
 					dto.setAzioneInUrl(Boolean.parseBoolean(connettore.getValore()));
 				}
 				
+				if(Connettore.P_VERSIONE.equals(connettore.getCodProprieta())) {
+					dto.setVersione(Versione.valueOf(connettore.getValore()));
+				}
 			}
 		}
 		return dto;
@@ -97,7 +101,7 @@ public class ConnettoreConverter {
 	public static List<it.govpay.orm.Connettore> toVOList(Connettore connettore) {
 		List<it.govpay.orm.Connettore> voList = new ArrayList<it.govpay.orm.Connettore>();
 		
-		if(connettore.getHttpUser() != null) {
+		if(connettore.getHttpUser() != null && !connettore.getHttpUser().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_HTTPUSER_NAME);
@@ -105,7 +109,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getHttpPassw() != null) {
+		if(connettore.getHttpPassw() != null && !connettore.getHttpPassw().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_HTTPPASSW_NAME);
@@ -113,7 +117,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getUrl() != null) {
+		if(connettore.getUrl() != null && !connettore.getUrl().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_URL_NAME);
@@ -137,7 +141,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslKsLocation() != null) {
+		if(connettore.getSslKsLocation() != null && !connettore.getSslKsLocation().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLKSLOCATION_NAME);
@@ -145,7 +149,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslKsPasswd() != null) {
+		if(connettore.getSslKsPasswd() != null && !connettore.getSslKsPasswd().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLKSPASSWD_NAME);
@@ -153,7 +157,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslKsType() != null) {
+		if(connettore.getSslKsType() != null && !connettore.getSslKsType().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLKSTYPE_NAME);
@@ -161,7 +165,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslTsLocation() != null) {
+		if(connettore.getSslTsLocation() != null && !connettore.getSslTsLocation().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLTSLOCATION_NAME);
@@ -169,7 +173,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslTsPasswd() != null) {
+		if(connettore.getSslTsPasswd() != null && !connettore.getSslTsPasswd().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLTSPASSWD_NAME);
@@ -177,7 +181,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslTsType() != null) {
+		if(connettore.getSslTsType() != null && !connettore.getSslTsType().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLTSTYPE_NAME);
@@ -185,7 +189,7 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslPKeyPasswd() != null) {
+		if(connettore.getSslPKeyPasswd() != null && !connettore.getSslPKeyPasswd().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLPKEYPASSWD_NAME);
@@ -193,11 +197,19 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 
-		if(connettore.getSslType() != null) {
+		if(connettore.getSslType() != null && !connettore.getSslType().trim().isEmpty()) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_SSLTYPE_NAME);
 			vo.setValore(connettore.getSslType());
+			voList.add(vo);
+		}
+		
+		if(connettore.getVersione() != null) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_VERSIONE);
+			vo.setValore(connettore.getVersione().toString());
 			voList.add(vo);
 		}
 

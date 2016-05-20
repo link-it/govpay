@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -53,14 +53,7 @@ public class PortaliBD extends BasicBD {
 	 * @throws MultipleResultException in caso di duplicati.
 	 * @throws ServiceException in caso di errore DB.
 	 */
-	public Portale getPortale(Long idPortale) throws NotFoundException, ServiceException, MultipleResultException {
-		if(idPortale== null) {
-			throw new ServiceException("Parameter 'id' cannot be NULL");
-		}
-		
-		long id = idPortale.longValue();
-
-
+	public Portale getPortale(long id) throws NotFoundException, ServiceException, MultipleResultException {
 		try {
 			it.govpay.orm.Portale portaleVO = ((JDBCPortaleServiceSearch)this.getPortaleService()).get(id);
 			Portale ente = PortaleConverter.toDTO(portaleVO);
@@ -135,7 +128,7 @@ public class PortaliBD extends BasicBD {
 
 			this.getPortaleService().update(idPortale, vo);
 			portale.setId(vo.getId());
-			
+			AnagraficaManager.removeFromCache(portale);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -154,10 +147,8 @@ public class PortaliBD extends BasicBD {
 	public void insertPortale(Portale portale) throws ServiceException{
 		try {
 			it.govpay.orm.Portale vo = PortaleConverter.toVO(portale);
-			
 			this.getPortaleService().create(vo);
 			portale.setId(vo.getId());
-
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

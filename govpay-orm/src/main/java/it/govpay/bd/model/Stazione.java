@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,10 +21,12 @@
 
 package it.govpay.bd.model;
 
-/**
- * Rapppresenta un ente creditore
- */
-public class Stazione extends BasicModel implements Comparable<Stazione>{
+import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+
+public class Stazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
 	private Long id; 
@@ -77,22 +79,6 @@ public class Stazione extends BasicModel implements Comparable<Stazione>{
 		this.abilitato = abilitato;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		Stazione stazione = null;
-		if(obj instanceof Stazione) {
-			stazione = (Stazione) obj;
-		} else {
-			return false;
-		}
-		boolean equal =
-				equals(codStazione, stazione.getCodStazione()) &&
-				equals(password, stazione.getPassword()) && 
-				idIntermediario == stazione.getIdIntermediario() &&
-				abilitato == stazione.isAbilitato() &&
-				equals(applicationCode, stazione.getApplicationCode());		
-		return equal;
-	}
 
 	public int getApplicationCode() {
 		return applicationCode;
@@ -102,9 +88,20 @@ public class Stazione extends BasicModel implements Comparable<Stazione>{
 		this.applicationCode = applicationCode;
 	}
 
-	@Override
-	public int compareTo(Stazione stazione) {
-		return this.codStazione.compareTo(stazione.getCodStazione());
+
+	// Business
+	
+	private Intermediario intermediario;
+	
+	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
+		if(intermediario == null) {
+			intermediario = AnagraficaManager.getIntermediario(bd, idIntermediario);
+		}
+		return intermediario;
+	}
+	
+	public void setIntermediario(Intermediario intermediario) {
+		this.intermediario = intermediario;
 	}
 
 }

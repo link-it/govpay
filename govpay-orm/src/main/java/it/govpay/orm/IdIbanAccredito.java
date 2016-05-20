@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-iban-accredito">
  * 		&lt;sequence>
  * 			&lt;element name="codIban" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -51,7 +52,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-iban-accredito", 
   propOrder = {
-  	"codIban"
+  	"codIban",
+  	"idDominio"
   }
 )
 
@@ -83,6 +85,14 @@ public class IdIbanAccredito extends org.openspcoop2.utils.beans.BaseBean implem
     this.codIban = codIban;
   }
 
+  public IdDominio getIdDominio() {
+    return this.idDominio;
+  }
+
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -93,5 +103,8 @@ public class IdIbanAccredito extends org.openspcoop2.utils.beans.BaseBean implem
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codIban",required=true,nillable=false)
   protected java.lang.String codIban;
+
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
 }

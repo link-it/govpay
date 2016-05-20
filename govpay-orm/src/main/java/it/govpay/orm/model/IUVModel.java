@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,13 +42,14 @@ public class IUVModel extends AbstractModel<IUV> {
 	
 		super();
 	
-		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"IUV",IUV.class));
-		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"IUV",IUV.class);
 		this.PRG = new Field("prg",long.class,"IUV",IUV.class);
 		this.IUV = new Field("iuv",java.lang.String.class,"IUV",IUV.class);
+		this.APPLICATION_CODE = new Field("applicationCode",int.class,"IUV",IUV.class);
 		this.DATA_GENERAZIONE = new Field("dataGenerazione",java.util.Date.class,"IUV",IUV.class);
-		this.APPLICATION_CODE = new Field("applicationCode",java.lang.Integer.class,"IUV",IUV.class);
-		this.AUX_DIGIT = new Field("auxDigit",java.lang.Integer.class,"IUV",IUV.class);
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"IUV",IUV.class));
+		this.TIPO_IUV = new Field("tipoIuv",java.lang.String.class,"IUV",IUV.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"IUV",IUV.class));
+		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"IUV",IUV.class);
 	
 	}
 	
@@ -56,31 +57,34 @@ public class IUVModel extends AbstractModel<IUV> {
 	
 		super(father);
 	
-		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"IUV",IUV.class));
-		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"IUV",IUV.class);
 		this.PRG = new ComplexField(father,"prg",long.class,"IUV",IUV.class);
 		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"IUV",IUV.class);
+		this.APPLICATION_CODE = new ComplexField(father,"applicationCode",int.class,"IUV",IUV.class);
 		this.DATA_GENERAZIONE = new ComplexField(father,"dataGenerazione",java.util.Date.class,"IUV",IUV.class);
-		this.APPLICATION_CODE = new ComplexField(father,"applicationCode",java.lang.Integer.class,"IUV",IUV.class);
-		this.AUX_DIGIT = new ComplexField(father,"auxDigit",java.lang.Integer.class,"IUV",IUV.class);
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"IUV",IUV.class));
+		this.TIPO_IUV = new ComplexField(father,"tipoIuv",java.lang.String.class,"IUV",IUV.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"IUV",IUV.class));
+		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"IUV",IUV.class);
 	
 	}
 	
 	
 
-	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
-	 
-	public IField COD_DOMINIO = null;
-	 
 	public IField PRG = null;
 	 
 	public IField IUV = null;
 	 
-	public IField DATA_GENERAZIONE = null;
-	 
 	public IField APPLICATION_CODE = null;
 	 
-	public IField AUX_DIGIT = null;
+	public IField DATA_GENERAZIONE = null;
+	 
+	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
+	 
+	public IField TIPO_IUV = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
+	 
+	public IField COD_VERSAMENTO_ENTE = null;
 	 
 
 	@Override

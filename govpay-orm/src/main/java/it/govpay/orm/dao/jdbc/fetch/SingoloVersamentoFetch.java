@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,32 +55,24 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 				SingoloVersamento object = new SingoloVersamento();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setIndice", SingoloVersamento.model().INDICE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice", SingoloVersamento.model().INDICE.getFieldType()));
 				setParameter(object, "setCodSingoloVersamentoEnte", SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_singolo_versamento_ente", SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
-				setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType()));
-				setParameter(object, "setIbanAccredito", SingoloVersamento.model().IBAN_ACCREDITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iban_accredito", SingoloVersamento.model().IBAN_ACCREDITO.getFieldType()));
-				setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_singolo_versamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
-				setParameter(object, "setImportoCommissioniPA", SingoloVersamento.model().IMPORTO_COMMISSIONI_PA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_commissioni_pa", SingoloVersamento.model().IMPORTO_COMMISSIONI_PA.getFieldType()));
-				setParameter(object, "setSingoloImportoPagato", SingoloVersamento.model().SINGOLO_IMPORTO_PAGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "singolo_importo_pagato", SingoloVersamento.model().SINGOLO_IMPORTO_PAGATO.getFieldType()));
-				setParameter(object, "setCausaleVersamento", SingoloVersamento.model().CAUSALE_VERSAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "causale_versamento", SingoloVersamento.model().CAUSALE_VERSAMENTO.getFieldType()));
-				setParameter(object, "setDatiSpecificiRiscossione", SingoloVersamento.model().DATI_SPECIFICI_RISCOSSIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "dati_specifici_riscossione", SingoloVersamento.model().DATI_SPECIFICI_RISCOSSIONE.getFieldType()));
 				setParameter(object, "setStatoSingoloVersamento", SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "stato_singolo_versamento", SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType()));
-				setParameter(object, "setEsitoSingoloPagamento", SingoloVersamento.model().ESITO_SINGOLO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "esito_singolo_pagamento", SingoloVersamento.model().ESITO_SINGOLO_PAGAMENTO.getFieldType()));
-				setParameter(object, "setDataEsitoSingoloPagamento", SingoloVersamento.model().DATA_ESITO_SINGOLO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_esito_singolo_pagamento", SingoloVersamento.model().DATA_ESITO_SINGOLO_PAGAMENTO.getFieldType()));
-				setParameter(object, "setIur", SingoloVersamento.model().IUR.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iur", SingoloVersamento.model().IUR.getFieldType()));
+				setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_singolo_versamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType()));
+				setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType()));
+				setParameter(object, "setTipoBollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_bollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType()));
+				setParameter(object, "setHashDocumento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "hash_documento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType()));
+				setParameter(object, "setProvinciaResidenza", SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "provincia_residenza", SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType()));
+				setParameter(object, "setTipoContabilita", SingoloVersamento.model().TIPO_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", SingoloVersamento.model().TIPO_CONTABILITA.getFieldType()));
+				setParameter(object, "setCodiceContabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "codice_contabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType()));
 				return object;
 			}
 			
@@ -103,32 +95,24 @@ public class SingoloVersamentoFetch extends AbstractJDBCFetch {
 				SingoloVersamento object = new SingoloVersamento();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setIndice", SingoloVersamento.model().INDICE.getFieldType(),
-					this.getObjectFromMap(map,"indice"));
 				setParameter(object, "setCodSingoloVersamentoEnte", SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codSingoloVersamentoEnte"));
-				setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"annoRiferimento"));
-				setParameter(object, "setIbanAccredito", SingoloVersamento.model().IBAN_ACCREDITO.getFieldType(),
-					this.getObjectFromMap(map,"ibanAccredito"));
-				setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"importoSingoloVersamento"));
-				setParameter(object, "setImportoCommissioniPA", SingoloVersamento.model().IMPORTO_COMMISSIONI_PA.getFieldType(),
-					this.getObjectFromMap(map,"importoCommissioniPA"));
-				setParameter(object, "setSingoloImportoPagato", SingoloVersamento.model().SINGOLO_IMPORTO_PAGATO.getFieldType(),
-					this.getObjectFromMap(map,"singoloImportoPagato"));
-				setParameter(object, "setCausaleVersamento", SingoloVersamento.model().CAUSALE_VERSAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"causaleVersamento"));
-				setParameter(object, "setDatiSpecificiRiscossione", SingoloVersamento.model().DATI_SPECIFICI_RISCOSSIONE.getFieldType(),
-					this.getObjectFromMap(map,"datiSpecificiRiscossione"));
 				setParameter(object, "setStatoSingoloVersamento", SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"statoSingoloVersamento"));
-				setParameter(object, "setEsitoSingoloPagamento", SingoloVersamento.model().ESITO_SINGOLO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"esitoSingoloPagamento"));
-				setParameter(object, "setDataEsitoSingoloPagamento", SingoloVersamento.model().DATA_ESITO_SINGOLO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"dataEsitoSingoloPagamento"));
-				setParameter(object, "setIur", SingoloVersamento.model().IUR.getFieldType(),
-					this.getObjectFromMap(map,"iur"));
+				setParameter(object, "setImportoSingoloVersamento", SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType(),
+					this.getObjectFromMap(map,"importoSingoloVersamento"));
+				setParameter(object, "setAnnoRiferimento", SingoloVersamento.model().ANNO_RIFERIMENTO.getFieldType(),
+					this.getObjectFromMap(map,"annoRiferimento"));
+				setParameter(object, "setTipoBollo", SingoloVersamento.model().TIPO_BOLLO.getFieldType(),
+					this.getObjectFromMap(map,"tipoBollo"));
+				setParameter(object, "setHashDocumento", SingoloVersamento.model().HASH_DOCUMENTO.getFieldType(),
+					this.getObjectFromMap(map,"hashDocumento"));
+				setParameter(object, "setProvinciaResidenza", SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType(),
+					this.getObjectFromMap(map,"provinciaResidenza"));
+				setParameter(object, "setTipoContabilita", SingoloVersamento.model().TIPO_CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"tipoContabilita"));
+				setParameter(object, "setCodiceContabilita", SingoloVersamento.model().CODICE_CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"codiceContabilita"));
 				return object;
 			}
 			

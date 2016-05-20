@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,25 +30,25 @@ public class DarsResponse {
 	private Object response;
 	
 	public String getCodOperazione() {
-		return codOperazione;
+		return this.codOperazione;
 	}
 	public void setCodOperazione(String codOperazione) {
 		this.codOperazione = codOperazione;
 	}
 	public EsitoOperazione getEsitoOperazione() {
-		return esitoOperazione;
+		return this.esitoOperazione;
 	}
 	public void setEsitoOperazione(EsitoOperazione esitoOperazione) {
 		this.esitoOperazione = esitoOperazione;
 	}
 	public String getDettaglioEsito() {
-		return dettaglioEsito;
+		return this.dettaglioEsito;
 	}
 	public void setDettaglioEsito(String dettaglioEsito) {
 		this.dettaglioEsito = dettaglioEsito;
 	}
 	public Object getResponse() {
-		return response;
+		return this.response;
 	}
 	public void setResponse(Object response) {
 		this.response = response;

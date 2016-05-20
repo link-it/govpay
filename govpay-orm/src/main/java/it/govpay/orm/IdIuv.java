@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="id-iuv">
  * 		&lt;sequence>
- * 			&lt;element name="codDominio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="prg" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
@@ -52,7 +52,7 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-iuv", 
   propOrder = {
-  	"codDominio",
+  	"idDominio",
   	"prg"
   }
 )
@@ -77,12 +77,12 @@ public class IdIuv extends org.openspcoop2.utils.beans.BaseBean implements Seria
 		this.id=new Long(-1);
   }
 
-  public java.lang.String getCodDominio() {
-    return this.codDominio;
+  public IdDominio getIdDominio() {
+    return this.idDominio;
   }
 
-  public void setCodDominio(java.lang.String codDominio) {
-    this.codDominio = codDominio;
+  public void setIdDominio(IdDominio idDominio) {
+    this.idDominio = idDominio;
   }
 
   public long getPrg() {
@@ -100,9 +100,8 @@ public class IdIuv extends org.openspcoop2.utils.beans.BaseBean implements Seria
 
 
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codDominio",required=true,nillable=false)
-  protected java.lang.String codDominio;
+  @XmlElement(name="idDominio",required=true,nillable=false)
+  protected IdDominio idDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="prg",required=true,nillable=false)

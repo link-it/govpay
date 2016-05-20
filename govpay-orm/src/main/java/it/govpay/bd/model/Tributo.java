@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,10 +20,16 @@
  */
 package it.govpay.bd.model;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+
+import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Tributo extends BasicModel {
 	private static final long serialVersionUID = 1L;
+	
+	public static final String BOLLOT = "BOLLOT";
 	
 	public enum TipoContabilta {
 	    CAPITOLO("0"),
@@ -41,22 +47,19 @@ public class Tributo extends BasicModel {
 		}
 		
 		public static TipoContabilta toEnum(String codifica) throws ServiceException {
-			String codifiche = "{";
 			for(TipoContabilta p : TipoContabilta.values()){
-				codifiche += " " +p.getCodifica() + ",";
 				if(p.getCodifica().equals(codifica))
 					return p;
 			}
-			codifiche += "}";
-			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + codifiche);
+			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilta.values()));
 		}
 	}
 	
 	private Long id; 
-	private long idEnte;
+	private long idDominio;
+	private Long idIbanAccredito;
 	private String codTributo;
 	private String descrizione;
-	private long ibanAccredito;
 	private boolean abilitato;
 	private TipoContabilta tipoContabilita;
 	private String codContabilita;
@@ -66,12 +69,6 @@ public class Tributo extends BasicModel {
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public long getIdEnte() {
-		return idEnte;
-	}
-	public void setIdEnte(long idEnte) {
-		this.idEnte = idEnte;
 	}
 	public String getCodTributo() {
 		return codTributo;
@@ -85,11 +82,11 @@ public class Tributo extends BasicModel {
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
-	public long getIbanAccredito() {
-		return ibanAccredito;
+	public Long getIdIbanAccredito() {
+		return idIbanAccredito;
 	}
-	public void setIbanAccredito(long ibanAccredito) {
-		this.ibanAccredito = ibanAccredito;
+	public void setIdIbanAccredito(Long idIbanAccredito) {
+		this.idIbanAccredito = idIbanAccredito;
 	}
 	public boolean isAbilitato() {
 		return abilitato;
@@ -109,26 +106,25 @@ public class Tributo extends BasicModel {
 	public void setCodContabilita(String codContabilita) {
 		this.codContabilita = codContabilita;
 	}
-
-	@Override
-	public boolean equals(Object obj) {
-		Tributo tributo = null;
-		if(obj instanceof Tributo) {
-			tributo = (Tributo) obj;
-		} else {
-			return false;
+	public long getIdDominio() {
+		return idDominio;
+	}
+	public void setIdDominio(long idDominio) {
+		this.idDominio = idDominio;
+	}
+	
+	// Business
+	
+	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
+		if(ibanAccredito == null && idIbanAccredito != null) {
+			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
 		}
-		
-		boolean equal =
-				equals(codTributo, tributo.getCodTributo()) &&
-				equals(descrizione, tributo.getDescrizione()) &&
-				equals(ibanAccredito, tributo.getIbanAccredito()) &&
-				equals(tipoContabilita, tributo.getTipoContabilita()) &&
-				equals(codContabilita, tributo.getCodContabilita()) &&
-				idEnte == tributo.getIdEnte() &&
-				abilitato == tributo.isAbilitato();
-		
-		return equal;
+		return ibanAccredito;
+	}
+	public void setIbanAccredito(IbanAccredito ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
 	}
 
+	private IbanAccredito ibanAccredito;
+	
 }

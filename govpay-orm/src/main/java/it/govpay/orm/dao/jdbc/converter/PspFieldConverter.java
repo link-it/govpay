@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,13 +82,6 @@ public class PspFieldConverter extends AbstractSQLFieldConverter {
 				return "ragione_sociale";
 			}
 		}
-		if(field.equals(Psp.model().COD_FLUSSO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_flusso";
-			}else{
-				return "cod_flusso";
-			}
-		}
 		if(field.equals(Psp.model().URL_INFO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".url_info";
@@ -117,13 +110,6 @@ public class PspFieldConverter extends AbstractSQLFieldConverter {
 				return "marca_bollo";
 			}
 		}
-		if(field.equals(Psp.model().ID_TRACCIATO.ID_TRACCIATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_tracciato";
-			}else{
-				return "id_tracciato";
-			}
-		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -143,9 +129,6 @@ public class PspFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Psp.model().RAGIONE_SOCIALE)){
 			return this.toTable(Psp.model(), returnAlias);
 		}
-		if(field.equals(Psp.model().COD_FLUSSO)){
-			return this.toTable(Psp.model(), returnAlias);
-		}
 		if(field.equals(Psp.model().URL_INFO)){
 			return this.toTable(Psp.model(), returnAlias);
 		}
@@ -157,9 +140,6 @@ public class PspFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Psp.model().MARCA_BOLLO)){
 			return this.toTable(Psp.model(), returnAlias);
-		}
-		if(field.equals(Psp.model().ID_TRACCIATO.ID_TRACCIATO)){
-			return this.toTable(Psp.model().ID_TRACCIATO, returnAlias);
 		}
 
 
@@ -176,9 +156,6 @@ public class PspFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Psp.model())){
 			return "psp";
-		}
-		if(model.equals(Psp.model().ID_TRACCIATO)){
-			return "tracciatixml";
 		}
 
 

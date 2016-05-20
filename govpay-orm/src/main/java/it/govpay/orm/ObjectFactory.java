@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -54,6 +54,55 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdContoAccredito }
+     */
+    public IdContoAccredito createIdContoAccredito() {
+        return new IdContoAccredito();
+    }
+
+    /**
+     * Create an instance of {@link OperatorePortale }
+     */
+    public OperatorePortale createOperatorePortale() {
+        return new OperatorePortale();
+    }
+
+    /**
+     * Create an instance of {@link IdDominio }
+     */
+    public IdDominio createIdDominio() {
+        return new IdDominio();
+    }
+
+    /**
+     * Create an instance of {@link IdRr }
+     */
+    public IdRr createIdRr() {
+        return new IdRr();
+    }
+
+    /**
+     * Create an instance of {@link IdStazione }
+     */
+    public IdStazione createIdStazione() {
+        return new IdStazione();
+    }
+
+    /**
+     * Create an instance of {@link Uo }
+     */
+    public Uo createUo() {
+        return new Uo();
+    }
+
+    /**
+     * Create an instance of {@link IdAnagrafica }
+     */
+    public IdAnagrafica createIdAnagrafica() {
+        return new IdAnagrafica();
+    }
+
+    /**
      * Create an instance of {@link RPT }
      */
     public RPT createRPT() {
@@ -68,66 +117,31 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ApplicazioneTributo }
+     * Create an instance of {@link Notifica }
      */
-    public ApplicazioneTributo createApplicazioneTributo() {
-        return new ApplicazioneTributo();
+    public Notifica createNotifica() {
+        return new Notifica();
     }
 
     /**
-     * Create an instance of {@link IdTabellaControparti }
+     * Create an instance of {@link IdApplicazione }
      */
-    public IdTabellaControparti createIdTabellaControparti() {
-        return new IdTabellaControparti();
+    public IdApplicazione createIdApplicazione() {
+        return new IdApplicazione();
     }
 
     /**
-     * Create an instance of {@link Ente }
+     * Create an instance of {@link OperatoreApplicazione }
      */
-    public Ente createEnte() {
-        return new Ente();
+    public OperatoreApplicazione createOperatoreApplicazione() {
+        return new OperatoreApplicazione();
     }
 
     /**
-     * Create an instance of {@link IdMail }
+     * Create an instance of {@link Dominio }
      */
-    public IdMail createIdMail() {
-        return new IdMail();
-    }
-
-    /**
-     * Create an instance of {@link IdRpt }
-     */
-    public IdRpt createIdRpt() {
-        return new IdRpt();
-    }
-
-    /**
-     * Create an instance of {@link IdIuv }
-     */
-    public IdIuv createIdIuv() {
-        return new IdIuv();
-    }
-
-    /**
-     * Create an instance of {@link IdCanale }
-     */
-    public IdCanale createIdCanale() {
-        return new IdCanale();
-    }
-
-    /**
-     * Create an instance of {@link IdFr }
-     */
-    public IdFr createIdFr() {
-        return new IdFr();
-    }
-
-    /**
-     * Create an instance of {@link Rilevamento }
-     */
-    public Rilevamento createRilevamento() {
-        return new Rilevamento();
+    public Dominio createDominio() {
+        return new Dominio();
     }
 
     /**
@@ -138,24 +152,185 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdEnte }
+     * Create an instance of {@link OperatoreUo }
      */
-    public IdEnte createIdEnte() {
-        return new IdEnte();
+    public OperatoreUo createOperatoreUo() {
+        return new OperatoreUo();
     }
 
     /**
-     * Create an instance of {@link Disponibilita }
+     * Create an instance of {@link IdIntermediario }
      */
-    public Disponibilita createDisponibilita() {
-        return new Disponibilita();
+    public IdIntermediario createIdIntermediario() {
+        return new IdIntermediario();
     }
 
     /**
-     * Create an instance of {@link Intermediario }
+     * Create an instance of {@link RR }
      */
-    public Intermediario createIntermediario() {
-        return new Intermediario();
+    public RR createRR() {
+        return new RR();
+    }
+
+    /**
+     * Create an instance of {@link IdFrApplicazione }
+     */
+    public IdFrApplicazione createIdFrApplicazione() {
+        return new IdFrApplicazione();
+    }
+
+    /**
+     * Create an instance of {@link Psp }
+     */
+    public Psp createPsp() {
+        return new Psp();
+    }
+
+    /**
+     * Create an instance of {@link Stazione }
+     */
+    public Stazione createStazione() {
+        return new Stazione();
+    }
+
+    /**
+     * Create an instance of {@link FR }
+     */
+    public FR createFR() {
+        return new FR();
+    }
+
+    /**
+     * Create an instance of {@link IdEvento }
+     */
+    public IdEvento createIdEvento() {
+        return new IdEvento();
+    }
+
+    /**
+     * Create an instance of {@link IdNotifica }
+     */
+    public IdNotifica createIdNotifica() {
+        return new IdNotifica();
+    }
+
+    /**
+     * Create an instance of {@link IdMessaggio }
+     */
+    public IdMessaggio createIdMessaggio() {
+        return new IdMessaggio();
+    }
+
+    /**
+     * Create an instance of {@link IdTributo }
+     */
+    public IdTributo createIdTributo() {
+        return new IdTributo();
+    }
+
+    /**
+     * Create an instance of {@link IbanAccredito }
+     */
+    public IbanAccredito createIbanAccredito() {
+        return new IbanAccredito();
+    }
+
+    /**
+     * Create an instance of {@link IdVersamento }
+     */
+    public IdVersamento createIdVersamento() {
+        return new IdVersamento();
+    }
+
+    /**
+     * Create an instance of {@link IdMediaRilevamento }
+     */
+    public IdMediaRilevamento createIdMediaRilevamento() {
+        return new IdMediaRilevamento();
+    }
+
+    /**
+     * Create an instance of {@link IdSla }
+     */
+    public IdSla createIdSla() {
+        return new IdSla();
+    }
+
+    /**
+     * Create an instance of {@link SingoloVersamento }
+     */
+    public SingoloVersamento createSingoloVersamento() {
+        return new SingoloVersamento();
+    }
+
+    /**
+     * Create an instance of {@link IdRilevamento }
+     */
+    public IdRilevamento createIdRilevamento() {
+        return new IdRilevamento();
+    }
+
+    /**
+     * Create an instance of {@link Operatore }
+     */
+    public Operatore createOperatore() {
+        return new Operatore();
+    }
+
+    /**
+     * Create an instance of {@link IdPagamento }
+     */
+    public IdPagamento createIdPagamento() {
+        return new IdPagamento();
+    }
+
+    /**
+     * Create an instance of {@link IdMailTemplate }
+     */
+    public IdMailTemplate createIdMailTemplate() {
+        return new IdMailTemplate();
+    }
+
+    /**
+     * Create an instance of {@link IdIbanAccredito }
+     */
+    public IdIbanAccredito createIdIbanAccredito() {
+        return new IdIbanAccredito();
+    }
+
+    /**
+     * Create an instance of {@link Portale }
+     */
+    public Portale createPortale() {
+        return new Portale();
+    }
+
+    /**
+     * Create an instance of {@link IdMail }
+     */
+    public IdMail createIdMail() {
+        return new IdMail();
+    }
+
+    /**
+     * Create an instance of {@link IdPsp }
+     */
+    public IdPsp createIdPsp() {
+        return new IdPsp();
+    }
+
+    /**
+     * Create an instance of {@link IdCarrello }
+     */
+    public IdCarrello createIdCarrello() {
+        return new IdCarrello();
+    }
+
+    /**
+     * Create an instance of {@link IdTracciato }
+     */
+    public IdTracciato createIdTracciato() {
+        return new IdTracciato();
     }
 
     /**
@@ -173,122 +348,52 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link IdMailTemplate }
+     * Create an instance of {@link IdEr }
      */
-    public IdMailTemplate createIdMailTemplate() {
-        return new IdMailTemplate();
+    public IdEr createIdEr() {
+        return new IdEr();
     }
 
     /**
-     * Create an instance of {@link ER }
+     * Create an instance of {@link IdPortale }
      */
-    public ER createER() {
-        return new ER();
+    public IdPortale createIdPortale() {
+        return new IdPortale();
     }
 
     /**
-     * Create an instance of {@link Esito }
+     * Create an instance of {@link PortaleApplicazione }
      */
-    public Esito createEsito() {
-        return new Esito();
+    public PortaleApplicazione createPortaleApplicazione() {
+        return new PortaleApplicazione();
     }
 
     /**
-     * Create an instance of {@link FR }
+     * Create an instance of {@link IdCanale }
      */
-    public FR createFR() {
-        return new FR();
+    public IdCanale createIdCanale() {
+        return new IdCanale();
     }
 
     /**
-     * Create an instance of {@link MediaRilevamento }
+     * Create an instance of {@link ApplicazioneDominio }
      */
-    public MediaRilevamento createMediaRilevamento() {
-        return new MediaRilevamento();
+    public ApplicazioneDominio createApplicazioneDominio() {
+        return new ApplicazioneDominio();
     }
 
     /**
-     * Create an instance of {@link IdRt }
+     * Create an instance of {@link Evento }
      */
-    public IdRt createIdRt() {
-        return new IdRt();
+    public Evento createEvento() {
+        return new Evento();
     }
 
     /**
-     * Create an instance of {@link OperatoreEnte }
+     * Create an instance of {@link IdSingolaRevoca }
      */
-    public OperatoreEnte createOperatoreEnte() {
-        return new OperatoreEnte();
-    }
-
-    /**
-     * Create an instance of {@link Connettore }
-     */
-    public Connettore createConnettore() {
-        return new Connettore();
-    }
-
-    /**
-     * Create an instance of {@link IdPsp }
-     */
-    public IdPsp createIdPsp() {
-        return new IdPsp();
-    }
-
-    /**
-     * Create an instance of {@link IdTracciato }
-     */
-    public IdTracciato createIdTracciato() {
-        return new IdTracciato();
-    }
-
-    /**
-     * Create an instance of {@link Operatore }
-     */
-    public Operatore createOperatore() {
-        return new Operatore();
-    }
-
-    /**
-     * Create an instance of {@link SingolaRendicontazione }
-     */
-    public SingolaRendicontazione createSingolaRendicontazione() {
-        return new SingolaRendicontazione();
-    }
-
-    /**
-     * Create an instance of {@link IbanAccredito }
-     */
-    public IbanAccredito createIbanAccredito() {
-        return new IbanAccredito();
-    }
-
-    /**
-     * Create an instance of {@link RR }
-     */
-    public RR createRR() {
-        return new RR();
-    }
-
-    /**
-     * Create an instance of {@link IdDominio }
-     */
-    public IdDominio createIdDominio() {
-        return new IdDominio();
-    }
-
-    /**
-     * Create an instance of {@link IdTributo }
-     */
-    public IdTributo createIdTributo() {
-        return new IdTributo();
-    }
-
-    /**
-     * Create an instance of {@link RT }
-     */
-    public RT createRT() {
-        return new RT();
+    public IdSingolaRevoca createIdSingolaRevoca() {
+        return new IdSingolaRevoca();
     }
 
     /**
@@ -296,34 +401,6 @@ public class ObjectFactory {
      */
     public IdSingolaRendicontazione createIdSingolaRendicontazione() {
         return new IdSingolaRendicontazione();
-    }
-
-    /**
-     * Create an instance of {@link TracciatoXML }
-     */
-    public TracciatoXML createTracciatoXML() {
-        return new TracciatoXML();
-    }
-
-    /**
-     * Create an instance of {@link Psp }
-     */
-    public Psp createPsp() {
-        return new Psp();
-    }
-
-    /**
-     * Create an instance of {@link Carrello }
-     */
-    public Carrello createCarrello() {
-        return new Carrello();
-    }
-
-    /**
-     * Create an instance of {@link IdStazione }
-     */
-    public IdStazione createIdStazione() {
-        return new IdStazione();
     }
 
     /**
@@ -341,192 +418,66 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Dominio }
+     * Create an instance of {@link FrApplicazione }
      */
-    public Dominio createDominio() {
-        return new Dominio();
+    public FrApplicazione createFrApplicazione() {
+        return new FrApplicazione();
     }
 
     /**
-     * Create an instance of {@link IdEvento }
+     * Create an instance of {@link RendicontazioneSenzaRPT }
      */
-    public IdEvento createIdEvento() {
-        return new IdEvento();
+    public RendicontazioneSenzaRPT createRendicontazioneSenzaRPT() {
+        return new RendicontazioneSenzaRPT();
     }
 
     /**
-     * Create an instance of {@link MailTemplate }
+     * Create an instance of {@link ApplicazioneTributo }
      */
-    public MailTemplate createMailTemplate() {
-        return new MailTemplate();
+    public ApplicazioneTributo createApplicazioneTributo() {
+        return new ApplicazioneTributo();
     }
 
     /**
-     * Create an instance of {@link PortaleApplicazione }
+     * Create an instance of {@link Connettore }
      */
-    public PortaleApplicazione createPortaleApplicazione() {
-        return new PortaleApplicazione();
+    public Connettore createConnettore() {
+        return new Connettore();
     }
 
     /**
-     * Create an instance of {@link Mail }
+     * Create an instance of {@link Intermediario }
      */
-    public Mail createMail() {
-        return new Mail();
+    public Intermediario createIntermediario() {
+        return new Intermediario();
     }
 
     /**
-     * Create an instance of {@link IdSla }
+     * Create an instance of {@link IdIuv }
      */
-    public IdSla createIdSla() {
-        return new IdSla();
+    public IdIuv createIdIuv() {
+        return new IdIuv();
     }
 
     /**
-     * Create an instance of {@link TabellaControparti }
+     * Create an instance of {@link IdUo }
      */
-    public TabellaControparti createTabellaControparti() {
-        return new TabellaControparti();
+    public IdUo createIdUo() {
+        return new IdUo();
     }
 
     /**
-     * Create an instance of {@link IdPortale }
+     * Create an instance of {@link IdRpt }
      */
-    public IdPortale createIdPortale() {
-        return new IdPortale();
+    public IdRpt createIdRpt() {
+        return new IdRpt();
     }
 
     /**
-     * Create an instance of {@link IdIbanAccredito }
+     * Create an instance of {@link IdFr }
      */
-    public IdIbanAccredito createIdIbanAccredito() {
-        return new IdIbanAccredito();
-    }
-
-    /**
-     * Create an instance of {@link Anagrafica }
-     */
-    public Anagrafica createAnagrafica() {
-        return new Anagrafica();
-    }
-
-    /**
-     * Create an instance of {@link Versamento }
-     */
-    public Versamento createVersamento() {
-        return new Versamento();
-    }
-
-    /**
-     * Create an instance of {@link IdEsito }
-     */
-    public IdEsito createIdEsito() {
-        return new IdEsito();
-    }
-
-    /**
-     * Create an instance of {@link IdCarrello }
-     */
-    public IdCarrello createIdCarrello() {
-        return new IdCarrello();
-    }
-
-    /**
-     * Create an instance of {@link IdSingolaRevoca }
-     */
-    public IdSingolaRevoca createIdSingolaRevoca() {
-        return new IdSingolaRevoca();
-    }
-
-    /**
-     * Create an instance of {@link IdRilevamento }
-     */
-    public IdRilevamento createIdRilevamento() {
-        return new IdRilevamento();
-    }
-
-    /**
-     * Create an instance of {@link IdIntermediario }
-     */
-    public IdIntermediario createIdIntermediario() {
-        return new IdIntermediario();
-    }
-
-    /**
-     * Create an instance of {@link ContoAccredito }
-     */
-    public ContoAccredito createContoAccredito() {
-        return new ContoAccredito();
-    }
-
-    /**
-     * Create an instance of {@link IdEr }
-     */
-    public IdEr createIdEr() {
-        return new IdEr();
-    }
-
-    /**
-     * Create an instance of {@link IdContoAccredito }
-     */
-    public IdContoAccredito createIdContoAccredito() {
-        return new IdContoAccredito();
-    }
-
-    /**
-     * Create an instance of {@link OperatoreApplicazione }
-     */
-    public OperatoreApplicazione createOperatoreApplicazione() {
-        return new OperatoreApplicazione();
-    }
-
-    /**
-     * Create an instance of {@link SingolaRevoca }
-     */
-    public SingolaRevoca createSingolaRevoca() {
-        return new SingolaRevoca();
-    }
-
-    /**
-     * Create an instance of {@link IdAnagrafica }
-     */
-    public IdAnagrafica createIdAnagrafica() {
-        return new IdAnagrafica();
-    }
-
-    /**
-     * Create an instance of {@link IdMessaggio }
-     */
-    public IdMessaggio createIdMessaggio() {
-        return new IdMessaggio();
-    }
-
-    /**
-     * Create an instance of {@link SingoloVersamento }
-     */
-    public SingoloVersamento createSingoloVersamento() {
-        return new SingoloVersamento();
-    }
-
-    /**
-     * Create an instance of {@link Evento }
-     */
-    public Evento createEvento() {
-        return new Evento();
-    }
-
-    /**
-     * Create an instance of {@link IdMediaRilevamento }
-     */
-    public IdMediaRilevamento createIdMediaRilevamento() {
-        return new IdMediaRilevamento();
-    }
-
-    /**
-     * Create an instance of {@link Stazione }
-     */
-    public Stazione createStazione() {
-        return new Stazione();
+    public IdFr createIdFr() {
+        return new IdFr();
     }
 
     /**
@@ -537,38 +488,24 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SLA }
+     * Create an instance of {@link Pagamento }
      */
-    public SLA createSLA() {
-        return new SLA();
+    public Pagamento createPagamento() {
+        return new Pagamento();
     }
 
     /**
-     * Create an instance of {@link Portale }
+     * Create an instance of {@link Versamento }
      */
-    public Portale createPortale() {
-        return new Portale();
+    public Versamento createVersamento() {
+        return new Versamento();
     }
 
     /**
-     * Create an instance of {@link IdRr }
+     * Create an instance of {@link IdTabellaControparti }
      */
-    public IdRr createIdRr() {
-        return new IdRr();
-    }
-
-    /**
-     * Create an instance of {@link IdApplicazione }
-     */
-    public IdApplicazione createIdApplicazione() {
-        return new IdApplicazione();
-    }
-
-    /**
-     * Create an instance of {@link IdVersamento }
-     */
-    public IdVersamento createIdVersamento() {
-        return new IdVersamento();
+    public IdTabellaControparti createIdTabellaControparti() {
+        return new IdTabellaControparti();
     }
 
 

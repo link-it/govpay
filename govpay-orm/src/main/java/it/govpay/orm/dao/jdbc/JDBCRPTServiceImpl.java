@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,23 +88,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
-		// Object _psp
-		Long id_psp = null;
-		it.govpay.orm.IdPsp idLogic_psp = null;
-		idLogic_psp = rpt.getIdPsp();
-		if(idLogic_psp!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_psp = ((JDBCPspServiceSearch)(this.getServiceManager().getPspServiceSearch())).findTableId(idLogic_psp, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_psp = idLogic_psp.getId();
-				if(id_psp==null || id_psp<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 		// Object _canale
 		Long id_canale = null;
 		it.govpay.orm.IdCanale idLogic_canale = null;
@@ -121,6 +104,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 				}
 			}
 		}
+
 		// Object _portale
 		Long id_portale = null;
 		it.govpay.orm.IdPortale idLogic_portale = null;
@@ -138,56 +122,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
-		// Object _tracciatoXML
-		Long id_tracciatoXML = null;
-		it.govpay.orm.IdTracciato idLogic_tracciatoXML = null;
-		idLogic_tracciatoXML = rpt.getIdTracciatoXML();
-		if(idLogic_tracciatoXML!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findTableId(idLogic_tracciatoXML, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_tracciatoXML = idLogic_tracciatoXML.getId();
-				if(id_tracciatoXML==null || id_tracciatoXML<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _stazione
-		Long id_stazione = null;
-		it.govpay.orm.IdStazione idLogic_stazione = null;
-		idLogic_stazione = rpt.getIdStazione();
-		if(idLogic_stazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findTableId(idLogic_stazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_stazione = idLogic_stazione.getId();
-				if(id_stazione==null || id_stazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-		// Object _anagrafica
-		Long id_anagrafica = null;
-		it.govpay.orm.IdAnagrafica idLogic_anagrafica = null;
-		idLogic_anagrafica = rpt.getIdAnagraficaVersante();
-		if(idLogic_anagrafica!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_anagrafica = ((JDBCAnagraficaServiceSearch)(this.getServiceManager().getAnagraficaServiceSearch())).findTableId(idLogic_anagrafica, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_anagrafica = idLogic_anagrafica.getId();
-				if(id_anagrafica==null || id_anagrafica<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object rpt
 		sqlQueryObjectInsert.addInsertTable(this.getRPTFieldConverter().toTable(RPT.model()));
@@ -195,26 +129,26 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().CCP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_DOMINIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().TIPO_VERSAMENTO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_ORA_MSG_RICHIESTA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_ORA_CREAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_MSG_RICHIESTA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().IBAN_ADDEBITO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().AUTENTICAZIONE_SOGGETTO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().FIRMA_RT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_MSG_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_FAULT,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().CALLBACK_URL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_SESSIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().PSP_REDIRECT_URL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RPT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_AGGIORNAMENTO_STATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().CALLBACK_URL,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().MODELLO_PAGAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_MSG_RICEVUTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_MSG_RICEVUTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().FIRMA_RICEVUTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_ESITO_PAGAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().IMPORTO_TOTALE_PAGATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_STAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
-		sqlQueryObjectInsert.addInsertField("id_psp","?");
 		sqlQueryObjectInsert.addInsertField("id_canale","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
-		sqlQueryObjectInsert.addInsertField("id_tracciato_xml","?");
-		sqlQueryObjectInsert.addInsertField("id_stazione","?");
-		sqlQueryObjectInsert.addInsertField("id_anagrafica_versante","?");
 
 		// Insert rpt
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getRPTFetch().getKeyGeneratorObject(RPT.model());
@@ -223,29 +157,30 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getIuv(),RPT.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCcp(),RPT.model().CCP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodDominio(),RPT.model().COD_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getTipoVersamento(),RPT.model().TIPO_VERSAMENTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataOraMsgRichiesta(),RPT.model().DATA_ORA_MSG_RICHIESTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataOraCreazione(),RPT.model().DATA_ORA_CREAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodMsgRichiesta(),RPT.model().COD_MSG_RICHIESTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getIbanAddebito(),RPT.model().IBAN_ADDEBITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getAutenticazioneSoggetto(),RPT.model().AUTENTICAZIONE_SOGGETTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getFirmaRT(),RPT.model().FIRMA_RT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataMsgRichiesta(),RPT.model().DATA_MSG_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getStato(),RPT.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDescrizioneStato(),RPT.model().DESCRIZIONE_STATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodFault(),RPT.model().COD_FAULT.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCallbackURL(),RPT.model().CALLBACK_URL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodSessione(),RPT.model().COD_SESSIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getPspRedirectURL(),RPT.model().PSP_REDIRECT_URL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getXmlRPT(),RPT.model().XML_RPT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataAggiornamentoStato(),RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCallbackURL(),RPT.model().CALLBACK_URL.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getModelloPagamento(),RPT.model().MODELLO_PAGAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodMsgRicevuta(),RPT.model().COD_MSG_RICEVUTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataMsgRicevuta(),RPT.model().DATA_MSG_RICEVUTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getFirmaRicevuta(),RPT.model().FIRMA_RICEVUTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodEsitoPagamento(),RPT.model().COD_ESITO_PAGAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getImportoTotalePagato(),RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getXmlRT(),RPT.model().XML_RT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodStazione(),RPT.model().COD_STAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_psp,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_canale,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciatoXML,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_anagrafica,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class)
 		);
 		rpt.setId(id);
 
+		
 	}
 
 	@Override
@@ -264,12 +199,12 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, rpt, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, RPT rpt, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -306,23 +241,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			}
 		}
 
-		// Object _rpt_psp
-		Long id_rpt_psp = null;
-		it.govpay.orm.IdPsp idLogic_rpt_psp = null;
-		idLogic_rpt_psp = rpt.getIdPsp();
-		if(idLogic_rpt_psp!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_psp = ((JDBCPspServiceSearch)(this.getServiceManager().getPspServiceSearch())).findTableId(idLogic_rpt_psp, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_psp = idLogic_rpt_psp.getId();
-				if(id_rpt_psp==null || id_rpt_psp<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 		// Object _rpt_canale
 		Long id_rpt_canale = null;
 		it.govpay.orm.IdCanale idLogic_rpt_canale = null;
@@ -339,6 +257,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 				}
 			}
 		}
+
 		// Object _rpt_portale
 		Long id_rpt_portale = null;
 		it.govpay.orm.IdPortale idLogic_rpt_portale = null;
@@ -351,56 +270,6 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
 				id_rpt_portale = idLogic_rpt_portale.getId();
 				if(id_rpt_portale==null || id_rpt_portale<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _rpt_tracciatoXML
-		Long id_rpt_tracciatoXML = null;
-		it.govpay.orm.IdTracciato idLogic_rpt_tracciatoXML = null;
-		idLogic_rpt_tracciatoXML = rpt.getIdTracciatoXML();
-		if(idLogic_rpt_tracciatoXML!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findTableId(idLogic_rpt_tracciatoXML, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_tracciatoXML = idLogic_rpt_tracciatoXML.getId();
-				if(id_rpt_tracciatoXML==null || id_rpt_tracciatoXML<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-		// Object _rpt_stazione
-		Long id_rpt_stazione = null;
-		it.govpay.orm.IdStazione idLogic_rpt_stazione = null;
-		idLogic_rpt_stazione = rpt.getIdStazione();
-		if(idLogic_rpt_stazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_stazione = ((JDBCStazioneServiceSearch)(this.getServiceManager().getStazioneServiceSearch())).findTableId(idLogic_rpt_stazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_stazione = idLogic_rpt_stazione.getId();
-				if(id_rpt_stazione==null || id_rpt_stazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-		// Object _rpt_anagrafica
-		Long id_rpt_anagrafica = null;
-		it.govpay.orm.IdAnagrafica idLogic_rpt_anagrafica = null;
-		idLogic_rpt_anagrafica = rpt.getIdAnagraficaVersante();
-		if(idLogic_rpt_anagrafica!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_rpt_anagrafica = ((JDBCAnagraficaServiceSearch)(this.getServiceManager().getAnagraficaServiceSearch())).findTableId(idLogic_rpt_anagrafica, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_rpt_anagrafica = idLogic_rpt_anagrafica.getId();
-				if(id_rpt_anagrafica==null || id_rpt_anagrafica<=0){
 					throw new Exception("Logic id not contains table id");
 				}
 			}
@@ -420,37 +289,42 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		lstObjects_rpt.add(new JDBCObject(rpt.getCcp(), RPT.model().CCP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_DOMINIO,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodDominio(), RPT.model().COD_DOMINIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().TIPO_VERSAMENTO,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getTipoVersamento(), RPT.model().TIPO_VERSAMENTO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_ORA_MSG_RICHIESTA,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getDataOraMsgRichiesta(), RPT.model().DATA_ORA_MSG_RICHIESTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_ORA_CREAZIONE,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getDataOraCreazione(), RPT.model().DATA_ORA_CREAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_MSG_RICHIESTA,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodMsgRichiesta(), RPT.model().COD_MSG_RICHIESTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().IBAN_ADDEBITO,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getIbanAddebito(), RPT.model().IBAN_ADDEBITO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().AUTENTICAZIONE_SOGGETTO,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getAutenticazioneSoggetto(), RPT.model().AUTENTICAZIONE_SOGGETTO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().FIRMA_RT,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getFirmaRT(), RPT.model().FIRMA_RT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_MSG_RICHIESTA,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getDataMsgRichiesta(), RPT.model().DATA_MSG_RICHIESTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().STATO,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getStato(), RPT.model().STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getDescrizioneStato(), RPT.model().DESCRIZIONE_STATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_FAULT,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getCodFault(), RPT.model().COD_FAULT.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().CALLBACK_URL,false), "?");
-		lstObjects_rpt.add(new JDBCObject(rpt.getCallbackURL(), RPT.model().CALLBACK_URL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_SESSIONE,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodSessione(), RPT.model().COD_SESSIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().PSP_REDIRECT_URL,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getPspRedirectURL(), RPT.model().PSP_REDIRECT_URL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RPT,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getXmlRPT(), RPT.model().XML_RPT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_AGGIORNAMENTO_STATO,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getDataAggiornamentoStato(), RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().CALLBACK_URL,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCallbackURL(), RPT.model().CALLBACK_URL.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().MODELLO_PAGAMENTO,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getModelloPagamento(), RPT.model().MODELLO_PAGAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_MSG_RICEVUTA,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodMsgRicevuta(), RPT.model().COD_MSG_RICEVUTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_MSG_RICEVUTA,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getDataMsgRicevuta(), RPT.model().DATA_MSG_RICEVUTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().FIRMA_RICEVUTA,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getFirmaRicevuta(), RPT.model().FIRMA_RICEVUTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_ESITO_PAGAMENTO,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodEsitoPagamento(), RPT.model().COD_ESITO_PAGAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().IMPORTO_TOTALE_PAGATO,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getImportoTotalePagato(), RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RT,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getXmlRT(), RPT.model().XML_RT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_STAZIONE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodStazione(), RPT.model().COD_STAZIONE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_psp","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_canale","?");
@@ -459,34 +333,13 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_portale","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_tracciato_xml","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_anagrafica_versante","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_versamento, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_psp, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_canale, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_rpt.add(new JDBCObject(id_rpt_portale, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_tracciatoXML, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_stazione, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_rpt.add(new JDBCObject(id_rpt_anagrafica, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_rpt.add(new JDBCObject(tableId, Long.class));
@@ -496,6 +349,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
 				lstObjects_rpt.toArray(new JDBCObject[]{}));
 		}
+
 	}
 	
 	@Override

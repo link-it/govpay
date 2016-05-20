@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -103,8 +103,8 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 	public IdCanale convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Canale canale) throws NotImplementedException, ServiceException, Exception{
 
 		IdCanale idCanale = new IdCanale();
-		idCanale.setIdPsp(canale.getIdPsp());
 		idCanale.setCodCanale(canale.getCodCanale());
+		idCanale.setIdPsp(canale.getIdPsp());
 		idCanale.setTipoVersamento(canale.getTipoVersamento());
 
 		return idCanale;
@@ -129,14 +129,13 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 	@Override
 	public List<IdCanale> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
 		List<IdCanale> list = new ArrayList<IdCanale>();
 
-		try{
+		try {
 			List<IField> fields = new ArrayList<IField>();
 
 			fields.add(Canale.model().COD_CANALE);
@@ -164,11 +163,12 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 					canale.setIdPsp(id_canale_psp);
 				}
 
-				canale.setCodCanale((String)map.get(Canale.model().COD_CANALE.getFieldName())); 
-				canale.setTipoVersamento((String)map.get(Canale.model().TIPO_VERSAMENTO.getFieldName())); 
+				canale.setCodCanale((String)map.get(Canale.model().COD_CANALE.getFieldName()));
+				canale.setTipoVersamento((String)map.get(Canale.model().TIPO_VERSAMENTO.getFieldName()));
 
 				list.add(idCanale);
 			}
+
 		} catch(NotFoundException e) {}
 
 		return list;
@@ -178,11 +178,10 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 	@Override
 	public List<Canale> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
 		List<Canale> list = new ArrayList<Canale>();
 		try{
 			List<IField> fields = new ArrayList<IField>();
@@ -223,8 +222,7 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 				list.add(canale);
 			}
 		} catch(NotFoundException e) {}
-		return list;
-
+		return list;     
 
 	}
 
@@ -519,21 +517,20 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 
 		IField idField = new CustomField("id", Long.class, "id", this.getCanaleFieldConverter().toTable(Canale.model()));
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
-		
+
 		expression.equals(idField, tableId);
 		expression.offset(0);
 		expression.limit(2); //per verificare la multiple results
 		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
 		List<Canale> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
-		
+
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
-		
+
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
 
 		return lst.get(0);
-
 
 	} 
 
@@ -591,6 +588,8 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
+		//		  If a table doesn't have a primary key, don't add it to this map
+
 		// Canale.model()
 		mapTableToPKColumn.put(converter.toTable(Canale.model()),
 				utilities.newList(
@@ -602,6 +601,7 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 				utilities.newList(
 						new CustomField("id", Long.class, "id", converter.toTable(Canale.model().ID_PSP))
 						));
+
 
 		return mapTableToPKColumn;		
 	}
@@ -665,10 +665,6 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		 */
-
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -684,7 +680,7 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 	public IdCanale findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
 			throws NotFoundException, ServiceException, NotImplementedException, Exception {
 
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -699,7 +695,7 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
 		// Recupero _canale
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_canale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_canale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_canale = new ArrayList<Class<?>>();
@@ -748,8 +744,7 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 	}
 
 	protected Long findIdCanale(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdCanale id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
-
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities =
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
@@ -773,7 +768,7 @@ public class JDBCCanaleServiceSearchImpl implements IJDBCServiceSearchWithId<Can
 		sqlQueryObjectGet.addWhereCondition(this.getCanaleFieldConverter().toColumn(Canale.model().TIPO_VERSAMENTO,true)+"=?");
 
 		// Recupero _canale
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_canale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
+		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_canale = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] {
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(idPsp,Long.class),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodCanale(),Canale.model().COD_CANALE.getFieldType()),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTipoVersamento(),Canale.model().TIPO_VERSAMENTO.getFieldType())

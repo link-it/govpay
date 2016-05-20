@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,23 +30,13 @@ package it.govpay.orm.model;
  */
 public class ModelFactory {
 
-	public static TracciatoXMLModel TRACCIATO_XML = new TracciatoXMLModel();
-	
 	public static DominioModel DOMINIO = new DominioModel();
-	
-	public static TabellaContropartiModel TABELLA_CONTROPARTI = new TabellaContropartiModel();
-	
-	public static ContoAccreditoModel CONTO_ACCREDITO = new ContoAccreditoModel();
 	
 	public static PspModel PSP = new PspModel();
 	
 	public static CanaleModel CANALE = new CanaleModel();
 	
-	public static AnagraficaModel ANAGRAFICA = new AnagraficaModel();
-	
-	public static MailTemplateModel MAIL_TEMPLATE = new MailTemplateModel();
-	
-	public static EnteModel ENTE = new EnteModel();
+	public static UoModel UO = new UoModel();
 	
 	public static PortaleModel PORTALE = new PortaleModel();
 	
@@ -68,35 +58,23 @@ public class ModelFactory {
 	
 	public static VersamentoModel VERSAMENTO = new VersamentoModel();
 	
+	public static EventoModel EVENTO = new EventoModel();
+	
 	public static SingoloVersamentoModel SINGOLO_VERSAMENTO = new SingoloVersamentoModel();
 	
 	public static RPTModel RPT = new RPTModel();
 	
-	public static CarrelloModel CARRELLO = new CarrelloModel();
-	
-	public static RTModel RT = new RTModel();
-	
-	public static EsitoModel ESITO = new EsitoModel();
-	
-	public static EventoModel EVENTO = new EventoModel();
-	
-	public static SLAModel SLA = new SLAModel();
-	
-	public static RilevamentoModel RILEVAMENTO = new RilevamentoModel();
-	
-	public static MediaRilevamentoModel MEDIA_RILEVAMENTO = new MediaRilevamentoModel();
-	
 	public static RRModel RR = new RRModel();
 	
-	public static ERModel ER = new ERModel();
+	public static PagamentoModel PAGAMENTO = new PagamentoModel();
 	
-	public static SingolaRevocaModel SINGOLA_REVOCA = new SingolaRevocaModel();
+	public static NotificaModel NOTIFICA = new NotificaModel();
 	
 	public static FRModel FR = new FRModel();
 	
-	public static SingolaRendicontazioneModel SINGOLA_RENDICONTAZIONE = new SingolaRendicontazioneModel();
+	public static FrApplicazioneModel FR_APPLICAZIONE = new FrApplicazioneModel();
 	
-	public static MailModel MAIL = new MailModel();
+	public static RendicontazioneSenzaRPTModel RENDICONTAZIONE_SENZA_RPT = new RendicontazioneSenzaRPTModel();
 	
 
 }

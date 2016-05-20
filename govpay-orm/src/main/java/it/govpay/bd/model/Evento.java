@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,7 +20,8 @@
  */
 package it.govpay.bd.model;
 
-import it.govpay.bd.model.Rpt.TipoVersamento;
+
+import it.govpay.bd.model.Canale.TipoVersamento;
 
 import java.util.Date;
 
@@ -31,85 +32,68 @@ public class Evento extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	public enum TipoEvento {
-		nodoInviaRPT("nodoInviaRPT"),
-		nodoInviaCarrelloRPT("nodoInviaCarrelloRPT"), 
-		nodoChiediStatoRPT("nodoChiediStatoRPT"), 
-		nodoChiediListaPendentiRPT("nodoChiediListaPendentiRPT"), 
-		paaInviaRT("paaInviaRT"), 
-		nodoChiediCopiaRT("nodoChiediCopiaRT"), 
-		paaVerificaRPT("paaVerificaRPT"), 
-		paaAttivaRPT("paaAttivaRPT"), 
-		nodoChiediInformativaPSP("nodoChiediInformativaPSP"),
-		nodoInviaRichiestaStorno("nodoInviaRichiestaStorno"), 
-		nodoInviaEsitoStorno("nodoInviaEsitoStorno"), 
-		nodoChiediElencoFlussiRendicontazione("nodoChiediElencoFlussiRendicontazione"),
-		nodoChiediFlussoRendicontazione("nodoChiediFlussoRendicontazione"), 
-		nodoChiediElencoQuadraturePA("nodoChiediElencoQuadraturePA"), 
-		nodoChiediQuadraturaPA("nodoChiediQuadraturaPA"),
-		SCONOSCIUTO("sconosciuto");
+		nodoInviaRPT,
+		nodoInviaCarrelloRPT, 
+		nodoChiediStatoRPT, 
+		paaInviaRT, 
+		nodoChiediCopiaRT, 
+		paaVerificaRPT, 
+		paaAttivaRPT,
+		nodoInviaRichiestaStorno,
+		paaInviaEsitoStorno;
+	}
+	
+	public enum CategoriaEvento {
+		INTERNO ("B"), INTERFACCIA ("F");
 		
 		private String codifica;
 
-		TipoEvento(String codifica) {
+		CategoriaEvento(String codifica) {
 			this.codifica = codifica;
 		}
-		
 		public String getCodifica() {
 			return codifica;
 		}
 		
-		public static TipoEvento toEnum(String codifica) throws ServiceException {
-			for(TipoEvento t : TipoEvento.values()){
-				if(t.getCodifica().equals(codifica))
-					return t;
+		public static CategoriaEvento toEnum(String codifica) throws ServiceException {
+			
+			for(CategoriaEvento p : CategoriaEvento.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
 			}
-			throw new ServiceException("Codifica inesistente per TipoEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoEvento.values()));
+			
+			throw new ServiceException("Codifica inesistente per CategoriaEvento. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(CategoriaEvento.values()));
 		}
-		
 	}
 	
-	public enum CategoriaEvento {
-		INTERNO, INTERFACCIA
-	}
-	
-	
-	private static final String EVENTO_PREFIX = "it.govpay.eventi.";
-	public static final String ID_PSP = EVENTO_PREFIX + "id_psp";
-	public static final String TIPO_VERSAMENTO = EVENTO_PREFIX + "tipo_versamento"; 
-	public static final String COMPONENTE = EVENTO_PREFIX + "componente";
-	public static final String ID_STAZIONE = EVENTO_PREFIX + "id_stazione_intermediario_PA";
-	public static final String ID_APPLICAZIONE = EVENTO_PREFIX + "id_applicazione";
-	public static final String CANALE = EVENTO_PREFIX + "canale";
-	public static final String PARAMATERI_SPECIFICI_INTERFACCIA = EVENTO_PREFIX + "parametri_specifici_interfaccia";
-	public static final String ID_DOMINIO = EVENTO_PREFIX + "id_dominio";
-	public static final String IUV = EVENTO_PREFIX + "iuv";
-	public static final String CCP = EVENTO_PREFIX + "ccp";
-	public static final String ESITO = EVENTO_PREFIX + "esito";
-	public static final String SOAP_ACTION = EVENTO_PREFIX + "SOAP_ACTION";
-	public static final String NDP_SOGGETTO = "NodoDeiPagamentiSPC";
-	public static final String GP_SOGGETTO = EVENTO_PREFIX + "GP_SOGGETTO";
-	public static final String VALUES_SEPARATOR = ";";
-	public static final String COMPONENTE_WGovPay = "WGOVPAY";
-	
+	public static final String COMPONENTE = "GP";
+	public static final String NDP = "NodoDeiPagamentiSPC";
 	
 	private Long id;
-	private Date dataOraEvento;
+	private Date dataRichiesta;
+	private Date dataRisposta;
 	private String codDominio;
 	private String iuv;
 	private String ccp;
-	private Long idApplicazione;
 	private String codPsp;
 	private TipoVersamento tipoVersamento;
 	private String componente;
 	private CategoriaEvento categoriaEvento;
 	private TipoEvento tipoEvento;
 	private String sottotipoEvento;
-	private String codFruitore;
-	private String codErogatore;
+	private String fruitore;
+	private String erogatore;
 	private String codStazione;
-	private String canalePagamento;
-	private String altriParametri;
+	private String codCanale;
+	private String altriParametriRichiesta;
+	private String altriParametriRisposta;
 	private String esito;
+	
+	public Evento() {
+		categoriaEvento = CategoriaEvento.INTERFACCIA;
+		dataRichiesta = new Date();
+		componente = COMPONENTE;
+	}
 	
 	public Long getId() {
 		return id;
@@ -117,11 +101,17 @@ public class Evento extends BasicModel {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Date getDataOraEvento() {
-		return dataOraEvento;
+	public Date getDataRichiesta() {
+		return dataRichiesta;
 	}
-	public void setDataOraEvento(Date dataOraEvento) {
-		this.dataOraEvento = dataOraEvento;
+	public void setDataRichiesta(Date data_richiesta) {
+		this.dataRichiesta = data_richiesta;
+	}
+	public Date getDataRisposta() {
+		return dataRisposta;
+	}
+	public void setDataRisposta(Date data_risposta) {
+		this.dataRisposta = data_risposta;
 	}
 	public String getCodDominio() {
 		return codDominio;
@@ -134,6 +124,12 @@ public class Evento extends BasicModel {
 	}
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+	public String getCcp() {
+		return ccp;
+	}
+	public void setCcp(String ccp) {
+		this.ccp = ccp;
 	}
 	public String getCodPsp() {
 		return codPsp;
@@ -171,17 +167,17 @@ public class Evento extends BasicModel {
 	public void setSottotipoEvento(String sottotipoEvento) {
 		this.sottotipoEvento = sottotipoEvento;
 	}
-	public String getCodFruitore() {
-		return codFruitore;
+	public String getFruitore() {
+		return fruitore;
 	}
-	public void setCodFruitore(String codFruitore) {
-		this.codFruitore = codFruitore;
+	public void setFruitore(String fruitore) {
+		this.fruitore = fruitore;
 	}
-	public String getCodErogatore() {
-		return codErogatore;
+	public String getErogatore() {
+		return erogatore;
 	}
-	public void setCodErogatore(String codErogatore) {
-		this.codErogatore = codErogatore;
+	public void setErogatore(String erogatore) {
+		this.erogatore = erogatore;
 	}
 	public String getCodStazione() {
 		return codStazione;
@@ -189,17 +185,23 @@ public class Evento extends BasicModel {
 	public void setCodStazione(String codStazione) {
 		this.codStazione = codStazione;
 	}
-	public String getCanalePagamento() {
-		return canalePagamento;
+	public String getCodCanale() {
+		return codCanale;
 	}
-	public void setCanalePagamento(String canalePagamento) {
-		this.canalePagamento = canalePagamento;
+	public void setCodCanale(String codCanale) {
+		this.codCanale = codCanale;
 	}
-	public String getAltriParametri() {
-		return altriParametri;
+	public String getAltriParametriRichiesta() {
+		return altriParametriRichiesta;
 	}
-	public void setAltriParametri(String altriParametri) {
-		this.altriParametri = altriParametri;
+	public void setAltriParametriRichiesta(String altriParametriRichiesta) {
+		this.altriParametriRichiesta = altriParametriRichiesta;
+	}
+	public String getAltriParametriRisposta() {
+		return altriParametriRisposta;
+	}
+	public void setAltriParametriRisposta(String altriParametriRisposta) {
+		this.altriParametriRisposta = altriParametriRisposta;
 	}
 	public String getEsito() {
 		return esito;
@@ -207,49 +209,5 @@ public class Evento extends BasicModel {
 	public void setEsito(String esito) {
 		this.esito = esito;
 	}
-	public Long getIdApplicazione() {
-		return idApplicazione;
-	}
-	public void setIdApplicazione(Long idApplicazione) {
-		this.idApplicazione = idApplicazione;
-	}
-	public String getCcp() {
-		return ccp;
-	}
-	public void setCcp(String ccp) {
-		this.ccp = ccp;
-	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		Evento evento = null;
-		if(obj instanceof Evento) {
-			evento = (Evento) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal = 
-				equals(dataOraEvento, evento.getDataOraEvento()) &&
-				equals(codDominio, evento.getCodDominio()) &&
-				equals(iuv, evento.getIuv()) &&
-				equals(ccp, evento.getCcp()) &&
-				equals(idApplicazione, evento.getIdApplicazione()) &&
-				equals(codPsp, evento.getCodPsp()) &&
-				equals(tipoVersamento, evento.getTipoVersamento()) &&
-				equals(componente, evento.getComponente()) &&
-				equals(categoriaEvento, evento.getCategoriaEvento()) &&
-				equals(tipoEvento, evento.getTipoEvento()) &&
-				equals(sottotipoEvento, evento.getSottotipoEvento()) &&
-				equals(codFruitore, evento.getCodFruitore()) &&
-				equals(codErogatore, evento.getCodErogatore()) &&
-				equals(codStazione, evento.getCodStazione()) &&
-				equals(canalePagamento, evento.getCanalePagamento()) &&
-				equals(altriParametri, evento.getAltriParametri()) &&
-				equals(esito, evento.getEsito());
-		
-		return equal;
-	}
-
 
 }

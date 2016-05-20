@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,62 +20,68 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Rr.Stato;
-import it.govpay.orm.IdRt;
-import it.govpay.orm.IdTracciato;
-
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Rr.StatoRr;
+import it.govpay.orm.IdRpt;
+import it.govpay.orm.RR;
 
 public class RrConverter {
 
-	public static List<Rr> toDTOList(List<it.govpay.orm.RR> applicazioneLst) throws ServiceException {
-		List<Rr> lstDTO = new ArrayList<Rr>();
-		if(applicazioneLst != null && !applicazioneLst.isEmpty()) {
-			for(it.govpay.orm.RR applicazione: applicazioneLst){
-				lstDTO.add(toDTO(applicazione));
-			}
-		}
-		return lstDTO;
-	}
-
-	public static Rr toDTO(it.govpay.orm.RR vo) throws ServiceException {
+	public static Rr toDTO(RR vo) {
 		Rr dto = new Rr();
-		dto.setId(vo.getId());
-		dto.setDataOraMsgRevoca(vo.getDataOraMsgRevoca());
+		dto.setCcp(vo.getCcp());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setCodMsgEsito(vo.getCodMsgEsito());
 		dto.setCodMsgRevoca(vo.getCodMsgRevoca());
-		dto.setStato(Stato.valueOf(vo.getStato()));
+		dto.setDataMsgEsito(vo.getDataMsgEsito());
+		dto.setDataMsgRevoca(vo.getDataMsgRevoca());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
-		dto.setIdTracciatoXML(vo.getIdTracciatoXML().getId());
-		dto.setDataOraCreazione(vo.getDataOraCreazione());
-		dto.setIdRt(vo.getIdRT().getId());
-		dto.setImportoTotaleRevocato(vo.getImportoTotaleRevocato());
+		dto.setId(vo.getId());
+		dto.setIdRpt(vo.getIdRpt().getId());
+		if(vo.getImportoTotaleRevocato() != null)
+			dto.setImportoTotaleRevocato(BigDecimal.valueOf(vo.getImportoTotaleRevocato()));
+		dto.setImportoTotaleRichiesto(BigDecimal.valueOf(vo.getImportoTotaleRichiesto()));
+		dto.setIuv(vo.getIuv());
+		dto.setStato(StatoRr.valueOf(vo.getStato()));
+		dto.setXmlEr(vo.getXmlER());
+		dto.setXmlRr(vo.getXmlRR());
 		return dto;
 	}
-
-	public static it.govpay.orm.RR toVO(Rr dto) {
-		it.govpay.orm.RR vo = new it.govpay.orm.RR();
-		vo.setId(dto.getId());
-		vo.setDataOraMsgRevoca(dto.getDataOraMsgRevoca());
+	
+	public static RR toVO(Rr dto) {
+		RR vo = new RR();
+		vo.setCcp(dto.getCcp());
+		vo.setCodDominio(dto.getCodDominio());
+		vo.setCodMsgEsito(dto.getCodMsgEsito());
 		vo.setCodMsgRevoca(dto.getCodMsgRevoca());
-		vo.setStato(dto.getStato().toString());
+		vo.setDataMsgEsito(dto.getDataMsgEsito());
+		vo.setDataMsgRevoca(dto.getDataMsgRevoca());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
-		
-		IdTracciato idTracciato = new IdTracciato();
-		idTracciato.setId(dto.getIdTracciatoXML());
-		vo.setIdTracciatoXML(idTracciato);
-		
-		vo.setDataOraCreazione(dto.getDataOraCreazione());
-		
-		IdRt idRt = new IdRt();
-		idRt.setId(dto.getIdRt());
-		vo.setIdRT(idRt);
-		
-		vo.setImportoTotaleRevocato(dto.getImportoTotaleRevocato());
+		vo.setId(dto.getId());
+		IdRpt idRpt = new IdRpt();
+		idRpt.setId(dto.getIdRpt());
+		vo.setIdRpt(idRpt);
+		if(dto.getImportoTotaleRichiesto() != null)
+			vo.setImportoTotaleRichiesto(dto.getImportoTotaleRichiesto().doubleValue());
+		if(dto.getImportoTotaleRevocato() != null)
+			vo.setImportoTotaleRevocato(dto.getImportoTotaleRevocato().doubleValue());
+		vo.setIuv(dto.getIuv());
+		vo.setStato(dto.getStato().toString());
+		vo.setXmlER(dto.getXmlEr());
+		vo.setXmlRR(dto.getXmlRr());
 		return vo;
+	}
+
+	public static List<Rr> toDTOList(List<RR> findAll) {
+		List<Rr> listRr = new ArrayList<Rr>();
+		for(RR rr : findAll) {
+			listRr.add(toDTO(rr));
+		}
+		return listRr;
 	}
 
 }

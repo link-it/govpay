@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,11 +44,14 @@ public class DominioModel extends AbstractModel<Dominio> {
 	
 		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new Field("idStazione",it.govpay.orm.IdStazione.class,"Dominio",Dominio.class));
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Dominio",Dominio.class);
-		this.RAGIONE_SOCIALE = new Field("ragioneSociale",java.lang.String.class,"Dominio",Dominio.class);
 		this.GLN = new Field("gln",java.lang.String.class,"Dominio",Dominio.class);
-		this.PLUGIN_CLASS = new Field("pluginClass",java.lang.String.class,"Dominio",Dominio.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Dominio",Dominio.class);
-		this.DISPONIBILITA = new it.govpay.orm.model.DisponibilitaModel(new Field("Disponibilita",it.govpay.orm.Disponibilita.class,"Dominio",Dominio.class));
+		this.RAGIONE_SOCIALE = new Field("ragioneSociale",java.lang.String.class,"Dominio",Dominio.class);
+		this.XML_CONTI_ACCREDITO = new Field("xmlContiAccredito",byte[].class,"Dominio",Dominio.class);
+		this.XML_TABELLA_CONTROPARTI = new Field("xmlTabellaControparti",byte[].class,"Dominio",Dominio.class);
+		this.RIUSO_IUV = new Field("riusoIUV",boolean.class,"Dominio",Dominio.class);
+		this.CUSTOM_IUV = new Field("customIUV",boolean.class,"Dominio",Dominio.class);
+		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
 	
 	}
 	
@@ -58,11 +61,14 @@ public class DominioModel extends AbstractModel<Dominio> {
 	
 		this.ID_STAZIONE = new it.govpay.orm.model.IdStazioneModel(new ComplexField(father,"idStazione",it.govpay.orm.IdStazione.class,"Dominio",Dominio.class));
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Dominio",Dominio.class);
-		this.RAGIONE_SOCIALE = new ComplexField(father,"ragioneSociale",java.lang.String.class,"Dominio",Dominio.class);
 		this.GLN = new ComplexField(father,"gln",java.lang.String.class,"Dominio",Dominio.class);
-		this.PLUGIN_CLASS = new ComplexField(father,"pluginClass",java.lang.String.class,"Dominio",Dominio.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Dominio",Dominio.class);
-		this.DISPONIBILITA = new it.govpay.orm.model.DisponibilitaModel(new ComplexField(father,"Disponibilita",it.govpay.orm.Disponibilita.class,"Dominio",Dominio.class));
+		this.RAGIONE_SOCIALE = new ComplexField(father,"ragioneSociale",java.lang.String.class,"Dominio",Dominio.class);
+		this.XML_CONTI_ACCREDITO = new ComplexField(father,"xmlContiAccredito",byte[].class,"Dominio",Dominio.class);
+		this.XML_TABELLA_CONTROPARTI = new ComplexField(father,"xmlTabellaControparti",byte[].class,"Dominio",Dominio.class);
+		this.RIUSO_IUV = new ComplexField(father,"riusoIUV",boolean.class,"Dominio",Dominio.class);
+		this.CUSTOM_IUV = new ComplexField(father,"customIUV",boolean.class,"Dominio",Dominio.class);
+		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
 	
 	}
 	
@@ -72,15 +78,21 @@ public class DominioModel extends AbstractModel<Dominio> {
 	 
 	public IField COD_DOMINIO = null;
 	 
-	public IField RAGIONE_SOCIALE = null;
-	 
 	public IField GLN = null;
-	 
-	public IField PLUGIN_CLASS = null;
 	 
 	public IField ABILITATO = null;
 	 
-	public it.govpay.orm.model.DisponibilitaModel DISPONIBILITA = null;
+	public IField RAGIONE_SOCIALE = null;
+	 
+	public IField XML_CONTI_ACCREDITO = null;
+	 
+	public IField XML_TABELLA_CONTROPARTI = null;
+	 
+	public IField RIUSO_IUV = null;
+	 
+	public IField CUSTOM_IUV = null;
+	 
+	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE_DEFAULT = null;
 	 
 
 	@Override

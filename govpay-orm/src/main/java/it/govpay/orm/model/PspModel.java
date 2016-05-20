@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,12 +44,10 @@ public class PspModel extends AbstractModel<Psp> {
 	
 		this.COD_PSP = new Field("codPsp",java.lang.String.class,"Psp",Psp.class);
 		this.RAGIONE_SOCIALE = new Field("ragioneSociale",java.lang.String.class,"Psp",Psp.class);
-		this.COD_FLUSSO = new Field("codFlusso",java.lang.String.class,"Psp",Psp.class);
 		this.URL_INFO = new Field("urlInfo",java.lang.String.class,"Psp",Psp.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Psp",Psp.class);
 		this.STORNO = new Field("storno",boolean.class,"Psp",Psp.class);
 		this.MARCA_BOLLO = new Field("marcaBollo",boolean.class,"Psp",Psp.class);
-		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciato",it.govpay.orm.IdTracciato.class,"Psp",Psp.class));
 	
 	}
 	
@@ -59,12 +57,10 @@ public class PspModel extends AbstractModel<Psp> {
 	
 		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"Psp",Psp.class);
 		this.RAGIONE_SOCIALE = new ComplexField(father,"ragioneSociale",java.lang.String.class,"Psp",Psp.class);
-		this.COD_FLUSSO = new ComplexField(father,"codFlusso",java.lang.String.class,"Psp",Psp.class);
 		this.URL_INFO = new ComplexField(father,"urlInfo",java.lang.String.class,"Psp",Psp.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Psp",Psp.class);
 		this.STORNO = new ComplexField(father,"storno",boolean.class,"Psp",Psp.class);
 		this.MARCA_BOLLO = new ComplexField(father,"marcaBollo",boolean.class,"Psp",Psp.class);
-		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciato",it.govpay.orm.IdTracciato.class,"Psp",Psp.class));
 	
 	}
 	
@@ -74,8 +70,6 @@ public class PspModel extends AbstractModel<Psp> {
 	 
 	public IField RAGIONE_SOCIALE = null;
 	 
-	public IField COD_FLUSSO = null;
-	 
 	public IField URL_INFO = null;
 	 
 	public IField ABILITATO = null;
@@ -83,8 +77,6 @@ public class PspModel extends AbstractModel<Psp> {
 	public IField STORNO = null;
 	 
 	public IField MARCA_BOLLO = null;
-	 
-	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO = null;
 	 
 
 	@Override

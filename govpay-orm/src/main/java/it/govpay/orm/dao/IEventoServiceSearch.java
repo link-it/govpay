@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,7 @@
 package it.govpay.orm.dao;
 
 import it.govpay.orm.Evento;
-import org.openspcoop2.generic_project.dao.IServiceSearchWithId;
-import it.govpay.orm.IdEvento;
+import org.openspcoop2.generic_project.dao.IServiceSearchWithoutId;
 
 
 /** 
@@ -34,5 +33,5 @@ import it.govpay.orm.IdEvento;
  * @version $Rev$, $Date$
  */
 
-public interface IEventoServiceSearch extends IServiceSearchWithId<Evento, IdEvento> {
+public interface IEventoServiceSearch extends IServiceSearchWithoutId<Evento> {
 }

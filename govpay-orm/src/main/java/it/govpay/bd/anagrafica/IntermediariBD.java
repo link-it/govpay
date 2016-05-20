@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -159,6 +159,7 @@ public class IntermediariBD extends BasicBD {
 				}
 			}
 
+			AnagraficaManager.removeFromCache(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -223,7 +224,7 @@ public class IntermediariBD extends BasicBD {
 	public List<Intermediario> findAll(IntermediarioFilter filter) throws ServiceException {
 		try {
 			List<Intermediario> lst = new ArrayList<Intermediario>();
-			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getIntermediarioService().findAll(this.getIntermediarioService().newPaginatedExpression());
+			List<it.govpay.orm.Intermediario> lstIntermediarioVO = this.getIntermediarioService().findAll(filter.toPaginatedExpression());
 			for(it.govpay.orm.Intermediario intermediarioVO: lstIntermediarioVO) {
 				lst.add(getIntermediario(intermediarioVO));
 			}

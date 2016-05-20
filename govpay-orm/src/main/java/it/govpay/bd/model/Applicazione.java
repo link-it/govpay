@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,26 +20,26 @@
  */
 package it.govpay.bd.model;
 
-import it.govpay.bd.model.converter.ApplicazioneConverter;
+import it.govpay.bd.model.Rpt.FirmaRichiesta;
 
 import java.util.List;
 
-import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Applicazione extends BasicModel {
-	public enum Versione {GPv1, GPv2}
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String codApplicazione;
 	private String principal;
-	private Versione versione;
-	private String policyRispedizione;
 	private boolean abilitato;
 	private List<Long> idTributi;
-    private Connettore connettoreEsito;
+	private List<Long> idDomini;
+    private Connettore connettoreNotifica;
     private Connettore connettoreVerifica;
-   
+    private FirmaRichiesta firmaRichiesta;
+    private boolean trusted;
+    
     public Long getId() {
 		return id;
 	}
@@ -52,11 +52,11 @@ public class Applicazione extends BasicModel {
 	public void setCodApplicazione(String codApplicazione) {
 		this.codApplicazione = codApplicazione;
 	}
-	public Connettore getConnettoreEsito() {
-		return connettoreEsito;
+	public Connettore getConnettoreNotifica() {
+		return connettoreNotifica;
 	}
-	public void setConnettoreEsito(Connettore connettoreEsito) {
-		this.connettoreEsito = connettoreEsito;
+	public void setConnettoreNotifica(Connettore connettoreNotifica) {
+		this.connettoreNotifica = connettoreNotifica;
 	}
 	public Connettore getConnettoreVerifica() {
 		return connettoreVerifica;
@@ -82,47 +82,25 @@ public class Applicazione extends BasicModel {
 	public void setIdTributi(List<Long> idTributi) {
 		this.idTributi = idTributi;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		Applicazione applicazione = null;
-		if(obj instanceof Applicazione) {
-			applicazione = (Applicazione) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal =
-			equals(principal, applicazione.getPrincipal()) &&
-			equals(codApplicazione, applicazione.getCodApplicazione()) &&
-			equals(connettoreEsito, applicazione.getConnettoreEsito()) &&
-			equals(connettoreVerifica, applicazione.getConnettoreVerifica()) &&
-			equals(idTributi, applicazione.getIdTributi()) &&
-			equals(versione, applicazione.getVersione()) &&
-			equals(policyRispedizione, applicazione.getPolicyRispedizione()) &&
-			abilitato==applicazione.isAbilitato();
-		
-		return equal;
+	public FirmaRichiesta getFirmaRichiesta() {
+		return firmaRichiesta;
 	}
-	public String getPolicyRispedizione() {
-		return policyRispedizione;
+	public void setFirmaRichiesta(FirmaRichiesta firmaRichiesta) {
+		this.firmaRichiesta = firmaRichiesta;
 	}
-	public void setPolicyRispedizione(String policyRispedizione) {
-		this.policyRispedizione = policyRispedizione;
+	public void setCodFirmaRichiesta(String codifica) throws ServiceException {
+		this.firmaRichiesta = FirmaRichiesta.toEnum(codifica);
 	}
-	public Versione getVersione() {
-		return versione;
+	public List<Long> getIdDomini() {
+		return idDomini;
 	}
-	public void setVersione(Versione versione) {
-		this.versione = versione;
+	public void setIdDomini(List<Long> idDomini) {
+		this.idDomini = idDomini;
 	}
-	
-	@Override
-	public String toString() {
-		try {
-			return ApplicazioneConverter.toVO(this).toJson();
-		} catch (UtilsException e) {
-			return null;
-		}
+	public boolean isTrusted() {
+		return trusted;
+	}
+	public void setTrusted(boolean trusted) {
+		this.trusted = trusted;
 	}
 }

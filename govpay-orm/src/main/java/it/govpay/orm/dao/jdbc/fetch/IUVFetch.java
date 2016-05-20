@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,18 +55,18 @@ public class IUVFetch extends AbstractJDBCFetch {
 				IUV object = new IUV();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodDominio", IUV.model().COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", IUV.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setPrg", IUV.model().PRG.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "prg", IUV.model().PRG.getFieldType()));
 				setParameter(object, "setIuv", IUV.model().IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv", IUV.model().IUV.getFieldType()));
-				setParameter(object, "setDataGenerazione", IUV.model().DATA_GENERAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_generazione", IUV.model().DATA_GENERAZIONE.getFieldType()));
 				setParameter(object, "setApplicationCode", IUV.model().APPLICATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "application_code", IUV.model().APPLICATION_CODE.getFieldType()));
-				setParameter(object, "setAuxDigit", IUV.model().AUX_DIGIT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "aux_digit", IUV.model().AUX_DIGIT.getFieldType()));
+				setParameter(object, "setDataGenerazione", IUV.model().DATA_GENERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_generazione", IUV.model().DATA_GENERAZIONE.getFieldType()));
+				setParameter(object, "setTipoIuv", IUV.model().TIPO_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_iuv", IUV.model().TIPO_IUV.getFieldType()));
+				setParameter(object, "setCodVersamentoEnte", IUV.model().COD_VERSAMENTO_ENTE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", IUV.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				return object;
 			}
 			
@@ -89,18 +89,18 @@ public class IUVFetch extends AbstractJDBCFetch {
 				IUV object = new IUV();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodDominio", IUV.model().COD_DOMINIO.getFieldType(),
-					this.getObjectFromMap(map,"codDominio"));
 				setParameter(object, "setPrg", IUV.model().PRG.getFieldType(),
 					this.getObjectFromMap(map,"prg"));
 				setParameter(object, "setIuv", IUV.model().IUV.getFieldType(),
 					this.getObjectFromMap(map,"iuv"));
-				setParameter(object, "setDataGenerazione", IUV.model().DATA_GENERAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"dataGenerazione"));
 				setParameter(object, "setApplicationCode", IUV.model().APPLICATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"applicationCode"));
-				setParameter(object, "setAuxDigit", IUV.model().AUX_DIGIT.getFieldType(),
-					this.getObjectFromMap(map,"auxDigit"));
+				setParameter(object, "setDataGenerazione", IUV.model().DATA_GENERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataGenerazione"));
+				setParameter(object, "setTipoIuv", IUV.model().TIPO_IUV.getFieldType(),
+					this.getObjectFromMap(map,"tipoIuv"));
+				setParameter(object, "setCodVersamentoEnte", IUV.model().COD_VERSAMENTO_ENTE.getFieldType(),
+					this.getObjectFromMap(map,"codVersamentoEnte"));
 				return object;
 			}
 			

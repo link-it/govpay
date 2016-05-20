@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,11 +42,11 @@ public class TributoModel extends AbstractModel<Tributo> {
 	
 		super();
 	
-		this.ID_ENTE = new it.govpay.orm.model.IdEnteModel(new Field("idEnte",it.govpay.orm.IdEnte.class,"Tributo",Tributo.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"Tributo",Tributo.class));
 		this.COD_TRIBUTO = new Field("codTributo",java.lang.String.class,"Tributo",Tributo.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Tributo",Tributo.class);
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"Tributo",Tributo.class);
-		this.IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new Field("ibanAccredito",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
+		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new Field("idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
 		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 	
@@ -56,11 +56,11 @@ public class TributoModel extends AbstractModel<Tributo> {
 	
 		super(father);
 	
-		this.ID_ENTE = new it.govpay.orm.model.IdEnteModel(new ComplexField(father,"idEnte",it.govpay.orm.IdEnte.class,"Tributo",Tributo.class));
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"Tributo",Tributo.class));
 		this.COD_TRIBUTO = new ComplexField(father,"codTributo",java.lang.String.class,"Tributo",Tributo.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Tributo",Tributo.class);
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"Tributo",Tributo.class);
-		this.IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new ComplexField(father,"ibanAccredito",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
+		this.ID_IBAN_ACCREDITO = new it.govpay.orm.model.IdIbanAccreditoModel(new ComplexField(father,"idIbanAccredito",it.govpay.orm.IdIbanAccredito.class,"Tributo",Tributo.class));
 		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 	
@@ -68,7 +68,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 	
 	
 
-	public it.govpay.orm.model.IdEnteModel ID_ENTE = null;
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 	public IField COD_TRIBUTO = null;
 	 
@@ -76,7 +76,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 	 
 	public IField DESCRIZIONE = null;
 	 
-	public it.govpay.orm.model.IdIbanAccreditoModel IBAN_ACCREDITO = null;
+	public it.govpay.orm.model.IdIbanAccreditoModel ID_IBAN_ACCREDITO = null;
 	 
 	public IField TIPO_CONTABILITA = null;
 	 

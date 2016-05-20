@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,14 +38,15 @@ import java.util.List;
  * <pre>
  * &lt;complexType name="Applicazione">
  * 		&lt;sequence>
- * 			&lt;element name="codApplicazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="versione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="policyRispedizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="firmaRicevuta" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="ApplicazioneTributo" type="{http://www.govpay.it/orm}ApplicazioneTributo" minOccurs="0" maxOccurs="unbounded"/>
+ * 			&lt;element name="ApplicazioneDominio" type="{http://www.govpay.it/orm}ApplicazioneDominio" minOccurs="0" maxOccurs="unbounded"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -61,13 +62,14 @@ import java.util.List;
 @XmlType(name = "Applicazione", 
   propOrder = {
   	"codApplicazione",
-  	"principal",
   	"abilitato",
-  	"versione",
-  	"policyRispedizione",
+  	"principal",
+  	"firmaRicevuta",
   	"codConnettoreEsito",
   	"codConnettoreVerifica",
-  	"applicazioneTributo"
+  	"trusted",
+  	"applicazioneTributo",
+  	"applicazioneDominio"
   }
 )
 
@@ -99,14 +101,6 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.codApplicazione = codApplicazione;
   }
 
-  public java.lang.String getPrincipal() {
-    return this.principal;
-  }
-
-  public void setPrincipal(java.lang.String principal) {
-    this.principal = principal;
-  }
-
   public boolean isAbilitato() {
     return this.abilitato;
   }
@@ -119,20 +113,20 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.abilitato = abilitato;
   }
 
-  public java.lang.String getVersione() {
-    return this.versione;
+  public java.lang.String getPrincipal() {
+    return this.principal;
   }
 
-  public void setVersione(java.lang.String versione) {
-    this.versione = versione;
+  public void setPrincipal(java.lang.String principal) {
+    this.principal = principal;
   }
 
-  public java.lang.String getPolicyRispedizione() {
-    return this.policyRispedizione;
+  public java.lang.String getFirmaRicevuta() {
+    return this.firmaRicevuta;
   }
 
-  public void setPolicyRispedizione(java.lang.String policyRispedizione) {
-    this.policyRispedizione = policyRispedizione;
+  public void setFirmaRicevuta(java.lang.String firmaRicevuta) {
+    this.firmaRicevuta = firmaRicevuta;
   }
 
   public java.lang.String getCodConnettoreEsito() {
@@ -149,6 +143,18 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
 
   public void setCodConnettoreVerifica(java.lang.String codConnettoreVerifica) {
     this.codConnettoreVerifica = codConnettoreVerifica;
+  }
+
+  public boolean isTrusted() {
+    return this.trusted;
+  }
+
+  public boolean getTrusted() {
+    return this.trusted;
+  }
+
+  public void setTrusted(boolean trusted) {
+    this.trusted = trusted;
   }
 
   public void addApplicazioneTributo(ApplicazioneTributo applicazioneTributo) {
@@ -175,6 +181,30 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     return this.applicazioneTributo.size();
   }
 
+  public void addApplicazioneDominio(ApplicazioneDominio applicazioneDominio) {
+    this.applicazioneDominio.add(applicazioneDominio);
+  }
+
+  public ApplicazioneDominio getApplicazioneDominio(int index) {
+    return this.applicazioneDominio.get( index );
+  }
+
+  public ApplicazioneDominio removeApplicazioneDominio(int index) {
+    return this.applicazioneDominio.remove( index );
+  }
+
+  public List<ApplicazioneDominio> getApplicazioneDominioList() {
+    return this.applicazioneDominio;
+  }
+
+  public void setApplicazioneDominioList(List<ApplicazioneDominio> applicazioneDominio) {
+    this.applicazioneDominio=applicazioneDominio;
+  }
+
+  public int sizeApplicazioneDominioList() {
+    return this.applicazioneDominio.size();
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -198,21 +228,17 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @XmlElement(name="codApplicazione",required=true,nillable=false)
   protected java.lang.String codApplicazione;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="principal",required=true,nillable=false)
-  protected java.lang.String principal;
-
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="versione",required=true,nillable=false)
-  protected java.lang.String versione;
+  @XmlElement(name="principal",required=true,nillable=false)
+  protected java.lang.String principal;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="policyRispedizione",required=false,nillable=false)
-  protected java.lang.String policyRispedizione;
+  @XmlElement(name="firmaRicevuta",required=true,nillable=false)
+  protected java.lang.String firmaRicevuta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreEsito",required=false,nillable=false)
@@ -221,6 +247,10 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codConnettoreVerifica",required=false,nillable=false)
   protected java.lang.String codConnettoreVerifica;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="trusted",required=true,nillable=false)
+  protected boolean trusted;
 
   @XmlElement(name="ApplicazioneTributo",required=true,nillable=false)
   protected List<ApplicazioneTributo> applicazioneTributo = new ArrayList<ApplicazioneTributo>();
@@ -250,6 +280,36 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @Deprecated
   public int sizeApplicazioneTributo() {
   	return this.applicazioneTributo.size();
+  }
+
+  @XmlElement(name="ApplicazioneDominio",required=true,nillable=false)
+  protected List<ApplicazioneDominio> applicazioneDominio = new ArrayList<ApplicazioneDominio>();
+
+  /**
+   * @deprecated Use method getApplicazioneDominioList
+   * @return List<ApplicazioneDominio>
+  */
+  @Deprecated
+  public List<ApplicazioneDominio> getApplicazioneDominio() {
+  	return this.applicazioneDominio;
+  }
+
+  /**
+   * @deprecated Use method setApplicazioneDominioList
+   * @param applicazioneDominio List<ApplicazioneDominio>
+  */
+  @Deprecated
+  public void setApplicazioneDominio(List<ApplicazioneDominio> applicazioneDominio) {
+  	this.applicazioneDominio=applicazioneDominio;
+  }
+
+  /**
+   * @deprecated Use method sizeApplicazioneDominioList
+   * @return lunghezza della lista
+  */
+  @Deprecated
+  public int sizeApplicazioneDominio() {
+  	return this.applicazioneDominio.size();
   }
 
 }

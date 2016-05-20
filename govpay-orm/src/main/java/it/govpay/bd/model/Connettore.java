@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,7 @@ public class Connettore extends BasicModel {
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";
 	public static final String P_URL_NAME = "URL";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
+	public static final String P_VERSIONE = "VERSIONE";
 	
 	public enum EnumAuthType {
 		SSL, HTTPBasic, NONE
@@ -44,6 +45,10 @@ public class Connettore extends BasicModel {
 	
 	public enum EnumSslType {
 		CLIENT, SERVER
+	}
+	
+	public enum Versione {
+		v1, v2, v2_1; 
 	}
 
 	private String idConnettore;
@@ -60,10 +65,10 @@ public class Connettore extends BasicModel {
 	private String httpUser;
 	private String httpPassw;
 	private String url;
+	private Versione versione;
 	private boolean azioneInUrl;
 	
 	public Connettore() {
-		// TODO Auto-generated constructor stub
 	}
 		
 	public String getIdConnettore() {
@@ -183,6 +188,14 @@ public class Connettore extends BasicModel {
 				azioneInUrl==connettore.isAzioneInUrl();
 
 		return equal;
+	}
+
+	public Versione getVersione() {
+		return versione;
+	}
+
+	public void setVersione(Versione versione) {
+		this.versione = versione;
 	}
 
 }

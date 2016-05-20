@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,39 +20,43 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.Disponibilita;
-import it.govpay.orm.Dominio;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.DominioFetch;
-
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
+import java.sql.Connection;
+
 import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.FunctionField;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import it.govpay.orm.IdDominio;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.DominioFetch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+
+import it.govpay.orm.Dominio;
 
 /**     
  * JDBCDominioServiceSearchImpl
@@ -104,7 +108,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	
 		IdDominio idDominio = new IdDominio();
 		idDominio.setCodDominio(dominio.getCodDominio());
-
+	
 		return idDominio;
 	}
 	
@@ -126,7 +130,6 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 	
 	@Override
 	public List<IdDominio> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-
         // default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
@@ -138,12 +141,12 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			List<IField> fields = new ArrayList<IField>();
 
 			fields.add(Dominio.model().COD_DOMINIO);
-
+        
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Dominio)this.getDominioFetch().fetch(jdbcProperties.getDatabase(), Dominio.model(), map)));
-			}
+        }
 		} catch(NotFoundException e) {}
 
         return list;
@@ -157,28 +160,37 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
-
         List<Dominio> list = new ArrayList<Dominio>();
         
 		try {
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id", Long.class, "id", this.getDominioFieldConverter().toTable(Dominio.model())));
+
 			fields.add(Dominio.model().COD_DOMINIO);
 			fields.add(Dominio.model().RAGIONE_SOCIALE);
 			fields.add(Dominio.model().GLN);
-			fields.add(Dominio.model().PLUGIN_CLASS);
+			fields.add(Dominio.model().XML_CONTI_ACCREDITO);
+			fields.add(Dominio.model().XML_TABELLA_CONTROPARTI);
 			fields.add(Dominio.model().ABILITATO);
+			fields.add(Dominio.model().RIUSO_IUV);
+			fields.add(Dominio.model().CUSTOM_IUV);
+
 
 			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getDominioFieldConverter().toTable(Dominio.model())));
+			fields.add(new CustomField("id_applicazione_default", Long.class, "id_applicazione_default", this.getDominioFieldConverter().toTable(Dominio.model())));
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
-			org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-
 			for(Map<String, Object> map: returnMap) {
 				Long id_stazione = (Long) map.remove("id_stazione");
-
+				
+				Object id_applicazione_defaultOBJ = map.remove("id_applicazione_default");
+				
+				Long id_applicazione_default = null;
+				if(id_applicazione_defaultOBJ instanceof Long) {
+					id_applicazione_default = (Long) id_applicazione_defaultOBJ;
+				}
+				
 				Dominio dominio = (Dominio)this.getDominioFetch().fetch(jdbcProperties.getDatabase(), Dominio.model(), map);
 				
 				it.govpay.orm.IdStazione id_dominio_stazione = null;
@@ -190,29 +202,17 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 				id_dominio_stazione.setId(id_stazione);
 				dominio.setIdStazione(id_dominio_stazione);
 
-				// Object dominio_disponibilita
-				ISQLQueryObject sqlQueryObjectGet_dominio_disponibilita = sqlQueryObject.newSQLQueryObject();
-				sqlQueryObjectGet_dominio_disponibilita.setANDLogicOperator(true);
-				sqlQueryObjectGet_dominio_disponibilita.addFromTable(this.getDominioFieldConverter().toTable(Dominio.model().DISPONIBILITA));
-				sqlQueryObjectGet_dominio_disponibilita.addSelectField("id");
-				sqlQueryObjectGet_dominio_disponibilita.addSelectField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_PERIODO,true));
-				sqlQueryObjectGet_dominio_disponibilita.addSelectField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.GIORNO,true));
-				sqlQueryObjectGet_dominio_disponibilita.addSelectField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.FASCE_ORARIE,true));
-				sqlQueryObjectGet_dominio_disponibilita.addSelectField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA,true));
-				sqlQueryObjectGet_dominio_disponibilita.addWhereCondition("id_dominio=?");
-
-				// Get dominio_disponibilita
-				java.util.List<Object> dominio_disponibilita_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_dominio_disponibilita.createSQLQuery(), jdbcProperties.isShowSql(), Dominio.model().DISPONIBILITA, this.getDominioFetch(),
-					new JDBCObject(dominio.getId(),Long.class));
-
-				if(dominio_disponibilita_list != null) {
-					for (Object dominio_disponibilita_object: dominio_disponibilita_list) {
-						Disponibilita dominio_disponibilita = (Disponibilita) dominio_disponibilita_object;
-
-
-						dominio.addDisponibilita(dominio_disponibilita);
+				if(id_applicazione_default != null) {
+					it.govpay.orm.IdApplicazione id_dominio_applicazione = null;
+					if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+						id_dominio_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(id_applicazione_default, false);
+					}else{
+						id_dominio_applicazione = new it.govpay.orm.IdApplicazione();
 					}
+					id_dominio_applicazione.setId(id_applicazione_default);
+					dominio.setIdApplicazioneDefault(id_dominio_applicazione);
 				}
+
 				list.add(dominio);
 			}
 		} catch(NotFoundException e) {}
@@ -500,25 +500,9 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 				imgSaved.getIdStazione()!=null){
 			obj.getIdStazione().setId(imgSaved.getIdStazione().getId());
 		}
-		if(obj.getDisponibilitaList()!=null){
-			List<it.govpay.orm.Disponibilita> listObj_ = obj.getDisponibilitaList();
-			for(it.govpay.orm.Disponibilita itemObj_ : listObj_){
-				it.govpay.orm.Disponibilita itemAlreadySaved_ = null;
-				if(imgSaved.getDisponibilitaList()!=null){
-					List<it.govpay.orm.Disponibilita> listImgSaved_ = imgSaved.getDisponibilitaList();
-					for(it.govpay.orm.Disponibilita itemImgSaved_ : listImgSaved_){
-						boolean objEqualsToImgSaved_ = false;
-						objEqualsToImgSaved_ = org.openspcoop2.generic_project.utils.Utilities.equals(itemObj_.getId(),itemImgSaved_.getId());
-						if(objEqualsToImgSaved_){
-							itemAlreadySaved_=itemImgSaved_;
-							break;
-						}
-					}
-				}
-				if(itemAlreadySaved_!=null){
-					itemObj_.setId(itemAlreadySaved_.getId());
-				}
-			}
+		if(obj.getIdApplicazioneDefault()!=null && 
+				imgSaved.getIdApplicazioneDefault()!=null){
+			obj.getIdApplicazioneDefault().setId(imgSaved.getIdApplicazioneDefault().getId());
 		}
 
 	}
@@ -541,10 +525,10 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
-		
+				
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
-
+		
 		return lst.get(0);
 
 	
@@ -586,14 +570,13 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			String tableName2 = this.getDominioFieldConverter().toAliasTable(Dominio.model().ID_STAZIONE);
 			sqlQueryObject.addWhereCondition(tableName1+".id_stazione="+tableName2+".id");
 		}
-
-		if(expression.inUseModel(Dominio.model().DISPONIBILITA,false)){
+		
+		if(expression.inUseModel(Dominio.model().ID_APPLICAZIONE_DEFAULT,false)){
 			String tableName1 = this.getDominioFieldConverter().toAliasTable(Dominio.model());
-			String tableName2 = this.getDominioFieldConverter().toAliasTable(Dominio.model().DISPONIBILITA);
-			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_dominio");
+			String tableName2 = this.getDominioFieldConverter().toAliasTable(Dominio.model().ID_APPLICAZIONE_DEFAULT);
+			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione_default="+tableName2+".id");
 		}
-
-        
+		
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdDominio id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -601,6 +584,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
 		Long longId = this.findIdDominio(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
+        
         
         return rootTableIdValues;
 	}
@@ -625,13 +609,13 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 				new CustomField("id", Long.class, "id", converter.toTable(Dominio.model().ID_STAZIONE))
 			));
 
-		// Dominio.model().DISPONIBILITA
-		mapTableToPKColumn.put(converter.toTable(Dominio.model().DISPONIBILITA),
+		// Dominio.model().ID_APPLICAZIONE_DEFAULT
+		mapTableToPKColumn.put(converter.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT),
 			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Dominio.model().DISPONIBILITA))
+				new CustomField("id", Long.class, "id", converter.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT))
 			));
 
-
+        
         return mapTableToPKColumn;		
 	}
 	
@@ -694,10 +678,6 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -718,6 +698,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
+
 		// Object _dominio
 		sqlQueryObjectGet.addFromTable(this.getDominioFieldConverter().toTable(Dominio.model()));
 		sqlQueryObjectGet.addSelectField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_DOMINIO,true));
@@ -730,7 +711,6 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 		};
 		List<Class<?>> listaFieldIdReturnType_dominio = new ArrayList<Class<?>>();
 		listaFieldIdReturnType_dominio.add(Dominio.model().COD_DOMINIO.getFieldType());
-
 		it.govpay.orm.IdDominio id_dominio = null;
 		List<Object> listaFieldId_dominio = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_dominio, searchParams_dominio);
@@ -771,6 +751,7 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+
 
 		// Object _dominio
 		sqlQueryObjectGet.addFromTable(this.getDominioFieldConverter().toTable(Dominio.model()));

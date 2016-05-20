@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,18 +22,17 @@ package it.govpay.ejb;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.EsitoBase;
-import it.govpay.bd.pagamento.EsitiBD;
-import it.govpay.business.Mail;
-import it.govpay.business.Pagamenti;
-import it.govpay.business.RegistroPSP;
-import it.govpay.business.Rendicontazioni;
-import it.govpay.exception.GovPayException;
-import it.govpay.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.thread.InviaEsitoThread;
-import it.govpay.thread.ThreadExecutorManager;
-import it.govpay.utils.GovPayConfiguration;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.business.Pagamento;
+import it.govpay.core.business.Psp;
+import it.govpay.core.business.Rendicontazioni;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,6 +42,7 @@ import javax.ejb.Singleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.utils.logger.beans.proxy.Service;
 
 @Singleton
 public class Operazioni{
@@ -50,111 +50,127 @@ public class Operazioni{
 	private static Logger log = LogManager.getLogger();
 	
 	@Schedule(hour="4,8,16,20", persistent=false)
-	public static boolean acquisizioneRendicontazioni(){
-		ThreadContext.put("cmd", "AcquisizioneRendicontazioni");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
+	public static String acquisizioneRendicontazioni(){
 		BasicBD bd = null;
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "AcquisizioneRendicontazioni");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
-			log.info("Acquisizione rendicontazioni");
-			new Rendicontazioni(bd).downloadRendicontazioni();
-			log.info("Acquisizione rendicontazioni completata");
-			return true;
+			String response = new Rendicontazioni(bd).downloadRendicontazioni();
+			return response;
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
-			return false;
+			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
 		}
 	}
 	
 	@Schedule(hour="0,12", persistent=false)
-	public static boolean aggiornamentoRegistroPsp(){
-		ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
+	public static String aggiornamentoRegistroPsp(){
 		BasicBD bd = null;
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "AggiornamentoRegistroPsp");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
-			new RegistroPSP(bd).aggiornaRegistro();
-			return true;
+			return new Psp(bd).aggiornaRegistro();
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
-			return false;
+			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
 	}
 	
 	@Schedule(hour="2,6,10,14,18,22", persistent=false)
-	public static boolean recuperoRptPendenti(){
-		ThreadContext.put("cmd", "RecuperoRptPendenti");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
+	public static String recuperoRptPendenti(){
 		BasicBD bd = null;
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "RecuperoRptPendenti");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
-			log.info("Recupero Rpt Pendenti");
-			new Pagamenti(bd).verificaRptPedenti();
-			log.info("Acquisizione Rpt pendenti completata");
-			return true;
+			return new Pagamento(bd).verificaTransazioniPendenti();
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
-			return false;
-		} finally {
-			if(bd != null) bd.closeConnection();
-		}
-	}
-	
-	@Schedule(hour="*", minute="*/15", persistent=false)
-	public static boolean notificheMail(){
-		ThreadContext.put("cmd", "NotificheMail");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
-		log.trace("Avvio batch SpedizioneNotificheMail");
-		BasicBD bd = null;
-		try {
-			bd = BasicBD.newInstance();
-			new Mail(bd).notificaMail();
-			return true;
-		} catch (Exception e) {
-			log.error("Spedizione delle notifiche mail fallita", e);
-			return false;
+			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
 	}
 	
 	@Schedule(hour="*", minute="*/1", persistent=false)
-	public static boolean spedizioneEsiti(){
-		ThreadContext.put("cmd", "SpedizioneEsiti");
-		ThreadContext.put("op", UUID.randomUUID().toString() );
+	public static boolean spedizioneNotifiche(){
 		BasicBD bd = null;
+		List<InviaNotificaThread> threads = new ArrayList<InviaNotificaThread>();
+		GpContext ctx = null;
 		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "SpedizioneNotifiche");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			ctx.getTransaction().setService(service);
+			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
-			GovPayConfiguration properties = GovPayConfiguration.newInstance();
-			log.trace("Spedizione degli esiti (max " + properties.getEsiti_limit() + " esiti)" );
-			try {
-				EsitiBD esitiBD = new EsitiBD(bd);
+			log.trace("Spedizione notifiche non consegnate");
+			
+			NotificheBD notificheBD = new NotificheBD(bd);
+			
+			List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
+			
+			if(notifiche.size() == 0) return true;
 				
-				List<EsitoBase> esiti = esitiBD.findEsitiDaSpedire(0, properties.getEsiti_limit());
-				if(esiti.size() == 0) return true;
-				
-				log.info("Trovati ["+esiti.size()+"] esiti da spedire");
-				
-				for(EsitoBase esito: esiti) {
-					InviaEsitoThread sender = new InviaEsitoThread(AnagraficaManager.getApplicazione(bd, esito.getIdApplicazione()), esito.getId());
-					ThreadExecutorManager.getEsitiPoolExecutor().execute(sender);
-				}
-			} catch (Exception se) {
-				if(bd != null) {
-					bd.rollback();
-				}
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, "Non è stato possibile spedire gli esiti: " + se.getMessage(), se);
+			log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
+			
+			for(Notifica notifica: notifiche) {
+				InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
+				ThreadExecutorManager.getClientPoolExecutor().execute(sender);
 			}
-			return true;
+			
+			log.info("Processi di spedizione avviati.");
 		} catch (Exception e) {
-			log.error("Spedizione degli esiti fallita", e);
+			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
 			return false;
 		} finally {
 			if(bd != null) bd.closeConnection();
+		}
+		
+		// Aspetto che abbiano finito tutti
+		while(true){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				
+			}
+			boolean completed = true;
+			for(InviaNotificaThread sender : threads) {
+				if(!sender.isCompleted()) 
+					completed = false;
+			}
+			
+			if(completed) {
+				log.info("Processo di spedizione completati.");
+				return true;
+			}
 		}
 	}
 	
@@ -169,5 +185,19 @@ public class Operazioni{
 			return false;
 		} 
 	}
+	
+//	@Resource
+//	private static TimerService timerService;
+//	
+//	public static String getTimerInfo(){
+//		String s = "";
+//		for(Timer t : timerService.getTimers()){
+//			s += t.getClass();
+//			s += t.getNextTimeout();
+//			s += t.getInfo();
+//			s += "\n";
+//		}
+//		return Response.ok(s).build();
+//	}
 
 }

@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,39 +20,58 @@
  */
 package it.govpay.bd.model;
 
-import java.math.BigDecimal;
-import java.util.Date;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.VersamentiBD;
 
-import org.codehaus.jackson.annotate.JsonIgnore;
+import java.math.BigDecimal;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class SingoloVersamento extends BasicModel implements Comparable<SingoloVersamento> {
 	private static final long serialVersionUID = 1L;
 
 	public enum StatoSingoloVersamento {
-		DA_PAGARE,
-		PAGATO,
-		RENDICONTATO;
+		ESEGUITO,
+		NON_ESEGUITO,
+		ANOMALO;
 	}
-
-
+	
+	public enum TipoBollo {
+		IMPOSTA_BOLLO("01");
+		
+		private String codifica;
+		TipoBollo(String codifica) {
+			this.codifica = codifica;
+		}
+		public String getCodifica() {
+			return codifica;
+		}
+		public static TipoBollo toEnum(String codifica) throws ServiceException {
+			for(TipoBollo p : TipoBollo.values()){
+				if(p.getCodifica().equals(codifica))
+					return p;
+			}
+			throw new ServiceException("Codifica inesistente per TipoBollo. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoBollo.values()));
+		}
+	}
+	
 	private Long id;
-	private long idTributo;
-	private int indice;
+	private Long idTributo;
+	private long idVersamento;
 	private String codSingoloVersamentoEnte;
-	private String ibanAccredito;
-	private BigDecimal importoSingoloVersamento;
-	private BigDecimal singoloImportoPagato;
-	private BigDecimal importoCommissioniPA;
-	private String causaleVersamento;
-	private String datiSpecificiRiscossione;
-	private String esitoSingoloPagamento;
-	private String iur;
-	private Date dataEsitoSingoloPagamento;
 	private StatoSingoloVersamento statoSingoloVersamento;
-	private Integer annoRiferimento;
-	@JsonIgnore
-	private Versamento versamento;
-
+	private BigDecimal importoSingoloVersamento;
+	private TipoBollo tipoBollo;
+	private String hashDocumento;
+	private String provinciaResidenza;
+	private Long idIbanAccredito;
+	private Tributo.TipoContabilta tipoContabilita;
+	private String codContabilita;
+	
+	
 	public Long getId() {
 		return id;
 	}
@@ -61,86 +80,28 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		this.id = id;
 	}
 
-	public long getIdTributo() {
+	public Long getIdTributo() {
 		return idTributo;
 	}
 
-	public void setIdTributo(long idTributo) {
+	public void setIdTributo(Long idTributo) {
 		this.idTributo = idTributo;
 	}
 
-	public int getIndice() {
-		return indice;
+	public Long getIdVersamento() {
+		return idVersamento;
 	}
 
-	public void setIndice(int indice) {
-		this.indice = indice;
+	public void setIdVersamento(long idVersamento) {
+		this.idVersamento = idVersamento;
 	}
 
-
-	public String getIbanAccredito() {
-		return ibanAccredito;
+	public String getCodSingoloVersamentoEnte() {
+		return codSingoloVersamentoEnte;
 	}
 
-	public void setIbanAccredito(String ibanAccredito) {
-		this.ibanAccredito = ibanAccredito;
-	}
-
-	public BigDecimal getImportoSingoloVersamento() {
-		return importoSingoloVersamento;
-	}
-
-	public void setImportoSingoloVersamento(BigDecimal importoSingoloVersamento) {
-		this.importoSingoloVersamento = importoSingoloVersamento;
-	}
-
-	public BigDecimal getImportoCommissioniPA() {
-		return importoCommissioniPA;
-	}
-
-	public void setImportoCommissioniPA(BigDecimal importoCommissioniPA) {
-		this.importoCommissioniPA = importoCommissioniPA;
-	}
-
-	public String getCausaleVersamento() {
-		return causaleVersamento;
-	}
-
-	public void setCausaleVersamento(String causaleVersamento) {
-		this.causaleVersamento = causaleVersamento;
-	}
-
-	public String getDatiSpecificiRiscossione() {
-		return datiSpecificiRiscossione;
-	}
-
-	public void setDatiSpecificiRiscossione(String datiSpecificiRiscossione) {
-		this.datiSpecificiRiscossione = datiSpecificiRiscossione;
-	}
-
-	public String getEsitoSingoloPagamento() {
-		return esitoSingoloPagamento;
-	}
-
-	public void setEsitoSingoloPagamento(String esitoSingoloPagamento) {
-		this.esitoSingoloPagamento = esitoSingoloPagamento;
-	}
-
-	public String getIur() {
-		return iur;
-	}
-
-	public void setIur(String iur) {
-		this.iur = iur;
-	}
-
-	public Date getDataEsitoSingoloPagamento() {
-		return dataEsitoSingoloPagamento;
-	}
-
-	public void setDataEsitoSingoloPagamento(
-			Date dataEsitoSingoloPagamento) {
-		this.dataEsitoSingoloPagamento = dataEsitoSingoloPagamento;
+	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
+		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
 	}
 
 	public StatoSingoloVersamento getStatoSingoloVersamento() {
@@ -152,68 +113,110 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		this.statoSingoloVersamento = statoSingoloVersamento;
 	}
 
-	public Integer getAnnoRiferimento() {
-		return annoRiferimento;
+	public BigDecimal getImportoSingoloVersamento() {
+		return importoSingoloVersamento;
 	}
 
-	public void setAnnoRiferimento(Integer annoRiferimento) {
-		this.annoRiferimento = annoRiferimento;
+	public void setImportoSingoloVersamento(BigDecimal importoSingoloVersamento) {
+		this.importoSingoloVersamento = importoSingoloVersamento;
 	}
 
-	public Versamento getVersamento() {
-		return versamento;
+	public TipoBollo getTipoBollo() {
+		return tipoBollo;
 	}
 
-	public void setVersamento(Versamento versamento) {
-		this.versamento = versamento;
+	public void setTipoBollo(TipoBollo tipoBollo) {
+		this.tipoBollo = tipoBollo;
 	}
 
-	public BigDecimal getSingoloImportoPagato() {
-		return singoloImportoPagato;
+	public String getHashDocumento() {
+		return hashDocumento;
 	}
 
-	public void setSingoloImportoPagato(BigDecimal singoloImportoPagato) {
-		this.singoloImportoPagato = singoloImportoPagato;
+	public void setHashDocumento(String hashDocumento) {
+		this.hashDocumento = hashDocumento;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		SingoloVersamento sv = null;
-		if(obj instanceof SingoloVersamento) {
-			sv = (SingoloVersamento) obj;
-		}
-		else {
-			return false;
-		}
-		boolean equal = 
-				equals(codSingoloVersamentoEnte, sv.getCodSingoloVersamentoEnte()) &&
-				equals(ibanAccredito, sv.getIbanAccredito()) &&
-				equals(importoSingoloVersamento, sv.getImportoSingoloVersamento()) &&
-				equals(singoloImportoPagato, sv.getSingoloImportoPagato()) &&
-				equals(importoCommissioniPA, sv.getImportoCommissioniPA()) &&
-				equals(causaleVersamento, sv.getCausaleVersamento()) &&
-				equals(datiSpecificiRiscossione, sv.getDatiSpecificiRiscossione()) &&
-				equals(esitoSingoloPagamento, sv.getEsitoSingoloPagamento()) &&
-				equals(iur, sv.getIur()) &&
-				equals(dataEsitoSingoloPagamento, sv.getDataEsitoSingoloPagamento()) &&
-				equals(statoSingoloVersamento, sv.getStatoSingoloVersamento()) &&
-				equals(annoRiferimento, sv.getAnnoRiferimento()) &&
-				idTributo == sv.getIdTributo() &&
-				indice == sv.getIndice();
-		return equal;
+	public String getProvinciaResidenza() {
+		return provinciaResidenza;
+	}
+
+	public void setProvinciaResidenza(String provinciaResidenza) {
+		this.provinciaResidenza = provinciaResidenza;
+	}
+	
+	public Long getIdIbanAccredito() {
+		return idIbanAccredito;
+	}
+
+	public void setIdIbanAccredito(Long idIbanAccredito) {
+		this.idIbanAccredito = idIbanAccredito;
+	}
+
+	public Tributo.TipoContabilta getTipoContabilita() {
+		return tipoContabilita;
+	}
+
+	public void setTipoContabilita(Tributo.TipoContabilta tipoContabilita) {
+		this.tipoContabilita = tipoContabilita;
+	}
+
+	public String getCodContabilita() {
+		return codContabilita;
+	}
+
+	public void setCodContabilita(String codContabilita) {
+		this.codContabilita = codContabilita;
 	}
 
 	@Override
 	public int compareTo(SingoloVersamento sv) {
-		return new Integer(indice).compareTo(new Integer(sv.getIndice()));
+		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
+	}
+	
+	// Business
+	
+	private Versamento versamento;
+	private Tributo tributo;
+	private IbanAccredito ibanAccredito;
+	
+	public Tributo getTributo(BasicBD bd) throws ServiceException {
+		if(tributo == null && idTributo != null) {
+			tributo = AnagraficaManager.getTributo(bd, getIdTributo());
+		}
+		return tributo;
 	}
 
-	public String getCodSingoloVersamentoEnte() {
-		return codSingoloVersamentoEnte;
+	public void setTributo(String codTributo, BasicBD bd) throws ServiceException, NotFoundException {
+		this.tributo = AnagraficaManager.getTributo(bd, versamento.getUo(bd).getIdDominio(), codTributo);
+		this.idTributo = tributo.getId();
 	}
-
-	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
-		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
+	
+	public void setVersamento(Versamento versamento) {
+		this.versamento = versamento;
+		if(versamento.getId() != null)
+			this.idVersamento = versamento.getId();
+	}
+	
+	public Versamento getVersamento(BasicBD bd) throws ServiceException {
+		if(this.versamento == null) {
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			this.versamento = versamentiBD.getVersamento(getIdVersamento());
+		}
+		return this.versamento;
+	}
+	
+	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
+		if(ibanAccredito == null && ibanAccredito != null) {
+			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, getIdIbanAccredito());
+		}
+		return ibanAccredito;
+	}
+	
+	public void setIbanAccredito(IbanAccredito ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
+		if(ibanAccredito.getId() != null)
+			this.idIbanAccredito = ibanAccredito.getId();
 	}
 
 }

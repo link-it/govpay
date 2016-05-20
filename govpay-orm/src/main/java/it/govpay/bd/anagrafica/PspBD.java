@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,19 +23,16 @@ package it.govpay.bd.anagrafica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.PspFilter;
 import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Psp.Canale;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Canale.TipoVersamento;
 import it.govpay.bd.model.converter.CanaleConverter;
 import it.govpay.bd.model.converter.PspConverter;
-import it.govpay.bd.pagamento.TracciatiBD.TipoTracciato;
 import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPsp;
-import it.govpay.orm.IdTracciato;
-import it.govpay.orm.TracciatoXML;
 import it.govpay.orm.dao.IDBCanaleServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCPspServiceSearch;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -102,7 +99,7 @@ public class PspBD extends BasicBD {
 			List<it.govpay.orm.Canale> canali = this.getCanaleService().findAll(exp);
 			
 			if(canali != null && !canali.isEmpty()) {
-				List<Canale> canaliLst = new ArrayList<Psp.Canale>();
+				List<Canale> canaliLst = new ArrayList<Canale>();
 				for(it.govpay.orm.Canale canaleVO: canali) {
 					Canale canale = CanaleConverter.toDTO(canaleVO, psp);
 					canaliLst.add(canale);
@@ -167,7 +164,23 @@ public class PspBD extends BasicBD {
 		long id = idCanale.longValue();
 		try {
 			it.govpay.orm.Canale canale = ((IDBCanaleServiceSearch)this.getCanaleService()).get(id);
-			Psp psp = getPsp(canale.getIdPsp().getId());
+			Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp().getId());
+			return CanaleConverter.toDTO(canale, psp);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public Canale getCanale(String codPsp, String codCanale, TipoVersamento tipoVersamento) throws NotFoundException, ServiceException, MultipleResultException{
+		try {
+			Psp psp = AnagraficaManager.getPsp(this, codPsp);
+			IdCanale idCanale = new IdCanale();
+			idCanale.setCodCanale(codCanale);
+			IdPsp idPsp = new IdPsp();
+			idPsp.setId(psp.getId());
+			idCanale.setIdPsp(idPsp);
+			idCanale.setTipoVersamento(tipoVersamento.getCodifica());
+			it.govpay.orm.Canale canale = ((IDBCanaleServiceSearch)this.getCanaleService()).get(idCanale);
 			return CanaleConverter.toDTO(canale, psp);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -187,7 +200,7 @@ public class PspBD extends BasicBD {
 	 * @throws ServiceException 
 	 * @throws NotFoundException 
 	 */
-	public void updatePsp(Psp psp, byte[] xml) throws NotFoundException, ServiceException {
+	public void updatePsp(Psp psp) throws NotFoundException, ServiceException {
 		try {
 			
 			it.govpay.orm.Psp vo = PspConverter.toVO(psp);
@@ -197,18 +210,9 @@ public class PspBD extends BasicBD {
 				throw new NotFoundException("Psp con id ["+idVO.toJson()+"] non trovato");
 			}
 			
-			//Inserisco il nuovo tracciato se e solo se il codFlusso e' cambiato
-			it.govpay.orm.Psp oldPsp = this.getPspService().get(idVO);
-			String codFlussoOld = oldPsp.getCodFlusso();
-			if(!psp.getCodFlusso().equals(codFlussoOld)) {
-				insertTracciato(vo, xml);				
-			} else {
-				vo.setIdTracciato(oldPsp.getIdTracciato());
-			}
-			
 			this.getPspService().update(idVO, vo);
 			psp.setId(vo.getId());
-
+			AnagraficaManager.removeFromCache(psp);
 			IPaginatedExpression exp = this.getCanaleService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Canale.model().ID_PSP.COD_PSP, psp.getCodPsp());
 			
@@ -224,7 +228,7 @@ public class PspBD extends BasicBD {
 			}
 			
 			for(Canale canale: psp.getCanali()) {
-				canale.setPsp(psp);
+				canale.setIdPsp(psp.getId());
 				canale.setAbilitato(true);
 				it.govpay.orm.Canale canaleVO = CanaleConverter.toVO(canale);
 				IdCanale idCanale = new IdCanale();
@@ -237,6 +241,7 @@ public class PspBD extends BasicBD {
 					this.getCanaleService().create(canaleVO);
 				}
 				canale.setId(canaleVO.getId());
+				AnagraficaManager.removeFromCache(canale);
 			}
 
 		} catch (NotImplementedException e) {
@@ -253,20 +258,6 @@ public class PspBD extends BasicBD {
 
 	}
 	
-	private void insertTracciato(it.govpay.orm.Psp psp, byte[] xml) throws ServiceException, NotImplementedException {
-		TracciatoXML tracciatoXML = new TracciatoXML();
-		tracciatoXML.setTipoTracciato(TipoTracciato.PSP.name());
-		tracciatoXML.setCodMessaggio(psp.getCodFlusso());
-		tracciatoXML.setDataOraCreazione(new Date());
-		tracciatoXML.setXml(xml);
-
-		this.getTracciatoXMLService().create(tracciatoXML);
-		
-		IdTracciato idTracciato = new IdTracciato();
-		idTracciato.setId(tracciatoXML.getId());
-		
-		psp.setIdTracciato(idTracciato);
-	}
 
 	/**
 	 * Inserisce il PSP con i dati inviati. Se esiste gia', dare errore.
@@ -281,7 +272,7 @@ public class PspBD extends BasicBD {
 	 * @param xml
 	 * @throws ServiceException 
 	 */
-	public void insertPsp(Psp psp, byte[] xml) throws ServiceException {
+	public void insertPsp(Psp psp) throws ServiceException {
 		try {
 			it.govpay.orm.Psp vo = PspConverter.toVO(psp);
 
@@ -290,12 +281,11 @@ public class PspBD extends BasicBD {
 				throw new NotFoundException("Psp con id ["+idVO.toJson()+"] gia' esistente");
 			}
 
-			insertTracciato(vo, xml);
 			this.getPspService().create(vo);
 			psp.setId(vo.getId());
 			
 			for(Canale canale: psp.getCanali()) {
-				canale.setPsp(psp);
+				canale.setIdPsp(psp.getId());
 				it.govpay.orm.Canale canaleVO = CanaleConverter.toVO(canale);
 				this.getCanaleService().create(canaleVO);
 				canale.setId(canaleVO.getId());

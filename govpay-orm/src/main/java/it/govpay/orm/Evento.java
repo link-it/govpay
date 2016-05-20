@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,23 +36,24 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Evento">
  * 		&lt;sequence>
- * 			&lt;element name="dataOraEvento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codDominio" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="iuv" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idApplicazione" type="{http://www.w3.org/2001/XMLSchema}unsignedLong" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="ccp" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codPsp" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoVersamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="componente" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="categoriaEvento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoEvento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="sottotipoEvento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codFruitore" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codErogatore" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codStazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="canalePagamento" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="altriParametri" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="esito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="componente" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="categoriaEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="sottotipoEvento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="erogatore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="fruitore" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codStazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codCanale" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="parametri1" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="parametri2" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="esito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="data1" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="data2" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -67,10 +68,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Evento", 
   propOrder = {
-  	"dataOraEvento",
   	"codDominio",
   	"iuv",
-  	"idApplicazione",
   	"ccp",
   	"codPsp",
   	"tipoVersamento",
@@ -78,12 +77,15 @@ import java.io.Serializable;
   	"categoriaEvento",
   	"tipoEvento",
   	"sottotipoEvento",
-  	"codFruitore",
-  	"codErogatore",
+  	"erogatore",
+  	"fruitore",
   	"codStazione",
-  	"canalePagamento",
-  	"altriParametri",
-  	"esito"
+  	"codCanale",
+  	"parametri1",
+  	"parametri2",
+  	"esito",
+  	"data1",
+  	"data2"
   }
 )
 
@@ -107,14 +109,6 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 		this.id=new Long(-1);
   }
 
-  public java.util.Date getDataOraEvento() {
-    return this.dataOraEvento;
-  }
-
-  public void setDataOraEvento(java.util.Date dataOraEvento) {
-    this.dataOraEvento = dataOraEvento;
-  }
-
   public java.lang.String getCodDominio() {
     return this.codDominio;
   }
@@ -129,14 +123,6 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
   public void setIuv(java.lang.String iuv) {
     this.iuv = iuv;
-  }
-
-  public java.lang.Long getIdApplicazione() {
-    return this.idApplicazione;
-  }
-
-  public void setIdApplicazione(java.lang.Long idApplicazione) {
-    this.idApplicazione = idApplicazione;
   }
 
   public java.lang.String getCcp() {
@@ -195,20 +181,20 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.sottotipoEvento = sottotipoEvento;
   }
 
-  public java.lang.String getCodFruitore() {
-    return this.codFruitore;
+  public java.lang.String getErogatore() {
+    return this.erogatore;
   }
 
-  public void setCodFruitore(java.lang.String codFruitore) {
-    this.codFruitore = codFruitore;
+  public void setErogatore(java.lang.String erogatore) {
+    this.erogatore = erogatore;
   }
 
-  public java.lang.String getCodErogatore() {
-    return this.codErogatore;
+  public java.lang.String getFruitore() {
+    return this.fruitore;
   }
 
-  public void setCodErogatore(java.lang.String codErogatore) {
-    this.codErogatore = codErogatore;
+  public void setFruitore(java.lang.String fruitore) {
+    this.fruitore = fruitore;
   }
 
   public java.lang.String getCodStazione() {
@@ -219,20 +205,28 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
     this.codStazione = codStazione;
   }
 
-  public java.lang.String getCanalePagamento() {
-    return this.canalePagamento;
+  public java.lang.String getCodCanale() {
+    return this.codCanale;
   }
 
-  public void setCanalePagamento(java.lang.String canalePagamento) {
-    this.canalePagamento = canalePagamento;
+  public void setCodCanale(java.lang.String codCanale) {
+    this.codCanale = codCanale;
   }
 
-  public java.lang.String getAltriParametri() {
-    return this.altriParametri;
+  public java.lang.String getParametri1() {
+    return this.parametri1;
   }
 
-  public void setAltriParametri(java.lang.String altriParametri) {
-    this.altriParametri = altriParametri;
+  public void setParametri1(java.lang.String parametri1) {
+    this.parametri1 = parametri1;
+  }
+
+  public java.lang.String getParametri2() {
+    return this.parametri2;
+  }
+
+  public void setParametri2(java.lang.String parametri2) {
+    this.parametri2 = parametri2;
   }
 
   public java.lang.String getEsito() {
@@ -241,6 +235,22 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
 
   public void setEsito(java.lang.String esito) {
     this.esito = esito;
+  }
+
+  public java.util.Date getData1() {
+    return this.data1;
+  }
+
+  public void setData1(java.util.Date data1) {
+    this.data1 = data1;
+  }
+
+  public java.util.Date getData2() {
+    return this.data2;
+  }
+
+  public void setData2(java.util.Date data2) {
+    this.data2 = data2;
   }
 
   private static final long serialVersionUID = 1L;
@@ -262,11 +272,6 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   }
 
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataOraEvento",required=true,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataOraEvento;
-
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codDominio",required=false,nillable=false)
   protected java.lang.String codDominio;
@@ -274,10 +279,6 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iuv",required=false,nillable=false)
   protected java.lang.String iuv;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="unsignedLong")
-  @XmlElement(name="idApplicazione",required=false,nillable=false)
-  protected java.lang.Long idApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ccp",required=false,nillable=false)
@@ -308,27 +309,41 @@ public class Evento extends org.openspcoop2.utils.beans.BaseBean implements Seri
   protected java.lang.String sottotipoEvento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codFruitore",required=false,nillable=false)
-  protected java.lang.String codFruitore;
+  @XmlElement(name="erogatore",required=false,nillable=false)
+  protected java.lang.String erogatore;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codErogatore",required=false,nillable=false)
-  protected java.lang.String codErogatore;
+  @XmlElement(name="fruitore",required=false,nillable=false)
+  protected java.lang.String fruitore;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codStazione",required=false,nillable=false)
   protected java.lang.String codStazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="canalePagamento",required=false,nillable=false)
-  protected java.lang.String canalePagamento;
+  @XmlElement(name="codCanale",required=false,nillable=false)
+  protected java.lang.String codCanale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="altriParametri",required=false,nillable=false)
-  protected java.lang.String altriParametri;
+  @XmlElement(name="parametri1",required=false,nillable=false)
+  protected java.lang.String parametri1;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="parametri2",required=false,nillable=false)
+  protected java.lang.String parametri2;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="esito",required=false,nillable=false)
   protected java.lang.String esito;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="data1",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date data1;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="data2",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date data2;
 
 }

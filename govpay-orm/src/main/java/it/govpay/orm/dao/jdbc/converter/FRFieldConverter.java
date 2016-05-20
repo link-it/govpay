@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,13 +68,6 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(FR.model().ID_TRACCIATO_XML.ID_TRACCIATO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_tracciato";
-			}else{
-				return "id_tracciato";
-			}
-		}
 		if(field.equals(FR.model().ID_PSP.COD_PSP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_psp";
@@ -96,6 +89,27 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_flusso";
 			}
 		}
+		if(field.equals(FR.model().STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato";
+			}else{
+				return "stato";
+			}
+		}
+		if(field.equals(FR.model().DESCRIZIONE_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione_stato";
+			}else{
+				return "descrizione_stato";
+			}
+		}
+		if(field.equals(FR.model().IUR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iur";
+			}else{
+				return "iur";
+			}
+		}
 		if(field.equals(FR.model().ANNO_RIFERIMENTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".anno_riferimento";
@@ -108,13 +122,6 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".data_ora_flusso";
 			}else{
 				return "data_ora_flusso";
-			}
-		}
-		if(field.equals(FR.model().IUR)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iur";
-			}else{
-				return "iur";
 			}
 		}
 		if(field.equals(FR.model().DATA_REGOLAMENTO)){
@@ -138,18 +145,18 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "importo_totale_pagamenti";
 			}
 		}
-		if(field.equals(FR.model().STATO)){
+		if(field.equals(FR.model().COD_BIC_RIVERSAMENTO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".stato";
+				return this.toAliasTable(field)+".cod_bic_riversamento";
 			}else{
-				return "stato";
+				return "cod_bic_riversamento";
 			}
 		}
-		if(field.equals(FR.model().DESCRIZIONE_STATO)){
+		if(field.equals(FR.model().XML)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".descrizione_stato";
+				return this.toAliasTable(field)+".xml";
 			}else{
-				return "descrizione_stato";
+				return "xml";
 			}
 		}
 
@@ -165,9 +172,6 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(FR.model().ID_TRACCIATO_XML.ID_TRACCIATO)){
-			return this.toTable(FR.model().ID_TRACCIATO_XML, returnAlias);
-		}
 		if(field.equals(FR.model().ID_PSP.COD_PSP)){
 			return this.toTable(FR.model().ID_PSP, returnAlias);
 		}
@@ -177,13 +181,19 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(FR.model().COD_FLUSSO)){
 			return this.toTable(FR.model(), returnAlias);
 		}
+		if(field.equals(FR.model().STATO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().DESCRIZIONE_STATO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().IUR)){
+			return this.toTable(FR.model(), returnAlias);
+		}
 		if(field.equals(FR.model().ANNO_RIFERIMENTO)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().DATA_ORA_FLUSSO)){
-			return this.toTable(FR.model(), returnAlias);
-		}
-		if(field.equals(FR.model().IUR)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().DATA_REGOLAMENTO)){
@@ -195,10 +205,10 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(FR.model().IMPORTO_TOTALE_PAGAMENTI)){
 			return this.toTable(FR.model(), returnAlias);
 		}
-		if(field.equals(FR.model().STATO)){
+		if(field.equals(FR.model().COD_BIC_RIVERSAMENTO)){
 			return this.toTable(FR.model(), returnAlias);
 		}
-		if(field.equals(FR.model().DESCRIZIONE_STATO)){
+		if(field.equals(FR.model().XML)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 
@@ -216,9 +226,6 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(FR.model())){
 			return "fr";
-		}
-		if(model.equals(FR.model().ID_TRACCIATO_XML)){
-			return "tracciatixml";
 		}
 		if(model.equals(FR.model().ID_PSP)){
 			return "psp";

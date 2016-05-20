@@ -1,9 +1,9 @@
-VERSION=v2.0
+VERSION=v2.1
 
 # Directory
 COPYING_FILE=../../COPYING
-SQL=../../resources/sql/2.0/
-DATASOURCE=../../resources/datasource/
+SQL=../../resources/db/sql/2.1/
+DATASOURCE=../../resources/db/datasource/
 DOC=../../resources/doc/pdf
 GOVPAY=../../govpay-ear/target/govpay.ear
 GOVPAY_CONSOLE=../../govpay-web-console/target/govpayConsole.war
@@ -31,7 +31,7 @@ echo "Prepare datasource ..."
 mkdir -p core.template/installer/datasource
 if [ ! -d "${DATASOURCE}" ]
 then
-	echo "Directory contenente gli script sql non esistente"
+	echo "Directory contenente i datasource non esistente"
 	exit 2
 fi
 cp -r ${DATASOURCE} core.template/installer/
@@ -93,7 +93,9 @@ cp ${GOVPAY_CONSOLE} core.template/installer/archivi/
 echo "Prepare archivi [completed]"
 
 echo "Creazione archivio compresso ..."
+rm -rf target
+mkdir target 
 mv core.template govpay-installer-${VERSION}
-tar czf govpay-installer-${VERSION}.tgz govpay-installer-${VERSION}/
-rm -rf govpay-installer-${VERSION}/
+tar czf target/govpay-installer-${VERSION}.tgz govpay-installer-${VERSION}/
+mv govpay-installer-${VERSION}/ target/
 echo "Creazione archivio compresso [completed]"

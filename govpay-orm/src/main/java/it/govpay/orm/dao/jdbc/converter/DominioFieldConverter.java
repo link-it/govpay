@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -82,25 +82,11 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
-		if(field.equals(Dominio.model().RAGIONE_SOCIALE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".ragione_sociale";
-			}else{
-				return "ragione_sociale";
-			}
-		}
 		if(field.equals(Dominio.model().GLN)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".gln";
 			}else{
 				return "gln";
-			}
-		}
-		if(field.equals(Dominio.model().PLUGIN_CLASS)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".plugin_class";
-			}else{
-				return "plugin_class";
 			}
 		}
 		if(field.equals(Dominio.model().ABILITATO)){
@@ -110,32 +96,46 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "abilitato";
 			}
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.TIPO_PERIODO)){
+		if(field.equals(Dominio.model().RAGIONE_SOCIALE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo_periodo";
+				return this.toAliasTable(field)+".ragione_sociale";
 			}else{
-				return "tipo_periodo";
+				return "ragione_sociale";
 			}
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.GIORNO)){
+		if(field.equals(Dominio.model().XML_CONTI_ACCREDITO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".giorno";
+				return this.toAliasTable(field)+".xml_conti_accredito";
 			}else{
-				return "giorno";
+				return "xml_conti_accredito";
 			}
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.FASCE_ORARIE)){
+		if(field.equals(Dominio.model().XML_TABELLA_CONTROPARTI)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".fasce_orarie";
+				return this.toAliasTable(field)+".xml_tabella_controparti";
 			}else{
-				return "fasce_orarie";
+				return "xml_tabella_controparti";
 			}
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA)){
+		if(field.equals(Dominio.model().RIUSO_IUV)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo_disponibilita";
+				return this.toAliasTable(field)+".riuso_iuv";
 			}else{
-				return "tipo_disponibilita";
+				return "riuso_iuv";
+			}
+		}
+		if(field.equals(Dominio.model().CUSTOM_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".custom_iuv";
+			}else{
+				return "custom_iuv";
+			}
+		}
+		if(field.equals(Dominio.model().ID_APPLICAZIONE_DEFAULT.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
 			}
 		}
 
@@ -157,29 +157,29 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Dominio.model().COD_DOMINIO)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
-		if(field.equals(Dominio.model().RAGIONE_SOCIALE)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
 		if(field.equals(Dominio.model().GLN)){
-			return this.toTable(Dominio.model(), returnAlias);
-		}
-		if(field.equals(Dominio.model().PLUGIN_CLASS)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().ABILITATO)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.TIPO_PERIODO)){
-			return this.toTable(Dominio.model().DISPONIBILITA, returnAlias);
+		if(field.equals(Dominio.model().RAGIONE_SOCIALE)){
+			return this.toTable(Dominio.model(), returnAlias);
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.GIORNO)){
-			return this.toTable(Dominio.model().DISPONIBILITA, returnAlias);
+		if(field.equals(Dominio.model().XML_CONTI_ACCREDITO)){
+			return this.toTable(Dominio.model(), returnAlias);
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.FASCE_ORARIE)){
-			return this.toTable(Dominio.model().DISPONIBILITA, returnAlias);
+		if(field.equals(Dominio.model().XML_TABELLA_CONTROPARTI)){
+			return this.toTable(Dominio.model(), returnAlias);
 		}
-		if(field.equals(Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA)){
-			return this.toTable(Dominio.model().DISPONIBILITA, returnAlias);
+		if(field.equals(Dominio.model().RIUSO_IUV)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().CUSTOM_IUV)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().ID_APPLICAZIONE_DEFAULT.COD_APPLICAZIONE)){
+			return this.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT, returnAlias);
 		}
 
 
@@ -200,8 +200,8 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(Dominio.model().ID_STAZIONE)){
 			return "stazioni";
 		}
-		if(model.equals(Dominio.model().DISPONIBILITA)){
-			return "disponibilita";
+		if(model.equals(Dominio.model().ID_APPLICAZIONE_DEFAULT)){
+			return "applicazioni";
 		}
 
 

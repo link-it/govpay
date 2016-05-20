@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -75,25 +75,18 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_versamento_ente";
 			}
 		}
-		if(field.equals(Versamento.model().COD_DOMINIO)){
+		if(field.equals(Versamento.model().ID_UO.COD_UO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_uo";
+			}else{
+				return "cod_uo";
+			}
+		}
+		if(field.equals(Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
 			}else{
 				return "cod_dominio";
-			}
-		}
-		if(field.equals(Versamento.model().IUV)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".iuv";
-			}else{
-				return "iuv";
-			}
-		}
-		if(field.equals(Versamento.model().ID_ENTE.COD_ENTE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_ente";
-			}else{
-				return "cod_ente";
 			}
 		}
 		if(field.equals(Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
@@ -101,20 +94,6 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".cod_applicazione";
 			}else{
 				return "cod_applicazione";
-			}
-		}
-		if(field.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.ID_ANAGRAFICA)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_anagrafica";
-			}else{
-				return "id_anagrafica";
-			}
-		}
-		if(field.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.COD_UNIVOCO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_univoco";
-			}else{
-				return "cod_univoco";
 			}
 		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){
@@ -138,18 +117,18 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione_stato";
 			}
 		}
-		if(field.equals(Versamento.model().STATO_RENDICONTAZIONE)){
+		if(field.equals(Versamento.model().AGGIORNABILE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".stato_rendicontazione";
+				return this.toAliasTable(field)+".aggiornabile";
 			}else{
-				return "stato_rendicontazione";
+				return "aggiornabile";
 			}
 		}
-		if(field.equals(Versamento.model().IMPORTO_PAGATO)){
+		if(field.equals(Versamento.model().DATA_CREAZIONE)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".importo_pagato";
+				return this.toAliasTable(field)+".data_creazione";
 			}else{
-				return "importo_pagato";
+				return "data_creazione";
 			}
 		}
 		if(field.equals(Versamento.model().DATA_SCADENZA)){
@@ -164,6 +143,69 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".data_ora_ultimo_aggiornamento";
 			}else{
 				return "data_ora_ultimo_aggiornamento";
+			}
+		}
+		if(field.equals(Versamento.model().CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_identificativo";
+			}else{
+				return "debitore_identificativo";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_INDIRIZZO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_indirizzo";
+			}else{
+				return "debitore_indirizzo";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_CIVICO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_civico";
+			}else{
+				return "debitore_civico";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_CAP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_cap";
+			}else{
+				return "debitore_cap";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_LOCALITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_localita";
+			}else{
+				return "debitore_localita";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_PROVINCIA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_provincia";
+			}else{
+				return "debitore_provincia";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_NAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_nazione";
+			}else{
+				return "debitore_nazione";
 			}
 		}
 
@@ -182,23 +224,14 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().COD_VERSAMENTO_ENTE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
-		if(field.equals(Versamento.model().COD_DOMINIO)){
-			return this.toTable(Versamento.model(), returnAlias);
+		if(field.equals(Versamento.model().ID_UO.COD_UO)){
+			return this.toTable(Versamento.model().ID_UO, returnAlias);
 		}
-		if(field.equals(Versamento.model().IUV)){
-			return this.toTable(Versamento.model(), returnAlias);
-		}
-		if(field.equals(Versamento.model().ID_ENTE.COD_ENTE)){
-			return this.toTable(Versamento.model().ID_ENTE, returnAlias);
+		if(field.equals(Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO)){
+			return this.toTable(Versamento.model().ID_UO.ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Versamento.model().ID_APPLICAZIONE, returnAlias);
-		}
-		if(field.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.ID_ANAGRAFICA)){
-			return this.toTable(Versamento.model().ID_ANAGRAFICA_DEBITORE, returnAlias);
-		}
-		if(field.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE.COD_UNIVOCO)){
-			return this.toTable(Versamento.model().ID_ANAGRAFICA_DEBITORE, returnAlias);
 		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){
 			return this.toTable(Versamento.model(), returnAlias);
@@ -209,16 +242,43 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().DESCRIZIONE_STATO)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
-		if(field.equals(Versamento.model().STATO_RENDICONTAZIONE)){
+		if(field.equals(Versamento.model().AGGIORNABILE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
-		if(field.equals(Versamento.model().IMPORTO_PAGATO)){
+		if(field.equals(Versamento.model().DATA_CREAZIONE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DATA_SCADENZA)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().CAUSALE_VERSAMENTO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_ANAGRAFICA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_INDIRIZZO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_CIVICO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_CAP)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_LOCALITA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_PROVINCIA)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_NAZIONE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 
@@ -237,14 +297,14 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(Versamento.model())){
 			return "versamenti";
 		}
-		if(model.equals(Versamento.model().ID_ENTE)){
-			return "enti";
+		if(model.equals(Versamento.model().ID_UO)){
+			return "uo";
+		}
+		if(model.equals(Versamento.model().ID_UO.ID_DOMINIO)){
+			return "id_dominio";
 		}
 		if(model.equals(Versamento.model().ID_APPLICAZIONE)){
 			return "applicazioni";
-		}
-		if(model.equals(Versamento.model().ID_ANAGRAFICA_DEBITORE)){
-			return "anagrafiche";
 		}
 
 

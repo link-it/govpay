@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -78,7 +78,7 @@ public class IntermediarioFilter extends AbstractFilter {
 				}
 				
 				// 2. metto in or l'eventuale stringa per il nome dell'intermediario
-				exp.like(Intermediario.model().COD_INTERMEDIARIO, this.idIntermediario,LikeMode.ANYWHERE); 
+				exp.ilike(Intermediario.model().COD_INTERMEDIARIO, this.idIntermediario,LikeMode.ANYWHERE); 
 			}
 
 			return exp;

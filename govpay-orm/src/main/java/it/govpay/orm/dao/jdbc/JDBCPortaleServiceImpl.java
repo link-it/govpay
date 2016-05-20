@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -73,7 +73,6 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 				
 
 
-
 		// Object portale
 		sqlQueryObjectInsert.addInsertTable(this.getPortaleFieldConverter().toTable(Portale.model()));
 		sqlQueryObjectInsert.addInsertField(this.getPortaleFieldConverter().toColumn(Portale.model().COD_PORTALE,false),"?");
@@ -127,6 +126,7 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 			portale.getPortaleApplicazioneList().get(i).setId(id_portaleApplicazione);
 		} // fine for 
 
+		
 	}
 
 	@Override
@@ -145,12 +145,12 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, portale, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Portale portale, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -169,7 +169,6 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
-
 
 
 		// Object portale
@@ -302,6 +301,7 @@ public class JDBCPortaleServiceImpl extends JDBCPortaleServiceSearchImpl
 		}
 
 		jdbcUtilities.execute(sqlQueryObjectUpdate_portaleApplicazione_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_portale_portaleApplicazione_delete.toArray(new JDBCObject[]{}));
+
 
 	}
 	

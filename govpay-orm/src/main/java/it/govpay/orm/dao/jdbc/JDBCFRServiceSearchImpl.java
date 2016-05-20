@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,38 +20,41 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.FR;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.FRFetch;
-
-import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
+import java.sql.Connection;
 
 import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.FunctionField;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+
+import it.govpay.orm.IdFr;
+
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
+
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.FRFetch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+import it.govpay.orm.FR;
 
 /**     
  * JDBCFRServiceSearchImpl
@@ -126,7 +129,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	
 	@Override
 	public List<IdFr> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-
         // default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
@@ -139,12 +141,12 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 
 			fields.add(FR.model().COD_FLUSSO);
 			fields.add(FR.model().ANNO_RIFERIMENTO);
-
+        
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map)));
-			}
+        }
 		} catch(NotFoundException e) {}
 
         return list;
@@ -154,67 +156,64 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	@Override
 	public List<FR> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
+		// default behaviour (id-mapping)
+		if(idMappingResolutionBehaviour==null){
+			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
+		}
+		List<FR> list = new ArrayList<FR>();
 
-        List<FR> list = new ArrayList<FR>();
-        
-        try{
+		try{
 			List<IField> fields = new ArrayList<IField>();
-
 			fields.add(new CustomField("id", Long.class, "id", this.getFRFieldConverter().toTable(FR.model())));
+			fields.add(new CustomField("id_psp", Long.class, "id_psp", this.getFRFieldConverter().toTable(FR.model())));
+			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFRFieldConverter().toTable(FR.model())));
 			fields.add(FR.model().COD_FLUSSO);
+			fields.add(FR.model().STATO);
+			fields.add(FR.model().DESCRIZIONE_STATO);
 			fields.add(FR.model().ANNO_RIFERIMENTO);
 			fields.add(FR.model().DATA_ORA_FLUSSO);
-			fields.add(FR.model().IUR);
 			fields.add(FR.model().DATA_REGOLAMENTO);
 			fields.add(FR.model().NUMERO_PAGAMENTI);
 			fields.add(FR.model().IMPORTO_TOTALE_PAGAMENTI);
-			fields.add(FR.model().STATO);
-			fields.add(FR.model().DESCRIZIONE_STATO);
-			fields.add(new CustomField("id_psp", Long.class, "id_psp", this.getFRFieldConverter().toTable(FR.model())));
-			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFRFieldConverter().toTable(FR.model())));
-			fields.add(new CustomField("id_tracciato_xml", Long.class, "id_tracciato_xml", this.getFRFieldConverter().toTable(FR.model())));
+			fields.add(FR.model().XML);
+			fields.add(FR.model().IUR);
+			fields.add(FR.model().COD_BIC_RIVERSAMENTO);
+ 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
-			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
-			for(Map<String, Object> map: returnMap) {
-				Long id_psp = (Long) map.remove("id_psp");
-				Long id_dominio = (Long) map.remove("id_dominio");
-				Long id_tracciato_xml = (Long) map.remove("id_tracciato_xml");
-
-				FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
-				
-				it.govpay.orm.IdPsp id_er_psp = null;
-				it.govpay.orm.IdTracciato id_er_tracciatoXML = null;
-				it.govpay.orm.IdDominio id_fr_dominio = null;
-
-				if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-					id_er_psp = ((JDBCPspServiceSearch)(this.getServiceManager().getPspServiceSearch())).findId(id_psp, false);
-					id_er_tracciatoXML = ((JDBCTracciatoXMLServiceSearch)(this.getServiceManager().getTracciatoXMLServiceSearch())).findId(id_tracciato_xml, false);
-					id_fr_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(id_dominio, false);
-				}else{
-					id_er_psp = new it.govpay.orm.IdPsp();
-					id_er_tracciatoXML = new it.govpay.orm.IdTracciato();
-					id_fr_dominio = new it.govpay.orm.IdDominio();
-				}
-				id_er_psp.setId(id_psp);
-				fr.setIdPsp(id_er_psp);
-				
-				id_er_tracciatoXML.setId(id_tracciato_xml);
-				fr.setIdTracciatoXML(id_er_tracciatoXML);
-
-				id_fr_dominio.setId(id_dominio);
-				fr.setIdDominio(id_fr_dominio);
-
-
+ 			for(Map<String, Object> map: returnMap) {
+ 				Long idPsp = (Long) map.remove("id_psp");
+ 				Long idDominio = (Long) map.remove("id_dominio");
+ 				FR fr = (FR)this.getFRFetch().fetch(jdbcProperties.getDatabase(), FR.model(), map);
+ 				if(idMappingResolutionBehaviour==null ||
+ 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+ 					){
+ 						it.govpay.orm.IdPsp id_fr_psp = null;
+ 						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+ 							id_fr_psp = ((JDBCPspServiceSearch)(this.getServiceManager().getPspServiceSearch())).findId(idPsp, false);
+ 						}else{
+ 							id_fr_psp = new it.govpay.orm.IdPsp();
+ 						}
+ 						id_fr_psp.setId(idPsp);
+ 						fr.setIdPsp(id_fr_psp);
+ 					}
+ 				if(idMappingResolutionBehaviour==null ||
+ 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+ 					){
+ 						it.govpay.orm.IdDominio id_fr_dominio = null;
+ 						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+ 							id_fr_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idDominio, false);
+ 						}else{
+ 							id_fr_dominio = new it.govpay.orm.IdDominio();
+ 						}
+ 						id_fr_dominio.setId(idDominio);
+ 						fr.setIdDominio(id_fr_dominio);
+ 					}
+ 				
 				list.add(fr);
-			}
-		} catch(NotFoundException e) {}
+         }
 
-        return list;      
+		} catch(NotFoundException e) {}
+		return list;      
 		
 	}
 	
@@ -493,10 +492,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getIdTracciatoXML()!=null && 
-				imgSaved.getIdTracciatoXML()!=null){
-			obj.getIdTracciatoXML().setId(imgSaved.getIdTracciatoXML().getId());
-		}
 		if(obj.getIdPsp()!=null && 
 				imgSaved.getIdPsp()!=null){
 			obj.getIdPsp().setId(imgSaved.getIdPsp().getId());
@@ -514,7 +509,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	}
 	
 	private FR _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
-	
 		IField idField = new CustomField("id", Long.class, "id", this.getFRFieldConverter().toTable(FR.model()));
 		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
@@ -526,10 +520,10 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		
 		if(lst.size() <=0)
 			throw new NotFoundException("Id ["+tableId+"]");
-		
+				
 		if(lst.size() > 1)
 			throw new MultipleResultException("Id ["+tableId+"]");
-
+		
 		return lst.get(0);
 
 	
@@ -565,25 +559,19 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
-		if(expression.inUseModel(FR.model().ID_PSP,false)){
-			String tableName1 = this.getFRFieldConverter().toAliasTable(FR.model());
-			String tableName2 = this.getFRFieldConverter().toAliasTable(FR.model().ID_PSP);
-			sqlQueryObject.addWhereCondition(tableName1+".id_psp="+tableName2+".id");
-		}
-
+		
 		if(expression.inUseModel(FR.model().ID_DOMINIO,false)){
 			String tableName1 = this.getFRFieldConverter().toAliasTable(FR.model());
 			String tableName2 = this.getFRFieldConverter().toAliasTable(FR.model().ID_DOMINIO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
 		}
 		
-		if(expression.inUseModel(FR.model().ID_TRACCIATO_XML,false)){
+		if(expression.inUseModel(FR.model().ID_PSP,false)){
 			String tableName1 = this.getFRFieldConverter().toAliasTable(FR.model());
-			String tableName2 = this.getFRFieldConverter().toAliasTable(FR.model().ID_TRACCIATO_XML);
-			sqlQueryObject.addWhereCondition(tableName1+".id_tracciato_xml="+tableName2+".id");
+			String tableName2 = this.getFRFieldConverter().toAliasTable(FR.model().ID_PSP);
+			sqlQueryObject.addWhereCondition(tableName1+".id_psp="+tableName2+".id");
 		}
-        
+		
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdFr id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -609,12 +597,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model()))
 			));
 
-		// FR.model().ID_TRACCIATO_XML
-		mapTableToPKColumn.put(converter.toTable(FR.model().ID_TRACCIATO_XML),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_TRACCIATO_XML))
-			));
-
 		// FR.model().ID_PSP
 		mapTableToPKColumn.put(converter.toTable(FR.model().ID_PSP),
 			utilities.newList(
@@ -627,6 +609,8 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 				new CustomField("id", Long.class, "id", converter.toTable(FR.model().ID_DOMINIO))
 			));
 
+
+        
         return mapTableToPKColumn;		
 	}
 	
@@ -689,10 +673,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -713,6 +693,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
+
 		// Object _fr
 		sqlQueryObjectGet.addFromTable(this.getFRFieldConverter().toTable(FR.model()));
 		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true));
@@ -727,7 +708,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		List<Class<?>> listaFieldIdReturnType_fr = new ArrayList<Class<?>>();
 		listaFieldIdReturnType_fr.add(FR.model().COD_FLUSSO.getFieldType());
 		listaFieldIdReturnType_fr.add(FR.model().ANNO_RIFERIMENTO.getFieldType());
-
 		it.govpay.orm.IdFr id_fr = null;
 		List<Object> listaFieldId_fr = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_fr, searchParams_fr);
@@ -769,6 +749,7 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+
 
 		// Object _fr
 		sqlQueryObjectGet.addFromTable(this.getFRFieldConverter().toTable(FR.model()));

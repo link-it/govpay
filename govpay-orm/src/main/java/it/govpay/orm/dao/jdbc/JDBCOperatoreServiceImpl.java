@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,9 +43,10 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
+import it.govpay.orm.OperatoreUo;
 import it.govpay.orm.Operatore;
 import it.govpay.orm.OperatoreApplicazione;
-import it.govpay.orm.OperatoreEnte;
+import it.govpay.orm.OperatorePortale;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
@@ -72,7 +73,6 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		
 		ISQLQueryObject sqlQueryObjectInsert = sqlQueryObject.newSQLQueryObject();
 				
-
 
 
 		// Object operatore
@@ -129,39 +129,75 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		} // fine for 
 
 		// for operatore
-		for (int i = 0; i < operatore.getOperatoreEnteList().size(); i++) {
+		for (int i = 0; i < operatore.getOperatorePortaleList().size(); i++) {
 
-			// Object _operatoreEnte_ente
-			Long id_operatoreEnte_ente = null;
-			it.govpay.orm.IdEnte idLogic_operatoreEnte_ente = null;
-			idLogic_operatoreEnte_ente = operatore.getOperatoreEnteList().get(i).getIdEnte();
-			if(idLogic_operatoreEnte_ente!=null){
+			// Object _operatorePortale_portale
+			Long id_operatorePortale_portale = null;
+			it.govpay.orm.IdPortale idLogic_operatorePortale_portale = null;
+			idLogic_operatorePortale_portale = operatore.getOperatorePortaleList().get(i).getIdPortale();
+			if(idLogic_operatorePortale_portale!=null){
 				if(idMappingResolutionBehaviour==null ||
 					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-					id_operatoreEnte_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findTableId(idLogic_operatoreEnte_ente, false);
+					id_operatorePortale_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_operatorePortale_portale, false);
 				}
 				else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-					id_operatoreEnte_ente = idLogic_operatoreEnte_ente.getId();
-					if(id_operatoreEnte_ente==null || id_operatoreEnte_ente<=0){
+					id_operatorePortale_portale = idLogic_operatorePortale_portale.getId();
+					if(id_operatorePortale_portale==null || id_operatorePortale_portale<=0){
 						throw new Exception("Logic id not contains table id");
 					}
 				}
 			}
 
 
-			// Object operatore.getOperatoreEnteList().get(i)
-			ISQLQueryObject sqlQueryObjectInsert_operatoreEnte = sqlQueryObjectInsert.newSQLQueryObject();
-			sqlQueryObjectInsert_operatoreEnte.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_ENTE));
-			sqlQueryObjectInsert_operatoreEnte.addInsertField("id_ente","?");
-			sqlQueryObjectInsert_operatoreEnte.addInsertField("id_operatore","?");
+			// Object operatore.getOperatorePortaleList().get(i)
+			ISQLQueryObject sqlQueryObjectInsert_operatorePortale = sqlQueryObjectInsert.newSQLQueryObject();
+			sqlQueryObjectInsert_operatorePortale.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+			sqlQueryObjectInsert_operatorePortale.addInsertField("id_portale","?");
+			sqlQueryObjectInsert_operatorePortale.addInsertField("id_operatore","?");
 
-			// Insert operatore.getOperatoreEnteList().get(i)
-			org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_operatoreEnte = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model().OPERATORE_ENTE);
-			long id_operatoreEnte = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_operatoreEnte, keyGenerator_operatoreEnte, jdbcProperties.isShowSql(),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatoreEnte_ente,Long.class),
+			// Insert operatore.getOperatorePortaleList().get(i)
+			org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_operatorePortale = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model().OPERATORE_PORTALE);
+			long id_operatorePortale = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_operatorePortale, keyGenerator_operatorePortale, jdbcProperties.isShowSql(),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatorePortale_portale,Long.class),
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
 			);
-			operatore.getOperatoreEnteList().get(i).setId(id_operatoreEnte);
+			operatore.getOperatorePortaleList().get(i).setId(id_operatorePortale);
+		} // fine for 
+
+		// for operatore
+		for (int i = 0; i < operatore.getOperatoreUoList().size(); i++) {
+
+			// Object _operatoreUo_uo
+			Long id_operatoreUo_uo = null;
+			it.govpay.orm.IdUo idLogic_operatoreUo_uo = null;
+			idLogic_operatoreUo_uo = operatore.getOperatoreUoList().get(i).getIdUo();
+			if(idLogic_operatoreUo_uo!=null){
+				if(idMappingResolutionBehaviour==null ||
+					(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+					id_operatoreUo_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findTableId(idLogic_operatoreUo_uo, false);
+				}
+				else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+					id_operatoreUo_uo = idLogic_operatoreUo_uo.getId();
+					if(id_operatoreUo_uo==null || id_operatoreUo_uo<=0){
+						throw new Exception("Logic id not contains table id");
+					}
+				}
+			}
+
+
+			// Object operatore.getOperatoreUoList().get(i)
+			ISQLQueryObject sqlQueryObjectInsert_operatoreUo = sqlQueryObjectInsert.newSQLQueryObject();
+			sqlQueryObjectInsert_operatoreUo.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+			sqlQueryObjectInsert_operatoreUo.addInsertField("id_uo","?");
+			sqlQueryObjectInsert_operatoreUo.addInsertField("id_operatore","?");
+
+			// Insert operatore.getOperatoreUoList().get(i)
+			org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_operatoreUo = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model().OPERATORE_UO);
+			long id_operatoreUo = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_operatoreUo, keyGenerator_operatoreUo, jdbcProperties.isShowSql(),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatoreUo_uo,Long.class),
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
+			);
+			operatore.getOperatoreUoList().get(i).setId(id_operatoreUo);
 		} // fine for 
 
 	}
@@ -182,12 +218,12 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, operatore, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Operatore operatore, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -206,7 +242,6 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) ||
 			org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour);
 			
-
 
 
 		// Object operatore
@@ -230,115 +265,115 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
 				lstObjects_operatore.toArray(new JDBCObject[]{}));
 		}
-		// for operatore_operatoreEnte
+		// for operatore_operatoreUo
 
-		java.util.List<Long> ids_operatore_operatoreEnte_da_non_eliminare = new java.util.ArrayList<Long>();
-		for (Object operatore_operatoreEnte_object : operatore.getOperatoreEnteList()) {
-			OperatoreEnte operatore_operatoreEnte = (OperatoreEnte) operatore_operatoreEnte_object;
-			if(operatore_operatoreEnte.getId() == null || operatore_operatoreEnte.getId().longValue() <= 0) {
+		java.util.List<Long> ids_operatore_operatoreUo_da_non_eliminare = new java.util.ArrayList<Long>();
+		for (Object operatore_operatoreUo_object : operatore.getOperatoreUoList()) {
+			OperatoreUo operatore_operatoreUo = (OperatoreUo) operatore_operatoreUo_object;
+			if(operatore_operatoreUo.getId() == null || operatore_operatoreUo.getId().longValue() <= 0) {
 
 				long id = operatore.getId();			
-				// Object _operatore_operatoreEnte_ente
-				Long id_operatore_operatoreEnte_ente = null;
-				it.govpay.orm.IdEnte idLogic_operatore_operatoreEnte_ente = null;
-				idLogic_operatore_operatoreEnte_ente = operatore_operatoreEnte.getIdEnte();
-				if(idLogic_operatore_operatoreEnte_ente!=null){
+				// Object _operatore_operatoreUo_uo
+				Long id_operatore_operatoreUo_uo = null;
+				it.govpay.orm.IdUo idLogic_operatore_operatoreUo_uo = null;
+				idLogic_operatore_operatoreUo_uo = operatore_operatoreUo.getIdUo();
+				if(idLogic_operatore_operatoreUo_uo!=null){
 					if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-						id_operatore_operatoreEnte_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findTableId(idLogic_operatore_operatoreEnte_ente, false);
+						id_operatore_operatoreUo_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findTableId(idLogic_operatore_operatoreUo_uo, false);
 					}
 					else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-						id_operatore_operatoreEnte_ente = idLogic_operatore_operatoreEnte_ente.getId();
-						if(id_operatore_operatoreEnte_ente==null || id_operatore_operatoreEnte_ente<=0){
+						id_operatore_operatoreUo_uo = idLogic_operatore_operatoreUo_uo.getId();
+						if(id_operatore_operatoreUo_uo==null || id_operatore_operatoreUo_uo<=0){
 							throw new Exception("Logic id not contains table id");
 						}
 					}
 				}
 
 
-				// Object operatore_operatoreEnte
-				ISQLQueryObject sqlQueryObjectInsert_operatore_operatoreEnte = sqlQueryObjectInsert.newSQLQueryObject();
-				sqlQueryObjectInsert_operatore_operatoreEnte.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_ENTE));
-				sqlQueryObjectInsert_operatore_operatoreEnte.addInsertField("id_ente","?");
-				sqlQueryObjectInsert_operatore_operatoreEnte.addInsertField("id_operatore","?");
+				// Object operatore_operatoreUo
+				ISQLQueryObject sqlQueryObjectInsert_operatore_operatoreUo = sqlQueryObjectInsert.newSQLQueryObject();
+				sqlQueryObjectInsert_operatore_operatoreUo.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+				sqlQueryObjectInsert_operatore_operatoreUo.addInsertField("id_uo","?");
+				sqlQueryObjectInsert_operatore_operatoreUo.addInsertField("id_operatore","?");
 
-				// Insert operatore_operatoreEnte
-				org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_operatore_operatoreEnte = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model().OPERATORE_ENTE);
-				long id_operatore_operatoreEnte = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_operatore_operatoreEnte, keyGenerator_operatore_operatoreEnte, jdbcProperties.isShowSql(),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore_operatoreEnte_ente,Long.class),
+				// Insert operatore_operatoreUo
+				org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_operatore_operatoreUo = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model().OPERATORE_UO);
+				long id_operatore_operatoreUo = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_operatore_operatoreUo, keyGenerator_operatore_operatoreUo, jdbcProperties.isShowSql(),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore_operatoreUo_uo,Long.class),
 					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
 				);
-				operatore_operatoreEnte.setId(id_operatore_operatoreEnte);
+				operatore_operatoreUo.setId(id_operatore_operatoreUo);
 
-				ids_operatore_operatoreEnte_da_non_eliminare.add(operatore_operatoreEnte.getId());
+				ids_operatore_operatoreUo_da_non_eliminare.add(operatore_operatoreUo.getId());
 			} else {
 
-				// Object _operatore_operatoreEnte_ente
-				Long id_operatore_operatoreEnte_ente = null;
-				it.govpay.orm.IdEnte idLogic_operatore_operatoreEnte_ente = null;
-				idLogic_operatore_operatoreEnte_ente = operatore_operatoreEnte.getIdEnte();
-				if(idLogic_operatore_operatoreEnte_ente!=null){
+				// Object _operatore_operatoreUo_uo
+				Long id_operatore_operatoreUo_uo = null;
+				it.govpay.orm.IdUo idLogic_operatore_operatoreUo_uo = null;
+				idLogic_operatore_operatoreUo_uo = operatore_operatoreUo.getIdUo();
+				if(idLogic_operatore_operatoreUo_uo!=null){
 					if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-						id_operatore_operatoreEnte_ente = ((JDBCEnteServiceSearch)(this.getServiceManager().getEnteServiceSearch())).findTableId(idLogic_operatore_operatoreEnte_ente, false);
+						id_operatore_operatoreUo_uo = ((JDBCUoServiceSearch)(this.getServiceManager().getUoServiceSearch())).findTableId(idLogic_operatore_operatoreUo_uo, false);
 					}
 					else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-						id_operatore_operatoreEnte_ente = idLogic_operatore_operatoreEnte_ente.getId();
-						if(id_operatore_operatoreEnte_ente==null || id_operatore_operatoreEnte_ente<=0){
+						id_operatore_operatoreUo_uo = idLogic_operatore_operatoreUo_uo.getId();
+						if(id_operatore_operatoreUo_uo==null || id_operatore_operatoreUo_uo<=0){
 							throw new Exception("Logic id not contains table id");
 						}
 					}
 				}
 
 
-				// Object operatore_operatoreEnte
-				ISQLQueryObject sqlQueryObjectUpdate_operatore_operatoreEnte = sqlQueryObjectUpdate.newSQLQueryObject();
-				sqlQueryObjectUpdate_operatore_operatoreEnte.setANDLogicOperator(true);
-				sqlQueryObjectUpdate_operatore_operatoreEnte.addUpdateTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_ENTE));
-				boolean isUpdate_operatore_operatoreEnte = true;
-				java.util.List<JDBCObject> lstObjects_operatore_operatoreEnte = new java.util.ArrayList<JDBCObject>();
+				// Object operatore_operatoreUo
+				ISQLQueryObject sqlQueryObjectUpdate_operatore_operatoreUo = sqlQueryObjectUpdate.newSQLQueryObject();
+				sqlQueryObjectUpdate_operatore_operatoreUo.setANDLogicOperator(true);
+				sqlQueryObjectUpdate_operatore_operatoreUo.addUpdateTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+				boolean isUpdate_operatore_operatoreUo = true;
+				java.util.List<JDBCObject> lstObjects_operatore_operatoreUo = new java.util.ArrayList<JDBCObject>();
 				if(setIdMappingResolutionBehaviour){
-					sqlQueryObjectUpdate_operatore_operatoreEnte.addUpdateField("id_ente","?");
+					sqlQueryObjectUpdate_operatore_operatoreUo.addUpdateField("id_uo","?");
 				}
 				if(setIdMappingResolutionBehaviour){
-					lstObjects_operatore_operatoreEnte.add(new JDBCObject(id_operatore_operatoreEnte_ente, Long.class));
+					lstObjects_operatore_operatoreUo.add(new JDBCObject(id_operatore_operatoreUo_uo, Long.class));
 				}
-				sqlQueryObjectUpdate_operatore_operatoreEnte.addWhereCondition("id=?");
-				ids_operatore_operatoreEnte_da_non_eliminare.add(operatore_operatoreEnte.getId());
-				lstObjects_operatore_operatoreEnte.add(new JDBCObject(new Long(operatore_operatoreEnte.getId()),Long.class));
+				sqlQueryObjectUpdate_operatore_operatoreUo.addWhereCondition("id=?");
+				ids_operatore_operatoreUo_da_non_eliminare.add(operatore_operatoreUo.getId());
+				lstObjects_operatore_operatoreUo.add(new JDBCObject(new Long(operatore_operatoreUo.getId()),Long.class));
 
-				if(isUpdate_operatore_operatoreEnte) {
-					// Update operatore_operatoreEnte
-					jdbcUtilities.executeUpdate(sqlQueryObjectUpdate_operatore_operatoreEnte.createSQLUpdate(), jdbcProperties.isShowSql(), 
-						lstObjects_operatore_operatoreEnte.toArray(new JDBCObject[]{}));
+				if(isUpdate_operatore_operatoreUo) {
+					// Update operatore_operatoreUo
+					jdbcUtilities.executeUpdate(sqlQueryObjectUpdate_operatore_operatoreUo.createSQLUpdate(), jdbcProperties.isShowSql(), 
+						lstObjects_operatore_operatoreUo.toArray(new JDBCObject[]{}));
 				}
 			}
-		} // fine for operatore_operatoreEnte
+		} // fine for operatore_operatoreUo
 
-		// elimino tutte le occorrenze di operatore_operatoreEnte non presenti nell'update
+		// elimino tutte le occorrenze di operatore_operatoreUo non presenti nell'update
 
-		ISQLQueryObject sqlQueryObjectUpdate_operatoreEnte_deleteList = sqlQueryObjectUpdate.newSQLQueryObject();
-		sqlQueryObjectUpdate_operatoreEnte_deleteList.setANDLogicOperator(true);
-		sqlQueryObjectUpdate_operatoreEnte_deleteList.addDeleteTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_ENTE));
-		java.util.List<JDBCObject> jdbcObjects_operatore_operatoreEnte_delete = new java.util.ArrayList<JDBCObject>();
+		ISQLQueryObject sqlQueryObjectUpdate_operatoreUo_deleteList = sqlQueryObjectUpdate.newSQLQueryObject();
+		sqlQueryObjectUpdate_operatoreUo_deleteList.setANDLogicOperator(true);
+		sqlQueryObjectUpdate_operatoreUo_deleteList.addDeleteTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+		java.util.List<JDBCObject> jdbcObjects_operatore_operatoreUo_delete = new java.util.ArrayList<JDBCObject>();
 
-		sqlQueryObjectUpdate_operatoreEnte_deleteList.addWhereCondition("id_operatore=?");
-		jdbcObjects_operatore_operatoreEnte_delete.add(new JDBCObject(operatore.getId(), Long.class));
+		sqlQueryObjectUpdate_operatoreUo_deleteList.addWhereCondition("id_operatore=?");
+		jdbcObjects_operatore_operatoreUo_delete.add(new JDBCObject(operatore.getId(), Long.class));
 
-		StringBuffer marks_operatore_operatoreEnte = new StringBuffer();
-		if(ids_operatore_operatoreEnte_da_non_eliminare.size() > 0) {
-			for(Long ids : ids_operatore_operatoreEnte_da_non_eliminare) {
-				if(marks_operatore_operatoreEnte.length() > 0) {
-					marks_operatore_operatoreEnte.append(",");
+		StringBuffer marks_operatore_operatoreUo = new StringBuffer();
+		if(ids_operatore_operatoreUo_da_non_eliminare.size() > 0) {
+			for(Long ids : ids_operatore_operatoreUo_da_non_eliminare) {
+				if(marks_operatore_operatoreUo.length() > 0) {
+					marks_operatore_operatoreUo.append(",");
 				}
-				marks_operatore_operatoreEnte.append("?");
-				jdbcObjects_operatore_operatoreEnte_delete.add(new JDBCObject(ids, Long.class));
+				marks_operatore_operatoreUo.append("?");
+				jdbcObjects_operatore_operatoreUo_delete.add(new JDBCObject(ids, Long.class));
 
 			}
-			sqlQueryObjectUpdate_operatoreEnte_deleteList.addWhereCondition("id NOT IN ("+marks_operatore_operatoreEnte.toString()+")");
+			sqlQueryObjectUpdate_operatoreUo_deleteList.addWhereCondition("id NOT IN ("+marks_operatore_operatoreUo.toString()+")");
 		}
 
-		jdbcUtilities.execute(sqlQueryObjectUpdate_operatoreEnte_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_operatore_operatoreEnte_delete.toArray(new JDBCObject[]{}));
+		jdbcUtilities.execute(sqlQueryObjectUpdate_operatoreUo_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_operatore_operatoreUo_delete.toArray(new JDBCObject[]{}));
 
 		// for operatore_operatoreApplicazione
 
@@ -449,6 +484,116 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		}
 
 		jdbcUtilities.execute(sqlQueryObjectUpdate_operatoreApplicazione_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_operatore_operatoreApplicazione_delete.toArray(new JDBCObject[]{}));
+
+		// for operatore_operatorePortale
+
+		java.util.List<Long> ids_operatore_operatorePortale_da_non_eliminare = new java.util.ArrayList<Long>();
+		for (Object operatore_operatorePortale_object : operatore.getOperatorePortaleList()) {
+			OperatorePortale operatore_operatorePortale = (OperatorePortale) operatore_operatorePortale_object;
+			if(operatore_operatorePortale.getId() == null || operatore_operatorePortale.getId().longValue() <= 0) {
+
+				long id = operatore.getId();			
+				// Object _operatore_operatorePortale_portale
+				Long id_operatore_operatorePortale_portale = null;
+				it.govpay.orm.IdPortale idLogic_operatore_operatorePortale_portale = null;
+				idLogic_operatore_operatorePortale_portale = operatore_operatorePortale.getIdPortale();
+				if(idLogic_operatore_operatorePortale_portale!=null){
+					if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+						id_operatore_operatorePortale_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_operatore_operatorePortale_portale, false);
+					}
+					else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+						id_operatore_operatorePortale_portale = idLogic_operatore_operatorePortale_portale.getId();
+						if(id_operatore_operatorePortale_portale==null || id_operatore_operatorePortale_portale<=0){
+							throw new Exception("Logic id not contains table id");
+						}
+					}
+				}
+
+
+				// Object operatore_operatorePortale
+				ISQLQueryObject sqlQueryObjectInsert_operatore_operatorePortale = sqlQueryObjectInsert.newSQLQueryObject();
+				sqlQueryObjectInsert_operatore_operatorePortale.addInsertTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+				sqlQueryObjectInsert_operatore_operatorePortale.addInsertField("id_portale","?");
+				sqlQueryObjectInsert_operatore_operatorePortale.addInsertField("id_operatore","?");
+
+				// Insert operatore_operatorePortale
+				org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_operatore_operatorePortale = this.getOperatoreFetch().getKeyGeneratorObject(Operatore.model().OPERATORE_PORTALE);
+				long id_operatore_operatorePortale = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_operatore_operatorePortale, keyGenerator_operatore_operatorePortale, jdbcProperties.isShowSql(),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore_operatorePortale_portale,Long.class),
+					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
+				);
+				operatore_operatorePortale.setId(id_operatore_operatorePortale);
+
+				ids_operatore_operatorePortale_da_non_eliminare.add(operatore_operatorePortale.getId());
+			} else {
+
+				// Object _operatore_operatorePortale_portale
+				Long id_operatore_operatorePortale_portale = null;
+				it.govpay.orm.IdPortale idLogic_operatore_operatorePortale_portale = null;
+				idLogic_operatore_operatorePortale_portale = operatore_operatorePortale.getIdPortale();
+				if(idLogic_operatore_operatorePortale_portale!=null){
+					if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+						id_operatore_operatorePortale_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findTableId(idLogic_operatore_operatorePortale_portale, false);
+					}
+					else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+						id_operatore_operatorePortale_portale = idLogic_operatore_operatorePortale_portale.getId();
+						if(id_operatore_operatorePortale_portale==null || id_operatore_operatorePortale_portale<=0){
+							throw new Exception("Logic id not contains table id");
+						}
+					}
+				}
+
+
+				// Object operatore_operatorePortale
+				ISQLQueryObject sqlQueryObjectUpdate_operatore_operatorePortale = sqlQueryObjectUpdate.newSQLQueryObject();
+				sqlQueryObjectUpdate_operatore_operatorePortale.setANDLogicOperator(true);
+				sqlQueryObjectUpdate_operatore_operatorePortale.addUpdateTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+				boolean isUpdate_operatore_operatorePortale = true;
+				java.util.List<JDBCObject> lstObjects_operatore_operatorePortale = new java.util.ArrayList<JDBCObject>();
+				if(setIdMappingResolutionBehaviour){
+					sqlQueryObjectUpdate_operatore_operatorePortale.addUpdateField("id_portale","?");
+				}
+				if(setIdMappingResolutionBehaviour){
+					lstObjects_operatore_operatorePortale.add(new JDBCObject(id_operatore_operatorePortale_portale, Long.class));
+				}
+				sqlQueryObjectUpdate_operatore_operatorePortale.addWhereCondition("id=?");
+				ids_operatore_operatorePortale_da_non_eliminare.add(operatore_operatorePortale.getId());
+				lstObjects_operatore_operatorePortale.add(new JDBCObject(new Long(operatore_operatorePortale.getId()),Long.class));
+
+				if(isUpdate_operatore_operatorePortale) {
+					// Update operatore_operatorePortale
+					jdbcUtilities.executeUpdate(sqlQueryObjectUpdate_operatore_operatorePortale.createSQLUpdate(), jdbcProperties.isShowSql(), 
+						lstObjects_operatore_operatorePortale.toArray(new JDBCObject[]{}));
+				}
+			}
+		} // fine for operatore_operatorePortale
+
+		// elimino tutte le occorrenze di operatore_operatorePortale non presenti nell'update
+
+		ISQLQueryObject sqlQueryObjectUpdate_operatorePortale_deleteList = sqlQueryObjectUpdate.newSQLQueryObject();
+		sqlQueryObjectUpdate_operatorePortale_deleteList.setANDLogicOperator(true);
+		sqlQueryObjectUpdate_operatorePortale_deleteList.addDeleteTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+		java.util.List<JDBCObject> jdbcObjects_operatore_operatorePortale_delete = new java.util.ArrayList<JDBCObject>();
+
+		sqlQueryObjectUpdate_operatorePortale_deleteList.addWhereCondition("id_operatore=?");
+		jdbcObjects_operatore_operatorePortale_delete.add(new JDBCObject(operatore.getId(), Long.class));
+
+		StringBuffer marks_operatore_operatorePortale = new StringBuffer();
+		if(ids_operatore_operatorePortale_da_non_eliminare.size() > 0) {
+			for(Long ids : ids_operatore_operatorePortale_da_non_eliminare) {
+				if(marks_operatore_operatorePortale.length() > 0) {
+					marks_operatore_operatorePortale.append(",");
+				}
+				marks_operatore_operatorePortale.append("?");
+				jdbcObjects_operatore_operatorePortale_delete.add(new JDBCObject(ids, Long.class));
+
+			}
+			sqlQueryObjectUpdate_operatorePortale_deleteList.addWhereCondition("id NOT IN ("+marks_operatore_operatorePortale.toString()+")");
+		}
+
+		jdbcUtilities.execute(sqlQueryObjectUpdate_operatorePortale_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_operatore_operatorePortale_delete.toArray(new JDBCObject[]{}));
 
 
 	}
@@ -578,28 +723,29 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObject.newSQLQueryObject();
 		
 
-		//Recupero oggetto _operatore_operatoreEnte
-		ISQLQueryObject sqlQueryObjectDelete_operatore_operatoreEnte_getToDelete = sqlQueryObjectDelete.newSQLQueryObject();
-		sqlQueryObjectDelete_operatore_operatoreEnte_getToDelete.setANDLogicOperator(true);
-		sqlQueryObjectDelete_operatore_operatoreEnte_getToDelete.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_ENTE));
-		sqlQueryObjectDelete_operatore_operatoreEnte_getToDelete.addWhereCondition("id_operatore=?");
-		java.util.List<Object> operatore_operatoreEnte_toDelete_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectDelete_operatore_operatoreEnte_getToDelete.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_ENTE, this.getOperatoreFetch(),
+		//Recupero oggetto _operatore_operatoreUo
+		ISQLQueryObject sqlQueryObjectDelete_operatore_operatoreUo_getToDelete = sqlQueryObjectDelete.newSQLQueryObject();
+		sqlQueryObjectDelete_operatore_operatoreUo_getToDelete.setANDLogicOperator(true);
+		sqlQueryObjectDelete_operatore_operatoreUo_getToDelete.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+		sqlQueryObjectDelete_operatore_operatoreUo_getToDelete.addWhereCondition("id_operatore=?");
+		java.util.List<Object> operatore_operatoreUo_toDelete_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectDelete_operatore_operatoreUo_getToDelete.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_UO, this.getOperatoreFetch(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class));
 
-		// for operatore_operatoreEnte
-		for (Object operatore_operatoreEnte_object : operatore_operatoreEnte_toDelete_list) {
-			OperatoreEnte operatore_operatoreEnte = (OperatoreEnte) operatore_operatoreEnte_object;
+		// for operatore_operatoreUo
+		for (Object operatore_operatoreUo_object : operatore_operatoreUo_toDelete_list) {
+			OperatoreUo operatore_operatoreUo = (OperatoreUo) operatore_operatoreUo_object;
 
-			// Object operatore_operatoreEnte
-			ISQLQueryObject sqlQueryObjectDelete_operatore_operatoreEnte = sqlQueryObjectDelete.newSQLQueryObject();
-			sqlQueryObjectDelete_operatore_operatoreEnte.setANDLogicOperator(true);
-			sqlQueryObjectDelete_operatore_operatoreEnte.addDeleteTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_ENTE));
-			sqlQueryObjectDelete_operatore_operatoreEnte.addWhereCondition("id=?");
+			// Object operatore_operatoreUo
+			ISQLQueryObject sqlQueryObjectDelete_operatore_operatoreUo = sqlQueryObjectDelete.newSQLQueryObject();
+			sqlQueryObjectDelete_operatore_operatoreUo.setANDLogicOperator(true);
+			sqlQueryObjectDelete_operatore_operatoreUo.addDeleteTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_UO));
+			sqlQueryObjectDelete_operatore_operatoreUo.addWhereCondition("id=?");
 
-			// Delete operatore_operatoreEnte
-			jdbcUtilities.execute(sqlQueryObjectDelete_operatore_operatoreEnte.createSQLDelete(), jdbcProperties.isShowSql(), 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(operatore_operatoreEnte.getId()),Long.class));
-		} // fine for operatore_operatoreEnte
+			// Delete operatore_operatoreUo
+			jdbcUtilities.execute(sqlQueryObjectDelete_operatore_operatoreUo.createSQLDelete(), jdbcProperties.isShowSql(), 
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(operatore_operatoreUo.getId()),Long.class));
+		} // fine for operatore_operatoreUo
+
 		//Recupero oggetto _operatore_operatoreApplicazione
 		ISQLQueryObject sqlQueryObjectDelete_operatore_operatoreApplicazione_getToDelete = sqlQueryObjectDelete.newSQLQueryObject();
 		sqlQueryObjectDelete_operatore_operatoreApplicazione_getToDelete.setANDLogicOperator(true);
@@ -622,6 +768,29 @@ public class JDBCOperatoreServiceImpl extends JDBCOperatoreServiceSearchImpl
 			jdbcUtilities.execute(sqlQueryObjectDelete_operatore_operatoreApplicazione.createSQLDelete(), jdbcProperties.isShowSql(), 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(operatore_operatoreApplicazione.getId()),Long.class));
 		} // fine for operatore_operatoreApplicazione
+
+		//Recupero oggetto _operatore_operatorePortale
+		ISQLQueryObject sqlQueryObjectDelete_operatore_operatorePortale_getToDelete = sqlQueryObjectDelete.newSQLQueryObject();
+		sqlQueryObjectDelete_operatore_operatorePortale_getToDelete.setANDLogicOperator(true);
+		sqlQueryObjectDelete_operatore_operatorePortale_getToDelete.addFromTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+		sqlQueryObjectDelete_operatore_operatorePortale_getToDelete.addWhereCondition("id_operatore=?");
+		java.util.List<Object> operatore_operatorePortale_toDelete_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectDelete_operatore_operatorePortale_getToDelete.createSQLQuery(), jdbcProperties.isShowSql(), Operatore.model().OPERATORE_PORTALE, this.getOperatoreFetch(),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class));
+
+		// for operatore_operatorePortale
+		for (Object operatore_operatorePortale_object : operatore_operatorePortale_toDelete_list) {
+			OperatorePortale operatore_operatorePortale = (OperatorePortale) operatore_operatorePortale_object;
+
+			// Object operatore_operatorePortale
+			ISQLQueryObject sqlQueryObjectDelete_operatore_operatorePortale = sqlQueryObjectDelete.newSQLQueryObject();
+			sqlQueryObjectDelete_operatore_operatorePortale.setANDLogicOperator(true);
+			sqlQueryObjectDelete_operatore_operatorePortale.addDeleteTable(this.getOperatoreFieldConverter().toTable(Operatore.model().OPERATORE_PORTALE));
+			sqlQueryObjectDelete_operatore_operatorePortale.addWhereCondition("id=?");
+
+			// Delete operatore_operatorePortale
+			jdbcUtilities.execute(sqlQueryObjectDelete_operatore_operatorePortale.createSQLDelete(), jdbcProperties.isShowSql(), 
+				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(operatore_operatorePortale.getId()),Long.class));
+		} // fine for operatore_operatorePortale
 
 		// Object operatore
 		sqlQueryObjectDelete.setANDLogicOperator(true);

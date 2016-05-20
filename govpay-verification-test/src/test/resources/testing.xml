@@ -1,9 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-
-<suite name="Suite">
-	<test name="Integration" verbose="1" parallel="methods" thread-count="5">
-		<classes>
-			<class name="it.govpay.test.web.v2.ws.GPPrt" /> 
-		</classes>
-	</test>
-</suite>

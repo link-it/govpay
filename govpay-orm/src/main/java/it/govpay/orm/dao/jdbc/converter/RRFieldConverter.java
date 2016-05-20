@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -68,18 +68,46 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the column containing the alias
 		
-		if(field.equals(RR.model().ID_RT.COD_MSG_RICEVUTA)){
+		if(field.equals(RR.model().ID_RPT.COD_MSG_RICHIESTA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_msg_ricevuta";
+				return this.toAliasTable(field)+".cod_msg_richiesta";
 			}else{
-				return "cod_msg_ricevuta";
+				return "cod_msg_richiesta";
 			}
 		}
-		if(field.equals(RR.model().ID_TRACCIATO_XML.ID_TRACCIATO)){
+		if(field.equals(RR.model().ID_RPT.COD_DOMINIO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".id_tracciato";
+				return this.toAliasTable(field)+".cod_dominio";
 			}else{
-				return "id_tracciato";
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(RR.model().ID_RPT.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
+		if(field.equals(RR.model().COD_DOMINIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_dominio";
+			}else{
+				return "cod_dominio";
+			}
+		}
+		if(field.equals(RR.model().IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
+		if(field.equals(RR.model().CCP)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ccp";
+			}else{
+				return "ccp";
 			}
 		}
 		if(field.equals(RR.model().COD_MSG_REVOCA)){
@@ -89,18 +117,18 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_msg_revoca";
 			}
 		}
-		if(field.equals(RR.model().DATA_ORA_MSG_REVOCA)){
+		if(field.equals(RR.model().DATA_MSG_REVOCA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_ora_msg_revoca";
+				return this.toAliasTable(field)+".data_msg_revoca";
 			}else{
-				return "data_ora_msg_revoca";
+				return "data_msg_revoca";
 			}
 		}
-		if(field.equals(RR.model().IMPORTO_TOTALE_REVOCATO)){
+		if(field.equals(RR.model().DATA_MSG_ESITO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".importo_totale_revocato";
+				return this.toAliasTable(field)+".data_msg_esito";
 			}else{
-				return "importo_totale_revocato";
+				return "data_msg_esito";
 			}
 		}
 		if(field.equals(RR.model().STATO)){
@@ -117,11 +145,39 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione_stato";
 			}
 		}
-		if(field.equals(RR.model().DATA_ORA_CREAZIONE)){
+		if(field.equals(RR.model().IMPORTO_TOTALE_RICHIESTO)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".data_ora_creazione";
+				return this.toAliasTable(field)+".importo_totale_richiesto";
 			}else{
-				return "data_ora_creazione";
+				return "importo_totale_richiesto";
+			}
+		}
+		if(field.equals(RR.model().COD_MSG_ESITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_msg_esito";
+			}else{
+				return "cod_msg_esito";
+			}
+		}
+		if(field.equals(RR.model().IMPORTO_TOTALE_REVOCATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale_revocato";
+			}else{
+				return "importo_totale_revocato";
+			}
+		}
+		if(field.equals(RR.model().XML_RR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".xml_rr";
+			}else{
+				return "xml_rr";
+			}
+		}
+		if(field.equals(RR.model().XML_ER)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".xml_er";
+			}else{
+				return "xml_er";
 			}
 		}
 
@@ -137,19 +193,31 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 		// it is possible to drive the choice whether to return only the alias or 
 		// the full definition of the table containing the alias
 		
-		if(field.equals(RR.model().ID_RT.COD_MSG_RICEVUTA)){
-			return this.toTable(RR.model().ID_RT, returnAlias);
+		if(field.equals(RR.model().ID_RPT.COD_MSG_RICHIESTA)){
+			return this.toTable(RR.model().ID_RPT, returnAlias);
 		}
-		if(field.equals(RR.model().ID_TRACCIATO_XML.ID_TRACCIATO)){
-			return this.toTable(RR.model().ID_TRACCIATO_XML, returnAlias);
+		if(field.equals(RR.model().ID_RPT.COD_DOMINIO)){
+			return this.toTable(RR.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(RR.model().ID_RPT.IUV)){
+			return this.toTable(RR.model().ID_RPT, returnAlias);
+		}
+		if(field.equals(RR.model().COD_DOMINIO)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().IUV)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().CCP)){
+			return this.toTable(RR.model(), returnAlias);
 		}
 		if(field.equals(RR.model().COD_MSG_REVOCA)){
 			return this.toTable(RR.model(), returnAlias);
 		}
-		if(field.equals(RR.model().DATA_ORA_MSG_REVOCA)){
+		if(field.equals(RR.model().DATA_MSG_REVOCA)){
 			return this.toTable(RR.model(), returnAlias);
 		}
-		if(field.equals(RR.model().IMPORTO_TOTALE_REVOCATO)){
+		if(field.equals(RR.model().DATA_MSG_ESITO)){
 			return this.toTable(RR.model(), returnAlias);
 		}
 		if(field.equals(RR.model().STATO)){
@@ -158,7 +226,19 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(RR.model().DESCRIZIONE_STATO)){
 			return this.toTable(RR.model(), returnAlias);
 		}
-		if(field.equals(RR.model().DATA_ORA_CREAZIONE)){
+		if(field.equals(RR.model().IMPORTO_TOTALE_RICHIESTO)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().COD_MSG_ESITO)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().IMPORTO_TOTALE_REVOCATO)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().XML_RR)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().XML_ER)){
 			return this.toTable(RR.model(), returnAlias);
 		}
 
@@ -177,11 +257,8 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(RR.model())){
 			return "rr";
 		}
-		if(model.equals(RR.model().ID_RT)){
-			return "rt";
-		}
-		if(model.equals(RR.model().ID_TRACCIATO_XML)){
-			return "tracciatixml";
+		if(model.equals(RR.model().ID_RPT)){
+			return "rpt";
 		}
 
 

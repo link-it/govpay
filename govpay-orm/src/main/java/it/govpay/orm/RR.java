@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,14 +36,20 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="RR">
  * 		&lt;sequence>
- * 			&lt;element name="idRT" type="{http://www.govpay.it/orm}id-rt" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idTracciatoXML" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codMsgRevoca" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="dataOraMsgRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="importoTotaleRevocato" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="stato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="dataOraCreazione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idRpt" type="{http://www.govpay.it/orm}id-rpt" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ccp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codMsgRevoca" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataMsgRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataMsgEsito" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoTotaleRichiesto" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codMsgEsito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoTotaleRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="xmlRR" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="xmlER" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,14 +64,20 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "RR", 
   propOrder = {
-  	"idRT",
-  	"idTracciatoXML",
+  	"idRpt",
+  	"codDominio",
+  	"iuv",
+  	"ccp",
   	"codMsgRevoca",
-  	"dataOraMsgRevoca",
-  	"importoTotaleRevocato",
+  	"dataMsgRevoca",
+  	"dataMsgEsito",
   	"stato",
   	"descrizioneStato",
-  	"dataOraCreazione"
+  	"importoTotaleRichiesto",
+  	"codMsgEsito",
+  	"importoTotaleRevocato",
+  	"xmlRR",
+  	"xmlER"
   }
 )
 
@@ -89,20 +101,36 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 		this.id=new Long(-1);
   }
 
-  public IdRt getIdRT() {
-    return this.idRT;
+  public IdRpt getIdRpt() {
+    return this.idRpt;
   }
 
-  public void setIdRT(IdRt idRT) {
-    this.idRT = idRT;
+  public void setIdRpt(IdRpt idRpt) {
+    this.idRpt = idRpt;
   }
 
-  public IdTracciato getIdTracciatoXML() {
-    return this.idTracciatoXML;
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
   }
 
-  public void setIdTracciatoXML(IdTracciato idTracciatoXML) {
-    this.idTracciatoXML = idTracciatoXML;
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
+  }
+
+  public java.lang.String getIuv() {
+    return this.iuv;
+  }
+
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
+  }
+
+  public java.lang.String getCcp() {
+    return this.ccp;
+  }
+
+  public void setCcp(java.lang.String ccp) {
+    this.ccp = ccp;
   }
 
   public java.lang.String getCodMsgRevoca() {
@@ -113,20 +141,20 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.codMsgRevoca = codMsgRevoca;
   }
 
-  public java.util.Date getDataOraMsgRevoca() {
-    return this.dataOraMsgRevoca;
+  public java.util.Date getDataMsgRevoca() {
+    return this.dataMsgRevoca;
   }
 
-  public void setDataOraMsgRevoca(java.util.Date dataOraMsgRevoca) {
-    this.dataOraMsgRevoca = dataOraMsgRevoca;
+  public void setDataMsgRevoca(java.util.Date dataMsgRevoca) {
+    this.dataMsgRevoca = dataMsgRevoca;
   }
 
-  public double getImportoTotaleRevocato() {
-    return this.importoTotaleRevocato;
+  public java.util.Date getDataMsgEsito() {
+    return this.dataMsgEsito;
   }
 
-  public void setImportoTotaleRevocato(double importoTotaleRevocato) {
-    this.importoTotaleRevocato = importoTotaleRevocato;
+  public void setDataMsgEsito(java.util.Date dataMsgEsito) {
+    this.dataMsgEsito = dataMsgEsito;
   }
 
   public java.lang.String getStato() {
@@ -145,12 +173,44 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.descrizioneStato = descrizioneStato;
   }
 
-  public java.util.Date getDataOraCreazione() {
-    return this.dataOraCreazione;
+  public double getImportoTotaleRichiesto() {
+    return this.importoTotaleRichiesto;
   }
 
-  public void setDataOraCreazione(java.util.Date dataOraCreazione) {
-    this.dataOraCreazione = dataOraCreazione;
+  public void setImportoTotaleRichiesto(double importoTotaleRichiesto) {
+    this.importoTotaleRichiesto = importoTotaleRichiesto;
+  }
+
+  public java.lang.String getCodMsgEsito() {
+    return this.codMsgEsito;
+  }
+
+  public void setCodMsgEsito(java.lang.String codMsgEsito) {
+    this.codMsgEsito = codMsgEsito;
+  }
+
+  public java.lang.Double getImportoTotaleRevocato() {
+    return this.importoTotaleRevocato;
+  }
+
+  public void setImportoTotaleRevocato(java.lang.Double importoTotaleRevocato) {
+    this.importoTotaleRevocato = importoTotaleRevocato;
+  }
+
+  public byte[] getXmlRR() {
+    return this.xmlRR;
+  }
+
+  public void setXmlRR(byte[] xmlRR) {
+    this.xmlRR = xmlRR;
+  }
+
+  public byte[] getXmlER() {
+    return this.xmlER;
+  }
+
+  public void setXmlER(byte[] xmlER) {
+    this.xmlER = xmlER;
   }
 
   private static final long serialVersionUID = 1L;
@@ -172,11 +232,20 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   }
 
 
-  @XmlElement(name="idRT",required=true,nillable=false)
-  protected IdRt idRT;
+  @XmlElement(name="idRpt",required=true,nillable=false)
+  protected IdRpt idRpt;
 
-  @XmlElement(name="idTracciatoXML",required=true,nillable=false)
-  protected IdTracciato idTracciatoXML;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=true,nillable=false)
+  protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=true,nillable=false)
+  protected java.lang.String iuv;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ccp",required=true,nillable=false)
+  protected java.lang.String ccp;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codMsgRevoca",required=true,nillable=false)
@@ -184,12 +253,13 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataOraMsgRevoca",required=true,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataOraMsgRevoca;
+  @XmlElement(name="dataMsgRevoca",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataMsgRevoca;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="double")
-  @XmlElement(name="importoTotaleRevocato",required=true,nillable=false)
-  protected double importoTotaleRevocato;
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataMsgEsito",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataMsgEsito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="stato",required=true,nillable=false)
@@ -199,9 +269,24 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @XmlElement(name="descrizioneStato",required=false,nillable=false)
   protected java.lang.String descrizioneStato;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="dataOraCreazione",required=true,nillable=false,type=java.lang.String.class)
-  protected java.util.Date dataOraCreazione;
+  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="importoTotaleRichiesto",required=true,nillable=false)
+  protected double importoTotaleRichiesto;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codMsgEsito",required=false,nillable=false)
+  protected java.lang.String codMsgEsito;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
+  @XmlElement(name="importoTotaleRevocato",required=false,nillable=false)
+  protected java.lang.Double importoTotaleRevocato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="xmlRR",required=true,nillable=false)
+  protected byte[] xmlRR;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="xmlER",required=false,nillable=false)
+  protected byte[] xmlER;
 
 }

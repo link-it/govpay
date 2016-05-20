@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,62 +20,41 @@
  */
 package it.govpay.web.ws;
 
+import java.util.List;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Ente;
-import it.govpay.bd.model.Iuv;
 import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Psp.Canale;
-import it.govpay.bd.model.Psp.ModelloPagamento;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rpt.FirmaRichiesta;
-import it.govpay.bd.model.Rt;
-import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
-import it.govpay.bd.pagamento.RptBD;
-import it.govpay.bd.pagamento.RtBD;
-import it.govpay.bd.pagamento.TracciatiBD;
-import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.VersamentiBD.TipoIUV;
-import it.govpay.business.Autorizzazione;
-import it.govpay.business.Pagamenti;
-import it.govpay.business.Pagamenti.SceltaWISP;
-import it.govpay.dars.bd.PspBD;
-import it.govpay.exception.GovPayException;
-import it.govpay.exception.GovPayException.GovPayExceptionEnum;
-import it.govpay.servizi.pa.CodErrore;
-import it.govpay.servizi.pa.CodEsito;
-import it.govpay.servizi.pa.EffettuazioneSceltaWISP;
-import it.govpay.servizi.pa.GpCercaVersamentiRequest;
-import it.govpay.servizi.pa.GpCercaVersamentiResponse;
-import it.govpay.servizi.pa.GpChiediListaPsp;
-import it.govpay.servizi.pa.GpChiediListaPspResponse;
-import it.govpay.servizi.pa.GpChiediStatoPagamento;
-import it.govpay.servizi.pa.GpChiediStatoPagamentoResponse;
-import it.govpay.servizi.pa.GpGeneraCodiciAvviso;
-import it.govpay.servizi.pa.GpGeneraCodiciAvvisoResponse;
-import it.govpay.servizi.pa.GpGeneraRpt;
-import it.govpay.servizi.pa.GpGeneraRptResponse;
-import it.govpay.servizi.pa.GpInviaRpt;
-import it.govpay.servizi.pa.GpInviaRptResponse;
-import it.govpay.servizi.pa.GpSceltaWISP;
-import it.govpay.servizi.pa.GpSceltaWISPResponse;
-import it.govpay.servizi.pa.IdPagamento;
-import it.govpay.servizi.pa.PagamentiTelematiciGPPrt;
-import it.govpay.servizi.pa.Pagamento;
-import it.govpay.web.adapter.PagamentiTelematiciGPUtil;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.List;
+import it.govpay.core.business.model.SceltaWISP;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.Gp21Utils;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.servizi.PagamentiTelematiciGPPrt;
+import it.govpay.servizi.commons.Canale;
+import it.govpay.servizi.commons.EsitoOperazione;
+import it.govpay.servizi.commons.TipoVersamento;
+import it.govpay.servizi.commons.TipoSceltaWisp;
+import it.govpay.servizi.gpprt.GpAvviaRichiestaStorno;
+import it.govpay.servizi.gpprt.GpAvviaRichiestaStornoResponse;
+import it.govpay.servizi.gpprt.GpAvviaTransazionePagamento;
+import it.govpay.servizi.gpprt.GpAvviaTransazionePagamentoResponse;
+import it.govpay.servizi.gpprt.GpChiediListaPsp;
+import it.govpay.servizi.gpprt.GpChiediListaPspResponse;
+import it.govpay.servizi.gpprt.GpChiediListaVersamenti;
+import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse;
+import it.govpay.servizi.gpprt.GpChiediSceltaWisp;
+import it.govpay.servizi.gpprt.GpChiediSceltaWispResponse;
+import it.govpay.servizi.gpprt.GpChiediStatoRichiestaStorno;
+import it.govpay.servizi.gpprt.GpChiediStatoRichiestaStornoResponse;
+import it.govpay.servizi.gpprt.GpChiediStatoTransazione;
+import it.govpay.servizi.gpprt.GpChiediStatoTransazioneResponse;
 
 import javax.annotation.Resource;
-import javax.imageio.ImageIO;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.WebServiceContext;
@@ -85,13 +64,19 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
-@WebService(serviceName = "PagamentiTelematiciGPPrtservice",
-endpointInterface = "it.govpay.servizi.pa.PagamentiTelematiciGPPrt",
-targetNamespace = "http://www.govpay.it/servizi/PagamentiTelematiciGP",
-portName = "GPPort")
+@WebService(serviceName = "PagamentiTelematiciGPPrtService",
+endpointInterface = "it.govpay.servizi.PagamentiTelematiciGPPrt",
+targetNamespace = "http://www.govpay.it/servizi/",
+portName = "GPPrtPort",
+wsdlLocation = "classpath:wsdl/GpPrt.wsdl")
 
 @HandlerChain(file="../../../../handler-chains/handler-chain.xml")
+
+@org.apache.cxf.annotations.SchemaValidation
+
 public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	
 	@Resource
@@ -100,577 +85,304 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	private static Logger log = LogManager.getLogger();
 	
 	@Override
-	public GpInviaRptResponse gpInviaRpt(GpInviaRpt bodyrichiesta) {
-		log.info("Ricevuta richiesta di InviaRpt");
-		
-		GpInviaRptResponse esitoOperazione = new GpInviaRptResponse();
-		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
-		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
-		esitoOperazione.getIdPagamento().addAll(bodyrichiesta.getIdPagamento());
-		
+	public GpChiediListaPspResponse gpChiediListaPsp(GpChiediListaPsp bodyrichiesta) {
+		log.info("Richiesta operazione gpChiediListaPsp");
+		GpChiediListaPspResponse response = new GpChiediListaPspResponse();
 		BasicBD bd = null;
 		try {
-			
-			try {
-				bd = BasicBD.newInstance();
-			} catch (ServiceException e) {
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
-			}
-			
-			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
-			
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			List<Long> versamenti = new ArrayList<Long>();
-			
-			Ente ente = null;
-			for(IdPagamento idPagamento : bodyrichiesta.getIdPagamento() ) {
-				try {
-					ente = AnagraficaManager.getEnte(bd, idPagamento.getCodEnte());
-				} catch (NotFoundException e){
-					log.error("Ente [codEnte: " + idPagamento.getCodEnte() + "] non censito in Anagrafica Enti.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				} 
-				
-				try { 
-					versamenti.add(versamentiBD.getVersamentoByIuv(ente.getId(), idPagamento.getIuv()).getId());
-				} catch (NotFoundException nfe) {
-					throw new GovPayException(GovPayExceptionEnum.IUV_NON_TROVATO);
-				}
-			}
-			
-			Pagamenti pagamenti = new Pagamenti(bd);
-			Canale canale = null;
-			
-			// Recupero il PSP scelto per il pagamento
-			Psp psp = null;
-			try {
-				psp = AnagraficaManager.getPsp(bd, bodyrichiesta.getCanale().getCodPsp());
-			} catch (NotFoundException nfe) {
-				throw new GovPayException(GovPayExceptionEnum.PSP_NON_TROVATO);
-			} 
-			
-			// Cerco il canale indicato
-			if(bodyrichiesta.getCanale().getCodCanale() != null) {
-				canale = psp.getCanale(bodyrichiesta.getCanale().getCodCanale());
-			} else {
-				canale = psp.getCanaleAttivo(PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getCanale().getTipoVersamento()), null);
-			}
-			
-			if(canale == null) {
-				throw new GovPayException(GovPayExceptionEnum.PSP_NON_TROVATO);
-			}
-			
-			//Effettuo il pagamento
-			String url = null;
-			if(versamenti.size() == 1)
-				url = pagamenti.eseguiPagamentoEnte(portale.getId(), versamenti.get(0), canale.getId(), bodyrichiesta.getIbanAddebito(), FirmaRichiesta.NESSUNA, PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getAutenticazione()), PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getVersante()), bodyrichiesta.getCallbackUrl());
-			else
-				url = pagamenti.eseguiPagamentoCarrelloEnte(portale.getId(), versamenti, canale.getId(), bodyrichiesta.getIbanAddebito(), FirmaRichiesta.NESSUNA, PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getAutenticazione()), PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getVersante()), bodyrichiesta.getCallbackUrl());
-			esitoOperazione.setUrl(url);
-			esitoOperazione.setCodEsito(CodEsito.OK);
-			return esitoOperazione;
+			bd = BasicBD.newInstance();
+			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Psp pspBusiness = new it.govpay.core.business.Psp(bd);
+			response = pspBusiness.chiediListaPsp(portaleAutenticato);
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
 		} catch (GovPayException e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
-			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
-			return esitoOperazione;
+			response.setCodEsitoOperazione(e.getCodEsito());
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			e.log(log);
 		} catch (Exception e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
-			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			return esitoOperazione;
+			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
+		response.setCodOperazione(ThreadContext.get("op"));
+		return response;
 	}
 	
 	@Override
-	public GpChiediStatoPagamentoResponse gpChiediStatoPagamento(GpChiediStatoPagamento bodyrichiesta) {
-		log.info("Ricevuta richiesta di gpChiediStatoPagamento.");
-		
-		GpChiediStatoPagamentoResponse esitoOperazione = new GpChiediStatoPagamentoResponse();
-		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
-		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
-		
+	public GpAvviaTransazionePagamentoResponse gpAvviaTransazionePagamento(GpAvviaTransazionePagamento bodyrichiesta) {
+		GpAvviaTransazionePagamentoResponse response = new GpAvviaTransazionePagamentoResponse();
+		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			try {
-				bd = BasicBD.newInstance();
-			} catch (Exception e) {
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
-			}
-
-			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
-			log.info("Identificazione Portale avvenuta con successo [CodPortale: " + portale.getCodPortale() + "]");
+			log.info("Richiesta operazione gpAvviaTransazionePagamento");
+			bd = BasicBD.newInstance();
+			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			
-			Ente ente = null;
-			try {
-				ente = AnagraficaManager.getEnte(bd, bodyrichiesta.getIdPagamento().getCodEnte());
-			} catch (NotFoundException e){
-				log.error("Ente [codEnte: " + bodyrichiesta.getIdPagamento().getCodEnte() + "] non censito in Anagrafica Enti.");
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-			} 
+			it.govpay.bd.model.Canale canale = null;
 			
-			Dominio dominio = null;
-			try {
-				dominio = AnagraficaManager.getDominio(bd, ente.getIdDominio());
-			} catch (NotFoundException e){
-				log.error("Dominio [idDominio: " + ente.getIdDominio() + "] associato all'Ente [codEnte: " + ente.getCodEnte() + " non censito in Anagrafica Domini.");
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-			} 
-
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			Versamento versamento = null;
-			try {
-				versamento = versamentiBD.getVersamento(dominio.getCodDominio(), bodyrichiesta.getIdPagamento().getIuv());
-			} catch (Exception e){
-				throw new GovPayException(GovPayExceptionEnum.IUV_NON_TROVATO);
-			} 
-			
-			Applicazione applicazione = null;
-			try {
-				applicazione = AnagraficaManager.getApplicazione(bd, versamento.getIdApplicazione());
-			} catch (NotFoundException e){
-				log.error("Applicazione [codApplicazione: " + bodyrichiesta.getCodApplicazione() + "] non censito in Anagrafica Applicazioni.");
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-			}
-			
-			RptBD rptBD = new RptBD(bd);
-			Rpt rpt = null;
-			try {
-				rpt = rptBD.getLastRpt(versamento.getId());
-				//Verifico lo stato RPT
-				if(new Pagamenti(bd).aggiornaRptDaNpD(rpt)) {
-					versamento = versamentiBD.getVersamento(versamento.getId());
-				}
-			} catch (Exception e){
-				return PagamentiTelematiciGPUtil.toGpChiediStatoPagamentoResponse(bd, esitoOperazione, applicazione, ente, dominio, versamento, null, null);
-			} 
-			
-			RtBD rtBD = new RtBD(bd);
-			Rt rt = null;
-			byte[] rtByte = null;
-			try {
-				rt = rtBD.getLastRt(rpt.getId());
-				TracciatiBD tracciatiBD = new TracciatiBD(bd);
-				rtByte = tracciatiBD.getTracciato(rt.getIdTracciatoXML());
-			} catch (Exception e){
-				
-			} 
-			log.info("Verifica effettuata. Pagamento in stato: " + versamento.getStato());
-			return PagamentiTelematiciGPUtil.toGpChiediStatoPagamentoResponse(bd, esitoOperazione, applicazione, ente, dominio,versamento, rpt, rtByte);
-		} catch (GovPayException e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
-			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
-			return esitoOperazione;
-		} catch (Exception e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
-			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			return esitoOperazione;
-		} finally {
-			if(bd != null) bd.closeConnection();
-		}
-	}
-
-	@Override
-	public GpGeneraRptResponse gpGeneraRpt(GpGeneraRpt bodyrichiesta) {
-		log.info("Ricevuta richiesta di Esecuzione Pagamento.");
-
-		GpGeneraRptResponse esitoOperazione = new GpGeneraRptResponse();
-		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
-		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
-		
-		BasicBD bd = null;
-		try {
-			try {
-				bd = BasicBD.newInstance();
-			} catch (Exception e) {
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
-			}
-
-			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
-
-			log.info("Identificazione Portale avvenuta con successo [CodPortale: " + portale.getCodPortale() + "]");
-			
-			Psp psp = AnagraficaManager.getPsp(bd, bodyrichiesta.getCanale().getCodPsp());
-			
-			ModelloPagamento modello = bodyrichiesta.getPagamento().size() == 1 ? null : ModelloPagamento.IMMEDIATO_MULTIBENEFICIARIO;
-			
-			Canale canale = null;
-			if(bodyrichiesta.getCanale().getCodCanale() != null) {
-				canale = psp.getCanale(bodyrichiesta.getCanale().getCodCanale());
-			} else {
-				canale = psp.getCanaleAttivo(PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getCanale().getTipoVersamento()), modello);
-			}
-			
-			if(canale == null) throw new GovPayException(GovPayExceptionEnum.PSP_NON_TROVATO);
-			
-			List<Long> versamenti = new ArrayList<Long>();
-			
-			for(Pagamento pagamento : bodyrichiesta.getPagamento()) {
-				
-				Applicazione applicazione = null;
-				try {
-					applicazione = AnagraficaManager.getApplicazione(bd, pagamento.getCodApplicazione());
-				} catch (NotFoundException e){
-					log.error("Applicazione [codApplicazione: " + pagamento.getCodApplicazione() + "] non censito in Anagrafica Applicazioni.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				}
-				
-				Ente ente = null;
-				try {
-					ente = AnagraficaManager.getEnte(bd, pagamento.getCodEnte());
-				} catch (NotFoundException e){
-					log.error("Ente [codEnte: " + pagamento.getCodEnte() + "] non censito in Anagrafica Enti.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				} 
+			if(bodyrichiesta.getCanale() == null) {
+				it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
 				
 				Dominio dominio = null;
 				try {
-					dominio = AnagraficaManager.getDominio(bd, ente.getIdDominio());
-				} catch (NotFoundException e){
-					log.error("Dominio [idDominio: " + ente.getIdDominio() + "] associato all'Ente [codEnte: " + ente.getCodEnte() + " non censito in Anagrafica Domini.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				} 
+					dominio = AnagraficaManager.getDominio(bd, bodyrichiesta.getSceltaWisp().getCodDominio());
+				} catch (NotFoundException e) {
+					throw new GovPayException(EsitoOperazione.DOM_000, bodyrichiesta.getSceltaWisp().getCodDominio());
+				}
 				
-				Stazione stazione = null;
+				SceltaWISP scelta = wisp.chiediScelta(portaleAutenticato, dominio, bodyrichiesta.getSceltaWisp().getCodKeyPA(), bodyrichiesta.getSceltaWisp().getCodKeyWISP());
+				if(scelta.isSceltaEffettuata() && !scelta.isPagaDopo()) {
+					canale = scelta.getCanale();
+				}
+				if(!scelta.isSceltaEffettuata()) {
+					throw new GovPayException(EsitoOperazione.WISP_003);
+				}
+				if(scelta.isPagaDopo()) { 
+					throw new GovPayException(EsitoOperazione.WISP_004);
+				}
+			} else {
 				try {
-					stazione = AnagraficaManager.getStazione(bd, dominio.getIdStazione());
-				} catch (NotFoundException e){
-					log.error("Stazione [idStazione: " + dominio.getIdStazione() + "] associato al dominio [codDominio: " + dominio.getCodDominio() + " non censito in Anagrafica Stazioni.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				} 
-				
-				Pagamenti pagamenti = new Pagamenti(bd);
-				
-				String iuv = pagamento.getIuv();
-				if(iuv == null) {
-					switch (pagamento.getTipoIuv()) {
-					case IUV_INIZIATIVA_ENTE:
-						iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.ISO11694, Iuv.AUX_DIGIT);
-						break;
-
-					case IUV_INIZIATIVA_PSP:
-						iuv = pagamenti.generaIuv(applicazione.getId(), stazione.getApplicationCode(), dominio.getCodDominio(), TipoIUV.NUMERICO, Iuv.AUX_DIGIT);
-						break;
-					}
-					log.info("Assegnato al Pagamento in Attesa lo IUV [" + iuv + "]");
-				} 
-				
-				IdPagamento idPagamento = new IdPagamento();
-				idPagamento.setCodEnte(pagamento.getCodEnte());
-				idPagamento.setIuv(iuv);
-				esitoOperazione.getIdPagamento().add(idPagamento);
-				
-				Versamento versamento = PagamentiTelematiciGPUtil.toVersamento(pagamento, ente, dominio, applicazione, iuv, bd);
-				pagamenti.caricaPagamento(versamento);
-				versamenti.add(versamento.getId());
+					it.govpay.bd.model.Canale.TipoVersamento tipoVersamento = it.govpay.bd.model.Canale.TipoVersamento.toEnum(bodyrichiesta.getCanale().getTipoVersamento().toString());
+					canale = AnagraficaManager.getCanale(bd, bodyrichiesta.getCanale().getCodPsp(), bodyrichiesta.getCanale().getCodCanale(), tipoVersamento);
+				} catch (NotFoundException e) {
+					throw new GovPayException(EsitoOperazione.PSP_000, bodyrichiesta.getCanale().getCodPsp(), bodyrichiesta.getCanale().getCodCanale(), bodyrichiesta.getCanale().getTipoVersamento().toString());
+				}
 			}
 			
-			log.info("Esecuzione del pagamento in corso...");
-			//Effettuo il pagamento
-			Pagamenti pagamenti = new Pagamenti(bd);
-			String url = null;
-			if(versamenti.size() == 1)
-				url = pagamenti.eseguiPagamentoEnte(portale.getId(), versamenti.get(0), canale.getId(), bodyrichiesta.getIbanAddebito(), FirmaRichiesta.NESSUNA, PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getAutenticazione()), PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getVersante()), bodyrichiesta.getCallbackUrl());
-			else
-				url = pagamenti.eseguiPagamentoCarrelloEnte(portale.getId(), versamenti, canale.getId(), bodyrichiesta.getIbanAddebito(), FirmaRichiesta.NESSUNA, PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getAutenticazione()), PagamentiTelematiciGPUtil.toOrm(bodyrichiesta.getVersante()), bodyrichiesta.getCallbackUrl());
-			esitoOperazione.setUrl(url);
-			esitoOperazione.setCodEsito(CodEsito.OK);
-			return esitoOperazione;
+			ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", canale.getPsp(bd).getCodPsp()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", canale.getCodCanale()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", canale.getTipoVersamento().getCodifica()));
+			ctx.log("integrazione.identificazioneCanale");
+			
+			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
+			response = pagamentoBusiness.avviaTransazione(portaleAutenticato, bodyrichiesta, canale);
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			ctx.setResult(response);
+			ctx.log("integrazione.inoltroRispostaOk");
 		} catch (GovPayException e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
-			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
-			return esitoOperazione;
+			response.setCodEsitoOperazione(e.getCodEsito());
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			e.log(log);
+			if(ctx != null) { 
+				ctx.log("integrazione.inoltroRispostaKo");
+			}
 		} catch (Exception e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
-			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			return esitoOperazione;
+			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			if(ctx != null) { 
+				ctx.log("integrazione.inoltroRispostaKo");
+			}
+			new GovPayException(e).log(log);
 		} finally {
+			if(ctx != null) ctx.log(); 
 			if(bd != null) bd.closeConnection();
 		}
+		response.setCodOperazione(ThreadContext.get("op"));
+		return response;
 	}
 
 	@Override
-	public GpSceltaWISPResponse gpSceltaWISP(GpSceltaWISP bodyrichiesta) {
-		log.info("Ricevuta richiesta di recupero SceltaWISP [codDominio: " + bodyrichiesta.getCodDominio() + "][codEnte: " + bodyrichiesta.getCodEnte() + "][keyPA: " + bodyrichiesta.getKeyPA() + "][keyWISP: " + bodyrichiesta.getKeyWISP() + "]");
-		
-		GpSceltaWISPResponse esitoOperazione = new GpSceltaWISPResponse();
-		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
-		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
-		
+	public GpChiediStatoTransazioneResponse gpChiediStatoTransazione(GpChiediStatoTransazione bodyrichiesta) {
+		log.info("Richiesta operazione gpChiediStatoTransazione per la transazione con dominio (" + bodyrichiesta.getCodDominio() + ") iuv (" +  bodyrichiesta.getIuv()+") e ccp (" + bodyrichiesta.getCcp() + ")");
+		GpChiediStatoTransazioneResponse response = new GpChiediStatoTransazioneResponse();
 		BasicBD bd = null;
 		try {
-			
-			try {
-				bd = BasicBD.newInstance();
-			} catch (ServiceException e) {
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
-			}
+			bd = BasicBD.newInstance();
+			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
+			Rpt rpt = pagamentoBusiness.chiediTransazione(portaleAutenticato, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv(), bodyrichiesta.getCcp());
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			response.setTransazione(Gp21Utils.toTransazione(rpt, bd));
+		} catch (GovPayException e) {
+			response.setCodEsitoOperazione(e.getCodEsito());
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			e.log(log);
+		} catch (Exception e) {
+			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+		response.setCodOperazione(ThreadContext.get("op"));
+		return response;
+	}
+
+	@Override
+	public GpChiediSceltaWispResponse gpChiediSceltaWisp(GpChiediSceltaWisp bodyrichiesta) {
+		log.info("Richiesta operazione gpChiediSceltaWisp dal portale (" +  bodyrichiesta.getCodPortale() +")");
+		GpChiediSceltaWispResponse response = new GpChiediSceltaWispResponse();
+		BasicBD bd = null;
+		try {
+			bd = BasicBD.newInstance();
+			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
 			
 			Dominio dominio = null;
-			
-			if(bodyrichiesta.getCodDominio() != null) {
-				try {
-					dominio = AnagraficaManager.getDominio(bd, bodyrichiesta.getCodDominio());
-				} catch (NotFoundException e){
-					log.error("Dominio [idDominio: " + bodyrichiesta.getCodDominio() + "] non censito in Anagrafica Domini.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				} 
-			} else {
-				String codEnte = bodyrichiesta.getCodEnte();
-				Ente ente = null;
-				try {
-					ente = AnagraficaManager.getEnte(bd, codEnte);
-				} catch (NotFoundException e){
-					log.error("Impossibile recuperare Dominio, Ente [codEnte: " + bodyrichiesta.getCodEnte() + "] non censito in Anagrafica Domini.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				}
-				
-				try {
-					dominio = AnagraficaManager.getDominio(bd, ente.getIdDominio());
-				} catch (NotFoundException e){
-					log.error("Dominio [idDominio: " + bodyrichiesta.getCodDominio() + "] non censito in Anagrafica Domini.");
-					throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-				}
+			try {
+				dominio = AnagraficaManager.getDominio(bd, bodyrichiesta.getCodDominio());
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.DOM_000, bodyrichiesta.getCodDominio());
 			}
-			
-			Pagamenti pagamenti = new Pagamenti(bd);
-			SceltaWISP scelta = pagamenti.getSceltaWISP(dominio, bodyrichiesta.getKeyPA(), bodyrichiesta.getKeyWISP());
-			esitoOperazione.setCodEsito(CodEsito.OK);
-			if(scelta.sceltaEffettuata) {
-				if(scelta.po) {
-					esitoOperazione.setEffettuazioneScelta(EffettuazioneSceltaWISP.PO);
-					log.info("SceltaWISP recuperata [EffettuazioneScelta: " + esitoOperazione.getEffettuazioneScelta().toString() + "]");
+			SceltaWISP scelta = wisp.chiediScelta(portaleAutenticato, dominio, bodyrichiesta.getCodKeyPA(), bodyrichiesta.getCodKeyWISP());
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			if(scelta.isSceltaEffettuata()) {
+				if(scelta.isPagaDopo()) {
+					response.setScelta(TipoSceltaWisp.PAGA_DOPO);
 				} else {
-					esitoOperazione.setEffettuazioneScelta(EffettuazioneSceltaWISP.SI);
-					esitoOperazione.setCanale(PagamentiTelematiciGPUtil.toCanale(scelta.canale));
-					log.info("SceltaWISP recuperata [EffettuazioneScelta: " + esitoOperazione.getEffettuazioneScelta().toString() + "][CodPsp: " + esitoOperazione.getCanale().getCodPsp()+ "][CodCanale: " +esitoOperazione.getCanale().getCodCanale() + "]");
+					response.setScelta(TipoSceltaWisp.SI);
+					Canale canale = new Canale();
+					canale.setCodCanale(scelta.getCanale().getCodCanale());
+					canale.setCodPsp(scelta.getCanale().getPsp(bd).getCodPsp());
+					canale.setTipoVersamento(TipoVersamento.fromValue(scelta.getCanale().getTipoVersamento().getCodifica()));
+					response.setCanale(canale);
 				}
 			} else {
-				esitoOperazione.setEffettuazioneScelta(EffettuazioneSceltaWISP.NO);
-				log.info("SceltaWISP recuperata [EffettuazioneScelta: " + esitoOperazione.getEffettuazioneScelta().toString() + "]");
+				response.setScelta(TipoSceltaWisp.NO);
 			}
-			return esitoOperazione;
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			log.info("SceltaWISP recuperata (" + response.getScelta() + ")");
 		} catch (GovPayException e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
-			esitoOperazione.setDescrizioneErrore(e.getDescrizione());
-			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
-				log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else {
-				log.error("Errore durante il pagamento. Ritorno esito [" + e.getTipoException() + "]");
-			}
-			return esitoOperazione;
+			response.setCodEsitoOperazione(e.getCodEsito());
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			e.log(log);
 		} catch (Exception e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
-			log.error("Errore durante il pagamento. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			return esitoOperazione;
+			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
+		response.setCodOperazione(ThreadContext.get("op"));
+		return response;
 	}
 
+
 	@Override
-	public GpGeneraCodiciAvvisoResponse gpGeneraCodiciAvviso(GpGeneraCodiciAvviso bodyrichiesta) {
-		log.info("Ricevuta richiesta di gpGeneraCodiciAvvisoResponse.");
-		
-		GpGeneraCodiciAvvisoResponse esitoOperazione = new GpGeneraCodiciAvvisoResponse();
-		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
-		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
-		
+	public GpChiediListaVersamentiResponse gpChiediListaVersamenti(GpChiediListaVersamenti bodyrichiesta) {
+		log.info("Richiesta operazione gpChiediListaVersamenti dal portale (" +  bodyrichiesta.getCodPortale() +") per il debitore (" + bodyrichiesta.getCodUnivocoDebitore() + ")");
+		GpChiediListaVersamentiResponse response = new GpChiediListaVersamentiResponse();
 		BasicBD bd = null;
 		try {
-			try {
-				bd = BasicBD.newInstance();
-			} catch (Exception e) {
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
+			bd = BasicBD.newInstance();
+			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
+			List<Versamento> versamenti = versamentoBusiness.chiediVersamenti(portaleAutenticato, bodyrichiesta.getCodPortale(), bodyrichiesta.getCodUnivocoDebitore());
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			for(Versamento versamento : versamenti) {
+				response.getVersamento().add(Gp21Utils.toVersamento(versamento, bd));
 			}
-
-			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
-			log.info("Identificazione Portale avvenuta con successo [CodPortale: " + portale.getCodPortale() + "]");
-			
-			Ente ente = null;
-			try {
-				ente = AnagraficaManager.getEnte(bd, bodyrichiesta.getIdPagamento().getCodEnte());
-			} catch (NotFoundException e){
-				log.error("Ente [codEnte: " + bodyrichiesta.getIdPagamento().getCodEnte() + "] non censito in Anagrafica Enti.");
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-			} 
-			
-			Dominio dominio = null;
-			try {
-				dominio = AnagraficaManager.getDominio(bd, ente.getIdDominio());
-			} catch (NotFoundException e){
-				log.error("Dominio [idDominio: " + ente.getIdDominio() + "] associato all'Ente [codEnte: " + ente.getCodEnte() + " non censito in Anagrafica Domini.");
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-			} 
-			
-			Stazione stazione = null;
-			try {
-				stazione = AnagraficaManager.getStazione(bd, dominio.getIdStazione());
-			} catch (NotFoundException e){
-				log.error("Stazione [idStazione: " + dominio.getIdStazione() + "] associato al Dominio [codDominio: " + dominio.getCodDominio() + " non censito in Anagrafica Domini.");
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO);
-			} 
-
-			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			Versamento versamento = null;
-			try {
-				versamento = versamentiBD.getVersamento(dominio.getCodDominio(), bodyrichiesta.getIdPagamento().getIuv());
-			} catch (Exception e){
-				throw new GovPayException(GovPayExceptionEnum.IUV_NON_TROVATO);
-			} 
-			
-			
-			ByteArrayOutputStream barcodeos = new ByteArrayOutputStream();
-			String barcodetxt = PagamentiTelematiciGPUtil.buildBarCodeTxt(dominio.getGln(), stazione.getApplicationCode(), versamento.getIuv(), versamento.getImportoTotale());
-			log.debug("Produzione barcode: " + barcodetxt);
-			BufferedImage barcode = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(new com.google.zxing.oned.Code128Writer().encode(barcodetxt, com.google.zxing.BarcodeFormat.CODE_128, 700, 200));
-			ImageIO.write(barcode, "GIF", barcodeos);
-			esitoOperazione.setBarcode(barcodeos.toByteArray());
-			
-			ByteArrayOutputStream qrcodeos = new ByteArrayOutputStream();
-			String qrcodetxt = PagamentiTelematiciGPUtil.buildQrCodeTxt(dominio.getCodDominio(), stazione.getApplicationCode(), versamento.getIuv(), versamento.getImportoTotale()); 
-			log.debug("Produzione qrcode: " + qrcodetxt);
-			BufferedImage qrcode = com.google.zxing.client.j2se.MatrixToImageWriter.toBufferedImage(new com.google.zxing.qrcode.QRCodeWriter().encode(qrcodetxt, com.google.zxing.BarcodeFormat.QR_CODE, 500, 500));
-			ImageIO.write(qrcode, "GIF", qrcodeos);
-			esitoOperazione.setQrcode(qrcodeos.toByteArray());
-			
-			esitoOperazione.setCodEsito(CodEsito.OK);
-			log.info("Generazione eseguita.");
-			return esitoOperazione;
 		} catch (GovPayException e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
-			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
-				log.error("Errore durante la generazione dei codici grafici. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else
-				log.error("Errore durante la generazione dei codici grafici. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
-			return esitoOperazione;
+			response.setCodEsitoOperazione(e.getCodEsito());
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			e.log(log);
 		} catch (Exception e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
-			log.error("Errore durante la generazione dei codici grafici.. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			return esitoOperazione;
+			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
-
+		response.setCodOperazione(ThreadContext.get("op"));
+		return response;
 	}
 	
 	@Override
-	public GpCercaVersamentiResponse gpCercaVersamenti(GpCercaVersamentiRequest bodyrichiesta) {
-		log.info("Ricevuta richiesta di CercaVersamenti");
-
-		GpCercaVersamentiResponse esitoOperazione = new GpCercaVersamentiResponse();
-		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
-		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
-
+	public GpAvviaRichiestaStornoResponse gpAvviaRichiestaStorno(GpAvviaRichiestaStorno bodyrichiesta) {
+		log.info("Richiesta operazione gpAvviaTransazionePagamento dal portale (" +  bodyrichiesta.getCodPortale() +")");
+		GpAvviaRichiestaStornoResponse response = new GpAvviaRichiestaStornoResponse();
 		BasicBD bd = null;
 		try {
-			try {
-				bd = BasicBD.newInstance();
-			} catch (ServiceException e) {
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
-			}
-
-			if(bodyrichiesta.getCodPortale() == null) {
-				throw new GovPayException(GovPayExceptionEnum.APPLICAZIONE_NON_TROVATA); 
-			}
+			bd = BasicBD.newInstance();
+			Portale portaleAutenticato = getPortaleAutenticato(bd);
 			
-			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
-
-			log.info("Identificazione Portale avvenuta con successo [CodPortale: " + portale.getCodPortale() + "]");
-
-			if(bodyrichiesta.getCodApplicazione() != null) {
-				Applicazione applicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione());
-				
-				if(!portale.getIdApplicazioni().contains(applicazione.getId())) {
-					//l'applicazione su cui si filtra non e' associata al portale, quindi la ricerca non dara' alcun risultato
-					esitoOperazione.setCodEsito(CodEsito.OK);
-					return esitoOperazione;
-				}
-			}
-
-			esitoOperazione.getVersamento().addAll(PagamentiTelematiciGPUtil.findVersamentiByFilter(bodyrichiesta, bd));
-			esitoOperazione.setCodEsito(CodEsito.OK);
-			return esitoOperazione;
+			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
+			response = pagamentoBusiness.avviaStorno(portaleAutenticato, bodyrichiesta);
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
 		} catch (GovPayException e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
-			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
-				log.error("Errore durante la ricerca dei versamenti. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else
-				log.error("Errore durante la ricerca dei versamenti. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
-			return esitoOperazione;
+			response.setCodEsitoOperazione(e.getCodEsito());
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			e.log(log);
 		} catch (Exception e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
-			log.error("Errore durante la ricerca dei versamenti. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			return esitoOperazione;
+			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
+		response.setCodOperazione(ThreadContext.get("op"));
+		return response;
 	}
 
 	@Override
-	public GpChiediListaPspResponse gpChiediListaPsp(GpChiediListaPsp bodyrichiesta) {
-		log.info("Ricevuta richiesta di ChiediListaPsp");
-
-		GpChiediListaPspResponse esitoOperazione = new GpChiediListaPspResponse();
-		esitoOperazione.setCodPortale(bodyrichiesta.getCodPortale());
-		esitoOperazione.setCodOperazione(ThreadContext.get("op"));
-
+	public GpChiediStatoRichiestaStornoResponse gpChiediStatoRichiestaStorno(GpChiediStatoRichiestaStorno bodyrichiesta) {
+		log.info("Richiesta operazione gpChiediStatoRichiestaStorno per la richiesta (" + bodyrichiesta.getCodRichiestaStorno() + ")");
+		GpChiediStatoRichiestaStornoResponse response = new GpChiediStatoRichiestaStornoResponse();
 		BasicBD bd = null;
 		try {
-			try {
-				bd = BasicBD.newInstance();
-			} catch (ServiceException e) {
-				throw new GovPayException(GovPayExceptionEnum.ERRORE_INTERNO, e);
-			}
-
-			if(bodyrichiesta.getCodPortale() == null) {
-				throw new GovPayException(GovPayExceptionEnum.APPLICAZIONE_NON_TROVATA); 
-			}
-			
-			Portale portale = new Autorizzazione(bd).authPortale(wsCtxt.getUserPrincipal(), bodyrichiesta.getCodPortale());
-
-			log.info("Identificazione Portale avvenuta con successo [CodPortale: " + portale.getCodPortale() + "]");
-
-			PspBD pspBD = new PspBD(bd);
-			esitoOperazione.getPsp().addAll(PagamentiTelematiciGPUtil.toPsp(pspBD.getPsp()));
-			esitoOperazione.setCodEsito(CodEsito.OK);
-			return esitoOperazione;
+			bd = BasicBD.newInstance();
+			Portale portaleAutenticato = getPortaleAutenticato(bd);
+			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
+			Rr rr = pagamentoBusiness.chiediStorno(portaleAutenticato, bodyrichiesta.getCodRichiestaStorno());
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			response.setStorno(Gp21Utils.toStorno(rr, bd));
 		} catch (GovPayException e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(PagamentiTelematiciGPUtil.toDescrizioneEsito(e.getTipoException()));
-			if(e.getTipoException().equals(GovPayExceptionEnum.ERRORE_INTERNO))
-				log.error("Errore durante la ricerca dei psp. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			else
-				log.error("Errore durante la ricerca dei psp. Ritorno esito [" + esitoOperazione.getCodErrore() + "]");
-			return esitoOperazione;
+			response.setCodEsitoOperazione(e.getCodEsito());
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			e.log(log);
 		} catch (Exception e) {
-			esitoOperazione.setCodEsito(CodEsito.KO);
-			esitoOperazione.setCodErrore(CodErrore.ERRORE_INTERNO);
-			log.error("Errore durante la ricerca dei psp. Ritorno esito [" + esitoOperazione.getCodErrore() + "]", e);
-			return esitoOperazione;
+			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
+			response.setDescrizioneEsitoOperazione(e.getMessage());
+			new GovPayException(e).log(log);
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
+		response.setCodOperazione(ThreadContext.get("op"));
+		return response;
+	}
+	
+	private Portale getPortaleAutenticato(BasicBD bd) throws GovPayException, ServiceException {
+		if(wsCtxt.getUserPrincipal() == null) {
+			throw new GovPayException(EsitoOperazione.AUT_000);
+		}
+		
+		Portale prt = null;
+		try {
+			prt =  AnagraficaManager.getPortaleByPrincipal(bd, wsCtxt.getUserPrincipal().getName());
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.AUT_002, wsCtxt.getUserPrincipal().getName());
+		}
+		
+		if(prt != null) {
+			Actor from = new Actor();
+			from.setName(prt.getCodPortale());
+			from.setType("GPPRT");
+			GpThreadLocal.get().getTransaction().setFrom(from);
+		}
+		
+		GpThreadLocal.get().getTransaction().getClient().setName(prt.getCodPortale());
+		GpThreadLocal.get().log("integrazione.ricevutaRichiesta");
+		
+		return prt;
+	}
+	
+	private void autorizzaPortale(String codPortale, Portale portaleAutenticato, BasicBD bd) throws GovPayException, ServiceException {
+		Portale portale = null;
+		try {
+			portale = AnagraficaManager.getPortale(bd, codPortale);
+		} catch (NotFoundException e) {
+			throw new GovPayException(EsitoOperazione.PRT_000, codPortale);
+		}
+
+		if(!portale.isAbilitato())
+			throw new GovPayException(EsitoOperazione.PRT_001, codPortale);
+
+		if(!portale.getCodPortale().equals(portaleAutenticato.getCodPortale()))
+			throw new GovPayException(EsitoOperazione.PRT_002, portaleAutenticato.getCodPortale(), codPortale);
+		
+		GpThreadLocal.get().log("integrazione.autorizzazionePortale");
 	}
 }

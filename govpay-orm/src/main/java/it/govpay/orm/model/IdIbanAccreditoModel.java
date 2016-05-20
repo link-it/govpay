@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -43,6 +43,7 @@ public class IdIbanAccreditoModel extends AbstractModel<IdIbanAccredito> {
 		super();
 	
 		this.COD_IBAN = new Field("codIban",java.lang.String.class,"id-iban-accredito",IdIbanAccredito.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"id-iban-accredito",IdIbanAccredito.class));
 	
 	}
 	
@@ -51,12 +52,15 @@ public class IdIbanAccreditoModel extends AbstractModel<IdIbanAccredito> {
 		super(father);
 	
 		this.COD_IBAN = new ComplexField(father,"codIban",java.lang.String.class,"id-iban-accredito",IdIbanAccredito.class);
+		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"id-iban-accredito",IdIbanAccredito.class));
 	
 	}
 	
 	
 
 	public IField COD_IBAN = null;
+	 
+	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 
 	@Override

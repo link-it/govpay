@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,41 +20,37 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import it.govpay.orm.Evento;
+import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.EventoFetch;
+
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-
-import it.govpay.orm.IdEvento;
-
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-
-import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.EventoFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.Evento;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * JDBCEventoServiceSearchImpl
@@ -64,7 +60,7 @@ import it.govpay.orm.Evento;
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Evento, IdEvento, JDBCServiceManager> {
+public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithoutId<Evento, JDBCServiceManager> {
 
 	private EventoFieldConverter _eventoFieldConverter = null;
 	public EventoFieldConverter getEventoFieldConverter() {
@@ -101,60 +97,14 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 	}
 	
 
-	@Override
-	public IdEvento convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Evento evento) throws NotImplementedException, ServiceException, Exception{
 	
-		IdEvento idEvento = new IdEvento();
-		idEvento.setIdEvento(evento.getId());
 	
-		return idEvento;
-	}
 	
-	@Override
-	public Evento get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdEvento id, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException,Exception {
-		Long id_evento = ( (id!=null && id.getId()!=null && id.getId()>0) ? id.getId() : this.findIdEvento(jdbcProperties, log, connection, sqlQueryObject, id, true));
-		return this._get(jdbcProperties, log, connection, sqlQueryObject, id_evento,idMappingResolutionBehaviour);
-		
-		
-	}
-	
-	@Override
-	public boolean exists(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdEvento id) throws MultipleResultException, NotImplementedException, ServiceException,Exception {
-
-		Long id_evento = this.findIdEvento(jdbcProperties, log, connection, sqlQueryObject, id, false);
-		return id_evento != null && id_evento > 0;
-		
-	}
-	
-	@Override
-	public List<IdEvento> findAllIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
-
-        // default behaviour (id-mapping)
-        if(idMappingResolutionBehaviour==null){
-                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-        }
-
-		List<IdEvento> list = new ArrayList<IdEvento>();
-
-		try{
-			List<IField> fields = new ArrayList<IField>();
-			fields.add(new CustomField("id", Long.class, "id", this.getEventoFieldConverter().toTable(Evento.model())));
-
-			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
-
-			for(Map<String, Object> map: returnMap) {
-				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map)));
-			}
-		} catch(NotFoundException e) {}
-
-        return list;
-		
-	}
 	
 	@Override
 	public List<Evento> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
-        // default behaviour (id-mapping)
+		 // default behaviour (id-mapping)
         if(idMappingResolutionBehaviour==null){
                 idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
@@ -164,10 +114,8 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 		try{
 			List<IField> fields = new ArrayList<IField>();
 			fields.add(new CustomField("id", Long.class, "id", this.getEventoFieldConverter().toTable(Evento.model())));
-			fields.add(Evento.model().DATA_ORA_EVENTO);
 			fields.add(Evento.model().COD_DOMINIO);
 			fields.add(Evento.model().IUV);
-			fields.add(Evento.model().ID_APPLICAZIONE);
 			fields.add(Evento.model().CCP);
 			fields.add(Evento.model().COD_PSP);
 			fields.add(Evento.model().TIPO_VERSAMENTO);
@@ -175,21 +123,26 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 			fields.add(Evento.model().CATEGORIA_EVENTO);
 			fields.add(Evento.model().TIPO_EVENTO);
 			fields.add(Evento.model().SOTTOTIPO_EVENTO);
-			fields.add(Evento.model().COD_FRUITORE);
-			fields.add(Evento.model().COD_EROGATORE);
+			fields.add(Evento.model().EROGATORE);
+			fields.add(Evento.model().FRUITORE);
 			fields.add(Evento.model().COD_STAZIONE);
-			fields.add(Evento.model().CANALE_PAGAMENTO);
-			fields.add(Evento.model().ALTRI_PARAMETRI);
+			fields.add(Evento.model().COD_CANALE);
+			fields.add(Evento.model().PARAMETRI_1);
+			fields.add(Evento.model().PARAMETRI_2);
 			fields.add(Evento.model().ESITO);
+			fields.add(Evento.model().DATA_1);
+			fields.add(Evento.model().DATA_2);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
-				list.add( (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map));
+
+				Evento evento = (Evento)this.getEventoFetch().fetch(jdbcProperties.getDatabase(), Evento.model(), map);
+				list.add(evento);
 			}
 		} catch(NotFoundException e) {}
 
-        return list;      
+        return list;     
 		
 	}
 	
@@ -220,13 +173,6 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 																			this.getEventoFieldConverter(), Evento.model(),listaQuery);
 	}
 
-	@Override
-	public InUse inUse(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdEvento id) throws NotFoundException, NotImplementedException, ServiceException,Exception {
-		
-		Long id_evento = this.findIdEvento(jdbcProperties, log, connection, sqlQueryObject, id, true);
-        return this._inUse(jdbcProperties, log, connection, sqlQueryObject, id_evento);
-		
-	}
 
 	@Override
 	public List<Object> select(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
@@ -452,24 +398,6 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 	
 	// -- DB
 
-	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdEvento id, Evento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
-				this.get(jdbcProperties,log,connection,sqlQueryObject,id,null));
-	}
-	
-	@Override
-	public void mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Evento obj) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		_mappingTableIds(jdbcProperties,log,connection,sqlQueryObject,obj,
-				this.get(jdbcProperties,log,connection,sqlQueryObject,tableId,null));
-	}
-	private void _mappingTableIds(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Evento obj, Evento imgSaved) throws NotFoundException,NotImplementedException,ServiceException,Exception{
-		if(imgSaved==null){
-			return;
-		}
-		obj.setId(imgSaved.getId());
-
-	}
 	
 	@Override
 	public Evento get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
@@ -496,10 +424,8 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 		sqlQueryObjectGet_evento.setANDLogicOperator(true);
 		sqlQueryObjectGet_evento.addFromTable(this.getEventoFieldConverter().toTable(Evento.model()));
 		sqlQueryObjectGet_evento.addSelectField("id");
-		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().DATA_ORA_EVENTO,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().IUV,true));
-		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().ID_APPLICAZIONE,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().CCP,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_PSP,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().TIPO_VERSAMENTO,true));
@@ -507,12 +433,15 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().CATEGORIA_EVENTO,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().TIPO_EVENTO,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().SOTTOTIPO_EVENTO,true));
-		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_FRUITORE,true));
-		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_EROGATORE,true));
+		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().EROGATORE,true));
+		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().FRUITORE,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_STAZIONE,true));
-		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().CANALE_PAGAMENTO,true));
-		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().ALTRI_PARAMETRI,true));
+		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_CANALE,true));
+		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_1,true));
+		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().PARAMETRI_2,true));
 		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().ESITO,true));
+		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().DATA_1,true));
+		sqlQueryObjectGet_evento.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().DATA_2,true));
 		sqlQueryObjectGet_evento.addWhereCondition("id=?");
 
 		// Get evento
@@ -542,7 +471,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 		sqlQueryObject.setANDLogicOperator(true);
 
 		sqlQueryObject.addFromTable(this.getEventoFieldConverter().toTable(Evento.model()));
-		sqlQueryObject.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().DATA_ORA_EVENTO,true));
+		sqlQueryObject.addSelectField(this.getEventoFieldConverter().toColumn(Evento.model().COD_DOMINIO,true));
 		sqlQueryObject.addWhereCondition("id=?");
 
 
@@ -556,13 +485,13 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+	
 	}
 	
-	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdEvento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
+	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Evento evento) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-		Long longId = this.findIdEvento(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
-		rootTableIdValues.add(longId);
+		rootTableIdValues.add(evento.getId());
         
         return rootTableIdValues;
 	}
@@ -580,8 +509,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Evento.model()))
 			));
-
-
+        
         return mapTableToPKColumn;		
 	}
 	
@@ -644,10 +572,6 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
 		if(throwNotImplemented==1){
@@ -659,51 +583,7 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 
 	}
 	
-	@Override
-	public IdEvento findId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, boolean throwNotFound)
-			throws NotFoundException, ServiceException, NotImplementedException, Exception {
-		
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-
-		// Object _evento
-		sqlQueryObjectGet.addFromTable(this.getEventoFieldConverter().toTable(Evento.model()));
-		sqlQueryObjectGet.addSelectField("id");
-		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.addWhereCondition("id=?");
-
-		// Recupero _evento
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_evento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
-		};
-		List<Class<?>> listaFieldIdReturnType_evento = new ArrayList<Class<?>>();
-		listaFieldIdReturnType_evento.add(Long.class);
-		it.govpay.orm.IdEvento id_evento = null;
-		List<Object> listaFieldId_evento = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-				listaFieldIdReturnType_evento, searchParams_evento);
-		if(listaFieldId_evento==null || listaFieldId_evento.size()<=0){
-			if(throwNotFound){
-				throw new NotFoundException("Not Found");
-			}
-		}
-		else{
-			id_evento = new it.govpay.orm.IdEvento();
-			id_evento.setIdEvento((Long)listaFieldId_evento.get(0));
-		}
-		
-		return id_evento;
-		
-	}
-
-	@Override
-	public Long findTableId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdEvento id, boolean throwNotFound)
-			throws NotFoundException, ServiceException, NotImplementedException, Exception {
-	
-		return this.findIdEvento(jdbcProperties,log,connection,sqlQueryObject,id,throwNotFound);
-			
-	}
 	
 	@Override
 	public List<List<Object>> nativeQuery(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, 
@@ -714,39 +594,4 @@ public class JDBCEventoServiceSearchImpl implements IJDBCServiceSearchWithId<Eve
 														
 	}
 	
-	protected Long findIdEvento(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdEvento id, boolean throwNotFound) throws NotFoundException, ServiceException, NotImplementedException, Exception {
-
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
-
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
-
-		// Object _evento
-		sqlQueryObjectGet.addFromTable(this.getEventoFieldConverter().toTable(Evento.model()));
-		sqlQueryObjectGet.addSelectField("id");
-		sqlQueryObjectGet.setANDLogicOperator(true);
-		sqlQueryObjectGet.setSelectDistinct(true);
-		sqlQueryObjectGet.addWhereCondition("id=?");
-
-		// Recupero _evento
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_evento = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getIdEvento(),Long.class),
-		};
-		Long id_evento = null;
-		try{
-			id_evento = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
-						Long.class, searchParams_evento);
-		}catch(NotFoundException notFound){
-			if(throwNotFound){
-				throw new NotFoundException(notFound);
-			}
-		}
-		if(id_evento==null || id_evento<=0){
-			if(throwNotFound){
-				throw new NotFoundException("Not Found");
-			}
-		}
-		
-		return id_evento;
-	}
 }

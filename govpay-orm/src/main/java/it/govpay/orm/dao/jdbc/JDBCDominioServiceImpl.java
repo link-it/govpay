@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -44,7 +44,6 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
 import it.govpay.orm.Dominio;
-import it.govpay.orm.Disponibilita;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 /**     
@@ -89,52 +88,54 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			}
 		}
 
+		// Object _applicazione
+		Long id_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_applicazione = null;
+		idLogic_applicazione = dominio.getIdApplicazioneDefault();
+		if(idLogic_applicazione!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_applicazione, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_applicazione = idLogic_applicazione.getId();
+				if(id_applicazione==null || id_applicazione<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object dominio
 		sqlQueryObjectInsert.addInsertTable(this.getDominioFieldConverter().toTable(Dominio.model()));
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_DOMINIO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().GLN,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().PLUGIN_CLASS,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().ABILITATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_CONTI_ACCREDITO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_TABELLA_CONTROPARTI,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RIUSO_IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_stazione","?");
+		sqlQueryObjectInsert.addInsertField("id_applicazione_default","?");
 
 		// Insert dominio
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getDominioFetch().getKeyGeneratorObject(Dominio.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCodDominio(),Dominio.model().COD_DOMINIO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRagioneSociale(),Dominio.model().RAGIONE_SOCIALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getGln(),Dominio.model().GLN.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getPluginClass(),Dominio.model().PLUGIN_CLASS.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getAbilitato(),Dominio.model().ABILITATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRagioneSociale(),Dominio.model().RAGIONE_SOCIALE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getXmlContiAccredito(),Dominio.model().XML_CONTI_ACCREDITO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getXmlTabellaControparti(),Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRiusoIUV(),Dominio.model().RIUSO_IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCustomIUV(),Dominio.model().CUSTOM_IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
 		dominio.setId(id);
 
-		// for dominio
-		for (int i = 0; i < dominio.getDisponibilitaList().size(); i++) {
 		
-			// Object dominio.getDisponibilitaList().get(i)
-			ISQLQueryObject sqlQueryObjectInsert_disponibilita = sqlQueryObjectInsert.newSQLQueryObject();
-			sqlQueryObjectInsert_disponibilita.addInsertTable(this.getDominioFieldConverter().toTable(Dominio.model().DISPONIBILITA));
-			sqlQueryObjectInsert_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_PERIODO,false),"?");
-			sqlQueryObjectInsert_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.GIORNO,false),"?");
-			sqlQueryObjectInsert_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.FASCE_ORARIE,false),"?");
-			sqlQueryObjectInsert_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA,false),"?");
-			sqlQueryObjectInsert_disponibilita.addInsertField("id_dominio","?");
-
-			// Insert dominio.getDisponibilitaList().get(i)
-			org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_disponibilita = this.getDominioFetch().getKeyGeneratorObject(Dominio.model().DISPONIBILITA);
-			long id_disponibilita = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_disponibilita, keyGenerator_disponibilita, jdbcProperties.isShowSql(),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getDisponibilitaList().get(i).getTipoPeriodo(),Dominio.model().DISPONIBILITA.TIPO_PERIODO.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getDisponibilitaList().get(i).getGiorno(),Dominio.model().DISPONIBILITA.GIORNO.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getDisponibilitaList().get(i).getFasceOrarie(),Dominio.model().DISPONIBILITA.FASCE_ORARIE.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getDisponibilitaList().get(i).getTipoDisponibilita(),Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA.getFieldType()),
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
-			);
-			dominio.getDisponibilitaList().get(i).setId(id_disponibilita);
-		} // fine for 
-
 	}
 
 	@Override
@@ -153,12 +154,12 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, dominio, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, Dominio dominio, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -195,6 +196,23 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			}
 		}
 
+		// Object _dominio_applicazione
+		Long id_dominio_applicazione = null;
+		it.govpay.orm.IdApplicazione idLogic_dominio_applicazione = null;
+		idLogic_dominio_applicazione = dominio.getIdApplicazioneDefault();
+		if(idLogic_dominio_applicazione!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_dominio_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findTableId(idLogic_dominio_applicazione, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_dominio_applicazione = idLogic_dominio_applicazione.getId();
+				if(id_dominio_applicazione==null || id_dominio_applicazione<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object dominio
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
@@ -203,21 +221,32 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_dominio = new java.util.ArrayList<JDBCObject>();
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().COD_DOMINIO,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getCodDominio(), Dominio.model().COD_DOMINIO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getRagioneSociale(), Dominio.model().RAGIONE_SOCIALE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().GLN,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getGln(), Dominio.model().GLN.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().PLUGIN_CLASS,false), "?");
-		lstObjects_dominio.add(new JDBCObject(dominio.getPluginClass(), Dominio.model().PLUGIN_CLASS.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().ABILITATO,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getAbilitato(), Dominio.model().ABILITATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().RAGIONE_SOCIALE,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getRagioneSociale(), Dominio.model().RAGIONE_SOCIALE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_CONTI_ACCREDITO,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getXmlContiAccredito(), Dominio.model().XML_CONTI_ACCREDITO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_TABELLA_CONTROPARTI,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getXmlTabellaControparti(), Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().RIUSO_IUV,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getRiusoIUV(), Dominio.model().RIUSO_IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getCustomIUV(), Dominio.model().CUSTOM_IUV.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_applicazione_default","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_dominio.add(new JDBCObject(id_dominio_stazione, Long.class));
 		}
-
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_dominio.add(new JDBCObject(id_dominio_applicazione, Long.class));
+		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_dominio.add(new JDBCObject(tableId, Long.class));
 
@@ -226,90 +255,6 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			jdbcUtilities.executeUpdate(sqlQueryObjectUpdate.createSQLUpdate(), jdbcProperties.isShowSql(), 
 				lstObjects_dominio.toArray(new JDBCObject[]{}));
 		}
-		// for dominio_disponibilita
-
-		java.util.List<Long> ids_dominio_disponibilita_da_non_eliminare = new java.util.ArrayList<Long>();
-		for (Object dominio_disponibilita_object : dominio.getDisponibilitaList()) {
-			Disponibilita dominio_disponibilita = (Disponibilita) dominio_disponibilita_object;
-			if(dominio_disponibilita.getId() == null || dominio_disponibilita.getId().longValue() <= 0) {
-
-				long id = dominio.getId();			
-
-				// Object dominio_disponibilita
-				ISQLQueryObject sqlQueryObjectInsert_dominio_disponibilita = sqlQueryObjectInsert.newSQLQueryObject();
-				sqlQueryObjectInsert_dominio_disponibilita.addInsertTable(this.getDominioFieldConverter().toTable(Dominio.model().DISPONIBILITA));
-				sqlQueryObjectInsert_dominio_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_PERIODO,false),"?");
-				sqlQueryObjectInsert_dominio_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.GIORNO,false),"?");
-				sqlQueryObjectInsert_dominio_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.FASCE_ORARIE,false),"?");
-				sqlQueryObjectInsert_dominio_disponibilita.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA,false),"?");
-				sqlQueryObjectInsert_dominio_disponibilita.addInsertField("id_dominio","?");
-
-				// Insert dominio_disponibilita
-				org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator_dominio_disponibilita = this.getDominioFetch().getKeyGeneratorObject(Dominio.model().DISPONIBILITA);
-				long id_dominio_disponibilita = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert_dominio_disponibilita, keyGenerator_dominio_disponibilita, jdbcProperties.isShowSql(),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio_disponibilita.getTipoPeriodo(),Dominio.model().DISPONIBILITA.TIPO_PERIODO.getFieldType()),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio_disponibilita.getGiorno(),Dominio.model().DISPONIBILITA.GIORNO.getFieldType()),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio_disponibilita.getFasceOrarie(),Dominio.model().DISPONIBILITA.FASCE_ORARIE.getFieldType()),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio_disponibilita.getTipoDisponibilita(),Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA.getFieldType()),
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class)
-				);
-				dominio_disponibilita.setId(id_dominio_disponibilita);
-
-				ids_dominio_disponibilita_da_non_eliminare.add(dominio_disponibilita.getId());
-			} else {
-
-
-				// Object dominio_disponibilita
-				ISQLQueryObject sqlQueryObjectUpdate_dominio_disponibilita = sqlQueryObjectUpdate.newSQLQueryObject();
-				sqlQueryObjectUpdate_dominio_disponibilita.setANDLogicOperator(true);
-				sqlQueryObjectUpdate_dominio_disponibilita.addUpdateTable(this.getDominioFieldConverter().toTable(Dominio.model().DISPONIBILITA));
-				boolean isUpdate_dominio_disponibilita = true;
-				java.util.List<JDBCObject> lstObjects_dominio_disponibilita = new java.util.ArrayList<JDBCObject>();
-				sqlQueryObjectUpdate_dominio_disponibilita.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_PERIODO,false), "?");
-				lstObjects_dominio_disponibilita.add(new JDBCObject(dominio_disponibilita.getTipoPeriodo(), Dominio.model().DISPONIBILITA.TIPO_PERIODO.getFieldType()));
-				sqlQueryObjectUpdate_dominio_disponibilita.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.GIORNO,false), "?");
-				lstObjects_dominio_disponibilita.add(new JDBCObject(dominio_disponibilita.getGiorno(), Dominio.model().DISPONIBILITA.GIORNO.getFieldType()));
-				sqlQueryObjectUpdate_dominio_disponibilita.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.FASCE_ORARIE,false), "?");
-				lstObjects_dominio_disponibilita.add(new JDBCObject(dominio_disponibilita.getFasceOrarie(), Dominio.model().DISPONIBILITA.FASCE_ORARIE.getFieldType()));
-				sqlQueryObjectUpdate_dominio_disponibilita.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA,false), "?");
-				lstObjects_dominio_disponibilita.add(new JDBCObject(dominio_disponibilita.getTipoDisponibilita(), Dominio.model().DISPONIBILITA.TIPO_DISPONIBILITA.getFieldType()));
-				sqlQueryObjectUpdate_dominio_disponibilita.addWhereCondition("id=?");
-				ids_dominio_disponibilita_da_non_eliminare.add(dominio_disponibilita.getId());
-				lstObjects_dominio_disponibilita.add(new JDBCObject(new Long(dominio_disponibilita.getId()),Long.class));
-
-				if(isUpdate_dominio_disponibilita) {
-					// Update dominio_disponibilita
-					jdbcUtilities.executeUpdate(sqlQueryObjectUpdate_dominio_disponibilita.createSQLUpdate(), jdbcProperties.isShowSql(), 
-						lstObjects_dominio_disponibilita.toArray(new JDBCObject[]{}));
-				}
-			}
-		} // fine for dominio_disponibilita
-
-		// elimino tutte le occorrenze di dominio_disponibilita non presenti nell'update
-
-		ISQLQueryObject sqlQueryObjectUpdate_disponibilita_deleteList = sqlQueryObjectUpdate.newSQLQueryObject();
-		sqlQueryObjectUpdate_disponibilita_deleteList.setANDLogicOperator(true);
-		sqlQueryObjectUpdate_disponibilita_deleteList.addDeleteTable(this.getDominioFieldConverter().toTable(Dominio.model().DISPONIBILITA));
-		java.util.List<JDBCObject> jdbcObjects_dominio_disponibilita_delete = new java.util.ArrayList<JDBCObject>();
-
-		sqlQueryObjectUpdate_disponibilita_deleteList.addWhereCondition("id_dominio=?");
-		jdbcObjects_dominio_disponibilita_delete.add(new JDBCObject(dominio.getId(), Long.class));
-
-		StringBuffer marks_dominio_disponibilita = new StringBuffer();
-		if(ids_dominio_disponibilita_da_non_eliminare.size() > 0) {
-			for(Long ids : ids_dominio_disponibilita_da_non_eliminare) {
-				if(marks_dominio_disponibilita.length() > 0) {
-					marks_dominio_disponibilita.append(",");
-				}
-				marks_dominio_disponibilita.append("?");
-				jdbcObjects_dominio_disponibilita_delete.add(new JDBCObject(ids, Long.class));
-
-			}
-			sqlQueryObjectUpdate_disponibilita_deleteList.addWhereCondition("id NOT IN ("+marks_dominio_disponibilita.toString()+")");
-		}
-
-		jdbcUtilities.execute(sqlQueryObjectUpdate_disponibilita_deleteList.createSQLDelete(), jdbcProperties.isShowSql(), jdbcObjects_dominio_disponibilita_delete.toArray(new JDBCObject[]{}));
-
 
 
 	}
@@ -438,30 +383,6 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		
 		ISQLQueryObject sqlQueryObjectDelete = sqlQueryObject.newSQLQueryObject();
 		
-		//Recupero oggetto _dominio_disponibilita
-		ISQLQueryObject sqlQueryObjectDelete_dominio_disponibilita_getToDelete = sqlQueryObjectDelete.newSQLQueryObject();
-		sqlQueryObjectDelete_dominio_disponibilita_getToDelete.setANDLogicOperator(true);
-		sqlQueryObjectDelete_dominio_disponibilita_getToDelete.addFromTable(this.getDominioFieldConverter().toTable(Dominio.model().DISPONIBILITA));
-		sqlQueryObjectDelete_dominio_disponibilita_getToDelete.addWhereCondition("id_dominio=?");
-		java.util.List<Object> dominio_disponibilita_toDelete_list = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectDelete_dominio_disponibilita_getToDelete.createSQLQuery(), jdbcProperties.isShowSql(), Dominio.model().DISPONIBILITA, this.getDominioFetch(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(id),Long.class));
-
-		// for dominio_disponibilita
-		for (Object dominio_disponibilita_object : dominio_disponibilita_toDelete_list) {
-			Disponibilita dominio_disponibilita = (Disponibilita) dominio_disponibilita_object;
-
-			// Object dominio_disponibilita
-			ISQLQueryObject sqlQueryObjectDelete_dominio_disponibilita = sqlQueryObjectDelete.newSQLQueryObject();
-			sqlQueryObjectDelete_dominio_disponibilita.setANDLogicOperator(true);
-			sqlQueryObjectDelete_dominio_disponibilita.addDeleteTable(this.getDominioFieldConverter().toTable(Dominio.model().DISPONIBILITA));
-			sqlQueryObjectDelete_dominio_disponibilita.addWhereCondition("id=?");
-
-			// Delete dominio_disponibilita
-			if(dominio_disponibilita != null){
-				jdbcUtilities.execute(sqlQueryObjectDelete_dominio_disponibilita.createSQLDelete(), jdbcProperties.isShowSql(), 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(new Long(dominio_disponibilita.getId()),Long.class));
-			}
-		} // fine for dominio_disponibilita
 
 		// Object dominio
 		sqlQueryObjectDelete.setANDLogicOperator(true);

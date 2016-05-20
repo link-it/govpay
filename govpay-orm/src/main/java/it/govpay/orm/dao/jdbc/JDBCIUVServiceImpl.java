@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,27 +88,46 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 			}
 		}
 
+		// Object _dominio
+		Long id_dominio = null;
+		it.govpay.orm.IdDominio idLogic_dominio = null;
+		idLogic_dominio = iuv.getIdDominio();
+		if(idLogic_dominio!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_dominio, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_dominio = idLogic_dominio.getId();
+				if(id_dominio==null || id_dominio<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object iuv
 		sqlQueryObjectInsert.addInsertTable(this.getIUVFieldConverter().toTable(IUV.model()));
-		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().COD_DOMINIO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().PRG,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().IUV,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().DATA_GENERAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().APPLICATION_CODE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().AUX_DIGIT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().DATA_GENERAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().TIPO_IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().COD_VERSAMENTO_ENTE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
+		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
 		// Insert iuv
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getIUVFetch().getKeyGeneratorObject(IUV.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getCodDominio(),IUV.model().COD_DOMINIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getPrg(),IUV.model().PRG.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getIuv(),IUV.model().IUV.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getDataGenerazione(),IUV.model().DATA_GENERAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getApplicationCode(),IUV.model().APPLICATION_CODE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getAuxDigit(),IUV.model().AUX_DIGIT.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getDataGenerazione(),IUV.model().DATA_GENERAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getTipoIuv(),IUV.model().TIPO_IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getCodVersamentoEnte(),IUV.model().COD_VERSAMENTO_ENTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
 		iuv.setId(id);
 
@@ -130,12 +149,12 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 		if(tableId==null || tableId<=0){
 			throw new Exception("Retrieve tableId failed");
 		}
-		
+
 		this.update(jdbcProperties, log, connection, sqlQueryObject, tableId, iuv, idMappingResolutionBehaviour);
 	}
 	@Override
 	public void update(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, long tableId, IUV iuv, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, NotImplementedException, ServiceException, Exception {
-
+	
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
 				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
@@ -172,29 +191,52 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 			}
 		}
 
+		// Object _iuv_dominio
+		Long id_iuv_dominio = null;
+		it.govpay.orm.IdDominio idLogic_iuv_dominio = null;
+		idLogic_iuv_dominio = iuv.getIdDominio();
+		if(idLogic_iuv_dominio!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_iuv_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findTableId(idLogic_iuv_dominio, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_iuv_dominio = idLogic_iuv_dominio.getId();
+				if(id_iuv_dominio==null || id_iuv_dominio<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object iuv
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getIUVFieldConverter().toTable(IUV.model()));
 		boolean isUpdate_iuv = true;
 		java.util.List<JDBCObject> lstObjects_iuv = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().COD_DOMINIO,false), "?");
-		lstObjects_iuv.add(new JDBCObject(iuv.getCodDominio(), IUV.model().COD_DOMINIO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().PRG,false), "?");
 		lstObjects_iuv.add(new JDBCObject(iuv.getPrg(), IUV.model().PRG.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().IUV,false), "?");
 		lstObjects_iuv.add(new JDBCObject(iuv.getIuv(), IUV.model().IUV.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().DATA_GENERAZIONE,false), "?");
-		lstObjects_iuv.add(new JDBCObject(iuv.getDataGenerazione(), IUV.model().DATA_GENERAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().APPLICATION_CODE,false), "?");
 		lstObjects_iuv.add(new JDBCObject(iuv.getApplicationCode(), IUV.model().APPLICATION_CODE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().AUX_DIGIT,false), "?");
-		lstObjects_iuv.add(new JDBCObject(iuv.getAuxDigit(), IUV.model().AUX_DIGIT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().DATA_GENERAZIONE,false), "?");
+		lstObjects_iuv.add(new JDBCObject(iuv.getDataGenerazione(), IUV.model().DATA_GENERAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().TIPO_IUV,false), "?");
+		lstObjects_iuv.add(new JDBCObject(iuv.getTipoIuv(), IUV.model().TIPO_IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().COD_VERSAMENTO_ENTE,false), "?");
+		lstObjects_iuv.add(new JDBCObject(iuv.getCodVersamentoEnte(), IUV.model().COD_VERSAMENTO_ENTE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_iuv.add(new JDBCObject(id_iuv_applicazione, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_iuv.add(new JDBCObject(id_iuv_dominio, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_iuv.add(new JDBCObject(tableId, Long.class));

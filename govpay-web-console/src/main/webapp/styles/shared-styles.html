@@ -1,9 +1,199 @@
-<!-- shared styles for all elements and index.html -->
-<dom-module id="shared-styles">
-  <template>
-    <style>
+<link rel="import" href="../bower_components/polymer/polymer.html"><link rel="import" href="../bower_components/paper-styles/typography.html"><dom-module id="shared-styles"><template><style>
+      /* General styles */
+
+      body {
+        @apply(--layout-fullbleed);
+        @apply(--layout-vertical);
+      }
+
+      .main {
+        @apply(--layout-fit);
+      }
+
+      .space {
+        @apply(--layout-flex);
+      }
+
+      #drawerToolbar {
+        color: var(--primary-text-color);
+        background-color: var(--drawer-menu-color);
+        border-bottom: var(--drawer-toolbar-border-color);
+      }
+
+      #drawerToolbar .menu-name {
+        @apply(--paper-font-title);
+      }
+
+      .addFAB, .editFAB {
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+      }
+
+      paper-toolbar {
+        --paper-toolbar-background: var(--toolbar-color);
+      }
+
+      paper-scroll-header-panel {
+        height: 100%;
+      }
+
+      paper-menu {
+      --paper-menu-selected-item: {
+         color: var(--primary-color);
+      }
+
+      --paper-menu-focused-item-after: {
+         background: var(--primary-color);
+       }
+      }
+
+      paper-menu iron-icon {
+        margin-right: 33px;
+        opacity: 0.54;
+      }
+
+      paper-menu a {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+
+        text-decoration: none;
+        color: var(--menu-link-color);
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 24px;
+        min-height: 48px;
+        padding: 0 16px;
+      }
+
+      paper-tab {
+        --paper-tab-ink: var(--accent-color);
+      }
+
+      paper-tabs {
+        --paper-tabs-selection-bar-color: var(--accent-color);
+      }
+
+      /* Height of the scroll area */
+      .content {
+        height: 900px;
+      }
+
+      section[data-route="home"] paper-material {
+        @apply(--paper-font-body2);
+      }
+
+      section[data-route="home"] paper-material .subhead {
+        @apply(--paper-font-subhead);
+      }
+
+      paper-material {
+        border-radius: 2px;
+        height: 100%;
+        padding: 16px 0 16px 0;
+        width: calc(98.66% - 16px);
+        margin: 16px auto;
+        background: white;
+      }
+
+      paper-input {
+        --paper-input-container-focus-color: var(--accent-color);
+      }
+
+      paper-dropdown-menu {
+        --paper-dropdown-menu-input {
+           --paper-input-container-focus-color: var(--accent-color);
+         }
+      }
+
+      #toast .toast-hide-button {
+        color: #eeff41;
+        margin: 10px;
+      }
+
+      paper-toast.success {
+        --paper-toast-background-color: #DFF2BF;
+        --paper-toast-color: #4F8A10;
+      }
+
+      paper-toast.error {
+        --paper-toast-background-color: #FFBABA;
+        --paper-toast-color: #D8000C;
+      }
+
+      paper-toast.warning {
+        --paper-toast-background-color: #FEEFB3;
+        --paper-toast-color: #9F6000;
+      }
+
+      .buttonBar {
+        padding-top: 24px;
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified);
+      }
+
+      .allSpace {
+        /*width: 100%;*/
+        @apply(--layout-flex);
+      }
+
+      .accentColor {
+        background-color: var(--accent-color);
+        color: #fff;
+      }
+
+      /*#spinner {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+      }*/
+
+      /* Breakpoints */
+
+      /* Small */
+      @media (max-width: 600px) {
+
+        #drawer .paper-toolbar {
+          margin-left: 16px;
+        }
+
+        paper-material {
+          --menu-container-display: none;
+          width: calc(97.33% - 32px);
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+
+      }
+
+      /* Tablet+ */
+      @media (min-width: 601px) {
+
+        #drawer.paper-drawer-panel > [drawer] {
+          border-right: 1px solid rgba(0, 0, 0, 0.14);
+        }
+
+        iron-pages {
+          padding: 48px 62px;
+        }
+
+        paper-material {
+          width: calc(98% - 46px);
+          margin-bottom: 32px;
+          padding-left: 30px;
+          padding-right: 30px;
+        }
+
+      }
       .page-title {
         @apply(--paper-font-display2);
+      }
+
+      #mainMenu paper-item, #mainMenu paper-icon-item {
+        border-bottom: 1px solid rgba(0, 0, 0, 0.14);
       }
 
       @media (max-width: 600px) {
@@ -11,161 +201,4 @@
           font-size: 24px!important;
         }
       }
-
-      iron-pages {
-        padding: 0px;
-      }
-
-      .restorePadding {
-        padding: 0px 24px;
-      }
-
-      paper-material {
-      background-color: #FFFFFF;
-      }
-
-      paper-item {
-
-      }
-
-      #searchbox {
-      width: 300px;
-      }
-
-      #searchbox paper-material{
-      padding: 24px;
-      }
-
-      .headerbox {
-      height: 56px;
-      color: rgb(158,158,158);
-      }
-
-      #searchbox .headerbox {
-      font-size: 18px;
-      font-weight: 500;
-      }
-
-      .separatore {
-      width: 24px;
-      }
-
-      #resultbox {
-      padding-bottom: 100px;
-      }
-
-      #resultbox paper-checkbox {
-      --paper-checkbox-unchecked-color: rgb(158,158,158);
-      --paper-checkbox-checked-color: var(--accent-color);
-      }
-
-      .filtro {
-      padding: 0 24px;
-      }
-
-      .selectAll {
-      color: rgb(158,158,158);
-      font-size: 14px;
-      }
-
-      #resultbox paper-icon-item {
-      padding: 0 24px;
-      }
-
-      .even{
-      background-color: rgb(250,250,250);
-      border-top: 2px solid rgb(243,243,243);
-      }
-
-      .odd {
-      background-color: #FFFFFF;
-      border-top: 2px solid rgb(243,243,243);
-      }
-
-      .buttons {
-      padding-top: 32px;
-      }
-
-      paper-input {
-        --paper-input-container-focus-color :  var(--accent-color);
-      }
-
-      paper-input-container .focused-line {
-      background: var(—accent-color) !important;
-      }
-
-      paper-button.green {
-      background: var(--accent-color);
-      color: white;
-      }
-
-      .actionButton {
-        position: absolute;
-        right: 36px;
-        bottom: 36px;
-        background: var(--accent-color);
-      }
-
-      paper-tabs, paper-toolbar {
-        background-color: var(--paper-toolbar-background);
-        color: #fff;
-       <!-- box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2);   paper-tabs[noink][no-bar]-->
-      }
-      paper-toolbar paper-tabs {
-        box-shadow: none;
-      }
-
-      paper-tab.iron-selected {
-        color: #FFFFFF; /* var(--accent-color); */
-      }
-
-      #selectionBar {
-        background-color: var(--accent-color);
-      }
-
-      .itembox {
-        padding-bottom: 100px;
-      }
-
-      .itembox paper-material{
-      margin-bottom: 4px;
-      padding: 24px 24px 12px 24px;
-      }
-
-      .formbox {
-
-      }
-
-      .formbox paper-material{
-      margin-bottom: 4px;
-      padding: 24px 24px 12px 24px;
-      }
-
-
-
-      p.groupTitle{
-      margin-top: 8px;
-      margin-bottom: 20px;
-      }
-
-      span.groupTitle{
-      color: #9E9E9E;
-      font-weight: 500;
-      }
-
-      p.groupItem {
-      margin-top: 12px;
-      margin-bottom: 12px;
-      }
-
-      span.grouplabel {
-      color: #9E9E9E;
-      }
-
-      .addButton{
-      color: #9E9E9E;
-      }
-
-    </style>
-  </template>
-</dom-module>
+    </style></template></dom-module>

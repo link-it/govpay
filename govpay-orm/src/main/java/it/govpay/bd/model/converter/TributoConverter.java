@@ -2,7 +2,7 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2015 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Tributo.TipoContabilta;
-import it.govpay.orm.IdEnte;
+import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
 
 import java.util.ArrayList;
@@ -39,43 +39,43 @@ public class TributoConverter {
 				lst.add(toDTO(vo));
 			}
 		}
-
 		return lst;
 	}
 
 	public static Tributo toDTO(it.govpay.orm.Tributo vo) throws ServiceException {
 		Tributo dto = new Tributo();
-		
 		dto.setId(vo.getId());
-		dto.setIdEnte(vo.getIdEnte().getId());
+		dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setCodTributo(vo.getCodTributo());
 		dto.setAbilitato(vo.getAbilitato());
 		dto.setDescrizione(vo.getDescrizione());
-		dto.setIbanAccredito(vo.getIbanAccredito().getId());
+		if(vo.getIdIbanAccredito() != null)
+			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
 		dto.setTipoContabilita(TipoContabilta.toEnum(vo.getTipoContabilita()));
 		dto.setCodContabilita(vo.getCodiceContabilita());
-
 		return dto;
 	}
 
 	public static it.govpay.orm.Tributo toVO(Tributo dto) {
 		it.govpay.orm.Tributo vo = new it.govpay.orm.Tributo();
-
 		vo.setId(dto.getId());
-		IdEnte idEnte = new IdEnte();
-		idEnte.setId(dto.getIdEnte());
-		vo.setIdEnte(idEnte);
 		vo.setCodTributo(dto.getCodTributo());
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setDescrizione(dto.getDescrizione());
-		IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
-		idIbanAccredito.setId(dto.getIbanAccredito());
-		vo.setIbanAccredito(idIbanAccredito);
 		vo.setTipoContabilita(dto.getTipoContabilita().getCodifica());
 		vo.setCodiceContabilita(dto.getCodContabilita());
 
+		IdDominio idDominio = new IdDominio();
+		idDominio.setId(dto.getIdDominio());
+		vo.setIdDominio(idDominio);
+		
+		if(dto.getIdIbanAccredito() != null) {
+			IdIbanAccredito idIbanAccredito = new IdIbanAccredito();
+			idIbanAccredito.setId(dto.getIdIbanAccredito());
+			vo.setIdIbanAccredito(idIbanAccredito);
+		}
+		
 		return vo;
-
 	}
 
 
