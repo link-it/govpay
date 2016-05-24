@@ -1,4 +1,4 @@
-# GovPay v2.1
+# GovPay v2.1-rc1
 GovPay implementa il protocollo di colloquio con il Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
 
 Di seguito un elenco delle principali funzionalità del prodotto.
