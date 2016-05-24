@@ -22,6 +22,7 @@ Di seguito un elenco delle principali funzionalità del prodotto.
 * cruscotto Web di gestione e configurazione.
 
 Per maggiori informazioni, consultare la documentazione del progetto:
-* [Introduzione a GovPay](./resources/doc/pdf/GovPay-ManualeIntroduzione.pdf)
-* [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
+* [Introduzione a GovPay](./resources/doc/pdf/GovPay-PagoPA.pdf)
 * [Manuale Integrazione](./resources/doc/pdf/GovPay-ManualeIntegrazione.pdf)
+* [Manuale Utente](./resources/doc/pdf/GovPay-ManualeUtente.pdf)
+
