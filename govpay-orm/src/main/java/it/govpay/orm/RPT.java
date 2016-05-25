@@ -60,6 +60,8 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotalePagato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="xmlRT" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codStazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codTransazioneRPT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codTransazioneRT" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -97,7 +99,9 @@ import java.io.Serializable;
   	"_decimalWrapper_codEsitoPagamento",
   	"importoTotalePagato",
   	"xmlRT",
-  	"codStazione"
+  	"codStazione",
+  	"codTransazioneRPT",
+  	"codTransazioneRT"
   }
 )
 
@@ -319,6 +323,22 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.codStazione = codStazione;
   }
 
+  public java.lang.String getCodTransazioneRPT() {
+    return this.codTransazioneRPT;
+  }
+
+  public void setCodTransazioneRPT(java.lang.String codTransazioneRPT) {
+    this.codTransazioneRPT = codTransazioneRPT;
+  }
+
+  public java.lang.String getCodTransazioneRT() {
+    return this.codTransazioneRT;
+  }
+
+  public void setCodTransazioneRT(java.lang.String codTransazioneRT) {
+    this.codTransazioneRT = codTransazioneRT;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -437,5 +457,13 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codStazione",required=true,nillable=false)
   protected java.lang.String codStazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTransazioneRPT",required=false,nillable=false)
+  protected java.lang.String codTransazioneRPT;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTransazioneRT",required=false,nillable=false)
+  protected java.lang.String codTransazioneRT;
 
 }

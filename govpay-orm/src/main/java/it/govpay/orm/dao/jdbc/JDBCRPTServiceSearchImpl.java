@@ -198,7 +198,9 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			fields.add(RPT.model().IMPORTO_TOTALE_PAGATO);
 			fields.add(RPT.model().XML_RT);
 			fields.add(RPT.model().COD_STAZIONE);
-		
+			fields.add(RPT.model().COD_TRANSAZIONE_RPT);
+			fields.add(RPT.model().COD_TRANSAZIONE_RT);
+
 			fields.add(new CustomField("id_versamento", Long.class, "id_versamento", this.getRPTFieldConverter().toTable(RPT.model())));
 			fields.add(new CustomField("id_portale", Long.class, "id_portale", this.getRPTFieldConverter().toTable(RPT.model())));
 			fields.add(new CustomField("id_canale", Long.class, "id_canale", this.getRPTFieldConverter().toTable(RPT.model())));

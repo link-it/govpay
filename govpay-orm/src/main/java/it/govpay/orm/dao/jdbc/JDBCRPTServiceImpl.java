@@ -146,6 +146,8 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().IMPORTO_TOTALE_PAGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_STAZIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RPT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RT,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_versamento","?");
 		sqlQueryObjectInsert.addInsertField("id_canale","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
@@ -174,6 +176,8 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getImportoTotalePagato(),RPT.model().IMPORTO_TOTALE_PAGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getXmlRT(),RPT.model().XML_RT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodStazione(),RPT.model().COD_STAZIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodTransazioneRPT(),RPT.model().COD_TRANSAZIONE_RPT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodTransazioneRT(),RPT.model().COD_TRANSAZIONE_RT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_versamento,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_canale,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class)
@@ -323,6 +327,10 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		lstObjects_rpt.add(new JDBCObject(rpt.getXmlRT(), RPT.model().XML_RT.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_STAZIONE,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodStazione(), RPT.model().COD_STAZIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RPT,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodTransazioneRPT(), RPT.model().COD_TRANSAZIONE_RPT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_TRANSAZIONE_RT,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodTransazioneRT(), RPT.model().COD_TRANSAZIONE_RT.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_versamento","?");
 		}

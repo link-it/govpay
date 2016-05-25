@@ -695,6 +695,8 @@ CREATE TABLE rpt
 	importo_totale_pagato BINARY_DOUBLE,
 	xml_rt BLOB,
 	cod_stazione VARCHAR(35) NOT NULL,
+	cod_transazione_rpt VARCHAR(36),
+	cod_transazione_rt VARCHAR(36),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -741,6 +743,8 @@ CREATE TABLE rr
 	importo_totale_revocato BINARY_DOUBLE,
 	xml_rr BLOB NOT NULL,
 	xml_er BLOB,
+	cod_transazione_rr VARCHAR(36),
+	cod_transazione_er VARCHAR(36),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_rpt NUMBER NOT NULL,

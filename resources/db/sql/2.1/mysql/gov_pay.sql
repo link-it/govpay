@@ -466,6 +466,8 @@ CREATE TABLE rpt
 	importo_totale_pagato DOUBLE,
 	xml_rt MEDIUMBLOB,
 	cod_stazione VARCHAR(35) NOT NULL,
+	cod_transazione_rpt VARCHAR(36),
+	cod_transazione_rt VARCHAR(36),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
@@ -504,6 +506,8 @@ CREATE TABLE rr
 	importo_totale_revocato DOUBLE,
 	xml_rr MEDIUMBLOB NOT NULL,
 	xml_er MEDIUMBLOB,
+	cod_transazione_rr VARCHAR(36),
+	cod_transazione_er VARCHAR(36),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_rpt BIGINT NOT NULL,
@@ -529,7 +533,7 @@ CREATE TABLE notifiche
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_prossima_spedizione DATETIME NOT NULL DEFAULT 0,
+	data_prossima_spedizione TIMESTAMP(3) NOT NULL DEFAULT 0,
 	tentativi_spedizione BIGINT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,

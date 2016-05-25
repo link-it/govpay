@@ -81,6 +81,10 @@ public class RRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "xml_rr", RR.model().XML_RR.getFieldType()));
 				setParameter(object, "setXmlER", RR.model().XML_ER.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "xml_er", RR.model().XML_ER.getFieldType()));
+				setParameter(object, "setCodTransazioneRR", RR.model().COD_TRANSAZIONE_RR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rr", RR.model().COD_TRANSAZIONE_RR.getFieldType()));
+				setParameter(object, "setCodTransazioneER", RR.model().COD_TRANSAZIONE_ER.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_transazione_er", RR.model().COD_TRANSAZIONE_ER.getFieldType()));
 				return object;
 			}
 			
@@ -129,6 +133,10 @@ public class RRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"xmlRR"));
 				setParameter(object, "setXmlER", RR.model().XML_ER.getFieldType(),
 					this.getObjectFromMap(map,"xmlER"));
+				setParameter(object, "setCodTransazioneRR", RR.model().COD_TRANSAZIONE_RR.getFieldType(),
+					this.getObjectFromMap(map,"codTransazioneRR"));
+				setParameter(object, "setCodTransazioneER", RR.model().COD_TRANSAZIONE_ER.getFieldType(),
+					this.getObjectFromMap(map,"codTransazioneER"));
 				return object;
 			}
 			

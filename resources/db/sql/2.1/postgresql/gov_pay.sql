@@ -472,6 +472,8 @@ CREATE TABLE rpt
 	importo_totale_pagato DOUBLE PRECISION,
 	xml_rt BYTEA,
 	cod_stazione VARCHAR(35) NOT NULL,
+	cod_transazione_rpt VARCHAR(36),
+	cod_transazione_rt VARCHAR(36),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_rpt') NOT NULL,
 	id_versamento BIGINT NOT NULL,
@@ -507,6 +509,8 @@ CREATE TABLE rr
 	importo_totale_revocato DOUBLE PRECISION,
 	xml_rr BYTEA NOT NULL,
 	xml_er BYTEA,
+	cod_transazione_rr VARCHAR(36),
+	cod_transazione_er VARCHAR(36),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_rr') NOT NULL,
 	id_rpt BIGINT NOT NULL,

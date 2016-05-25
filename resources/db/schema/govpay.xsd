@@ -73,6 +73,12 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 	
+	<xsd:simpleType name="String36">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="36" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 	<xsd:simpleType name="String10">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="10" />
@@ -1322,7 +1328,8 @@
 			<xsd:element name="importoTotalePagato" type="xsd:decimal" minOccurs="0" />
 			<xsd:element name="xmlRT" type="xsd:base64Binary" minOccurs="0" />	
 			<xsd:element name="codStazione" type="String35" />
-			
+			<xsd:element name="codTransazioneRPT" type="String36" minOccurs="0"/>
+			<xsd:element name="codTransazioneRT" type="String36" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1366,6 +1373,10 @@
 			<xsd:element name="importoTotaleRevocato" type="xsd:decimal" minOccurs="0" />
 			<xsd:element name="xmlRR" type="xsd:base64Binary" />
 			<xsd:element name="xmlER" type="xsd:base64Binary" minOccurs="0" />
+			
+			<xsd:element name="codTransazioneRR" type="String36" minOccurs="0"/>
+			<xsd:element name="codTransazioneER" type="String36" minOccurs="0"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 	

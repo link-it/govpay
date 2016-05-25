@@ -180,6 +180,20 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 				return "xml_er";
 			}
 		}
+		if(field.equals(RR.model().COD_TRANSAZIONE_RR)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_transazione_rr";
+			}else{
+				return "cod_transazione_rr";
+			}
+		}
+		if(field.equals(RR.model().COD_TRANSAZIONE_ER)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_transazione_er";
+			}else{
+				return "cod_transazione_er";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -239,6 +253,12 @@ public class RRFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RR.model(), returnAlias);
 		}
 		if(field.equals(RR.model().XML_ER)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().COD_TRANSAZIONE_RR)){
+			return this.toTable(RR.model(), returnAlias);
+		}
+		if(field.equals(RR.model().COD_TRANSAZIONE_ER)){
 			return this.toTable(RR.model(), returnAlias);
 		}
 
