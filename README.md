@@ -11,7 +11,7 @@ GovPay implementa il protocollo di colloquio con il Nodo dei Pagamenti SPC del p
 ## Contatti
 
 - Mailing list: [Utenti GovPay](http://www.gov4j.it/mailman/listinfo/utenti-govpay)
-- [GitHub Issues](https://github.com/link-it/GovPay/issues)
+- Segnalazioni: [GitHub Issues](https://github.com/link-it/GovPay/issues)
 
 ## Funzionalità
 
@@ -35,3 +35,22 @@ Di seguito un elenco delle principali funzionalità del prodotto.
 * completa integrazione con il software di Porta di Dominio OpenSPCoop.
 * cruscotto Web di gestione e configurazione.
 
+## Licenza
+
+GovPay - Porta di Accesso al Nodo dei Pagamenti SPC
+http://www.gov4j.it/govpay
+
+Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
