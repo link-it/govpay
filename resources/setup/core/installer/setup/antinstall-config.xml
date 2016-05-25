@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
-<installer name="GovPay PRODUCT_VERSION Installer" defaultImageResource="/logoSetup.png"
+<installer name="GovPay vPRODUCT_VERSION Installer" defaultImageResource="/logoSetup.png"
     windowIcon="/iconaSetup.png" wide="550:275">
     
     <!-- Se si caricano i loadDefaults non funzionano piu' i cambi di stato per il db -->
     <!-- loadDefaults="true" > -->
 
-    <page type="input" name="intro" displayText="Installer GovPay PRODUCT_VERSION">
+    <page type="input" name="intro" displayText="Installer GovPay vPRODUCT_VERSION">
 
 	<hidden property="antinstaller_product_version" value="PRODUCT_VERSION"/>
 
@@ -26,6 +26,7 @@
         <large-select defaultValue="jboss7" property="antinstaller_as" displayText="Application Server">
             <option value="jboss7" text="JBoss 7.x"/>
 	    <option value="jboss7" text="JBoss EAP 6.x"/>
+	    <option value="wildfly" text="WildFly 8.2"/>
         </large-select>
 
 	<comment displayText=""/>

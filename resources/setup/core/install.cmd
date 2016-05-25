@@ -52,6 +52,7 @@ set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\jakarta-regexp-1.5.jar
 
 REM # unix tasks
 set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-nodeps-1.8.0.jar
+set CLASSPATH=%CLASSPATH%;%ANTINSTALLER_LIBRARIES%\ant-trax.jar
 
 %COMMAND% -classpath %CLASSPATH%  org.tp23.antinstaller.runtime.ExecInstall %INTERFACE% %ROOT_OPENSPCOOP%\installer\setup
 
