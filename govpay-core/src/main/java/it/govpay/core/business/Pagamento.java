@@ -111,10 +111,10 @@ public class Pagamento extends BasicBD {
 		for(VersamentoKey versamento : gpAvviaTransazionePagamento.getVersamentoOrVersamentoRef()) {
 			Versamento versamentoModel = null;
 			if(versamento instanceof it.govpay.servizi.commons.Versamento) {
-				ctx.log("integrazione.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
+				ctx.log("core.acquisizioneVersamento", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				versamentoModel = VersamentoUtils.toVersamentoModel((it.govpay.servizi.commons.Versamento) versamento, this);
 			} else {
-				ctx.log("integrazione.acquisizioneVersamentoRef", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
+				ctx.log("core.acquisizioneVersamentoRef", versamento.getCodApplicazione(), versamento.getCodVersamentoEnte());
 				Applicazione applicazione = null;
 				try {
 					applicazione = AnagraficaManager.getApplicazione(this, versamento.getCodApplicazione());
@@ -306,11 +306,11 @@ public class Pagamento extends BasicBD {
 				idTransaction = ctx.openTransaction();
 				
 				if(codCarrello != null) {
-					ctx.setupNodoClient(intermediario, Azione.nodoInviaCarrelloRPT);
+					ctx.setupNodoClient(stazione.getCodStazione(), null, Azione.nodoInviaCarrelloRPT);
 					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
 					ctx.log("core.invioCarrelloRpt");
 				} else {
-					ctx.setupNodoClient(intermediario, Azione.nodoInviaRPT);
+					ctx.setupNodoClient(stazione.getCodStazione(), rpts.get(0).getCodDominio(), Azione.nodoInviaRPT);
 					ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rpts.get(0).getCodDominio()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rpts.get(0).getIuv()));
 					ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpts.get(0).getCcp()));
@@ -321,7 +321,7 @@ public class Pagamento extends BasicBD {
 			
 				setupConnection();
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
-					
+					ctx.log("core.invioRptKo");
 					// RPT rifiutata dal Nodo
 					// Aggiorno lo stato e ritorno l'errore
 					try {
@@ -344,7 +344,7 @@ public class Pagamento extends BasicBD {
 					// Aggiorno lo stato e ritorno
 					if(risposta.getUrl() != null) {
 						ctx.getContext().getResponse().addGenericProperty(new Property("redirectUrl", risposta.getUrl()));
-						ctx.log("core.invioRptOkRedirect");
+						ctx.log("core.invioRptKo");
 					} else {
 						ctx.log("core.invioRptOkNoRedirect");
 					}
@@ -368,7 +368,7 @@ public class Pagamento extends BasicBD {
 				} else {
 					StatoRpt statoRpt = null;
 					try {
-						statoRpt = StatoRpt.valueOf(risposta.getEsito().getStato());
+						statoRpt = StatoRpt.toEnum(risposta.getEsito().getStato());
 					} catch (IllegalArgumentException ee) {
 						throw new GovPayException(EsitoOperazione.NDP_000, e);
 					}
@@ -465,7 +465,7 @@ public class Pagamento extends BasicBD {
 				log.trace("Recupero i pendenti [CodStazione: " + stazione.getCodStazione() + "][CodDominio: " + dominio.getCodDominio() + "]");
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
-				Map<String, StatoRpt> statiRptPendenti = new HashMap<String, StatoRpt>();
+				Map<String, String> statiRptPendenti = new HashMap<String, String>();
 				
 				NodoClient client = new NodoClient(intermediario);
 				
@@ -513,8 +513,7 @@ public class Pagamento extends BasicBD {
 
 					for(TipoRPTPendente rptPendente : risposta.getListaRPTPendenti().getRptPendente()) {
 						String rptKey = rptPendente.getIdentificativoUnivocoVersamento() + "@" + rptPendente.getCodiceContestoPagamento();
-						StatoRpt stato = StatoRpt.valueOf(rptPendente.getStato());
-						statiRptPendenti.put(rptKey, stato);
+						statiRptPendenti.put(rptKey, rptPendente.getStato());
 					}
 					
 					a.add(Calendar.DATE, -7);
@@ -535,12 +534,13 @@ public class Pagamento extends BasicBD {
 				
 				// Scorro le transazioni. Se non risulta pendente sul nodo (quindi non e' pendente) la mando in aggiornamento.
 				for(Rpt rpt : rpts) {
-					StatoRpt stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
+					String stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null) {
-						if(!rpt.getStato().equals(stato)) {
-							log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);
+						log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);
+						StatoRpt statoRpt = StatoRpt.toEnum(stato);
+						if(!rpt.getStato().equals(statoRpt)) {
 							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt confermata pendente dal nodo con stato " + stato.toString());
-							rptBD.updateRpt(rpt.getId(), stato, null, null, null);
+							rptBD.updateRpt(rpt.getId(), statoRpt, null, null, null);
 						}
 					} else {
 						log.debug("Rpt non pendente sul nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
@@ -573,6 +573,8 @@ public class Pagamento extends BasicBD {
 	}
 
 	public GpAvviaRichiestaStornoResponse avviaStorno(Portale portaleAutenticato, GpAvviaRichiestaStorno gpAvviaRichiestaStorno) throws ServiceException, GovPayException {
+		GpContext ctx = GpThreadLocal.get();
+		
 		Portale portale = null;
 		try {
 			portale = AnagraficaManager.getPortale(this, gpAvviaRichiestaStorno.getCodPortale());
@@ -623,6 +625,8 @@ public class Pagamento extends BasicBD {
 		NotificheBD notificheBD = new NotificheBD(this);
 		PagamentiBD pagamentiBD = new PagamentiBD(this);
 		
+		ctx.log("core.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
+		
 		setAutoCommit(false);
 		rrBD.insertRr(rr);
 		notifica.setIdRr(rr.getId());
@@ -638,10 +642,23 @@ public class Pagamento extends BasicBD {
 		GpAvviaRichiestaStornoResponse response = new GpAvviaRichiestaStornoResponse();
 		response.setCodRichiestaStorno(rr.getCodMsgRevoca());
 		
+		String idTransaction = null;
 		try {
+			
+			idTransaction = ctx.openTransaction();
+			
+			ctx.setupNodoClient(rpt.getStazione(this).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
+			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rr.getCodDominio()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rr.getIuv()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rr.getCcp()));
+			ctx.log("core.invioRr");
+
 			Risposta risposta = RrUtils.inviaRr(rr, rpt, this);
 		
 			if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
+				
+				ctx.log("core.invioRrKo");
+				
 				// RR rifiutata dal Nodo
 				// Aggiorno lo stato e ritorno l'errore
 				
@@ -655,14 +672,18 @@ public class Pagamento extends BasicBD {
 				log.error(risposta.getLog());
 				throw new GovPayException(EsitoOperazione.NDP_001);
 			} else {
+				ctx.log("core.invioRrOk");
 				// RPT accettata dal Nodo
 				// Aggiorno lo stato e ritorno
 				rrBD.updateRr(rr.getId(), StatoRr.RR_ACCETTATA_NODO, null);
 				return response;
 			}
 		} catch (ClientException e) {
+			ctx.log("core.invioRrKo");
 			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
+		} finally {
+			ctx.closeTransaction(idTransaction);
 		}
 	}
 

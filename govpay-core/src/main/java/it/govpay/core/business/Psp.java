@@ -124,7 +124,7 @@ public class Psp extends BasicBD {
 				transactionId = GpThreadLocal.get().openTransaction();
 				GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", dominio.getCodDominio()));
 				GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
-				GpThreadLocal.get().setupNodoClient(intermediario, Azione.nodoChiediInformativaPSP);
+				GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediInformativaPSP);
 				GpThreadLocal.get().log("psp.aggiornamentoPspRichiesta");
 				
 				closeConnection();

@@ -123,7 +123,15 @@ public class Rpt extends BasicModel{
 		RT_ACCETTATA_PA,
 		RT_RIFIUTATA_PA,
 		RT_ESITO_SCONOSCIUTO_PA,
-		PROCESSED;
+		INTERNO_NODO;
+		
+		public static StatoRpt toEnum(String s) {
+			try {
+				return StatoRpt.valueOf(s);
+			} catch (IllegalArgumentException e) {
+				return INTERNO_NODO;
+			}
+		}
 	}
 	
 	private Long id;
@@ -152,6 +160,9 @@ public class Rpt extends BasicModel{
 	private EsitoPagamento esitoPagamento;
 	private BigDecimal importoTotalePagato;
 	private byte[] xmlRt;
+	
+	private String idTransazioneRpt;
+	private String idTransazioneRt;
 	
 	public Long getId() {
 		return id;
@@ -303,6 +314,18 @@ public class Rpt extends BasicModel{
 	public void setXmlRt(byte[] xml) {
 		this.xmlRt = xml;
 	}
+	public String getIdTransazioneRt() {
+		return idTransazioneRt;
+	}
+	public void setIdTransazioneRt(String idTransazioneRt) {
+		this.idTransazioneRt = idTransazioneRt;
+	}
+	public String getIdTransazioneRpt() {
+		return idTransazioneRpt;
+	}
+	public void setIdTransazioneRpt(String idTransazioneRpt) {
+		this.idTransazioneRpt = idTransazioneRpt;
+	}
 	// Business
 	
 	private Versamento versamento;
@@ -325,9 +348,13 @@ public class Rpt extends BasicModel{
 		this.versamento = versamento;
 	}
 	
-	public Stazione getStazione(BasicBD bd) throws ServiceException, NotFoundException {
+	public Stazione getStazione(BasicBD bd) throws ServiceException {
 		if(this.stazione == null) {
-			this.stazione = AnagraficaManager.getStazione(bd, getCodStazione());
+			try {
+				this.stazione = AnagraficaManager.getStazione(bd, getCodStazione());
+			} catch (NotFoundException e) {
+				throw new ServiceException(e);
+			}
 		}
 		return this.stazione;
 	}
@@ -336,7 +363,7 @@ public class Rpt extends BasicModel{
 		this.stazione = stazione;
 	}
 	
-	public Intermediario getIntermediario(BasicBD bd) throws ServiceException, NotFoundException {
+	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
 		if(this.intermediario == null) {
 			this.intermediario = AnagraficaManager.getIntermediario(bd, getStazione(bd).getIdIntermediario());
 		}
@@ -384,8 +411,5 @@ public class Rpt extends BasicModel{
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
 	}
-	
 
-
-	
 }

@@ -27,7 +27,6 @@ import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.servizi.commons.GpResponse;
@@ -36,6 +35,14 @@ public class GpContext {
 
 	private List<ILogger> loggers;
 	private List<Context> contexts;
+	
+	public static String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
+	public static String TIPO_SOGGETTO_NDP = "NDP";
+	public static String TIPO_SERVIZIO_NDP = "NDP";
+	
+	public static String TIPO_SOGGETTO_GOVPAY = "GP";
+	public static String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
+	public static String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
 	
 	public GpContext(MessageContext msgCtx) throws ServiceException {
 		try {
@@ -125,20 +132,28 @@ public class GpContext {
 		return null;
 	}
 	
-	public void setupNodoClient(Intermediario intermediario, Azione azione) {
+	public void setupNodoClient(String codStazione, String codDominio, Azione azione) {
 		Actor to = new Actor();
-		to.setName("PagoPa");
+		to.setName(NodoDeiPagamentiSPC);
+		to.setType(TIPO_SOGGETTO_NDP);
 		GpThreadLocal.get().getTransaction().setTo(to);
 		
 		Actor from = new Actor();
-		from.setName(intermediario.getDenominazione());
+		from.setName(codStazione);
+		from.setType(TIPO_SOGGETTO_NDP);
 		GpThreadLocal.get().getTransaction().setFrom(from);
 		
-		GpThreadLocal.get().setInfoFruizione(PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
 		
 		Server server = new Server();
-		server.setName("PagoPa");
+		server.setName(NodoDeiPagamentiSPC);
 		GpThreadLocal.get().getTransaction().setServer(server);
+		
+		if(codDominio != null) {
+			Client client = new Client();
+			client.setName(codDominio);
+			GpThreadLocal.get().getTransaction().setClient(client);
+		}
 	}
 	
 	private ILogger getActiveLogger(){
@@ -148,10 +163,11 @@ public class GpContext {
 		return null;
 	}
 	
-	public void setInfoFruizione(String servizio, String operazione, int version) {
+	public void setInfoFruizione(String tipoServizio, String servizio, String operazione, int version) {
 		Service service = new Service();
 		service.setName(servizio);
 		service.setVersion(version);
+		service.setType(tipoServizio);
 		getContext().getTransaction().setService(service);
 		
 		Operation operation = new Operation();

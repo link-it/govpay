@@ -119,7 +119,7 @@ public class Rendicontazioni extends BasicBD {
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", dominio.getCodDominio()));
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));
-						GpThreadLocal.get().setupNodoClient(intermediario, Azione.nodoChiediElencoFlussiRendicontazione);
+						GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediElencoFlussiRendicontazione);
 						
 						GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussi");
 						
@@ -178,7 +178,8 @@ public class Rendicontazioni extends BasicBD {
 										GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));
 										GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("identificativoFlusso", idRendicontazione.getIdentificativoFlusso()));
 										GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("annoFlusso", annoFlusso + ""));
-										GpThreadLocal.get().setupNodoClient(intermediario, Azione.nodoChiediFlussoRendicontazione);
+										GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediFlussoRendicontazione);
+
 										GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso");
 										NodoChiediFlussoRendicontazione richiestaFlusso = new NodoChiediFlussoRendicontazione();
 										richiestaFlusso.setIdentificativoDominio(dominio.getCodDominio());

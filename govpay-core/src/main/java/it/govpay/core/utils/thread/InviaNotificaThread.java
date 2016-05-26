@@ -24,6 +24,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Notifica.StatoSpedizione;
+import it.govpay.bd.model.Notifica.TipoNotifica;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.GpContext;
@@ -69,11 +70,14 @@ public class InviaNotificaThread implements Runnable {
 		GpContext ctx = null;
 		BasicBD bd = null;
 		try {
-			ctx = new GpContext("DA IMPOSTARE QUANDO MEMORIZZATO");
+			if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+				ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRpt());
+			} else {
+				ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRt());
+			}
+			GpThreadLocal.set(ctx);
 			ThreadContext.put("op", ctx.getTransactionId());
 			log.info("Richiesta operazione gpAvviaTransazionePagamento");
-			GpThreadLocal.set(ctx);
-		
 		
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
 			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null) {
@@ -113,9 +117,8 @@ public class InviaNotificaThread implements Runnable {
 			}
 		} finally {
 			completed = true;
-			if(bd != null){
-				bd.closeConnection();
-			}
+			if(bd != null) bd.closeConnection(); 
+			if(ctx != null) ctx.log();
 		}
 	}
 

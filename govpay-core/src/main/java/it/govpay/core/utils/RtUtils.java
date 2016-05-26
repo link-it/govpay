@@ -30,6 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 import org.xml.sax.SAXException;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
@@ -265,6 +266,12 @@ public class RtUtils extends NdpValidationUtils {
 		
 		log.info("Acquisizione RT per un importo di " + ctRt.getDatiPagamento().getImportoTotalePagato());
 		
+		GpContext ctx = GpThreadLocal.get();
+		ctx.getContext().getRequest().addGenericProperty(new Property("codMessaggioRicevuta", ctRt.getIdentificativoMessaggioRicevuta()));
+		ctx.getContext().getRequest().addGenericProperty(new Property("importo", ctRt.getDatiPagamento().getImportoTotalePagato().toString()));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codEsitoPagamento", Rpt.EsitoPagamento.toEnum(ctRt.getDatiPagamento().getCodiceEsitoPagamento()).toString()));
+		ctx.log("rt.acquisizione");
+		
 		// Rileggo per avere la lettura dello stato rpt in transazione
 		rpt.setCodMsgRicevuta(ctRt.getIdentificativoMessaggioRicevuta());
 		rpt.setDataMsgRicevuta(ctRt.getDataOraMessaggioRicevuta());
@@ -272,7 +279,7 @@ public class RtUtils extends NdpValidationUtils {
 		rpt.setImportoTotalePagato(ctRt.getDatiPagamento().getImportoTotalePagato());
 		rpt.setStato(StatoRpt.RT_ACCETTATA_PA);
 		rpt.setXmlRt(rtByte);
-		
+		rpt.setIdTransazioneRt(GpThreadLocal.get().getTransactionId());
 		// Aggiorno l'RPT con i dati dell'RT
 		rptBD.updateRpt(rpt.getId(), rpt);
 		
@@ -314,8 +321,10 @@ public class RtUtils extends NdpValidationUtils {
 				singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.ANOMALO);
 				irregolare = true;
 			}
-			versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 			
+			ctx.log("rt.acquisizionePagamento", pagamento.getIur(), pagamento.getImportoPagato().toString(), singoloVersamento.getCodSingoloVersamentoEnte(), singoloVersamento.getStatoSingoloVersamento().toString());
+			
+			versamentiBD.updateStatoSingoloVersamento(singoloVersamento.getId(), singoloVersamento.getStatoSingoloVersamento());
 			pagamentiBD.insertPagamento(pagamento);
 		}
 		
@@ -356,7 +365,7 @@ public class RtUtils extends NdpValidationUtils {
 		case DECORRENZA_TERMINI:
 		case PAGAMENTO_NON_ESEGUITO:
 			break;
-		}			
+		}	
 		
 		Notifica notifica = new Notifica(rpt, TipoNotifica.RICEVUTA, bd);
 		NotificheBD notificheBD = new NotificheBD(bd);
@@ -367,6 +376,7 @@ public class RtUtils extends NdpValidationUtils {
 		
 		ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, bd));
 		
+		ctx.log("rt.acquisizioneOk", versamento.getCodVersamentoEnte(), versamento.getStatoVersamento().toString());
 		log.info("RT acquisita con successo.");
 		
 		return rpt;

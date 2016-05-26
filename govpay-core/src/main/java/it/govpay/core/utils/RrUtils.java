@@ -246,8 +246,6 @@ public class RrUtils extends NdpValidationUtils {
 			inviaRR.setRr(rr.getXmlRr());
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRichiestaStorno(inviaRR)); 
 			return risposta;
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
 			if(bd != null) 
@@ -277,11 +275,7 @@ public class RrUtils extends NdpValidationUtils {
 			evento.setEsito(risposta.getEsito());
 		else
 			evento.setEsito("Errore di trasmissione al Nodo");
-		try {
-			evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
+		evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
 		evento.setIuv(rpt.getIuv());
 		evento.setSottotipoEvento(null);
 		evento.setTipoEvento(tipoEvento);
@@ -299,7 +293,7 @@ public class RrUtils extends NdpValidationUtils {
 			ctEr = JaxbUtils.toER(er);
 		} catch (Exception e) {
 			log.error("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
-			throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage());
+			throw new NdpException(FaultPa.PAA_SINTASSI_XSD, identificativoDominio, e.getCause().getMessage());
 		}
 		
 		RrBD rrBD = new RrBD(bd);
@@ -307,7 +301,7 @@ public class RrUtils extends NdpValidationUtils {
 		try {
 			rr = rrBD.getRr(ctEr.getRiferimentoMessaggioRevoca());
 		} catch (NotFoundException e) {
-			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, identificativoDominio, null);
+			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, identificativoDominio, "RR con identificativo " + ctEr.getRiferimentoMessaggioRevoca() + " sconosciuta");
 		}
 		
 		if(rr.getStato().equals(StatoRr.ER_ACCETTATA_PA)) {

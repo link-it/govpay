@@ -125,7 +125,7 @@ public class RptUtils {
 		rpt.setModelloPagamento(canale.getModelloPagamento());
 		rpt.setPspRedirectURL(null);
 		rpt.setStato(StatoRpt.RPT_ATTIVATA);
-
+		rpt.setIdTransazioneRpt(GpThreadLocal.get().getTransactionId());
 		rpt.setVersamento(versamento);
 		rpt.setCanale(canale);
 		rpt.setPsp(psp);
@@ -326,8 +326,6 @@ public class RptUtils {
 				inviaRPT.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRPT(rpt.getIntermediario(bd), rpt.getStazione(bd), rpt, inviaRPT)); 
 			return risposta;
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
 			if(bd != null) 
@@ -396,11 +394,7 @@ public class RptUtils {
 			evento.setEsito(risposta.getEsito());
 		else
 			evento.setEsito("Errore di trasmissione al Nodo");
-		try {
-			evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
+		evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
 		evento.setIuv(rpt.getIuv());
 		evento.setSottotipoEvento(null);
 		evento.setTipoEvento(tipoEvento);
@@ -459,7 +453,7 @@ public class RptUtils {
 					if(it.govpay.core.exceptions.NdpException.FaultNodo.valueOf(risposta.getFault().getFaultCode()).equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA)) {
 						log.info("RPT inesistente. Aggiorno lo stato in " + StatoRpt.RPT_ERRORE_INVIO_A_NODO + ".");
 						rpt.setStato(StatoRpt.RPT_ERRORE_INVIO_A_NODO);
-						rpt.setDescrizioneStato(null);
+						rpt.setDescrizioneStato("Stato sul nodo: PPT_RPT_SCONOSCIUTA");
 	
 						RptBD rptBD = new RptBD(bd);
 						rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ERRORE_INVIO_A_NODO, null, null, null);
@@ -467,7 +461,7 @@ public class RptUtils {
 					}
 					throw new GovPayException(EsitoOperazione.NDP_001, risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "");
 				} else {
-					StatoRpt nuovoStato = Rpt.StatoRpt.valueOf(risposta.getEsito().getStato());
+					StatoRpt nuovoStato = Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
 					log.info("Acquisito stato della RPT: " + nuovoStato + ".");
 	
 					RptBD rptBD = null;
