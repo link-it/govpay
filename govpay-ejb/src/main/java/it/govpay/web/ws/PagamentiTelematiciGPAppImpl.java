@@ -72,7 +72,7 @@ targetNamespace = "http://www.govpay.it/servizi/",
 portName = "GPAppPort",
 wsdlLocation="classpath:wsdl/GpApp.wsdl")
 
-@HandlerChain(file="../../../../handler-chains/handler-chain.xml")
+@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 
 @org.apache.cxf.annotations.SchemaValidation
 public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {

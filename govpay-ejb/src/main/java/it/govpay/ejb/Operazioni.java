@@ -42,6 +42,7 @@ import javax.ejb.Singleton;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 
 @Singleton
@@ -59,7 +60,11 @@ public class Operazioni{
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Batch");
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
 			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("AcquisizioneRendicontazioni");
+			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			String response = new Rendicontazioni(bd).downloadRendicontazioni();
@@ -83,7 +88,11 @@ public class Operazioni{
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Batch");
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
 			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("AggiornamentoRegistroPsp");
+			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			return new Psp(bd).aggiornaRegistro();
@@ -105,7 +114,11 @@ public class Operazioni{
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Batch");
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
 			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("RecuperoRptPendenti");
+			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			return new Pagamento(bd).verificaTransazioniPendenti();
@@ -128,7 +141,11 @@ public class Operazioni{
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Batch");
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
 			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("SpedizioneNotifiche");
+			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			log.trace("Spedizione notifiche non consegnate");

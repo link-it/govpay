@@ -164,7 +164,7 @@ public class Pagamento extends BasicBD {
 			Date adesso = new Date();
 			boolean isBollo = false;
 			Stazione stazione = null;
-			List<String> versamentiRefs = new ArrayList<String>();
+			
 			for(Versamento versamentoModel : versamenti) {
 				
 				ctx.log("rpt.validazioneSemantica", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
@@ -209,8 +209,6 @@ public class Pagamento extends BasicBD {
 				}
 				
 				ctx.log("rpt.validazioneSemanticaOk", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
-				
-				versamentiRefs.add(versamentoModel.getCodVersamentoEnte() + "@" + versamentoModel.getApplicazione(this).getCodApplicazione());
 			}
 			
 			it.govpay.bd.model.Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
@@ -262,6 +260,7 @@ public class Pagamento extends BasicBD {
 			List<Rpt> rpts = new ArrayList<Rpt>();
 			for(Versamento versamento : versamenti) {
 				// Aggiorno tutti i versamenti che mi sono stati passati
+				
 				if(versamento.getId() == null) {
 					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
 				}
@@ -298,7 +297,6 @@ public class Pagamento extends BasicBD {
 				} else {
 					ctx.setCorrelationId(versamento.getUo(this).getDominio(this).getCodDominio() + iuv.getIuv() + ccp);
 				}
-				
 				Rpt rpt = RptUtils.buildRpt(intermediario, stazione, codCarrello, versamento, iuv, ccp, portale, psp, canale, versante, autenticazione, ibanAddebito, redirect, this);
 				rptBD.insertRpt(rpt);
 				rpts.add(rpt);

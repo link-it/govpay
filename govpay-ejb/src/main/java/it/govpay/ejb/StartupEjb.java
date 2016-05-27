@@ -44,6 +44,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.openspcoop2.utils.logger.LoggerFactory;
+import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
 import org.openspcoop2.utils.logger.log4j.Log4jType;
@@ -94,7 +95,11 @@ public class StartupEjb {
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Inizializzazione");
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
 			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("Init");
+			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 		} catch (Exception e) {
 			log.error("Errore durante predisposizione del contesto: " + e);

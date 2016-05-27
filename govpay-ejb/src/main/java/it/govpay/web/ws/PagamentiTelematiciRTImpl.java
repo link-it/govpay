@@ -64,7 +64,7 @@ wsdlLocation = "classpath:wsdl/PaPerNodo.wsdl")
 
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 
-@HandlerChain(file="../../../../handler-chains/handler-chain.xml")
+@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
 
 public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 

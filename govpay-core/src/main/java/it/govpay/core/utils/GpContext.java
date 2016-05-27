@@ -40,11 +40,13 @@ public class GpContext {
 	public static String TIPO_SOGGETTO_NDP = "NDP";
 	public static String TIPO_SERVIZIO_NDP = "NDP";
 	
-	public static String TIPO_SOGGETTO_GOVPAY = "GP";
+	public static String TIPO_SOGGETTO_APP = "APP";
+	public static String TIPO_SOGGETTO_PRT = "PRT";
+	public static String TIPO_SOGGETTO_STAZIONE = "STZ";
 	public static String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
 	public static String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
 	
-	public GpContext(MessageContext msgCtx) throws ServiceException {
+	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
 		try {
 			loggers = new ArrayList<ILogger>();
 			ILogger logger = LoggerFactory.newLogger(new Context());	
@@ -59,7 +61,9 @@ public class GpContext {
 			
 			Service service = new Service();
 			service.setName(((QName) msgCtx.get(MessageContext.WSDL_SERVICE)).getLocalPart());
-			service.setVersion(020100);
+			service.setVersion(versioneServizio);
+			service.setType(tipoServizio);
+			
 			transaction.setService(service);
 			
 			Operation operation = new Operation();
@@ -140,7 +144,7 @@ public class GpContext {
 		
 		Actor from = new Actor();
 		from.setName(codStazione);
-		from.setType(TIPO_SOGGETTO_NDP);
+		from.setType(TIPO_SOGGETTO_STAZIONE);
 		GpThreadLocal.get().getTransaction().setFrom(from);
 		
 		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);

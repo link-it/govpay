@@ -73,5 +73,12 @@ public class IbanAccreditoConverter {
 
 		return vo;
 	}
+	
+	private static String toNull(String s) {
+		if(s == null || s.trim().length() == 0)
+			return null;
+		else
+			return s.trim();
+	}
 
 }

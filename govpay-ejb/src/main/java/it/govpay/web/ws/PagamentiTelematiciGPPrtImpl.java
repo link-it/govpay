@@ -73,7 +73,7 @@ targetNamespace = "http://www.govpay.it/servizi/",
 portName = "GPPrtPort",
 wsdlLocation = "classpath:wsdl/GpPrt.wsdl")
 
-@HandlerChain(file="../../../../handler-chains/handler-chain.xml")
+@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
 
 @org.apache.cxf.annotations.SchemaValidation
 
@@ -425,7 +425,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		if(prt != null) {
 			Actor from = new Actor();
 			from.setName(prt.getCodPortale());
-			from.setType("GPPRT");
+			from.setType(GpContext.TIPO_SOGGETTO_PRT);
 			GpThreadLocal.get().getTransaction().setFrom(from);
 		}
 		
