@@ -84,8 +84,9 @@ public class NodoClient extends BasicClient {
 		GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
 		GpThreadLocal.get().log("cooperazione.invioRichiesta");
 		
-		byte[] response = super.sendSoap(azione, body, header, isAzioneInUrl);
+		
 		try {
+			byte[] response = super.sendSoap(azione, body, header, isAzioneInUrl);
 			if(response == null) {
 				throw new ClientException("Il Nodo dei Pagamenti ha ritornato un messaggio vuoto.");
 			}
@@ -100,6 +101,9 @@ public class NodoClient extends BasicClient {
 				GpThreadLocal.get().log("cooperazione.invioRichiestaOk");
 			}
 			return r;
+		} catch (ClientException e) {
+			GpThreadLocal.get().log("cooperazione.invioRichiestaKo");
+			throw e;
 		} catch (Exception e) {
 			GpThreadLocal.get().log("cooperazione.invioRichiestaKo");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);

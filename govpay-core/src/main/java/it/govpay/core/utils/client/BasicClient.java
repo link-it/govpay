@@ -25,6 +25,7 @@ import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Connettore.EnumAuthType;
 import it.govpay.bd.model.Connettore.EnumSslType;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 
@@ -191,7 +192,7 @@ public class BasicClient {
 		int responseCode;
 		HttpURLConnection connection = null;
 		byte[] msg = null;
-
+		GpContext ctx = GpThreadLocal.get();
 		String urlString = url.toExternalForm();
 		if(isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
@@ -241,9 +242,9 @@ public class BasicClient {
 			}
 			
 			requestMsg.setContent(baos.toByteArray());
-			GpThreadLocal.get().getContext().getRequest().setOutDate(new Date());
-			GpThreadLocal.get().getContext().getRequest().setOutSize(Long.valueOf(baos.size()));
-			GpThreadLocal.get().log(requestMsg);
+			ctx.getContext().getRequest().setOutDate(new Date());
+			ctx.getContext().getRequest().setOutSize(Long.valueOf(baos.size()));
+			ctx.log(requestMsg);
 			
 			connection.getOutputStream().write(baos.toByteArray());
 	
@@ -252,8 +253,7 @@ public class BasicClient {
 		}
 		try {
 			responseCode = connection.getResponseCode();
-			if(GpThreadLocal.get().getTransaction().getServer() != null)
-				GpThreadLocal.get().getTransaction().getServer().setTransportCode(Integer.toString(responseCode));
+			ctx.getTransaction().getServer().setTransportCode(Integer.toString(responseCode));
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
@@ -297,7 +297,7 @@ public class BasicClient {
 				throw new ClientException("Errore nell'invocazione: HTTP " + responseCode);
 			}
 		} finally {
-			GpThreadLocal.get().log(responseMsg);
+			ctx.log(responseMsg);
 		}
 		
 	}

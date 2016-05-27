@@ -24,7 +24,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.business.Psp;
-import it.govpay.core.business.Rendicontazioni;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -126,14 +125,14 @@ public class StartupEjb {
 			if(bd != null) bd.closeConnection();
 		}
 		
-		try {
-			bd = BasicBD.newInstance();
-			new Rendicontazioni(bd).downloadRendicontazioni();
-		} catch (Exception e) {
-			log.error("Aggiornamento delle rendicontazioni fallito",e);
-		} finally {
-			if(bd != null) bd.closeConnection();
-		}
+//		try {
+//			bd = BasicBD.newInstance();
+//			new Rendicontazioni(bd).downloadRendicontazioni();
+//		} catch (Exception e) {
+//			log.error("Aggiornamento delle rendicontazioni fallito",e);
+//		} finally {
+//			if(bd != null) bd.closeConnection();
+//		}
 		
 		ctx.log();
 	}
