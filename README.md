@@ -1,5 +1,4 @@
 # GovPay - Porta di accesso al Nodo dei Pagamenti
-
 GovPay implementa il protocollo di colloquio con il Nodo dei Pagamenti SPC del progetto PagoPa per l'integrazione degli enti pubblici con la rete interbancaria.
 
 ## Documentazione
