@@ -37,6 +37,8 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.servizi.commons.EsitoOperazione;
 
@@ -69,8 +71,12 @@ public class Versamento extends BasicBD {
 	public it.govpay.bd.model.Iuv caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException {
 		// Indica se devo gestire la transazione oppure se e' gestita dal chiamante
 		boolean doCommit = false;
+		GpContext ctx = GpThreadLocal.get();
 		try {
+			ctx.log("versamento.validazioneSemantica", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
 			VersamentoUtils.validazioneSemantica(versamento, generaIuv, this);
+			ctx.log("versamento.validazioneSemanticaOk", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte());
+			
 			VersamentiBD versamentiBD = new VersamentiBD(this);
 			
 			if(isAutoCommit()) {
