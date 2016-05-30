@@ -88,6 +88,23 @@
 			                </includes>
 			                <targetPath>scripts</targetPath>
 			            </resource>
+			            <resource>
+			                <filtering>true</filtering>
+			                <directory>src/main/webapp/public</directory>
+			                <includes>
+			                    <include>*.html</include>
+			                    <include>*.jsp</include>
+			                </includes>
+			                <targetPath>public</targetPath>
+			            </resource>
+			            <resource>
+			                <filtering>true</filtering>
+			                <directory>src/main/webapp</directory>
+			                <includes>
+			                    <include>index.html</include>
+			                </includes>
+			                <targetPath>/</targetPath>
+			            </resource>
 			        </webResources>
 				</configuration>
 			</plugin>

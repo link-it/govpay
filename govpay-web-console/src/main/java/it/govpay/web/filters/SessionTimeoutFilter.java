@@ -50,8 +50,8 @@ import org.apache.logging.log4j.Logger;
 */
 public class SessionTimeoutFilter implements Filter {
 
-	private String loginPage = "public/login.html";
-	private String loginErrorPage = "public/loginError.html";
+	private String loginPage = "public/login.jsp";
+	private String loginErrorPage = "public/login.jsp";
 	private List<String> excludedPages = null;
 	Logger log = LogManager.getLogger();
 
@@ -70,7 +70,7 @@ public class SessionTimeoutFilter implements Filter {
 
 		if ((request instanceof HttpServletRequest) && (response instanceof HttpServletResponse)) {
 			HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-			HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+		//	HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 			
 			String requestPath = httpServletRequest.getRequestURI();
 			this.log.debug("Richiesta risorsa: " + requestPath);
@@ -90,7 +90,7 @@ public class SessionTimeoutFilter implements Filter {
 
 				// is session invalid?
 				if (this.isSessionInvalid(httpServletRequest)) {					
-					String redirPageUrl = httpServletRequest.getContextPath() + "/";
+					//String redirPageUrl = httpServletRequest.getContextPath() + "/";
 					
 					if(sessione!= null)
 						sessione.invalidate();
@@ -101,8 +101,8 @@ public class SessionTimeoutFilter implements Filter {
 					//redirPageUrl += StringUtils.contains(httpServletRequest.getRequestURI(), getLoginPage()) ? getLoginPage() : getTimeoutPage();
 				//	redirPageUrl += getRedirPage(httpServletRequest);
 //					log.info("session is invalid! redirecting to page : " + redirPageUrl);
-					httpServletResponse.sendRedirect(redirPageUrl);
-					return;
+					//httpServletResponse.sendRedirect(redirPageUrl);
+					//return;
 				}
 			}
 		}
