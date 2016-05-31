@@ -350,7 +350,7 @@
 		
 		<xsd:sequence>
 			<xsd:element name="codPsp" type="String35"/>
-			<xsd:element name="ragioneSociale" type="String35"/>
+			<xsd:element name="ragioneSociale" type="String70"/>
 			<xsd:element minOccurs="0" name="urlInfo" type="xsd:string"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 			<xsd:element name="storno" type="xsd:boolean"/>
