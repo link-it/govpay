@@ -43,10 +43,15 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.logger.LoggerFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
-import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
+import org.openspcoop2.utils.logger.config.DatabaseConfig;
+import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
+import org.openspcoop2.utils.logger.config.DiagnosticConfig;
+import org.openspcoop2.utils.logger.config.Log4jConfig;
+import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
 import org.openspcoop2.utils.logger.log4j.Log4jType;
 
 @Startup
@@ -70,18 +75,39 @@ public class StartupEjb {
 			log.warn("Errore durante la configurazione del Logger: " + e);
 		}
 		
+		// Configurazione del logger Diagnostici/Tracce/Dump
 		try {
+			// TODO
+			DiagnosticConfig diagnosticConfig = new DiagnosticConfig();
+	        diagnosticConfig.setDiagnosticPropertiesResourceURI("/msgDiagnostici.properties");
+	        diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
+			
+	        Log4jConfig log4jConfig = new Log4jConfig();
+	        log4jConfig.setLog4jType(Log4jType.LOG4Jv2);
 			if(log4j2Config != null) {
-				LoggerFactory.initialize(Log4JLoggerWithProxyContext.class.getName(),
-						"/msgDiagnostici.properties",
-						false,
-						new File(log4j2Config), Log4jType.LOG4Jv2);
+		        log4jConfig.setLog4jPropertiesResource(new File(log4j2Config));
 			} else {
-				LoggerFactory.initialize(Log4JLoggerWithProxyContext.class.getName(),
-						"/msgDiagnostici.properties",
-						false,
-						"/log4j2.xml", Log4jType.LOG4Jv2);
+		        log4jConfig.setLog4jPropertiesResourceURI("/log4j2.xml");
 			}
+			
+			MultiLoggerConfig mConfig = new MultiLoggerConfig();
+	        mConfig.setDiagnosticConfig(diagnosticConfig);
+//	        mConfig.setDiagnosticSeverityFilter(Severity.DEBUG_LOW);
+//	        mConfig.setEventSeverityFilter(Severity.INFO);
+	        mConfig.setLog4jLoggerEnabled(true);
+	        mConfig.setLog4jConfig(log4jConfig);
+	        mConfig.setDbLoggerEnabled(false);
+	        DatabaseConfig dbConfig = new DatabaseConfig();
+	        DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
+	        dbDSConfig.setJndiName(null);
+	        dbDSConfig.setJndiContext(null);
+	        dbConfig.setConfigDatasource(dbDSConfig);
+	        dbConfig.setDatabaseType(TipiDatabase.POSTGRESQL);
+	        dbConfig.setLogSql(true);
+	        mConfig.setDatabaseConfig(dbConfig);
+	        
+	        LoggerFactory.initialize("org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext", log, mConfig);
+	        
 		} catch (Exception e) {
 			log.error("Errore durante la configurazione dei diagnostici", e);
 			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
