@@ -516,7 +516,7 @@ public class RptUtils {
 							return true;
 						}
 	
-						RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, bd);
+						rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, bd);
 						return true;
 					default:
 						log.info("Aggiorno lo stato della RPT [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "] in " + nuovoStato + ".");

@@ -58,19 +58,8 @@
 										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
 										<xsd:element name="importoRendicontato" type="com:importo" />
 										<xsd:element name="iur" type="com:cod35" />
-										<xsd:element name="codFlussoRendicontazione" type="com:cod35" />
 										<xsd:element name="dataRendicontazione" type="xsd:dateTime" />
 										<xsd:element name="esitoRendicontazione" type="com:tipoRendicontazione" />
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-							<xsd:element name="pagamentoSenzaRpt" maxOccurs="unbounded" minOccurs="0">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
-										<xsd:element name="importoPagato" type="com:importo" />
-										<xsd:element name="iur" type="com:cod35" />
-										<xsd:element name="dataRendicontazione" type="xsd:dateTime"/>
 									</xsd:sequence>
 								</xsd:complexType>
 							</xsd:element>
@@ -223,43 +212,64 @@
 			
 			<xsd:simpleType name="string2">
 				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
 					<xsd:maxLength value="2" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="string16">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="16" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
 			<xsd:simpleType name="string20">
 				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
 					<xsd:maxLength value="20" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
 			<xsd:simpleType name="string35">
 				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
 					<xsd:maxLength value="35" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
 			<xsd:simpleType name="string40">
 				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
 					<xsd:maxLength value="40" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
 			<xsd:simpleType name="string70">
 				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
 					<xsd:maxLength value="70" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
 			<xsd:simpleType name="string120">
 				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
 					<xsd:maxLength value="120" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
 			<xsd:simpleType name="string140">
 				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
 					<xsd:maxLength value="140" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="string256">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="256" />
 				</xsd:restriction>
 			</xsd:simpleType>
 		
@@ -419,15 +429,15 @@
 			
 			<xsd:complexType name="anagrafica">
 				<xsd:sequence>
-					<xsd:element name="codUnivoco" type="xsd:string" />
-					<xsd:element name="ragioneSociale" type="xsd:string" />
-					<xsd:element name="indirizzo" type="xsd:string" minOccurs="0" />
-					<xsd:element name="civico" type="xsd:string" minOccurs="0" />
-					<xsd:element name="cap" type="xsd:string" minOccurs="0" />
-					<xsd:element name="localita" type="xsd:string" minOccurs="0" />
-					<xsd:element name="provincia" type="xsd:string" minOccurs="0" />
-					<xsd:element name="nazione" type="xsd:string" minOccurs="0" />
-					<xsd:element name="email" type="xsd:string" minOccurs="0" />
+					<xsd:element name="codUnivoco" type="com:string35" />
+					<xsd:element name="ragioneSociale" type="com:string70" />
+					<xsd:element name="indirizzo" type="com:string70" minOccurs="0" />
+					<xsd:element name="civico" type="com:string16" minOccurs="0" />
+					<xsd:element name="cap" type="com:string16" minOccurs="0" />
+					<xsd:element name="localita" type="com:string35" minOccurs="0" />
+					<xsd:element name="provincia" type="com:string35" minOccurs="0" />
+					<xsd:element name="nazione" type="com:string2" minOccurs="0" />
+					<xsd:element name="email" type="com:string256" minOccurs="0" />
 					<xsd:element name="telefono" type="xsd:string" minOccurs="0" />
 					<xsd:element name="cellulare" type="xsd:string" minOccurs="0" />
 					<xsd:element name="fax" type="xsd:string" minOccurs="0" />
