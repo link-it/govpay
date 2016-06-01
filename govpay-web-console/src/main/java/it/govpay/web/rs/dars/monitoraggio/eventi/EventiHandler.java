@@ -71,10 +71,10 @@ import it.govpay.web.utils.Utils;
 
 public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandler<Evento>{
 
-	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
+	public static final String SEPARATORE_CSV = "|";
+
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-	private SimpleDateFormat sdfFilename = new SimpleDateFormat("yyyyMMdd_HHmmss");  
 
 	public EventiHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -96,7 +96,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			
+
 			String idTransazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
 			String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
 			SortOrder sortOrder = SortOrder.DESC;
@@ -110,14 +110,14 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Evento.model().DATA_1);
-		
+
 			fsw.setSortOrder(sortOrder);
 			filter.getFilterSortList().add(fsw);
 
 			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String ccpId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
-			
+
 
 
 			String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
@@ -260,18 +260,17 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	public String getTitolo(Evento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
-		//Nel titolo indicare dominio, iuv, ccp e tipo evento 
+		//Nel titolo indicare data tipo evento ed esito 
 
-		String codDominio = entry.getCodDominio();
-		String iuv = entry.getIuv();
-		String ccp = entry.getCcp();
 		TipoEvento tipoEvento = entry.getTipoEvento();
-
+		Date dataRichiesta = entry.getDataRichiesta();
+		String esito = entry.getEsito();
 
 		sb.append(
 				Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo",
-						codDominio,iuv,ccp,
-						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+ tipoEvento.name()) 
+						this.sdf.format(dataRichiesta),						
+						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+ tipoEvento.name()),
+						esito						
 						));
 
 		return sb.toString();
@@ -280,11 +279,12 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	@Override
 	public String getSottotitolo(Evento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
+		String codDominio = entry.getCodDominio();
+		String iuv = entry.getIuv();
+		String ccp = entry.getCcp();
 
-		Date dataRichiesta = entry.getDataRichiesta();
-		String esito = entry.getEsito();
-
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo", this.sdf.format(dataRichiesta),esito));
+		//Nel sottotitolo indicare dominio, iuv, ccp 
+		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo", codDominio,iuv,ccp));
 
 		return sb.toString();
 	} 
@@ -313,17 +313,20 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			EventiFilter filter = eventiBD.newFilter();
 			filter.setIdEventi(idsToExport );
 			List<Evento> list = eventiBD.findAll(filter);
+			StringBuilder sbCSV = new StringBuilder();
 
-			int i =1;
+			sbCSV.append(getCsvHeader());
+
 			for (Evento evento: list) {
-				String eventoFileName = "Evento_" + i + "_"+ evento.getTipoEvento().name() + "_" + this.sdfFilename.format(evento.getDataRichiesta())  +".csv"; 
-
-				ZipEntry datiEvento = new ZipEntry(eventoFileName);
-				zout.putNextEntry(datiEvento);
-				zout.write(getEventoCsv(evento).getBytes());
-				zout.closeEntry();
-				i++;
+				sbCSV.append("\n");
+				sbCSV.append(getEventoCsv(evento));
 			}
+
+			ZipEntry datiEvento = new ZipEntry("eventi.csv");
+			zout.putNextEntry(datiEvento);
+			zout.write(sbCSV.toString().getBytes());
+			zout.closeEntry();
+
 			zout.flush();
 			zout.close();
 
@@ -337,57 +340,87 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 		}
 	}
 
+	private String getCsvHeader(){
+		StringBuilder sb = new StringBuilder();
+
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sottotipoEvento.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".componente.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erogatore.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fruitore.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esito.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRisposta.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRichiesta.label")).append(SEPARATORE_CSV);
+		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRisposta.label"));
+
+		return sb.toString();
+	}
+
 	private String getEventoCsv(Evento evento){
 		StringBuilder sb = new StringBuilder();
 
-		it.govpay.web.rs.dars.model.Sezione sezione = new it.govpay.web.rs.dars.model.Sezione(""); 
-
 		if(StringUtils.isNotEmpty(evento.getCodDominio()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"), evento.getCodDominio());
+			sb.append(evento.getCodDominio());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getIuv()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"), evento.getIuv());
+			sb.append(evento.getIuv());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getCcp()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"), evento.getCcp());
+			sb.append(evento.getCcp());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getCodPsp()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label"), evento.getCodPsp());
+			sb.append(evento.getCodPsp());
+		sb.append(SEPARATORE_CSV);
 		if(evento.getTipoEvento() != null)
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento.label"), 
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+evento.getTipoEvento().name()));
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+evento.getTipoEvento().name()));
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getSottotipoEvento()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sottotipoEvento.label"), evento.getSottotipoEvento());
-		if(evento.getCategoriaEvento()!= null)
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento.label"), 
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento." +evento.getCategoriaEvento().name()));
+			sb.append(evento.getSottotipoEvento());
+		sb.append(SEPARATORE_CSV);
+		if(evento.getCategoriaEvento() != null)
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento." +evento.getCategoriaEvento().name()));
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getComponente()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".componente.label"), evento.getComponente());
+			sb.append(evento.getComponente());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getErogatore()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erogatore.label"), evento.getErogatore());
+			sb.append(evento.getErogatore());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getFruitore()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fruitore.label"), evento.getFruitore());
+			sb.append(evento.getFruitore());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getCodStazione()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"), evento.getCodStazione());
+			sb.append(evento.getCodStazione());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getCodCanale()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), evento.getCodCanale());
+			sb.append(evento.getCodCanale());
+		sb.append(SEPARATORE_CSV);
 		if(evento.getTipoVersamento()!= null)
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), evento.getTipoVersamento().name());
+			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento." +evento.getTipoVersamento().name()));
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getEsito()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esito.label"), evento.getEsito());
+			sb.append(evento.getEsito());
+		sb.append(SEPARATORE_CSV);
 		if(evento.getDataRichiesta()!= null)
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label"), this.sdf.format(evento.getDataRichiesta()));
+			sb.append( this.sdf.format(evento.getDataRichiesta()));
+		sb.append(SEPARATORE_CSV);
 		if(evento.getDataRisposta()!= null)
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRisposta.label"), this.sdf.format(evento.getDataRisposta()));
+			sb.append(this.sdf.format(evento.getDataRisposta()));
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getAltriParametriRichiesta()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRichiesta.label"), evento.getAltriParametriRichiesta());
+			sb.append(evento.getAltriParametriRichiesta());
+		sb.append(SEPARATORE_CSV);
 		if(StringUtils.isNotEmpty(evento.getAltriParametriRisposta()))
-			sezione.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRisposta.label"), evento.getAltriParametriRisposta());
-
-
-		for (Voce<String> voce : sezione.getVoci()) {
-			if(sb.length() > 0)
-				sb.append("\n");
-
-			sb.append(voce.getEtichetta()).append(":").append(voce.getValore());
-		}
+			sb.append(evento.getAltriParametriRisposta());
 
 		return sb.toString();
 	}
