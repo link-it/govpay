@@ -59,6 +59,7 @@ import org.openspcoop2.utils.logger.log4j.Log4jType;
 public class StartupEjb {
 	
 	private static Logger log = LogManager.getLogger();	
+	private static org.apache.log4j.Logger logv1 = org.apache.log4j.LogManager.getLogger(StartupEjb.class);	
 	
 	@PostConstruct
 	public void init() {
@@ -99,14 +100,14 @@ public class StartupEjb {
 	        mConfig.setDbLoggerEnabled(false);
 	        DatabaseConfig dbConfig = new DatabaseConfig();
 	        DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
-	        dbDSConfig.setJndiName(null);
-	        dbDSConfig.setJndiContext(null);
+	        dbDSConfig.setJndiName(it.govpay.bd.GovpayConfig.getInstance().getDataSourceJNDIName());
+//	        dbDSConfig.setJndiContext(null);
 	        dbConfig.setConfigDatasource(dbDSConfig);
 	        dbConfig.setDatabaseType(TipiDatabase.POSTGRESQL);
 	        dbConfig.setLogSql(true);
 	        mConfig.setDatabaseConfig(dbConfig);
 	        
-	        LoggerFactory.initialize("org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext", log, mConfig);
+	        LoggerFactory.initialize("org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext", logv1, mConfig);
 	        
 		} catch (Exception e) {
 			log.error("Errore durante la configurazione dei diagnostici", e);
