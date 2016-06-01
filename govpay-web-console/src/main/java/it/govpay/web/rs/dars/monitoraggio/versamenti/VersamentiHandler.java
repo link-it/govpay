@@ -21,7 +21,6 @@
 package it.govpay.web.rs.dars.monitoraggio.versamenti;
 
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -122,7 +121,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
+			fsw.setField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
@@ -131,13 +130,10 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			if(StringUtils.isNotEmpty(cfDebitore))
 				filter.setCodUnivocoDebitore(cfDebitore); 
 
-			String cfVersanteId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfVersante.id");
-			String cfVersante = this.getParameter(uriInfo, cfVersanteId, String.class);
-
-			String idVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
-			String idVersamento = this.getParameter(uriInfo, idVersamentoId, String.class);
-			if(StringUtils.isNotEmpty(idVersamento))
-				filter.setCodVersamento(idVersamento);
+			String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
+			String codVersamento = this.getParameter(uriInfo, codVersamentoId, String.class);
+			if(StringUtils.isNotEmpty(codVersamento))
+				filter.setCodVersamento(codVersamento);
 			
 
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
@@ -165,8 +161,18 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String iuv = this.getParameter(uriInfo, iuvId, String.class);
-			if(StringUtils.isNotEmpty(iuv))
-				filter.setIuv(iuv); 
+			if(StringUtils.isNotEmpty(iuv)){
+				RptBD rptBD = new RptBD(bd);
+				RptFilter newFilter = rptBD.newFilter();
+				newFilter.setIuv(iuv);
+				List<Rpt> findAll = rptBD.findAll(newFilter);
+				List<Long> idVersamentoL = new ArrayList<Long>();
+				for (Rpt rpt : findAll) {
+					idVersamentoL.add(rpt.getIdVersamento());
+				}
+				
+				filter.setIdVersamento(idVersamentoL);  
+			}
 			
 
 			boolean eseguiRicerca = isAdmin;
@@ -214,8 +220,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		String cfDebitoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
-		String cfVersanteId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfVersante.id");
-		String idVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
+		String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
 		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 
@@ -229,13 +234,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		cfDebitore.setDefaultValue(null);
 		sezioneRoot.addField(cfDebitore);
 
-		InputText cfVersante = (InputText) infoRicercaMap.get(cfVersanteId);
-		cfVersante.setDefaultValue(null);
-		sezioneRoot.addField(cfVersante);
-
-		InputText idVersamento = (InputText) infoRicercaMap.get(idVersamentoId);
-		idVersamento.setDefaultValue(null);
-		sezioneRoot.addField(idVersamento);
+		InputText codVersamento = (InputText) infoRicercaMap.get(codVersamentoId);
+		codVersamento.setDefaultValue(null);
+		sezioneRoot.addField(codVersamento);
 
 		InputText iuv = (InputText) infoRicercaMap.get(iuvId);
 		iuv.setDefaultValue(null);
@@ -279,8 +280,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String cfDebitoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
-			String cfVersanteId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfVersante.id");
-			String idVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
+			String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 
@@ -289,16 +289,10 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			InputText cfDebitore = new InputText(cfDebitoreId, cfDebitoreLabel, null, false, false, true, 1, 35);
 			infoRicercaMap.put(cfDebitoreId, cfDebitore);
 
-			// cfVersante
-			String cfVersanteLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfVersante.label");
-			InputText cfVersante = new InputText(cfVersanteId, cfVersanteLabel, null, false, false, true, 1, 35);
-			cfVersante.setAvanzata(true);
-			infoRicercaMap.put(cfVersanteId, cfVersante);
-
 			// Id Versamento
-			String idVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.label");
-			InputText idVersamento = new InputText(idVersamentoId, idVersamentoLabel, null, false, false, true, 1, 35);
-			infoRicercaMap.put(idVersamentoId, idVersamento);
+			String codVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.label");
+			InputText codVersamento = new InputText(codVersamentoId, codVersamentoLabel, null, false, false, true, 1, 35);
+			infoRicercaMap.put(codVersamentoId, codVersamento);
 
 			// iuv
 			String iuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
@@ -347,7 +341,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				filter.getFilterSortList().add(fsw);
 
 				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
-				filter.setIdVersamento(id);
+				List<Long> idVersamentoL = new ArrayList<Long>();
+				idVersamentoL.add(id);
+				filter.setIdVersamento(idVersamentoL);
 
 				eseguiRicerca = eseguiRicerca && count > 0;
 			}
@@ -379,7 +375,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				if(applicazione != null)
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicazione.label"), applicazione.getCodApplicazione());  
 				if(versamento.getStatoVersamento() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label"), versamento.getStatoVersamento().toString());
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label"),
+							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+versamento.getStatoVersamento()));
 				if(StringUtils.isNotEmpty(versamento.getDescrizioneStato())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), versamento.getDescrizioneStato());
 				if(versamento.getImportoTotale() != null)
@@ -447,11 +444,27 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	@Override
 	public String getTitolo(Versamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
-
-		BigDecimal importoTotale = entry.getImportoTotale();
+		
 		String codVersamentoEnte = entry.getCodVersamentoEnte();
-
-		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append("€");
+		
+		StatoVersamento statoVersamento = entry.getStatoVersamento();
+		switch (statoVersamento) {
+		case NON_ESEGUITO:
+			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo.nonEseguito", codVersamentoEnte));
+			break;
+		case ANNULLATO:
+		case ANOMALO:
+		case ESEGUITO_SENZA_RPT:
+		case PARZIALMENTE_ESEGUITO:
+		case ESEGUITO:
+		default:
+			sb.append(
+					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", codVersamentoEnte,
+					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name())));
+			break;
+		}
+		
+//		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append("€");
 
 		return sb.toString();
 	}
@@ -463,30 +476,26 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
+		Date dataScadenza = entry.getDataScadenza();
+		
 		switch (statoVersamento) {
-		case ANNULLATO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.annullato"));
+		case NON_ESEGUITO:
+			if(dataScadenza != null)
+				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.nonEseguito",this.sdf.format(dataScadenza)));
 			break;
 		case ANOMALO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.anomalo"));
+			sb.append("");
 			break;
+		case ANNULLATO:
 		case ESEGUITO_SENZA_RPT:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.eseguitoNoRpt"));
-			break;
-		case NON_ESEGUITO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.nonEseguito"));
-			break;
 		case PARZIALMENTE_ESEGUITO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.parzialmenteEseguito"));
-			break;
 		case ESEGUITO:
 		default:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.eseguito"));
+			sb.append(
+					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
+					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),this.sdf.format(dataUltimoAggiornamento) ));
 			break;
 		}
-
-
-		sb.append(" ").append(this.sdf.format(dataUltimoAggiornamento)); 
 
 		return sb.toString();
 	} 

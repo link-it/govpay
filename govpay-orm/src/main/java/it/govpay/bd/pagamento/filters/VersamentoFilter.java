@@ -49,8 +49,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private List<Long> idApplicazioni;
 	private Date datainizio;
 	private Date dataFine;
-	private Long idVersamento= null;
-	private String iuv;
+	private List<Long> idVersamento= null;
 	private String codVersamento = null;
 
 	public enum SortFields {
@@ -112,18 +111,13 @@ public class VersamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 
-			if(this.idVersamento != null){
+			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
 				if(addAnd)
 					newExpression.and();
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
-				newExpression.equals(cf, this.idVersamento);
+				newExpression.in(cf, this.idVersamento);
 				addAnd = true;
-			}
-			
-			if(this.iuv != null){
-				// collegamento alla tabella dei pagamenti?
-				
 			}
 			
 			if(this.codVersamento != null){
@@ -187,19 +181,12 @@ public class VersamentoFilter extends AbstractFilter {
 		this.codUnivocoDebitore = codUnivocoDebitore;
 	}
 
-	public Long getIdVersamento() {
+	public List<Long> getIdVersamento() {
 		return idVersamento;
 	}
 
-	public void setIdVersamento(Long idVersamento) {
+	public void setIdVersamento(List<Long> idVersamento) {
 		this.idVersamento = idVersamento;
-	}
-
-	public String getIuv() {
-		return iuv;
-	}
-	public void setIuv(String iuv) {
-		this.iuv = iuv;
 	}
 
 	public String getCodVersamento() {

@@ -127,7 +127,10 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 					VersamentoFilter versamentoFilter = versamentiBD.newFilter();
 					versamentoFilter.setIdApplicazioni(idApplicazioniOperatore);
 					versamentoFilter.setIdUo(idUoOperatore); 
-					versamentoFilter.setIdVersamento(Long.parseLong(idVersamento));
+					
+					List<Long> idVersamentoL = new ArrayList<Long>();
+					idVersamentoL.add(Long.parseLong(idVersamento));
+					versamentoFilter.setIdVersamento(idVersamentoL);
 
 					long countVersamento = eseguiRicerca ? versamentiBD.count(versamentoFilter) : 0;
 					eseguiRicerca = eseguiRicerca && countVersamento > 0;
