@@ -82,7 +82,7 @@ public class NodoClient extends BasicClient {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		} 
 		GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
-		GpThreadLocal.get().log("cooperazione.invioRichiesta");
+		GpThreadLocal.get().log("ndp_client.invioRichiesta");
 		
 		
 		try {
@@ -96,16 +96,16 @@ public class NodoClient extends BasicClient {
 				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
 				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
 				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
-				GpThreadLocal.get().log("cooperazione.invioRichiestaFault", faultCode, faultString, faultDescription);
+				GpThreadLocal.get().log("ndp_client.invioRichiestaFault", faultCode, faultString, faultDescription);
 			} else {
-				GpThreadLocal.get().log("cooperazione.invioRichiestaOk");
+				GpThreadLocal.get().log("ndp_client.invioRichiestaOk");
 			}
 			return r;
 		} catch (ClientException e) {
-			GpThreadLocal.get().log("cooperazione.invioRichiestaKo");
+			GpThreadLocal.get().log("ndp_client.invioRichiestaKo");
 			throw e;
 		} catch (Exception e) {
-			GpThreadLocal.get().log("cooperazione.invioRichiestaKo");
+			GpThreadLocal.get().log("ndp_client.invioRichiestaKo");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		}
 	}

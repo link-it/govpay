@@ -342,8 +342,12 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		try {
 			bd = BasicBD.newInstance();
 			
+			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", bodyrichiesta.getCodDominio()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", bodyrichiesta.getIuv()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", bodyrichiesta.getCcp()));
+			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("gpprt.ricevutaRichiestaStorno");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("gpprt.autorizzazionePortale");

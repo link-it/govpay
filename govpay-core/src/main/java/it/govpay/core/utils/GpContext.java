@@ -96,7 +96,7 @@ public class GpContext {
 	
 	public String openTransaction() throws ServiceException {
 		try {
-			ILogger logger = LoggerFactory.newLogger();	
+			ILogger logger = LoggerFactory.newLogger(new Context());	
 			loggers.add(logger);
 			
 			Context context = (Context) logger.getContext();

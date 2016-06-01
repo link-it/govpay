@@ -590,21 +590,8 @@ public class Pagamento extends BasicBD {
 		
 	}
 
-	public GpAvviaRichiestaStornoResponse avviaStorno(Portale portaleAutenticato, GpAvviaRichiestaStorno gpAvviaRichiestaStorno) throws ServiceException, GovPayException {
+	public GpAvviaRichiestaStornoResponse avviaStorno(Portale portale, GpAvviaRichiestaStorno gpAvviaRichiestaStorno) throws ServiceException, GovPayException {
 		GpContext ctx = GpThreadLocal.get();
-		
-		Portale portale = null;
-		try {
-			portale = AnagraficaManager.getPortale(this, gpAvviaRichiestaStorno.getCodPortale());
-		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.PRT_000, gpAvviaRichiestaStorno.getCodPortale());
-		}
-
-		if(!portale.isAbilitato())
-			throw new GovPayException(EsitoOperazione.PRT_001, gpAvviaRichiestaStorno.getCodPortale());
-
-		if(!portale.getCodPortale().equals(portaleAutenticato.getCodPortale()))
-			throw new GovPayException(EsitoOperazione.PRT_002, portaleAutenticato.getCodPortale(), gpAvviaRichiestaStorno.getCodPortale());
 		
 		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<it.govpay.bd.model.Pagamento>(); 
 		Rpt rpt = null;
@@ -612,7 +599,7 @@ public class Pagamento extends BasicBD {
 			RptBD rptBD = new RptBD(this);
 			rpt = rptBD.getRpt(gpAvviaRichiestaStorno.getCodDominio(), gpAvviaRichiestaStorno.getIuv(), gpAvviaRichiestaStorno.getCcp());
 			
-			if(!rpt.getIdPortale().equals(portaleAutenticato.getId()))
+			if(!rpt.getIdPortale().equals(portale.getId()))
 				throw new GovPayException(EsitoOperazione.PRT_004, gpAvviaRichiestaStorno.getCodPortale());
 			
 			if(gpAvviaRichiestaStorno.getPagamento() == null || gpAvviaRichiestaStorno.getPagamento().isEmpty()) {
@@ -620,6 +607,7 @@ public class Pagamento extends BasicBD {
 					if(pagamento.getImportoRevocato() != null) continue;
 					pagamento.setCausaleRevoca(gpAvviaRichiestaStorno.getCausaleRevoca());
 					pagamento.setDatiRevoca(gpAvviaRichiestaStorno.getDatiAggiuntivi());
+					ctx.log("gpprt.stornoPagamentoRichiesto", pagamento.getIur(), pagamento.getImportoPagato().toString());
 					pagamentiDaStornare.add(pagamento);
 				}
 			} else {
@@ -629,11 +617,16 @@ public class Pagamento extends BasicBD {
 						throw new GovPayException(EsitoOperazione.PAG_009, p.getIur());
 					pagamento.setCausaleRevoca(p.getCausaleRevoca());
 					pagamento.setDatiRevoca(p.getDatiAggiuntivi());
+					ctx.log("gpprt.stornoPagamentoTrovato", pagamento.getIur(), pagamento.getImportoPagato().toString());
 					pagamentiDaStornare.add(pagamento);
 				}
 			}
 		} catch (NotFoundException e) {
 			throw new GovPayException(EsitoOperazione.PAG_008, gpAvviaRichiestaStorno.getCodPortale());
+		}
+		
+		if(pagamentiDaStornare.isEmpty()) {
+			throw new GovPayException(EsitoOperazione.PAG_011);
 		}
 		
 		Rr rr = RrUtils.buildRr(rpt, pagamentiDaStornare, this);
