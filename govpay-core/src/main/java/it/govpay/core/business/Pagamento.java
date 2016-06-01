@@ -607,7 +607,7 @@ public class Pagamento extends BasicBD {
 					if(pagamento.getImportoRevocato() != null) continue;
 					pagamento.setCausaleRevoca(gpAvviaRichiestaStorno.getCausaleRevoca());
 					pagamento.setDatiRevoca(gpAvviaRichiestaStorno.getDatiAggiuntivi());
-					ctx.log("gpprt.stornoPagamentoRichiesto", pagamento.getIur(), pagamento.getImportoPagato().toString());
+					ctx.log("rr.stornoPagamentoRichiesto", pagamento.getIur(), pagamento.getImportoPagato().toString());
 					pagamentiDaStornare.add(pagamento);
 				}
 			} else {
@@ -617,7 +617,7 @@ public class Pagamento extends BasicBD {
 						throw new GovPayException(EsitoOperazione.PAG_009, p.getIur());
 					pagamento.setCausaleRevoca(p.getCausaleRevoca());
 					pagamento.setDatiRevoca(p.getDatiAggiuntivi());
-					ctx.log("gpprt.stornoPagamentoTrovato", pagamento.getIur(), pagamento.getImportoPagato().toString());
+					ctx.log("rr.stornoPagamentoTrovato", pagamento.getIur(), pagamento.getImportoPagato().toString());
 					pagamentiDaStornare.add(pagamento);
 				}
 			}
@@ -629,6 +629,7 @@ public class Pagamento extends BasicBD {
 			throw new GovPayException(EsitoOperazione.PAG_011);
 		}
 		
+		
 		Rr rr = RrUtils.buildRr(rpt, pagamentiDaStornare, this);
 		RrBD rrBD = new RrBD(this);
 		
@@ -636,7 +637,7 @@ public class Pagamento extends BasicBD {
 		NotificheBD notificheBD = new NotificheBD(this);
 		PagamentiBD pagamentiBD = new PagamentiBD(this);
 		
-		ctx.log("core.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
+		ctx.log("rr.creazioneRr", rr.getCodDominio(), rr.getIuv(), rr.getCcp(), rr.getCodMsgRevoca());
 		
 		setAutoCommit(false);
 		rrBD.insertRr(rr);
@@ -657,18 +658,15 @@ public class Pagamento extends BasicBD {
 		try {
 			
 			idTransaction = ctx.openTransaction();
-			
 			ctx.setupNodoClient(rpt.getStazione(this).getCodStazione(), rr.getCodDominio(), Azione.nodoInviaRichiestaStorno);
-			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rr.getCodDominio()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rr.getIuv()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rr.getCcp()));
-			ctx.log("core.invioRr");
+			ctx.getContext().getRequest().addGenericProperty(new Property("codMessaggioRevoca", rr.getCodMsgRevoca()));
+			ctx.log("rr.invioRr");
 
 			Risposta risposta = RrUtils.inviaRr(rr, rpt, this);
 		
 			if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 				
-				ctx.log("core.invioRrKo");
+				ctx.log("rr.invioRrKo");
 				
 				// RR rifiutata dal Nodo
 				// Aggiorno lo stato e ritorno l'errore
@@ -683,14 +681,14 @@ public class Pagamento extends BasicBD {
 				log.error(risposta.getLog());
 				throw new GovPayException(EsitoOperazione.NDP_001);
 			} else {
-				ctx.log("core.invioRrOk");
+				ctx.log("rr.invioRrOk");
 				// RPT accettata dal Nodo
 				// Aggiorno lo stato e ritorno
 				rrBD.updateRr(rr.getId(), StatoRr.RR_ACCETTATA_NODO, null);
 				return response;
 			}
 		} catch (ClientException e) {
-			ctx.log("core.invioRrKo");
+			ctx.log("rr.invioRrKo");
 			rrBD.updateRr(rr.getId(), StatoRr.RR_ERRORE_INVIO_A_NODO, e.getMessage());
 			throw new GovPayException(EsitoOperazione.NDP_000, e);
 		} finally {
