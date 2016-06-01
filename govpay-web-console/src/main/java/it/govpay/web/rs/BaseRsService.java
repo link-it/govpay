@@ -102,8 +102,10 @@ public abstract class BaseRsService {
 	}
 
 	protected Operatore getOperatoreByPrincipal(BasicBD bd, String principal) throws ServiceException,WebApplicationException{
-		if(principal == null)
-			throw new WebApplicationException(this.getUnauthorizedResponse());
+		if(principal == null){
+			this.invalidateSession(null);
+			throw new WebApplicationException(this.getForbiddenResponse());
+		}
 		
 		Operatore operatore = null;
 		try {
@@ -111,22 +113,33 @@ public abstract class BaseRsService {
 			operatore = operatoriBD.getOperatore(principal);
 			
 			// Se l'utente non dispone di un profilo allora non e' autorizzato
-			if(operatore.getProfilo() == null)
+			if(operatore.getProfilo() == null){
+				this.invalidateSession(null);
 				throw new WebApplicationException(this.getUnauthorizedResponse());
+			}
 			
 			return operatore;
 		} catch (ServiceException e) {
 			throw e;
 		} catch (NotFoundException e) {
+			this.invalidateSession(null);
 			throw new WebApplicationException(this.getUnauthorizedResponse());
 		} catch (MultipleResultException e) {
+			this.invalidateSession(null);
 			throw new WebApplicationException(this.getUnauthorizedResponse());
 		}	
 	}
 	
 	protected Response getUnauthorizedResponse(){
 		Response res =	Response.status(Response.Status.UNAUTHORIZED)
-				// [TODO] controllare l'autorizzazione agli accessi quando si fondono la console e i servizi dars
+				.header("Access-Control-Allow-Origin", "*")
+				.build();
+		
+		return res;
+	}
+	
+	protected Response getForbiddenResponse(){
+		Response res =	Response.status(Response.Status.FORBIDDEN)
 				.header("Access-Control-Allow-Origin", "*")
 				.build();
 		
@@ -134,14 +147,16 @@ public abstract class BaseRsService {
 	}
 
 	public void invalidateSession(Logger log){
-		log.info("Invalidate Session in corso...");
+		if(log!= null)
+			log.info("Invalidate Session in corso...");
 		
 		HttpSession session = this.request.getSession(false);
 		if(session != null){
 			session.invalidate();
 		}
 		
-		log.info("Invalidate Session completata.");
+		if(log!= null)
+			log.info("Invalidate Session completata.");
 	}
 	
 	public static UriBuilder checkDarsURI(UriInfo uriInfo) throws MalformedURLException{

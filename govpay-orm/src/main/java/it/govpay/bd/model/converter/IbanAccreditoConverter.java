@@ -41,12 +41,12 @@ public class IbanAccreditoConverter {
 	public static IbanAccredito toDTO(it.govpay.orm.IbanAccredito vo) {
 		IbanAccredito dto = new IbanAccredito();
 		dto.setId(vo.getId());
-		dto.setCodIban(vo.getCodIban());
-		dto.setCodBicAccredito(vo.getBicAccredito());
-		dto.setCodIbanAppoggio(vo.getIbanAppoggio());
-		dto.setCodBicAppoggio(vo.getBicAppoggio());
-		dto.setIdSellerBank(vo.getIdSellerBank());
-		dto.setIdNegozio(vo.getIdNegozio());
+		dto.setCodIban(toNull(vo.getCodIban()));
+		dto.setCodBicAccredito(toNull(vo.getBicAccredito()));
+		dto.setCodIbanAppoggio(toNull(vo.getIbanAppoggio()));
+		dto.setCodBicAppoggio(toNull(vo.getBicAppoggio()));
+		dto.setIdSellerBank(toNull(vo.getIdSellerBank()));
+		dto.setIdNegozio(toNull(vo.getIdNegozio()));
 		dto.setPostale(vo.getPostale());
 		dto.setAttivatoObep(vo.getAttivato());
 		dto.setAbilitato(vo.getAbilitato());
@@ -58,12 +58,12 @@ public class IbanAccreditoConverter {
 	public static it.govpay.orm.IbanAccredito toVO(IbanAccredito dto) {
 		it.govpay.orm.IbanAccredito vo = new it.govpay.orm.IbanAccredito();
 		vo.setId(dto.getId());
-		vo.setCodIban(dto.getCodIban());
-		vo.setBicAccredito(dto.getCodBicAccredito());
-		vo.setIbanAppoggio(dto.getCodIbanAppoggio());
-		vo.setBicAppoggio(dto.getCodBicAppoggio());
-		vo.setIdSellerBank(dto.getIdSellerBank());
-		vo.setIdNegozio(dto.getIdNegozio());
+		vo.setCodIban(toNull(dto.getCodIban()));
+		vo.setBicAccredito(toNull(dto.getCodBicAccredito()));
+		vo.setIbanAppoggio(toNull(dto.getCodIbanAppoggio()));
+		vo.setBicAppoggio(toNull(dto.getCodBicAppoggio()));
+		vo.setIdSellerBank(toNull(dto.getIdSellerBank()));
+		vo.setIdNegozio(toNull(dto.getIdNegozio()));
 		vo.setPostale(dto.isPostale());
 		vo.setAttivato(dto.isAttivatoObep());
 		vo.setAbilitato(dto.isAbilitato());

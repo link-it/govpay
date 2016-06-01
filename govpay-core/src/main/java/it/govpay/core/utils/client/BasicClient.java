@@ -51,6 +51,7 @@ import javax.xml.bind.JAXBElement;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.utils.logger.beans.Message;
@@ -240,6 +241,15 @@ public class BasicClient {
 			} else {
 				JaxbUtils.marshal(body, baos);
 			}
+
+			if(log.getLevel().isMoreSpecificThan(Level.TRACE)) {
+				StringBuffer sb = new StringBuffer();
+				for(String key : connection.getRequestProperties().keySet()) {
+					sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
+				}
+				sb.append("\n" + baos.toString());
+				log.trace(sb.toString());
+			}
 			
 			requestMsg.setContent(baos.toByteArray());
 			ctx.getContext().getRequest().setOutDate(new Date());
@@ -297,7 +307,17 @@ public class BasicClient {
 				throw new ClientException("Errore nell'invocazione: HTTP " + responseCode);
 			}
 		} finally {
-			ctx.log(responseMsg);
+			if(responseMsg != null)
+				ctx.log(responseMsg);
+
+			if(log.getLevel().isMoreSpecificThan(Level.TRACE) && connection != null && connection.getHeaderFields() != null) {
+				StringBuffer sb = new StringBuffer();
+				for(String key : connection.getHeaderFields().keySet()) { 
+					sb.append("\n\t" + key + ": " + connection.getHeaderField(key));
+				}
+				sb.append("\n" + new String(msg));
+				log.trace(sb.toString());
+			}
 		}
 		
 	}

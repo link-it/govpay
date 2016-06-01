@@ -203,7 +203,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 
 			// Verifico l'importo
-			if(!bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento().equals(versamento.getImportoTotale()))
+			if(bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento().compareTo(versamento.getImportoTotale()) != 0)
 				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, codDominio);
 			
 			// Verifico che abbia un solo singolo versamento

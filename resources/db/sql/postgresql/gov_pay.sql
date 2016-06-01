@@ -3,7 +3,7 @@ CREATE SEQUENCE seq_psp start 1 increment 1 maxvalue 9223372036854775807 minvalu
 CREATE TABLE psp
 (
 	cod_psp VARCHAR(35) NOT NULL,
-	ragione_sociale VARCHAR(35) NOT NULL,
+	ragione_sociale VARCHAR(70) NOT NULL,
 	url_info VARCHAR(255),
 	abilitato BOOLEAN NOT NULL,
 	storno BOOLEAN NOT NULL,

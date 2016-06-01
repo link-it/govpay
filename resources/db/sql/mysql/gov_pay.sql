@@ -1,7 +1,7 @@
 CREATE TABLE psp
 (
 	cod_psp VARCHAR(35) NOT NULL,
-	ragione_sociale VARCHAR(35) NOT NULL,
+	ragione_sociale VARCHAR(70) NOT NULL,
 	url_info VARCHAR(255),
 	abilitato BOOLEAN NOT NULL,
 	storno BOOLEAN NOT NULL,
@@ -532,8 +532,8 @@ CREATE TABLE notifiche
 	descrizione_stato VARCHAR(255),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
-	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_prossima_spedizione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
+	data_prossima_spedizione DATETIME NOT NULL DEFAULT 0,
 	tentativi_spedizione BIGINT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,

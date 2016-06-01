@@ -60,8 +60,8 @@
 	<login-config>
 		<auth-method>FORM</auth-method>
 		<form-login-config>
-			<form-login-page>/public/login.html</form-login-page>
-			<form-error-page>/public/loginError.html</form-error-page>
+			<form-login-page>/public/login.jsp</form-login-page>
+			<form-error-page>/public/login.jsp?msg=le</form-error-page>
 		</form-login-config>
 	</login-config>
 	

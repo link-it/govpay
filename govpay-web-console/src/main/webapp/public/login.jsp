@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<%@page import="it.govpay.web.utils.Utils"%>
+<%@page import="org.apache.commons.lang.StringUtils"%>
 <html>
 <head>
     <meta charset="utf-8">
@@ -12,13 +14,45 @@
     <!-- Custom styles for this template -->
     <link href="styles/login.css" rel="stylesheet">
 
+<%
+String msg = request.getParameter("msg"); 
+String msgString = null;
+String msgType = null;
+    		
+if(StringUtils.isNotEmpty(msg)){
+	if(msg.equals("lo")){ // logout Ok
+		msgString =  "govpay.logoutOk";
+		msgType= "alert alert-info";
+	}else if(msg.equals("le")){ // credenziali sconosciute nell'application server
+		msgString = "govpay.credenzialiNonValide";
+		msgType= "alert alert-danger";
+	}else if(msg.equals("se")) { // sessione scaduta
+		msgString = "govpay.sessioneScaduta";
+		msgType= "alert alert-warning";
+	}else { // utente sconosciuto in govpay
+		msgString = "govpay.utenteNonAutorizzato";
+		msgType= "alert alert-danger";
+	}
+}
+    		
+%>
+
 </head>
 <body>
 
 <div class="container">
 
     <form class="form-signin" action="j_security_check" method=post>
-        <h2 class="form-signin-heading">${it.govpay.console.appTitle} v${project.version}</h2>
+    	<div class="form-signin-heading text-center">
+	    	<h2 class="disply-inline">${it.govpay.console.appTitle} </h2>
+	    	<h4 class="disply-inline">v${project.version}</h4>
+    	</div>
+        
+        <% if(StringUtils.isNotEmpty(msg)){ %>
+        	<div class="<%=msgType %>" role="alert">
+        		<p><%=Utils.getInstance().getMessageFromResourceBundle(msgString) %></p>
+        	</div>
+        <% } %>
         <label for="inputEmail" class="sr-only">Username</label>
         <input type="text" id="inputEmail" class="form-control" placeholder="Username" required autofocus
                name="j_username">

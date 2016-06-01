@@ -34,14 +34,14 @@ public class UnitaOperativaConverter {
 		dto.setId(vo.getId());
 		dto.setIdDominio(vo.getIdDominio().getId());
 		Anagrafica anagrafica = new Anagrafica();
-		anagrafica.setCap(vo.getUoCap());
-		anagrafica.setCivico(vo.getUoCivico());
-		anagrafica.setCodUnivoco(vo.getUoCodiceIdentificativo());
-		anagrafica.setRagioneSociale(vo.getUoDenominazione());
-		anagrafica.setIndirizzo(vo.getUoIndirizzo());
-		anagrafica.setLocalita(vo.getUoLocalita());
-		anagrafica.setNazione(vo.getUoNazione());
-		anagrafica.setProvincia(vo.getUoProvincia());
+		anagrafica.setCap(toNull(vo.getUoCap()));
+		anagrafica.setCivico(toNull(vo.getUoCivico()));
+		anagrafica.setCodUnivoco(toNull(vo.getUoCodiceIdentificativo()));
+		anagrafica.setRagioneSociale(toNull(vo.getUoDenominazione()));
+		anagrafica.setIndirizzo(toNull(vo.getUoIndirizzo()));
+		anagrafica.setLocalita(toNull(vo.getUoLocalita()));
+		anagrafica.setNazione(toNull(vo.getUoNazione()));
+		anagrafica.setProvincia(toNull(vo.getUoProvincia()));
 		dto.setAnagrafica(anagrafica);
 		return dto;
 	}
@@ -50,21 +50,28 @@ public class UnitaOperativaConverter {
 		Uo vo = new Uo();
 		vo.setId(dto.getId());
 		vo.setAbilitato(dto.isAbilitato());
-		vo.setCodUo(dto.getCodUo());
-		vo.setUoCap(dto.getAnagrafica().getCap());
-		vo.setUoCivico(dto.getAnagrafica().getCivico());
-		vo.setUoCodiceIdentificativo(dto.getAnagrafica().getCodUnivoco());
-		vo.setUoDenominazione(dto.getAnagrafica().getRagioneSociale());
-		vo.setUoIndirizzo(dto.getAnagrafica().getIndirizzo());
-		vo.setUoLocalita(dto.getAnagrafica().getLocalita());
-		vo.setUoNazione(dto.getAnagrafica().getNazione());
-		vo.setUoProvincia(dto.getAnagrafica().getProvincia());
+		vo.setCodUo(toNull(dto.getCodUo()));
+		vo.setUoCap(toNull(dto.getAnagrafica().getCap()));
+		vo.setUoCivico(toNull(dto.getAnagrafica().getCivico()));
+		vo.setUoCodiceIdentificativo(toNull(dto.getAnagrafica().getCodUnivoco()));
+		vo.setUoDenominazione(toNull(dto.getAnagrafica().getRagioneSociale()));
+		vo.setUoIndirizzo(toNull(dto.getAnagrafica().getIndirizzo()));
+		vo.setUoLocalita(toNull(dto.getAnagrafica().getLocalita()));
+		vo.setUoNazione(toNull(dto.getAnagrafica().getNazione()));
+		vo.setUoProvincia(toNull(dto.getAnagrafica().getProvincia()));
 		
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());
 		vo.setIdDominio(idDominio);
 		
 		return vo;
+	}
+	
+	private static String toNull(String s) {
+		if(s == null || s.trim().length() == 0)
+			return null;
+		else
+			return s.trim();
 	}
 
 }
