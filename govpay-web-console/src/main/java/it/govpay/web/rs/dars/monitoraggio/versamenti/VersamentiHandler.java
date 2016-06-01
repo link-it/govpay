@@ -482,6 +482,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		case NON_ESEGUITO:
 			if(dataScadenza != null)
 				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.nonEseguito",this.sdf.format(dataScadenza)));
+			else 
+				sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".label.sottotitolo.nonEseguito.noScadenza"));
 			break;
 		case ANOMALO:
 			sb.append("");
