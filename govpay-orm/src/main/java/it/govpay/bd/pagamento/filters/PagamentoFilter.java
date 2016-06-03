@@ -43,7 +43,7 @@ public class PagamentoFilter extends AbstractFilter {
 	private Long idRr;
 	private Long idFrApplicazione;
 	private Long idFrApplicazioneRevoca;
-	private Long idFrApplicazioneOrIdFrApplicazioneRevoca;
+	private List<Long> idFrApplicazioneOrIdFrApplicazioneRevoca;
 	
 	public enum SortFields {
 		DATA
@@ -99,11 +99,11 @@ public class PagamentoFilter extends AbstractFilter {
 				IExpression orExpr = this.newExpression();
 				IExpression revocaExpr = this.newExpression();
 				
-				orExpr.equals(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca);
+				orExpr.in(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca);
 				orExpr.or();
 				
 				// id fr applicazione revoca non null
-				revocaExpr.equals(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca)
+				revocaExpr.in(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca)
 				.and().isNotNull(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())));
 				
 				orExpr.or(revocaExpr);
@@ -164,11 +164,11 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idFrApplicazioneRevoca = idFrApplicazioneRevoca;
 	}
 
-	public Long getIdFrApplicazioneOrIdFrApplicazioneRevoca() {
+	public List<Long> getIdFrApplicazioneOrIdFrApplicazioneRevoca() {
 		return idFrApplicazioneOrIdFrApplicazioneRevoca;
 	}
 
-	public void setIdFrApplicazioneOrIdFrApplicazioneRevoca(Long idFrApplicazioneOrIdFrApplicazioneRevoca) {
+	public void setIdFrApplicazioneOrIdFrApplicazioneRevoca(List<Long> idFrApplicazioneOrIdFrApplicazioneRevoca) {
 		this.idFrApplicazioneOrIdFrApplicazioneRevoca = idFrApplicazioneOrIdFrApplicazioneRevoca;
 	}
 

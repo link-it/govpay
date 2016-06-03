@@ -67,6 +67,7 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
 
 public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
@@ -279,6 +280,13 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
+				
+				Pagamenti pagamentiDars = new Pagamenti();
+				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+				String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFr.id");
+				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(idFrApplicazioneId, fr.getId());
+				
+				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
