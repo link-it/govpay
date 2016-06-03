@@ -313,12 +313,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
-			ctx.log("rt.ricezioneKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
+			ctx.log("rt.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, codDominio, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
-			ctx.log("rt.ricezioneKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
+			ctx.log("rt.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
 			GiornaleEventi ge = new GiornaleEventi(bd);
 			evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
@@ -337,6 +337,24 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
+		
+		
+		GpContext ctx = GpThreadLocal.get();
+		
+		Actor from = new Actor();
+		from.setName("NodoDeiPagamentiSPC");
+		ctx.getTransaction().setFrom(from);
+		
+		Actor to = new Actor();
+		to.setName(header.getIdentificativoStazioneIntermediarioPA());
+		ctx.getTransaction().setTo(to);
+		
+		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
+		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
+		ctx.log("ccp.ricezioneVerifica");
+		
+		
 		log.info("Ricevuta richiesta di verifica RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
 		BasicBD bd = null;
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
@@ -377,10 +395,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			Iuv iuvModel = null;
 			try {
 				iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
+				ctx.log("ccp.iuvPresente", iuvModel.getCodVersamentoEnte());
 			} catch (NotFoundException e) {
 				// iuv non trovato... se non ho una applicazione di default il pagamento e' sconosciuto.
-				if(dominio.getIdApplicazioneDefault() == null)
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				if(dominio.getIdApplicazioneDefault() == null) {
+					ctx.log("ccp.iuvNonPresenteNoAppDefault");
+					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				}
+				ctx.log("ccp.iuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione());
 			}
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -388,7 +410,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			try {
 				try {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
-					if(iuvModel == null) throw new NotFoundException();
+					if(iuvModel == null) {
+						// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
+						throw new NotFoundException();
+					}
 					versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 
 					// Versamento trovato, gestisco un'eventuale scadenza
@@ -402,12 +427,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 				} catch (NotFoundException e) {
 					// Versamento non trovato, devo interrogare l'applicazione.
+					ctx.log("ccp.versamentoNonPresente");
 					if(iuvModel != null) {
 						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), iuv, bd);
 					} else {
 						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()), null, iuv, bd);
 						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 					}
+					ctx.log("ccp.versamentoAcquisito");
 				}
 			} catch (VersamentoScadutoException e1) {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, codDominio);
@@ -469,12 +496,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaVerificaRPTRisposta(esito);
+			ctx.log("ccp.verificaInfo", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
+			ctx.log("ccp.ricezioneVerificaOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
+			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
+			ctx.log("rt.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, codDominio, response);
+			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
+			ctx.log("rt.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
 			GiornaleEventi ge = new GiornaleEventi(bd);
 			evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
