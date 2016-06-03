@@ -24,6 +24,7 @@ import java.util.Date;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
+import it.gov.digitpa.schemas._2011.pagamenti.StAutenticazioneSoggetto;
 import it.gov.digitpa.schemas._2011.ws.psp.CtSpezzoniCausaleVersamento;
 import it.gov.digitpa.schemas._2011.ws.psp.FaultBean;
 import it.gov.digitpa.schemas._2011.ws.psp.EsitoAttivaRPT;
@@ -66,6 +67,8 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.core.utils.client.BasicClient.ClientException;
@@ -81,6 +84,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 
 @WebService(serviceName = "PagamentiTelematiciCCPservice",
@@ -106,6 +111,21 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
+		
+		GpContext ctx = GpThreadLocal.get();
+		
+		Actor from = new Actor();
+		from.setName("NodoDeiPagamentiSPC");
+		ctx.getTransaction().setFrom(from);
+		
+		Actor to = new Actor();
+		to.setName(header.getIdentificativoStazioneIntermediarioPA());
+		ctx.getTransaction().setTo(to);
+		
+		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
+		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
+		ctx.log("ccp.ricezioneAttiva");
 
 		BasicBD bd = null;
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
@@ -151,8 +171,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 			} catch (NotFoundException e) {
 				// iuv non trovato... se non ho una applicazione di default il pagamento e' sconosciuto.
-				if(dominio.getIdApplicazioneDefault() == null)
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				if(dominio.getIdApplicazioneDefault() == null) {
+					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
+				}
 			}
 			
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -229,7 +250,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			// Creazione dell'RPT
 			Anagrafica versante = toOrm(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante());
-			Rpt rpt = RptUtils.buildRpt(intermediario, stazione, null, versamento, iuvModel, ccp, null, psp, canale, versante, "N/A", null, null, bd);
+			Rpt rpt = RptUtils.buildRpt(intermediario, stazione, null, versamento, iuvModel, ccp, null, psp, canale, versante, StAutenticazioneSoggetto.N_A.value(), null, null, bd);
+			
+			ctx.log("ccp.attivazione", rpt.getCodMsgRichiesta());
 			
 			// Da specifica, le RPT ad iniziativa PSP non possono richiedere firma
 			rpt.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
@@ -255,7 +278,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			esito.setEsito("OK");
 			PaaTipoDatiPagamentoPA datiPagamento =  new PaaTipoDatiPagamentoPA();
 			datiPagamento.setImportoSingoloVersamento(versamento.getImportoTotale());
-			
 			if(versamento.getCausaleVersamento() != null) {
 				if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
 					datiPagamento.setCausaleVersamento(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
@@ -278,20 +300,25 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				}
 			}
 			datiPagamento.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, versamento.getUo(bd), bd));
-			IbanAccredito ibanAccredito = versamento.getSingoliVersamenti(bd).get(0).getTributo(bd).getIbanAccredito(bd);
+			IbanAccredito ibanAccredito = versamento.getSingoliVersamenti(bd).get(0).getIbanAccredito(bd);
 			if(ibanAccredito != null) {
 				datiPagamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
 				datiPagamento.setIbanAccredito(ibanAccredito.getCodIban());
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaAttivaRPTRisposta(esito);
-			
+			ctx.log("ccp.attivazioneInfo", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
+			ctx.log("ccp.ricezioneAttivaOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
+			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
+			ctx.log("rt.ricezioneKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, codDominio, response);
+			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
+			ctx.log("rt.ricezioneKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
 			GiornaleEventi ge = new GiornaleEventi(bd);
 			evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());

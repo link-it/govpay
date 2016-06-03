@@ -273,23 +273,15 @@ public class RptUtils {
 			datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
 			datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
 			datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
-			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita().getCodifica() + "/" + singoloVersamento.getCodContabilita());
 		} else {
-			if(singoloVersamento.getTributo(bd).getIdIbanAccredito() != null) {
-				IbanAccredito ibanAccredito = singoloVersamento.getTributo(bd).getIbanAccredito(bd);
-				datiSingoloVersamento.setBicAccredito(getNotEmpty(ibanAccredito.getCodBicAccredito()));
-				datiSingoloVersamento.setBicAppoggio(getNotEmpty(ibanAccredito.getCodBicAppoggio()));
-				datiSingoloVersamento.setIbanAppoggio(getNotEmpty(ibanAccredito.getCodIbanAppoggio()));
-				datiSingoloVersamento.setIbanAccredito(getNotEmpty(ibanAccredito.getCodIban()));
-			} else {
-				CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
-				marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
-				marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
-				marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
-				datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
-			}
-			datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTributo(bd).getTipoContabilita().getCodifica() + "/" + singoloVersamento.getTributo(bd).getCodContabilita());
+			CtDatiMarcaBolloDigitale marcaBollo = new CtDatiMarcaBolloDigitale();
+			marcaBollo.setHashDocumento(singoloVersamento.getHashDocumento());
+			marcaBollo.setProvinciaResidenza(singoloVersamento.getProvinciaResidenza());
+			marcaBollo.setTipoBollo(singoloVersamento.getTipoBollo().getCodifica());
+			datiSingoloVersamento.setDatiMarcaBolloDigitale(marcaBollo);
+			
 		}
+		datiSingoloVersamento.setDatiSpecificiRiscossione(singoloVersamento.getTipoContabilita(bd).getCodifica() + "/" + singoloVersamento.getCodContabilita(bd));
 		datiSingoloVersamento.setCausaleVersamento(buildCausaleSingoloVersamento(rpt.getIuv(), singoloVersamento.getImportoSingoloVersamento()));
 		return datiSingoloVersamento;
 	}
