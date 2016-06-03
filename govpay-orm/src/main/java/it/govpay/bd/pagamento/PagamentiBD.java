@@ -167,6 +167,39 @@ public class PagamentiBD extends BasicBD {
 		}
 	}
 	
+	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(List<Long> idFrApplicazione) throws ServiceException {
+		try {
+			IPaginatedExpression exp = this.getRendicontazioneSenzaRPTService().newPaginatedExpression();
+			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.in(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", fieldConverter.toTable(it.govpay.orm.RendicontazioneSenzaRPT.model())), idFrApplicazione);
+			List<it.govpay.orm.RendicontazioneSenzaRPT> rendicontazioniSenzaRpt =  this.getRendicontazioneSenzaRPTService().findAll(exp);
+			return RendicontazioneSenzaRptConverter.toDTO(rendicontazioniSenzaRpt);
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
+	}
+	
+	public long countRendicontazioniSenzaRpt(List<Long> idFrApplicazione) throws ServiceException {
+		try {
+			IExpression exp = this.getRendicontazioneSenzaRPTService().newExpression();
+			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.in(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", fieldConverter.toTable(it.govpay.orm.RendicontazioneSenzaRPT.model())), idFrApplicazione);
+			NonNegativeNumber count = this.getRendicontazioneSenzaRPTService().count(exp);
+			
+			return count != null ? count.longValue() : 0;
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
+	}
+	
 	public RendicontazioneSenzaRpt getRendicontazioneSenzaRpt(Long idRendicontazioneSenzaRpt) throws ServiceException {
 		try {
 			return RendicontazioneSenzaRptConverter.toDTO(((JDBCRendicontazioneSenzaRPTService)this.getRendicontazioneSenzaRPTService()).get(idRendicontazioneSenzaRpt));

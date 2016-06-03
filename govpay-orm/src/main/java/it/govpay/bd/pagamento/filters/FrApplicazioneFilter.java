@@ -45,7 +45,7 @@ public class FrApplicazioneFilter extends AbstractFilter {
 	private List<Long> idApplicazioni;
 	private List<Long> idFlussi; 
 	private Long idFrApplicazione;
-
+	
 	public FrApplicazioneFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}

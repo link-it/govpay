@@ -39,6 +39,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.model.FrApplicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.Pagamento;
@@ -102,6 +103,9 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.id");
 			String idFrApplicazione = this.getParameter(uriInfo, idFrApplicazioneId, String.class);
 
+			String idFrId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFr.id");
+			String idFr= this.getParameter(uriInfo, idFrId, String.class);
+
 			boolean eseguiRicerca = isAdmin;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = null;
@@ -127,7 +131,10 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 					VersamentoFilter versamentoFilter = versamentiBD.newFilter();
 					versamentoFilter.setIdApplicazioni(idApplicazioniOperatore);
 					versamentoFilter.setIdUo(idUoOperatore); 
-					versamentoFilter.setIdVersamento(Long.parseLong(idVersamento));
+
+					List<Long> idVersamentoL = new ArrayList<Long>();
+					idVersamentoL.add(Long.parseLong(idVersamento));
+					versamentoFilter.setIdVersamento(idVersamentoL);
 
 					long countVersamento = eseguiRicerca ? versamentiBD.count(versamentoFilter) : 0;
 					eseguiRicerca = eseguiRicerca && countVersamento > 0;
@@ -151,6 +158,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			}
 
 			long countRendicontazioniSenzaRpt = 0;
+			List<Long> idFrApplicazioni = new ArrayList<Long>();
 			if(StringUtils.isNotEmpty(idFrApplicazione)){
 				if(!isAdmin){
 					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore);
@@ -167,15 +175,48 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
 				if(eseguiRicerca){
 					// Ricerca Pagamenti uso idFrApplicazione per filtrare
-					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(Long.parseLong(idFrApplicazione));
+					idFrApplicazioni.add(Long.parseLong(idFrApplicazione));
+					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
 					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
 
 					// Rendicontazioni 
-					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(Long.parseLong(idFrApplicazione)) : 0;
+					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
 					count += countRendicontazioniSenzaRpt;
 
 				}
 			}
+
+			if(StringUtils.isNotEmpty(idFr)){
+				FrBD frBD = new FrBD(bd);
+				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
+				List<Long> idFlussi = new ArrayList<Long>();
+				idFlussi.add(Long.parseLong(idFr));
+				frApplicazioneFilter.setIdFlussi(idFlussi);
+
+				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
+				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
+
+				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
+				if(eseguiRicerca){
+					//prendere gli id_fr_applicazione
+					idFrApplicazioni = new ArrayList<Long>();
+					List<FrApplicazione> findAllFrApplicazione = frBD.findAllFrApplicazione(frApplicazioneFilter);
+					for (FrApplicazione frApplicazione : findAllFrApplicazione) {
+						idFrApplicazioni.add(frApplicazione.getId());
+					}
+
+					// Ricerca Pagamenti uso idFrApplicazione per filtrare
+					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
+					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+
+					// Rendicontazioni 
+					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
+					count += countRendicontazioniSenzaRpt;
+
+				}
+			}
+
+
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
@@ -194,14 +235,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				RendicontazioniSenzaRpt rendicontazioniSenzaRptDars = new RendicontazioniSenzaRpt();
 				RendicontazioniSenzaRptHandler rendicontazioniSenzaRptDarsHandler = (RendicontazioniSenzaRptHandler) rendicontazioniSenzaRptDars.getDarsHandler();
 				UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniSenzaRptDars.getPathServizio()).path("{id}");
-				
-				List<RendicontazioneSenzaRpt> rendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(Long.parseLong(idFrApplicazione)) : new ArrayList<RendicontazioneSenzaRpt>();
+
+				List<RendicontazioneSenzaRpt> rendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(idFrApplicazioni) : new ArrayList<RendicontazioneSenzaRpt>();
 
 				if(rendicontazioniSenzaRpt != null && rendicontazioniSenzaRpt.size() > 0){
 					for (RendicontazioneSenzaRpt entry : rendicontazioniSenzaRpt) {
 						Elemento elemento = rendicontazioniSenzaRptDarsHandler.getElemento(entry, entry.getId(), uriDettaglioRRBuilder,bd);
 						elenco.getElenco().add(elemento);
-						
+
 					}
 				}
 			}

@@ -97,7 +97,9 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 				filter.getFilterSortList().add(fsw);
 
 				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
-				filter.setIdVersamento(Long.parseLong(idVersamento));
+				List<Long> idVersamentoL = new ArrayList<Long>();
+				idVersamentoL.add(Long.parseLong(idVersamento));
+				filter.setIdVersamento(idVersamentoL);
 
 				eseguiRicerca = eseguiRicerca && count > 0;
 			}
