@@ -362,7 +362,10 @@ public class RptUtils {
 					elementoListaRpt.setIdentificativoDominio(rpt.getCodDominio());
 					elementoListaRpt.setIdentificativoUnivocoVersamento(rpt.getIuv());
 					elementoListaRpt.setRpt(rpt.getXmlRpt());
-					elementoListaRpt.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
+					if(rpt.getFirmaRichiesta() == FirmaRichiesta.NESSUNA)
+						elementoListaRpt.setTipoFirma("");
+					else
+						elementoListaRpt.setTipoFirma(rpt.getFirmaRichiesta().getCodifica());
 					listaRpt.getElementoListaRPT().add(elementoListaRpt);
 				}
 				inviaCarrelloRpt.setListaRPT(listaRpt);
