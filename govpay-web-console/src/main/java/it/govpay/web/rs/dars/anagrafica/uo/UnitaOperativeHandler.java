@@ -142,7 +142,13 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI ricerca = this.getUriRicerca(uriInfo, bd);
+		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		URI ricerca =  null;
+		try{
+			ricerca =  BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).queryParam(idDominioId, this.idDominio).build();
+		}catch(Exception e ){
+			throw new ConsoleException(e);
+		}
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
