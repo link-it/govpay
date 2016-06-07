@@ -27,8 +27,10 @@ import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
+import it.govpay.bd.model.Connettore.Versione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.servizi.PagamentiTelematiciPAService;
 import it.govpay.servizi.commons.GpResponse;
 
 public class GpContext {
@@ -37,14 +39,17 @@ public class GpContext {
 	private List<Context> contexts;
 	
 	public static String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
+	public static String GovPay = "GovPay";
 	public static String TIPO_SOGGETTO_NDP = "NDP";
 	public static String TIPO_SERVIZIO_NDP = "NDP";
 	
 	public static String TIPO_SOGGETTO_APP = "APP";
 	public static String TIPO_SOGGETTO_PRT = "PRT";
 	public static String TIPO_SOGGETTO_STAZIONE = "STZ";
+	public static String TIPO_SERVIZIO_GOVPAY = "GP";
 	public static String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
 	public static String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
+	
 	
 	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
 		try {
@@ -54,6 +59,7 @@ public class GpContext {
 			
 			contexts = new ArrayList<Context>();
 			Context context = (Context) logger.getContext();
+			context.getTransaction().setProtocol("govpay");
 			contexts.add(context);
 			
 			Transaction transaction = context.getTransaction();
@@ -100,6 +106,9 @@ public class GpContext {
 			loggers.add(logger);
 			
 			Context context = (Context) logger.getContext();
+			context.getTransaction().setProtocol("govpay");
+			if(!contexts.isEmpty())
+				context.getRequest().setCorrelationIdentifier(contexts.get(0).getIdTransaction());
 			contexts.add(context);
 			
 			Request request = context.getRequest();
@@ -158,6 +167,28 @@ public class GpContext {
 			client.setName(codDominio);
 			GpThreadLocal.get().getTransaction().setClient(client);
 		}
+	}
+	
+	public void setupPaClient(String codApplicazione, String azione, Versione versione) {
+		Actor to = new Actor();
+		to.setName(codApplicazione);
+		to.setType(TIPO_SOGGETTO_APP);
+		GpThreadLocal.get().getTransaction().setTo(to);
+		
+		Actor from = new Actor();
+		from.setName(GovPay);
+		from.setType(TIPO_SERVIZIO_GOVPAY);
+		GpThreadLocal.get().getTransaction().setFrom(from);
+		
+		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, PagamentiTelematiciPAService.SERVICE.getLocalPart(), azione, versione.getVersione());
+		
+		Server server = new Server();
+		server.setName(codApplicazione);
+		GpThreadLocal.get().getTransaction().setServer(server);
+		
+		Client client = new Client();
+		client.setName(GovPay);
+		GpThreadLocal.get().getTransaction().setClient(client);
 	}
 	
 	private ILogger getActiveLogger(){

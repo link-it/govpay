@@ -83,6 +83,8 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		
 		GpContext ctx = GpThreadLocal.get();
 		
+		ctx.setCorrelationId(identificativoDominio + identificativoUnivocoVersamento + codiceContestoPagamento);
+		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
 		GpThreadLocal.get().getTransaction().setFrom(from);
@@ -172,7 +174,13 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 	@Override
 	public PaaInviaRTRisposta paaInviaRT(PaaInviaRT bodyrichiesta, IntestazionePPT header) {
 		
+		String ccp = header.getCodiceContestoPagamento();
+		String codDominio = header.getIdentificativoDominio();
+		String iuv = header.getIdentificativoUnivocoVersamento();
+		
 		GpContext ctx = GpThreadLocal.get();
+		
+		ctx.setCorrelationId(codDominio + iuv + ccp);
 		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
@@ -181,10 +189,6 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		Actor to = new Actor();
 		to.setName(header.getIdentificativoStazioneIntermediarioPA());
 		ctx.getTransaction().setTo(to);
-		
-		String ccp = header.getCodiceContestoPagamento();
-		String codDominio = header.getIdentificativoDominio();
-		String iuv = header.getIdentificativoUnivocoVersamento();
 		
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));

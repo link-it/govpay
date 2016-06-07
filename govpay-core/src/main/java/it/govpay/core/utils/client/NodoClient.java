@@ -61,7 +61,6 @@ public class NodoClient extends BasicClient {
 
 	public enum Azione {
 		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediInformativaPSP, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP
-
 	}
 
 	private static ObjectFactory objectFactory;

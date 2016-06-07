@@ -113,6 +113,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String ccp = header.getCodiceContestoPagamento();
 		
 		GpContext ctx = GpThreadLocal.get();
+		ctx.setCorrelationId(codDominio + iuv + ccp);
 		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
@@ -340,6 +341,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		
 		GpContext ctx = GpThreadLocal.get();
+		ctx.setCorrelationId(codDominio + iuv + ccp);
 		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");

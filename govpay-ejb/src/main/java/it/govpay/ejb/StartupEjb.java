@@ -52,6 +52,7 @@ import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
 import org.openspcoop2.utils.logger.config.DiagnosticConfig;
 import org.openspcoop2.utils.logger.config.Log4jConfig;
 import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
+import org.openspcoop2.utils.logger.constants.Severity;
 import org.openspcoop2.utils.logger.log4j.Log4jType;
 
 @Startup
@@ -93,21 +94,20 @@ public class StartupEjb {
 			
 			MultiLoggerConfig mConfig = new MultiLoggerConfig();
 	        mConfig.setDiagnosticConfig(diagnosticConfig);
-//	        mConfig.setDiagnosticSeverityFilter(Severity.DEBUG_LOW);
+	        mConfig.setDiagnosticSeverityFilter(Severity.DEBUG_LOW);
 //	        mConfig.setEventSeverityFilter(Severity.INFO);
 	        mConfig.setLog4jLoggerEnabled(true);
-	        mConfig.setLog4jConfig(log4jConfig);
-	        mConfig.setDbLoggerEnabled(false);
+	        mConfig.setLog4jConfig(log4jConfig);	
+	        mConfig.setDbLoggerEnabled(true);
 	        DatabaseConfig dbConfig = new DatabaseConfig();
 	        DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
 	        dbDSConfig.setJndiName(it.govpay.bd.GovpayConfig.getInstance().getDataSourceJNDIName());
-//	        dbDSConfig.setJndiContext(null);
 	        dbConfig.setConfigDatasource(dbDSConfig);
 	        dbConfig.setDatabaseType(TipiDatabase.POSTGRESQL);
 	        dbConfig.setLogSql(true);
 	        mConfig.setDatabaseConfig(dbConfig);
 	        
-	        LoggerFactory.initialize("org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext", logv1, mConfig);
+	        LoggerFactory.initialize("el.hdm4", logv1, mConfig);
 	        
 		} catch (Exception e) {
 			log.error("Errore durante la configurazione dei diagnostici", e);
