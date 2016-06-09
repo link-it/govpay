@@ -83,7 +83,12 @@ public class GpContext {
 			client.setInterfaceName(((QName) msgCtx.get(MessageContext.WSDL_INTERFACE)).getLocalPart());
 			if(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal() != null)
 				client.setPrincipal(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal().getName());
+			
 			transaction.setClient(client);
+			
+			Server server = new Server();
+			server.setName(GovPay);
+			transaction.setServer(server);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
 		}

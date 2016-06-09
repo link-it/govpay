@@ -43,7 +43,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
-import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.logger.LoggerFactory;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
@@ -52,7 +51,6 @@ import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
 import org.openspcoop2.utils.logger.config.DiagnosticConfig;
 import org.openspcoop2.utils.logger.config.Log4jConfig;
 import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
-import org.openspcoop2.utils.logger.constants.Severity;
 import org.openspcoop2.utils.logger.log4j.Log4jType;
 
 @Startup
@@ -79,7 +77,7 @@ public class StartupEjb {
 		
 		// Configurazione del logger Diagnostici/Tracce/Dump
 		try {
-			// TODO
+
 			DiagnosticConfig diagnosticConfig = new DiagnosticConfig();
 	        diagnosticConfig.setDiagnosticPropertiesResourceURI("/msgDiagnostici.properties");
 	        diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
@@ -94,20 +92,22 @@ public class StartupEjb {
 			
 			MultiLoggerConfig mConfig = new MultiLoggerConfig();
 	        mConfig.setDiagnosticConfig(diagnosticConfig);
-	        mConfig.setDiagnosticSeverityFilter(Severity.DEBUG_LOW);
-//	        mConfig.setEventSeverityFilter(Severity.INFO);
-	        mConfig.setLog4jLoggerEnabled(true);
+	        mConfig.setDiagnosticSeverityFilter(GovpayConfig.getInstance().getmLogLevel());
+	        mConfig.setLog4jLoggerEnabled(GovpayConfig.getInstance().ismLogOnLog4j());
 	        mConfig.setLog4jConfig(log4jConfig);	
-	        mConfig.setDbLoggerEnabled(true);
-	        DatabaseConfig dbConfig = new DatabaseConfig();
-	        DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
-	        dbDSConfig.setJndiName(it.govpay.bd.GovpayConfig.getInstance().getDataSourceJNDIName());
-	        dbConfig.setConfigDatasource(dbDSConfig);
-	        dbConfig.setDatabaseType(TipiDatabase.POSTGRESQL);
-	        dbConfig.setLogSql(true);
-	        mConfig.setDatabaseConfig(dbConfig);
+	        mConfig.setDbLoggerEnabled(GovpayConfig.getInstance().ismLogOnDB());
 	        
-	        LoggerFactory.initialize("el.hdm4", logv1, mConfig);
+	        if(GovpayConfig.getInstance().ismLogOnDB()) {
+		        DatabaseConfig dbConfig = new DatabaseConfig();
+		        DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
+		        dbDSConfig.setJndiName(GovpayConfig.getInstance().getmLogDS());
+		        dbConfig.setConfigDatasource(dbDSConfig);
+		        dbConfig.setDatabaseType(GovpayConfig.getInstance().getmLogDBType());
+		        dbConfig.setLogSql(GovpayConfig.getInstance().ismLogSql());
+		        mConfig.setDatabaseConfig(dbConfig);
+	        }
+	        
+	        LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), logv1, mConfig);
 	        
 		} catch (Exception e) {
 			log.error("Errore durante la configurazione dei diagnostici", e);
@@ -156,15 +156,6 @@ public class StartupEjb {
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
-		
-//		try {
-//			bd = BasicBD.newInstance();
-//			new Rendicontazioni(bd).downloadRendicontazioni();
-//		} catch (Exception e) {
-//			log.error("Aggiornamento delle rendicontazioni fallito",e);
-//		} finally {
-//			if(bd != null) bd.closeConnection();
-//		}
 		
 		ctx.log();
 	}

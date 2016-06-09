@@ -14,19 +14,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>it.link.pddOE</groupId>
-			<artifactId>pddOE_logger</artifactId>
-			<version>2.3.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<artifactId>log4j</artifactId>
-					<groupId>log4j</groupId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-
-		<dependency>
 			<groupId>it.govpay</groupId>
 			<artifactId>govpay-core</artifactId>
 			<type>jar</type>
@@ -82,11 +69,5 @@
 			</resource>
 		</resources>
 	</build>
-	<repositories>
-		<repository>
-			<id>openspcoop2-private-snapshot</id>
-			<url>http://maven.openspcoop.org/content/private_snapshots/</url>
-		</repository>
-	</repositories>
 
 </project>
