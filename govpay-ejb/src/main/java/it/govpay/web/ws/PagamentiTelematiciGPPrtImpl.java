@@ -131,7 +131,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.log("gpprt.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazionePortale");
+			ctx.log("gpprt.autorizzazione");
 			
 			it.govpay.bd.model.Canale canale = null;
 			
@@ -205,7 +205,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.log("gpprt.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazionePortale");
+			ctx.log("gpprt.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			Rpt rpt = pagamentoBusiness.chiediTransazione(portaleAutenticato, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv(), bodyrichiesta.getCcp());
@@ -244,7 +244,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.log("gpprt.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazionePortale");
+			ctx.log("gpprt.autorizzazione");
 			
 			it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
 			
@@ -305,7 +305,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.log("gpprt.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazionePortale");
+			ctx.log("gpprt.autorizzazione");
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			List<Versamento> versamenti = versamentoBusiness.chiediVersamenti(portaleAutenticato, bodyrichiesta.getCodPortale(), bodyrichiesta.getCodUnivocoDebitore());
@@ -350,7 +350,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.log("gpprt.ricevutaRichiestaStorno");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazionePortale");
+			ctx.log("gpprt.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			response = pagamentoBusiness.avviaStorno(portaleAutenticato, bodyrichiesta);
@@ -388,7 +388,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.log("gpprt.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazionePortale");
+			ctx.log("gpprt.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			Rr rr = pagamentoBusiness.chiediStorno(portaleAutenticato, bodyrichiesta.getCodRichiestaStorno());
@@ -431,9 +431,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			from.setName(prt.getCodPortale());
 			from.setType(GpContext.TIPO_SOGGETTO_PRT);
 			GpThreadLocal.get().getTransaction().setFrom(from);
+			GpThreadLocal.get().getTransaction().getClient().setName(prt.getCodPortale());
 		}
 		
-		GpThreadLocal.get().getTransaction().getClient().setName(prt.getCodPortale());
 		return prt;
 	}
 	
