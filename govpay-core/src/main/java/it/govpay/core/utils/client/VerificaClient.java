@@ -38,12 +38,12 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.logger.beans.proxy.Server;
 
 public class VerificaClient extends BasicClient {
 
@@ -70,50 +70,68 @@ public class VerificaClient extends BasicClient {
 	public Versamento invoke(String codVersamentoEnte, String iuv, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, GovPayException {
 		log.debug("Richiedo la verifica per il versamento ("+codVersamentoEnte+") in versione (" + versione.toString() + ") alla URL ("+url+")");
 		
-		Server server = new Server();
-		server.setName(codApplicazione);
-		GpThreadLocal.get().getTransaction().setServer(server);
+		GpContext ctx = GpThreadLocal.get();
+		String idTransaction = ctx.openTransaction();
 		
-		//Chiudo la connessione al DB prima della comunicazione HTTP
-		bd.closeConnection();
-		
-		switch (versione) {
-		case v2_1:
-			PaVerificaVersamentoResponse paVerificaVersamentoResponse = null;
-			try {
-				PaVerificaVersamento paVerificaVersamento = new PaVerificaVersamento();
-				paVerificaVersamento.setCodApplicazione(codApplicazione);
-				paVerificaVersamento.setCodVersamentoEnte(codVersamentoEnte);
-				paVerificaVersamento.setIuv(iuv);
-				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paVerificaVersamento");
-				byte[] response = sendSoap("paVerificaVersamento", new JAXBElement<PaVerificaVersamento>(qname, PaVerificaVersamento.class, paVerificaVersamento), null, false);
+		try {
+			ctx.setupPaClient(codApplicazione, "paVerificaVersamento", versione);
+			ctx.log("versamento.verifica", codApplicazione, iuv, url.toExternalForm());
+			
+			
+			//Chiudo la connessione al DB prima della comunicazione HTTP
+			bd.closeConnection();
+			
+			switch (versione) {
+			case v2_1:
+				PaVerificaVersamentoResponse paVerificaVersamentoResponse = null;
 				try {
-					paVerificaVersamentoResponse = (PaVerificaVersamentoResponse) SOAPUtils.unmarshal(response);
-				} catch(Exception e) {
-					throw new ClientException(e);
-				} 
-			} finally {
+					PaVerificaVersamento paVerificaVersamento = new PaVerificaVersamento();
+					paVerificaVersamento.setCodApplicazione(codApplicazione);
+					paVerificaVersamento.setCodVersamentoEnte(codVersamentoEnte);
+					paVerificaVersamento.setIuv(iuv);
+					QName qname = new QName("http://www.govpay.it/servizi/pa/", "paVerificaVersamento");
+					byte[] response = sendSoap("paVerificaVersamento", new JAXBElement<PaVerificaVersamento>(qname, PaVerificaVersamento.class, paVerificaVersamento), null, false);
+					try {
+						paVerificaVersamentoResponse = (PaVerificaVersamentoResponse) SOAPUtils.unmarshal(response);
+					} catch(Exception e) {
+						ctx.log("versamento.verificaKo", iuv, "Errore nella deserializzazione del messaggio di risposta (" + e.getMessage() + ")");
+						throw new ClientException(e);
+					} 
+				} finally {
+					bd.setupConnection();
+				}
+				switch (paVerificaVersamentoResponse.getCodEsito()) {
+				case OK:
+					ctx.log("versamento.verificaOk");
+					try {
+						return VersamentoUtils.toVersamentoModel(paVerificaVersamentoResponse.getVersamento(), bd);
+					} catch (GovPayException e) {
+						ctx.log("versamento.verificaKo", iuv, "(" + e.getCodEsito() + ") " + e.getMessage());
+					}
+				case PAGAMENTO_ANNULLATO:
+					ctx.log("versamento.verificaAnnullato");
+					throw new VersamentoAnnullatoException();
+				case PAGAMENTO_DUPLICATO:
+					ctx.log("versamento.verificaDuplicato");
+					throw new VersamentoDuplicatoException();
+				case PAGAMENTO_SCADUTO:
+					ctx.log("versamento.verificaScaduto");
+					throw new VersamentoScadutoException();
+				case PAGAMENTO_SCONOSCIUTO:
+					ctx.log("versamento.verificaSconosciuto", iuv);
+					throw new VersamentoSconosciutoException();
+				}
+			default:
 				bd.setupConnection();
+				ctx.log("versamento.verificaKo", iuv, "Versione del connettore (" + versione + ") non supportato");
+				throw new GovPayException(EsitoOperazione.INTERNAL, "Versione del connettore (" + versione + ") non supportato");
 			}
-			switch (paVerificaVersamentoResponse.getCodEsito()) {
-			case OK:
-				return VersamentoUtils.toVersamentoModel(paVerificaVersamentoResponse.getVersamento(), bd);
-			case PAGAMENTO_ANNULLATO:
-				throw new VersamentoAnnullatoException();
-			case PAGAMENTO_DUPLICATO:
-				throw new VersamentoDuplicatoException();
-			case PAGAMENTO_SCADUTO:
-				throw new VersamentoScadutoException();
-			case PAGAMENTO_SCONOSCIUTO:
-				throw new VersamentoSconosciutoException();
-			}
-		case v1:
-		case v2:
-			bd.setupConnection();
-			throw new GovPayException(EsitoOperazione.INTERNAL, "Versione del connettore (" + versione + ") non supportato");
+		} catch (ServiceException e) {
+			ctx.log("versamento.verificaKo", iuv, e.getMessage());
+		} finally {
+			ctx.closeTransaction(idTransaction);
 		}
 		
-		bd.setupConnection();
 		throw new ServiceException();
 	}
 	

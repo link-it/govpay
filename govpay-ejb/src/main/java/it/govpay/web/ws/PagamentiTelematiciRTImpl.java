@@ -40,6 +40,8 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.core.business.GiornaleEventi;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
 import javax.annotation.Resource;
@@ -51,6 +53,8 @@ import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.logger.beans.Property;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
 @WebService(serviceName = "PagamentiTelematiciRTservice",
 endpointInterface = "it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirt.PagamentiTelematiciRT",
@@ -60,7 +64,7 @@ wsdlLocation = "classpath:wsdl/PaPerNodo.wsdl")
 
 @org.apache.cxf.annotations.SchemaValidation(type = SchemaValidationType.IN)
 
-@HandlerChain(file="../../../../handler-chains/handler-chain.xml")
+@HandlerChain(file="../../../../handler-chains/handler-chain-ndp.xml")
 
 public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 
@@ -76,6 +80,26 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			String identificativoDominio,
 			String identificativoUnivocoVersamento,
 			String codiceContestoPagamento, byte[] er) {
+		
+		GpContext ctx = GpThreadLocal.get();
+		
+		ctx.setCorrelationId(identificativoDominio + identificativoUnivocoVersamento + codiceContestoPagamento);
+		
+		Actor from = new Actor();
+		from.setName("NodoDeiPagamentiSPC");
+		from.setType(GpContext.TIPO_SOGGETTO_NDP);
+		ctx.getTransaction().setFrom(from);
+		
+		Actor to = new Actor();
+		to.setName(identificativoStazioneIntermediarioPA);
+		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
+		ctx.getTransaction().setTo(to);
+		
+		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", codiceContestoPagamento));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", identificativoDominio));
+		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", identificativoUnivocoVersamento));
+		ctx.log("er.ricezione");
+		
 		log.info("Ricevuta richiesta di acquisizione ER [" + identificativoDominio + "][" + identificativoUnivocoVersamento + "][" + codiceContestoPagamento + "]");
 		
 		TipoInviaEsitoStornoRisposta response = new TipoInviaEsitoStornoRisposta();
@@ -127,17 +151,27 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			evento.setCodCanale(rr.getRpt(bd).getCanale(bd).getCodCanale());
 			evento.setTipoVersamento(rr.getRpt(bd).getCanale(bd).getTipoVersamento());
 			response.setEsito("OK");
+			ctx.log("er.ricezioneOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
+			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
+			ctx.log("er.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, identificativoDominio, e.getMessage(), e), response);
+			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
+			ctx.log("er.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 		} finally {
 			GiornaleEventi ge = new GiornaleEventi(bd);
 			evento.setEsito(response.getEsito());
 			evento.setDataRisposta(new Date());
 			ge.registraEvento(evento);
+			
+			if(ctx != null) {
+				ctx.setResult(response.getFault() == null ? null : response.getFault().getFaultCode());
+				ctx.log();
+			}
 			
 			if(bd != null) bd.closeConnection();
 		}
@@ -146,9 +180,29 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 	
 	@Override
 	public PaaInviaRTRisposta paaInviaRT(PaaInviaRT bodyrichiesta, IntestazionePPT header) {
+		
 		String ccp = header.getCodiceContestoPagamento();
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
+		
+		GpContext ctx = GpThreadLocal.get();
+		
+		ctx.setCorrelationId(codDominio + iuv + ccp);
+		
+		Actor from = new Actor();
+		from.setName("NodoDeiPagamentiSPC");
+		from.setType(GpContext.TIPO_SOGGETTO_NDP);
+		ctx.getTransaction().setFrom(from);
+		
+		Actor to = new Actor();
+		to.setName(header.getIdentificativoStazioneIntermediarioPA());
+		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
+		ctx.getTransaction().setTo(to);
+		
+		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
+		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
+		ctx.log("rt.ricezione");
 		
 		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "][" + ccp + "]");
 		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
@@ -203,17 +257,27 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
 			esito.setEsito("OK");
 			response.setPaaInviaRTRisposta(esito);
+			ctx.log("rt.ricezioneOk");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
+			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
+			ctx.log("rt.ricezioneKo", response.getPaaInviaRTRisposta().getFault().getFaultCode(), response.getPaaInviaRTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), response);
+			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
+			ctx.log("rt.ricezioneKo", response.getPaaInviaRTRisposta().getFault().getFaultCode(), response.getPaaInviaRTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
 			GiornaleEventi ge = new GiornaleEventi(bd);
 			evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
 			evento.setDataRisposta(new Date());
 			ge.registraEvento(evento);
+			
+			if(ctx != null) {
+				ctx.setResult(response.getPaaInviaRTRisposta().getFault() == null ? null : response.getPaaInviaRTRisposta().getFault().getFaultCode());
+				ctx.log();
+			}
 			
 			if(bd != null) bd.closeConnection();
 		}

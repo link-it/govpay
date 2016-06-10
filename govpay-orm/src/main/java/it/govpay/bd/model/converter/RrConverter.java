@@ -42,6 +42,8 @@ public class RrConverter {
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
 		dto.setIdRpt(vo.getIdRpt().getId());
+		dto.setIdTransazioneRr(vo.getCodTransazioneRR());
+		dto.setIdTransazioneEr(vo.getCodTransazioneER());
 		if(vo.getImportoTotaleRevocato() != null)
 			dto.setImportoTotaleRevocato(BigDecimal.valueOf(vo.getImportoTotaleRevocato()));
 		dto.setImportoTotaleRichiesto(BigDecimal.valueOf(vo.getImportoTotaleRichiesto()));
@@ -58,6 +60,8 @@ public class RrConverter {
 		vo.setCodDominio(dto.getCodDominio());
 		vo.setCodMsgEsito(dto.getCodMsgEsito());
 		vo.setCodMsgRevoca(dto.getCodMsgRevoca());
+		vo.setCodTransazioneRR(dto.getIdTransazioneRr());
+		vo.setCodTransazioneER(dto.getIdTransazioneEr());
 		vo.setDataMsgEsito(dto.getDataMsgEsito());
 		vo.setDataMsgRevoca(dto.getDataMsgRevoca());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());

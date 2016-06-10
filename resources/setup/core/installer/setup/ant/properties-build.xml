@@ -19,7 +19,7 @@
 		<antcall target="set_property">
 			<param name="file" value="${file}"/>
 			<param name="token" value="govpay.sourceCodeDisclaimer"/>
-			<param name="value" value="Generato con GovPay ${antinstaller_product_version}"/>
+			<param name="value" value="Generato con GovPay v${antinstaller_product_version}"/>
 		</antcall>
 
                 <antcall target="replace_token">
@@ -123,5 +123,13 @@
                         <param name="value" value="${pubhost_noendslash}"/>
                 </antcall>
 	</target>
+        <target name="wildfly_govpay_securitydomain">
+		<antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="java:/jaas/other"/>
+                        <param name="value" value="other"/>
+                </antcall>
+
+        </target>
 	
 </project>

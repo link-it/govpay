@@ -257,6 +257,20 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_stazione";
 			}
 		}
+		if(field.equals(RPT.model().COD_TRANSAZIONE_RPT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_transazione_rpt";
+			}else{
+				return "cod_transazione_rpt";
+			}
+		}
+		if(field.equals(RPT.model().COD_TRANSAZIONE_RT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_transazione_rt";
+			}else{
+				return "cod_transazione_rt";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -349,6 +363,12 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().COD_STAZIONE)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().COD_TRANSAZIONE_RPT)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().COD_TRANSAZIONE_RT)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
 

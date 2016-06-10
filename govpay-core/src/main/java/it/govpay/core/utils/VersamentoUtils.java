@@ -265,7 +265,9 @@ public class VersamentoUtils {
 	}
 
 	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+		GpContext ctx = GpThreadLocal.get();
 		if(applicazione.getConnettoreVerifica() == null) {
+			ctx.log("versamento.verificaNonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
 		VerificaClient verificaClient = new VerificaClient(applicazione);

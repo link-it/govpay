@@ -35,6 +35,7 @@ import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.IuvGenerato;
@@ -97,9 +98,11 @@ public class Iuv extends BasicBD {
 				try {
 					iuv = iuvBD.generaIuv(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.NUMERICO);
 				} catch (ServiceException se) {
+					GpThreadLocal.get().log("iuv.generazioneIUVKo", applicazione.getCodApplicazione(), iuvRichiesto.getCodVersamentoEnte(), dominio.getCodDominio(), e.getMessage());
 					e = se;
 					continue;
 				}
+				GpThreadLocal.get().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), iuvRichiesto.getCodVersamentoEnte(), dominio.getCodDominio(), iuv.getIuv());
 				log.info("Generato IUV [CodDominio: " + dominio.getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
 				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale());
 				response.getIuvGenerato().add(iuvGenerato);
@@ -185,6 +188,7 @@ public class Iuv extends BasicBD {
 		try {
 			iuv = iuvBD.getIuv(dominio.getId(), iuvProposto);
 			if(!iuv.getCodVersamentoEnte().equals(codVersamentoEnte)) {
+				GpThreadLocal.get().log("iuv.caricamentoIUVKo", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuvProposto);
 				throw new GovPayException(EsitoOperazione.VER_018, iuvProposto, iuv.getCodVersamentoEnte());
 			}
 		} catch (NotFoundException ne) {
@@ -199,6 +203,7 @@ public class Iuv extends BasicBD {
 			iuv.setCodVersamentoEnte(codVersamentoEnte);
 			iuv.setApplicationCode(dominio.getStazione(this).getApplicationCode());
 			iuvBD.insertIuv(iuv);
+			GpThreadLocal.get().log("iuv.caricamentoIUVOk", applicazione.getCodApplicazione(), iuvProposto, dominio.getCodDominio(), iuv.getIuv());
 		}
 		return iuv;
 	}

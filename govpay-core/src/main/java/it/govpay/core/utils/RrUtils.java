@@ -31,6 +31,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 import org.xml.sax.SAXException;
 
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtDatiEsitoRevoca;
@@ -59,6 +60,7 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Rr.StatoRr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -246,8 +248,6 @@ public class RrUtils extends NdpValidationUtils {
 			inviaRR.setRr(rr.getXmlRr());
 			risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaRichiestaStorno(inviaRR)); 
 			return risposta;
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
 			if(bd != null) 
@@ -277,11 +277,7 @@ public class RrUtils extends NdpValidationUtils {
 			evento.setEsito(risposta.getEsito());
 		else
 			evento.setEsito("Errore di trasmissione al Nodo");
-		try {
-			evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
+		evento.setFruitore(rpt.getIntermediario(bd).getDenominazione());
 		evento.setIuv(rpt.getIuv());
 		evento.setSottotipoEvento(null);
 		evento.setTipoEvento(tipoEvento);
@@ -292,6 +288,7 @@ public class RrUtils extends NdpValidationUtils {
 		bd.setAutoCommit(false);
 		bd.enableSelectForUpdate();
 		
+		GpContext ctx = GpThreadLocal.get();
 		
 		CtEsitoRevoca ctEr = null;
 		// Validazione Sintattica
@@ -299,15 +296,19 @@ public class RrUtils extends NdpValidationUtils {
 			ctEr = JaxbUtils.toER(er);
 		} catch (Exception e) {
 			log.error("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
-			throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage());
+			throw new NdpException(FaultPa.PAA_SINTASSI_XSD, identificativoDominio, e.getCause().getMessage());
 		}
+		
+		ctx.getContext().getRequest().addGenericProperty(new Property("codMessaggioEsito", ctEr.getIdentificativoMessaggioEsito()));
+		ctx.getContext().getRequest().addGenericProperty(new Property("importo", ctEr.getDatiRevoca().getImportoTotaleRevocato().toString()));
+		ctx.log("er.acquisizione");
 		
 		RrBD rrBD = new RrBD(bd);
 		Rr rr = null;
 		try {
 			rr = rrBD.getRr(ctEr.getRiferimentoMessaggioRevoca());
 		} catch (NotFoundException e) {
-			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, identificativoDominio, null);
+			throw new NdpException(FaultPa.PAA_RPT_SCONOSCIUTA, identificativoDominio, "RR con identificativo " + ctEr.getRiferimentoMessaggioRevoca() + " sconosciuta");
 		}
 		
 		if(rr.getStato().equals(StatoRr.ER_ACCETTATA_PA)) {
@@ -330,8 +331,6 @@ public class RrUtils extends NdpValidationUtils {
 			throw e;
 		}
 		
-		log.info("Acquisizione ER per un importo di " + ctEr.getDatiRevoca().getImportoTotaleRevocato());
-		
 		// Rileggo per avere la lettura dello stato rpt in transazione
 		rr.setCodMsgEsito(ctEr.getIdentificativoMessaggioEsito());
 		rr.setDataMsgEsito(ctEr.getDataOraMessaggioEsito());
@@ -347,15 +346,27 @@ public class RrUtils extends NdpValidationUtils {
 		PagamentiBD pagamentiBD = new PagamentiBD(bd);
 		VersamentiBD versamentiBD = new VersamentiBD(bd);
 		
-		for(Pagamento pagamento : pagamenti) {
-			pagamentiBD.updatePagamento(pagamento);
+		Versamento v = rr.getPagamenti(versamentiBD).get(0).getSingoloVersamento(bd).getVersamento(bd);
+		if(rr.getImportoTotaleRevocato().compareTo(BigDecimal.ZERO) == 0) {
 			
-			SingoloVersamento sv = pagamento.getSingoloVersamento(bd);
-			versamentiBD.updateStatoSingoloVersamento(sv.getIdVersamento(), StatoSingoloVersamento.ANOMALO);
+		} else {
+			SingoloVersamento sv = null;
+			for(Pagamento pagamento : pagamenti) {
+				
+				if(pagamento.getImportoRevocato().compareTo(BigDecimal.ZERO) == 0){ 
+					ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
+					continue;
+				}
+					
+				pagamentiBD.updatePagamento(pagamento);
+				
+				sv = pagamento.getSingoloVersamento(bd);
+				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ANOMALO);
+				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
+			}
 			versamentiBD.updateStatoVersamento(sv.getIdVersamento(), StatoVersamento.ANOMALO, "Pagamenti stornati");
+			v.setStatoVersamento(StatoVersamento.ANOMALO);
 		}
-		
-		
 		
 		Notifica notifica = new Notifica(rr, TipoNotifica.RICEVUTA, bd);
 		NotificheBD notificheBD = new NotificheBD(bd);
@@ -366,6 +377,7 @@ public class RrUtils extends NdpValidationUtils {
 		
 		ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, bd));
 		
+		ctx.log("er.acquisizioneOk", v.getCodVersamentoEnte(), v.getStatoVersamento().toString());
 		log.info("ER acquisita con successo.");
 		
 		return rr;
@@ -388,6 +400,12 @@ public class RrUtils extends NdpValidationUtils {
 		if(!equals(datiRr.getIdentificativoUnivocoVersamento(), datiEr.getIdentificativoUnivocoVersamento())) throw new NdpException(FaultPa.PAA_SEMANTICA, "IdentificativoUnivocoVersamento non corrisponde");
 		
 		for(CtDatiSingoloEsitoRevoca singolaRevoca : datiEr.getDatiSingolaRevoca()) {
+			
+			if(singolaRevoca.getSingoloImportoRevocato().compareTo(BigDecimal.ZERO) == 0) {
+				//Importo non revocato. Non faccio niente
+				continue;
+			}
+
 			Pagamento pagamento = null;
 			try {
 				pagamento = rr.getPagamento(singolaRevoca.getIdentificativoUnivocoRiscossione(), bd);

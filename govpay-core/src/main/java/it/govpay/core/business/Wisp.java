@@ -55,11 +55,11 @@ public class Wisp extends BasicBD {
 		GpContext ctx = GpThreadLocal.get();
 		try {
 			idTransaction = ctx.openTransaction();
-			ctx.setupNodoClient(dominio.getStazione(this).getIntermediario(this), Azione.nodoChiediSceltaWISP);
+			ctx.setupNodoClient(dominio.getStazione(this).getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediSceltaWISP);
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", dominio.getCodDominio()));
 			ctx.getContext().getRequest().addGenericProperty(new Property("codKeyPA", codKeyPA));
 			GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codKeyWISP", codKeyWISP));
-			GpThreadLocal.get().log("integrazione.risoluzioneWisp");
+			GpThreadLocal.get().log("wisp.risoluzioneWisp");
 			
 			
 			Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
@@ -79,13 +79,13 @@ public class Wisp extends BasicBD {
 				FaultNodo fault = FaultNodo.valueOf(risposta.getFault().getFaultCode());
 				switch (fault) {
 				case PPT_WISP_SESSIONE_SCONOSCIUTA:
-					ctx.log("integrazione.risoluzioneWispSconosciuta");
+					ctx.log("wisp.risoluzioneWispKoSconosciuta");
 					throw new GovPayException(EsitoOperazione.WISP_000);
 				case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
-					ctx.log("integrazione.risoluzioneWispTimeout");
+					ctx.log("wisp.risoluzioneWispKoTimeout");
 					throw new GovPayException(EsitoOperazione.WISP_001);
 				default:
-					ctx.log("integrazione.risoluzioneWispKo");
+					ctx.log("wisp.risoluzioneWispKo", risposta.getFault().getFaultCode());
 					throw new GovPayException(EsitoOperazione.NDP_001, risposta.getFault().getFaultCode());
 				}
 			} else {
@@ -95,7 +95,7 @@ public class Wisp extends BasicBD {
 					ctx.getContext().getResponse().addGenericProperty(new Property("codPsp", risposta.getIdentificativoPSP()));
 					ctx.getContext().getResponse().addGenericProperty(new Property("codCanale", risposta.getIdentificativoCanale()));
 					ctx.getContext().getResponse().addGenericProperty(new Property("tipoVersamento", risposta.getTipoVersamento().toString()));
-					ctx.log("integrazione.risoluzioneWispCanale");
+					ctx.log("wisp.risoluzioneWispOkCanale");
 					try {
 						Canale canale = AnagraficaManager.getCanale(this,  risposta.getIdentificativoPSP(), risposta.getIdentificativoCanale(), TipoVersamento.toEnum(risposta.getTipoVersamento().toString()));
 						canale.setPsp(canale.getPsp(this));
@@ -107,12 +107,12 @@ public class Wisp extends BasicBD {
 					scelta.setSceltaEffettuata(true);
 					return scelta;
 				case NO:
-					ctx.log("integrazione.risoluzioneWispNoScelta");
+					ctx.log("integrazione.risoluzioneWispOkNoScelta");
 					scelta.setPagaDopo(false);
 					scelta.setSceltaEffettuata(false);
 					return scelta;
 				case PO:
-					ctx.log("integrazione.risoluzioneWispPagaDopo");
+					ctx.log("integrazione.risoluzioneWispOkPagaDopo");
 					scelta.setPagaDopo(true);
 					scelta.setSceltaEffettuata(true);
 					return scelta;

@@ -30,6 +30,9 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.utils.TipiDatabase;
+import org.openspcoop2.utils.logger.constants.Severity;
+import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
 
 public class GovpayConfig {
 
@@ -58,6 +61,10 @@ public class GovpayConfig {
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePool;
 	private String ksLocation, ksPassword, ksAlias;
+	private String mLogClass, mLogDS;
+	private Severity mLogLevel;
+	private TipiDatabase mLogDBType;
+	private boolean mLogOnLog4j, mLogOnDB, mLogSql;
 
 
 	public GovpayConfig() {
@@ -70,7 +77,15 @@ public class GovpayConfig {
 		this.ksAlias = null;
 		this.ksLocation = null;
 		this.ksPassword = null;
-
+		this.mLogClass = Log4JLoggerWithProxyContext.class.getName();
+		this.mLogLevel = Severity.INFO;
+		this.mLogOnDB = false;
+		this.mLogOnLog4j = true;
+		this.mLogSql = false;
+		this.mLogDBType = null;
+		this.mLogDS = null;
+		
+		
 		try {
 			
 			// Recupero il property all'interno dell'EAR
@@ -165,7 +180,41 @@ public class GovpayConfig {
 			} catch (Exception e) {
 				throw new Exception("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
 			}
-
+			
+			String mLogClassString = getProperty("it.govpay.mlog.class", props, false);
+			if(mLogClassString != null && !mLogClassString.isEmpty()) 
+				this.mLogClass = mLogClassString;
+			
+			String mLogOnLog4jString = getProperty("it.govpay.mlog.log4j", props, false);
+			if(mLogOnLog4jString != null && !Boolean.valueOf(mLogOnLog4jString))
+				this.mLogOnLog4j = false;
+			
+			try {
+				this.mLogLevel = Severity.valueOf(getProperty("it.govpay.mlog.level", props, false));
+			} catch (Exception e) {
+				log.warn("Valore ["+getProperty("it.govpay.mlog.level", props, false)+"] non consentito per la property \"it.govpay.mlog.level\". Assunto valore di default \"INFO\".");
+			}
+			
+			String mLogOnDBString = getProperty("it.govpay.mlog.db", props, false);
+			if(mLogOnDBString != null && Boolean.valueOf(mLogOnDBString))
+				this.mLogOnDB = true;
+			
+			if(this.mLogOnDB) {
+				String mLogDBTypeString = getProperty("it.govpay.mlog.db.type", props, true);
+				try {
+					this.mLogDBType = TipiDatabase.valueOf(mLogDBTypeString);
+				} catch (IllegalArgumentException e) {
+					throw new Exception("Valore ["+mLogDBTypeString.trim()+"] non consentito per la property \"it.govpay.mlog.db.type\": " +e.getMessage());
+				}
+				
+				this.mLogDS = getProperty("it.govpay.mlog.db.ds", props, true);
+				
+				String mLogSqlString = getProperty("it.govpay.mlog.showSql", props, false);
+				if(mLogSqlString != null)
+					this.mLogOnLog4j = Boolean.valueOf(mLogSqlString);
+			}
+			
+			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -239,4 +288,31 @@ public class GovpayConfig {
 		return ksAlias;
 	}
 
+	public String getmLogClass() {
+		return mLogClass;
+	}
+
+	public String getmLogDS() {
+		return mLogDS;
+	}
+
+	public Severity getmLogLevel() {
+		return mLogLevel;
+	}
+
+	public TipiDatabase getmLogDBType() {
+		return mLogDBType;
+	}
+
+	public boolean ismLogOnLog4j() {
+		return mLogOnLog4j;
+	}
+
+	public boolean ismLogOnDB() {
+		return mLogOnDB;
+	}
+
+	public boolean ismLogSql() {
+		return mLogSql;
+	}
 }

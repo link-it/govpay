@@ -27,9 +27,11 @@ import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.govpay.bd.model.Intermediario;
+import it.govpay.bd.model.Connettore.Versione;
 import it.govpay.bd.model.Rpt;
+import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.servizi.PagamentiTelematiciPAService;
 import it.govpay.servizi.commons.GpResponse;
 
 public class GpContext {
@@ -37,7 +39,21 @@ public class GpContext {
 	private List<ILogger> loggers;
 	private List<Context> contexts;
 	
-	public GpContext(MessageContext msgCtx) throws ServiceException {
+	public static String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
+	public static String GovPay = "GovPay";
+	public static String TIPO_SOGGETTO_NDP = "NDP";
+	public static String TIPO_SERVIZIO_NDP = "NDP";
+	
+	public static String TIPO_SOGGETTO_APP = "APP";
+	public static String TIPO_SOGGETTO_PRT = "PRT";
+	public static String TIPO_SOGGETTO_STAZIONE = "STZ";
+	public static String TIPO_SOGGETTO_GOVPAY = "GP";
+	public static String TIPO_SERVIZIO_GOVPAY = "GP";
+	public static String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
+	public static String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
+	
+	
+	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {
 		try {
 			loggers = new ArrayList<ILogger>();
 			ILogger logger = LoggerFactory.newLogger(new Context());	
@@ -45,6 +61,7 @@ public class GpContext {
 			
 			contexts = new ArrayList<Context>();
 			Context context = (Context) logger.getContext();
+			context.getTransaction().setProtocol("govpay");
 			contexts.add(context);
 			
 			Transaction transaction = context.getTransaction();
@@ -52,7 +69,9 @@ public class GpContext {
 			
 			Service service = new Service();
 			service.setName(((QName) msgCtx.get(MessageContext.WSDL_SERVICE)).getLocalPart());
-			service.setVersion(020100);
+			service.setVersion(versioneServizio);
+			service.setType(tipoServizio);
+			
 			transaction.setService(service);
 			
 			Operation operation = new Operation();
@@ -66,7 +85,18 @@ public class GpContext {
 			client.setInterfaceName(((QName) msgCtx.get(MessageContext.WSDL_INTERFACE)).getLocalPart());
 			if(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal() != null)
 				client.setPrincipal(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal().getName());
+			
 			transaction.setClient(client);
+			
+			Server server = new Server();
+			server.setName(GovPay);
+			
+			Actor to = new Actor();
+			to.setName(GovPay);
+			to.setType(TIPO_SOGGETTO_GOVPAY);
+			transaction.setTo(to);
+			
+			transaction.setServer(server);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
 		}
@@ -89,6 +119,9 @@ public class GpContext {
 			loggers.add(logger);
 			
 			Context context = (Context) logger.getContext();
+			context.getTransaction().setProtocol("govpay");
+			if(!contexts.isEmpty())
+				context.getRequest().setCorrelationIdentifier(contexts.get(0).getIdTransaction());
 			contexts.add(context);
 			
 			Request request = context.getRequest();
@@ -125,20 +158,50 @@ public class GpContext {
 		return null;
 	}
 	
-	public void setupNodoClient(Intermediario intermediario, Azione azione) {
+	public void setupNodoClient(String codStazione, String codDominio, Azione azione) {
 		Actor to = new Actor();
-		to.setName("PagoPa");
+		to.setName(NodoDeiPagamentiSPC);
+		to.setType(TIPO_SOGGETTO_NDP);
 		GpThreadLocal.get().getTransaction().setTo(to);
 		
 		Actor from = new Actor();
-		from.setName(intermediario.getDenominazione());
+		from.setName(codStazione);
+		from.setType(TIPO_SOGGETTO_STAZIONE);
 		GpThreadLocal.get().getTransaction().setFrom(from);
 		
-		GpThreadLocal.get().setInfoFruizione(PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
+		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_NDP, PagamentiTelematiciRPTservice.SERVICE.getLocalPart(), azione.toString(), Rpt.VERSIONE_ENCODED);
 		
 		Server server = new Server();
-		server.setName("PagoPa");
+		server.setName(NodoDeiPagamentiSPC);
 		GpThreadLocal.get().getTransaction().setServer(server);
+		
+		if(codDominio != null) {
+			Client client = new Client();
+			client.setName(codDominio);
+			GpThreadLocal.get().getTransaction().setClient(client);
+		}
+	}
+	
+	public void setupPaClient(String codApplicazione, String azione, Versione versione) {
+		Actor to = new Actor();
+		to.setName(codApplicazione);
+		to.setType(TIPO_SOGGETTO_APP);
+		GpThreadLocal.get().getTransaction().setTo(to);
+		
+		Actor from = new Actor();
+		from.setName(GovPay);
+		from.setType(TIPO_SERVIZIO_GOVPAY);
+		GpThreadLocal.get().getTransaction().setFrom(from);
+		
+		GpThreadLocal.get().setInfoFruizione(TIPO_SERVIZIO_GOVPAY_WS, PagamentiTelematiciPAService.SERVICE.getLocalPart(), azione, versione.getVersione());
+		
+		Server server = new Server();
+		server.setName(codApplicazione);
+		GpThreadLocal.get().getTransaction().setServer(server);
+		
+		Client client = new Client();
+		client.setName(GovPay);
+		GpThreadLocal.get().getTransaction().setClient(client);
 	}
 	
 	private ILogger getActiveLogger(){
@@ -148,10 +211,11 @@ public class GpContext {
 		return null;
 	}
 	
-	public void setInfoFruizione(String servizio, String operazione, int version) {
+	public void setInfoFruizione(String tipoServizio, String servizio, String operazione, int version) {
 		Service service = new Service();
 		service.setName(servizio);
 		service.setVersion(version);
+		service.setType(tipoServizio);
 		getContext().getTransaction().setService(service);
 		
 		Operation operation = new Operation();
@@ -173,6 +237,10 @@ public class GpContext {
 	}
 
 	public void setResult(GpResponse response) {
+		if(response == null || response.getCodEsitoOperazione() == null) {
+			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			return;
+		}
 		switch (response.getCodEsitoOperazione()) {
 		case OK:
 			getContext().getTransaction().setResult(Result.SUCCESS);
@@ -184,6 +252,20 @@ public class GpContext {
 			getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 			break;
 		}
+	}
+	
+	public void setResult(String faultCode) {
+		if(faultCode == null) {
+			getContext().getTransaction().setResult(Result.SUCCESS);
+			return;
+		}
+			
+		if(faultCode.equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			return; 
+		}
+		
+		getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 	}
 	
 	public void log(String string, String...params) {

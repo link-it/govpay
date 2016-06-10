@@ -177,6 +177,8 @@ public class JDBCRRServiceSearchImpl implements IJDBCServiceSearchWithId<RR, IdR
 			fields.add(RR.model().IMPORTO_TOTALE_REVOCATO);
 			fields.add(RR.model().XML_RR);
 			fields.add(RR.model().XML_ER);
+			fields.add(RR.model().COD_TRANSAZIONE_RR);
+			fields.add(RR.model().COD_TRANSAZIONE_ER);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         

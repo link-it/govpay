@@ -66,6 +66,8 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.IMPORTO_TOTALE_PAGATO = new Field("importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
 		this.XML_RT = new Field("xmlRT",byte[].class,"RPT",RPT.class);
 		this.COD_STAZIONE = new Field("codStazione",java.lang.String.class,"RPT",RPT.class);
+		this.COD_TRANSAZIONE_RPT = new Field("codTransazioneRPT",java.lang.String.class,"RPT",RPT.class);
+		this.COD_TRANSAZIONE_RT = new Field("codTransazioneRT",java.lang.String.class,"RPT",RPT.class);
 	
 	}
 	
@@ -97,6 +99,8 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.IMPORTO_TOTALE_PAGATO = new ComplexField(father,"importoTotalePagato",java.lang.Double.class,"RPT",RPT.class);
 		this.XML_RT = new ComplexField(father,"xmlRT",byte[].class,"RPT",RPT.class);
 		this.COD_STAZIONE = new ComplexField(father,"codStazione",java.lang.String.class,"RPT",RPT.class);
+		this.COD_TRANSAZIONE_RPT = new ComplexField(father,"codTransazioneRPT",java.lang.String.class,"RPT",RPT.class);
+		this.COD_TRANSAZIONE_RT = new ComplexField(father,"codTransazioneRT",java.lang.String.class,"RPT",RPT.class);
 	
 	}
 	
@@ -149,6 +153,10 @@ public class RPTModel extends AbstractModel<RPT> {
 	public IField XML_RT = null;
 	 
 	public IField COD_STAZIONE = null;
+	 
+	public IField COD_TRANSAZIONE_RPT = null;
+	 
+	public IField COD_TRANSAZIONE_RT = null;
 	 
 
 	@Override

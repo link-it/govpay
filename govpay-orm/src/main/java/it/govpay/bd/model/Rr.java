@@ -60,6 +60,9 @@ public class Rr extends BasicModel{
 	private byte[] xmlRr;
 	private byte[] xmlEr;
 	
+	private String idTransazioneRr;
+	private String idTransazioneEr;
+	
 	public Long getId() {
 		return id;
 	}
@@ -180,6 +183,22 @@ public class Rr extends BasicModel{
 		this.xmlEr = xmlEr;
 	}
 	
+	public String getIdTransazioneRr() {
+		return idTransazioneRr;
+	}
+
+	public void setIdTransazioneRr(String idTransazioneRr) {
+		this.idTransazioneRr = idTransazioneRr;
+	}
+
+	public String getIdTransazioneEr() {
+		return idTransazioneEr;
+	}
+
+	public void setIdTransazioneEr(String idTransazioneEr) {
+		this.idTransazioneEr = idTransazioneEr;
+	}
+	
 	// Business
 	
 	private Rpt rpt;
@@ -218,4 +237,6 @@ public class Rr extends BasicModel{
 		}
 		throw new NotFoundException();
 	}
+
+
 }

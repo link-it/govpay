@@ -104,6 +104,43 @@
 
 	<target name="setup_completo"  depends="init_setup, setup_properties, setup_datasource, setup_sql, setup_finished"/>
 	<target name="setup_finished">
+		<if>
+			<equals arg1="${antinstaller_as}" arg2="wildfly" />
+			<then>
+				<unzip src="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}.war" dest="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}"/>
+				<delete file="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}.war" />
+				<move todir="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}/WEB-INF/lib">
+					<fileset dir="${tmp_dir}/govpay/lib" >
+						<include name="log4j*.jar" />
+						<include name="jcs*.jar" />
+						<include name="openspcoop2*.jar" />
+						<include name="govpay*.jar" />
+					</fileset>
+				</move>
+				<delete>
+					<fileset dir="${tmp_dir}/govpay/lib" >
+						<include name="xalan*.jar"/>
+						<include name="xerces*.jar"/>
+						<include name="jaxb-impl*.jar"/>
+						<include name="xml-apis*.jar"/>
+						<include name="woodstox-core-asl*.jar"/>
+					</fileset>
+				</delete>
+				<antcall target="wildfly_govpay_securitydomain">
+        	                	<param name="file" value="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}/WEB-INF/jboss-web.xml"/>
+				</antcall>
+                                <antcall target="wildfly_govpay_securitydomain">
+                                        <param name="file" value="${tmp_dir}/govpayConsole/WEB-INF/jboss-web.xml"/>
+                                </antcall>
+			
+				<xslt  in="${tmp_dir}/govpayConsole/WEB-INF/web.xml" out="${tmp_dir}/govpayConsole/WEB-INF/new-web.xml" style="./xslt/wildfly_remove_listener.xslt" >
+				</xslt>
+				<delete file="${tmp_dir}/govpayConsole/WEB-INF/web.xml" />
+				<move file="${tmp_dir}/govpayConsole/WEB-INF/new-web.xml" tofile="${tmp_dir}/govpayConsole/WEB-INF/web.xml" />
+				<zip destfile="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}.war" basedir="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}"/>
+				<delete dir="${tmp_dir}/govpay/govpay-web-${antinstaller_product_version}" />
+			</then>
+		</if>
 		<delete dir="${dist}"/>
 		<mkdir dir="${dist}/archivi" />
 		<zip destfile="${dist}/archivi/govpay.ear" basedir="${tmp_dir}/govpay"/>
