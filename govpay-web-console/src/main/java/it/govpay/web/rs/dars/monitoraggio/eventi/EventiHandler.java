@@ -95,14 +95,17 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 			URI cancellazione = null;
 
+			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
 			String idTransazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
 			String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
 			SortOrder sortOrder = SortOrder.DESC;
 			// se visualizzo gli eventi nella pagina delle transazioni li ordino in ordine crescente
-			if(StringUtils.isNotEmpty(idTransazione))
+			if(StringUtils.isNotEmpty(idTransazione)){
+				visualizzaRicerca = false;
 				sortOrder = SortOrder.ASC;
+			}
 
 			EventiBD eventiBD = new EventiBD(bd);
 			EventiFilter filter = eventiBD.newFilter();
@@ -135,8 +138,8 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 			long count = eventiBD.count(filter);
 
-			// visualizza la ricerca solo se i risultati sono > del limit
-			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			// visualizza la ricerca solo se i risultati sono > del limit e se non sono nella schermata degli eventi di una transazione.
+			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
