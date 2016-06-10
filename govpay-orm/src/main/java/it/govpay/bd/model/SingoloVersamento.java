@@ -207,9 +207,14 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	}
 	
 	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
-		if(ibanAccredito == null && ibanAccredito != null) {
-			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, getIdIbanAccredito());
+		if(ibanAccredito == null && idIbanAccredito != null) {
+			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
 		}
+		
+		if(ibanAccredito == null && idIbanAccredito == null) {
+			ibanAccredito = getTributo(bd).getIbanAccredito(bd);
+		}
+		
 		return ibanAccredito;
 	}
 	
@@ -218,6 +223,21 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 		if(ibanAccredito.getId() != null)
 			this.idIbanAccredito = ibanAccredito.getId();
 	}
+	
+	public Tributo.TipoContabilta getTipoContabilita(BasicBD bd) throws ServiceException {
+		if(tipoContabilita != null)
+			return tipoContabilita;
+		else
+			return getTributo(bd).getTipoContabilita();
+	}
+	
+	public String getCodContabilita(BasicBD bd) throws ServiceException {
+		if(codContabilita != null)
+			return codContabilita;
+		else
+			return getTributo(bd).getCodContabilita();
+	}
+
 
 }
 

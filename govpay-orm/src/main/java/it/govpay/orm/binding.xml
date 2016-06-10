@@ -486,6 +486,8 @@
     <value name="importoTotalePagato" field="importoTotalePagato" usage="optional"/>
     <value name="xmlRT" field="xmlRT" usage="optional"/>
     <value name="codStazione" field="codStazione" usage="required"/>
+    <value name="codTransazioneRPT" field="codTransazioneRPT" usage="optional"/>
+    <value name="codTransazioneRT" field="codTransazioneRT" usage="optional"/>
   </mapping>
   <mapping name="RR" class="it.govpay.orm.RR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -503,6 +505,8 @@
     <value name="importoTotaleRevocato" field="importoTotaleRevocato" usage="optional"/>
     <value name="xmlRR" field="xmlRR" usage="required"/>
     <value name="xmlER" field="xmlER" usage="optional"/>
+    <value name="codTransazioneRR" field="codTransazioneRR" usage="optional"/>
+    <value name="codTransazioneER" field="codTransazioneER" usage="optional"/>
   </mapping>
   <mapping name="Pagamento" class="it.govpay.orm.Pagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

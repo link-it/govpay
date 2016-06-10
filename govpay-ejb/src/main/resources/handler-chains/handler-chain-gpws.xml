@@ -2,8 +2,8 @@
 <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
 	<handler-chain>
 		<handler>
-			<handler-name>it.govpay.web.handler.MessageLoggingHandler</handler-name>
-			<handler-class>it.govpay.web.handler.MessageLoggingHandler</handler-class>
+			<handler-name>it.govpay.web.handler.MessageLoggingHandlerGPWS_020100</handler-name>
+			<handler-class>it.govpay.web.handler.MessageLoggingHandlerGPWS_020100</handler-class>
 		</handler>
 		<handler>
 			<handler-name>it.govpay.web.handler.LoggerSetupHandler</handler-name>

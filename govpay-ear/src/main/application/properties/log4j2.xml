@@ -30,7 +30,7 @@
 		
 		<RollingFile name="govpay_diagnostic" fileName="${it.govpay.log.folder}/govpay_diagnostic.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic-%d{yyyy-MM-dd}-%i.log.gz	">
 			<PatternLayout>
-				<Pattern>%p %m %n %n</Pattern>
+				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
 			<Policies>
 				<SizeBasedTriggeringPolicy size="5 MB" />

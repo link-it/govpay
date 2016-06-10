@@ -24,6 +24,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Notifica.StatoSpedizione;
+import it.govpay.bd.model.Notifica.TipoNotifica;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.GpContext;
@@ -37,6 +38,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 
 public class InviaNotificaThread implements Runnable {
 
@@ -47,19 +49,19 @@ public class InviaNotificaThread implements Runnable {
 	public InviaNotificaThread(Notifica notifica, BasicBD bd) throws ServiceException {
 		// Verifico che tutti i campi siano valorizzati
 		this.notifica = notifica;
-		notifica.getApplicazione(bd);
-		if(notifica.getIdRpt() != null) {
-			notifica.getRpt(bd).getVersamento(bd);
-			notifica.getRpt(bd).getCanale(bd);
-			notifica.getRpt(bd).getPsp(bd);
-			notifica.getRpt(bd).getPagamenti(bd);
+		this.notifica.getApplicazione(bd);
+		if(this.notifica.getIdRpt() != null) {
+			this.notifica.getRpt(bd).getVersamento(bd);
+			this.notifica.getRpt(bd).getCanale(bd);
+			this.notifica.getRpt(bd).getPsp(bd);
+			this.notifica.getRpt(bd).getPagamenti(bd);
 		} else {
-			notifica.getRr(bd);
-			notifica.getRr(bd).getRpt(bd);
-			notifica.getRr(bd).getRpt(bd).getVersamento(bd);
-			notifica.getRr(bd).getRpt(bd).getCanale(bd);
-			notifica.getRr(bd).getRpt(bd).getPsp(bd);
-			notifica.getRr(bd).getRpt(bd).getPagamenti(bd);
+			this.notifica.getRr(bd);
+			this.notifica.getRr(bd).getRpt(bd);
+			this.notifica.getRr(bd).getRpt(bd).getVersamento(bd);
+			this.notifica.getRr(bd).getRpt(bd).getCanale(bd);
+			this.notifica.getRr(bd).getRpt(bd).getPsp(bd);
+			this.notifica.getRr(bd).getRpt(bd).getPagamenti(bd);
 		}
 	}
 
@@ -69,14 +71,41 @@ public class InviaNotificaThread implements Runnable {
 		GpContext ctx = null;
 		BasicBD bd = null;
 		try {
-			ctx = new GpContext("DA IMPOSTARE QUANDO MEMORIZZATO");
-			ThreadContext.put("op", ctx.getTransactionId());
-			log.info("Richiesta operazione gpAvviaTransazionePagamento");
+			if(notifica.getIdRpt() != null) {
+				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+					ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRpt());
+				} else {
+					ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRt());
+				}
+				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", notifica.getRpt(null).getCodDominio()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", notifica.getRpt(null).getIuv()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", notifica.getRpt(null).getCcp()));
+				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
+					ctx.log("notifica.rpt");
+				else
+					ctx.log("notifica.rt");
+			} else {
+				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+					ctx = new GpContext(notifica.getRr(bd).getIdTransazioneRr());
+				} else {
+					ctx = new GpContext(notifica.getRr(bd).getIdTransazioneEr());
+				}
+				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", notifica.getRr(null).getCodDominio()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", notifica.getRr(null).getIuv()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", notifica.getRr(null).getCcp()));
+				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
+					ctx.log("notifica.rr");
+				else
+					ctx.log("notifica.er");
+			}
 			GpThreadLocal.set(ctx);
-		
+			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(null).getConnettoreNotifica().getVersione());
+			
+			ThreadContext.put("op", ctx.getTransactionId());
 		
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
 			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null) {
+				ctx.log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");
 				if(bd == null)
 					bd = BasicBD.newInstance();
@@ -95,6 +124,7 @@ public class InviaNotificaThread implements Runnable {
 			bd = BasicBD.newInstance();
 			NotificheBD notificheBD = new NotificheBD(bd);
 			notificheBD.updateSpedito(notifica.getId());
+			ctx.log("notifica.ok");
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
 			if(e instanceof GovPayException || e instanceof ClientException)
@@ -107,15 +137,17 @@ public class InviaNotificaThread implements Runnable {
 				long tentativi = notifica.getTentativiSpedizione() + 1;
 				NotificheBD notificheBD = new NotificheBD(bd);
 				Date prossima = new Date(new Date().getTime() + (tentativi * tentativi * 60 * 1000));
+				
+				ctx.log("notifica.ko", e.getMessage(), prossima.toString());
+				
 				notificheBD.updateDaSpedire(notifica.getId(), e.getMessage(), tentativi, prossima);
 			} catch (Exception ee) {
 				// Andato male l'aggiornamento. Non importa, verra' rispedito.
 			}
 		} finally {
 			completed = true;
-			if(bd != null){
-				bd.closeConnection();
-			}
+			if(bd != null) bd.closeConnection(); 
+			if(ctx != null) ctx.log();
 		}
 	}
 

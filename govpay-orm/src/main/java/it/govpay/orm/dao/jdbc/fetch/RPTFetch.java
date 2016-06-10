@@ -97,6 +97,10 @@ public class RPTFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "xml_rt", RPT.model().XML_RT.getFieldType()));
 				setParameter(object, "setCodStazione", RPT.model().COD_STAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_stazione", RPT.model().COD_STAZIONE.getFieldType()));
+				setParameter(object, "setCodTransazioneRPT", RPT.model().COD_TRANSAZIONE_RPT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rpt", RPT.model().COD_TRANSAZIONE_RPT.getFieldType()));
+				setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rt", RPT.model().COD_TRANSAZIONE_RT.getFieldType()));
 				return object;
 			}
 			
@@ -161,6 +165,10 @@ public class RPTFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"xmlRT"));
 				setParameter(object, "setCodStazione", RPT.model().COD_STAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"codStazione"));
+				setParameter(object, "setCodTransazioneRPT", RPT.model().COD_TRANSAZIONE_RPT.getFieldType(),
+					this.getObjectFromMap(map,"codTransazioneRPT"));
+				setParameter(object, "setCodTransazioneRT", RPT.model().COD_TRANSAZIONE_RT.getFieldType(),
+					this.getObjectFromMap(map,"codTransazioneRT"));
 				return object;
 			}
 			

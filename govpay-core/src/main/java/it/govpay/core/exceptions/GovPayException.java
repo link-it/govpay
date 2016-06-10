@@ -105,6 +105,7 @@ public class GovPayException extends Exception {
 		case PAG_008: return "Transazione di pagamento inesistente"; 
 		case PAG_009: return "Pagamento con Identificativo Univoco di Riscossione (" + params[0] + ") e' gia' stato stornato."; 
 		case PAG_010: return "Richiesta di storno inesistente."; 
+		case PAG_011: return "Nessun pagamento da stornare."; 
 		case PRT_000: return "Portale (" + params[0] + ") inesistente";	
 		case PRT_001: return "Portale (" + params[0] + ") disabilitato";
 		case PRT_002: return "Portale autenticato (" + params[0] + ") diverso dal chiamante (" + params[1] + ")";

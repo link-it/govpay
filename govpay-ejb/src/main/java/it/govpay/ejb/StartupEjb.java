@@ -24,7 +24,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.core.business.Psp;
-import it.govpay.core.business.Rendicontazioni;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
@@ -45,8 +44,13 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.apache.logging.log4j.core.LoggerContext;
 import org.openspcoop2.utils.logger.LoggerFactory;
+import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
-import org.openspcoop2.utils.logger.log4j.Log4JLoggerWithProxyContext;
+import org.openspcoop2.utils.logger.config.DatabaseConfig;
+import org.openspcoop2.utils.logger.config.DatabaseConfigDatasource;
+import org.openspcoop2.utils.logger.config.DiagnosticConfig;
+import org.openspcoop2.utils.logger.config.Log4jConfig;
+import org.openspcoop2.utils.logger.config.MultiLoggerConfig;
 import org.openspcoop2.utils.logger.log4j.Log4jType;
 
 @Startup
@@ -54,6 +58,7 @@ import org.openspcoop2.utils.logger.log4j.Log4jType;
 public class StartupEjb {
 	
 	private static Logger log = LogManager.getLogger();	
+	private static org.apache.log4j.Logger logv1 = org.apache.log4j.LogManager.getLogger(StartupEjb.class);	
 	
 	@PostConstruct
 	public void init() {
@@ -70,18 +75,39 @@ public class StartupEjb {
 			log.warn("Errore durante la configurazione del Logger: " + e);
 		}
 		
+		// Configurazione del logger Diagnostici/Tracce/Dump
 		try {
+
+			DiagnosticConfig diagnosticConfig = new DiagnosticConfig();
+	        diagnosticConfig.setDiagnosticPropertiesResourceURI("/msgDiagnostici.properties");
+	        diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
+			
+	        Log4jConfig log4jConfig = new Log4jConfig();
+	        log4jConfig.setLog4jType(Log4jType.LOG4Jv2);
 			if(log4j2Config != null) {
-				LoggerFactory.initialize(Log4JLoggerWithProxyContext.class.getName(),
-						"/msgDiagnostici.properties",
-						false,
-						new File(log4j2Config), Log4jType.LOG4Jv2);
+		        log4jConfig.setLog4jPropertiesResource(new File(log4j2Config));
 			} else {
-				LoggerFactory.initialize(Log4JLoggerWithProxyContext.class.getName(),
-						"/msgDiagnostici.properties",
-						false,
-						"/log4j2.xml", Log4jType.LOG4Jv2);
+		        log4jConfig.setLog4jPropertiesResourceURI("/log4j2.xml");
 			}
+			
+			MultiLoggerConfig mConfig = new MultiLoggerConfig();
+	        mConfig.setDiagnosticConfig(diagnosticConfig);
+	        mConfig.setDiagnosticSeverityFilter(GovpayConfig.getInstance().getmLogLevel());
+	        mConfig.setLog4jLoggerEnabled(GovpayConfig.getInstance().ismLogOnLog4j());
+	        mConfig.setLog4jConfig(log4jConfig);	
+	        mConfig.setDbLoggerEnabled(GovpayConfig.getInstance().ismLogOnDB());
+	        
+	        if(GovpayConfig.getInstance().ismLogOnDB()) {
+		        DatabaseConfig dbConfig = new DatabaseConfig();
+		        DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
+		        dbDSConfig.setJndiName(GovpayConfig.getInstance().getmLogDS());
+		        dbConfig.setConfigDatasource(dbDSConfig);
+		        dbConfig.setDatabaseType(GovpayConfig.getInstance().getmLogDBType());
+		        dbConfig.setLogSql(GovpayConfig.getInstance().ismLogSql());
+		        mConfig.setDatabaseConfig(dbConfig);
+	        }
+	        LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), logv1, mConfig);
+	        
 		} catch (Exception e) {
 			log.error("Errore durante la configurazione dei diagnostici", e);
 			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
@@ -95,7 +121,11 @@ public class StartupEjb {
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Inizializzazione");
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
 			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("Init");
+			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 		} catch (Exception e) {
 			log.error("Errore durante predisposizione del contesto: " + e);
@@ -122,15 +152,6 @@ public class StartupEjb {
 			new Psp(bd).aggiornaRegistro();
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito",e);
-		} finally {
-			if(bd != null) bd.closeConnection();
-		}
-		
-		try {
-			bd = BasicBD.newInstance();
-			new Rendicontazioni(bd).downloadRendicontazioni();
-		} catch (Exception e) {
-			log.error("Aggiornamento delle rendicontazioni fallito",e);
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}

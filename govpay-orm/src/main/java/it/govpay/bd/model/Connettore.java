@@ -48,7 +48,19 @@ public class Connettore extends BasicModel {
 	}
 	
 	public enum Versione {
-		v1, v2, v2_1; 
+		v1, v2, v2_1;
+
+		public int getVersione() {
+			switch (this) {
+			case v1:
+				return 0100;
+			case v2:
+				return 0200;
+			case v2_1:
+				return 0201;
+			}
+			return 0;
+		} 
 	}
 
 	private String idConnettore;

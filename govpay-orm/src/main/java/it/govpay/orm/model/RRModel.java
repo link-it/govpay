@@ -56,6 +56,8 @@ public class RRModel extends AbstractModel<RR> {
 		this.IMPORTO_TOTALE_REVOCATO = new Field("importoTotaleRevocato",java.lang.Double.class,"RR",RR.class);
 		this.XML_RR = new Field("xmlRR",byte[].class,"RR",RR.class);
 		this.XML_ER = new Field("xmlER",byte[].class,"RR",RR.class);
+		this.COD_TRANSAZIONE_RR = new Field("codTransazioneRR",java.lang.String.class,"RR",RR.class);
+		this.COD_TRANSAZIONE_ER = new Field("codTransazioneER",java.lang.String.class,"RR",RR.class);
 	
 	}
 	
@@ -77,6 +79,8 @@ public class RRModel extends AbstractModel<RR> {
 		this.IMPORTO_TOTALE_REVOCATO = new ComplexField(father,"importoTotaleRevocato",java.lang.Double.class,"RR",RR.class);
 		this.XML_RR = new ComplexField(father,"xmlRR",byte[].class,"RR",RR.class);
 		this.XML_ER = new ComplexField(father,"xmlER",byte[].class,"RR",RR.class);
+		this.COD_TRANSAZIONE_RR = new ComplexField(father,"codTransazioneRR",java.lang.String.class,"RR",RR.class);
+		this.COD_TRANSAZIONE_ER = new ComplexField(father,"codTransazioneER",java.lang.String.class,"RR",RR.class);
 	
 	}
 	
@@ -109,6 +113,10 @@ public class RRModel extends AbstractModel<RR> {
 	public IField XML_RR = null;
 	 
 	public IField XML_ER = null;
+	 
+	public IField COD_TRANSAZIONE_RR = null;
+	 
+	public IField COD_TRANSAZIONE_ER = null;
 	 
 
 	@Override

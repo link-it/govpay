@@ -61,7 +61,6 @@ public class NodoClient extends BasicClient {
 
 	public enum Azione {
 		nodoInviaRPT, nodoInviaCarrelloRPT, nodoChiediInformativaPSP, nodoChiediStatoRPT, nodoChiediCopiaRT, nodoChiediListaPendentiRPT, nodoInviaRichiestaStorno, nodoChiediElencoFlussiRendicontazione, nodoChiediFlussoRendicontazione, nodoChiediSceltaWISP
-
 	}
 
 	private static ObjectFactory objectFactory;
@@ -81,33 +80,38 @@ public class NodoClient extends BasicClient {
 		if(isAzioneInUrl) {
 			if(!urlString.endsWith("/")) urlString = urlString.concat("/");
 		} 
-		if(GpThreadLocal.get().getTransaction().getServer() != null)
-			GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
-		GpThreadLocal.get().log("cooperazione.invioRichiesta");
+		GpThreadLocal.get().getTransaction().getServer().setEndpoint(urlString);
+		GpThreadLocal.get().log("ndp_client.invioRichiesta");
 		
-		byte[] response = super.sendSoap(azione, body, header, isAzioneInUrl);
+		
 		try {
+			byte[] response = super.sendSoap(azione, body, header, isAzioneInUrl);
 			if(response == null) {
 				throw new ClientException("Il Nodo dei Pagamenti ha ritornato un messaggio vuoto.");
 			}
 			JAXBElement<?> jaxbElement = SOAPUtils.toJaxb(response);
 			Risposta r = (Risposta) jaxbElement.getValue();
 			if(r.getFault() != null) {
-				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Empty Fault Code>";
-				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Empty Fault String>";
-				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Empty Fault Description>";
-				GpThreadLocal.get().log("cooperazione.invioRichiestaFault", faultCode, faultString, faultDescription);
+				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
+				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
+				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
+				GpThreadLocal.get().log("ndp_client.invioRichiestaFault", faultCode, faultString, faultDescription);
 			} else {
-				GpThreadLocal.get().log("cooperazione.invioRichiestaOk");
+				GpThreadLocal.get().log("ndp_client.invioRichiestaOk");
 			}
 			return r;
+		} catch (ClientException e) {
+			GpThreadLocal.get().log("ndp_client.invioRichiestaKo");
+			throw e;
 		} catch (Exception e) {
-			GpThreadLocal.get().log("cooperazione.invioRichiestaKo");
+			GpThreadLocal.get().log("ndp_client.invioRichiestaKo");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		}
 	}
 
 	public NodoInviaRPTRisposta nodoInviaRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, NodoInviaRPT inviaRPT) throws GovPayException, ClientException {
+		
+		
 		IntestazionePPT intestazione = new IntestazionePPT();
 		intestazione.setCodiceContestoPagamento(rpt.getCcp());
 		intestazione.setIdentificativoDominio(rpt.getCodDominio());

@@ -104,6 +104,8 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().IMPORTO_TOTALE_REVOCATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().XML_RR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().XML_ER,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().COD_TRANSAZIONE_RR,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRRFieldConverter().toColumn(RR.model().COD_TRANSAZIONE_ER,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 
 		// Insert rr
@@ -122,6 +124,8 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getImportoTotaleRevocato(),RR.model().IMPORTO_TOTALE_REVOCATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getXmlRR(),RR.model().XML_RR.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getXmlER(),RR.model().XML_ER.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getCodTransazioneRR(),RR.model().COD_TRANSAZIONE_RR.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rr.getCodTransazioneER(),RR.model().COD_TRANSAZIONE_ER.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class)
 		);
 		rr.setId(id);
@@ -218,6 +222,10 @@ public class JDBCRRServiceImpl extends JDBCRRServiceSearchImpl
 		lstObjects_rr.add(new JDBCObject(rr.getXmlRR(), RR.model().XML_RR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().XML_ER,false), "?");
 		lstObjects_rr.add(new JDBCObject(rr.getXmlER(), RR.model().XML_ER.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().COD_TRANSAZIONE_RR,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getCodTransazioneRR(), RR.model().COD_TRANSAZIONE_RR.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRRFieldConverter().toColumn(RR.model().COD_TRANSAZIONE_ER,false), "?");
+		lstObjects_rr.add(new JDBCObject(rr.getCodTransazioneER(), RR.model().COD_TRANSAZIONE_ER.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
 		}

@@ -50,6 +50,8 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotaleRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="xmlRR" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="xmlER" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codTransazioneRR" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codTransazioneER" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -77,7 +79,9 @@ import java.io.Serializable;
   	"codMsgEsito",
   	"importoTotaleRevocato",
   	"xmlRR",
-  	"xmlER"
+  	"xmlER",
+  	"codTransazioneRR",
+  	"codTransazioneER"
   }
 )
 
@@ -213,6 +217,22 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.xmlER = xmlER;
   }
 
+  public java.lang.String getCodTransazioneRR() {
+    return this.codTransazioneRR;
+  }
+
+  public void setCodTransazioneRR(java.lang.String codTransazioneRR) {
+    this.codTransazioneRR = codTransazioneRR;
+  }
+
+  public java.lang.String getCodTransazioneER() {
+    return this.codTransazioneER;
+  }
+
+  public void setCodTransazioneER(java.lang.String codTransazioneER) {
+    this.codTransazioneER = codTransazioneER;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -288,5 +308,13 @@ public class RR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="xmlER",required=false,nillable=false)
   protected byte[] xmlER;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTransazioneRR",required=false,nillable=false)
+  protected java.lang.String codTransazioneRR;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTransazioneER",required=false,nillable=false)
+  protected java.lang.String codTransazioneER;
 
 }

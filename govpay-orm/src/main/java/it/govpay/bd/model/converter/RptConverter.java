@@ -68,13 +68,15 @@ public class RptConverter {
 		dto.setIdCanale(vo.getIdCanale().getId());
 		if(vo.getIdPortale() != null)
 			dto.setIdPortale(vo.getIdPortale().getId());
+		dto.setIdTransazioneRpt(vo.getCodTransazioneRPT());
+		dto.setIdTransazioneRt(vo.getCodTransazioneRT());
 		dto.setIdVersamento(vo.getIdVersamento().getId());
 		if(vo.getImportoTotalePagato() != null)
 			dto.setImportoTotalePagato(BigDecimal.valueOf(vo.getImportoTotalePagato()));
 		dto.setIuv(vo.getIuv());
 		dto.setModelloPagamento(ModelloPagamento.toEnum(Integer.parseInt(vo.getModelloPagamento())));
 		dto.setPspRedirectURL(vo.getPspRedirectURL());
-		dto.setStato(StatoRpt.valueOf(vo.getStato()));
+		dto.setStato(StatoRpt.toEnum(vo.getStato()));
 		dto.setXmlRpt(vo.getXmlRPT());
 		dto.setXmlRt(vo.getXmlRT());
 		return dto;
@@ -92,6 +94,8 @@ public class RptConverter {
 		vo.setCodMsgRicevuta(dto.getCodMsgRicevuta());
 		vo.setCodSessione(dto.getCodSessione());
 		vo.setCodStazione(dto.getCodStazione());
+		vo.setCodTransazioneRPT(dto.getIdTransazioneRpt());
+		vo.setCodTransazioneRT(dto.getIdTransazioneRt());
 		vo.setDataAggiornamentoStato(dto.getDataAggiornamento());
 		vo.setDataMsgRichiesta(dto.getDataMsgRichiesta());
 		vo.setDataMsgRicevuta(dto.getDataMsgRicevuta());
