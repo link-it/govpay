@@ -1,8 +1,8 @@
-VERSION=2.1-rc1
+VERSION=2.1
 
 # Directory
 COPYING_FILE=../../COPYING
-SQL=../../resources/db/sql/2.1/
+SQL=../../resources/db/sql/
 DATASOURCE=../../resources/db/datasource/
 DOC=../../resources/doc/pdf
 GOVPAY=../../govpay-ear/target/govpay.ear
@@ -23,6 +23,8 @@ then
 fi
 cp -r ${SQL}/* core.template/installer/sql/
 rm -f core.template/installer/sql/*.sql
+rm -f core.template/installer/sql/*/delete.sql
+rm -f core.template/installer/sql/*/drop.sql
 cp ${SQL}/init.sql core.template/installer/sql/
 echo "Prepare sql script [completed]"
 
