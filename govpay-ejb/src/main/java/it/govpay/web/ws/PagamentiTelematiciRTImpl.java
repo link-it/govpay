@@ -87,11 +87,13 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
-		GpThreadLocal.get().getTransaction().setFrom(from);
+		from.setType(GpContext.TIPO_SOGGETTO_NDP);
+		ctx.getTransaction().setFrom(from);
 		
 		Actor to = new Actor();
 		to.setName(identificativoStazioneIntermediarioPA);
-		GpThreadLocal.get().getTransaction().setTo(to);
+		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
+		ctx.getTransaction().setTo(to);
 		
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", codiceContestoPagamento));
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", identificativoDominio));
@@ -166,6 +168,11 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			evento.setDataRisposta(new Date());
 			ge.registraEvento(evento);
 			
+			if(ctx != null) {
+				ctx.setResult(response.getFault() == null ? null : response.getFault().getFaultCode());
+				ctx.log();
+			}
+			
 			if(bd != null) bd.closeConnection();
 		}
 		return response;
@@ -184,10 +191,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
+		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		ctx.getTransaction().setFrom(from);
 		
 		Actor to = new Actor();
 		to.setName(header.getIdentificativoStazioneIntermediarioPA());
+		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		ctx.getTransaction().setTo(to);
 		
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
@@ -264,6 +273,11 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
 			evento.setDataRisposta(new Date());
 			ge.registraEvento(evento);
+			
+			if(ctx != null) {
+				ctx.setResult(response.getPaaInviaRTRisposta().getFault() == null ? null : response.getPaaInviaRTRisposta().getFault().getFaultCode());
+				ctx.log();
+			}
 			
 			if(bd != null) bd.closeConnection();
 		}

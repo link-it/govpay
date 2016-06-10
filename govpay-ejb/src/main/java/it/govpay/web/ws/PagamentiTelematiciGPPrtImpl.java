@@ -98,7 +98,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			it.govpay.core.business.Psp pspBusiness = new it.govpay.core.business.Psp(bd);
 			response = pspBusiness.chiediListaPsp(portaleAutenticato);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.setResult(response);
 			ctx.log("gpprt.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -111,7 +110,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			new GovPayException(e).log(log);
 			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -172,7 +174,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			response = pagamentoBusiness.avviaTransazione(portaleAutenticato, bodyrichiesta, canale);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.setResult(response);
 			ctx.log("gpprt.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -185,7 +186,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			new GovPayException(e).log(log);
 			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -211,7 +215,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			Rpt rpt = pagamentoBusiness.chiediTransazione(portaleAutenticato, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv(), bodyrichiesta.getCcp());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			response.setTransazione(Gp21Utils.toTransazione(rpt, bd));
-			ctx.setResult(response);
 			ctx.log("gpprt.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -224,7 +227,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			new GovPayException(e).log(log);
 			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -270,7 +276,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				response.setScelta(TipoSceltaWisp.NO);
 			}
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.setResult(response);
 			ctx.log("gpprt.ricevutaRichiestaOk");
 			log.info("SceltaWISP recuperata (" + response.getScelta() + ")");
 		} catch (GovPayException e) {
@@ -284,7 +289,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			new GovPayException(e).log(log);
 			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -313,7 +321,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			for(Versamento versamento : versamenti) {
 				response.getVersamento().add(Gp21Utils.toVersamento(versamento, bd));
 			}
-			ctx.setResult(response);
 			ctx.log("gpprt.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -326,7 +333,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			new GovPayException(e).log(log);
 			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -355,7 +365,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			response = pagamentoBusiness.avviaStorno(portaleAutenticato, bodyrichiesta);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.setResult(response);
 			ctx.log("gpprt.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -368,7 +377,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			new GovPayException(e).log(log);
 			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -394,7 +406,6 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			Rr rr = pagamentoBusiness.chiediStorno(portaleAutenticato, bodyrichiesta.getCodRichiestaStorno());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			response.setStorno(Gp21Utils.toStorno(rr, bd));
-			ctx.setResult(response);
 			ctx.log("gpprt.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -407,7 +418,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			new GovPayException(e).log(log);
 			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));

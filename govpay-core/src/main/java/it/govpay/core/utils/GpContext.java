@@ -29,6 +29,7 @@ import org.openspcoop2.utils.logger.constants.proxy.Result;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.govpay.bd.model.Connettore.Versione;
 import it.govpay.bd.model.Rpt;
+import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.servizi.PagamentiTelematiciPAService;
 import it.govpay.servizi.commons.GpResponse;
@@ -46,6 +47,7 @@ public class GpContext {
 	public static String TIPO_SOGGETTO_APP = "APP";
 	public static String TIPO_SOGGETTO_PRT = "PRT";
 	public static String TIPO_SOGGETTO_STAZIONE = "STZ";
+	public static String TIPO_SOGGETTO_GOVPAY = "GP";
 	public static String TIPO_SERVIZIO_GOVPAY = "GP";
 	public static String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
 	public static String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
@@ -88,6 +90,12 @@ public class GpContext {
 			
 			Server server = new Server();
 			server.setName(GovPay);
+			
+			Actor to = new Actor();
+			to.setName(GovPay);
+			to.setType(TIPO_SOGGETTO_GOVPAY);
+			transaction.setTo(to);
+			
 			transaction.setServer(server);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
@@ -229,6 +237,10 @@ public class GpContext {
 	}
 
 	public void setResult(GpResponse response) {
+		if(response == null || response.getCodEsitoOperazione() == null) {
+			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			return;
+		}
 		switch (response.getCodEsitoOperazione()) {
 		case OK:
 			getContext().getTransaction().setResult(Result.SUCCESS);
@@ -240,6 +252,20 @@ public class GpContext {
 			getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 			break;
 		}
+	}
+	
+	public void setResult(String faultCode) {
+		if(faultCode == null) {
+			getContext().getTransaction().setResult(Result.SUCCESS);
+			return;
+		}
+			
+		if(faultCode.equals(FaultPa.PAA_SYSTEM_ERROR.name())) {
+			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			return; 
+		}
+		
+		getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
 	}
 	
 	public void log(String string, String...params) {

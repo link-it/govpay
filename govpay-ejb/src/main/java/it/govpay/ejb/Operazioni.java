@@ -38,6 +38,8 @@ import java.util.UUID;
 
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
+import javax.ejb.Timeout;
+import javax.ejb.Timer;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,9 +49,9 @@ import org.openspcoop2.utils.logger.beans.proxy.Service;
 
 @Singleton
 public class Operazioni{
-	
+
 	private static Logger log = LogManager.getLogger();
-	
+
 	@Schedule(hour="4,8,16,20", persistent=false)
 	public static String acquisizioneRendicontazioni(){
 		BasicBD bd = null;
@@ -77,7 +79,7 @@ public class Operazioni{
 			if(ctx != null) ctx.log();
 		}
 	}
-	
+
 	@Schedule(hour="0,12", persistent=false)
 	public static String aggiornamentoRegistroPsp(){
 		BasicBD bd = null;
@@ -103,7 +105,7 @@ public class Operazioni{
 			if(bd != null) bd.closeConnection();
 		}
 	}
-	
+
 	@Schedule(hour="2,6,10,14,18,22", persistent=false)
 	public static String recuperoRptPendenti(){
 		BasicBD bd = null;
@@ -129,7 +131,7 @@ public class Operazioni{
 			if(bd != null) bd.closeConnection();
 		}
 	}
-	
+
 	@Schedule(hour="*", minute="*/1", persistent=false)
 	public static boolean spedizioneNotifiche(){
 		BasicBD bd = null;
@@ -149,20 +151,20 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance();
 			log.trace("Spedizione notifiche non consegnate");
-			
+
 			NotificheBD notificheBD = new NotificheBD(bd);
-			
+
 			List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
-			
+
 			if(notifiche.size() == 0) return true;
-				
+
 			log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
-			
+
 			for(Notifica notifica: notifiche) {
 				InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
 				ThreadExecutorManager.getClientPoolExecutor().execute(sender);
 			}
-			
+
 			log.info("Processi di spedizione avviati.");
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
@@ -170,27 +172,27 @@ public class Operazioni{
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
-		
+
 		// Aspetto che abbiano finito tutti
 		while(true){
 			try {
 				Thread.sleep(500);
 			} catch (InterruptedException e) {
-				
+
 			}
 			boolean completed = true;
 			for(InviaNotificaThread sender : threads) {
 				if(!sender.isCompleted()) 
 					completed = false;
 			}
-			
+
 			if(completed) {
 				log.info("Processo di spedizione completati.");
 				return true;
 			}
 		}
 	}
-	
+
 	public static boolean resetCacheAnagrafica(){
 		ThreadContext.put("cmd", "ResetCacheAnagrafica");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
@@ -202,19 +204,24 @@ public class Operazioni{
 			return false;
 		} 
 	}
-	
-//	@Resource
-//	private static TimerService timerService;
-//	
-//	public static String getTimerInfo(){
-//		String s = "";
-//		for(Timer t : timerService.getTimers()){
-//			s += t.getClass();
-//			s += t.getNextTimeout();
-//			s += t.getInfo();
-//			s += "\n";
-//		}
-//		return Response.ok(s).build();
-//	}
+
+	@Timeout 
+	private void generateReport(Timer timer) {
+		log.warn("Timeout del batch: " + timer.getInfo()); 
+	}
+
+	//	@Resource
+	//	private static TimerService timerService;
+	//	
+	//	public static String getTimerInfo(){
+	//		String s = "";
+	//		for(Timer t : timerService.getTimers()){
+	//			s += t.getClass();
+	//			s += t.getNextTimeout();
+	//			s += t.getInfo();
+	//			s += "\n";
+	//		}
+	//		return Response.ok(s).build();
+	//	}
 
 }

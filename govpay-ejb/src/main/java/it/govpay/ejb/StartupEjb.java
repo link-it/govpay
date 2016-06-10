@@ -106,7 +106,6 @@ public class StartupEjb {
 		        dbConfig.setLogSql(GovpayConfig.getInstance().ismLogSql());
 		        mConfig.setDatabaseConfig(dbConfig);
 	        }
-	        
 	        LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), logv1, mConfig);
 	        
 		} catch (Exception e) {

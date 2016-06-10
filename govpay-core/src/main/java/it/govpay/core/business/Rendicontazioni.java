@@ -115,7 +115,6 @@ public class Rendicontazioni extends BasicBD {
 					String idTransaction = null;
 					try {
 						idTransaction = GpThreadLocal.get().openTransaction();
-						GpThreadLocal.get().openTransaction();
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", dominio.getCodDominio()));
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));

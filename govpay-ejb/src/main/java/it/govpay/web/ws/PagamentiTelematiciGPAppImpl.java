@@ -110,7 +110,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			new GovPayException(e).log(log);
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -142,7 +145,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			new GovPayException(e).log(log);
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -187,7 +193,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 			new GovPayException(e).log(log);
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -219,7 +228,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			new GovPayException(e).log(log);
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -251,7 +263,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			new GovPayException(e).log(log);
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -290,7 +305,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			new GovPayException(e).log(log);
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -337,7 +355,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			new GovPayException(e).log(log);
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));
@@ -394,7 +415,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			new GovPayException(e).log(log);
 			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
-			if(ctx != null) ctx.log();
+			if(ctx != null) {
+				ctx.setResult(response);
+				ctx.log();
+			}
 			if(bd != null) bd.closeConnection();
 		}
 		response.setCodOperazione(ThreadContext.get("op"));

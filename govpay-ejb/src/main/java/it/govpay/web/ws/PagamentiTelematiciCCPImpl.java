@@ -117,10 +117,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
+		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		ctx.getTransaction().setFrom(from);
 		
 		Actor to = new Actor();
 		to.setName(header.getIdentificativoStazioneIntermediarioPA());
+		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		ctx.getTransaction().setTo(to);
 		
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
@@ -326,6 +328,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			evento.setDataRisposta(new Date());
 			ge.registraEvento(evento);
 			
+			if(ctx != null) {
+				ctx.setResult(response.getPaaAttivaRPTRisposta().getFault() == null ? null : response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
+				ctx.log();
+			}
+			
 			if(bd != null) bd.closeConnection();
 		}
 		return response;
@@ -345,10 +352,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
+		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		ctx.getTransaction().setFrom(from);
 		
 		Actor to = new Actor();
 		to.setName(header.getIdentificativoStazioneIntermediarioPA());
+		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		ctx.getTransaction().setTo(to);
 		
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
@@ -515,6 +524,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
 			evento.setDataRisposta(new Date());
 			ge.registraEvento(evento);
+			
+			if(ctx != null) {
+				ctx.setResult(response.getPaaVerificaRPTRisposta().getFault() == null ? null : response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
+				ctx.log();
+			}
 			
 			if(bd != null) bd.closeConnection();
 		}
