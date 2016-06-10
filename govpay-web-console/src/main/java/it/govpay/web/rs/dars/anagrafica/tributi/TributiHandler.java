@@ -107,7 +107,12 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
+
 			filter.setIdDominio(this.idDominio);
+			
+			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
+			filter.setCodTributo(codTributo); 
 
 			long count = tributiBD.count(filter);
 
@@ -140,14 +145,19 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI ricerca = this.getUriRicerca(uriInfo, bd);
+		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		URI ricerca =  null;
+		try{
+			ricerca =  BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).queryParam(idDominioId, this.idDominio).build();
+		}catch(Exception e ){
+			throw new ConsoleException(e);
+		}
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 
 		if(infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
-
 		}
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
@@ -155,6 +165,11 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
 		codTributo.setDefaultValue(null);
 		sezioneRoot.addField(codTributo);
+
+//		InputNumber idDominio = (InputNumber) infoRicercaMap.get(idDominioId);
+//		idDominio.setDefaultValue(this.idDominio);
+//		sezioneRoot.addField(idDominio);
+
 
 		return infoRicerca;
 	}
@@ -164,11 +179,16 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+//			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
 			// codTributo
 			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, false, false, true, 1, 255);
 			infoRicercaMap.put(codTributoId, codTributo);
+
+			// idDominio
+//			InputNumber idDominio = new InputNumber(idDominioId, null, null, true, true, false, 1, 255);
+//			infoRicercaMap.put(idDominioId, idDominio);
 		}
 	}
 

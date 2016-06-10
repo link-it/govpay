@@ -246,7 +246,7 @@ public class AnagraficaHandler {
 
 			// codunivoco (hidden!)
 			String codUnivocoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".codUnivoco.label");
-			InputText codUnivoco = new InputText(codUnivocoId, codUnivocoLabel, null, true, true,true, 1, 35);
+			InputText codUnivoco = new InputText(codUnivocoId, codUnivocoLabel, null, false, true,true, 1, 35);
 			//			codUnivoco.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".codUnivoco.errorMessage"));
 			mappaCreazione.put(codUnivocoId, codUnivoco);
 
