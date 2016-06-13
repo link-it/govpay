@@ -75,7 +75,7 @@ public class IuvUtils {
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
 		iuvGenerato.setCodVersamentoEnte(iuv.getCodVersamentoEnte());
 		iuvGenerato.setIuv(iuv.getIuv());
-		iuvGenerato.setBarCode(buildBarCode(dominio.getCodDominio(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
+		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
 		switch (GovpayConfig.getInstance().getVersioneAvviso()) {
 		case v001:
 			iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
