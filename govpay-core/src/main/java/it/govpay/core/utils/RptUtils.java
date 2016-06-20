@@ -68,6 +68,7 @@ import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
@@ -430,8 +431,11 @@ public class RptUtils {
 				log.info("Rpt in stato non terminale [" + rpt.getStato()+ "]. Eseguo un aggiornamento dello stato.");
 	
 				bd.closeConnection();
+				String transactionId = null;
 				NodoChiediStatoRPTRisposta risposta = null;
 				try {
+					transactionId = GpThreadLocal.get().openTransaction();
+					GpThreadLocal.get().setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediStatoRPT);
 					NodoChiediStatoRPT richiesta = new NodoChiediStatoRPT();
 					richiesta.setIdentificativoDominio(rpt.getCodDominio());
 					richiesta.setIdentificativoIntermediarioPA(rpt.getStazione(bd).getIntermediario(bd).getCodIntermediario());
@@ -443,6 +447,7 @@ public class RptUtils {
 					risposta = client.nodoChiediStatoRpt(richiesta, rpt.getStazione(bd).getIntermediario(bd).getDenominazione());
 				} finally {
 					bd.setupConnection();
+					GpThreadLocal.get().closeTransaction(transactionId);
 				}
 				if(risposta.getFault() != null) {
 					if(it.govpay.core.exceptions.NdpException.FaultNodo.valueOf(risposta.getFault().getFaultCode()).equals(it.govpay.core.exceptions.NdpException.FaultNodo.PPT_RPT_SCONOSCIUTA)) {
@@ -469,8 +474,11 @@ public class RptUtils {
 						log.info("Richiesta dell'RT al Nodo dei Pagamenti [CodDominio: " + rpt.getCodDominio() + "][IUV: " + rpt.getIuv() + "][CCP: " + rpt.getCcp() + "].");
 	
 						bd.closeConnection();
+						transactionId = null;
 						NodoChiediCopiaRTRisposta nodoChiediCopiaRTRisposta = null;
 						try {
+							transactionId = GpThreadLocal.get().openTransaction();
+							GpThreadLocal.get().setupNodoClient(rpt.getStazione(bd).getCodStazione(), rpt.getCodDominio(), Azione.nodoChiediCopiaRT);
 							NodoChiediCopiaRT nodoChiediCopiaRT = new NodoChiediCopiaRT();
 							nodoChiediCopiaRT.setIdentificativoDominio(rpt.getCodDominio());
 							nodoChiediCopiaRT.setIdentificativoIntermediarioPA(rpt.getIntermediario(bd).getCodIntermediario());
@@ -481,6 +489,7 @@ public class RptUtils {
 							nodoChiediCopiaRTRisposta = client.nodoChiediCopiaRT(nodoChiediCopiaRT, rpt.getIntermediario(bd).getDenominazione());
 						} finally {
 							bd.setupConnection();
+							GpThreadLocal.get().closeTransaction(transactionId);
 						}
 	
 						byte[] rtByte = null;

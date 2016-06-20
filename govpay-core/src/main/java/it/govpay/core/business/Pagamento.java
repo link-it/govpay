@@ -508,12 +508,17 @@ public class Pagamento extends BasicBD {
 						log.debug("Richiedo la lista delle RPT pendenti (oltre " + (i*7) + " giorni fa)");
 					}
 					NodoChiediListaPendentiRPTRisposta risposta = null;
+					String transactionId = null;
 					try {
+						transactionId = GpThreadLocal.get().openTransaction();
+						GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediListaPendentiRPT);
 						risposta = client.nodoChiediListaPendentiRPT(richiesta, intermediario.getDenominazione());
 					} catch (Exception e) {
 						log.error("Errore durante la richiesta di lista pendenti", e);
 						continue;
-					} 
+					} finally {
+						GpThreadLocal.get().closeTransaction(transactionId);
+					}
 
 					if(risposta == null) {
 						log.debug("Risposta vuota.");
@@ -568,11 +573,14 @@ public class Pagamento extends BasicBD {
 							RptUtils.aggiornaRptDaNpD(client, rpt, this);
 						} catch (NdpException e) {
 							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Errore durante l'aggiornamento: " + e.getFault().getFaultString() + ".");
+							log.error("Errore durante l'aggiornamento della RPT: " + e.getFault().getFaultString());
 							continue;
 						} catch (Exception e) {
 							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Errore durante l'aggiornamento: " + e + ".");
+							log.error("Errore durante l'aggiornamento della RPT", e);
 							continue;
 						}
+						log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
 						response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
 					}
 				}
