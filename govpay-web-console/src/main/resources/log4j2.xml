@@ -3,17 +3,30 @@
 <Configuration>
 	<Appenders>
 	
-		<File name="govpay" fileName="${it.govpay.log.folder}/govpay-console.log" append="true">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd}  %msg%n" />
-		</File>
+		<RollingFile name="govpay" fileName="${it.govpay.log.folder}/govpay-console.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay-console-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
 		
-		<File name="govpay_orm" fileName="${it.govpay.log.folder}/govpay-console_orm.log" append="true">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %X{cmd} %msg%n" />
-		</File>
+		<RollingFile name="govpay_orm" fileName="${it.govpay.log.folder}/govpay-console_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay-console_orm-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
 		
-		<File name="STDOUT" fileName="${it.govpay.log.folder}/govpay_root.log" append="true">
-			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %msg%n" />
-		</File>
+		<RollingFile name="STDOUT" fileName="${it.govpay.log.folder}/govpay-console_root.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay-console_root-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
+			<Policies>
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		
 	</Appenders>
 	
 	<Loggers>
