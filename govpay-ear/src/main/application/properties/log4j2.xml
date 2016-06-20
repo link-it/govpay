@@ -2,7 +2,7 @@
 <!DOCTYPE xml>
 <Configuration>
 	<Appenders>
-		<RollingFile name="govpay" fileName="${it.govpay.log.folder}/govpay.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="govpay" fileName="${it.govpay.log.folder}/govpay.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -10,7 +10,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 		
-		<RollingFile name="govpay_orm" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="govpay_orm" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -18,7 +18,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 		
-		<RollingFile name="govpay_bd" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="govpay_bd" fileName="${it.govpay.log.folder}/govpay_orm.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_orm-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -26,7 +26,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 		
-		<RollingFile name="STDOUT" fileName="${it.govpay.log.folder}/govpay_root.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_root-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="STDOUT" fileName="${it.govpay.log.folder}/govpay_root.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_root-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} | %-5.5p | %C:%L | %X{op} | %msg%n" />
 			<Policies>
 				<SizeBasedTriggeringPolicy size="50 MB" />
@@ -34,7 +34,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 	
-		<RollingFile name="govpay_transaction" fileName="${it.govpay.log.folder}/govpay_transaction.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_transaction-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="govpay_transaction" fileName="${it.govpay.log.folder}/govpay_transaction.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_transaction-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
@@ -44,7 +44,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 		
-		<RollingFile name="govpay_diagnostic" fileName="${it.govpay.log.folder}/govpay_diagnostic.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="govpay_diagnostic" fileName="${it.govpay.log.folder}/govpay_diagnostic.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
@@ -54,7 +54,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 		
-		<RollingFile name="govpay_dump" fileName="${it.govpay.log.folder}/govpay_dump.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_dump-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="govpay_dump" fileName="${it.govpay.log.folder}/govpay_dump.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_dump-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
@@ -64,7 +64,7 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 		
-		<RollingFile name="govpay_event" fileName="${it.govpay.log.folder}/govpay_event.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_event-%d{yyyy-MM-dd}-%i.log.gz	">
+		<RollingFile name="govpay_event" fileName="${it.govpay.log.folder}/govpay_event.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_event-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
 			</PatternLayout>
