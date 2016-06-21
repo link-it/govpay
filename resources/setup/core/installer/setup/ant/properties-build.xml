@@ -15,7 +15,6 @@
                         <param name="value" value="${antinstaller_work_folder}"/>
                 </antcall>
 
-
 		<antcall target="set_property">
 			<param name="file" value="${file}"/>
 			<param name="token" value="govpay.sourceCodeDisclaimer"/>
@@ -121,6 +120,12 @@
                         <param name="file" value="${file}"/>
                         <param name="token" value="http://localhost:8080"/>
                         <param name="value" value="${pubhost_noendslash}"/>
+                </antcall>
+
+		<antcall target="replace_token">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="/var/govpay/console"/>
+                        <param name="value" value="${antinstaller_console_work_folder}"/>
                 </antcall>
 	</target>
         <target name="wildfly_govpay_securitydomain">
