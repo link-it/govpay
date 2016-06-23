@@ -148,7 +148,13 @@
 		<mkdir dir="${dist}/datasource" />
 		<copy file="${tmp_dir}/govpay-ds.xml" todir="${dist}/datasource" />
 		<mkdir dir="${dist}/sql" />
+		<mkdir dir="${dist}/sql/patches" />
 		<copy file="${tmp_dir}/gov_pay.sql" todir="${dist}/sql"/>		
+		<copy todir="${dist}/sql/patches">
+			<fileset dir="${sql}/${antinstaller_tipo_database}/"> 
+				<include name="**/*.sql" />
+			</fileset>
+		</copy>
 		<delete dir="${build}"/>
 	</target>
 
