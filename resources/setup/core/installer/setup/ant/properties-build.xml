@@ -23,9 +23,11 @@
 
                 <antcall target="replace_token">
                         <param name="file" value="${file}"/>
-                        <param name="token" value="http://localhost:8080/openspcoop2/PD?wsdl"/>
+                        <param name="token" value="http://hostpdd/openspcoop2/PD"/>
                         <param name="value" value="${antinstaller_pddcheck}"/>
                 </antcall>
+
+
 
 	</target>
 
