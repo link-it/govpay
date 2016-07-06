@@ -66,6 +66,10 @@ public class Versamento extends BasicModel {
 	private Date dataUltimoAggiornamento;
 	private Causale causaleVersamento;
 	private Anagrafica anagraficaDebitore;
+	private String codLotto;
+	private String codVersamentoLotto;
+	private String codAnnoTributario;
+	private String codBundlekey;
 	
 	public Long getId() {
 		return id;
@@ -163,6 +167,14 @@ public class Versamento extends BasicModel {
 		this.anagraficaDebitore = anagraficaDebitore;
 	}
 	
+	public String getCodBundlekey() {
+		return codBundlekey;
+	}
+
+	public void setCodBundlekey(String codBundlekey) {
+		this.codBundlekey = codBundlekey;
+	}
+
 	public Causale getCausaleVersamento() {
 		return causaleVersamento;
 	}
@@ -395,4 +407,27 @@ public class Versamento extends BasicModel {
 		this.iuvProposto = iuvProposto;
 	}
 
+	public String getCodLotto() {
+		return codLotto;
+	}
+
+	public void setCodLotto(String codLotto) {
+		this.codLotto = codLotto;
+	}
+
+	public String getCodVersamentoLotto() {
+		return codVersamentoLotto;
+	}
+
+	public void setCodVersamentoLotto(String codVersamentoLotto) {
+		this.codVersamentoLotto = codVersamentoLotto;
+	}
+
+	public String getCodAnnoTributario() {
+		return codAnnoTributario;
+	}
+
+	public void setCodAnnoTributario(String codAnnoTributario) {
+		this.codAnnoTributario = codAnnoTributario;
+	}
 }

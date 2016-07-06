@@ -38,6 +38,8 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,7 +55,9 @@ import java.io.Serializable;
 @XmlType(name = "id-singolo-versamento", 
   propOrder = {
   	"idVersamento",
-  	"codSingoloVersamentoEnte"
+  	"codSingoloVersamentoEnte",
+  	"idTributo",
+  	"note"
   }
 )
 
@@ -93,6 +97,22 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
     this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
   }
 
+  public IdTributo getIdTributo() {
+    return this.idTributo;
+  }
+
+  public void setIdTributo(IdTributo idTributo) {
+    this.idTributo = idTributo;
+  }
+
+  public java.lang.String getNote() {
+    return this.note;
+  }
+
+  public void setNote(java.lang.String note) {
+    this.note = note;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -106,5 +126,12 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
   protected java.lang.String codSingoloVersamentoEnte;
+
+  @XmlElement(name="idTributo",required=false,nillable=false)
+  protected IdTributo idTributo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="note",required=false,nillable=false)
+  protected java.lang.String note;
 
 }

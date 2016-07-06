@@ -66,6 +66,10 @@ public class GovpayConfig {
 	private TipiDatabase mLogDBType;
 	private boolean mLogOnLog4j, mLogOnDB, mLogSql;
 
+	private boolean batchEstrattoConto;
+	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
+	private String pathEstrattoConto;
+
 
 	public GovpayConfig() {
 		// Default values:
@@ -84,27 +88,27 @@ public class GovpayConfig {
 		this.mLogSql = false;
 		this.mLogDBType = null;
 		this.mLogDS = null;
-		
-		
+		this.batchEstrattoConto = false;
+
 		try {
-			
+
 			// Recupero il property all'interno dell'EAR
 			InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
 			Properties props1 = new Properties();
 			props1.load(is);
-			
+
 			Properties props0 = null;
-			
+
 			Properties[] props = new Properties[2];
 			props[0] = props0;
 			props[1] = props1;
-			
+
 			// Recupero la configurazione della working dir
 			// Se e' configurata, la uso come prioritaria
-			
+
 			try {
 				String resourceDir = getProperty("it.govpay.resource.path", props1, false);
-				
+
 				if(resourceDir != null) {
 					File resourceDirFile = new File(resourceDir);
 					if(!resourceDirFile.isDirectory())
@@ -116,7 +120,7 @@ public class GovpayConfig {
 						log.info("Caricata configurazione logger: " + log4j2ConfigFile.getAbsolutePath());
 						this.log4j2Config = log4j2ConfigFile.toURI();
 					}
-					
+
 					File gpConfigFile = new File(resourceDir + File.separatorChar + "govpay.properties");
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
@@ -173,32 +177,32 @@ public class GovpayConfig {
 				log.warn("Errore di inizializzazione: " + e.getMessage() + ". Assunto valore di default: " + 10);
 				this.dimensionePool = 10;
 			}
-			
+
 			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", props, true);
 			try {
 				this.urlPddVerifica = new URL(urlPddVerificaProperty.trim());
 			} catch (Exception e) {
 				throw new Exception("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
 			}
-			
+
 			String mLogClassString = getProperty("it.govpay.mlog.class", props, false);
 			if(mLogClassString != null && !mLogClassString.isEmpty()) 
 				this.mLogClass = mLogClassString;
-			
+
 			String mLogOnLog4jString = getProperty("it.govpay.mlog.log4j", props, false);
 			if(mLogOnLog4jString != null && !Boolean.valueOf(mLogOnLog4jString))
 				this.mLogOnLog4j = false;
-			
+
 			try {
 				this.mLogLevel = Severity.valueOf(getProperty("it.govpay.mlog.level", props, false));
 			} catch (Exception e) {
 				log.warn("Valore ["+getProperty("it.govpay.mlog.level", props, false)+"] non consentito per la property \"it.govpay.mlog.level\". Assunto valore di default \"INFO\".");
 			}
-			
+
 			String mLogOnDBString = getProperty("it.govpay.mlog.db", props, false);
 			if(mLogOnDBString != null && Boolean.valueOf(mLogOnDBString))
 				this.mLogOnDB = true;
-			
+
 			if(this.mLogOnDB) {
 				String mLogDBTypeString = getProperty("it.govpay.mlog.db.type", props, true);
 				try {
@@ -206,15 +210,48 @@ public class GovpayConfig {
 				} catch (IllegalArgumentException e) {
 					throw new Exception("Valore ["+mLogDBTypeString.trim()+"] non consentito per la property \"it.govpay.mlog.db.type\": " +e.getMessage());
 				}
-				
+
 				this.mLogDS = getProperty("it.govpay.mlog.db.ds", props, true);
-				
+
 				String mLogSqlString = getProperty("it.govpay.mlog.showSql", props, false);
 				if(mLogSqlString != null)
 					this.mLogOnLog4j = Boolean.valueOf(mLogSqlString);
 			}
-			
-			
+
+
+
+
+
+			String batchEstrattoContoString = getProperty("it.govpay.batch.estrattoConto", props, false);
+			if(batchEstrattoContoString != null && Boolean.valueOf(batchEstrattoContoString))
+				this.batchEstrattoConto = true;
+
+			if(this.batchEstrattoConto) {
+
+				String numeroMesiEstrattoContoProperty = getProperty("it.govpay.batch.estrattoConto.numeroMesi", props, true);
+				if(numeroMesiEstrattoContoProperty != null)
+					try {
+						this.numeroMesiEstrattoConto = Integer.parseInt(numeroMesiEstrattoContoProperty);
+					} catch (IllegalArgumentException e) {
+						throw new Exception("Valore ["+numeroMesiEstrattoContoProperty.trim()+"] non consentito per la property \"it.govpay.batch.estrattoConto.numeroMesi\": " +e.getMessage());
+					}
+
+				String giornoEsecuzioneEstrattoContoProperty = getProperty("it.govpay.batch.estrattoConto.giornoEsecuzione", props, true);
+				if(giornoEsecuzioneEstrattoContoProperty != null)
+					try {
+						this.giornoEsecuzioneEstrattoConto = Integer.parseInt(giornoEsecuzioneEstrattoContoProperty);
+					} catch (IllegalArgumentException e) {
+						throw new Exception("Valore ["+giornoEsecuzioneEstrattoContoProperty.trim()+"] non consentito per la property \"it.govpay.batch.estrattoConto.giornoEsecuzione\": " +e.getMessage());
+					}
+
+				this.pathEstrattoConto = getProperty("it.govpay.batch.estrattoConto.pathEsportazione", props, true);
+				if(this.pathEstrattoConto != null) {
+					File logoDirFile = new File(this.pathEstrattoConto);
+					if(!logoDirFile.isDirectory())
+						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pathEsportazione\" (" + pathEstrattoConto + ") non esiste o non e' un folder.");
+				}
+			}
+
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -242,7 +279,7 @@ public class GovpayConfig {
 
 		return value.trim();
 	}
-	
+
 	private static String getProperty(String name, Properties[] props, boolean required) throws Exception {
 		String value = null;
 		for(Properties p : props) {
@@ -251,9 +288,9 @@ public class GovpayConfig {
 				return value;
 			}
 		}
-		
+
 		log.debug("Proprieta " + name + " non trovata");
-		
+
 		if(required) 
 			throw new Exception("Proprieta ["+name+"] non trovata");
 		else 
@@ -315,4 +352,21 @@ public class GovpayConfig {
 	public boolean ismLogSql() {
 		return mLogSql;
 	}
+	
+	public boolean isBatchEstrattoConto() {
+		return batchEstrattoConto;
+	}
+
+	public int getNumeroMesiEstrattoConto() {
+		return numeroMesiEstrattoConto;
+	}
+
+	public int getGiornoEsecuzioneEstrattoConto() {
+		return giornoEsecuzioneEstrattoConto;
+	}
+
+	public String getPathEstrattoConto() {
+		return pathEstrattoConto;
+	}
+
 }

@@ -166,6 +166,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(new CustomField("id_rr", Long.class, "id_rr", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE);
 			fields.add(Pagamento.model().IMPORTO_PAGATO);
+			fields.add(Pagamento.model().DATA_ACQUISIZIONE);
 			fields.add(Pagamento.model().IUR);
 			fields.add(Pagamento.model().DATA_PAGAMENTO);
 			fields.add(Pagamento.model().COMMISSIONI_PSP);
@@ -176,6 +177,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(Pagamento.model().CODFLUSSO_RENDICONTAZIONE);
 			fields.add(Pagamento.model().ANNO_RIFERIMENTO);
 			fields.add(Pagamento.model().INDICE_SINGOLO_PAGAMENTO);
+			fields.add(Pagamento.model().DATA_ACQUISIZIONE_REVOCA);
 			fields.add(Pagamento.model().CAUSALE_REVOCA);
 			fields.add(Pagamento.model().DATI_REVOCA);
 			fields.add(Pagamento.model().IMPORTO_REVOCATO);
@@ -579,6 +581,14 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 					obj.getIdSingoloVersamento().getIdVersamento().getIdApplicazione().setId(imgSaved.getIdSingoloVersamento().getIdVersamento().getIdApplicazione().getId());
 				}
 			}
+			if(obj.getIdSingoloVersamento().getIdTributo()!=null && 
+					imgSaved.getIdSingoloVersamento().getIdTributo()!=null){
+				obj.getIdSingoloVersamento().getIdTributo().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getId());
+				if(obj.getIdSingoloVersamento().getIdTributo().getIdDominio()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio()!=null){
+					obj.getIdSingoloVersamento().getIdTributo().getIdDominio().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio().getId());
+				}
+			}
 		}
 		if(obj.getIdFrApplicazione()!=null && 
 				imgSaved.getIdFrApplicazione()!=null){
@@ -590,6 +600,22 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			if(obj.getIdFrApplicazione().getIdApplicazione()!=null && 
 					imgSaved.getIdFrApplicazione().getIdApplicazione()!=null){
 				obj.getIdFrApplicazione().getIdApplicazione().setId(imgSaved.getIdFrApplicazione().getIdApplicazione().getId());
+			}
+		}
+		if(obj.getIdRr()!=null && 
+				imgSaved.getIdRr()!=null){
+			obj.getIdRr().setId(imgSaved.getIdRr().getId());
+		}
+		if(obj.getIdFrApplicazioneRevoca()!=null && 
+				imgSaved.getIdFrApplicazioneRevoca()!=null){
+			obj.getIdFrApplicazioneRevoca().setId(imgSaved.getIdFrApplicazioneRevoca().getId());
+			if(obj.getIdFrApplicazioneRevoca().getIdFr()!=null && 
+					imgSaved.getIdFrApplicazioneRevoca().getIdFr()!=null){
+				obj.getIdFrApplicazioneRevoca().getIdFr().setId(imgSaved.getIdFrApplicazioneRevoca().getIdFr().getId());
+			}
+			if(obj.getIdFrApplicazioneRevoca().getIdApplicazione()!=null && 
+					imgSaved.getIdFrApplicazioneRevoca().getIdApplicazione()!=null){
+				obj.getIdFrApplicazioneRevoca().getIdApplicazione().setId(imgSaved.getIdFrApplicazioneRevoca().getIdApplicazione().getId());
 			}
 		}
 
@@ -688,7 +714,29 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 			}
 
+	        if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
+				if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO,false)==false){
+					sqlQueryObject.addFromTable(this.getPagamentoFieldConverter().toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO));
+				}
+				String tableName3 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
+				sqlQueryObject.addWhereCondition(tableName3+".id="+tableName2+".id_tributo");
+
+			}
+
 		}
+		
+        if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO,false)){
+			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
+			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_versamento="+tableName2+".id");
+		}
+		
+        if(expression.inUseModel(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO,false)){
+			String tableName1 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO);
+			String tableName2 = this.getPagamentoFieldConverter().toAliasTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+		}
+
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdPagamento id) throws NotFoundException, ServiceException, NotImplementedException, Exception{

@@ -184,7 +184,7 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 			return "iban_accredito";
 		}
 		if(model.equals(Tributo.model().ID_IBAN_ACCREDITO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
 		}
 
 

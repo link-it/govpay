@@ -48,6 +48,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 	public final static String RECUPERO_RPT_PENDENTI = "recuperoRptPendenti";
 	public final static String SPEDIZIONE_NOTIFICHE = "spedizioneNotifiche";
 	public final static String RESET_CACHE_ANAGRAFICA = "resetCacheAnagrafica";
+	public final static String ESTRATTO_CONTO = "estrattoConto";
 
 	/** getAttribute */
 	@Override
@@ -112,6 +113,10 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 				return "Reset Cache Anagrafica#eseguita con successo.";
 			else
 				return "Reset Cache Anagrafica#fallita.";
+		}
+		
+		if(actionName.equals(ESTRATTO_CONTO)){
+			return Operazioni.estrattoConto();
 		}
 
 		throw new UnsupportedOperationException("Operazione "+actionName+" sconosciuta");

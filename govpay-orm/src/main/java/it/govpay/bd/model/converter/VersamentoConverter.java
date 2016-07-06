@@ -70,6 +70,10 @@ public class VersamentoConverter {
 			debitore.setNazione(vo.getDebitoreNazione());
 			debitore.setProvincia(vo.getDebitoreProvincia());
 			dto.setAnagraficaDebitore(debitore);
+			dto.setCodAnnoTributario(vo.getCodAnnoTributario());
+			dto.setCodLotto(vo.getCodLotto());
+			dto.setCodVersamentoLotto(vo.getCodVersamentoLotto()); 
+			dto.setCodBundlekey(vo.getCodBundlekey()); 
 			return dto;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);
@@ -104,6 +108,10 @@ public class VersamentoConverter {
 			vo.setDebitoreLocalita(anagraficaDebitore.getLocalita());
 			vo.setDebitoreNazione(anagraficaDebitore.getNazione());
 			vo.setDebitoreProvincia(anagraficaDebitore.getProvincia());
+			vo.setCodAnnoTributario(dto.getCodAnnoTributario());
+			vo.setCodLotto(dto.getCodLotto());
+			vo.setCodVersamentoLotto(dto.getCodVersamentoLotto()); 
+			vo.setCodBundlekey(dto.getCodBundlekey());
 			return vo;
 		} catch (UnsupportedEncodingException e) {
 			throw new ServiceException(e);

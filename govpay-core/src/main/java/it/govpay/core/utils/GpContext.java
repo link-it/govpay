@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.namespace.QName;
 import javax.xml.ws.handler.MessageContext;
 
@@ -49,6 +51,8 @@ public class GpContext {
 	public static String TIPO_SOGGETTO_STAZIONE = "STZ";
 	public static String TIPO_SOGGETTO_GOVPAY = "GP";
 	public static String TIPO_SERVIZIO_GOVPAY = "GP";
+	public static String TIPO_SERVIZIO_GOVPAY_RS = "GPRS";
+	public static String TIPO_SERVIZIO_GOVPAY_JSON = "GPJSON";
 	public static String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
 	public static String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
 	
@@ -85,6 +89,56 @@ public class GpContext {
 			client.setInterfaceName(((QName) msgCtx.get(MessageContext.WSDL_INTERFACE)).getLocalPart());
 			if(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal() != null)
 				client.setPrincipal(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal().getName());
+			
+			transaction.setClient(client);
+			
+			Server server = new Server();
+			server.setName(GovPay);
+			
+			Actor to = new Actor();
+			to.setName(GovPay);
+			to.setType(TIPO_SOGGETTO_GOVPAY);
+			transaction.setTo(to);
+			
+			transaction.setServer(server);
+		} catch (UtilsException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public GpContext(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request,
+			String nomeOperazione, String nomeServizio, String tipoServizio, int versioneServizio) throws ServiceException {
+		try {
+			loggers = new ArrayList<ILogger>();
+			ILogger logger = LoggerFactory.newLogger(new Context());	
+			loggers.add(logger);
+			
+			contexts = new ArrayList<Context>();
+			Context context = (Context) logger.getContext();
+			context.getTransaction().setProtocol("govpay");
+			contexts.add(context);
+			
+			Transaction transaction = context.getTransaction();
+			transaction.setRole(Role.SERVER);
+			
+			Service service = new Service();
+			service.setName(nomeServizio);
+			service.setVersion(versioneServizio);
+			service.setType(tipoServizio);
+			
+			transaction.setService(service);
+			
+			Operation operation = new Operation();
+			operation.setMode(FlowMode.INPUT_OUTPUT);
+			operation.setName(nomeOperazione);
+			transaction.setOperation(operation);
+			
+			Client client = new Client();
+			client.setInvocationEndpoint(request.getRequestURI());
+			
+			client.setInterfaceName(nomeServizio);
+			if(request.getUserPrincipal() != null)
+				client.setPrincipal(request.getUserPrincipal().getName());
 			
 			transaction.setClient(client);
 			

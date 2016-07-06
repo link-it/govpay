@@ -594,6 +594,10 @@ CREATE TABLE versamenti
 	debitore_localita VARCHAR(35),
 	debitore_provincia VARCHAR(35),
 	debitore_nazione VARCHAR(2),
+	cod_lotto VARCHAR(35),
+	cod_versamento_lotto VARCHAR(35),
+	cod_anno_tributario VARCHAR(35),
+	cod_bundlekey VARCHAR(256),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_uo NUMBER NOT NULL,
@@ -636,6 +640,7 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR(2),
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
+	note VARCHAR(512),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -919,6 +924,7 @@ CREATE TABLE pagamenti
 (
 	cod_singolo_versamento_ente VARCHAR(35) NOT NULL,
 	importo_pagato BINARY_DOUBLE NOT NULL,
+	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR(35) NOT NULL,
 	data_pagamento TIMESTAMP NOT NULL,
 	commissioni_psp BINARY_DOUBLE,
@@ -930,6 +936,7 @@ CREATE TABLE pagamenti
 	codflusso_rendicontazione VARCHAR(35),
 	anno_riferimento NUMBER,
 	indice_singolo_pagamento NUMBER,
+	data_acquisizione_revoca TIMESTAMP,
 	causale_revoca VARCHAR(140),
 	dati_revoca VARCHAR(140),
 	importo_revocato BINARY_DOUBLE,

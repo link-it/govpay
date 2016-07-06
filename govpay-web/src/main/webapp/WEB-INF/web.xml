@@ -13,6 +13,7 @@
 			<web-resource-name>All resources</web-resource-name>
 			<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
+			<url-pattern>/rs/caricatore/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>

@@ -44,6 +44,10 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"id-versamento",IdVersamento.class));
+		this.DEBITORE_IDENTIFICATIVO = new Field("debitoreIdentificativo",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.DEBITORE_ANAGRAFICA = new Field("debitoreAnagrafica",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.COD_VERSAMENTO_LOTTO = new Field("codVersamentoLotto",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -53,6 +57,10 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"id-versamento",IdVersamento.class));
+		this.DEBITORE_IDENTIFICATIVO = new ComplexField(father,"debitoreIdentificativo",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.DEBITORE_ANAGRAFICA = new ComplexField(father,"debitoreAnagrafica",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.COD_VERSAMENTO_LOTTO = new ComplexField(father,"codVersamentoLotto",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -61,6 +69,14 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	public IField COD_VERSAMENTO_ENTE = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
+	 
+	public IField DEBITORE_IDENTIFICATIVO = null;
+	 
+	public IField DEBITORE_ANAGRAFICA = null;
+	 
+	public IField COD_VERSAMENTO_LOTTO = null;
+	 
+	public IField COD_ANNO_TRIBUTARIO = null;
 	 
 
 	@Override

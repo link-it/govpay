@@ -161,6 +161,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertTable(this.getPagamentoFieldConverter().toTable(Pagamento.model()));
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_PAGATO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_PAGAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COMMISSIONI_PSP,false),"?");
@@ -171,6 +172,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().CODFLUSSO_RENDICONTAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ANNO_RIFERIMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_SINGOLO_PAGAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().CAUSALE_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATI_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_REVOCATO,false),"?");
@@ -192,6 +194,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCodSingoloVersamentoEnte(),Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getImportoPagato(),Pagamento.model().IMPORTO_PAGATO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataAcquisizione(),Pagamento.model().DATA_ACQUISIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIur(),Pagamento.model().IUR.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataPagamento(),Pagamento.model().DATA_PAGAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCommissioniPsp(),Pagamento.model().COMMISSIONI_PSP.getFieldType()),
@@ -202,6 +205,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCodflussoRendicontazione(),Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getAnnoRiferimento(),Pagamento.model().ANNO_RIFERIMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIndiceSingoloPagamento(),Pagamento.model().INDICE_SINGOLO_PAGAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataAcquisizioneRevoca(),Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCausaleRevoca(),Pagamento.model().CAUSALE_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDatiRevoca(),Pagamento.model().DATI_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getImportoRevocato(),Pagamento.model().IMPORTO_REVOCATO.getFieldType()),
@@ -359,6 +363,8 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodSingoloVersamentoEnte(), Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_PAGATO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getImportoPagato(), Pagamento.model().IMPORTO_PAGATO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false), "?");
+		lstObjects_pagamento.add(new JDBCObject(pagamento.getDataAcquisizione(), Pagamento.model().DATA_ACQUISIZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUR,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getIur(), Pagamento.model().IUR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_PAGAMENTO,false), "?");
@@ -379,6 +385,8 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getAnnoRiferimento(), Pagamento.model().ANNO_RIFERIMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_SINGOLO_PAGAMENTO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getIndiceSingoloPagamento(), Pagamento.model().INDICE_SINGOLO_PAGAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE_REVOCA,false), "?");
+		lstObjects_pagamento.add(new JDBCObject(pagamento.getDataAcquisizioneRevoca(), Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().CAUSALE_REVOCA,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getCausaleRevoca(), Pagamento.model().CAUSALE_REVOCA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATI_REVOCA,false), "?");

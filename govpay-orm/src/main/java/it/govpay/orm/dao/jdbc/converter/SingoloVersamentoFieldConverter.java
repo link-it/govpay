@@ -82,6 +82,34 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_identificativo";
+			}else{
+				return "debitore_identificativo";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_lotto";
+			}else{
+				return "cod_versamento_lotto";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_anno_tributario";
+			}else{
+				return "cod_anno_tributario";
+			}
+		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -173,6 +201,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "codice_contabilita";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().NOTE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".note";
+			}else{
+				return "note";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -191,6 +226,18 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO, returnAlias);
@@ -231,6 +278,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(SingoloVersamento.model().CODICE_CONTABILITA)){
 			return this.toTable(SingoloVersamento.model(), returnAlias);
 		}
+		if(field.equals(SingoloVersamento.model().NOTE)){
+			return this.toTable(SingoloVersamento.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -251,19 +301,19 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "versamenti";
 		}
 		if(model.equals(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "id_applicazione";
+			return "applicazioni";
 		}
 		if(model.equals(SingoloVersamento.model().ID_TRIBUTO)){
 			return "tributi";
 		}
 		if(model.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
 		}
 		if(model.equals(SingoloVersamento.model().ID_IBAN_ACCREDITO)){
 			return "iban_accredito";
 		}
 		if(model.equals(SingoloVersamento.model().ID_IBAN_ACCREDITO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
 		}
 
 

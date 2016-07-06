@@ -20,9 +20,12 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -32,17 +35,21 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.utils.TipiDatabase;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.orm.IdPagamento;
+import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.jdbc.JDBCRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.RendicontazioneSenzaRPTFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.PagamentoFetch;
 
 public class PagamentiBD extends BasicBD {
 
@@ -80,7 +87,7 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public void updatePagamento(Pagamento pagamento) throws ServiceException{
 		try {
 			it.govpay.orm.Pagamento vo = PagamentoConverter.toVO(pagamento);
@@ -133,7 +140,7 @@ public class PagamentiBD extends BasicBD {
 		filter.setIdFrApplicazione(idFrApplicazione);
 		return findAll(filter);
 	}
-	
+
 	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(Long idFrApplicazione) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getRendicontazioneSenzaRPTService().newPaginatedExpression();
@@ -149,14 +156,14 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException();
 		}
 	}
-	
+
 	public long countRendicontazioniSenzaRpt(Long idFrApplicazione) throws ServiceException {
 		try {
 			IExpression exp = this.getRendicontazioneSenzaRPTService().newExpression();
 			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", fieldConverter.toTable(it.govpay.orm.RendicontazioneSenzaRPT.model())), idFrApplicazione);
 			NonNegativeNumber count = this.getRendicontazioneSenzaRPTService().count(exp);
-			
+
 			return count != null ? count.longValue() : 0;
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
@@ -166,7 +173,7 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException();
 		}
 	}
-	
+
 	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(List<Long> idFrApplicazione) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getRendicontazioneSenzaRPTService().newPaginatedExpression();
@@ -182,14 +189,14 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException();
 		}
 	}
-	
+
 	public long countRendicontazioniSenzaRpt(List<Long> idFrApplicazione) throws ServiceException {
 		try {
 			IExpression exp = this.getRendicontazioneSenzaRPTService().newExpression();
 			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.in(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", fieldConverter.toTable(it.govpay.orm.RendicontazioneSenzaRPT.model())), idFrApplicazione);
 			NonNegativeNumber count = this.getRendicontazioneSenzaRPTService().count(exp);
-			
+
 			return count != null ? count.longValue() : 0;
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
@@ -199,7 +206,7 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException();
 		}
 	}
-	
+
 	public RendicontazioneSenzaRpt getRendicontazioneSenzaRpt(Long idRendicontazioneSenzaRpt) throws ServiceException {
 		try {
 			return RendicontazioneSenzaRptConverter.toDTO(((JDBCRendicontazioneSenzaRPTService)this.getRendicontazioneSenzaRPTService()).get(idRendicontazioneSenzaRpt));
@@ -217,7 +224,7 @@ public class PagamentiBD extends BasicBD {
 		filter.setIdRr(idRr);
 		return findAll(filter);
 	}
-	
+
 	public PagamentoFilter newFilter() throws ServiceException {
 		return new PagamentoFilter(this.getPagamentoService());
 	}
@@ -237,5 +244,40 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
+	public  List<it.govpay.bd.model.rest.Pagamento>  estrattoConto(PagamentoFilter filter)throws ServiceException {
+		List<it.govpay.bd.model.rest.Pagamento> pagamenti = new ArrayList<it.govpay.bd.model.rest.Pagamento>();
+		IPagamentoService pagamentoService = this.getPagamentoService();
+
+		IPaginatedExpression pagExpr = filter.toPaginatedExpression();
+
+		List<IField> listaFields = new ArrayList<IField>();
+		listaFields.add(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
+		listaFields.add(it.govpay.orm.Pagamento.model().IMPORTO_PAGATO);
+		listaFields.add(it.govpay.orm.Pagamento.model().IUR);
+		listaFields.add(it.govpay.orm.Pagamento.model().ID_RPT.IUV);
+		listaFields.add(it.govpay.orm.Pagamento.model().CODFLUSSO_RENDICONTAZIONE);
+		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE);
+		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE);
+
+		IField [] fields = listaFields.toArray(new IField[listaFields.size()]);
+		List<Map<String,Object>> select = new ArrayList<Map<String,Object>>();
+		try {
+			select = pagamentoService.select(pagExpr, fields); 
+			if(select != null && select.size() > 0){
+				PagamentoFetch pagFetch = new PagamentoFetch();
+				TipiDatabase tipoDatabase = ConnectionManager.getJDBCServiceManagerProperties().getDatabase(); 
+				for (Map<String, Object> map : select) {
+					it.govpay.orm.Pagamento pagamento = (it.govpay.orm.Pagamento) pagFetch.fetch(tipoDatabase, it.govpay.orm.Pagamento.model(), map);
+					it.govpay.bd.model.rest.Pagamento dto = it.govpay.bd.model.rest.converter.PagamentoConverter.toRestDTO(pagamento,map);
+					pagamenti.add(dto); 
+				}
+			}
+		} catch (NotFoundException e) {
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		return pagamenti;
+	}
+
 }

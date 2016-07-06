@@ -48,6 +48,7 @@ import java.io.Serializable;
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -73,7 +74,8 @@ import java.io.Serializable;
   	"provinciaResidenza",
   	"idIbanAccredito",
   	"tipoContabilita",
-  	"codiceContabilita"
+  	"codiceContabilita",
+  	"note"
   }
 )
 
@@ -193,6 +195,14 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
     this.codiceContabilita = codiceContabilita;
   }
 
+  public java.lang.String getNote() {
+    return this.note;
+  }
+
+  public void setNote(java.lang.String note) {
+    this.note = note;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -256,5 +266,9 @@ public class SingoloVersamento extends org.openspcoop2.utils.beans.BaseBean impl
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codiceContabilita",required=false,nillable=false)
   protected java.lang.String codiceContabilita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="note",required=false,nillable=false)
+  protected java.lang.String note;
 
 }

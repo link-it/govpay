@@ -115,6 +115,8 @@ public class Gp21Utils {
 		p.setDatiRevoca(pagamento.getDatiRevoca());
 		p.setEsitoRevoca(pagamento.getEsitoRevoca());
 		p.setImportoRevocato(pagamento.getImportoRevocato());
+		p.setDataAcquisizione(pagamento.getDataAcquisizione());
+		p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
 		return p;
 	}
 	

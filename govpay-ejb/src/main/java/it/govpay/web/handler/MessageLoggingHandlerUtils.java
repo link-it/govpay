@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.core.UriInfo;
 import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
@@ -105,6 +107,67 @@ public class MessageLoggingHandlerUtils {
 			msg.setType(MessageType.REQUEST_IN);
 			msg.setContentType(((HttpServletRequest) smc.get(MessageContext.SERVLET_REQUEST)).getContentType());
 			
+			ctx.getContext().getRequest().setInDate(new Date());
+			ctx.getContext().getRequest().setInSize(Long.valueOf(baos.size()));
+		}
+		
+		if(httpHeaders != null) {
+			for(String key : httpHeaders.keySet()) {
+				if(httpHeaders.get(key) != null) {
+					if(key == null)
+						msg.addHeader(new Property("Status-line", httpHeaders.get(key).get(0)));
+					else if(httpHeaders.get(key).size() == 1)
+						msg.addHeader(new Property(key, httpHeaders.get(key).get(0)));
+					else
+						msg.addHeader(new Property(key, ArrayUtils.toString(httpHeaders.get(key))));
+				}
+			}
+		}
+
+
+		
+		ctx.log(msg);
+		
+		return true;
+	}
+	
+	
+	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, ByteArrayOutputStream baos,
+			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) {
+		
+		GpContext ctx = null;
+		Message msg = new Message();
+		
+		try {
+			
+			msg.setContent(baos.toByteArray());
+		} catch (Exception e) {
+			log.error("Exception in handler: " + e);
+		}
+		
+		Map<String, List<String>> httpHeaders = null;
+		
+		if (outbound) {
+			ctx = GpThreadLocal.get();
+			//httpHeaders = (Map<String, List<String>>) smc.get(MessageContext.HTTP_RESPONSE_HEADERS);
+			msg.setType(MessageType.RESPONSE_OUT);
+			if(rsHttpHeaders.getMediaType() != null)
+				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
+			ctx.getContext().getResponse().setOutDate(new Date());
+			ctx.getContext().getResponse().setOutSize(Long.valueOf(baos.size()));
+		} else {
+			try {
+				ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
+				ThreadContext.put("op", ctx.getTransactionId());
+				GpThreadLocal.set(ctx);
+			} catch (Exception e) {
+				log.error(e.getMessage(),e);
+				return false;
+			}
+			httpHeaders = rsHttpHeaders.getRequestHeaders();
+			msg.setType(MessageType.REQUEST_IN);
+			if(rsHttpHeaders.getMediaType() != null)
+				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
 			ctx.getContext().getRequest().setInDate(new Date());
 			ctx.getContext().getRequest().setInSize(Long.valueOf(baos.size()));
 		}
