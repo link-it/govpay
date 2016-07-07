@@ -23,6 +23,7 @@ package it.govpay.bd.model.converter;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
+import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.orm.ApplicazioneDominio;
 import it.govpay.orm.ApplicazioneTributo;
 import it.govpay.orm.IdDominio;
@@ -45,6 +46,8 @@ public class ApplicazioneConverter {
 		dto.setId(vo.getId());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setTrusted(vo.getTrusted());
+		// TODO GP-310
+		dto.setVersione(Versione.GP_02_02_00);
 		
 		List<Long> idTributi = new ArrayList<Long>();
 		if(vo.getApplicazioneTributoList() != null && !vo.getApplicazioneTributoList().isEmpty()) {

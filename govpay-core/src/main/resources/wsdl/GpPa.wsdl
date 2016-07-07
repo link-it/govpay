@@ -55,7 +55,9 @@
 							<xsd:element name="pagamento" maxOccurs="unbounded" minOccurs="0">
 								<xsd:complexType>
 									<xsd:sequence>
+										<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0"/>
 										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
+										<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
 										<xsd:element name="importoRendicontato" type="com:importo" />
 										<xsd:element name="iur" type="com:cod35" />
 										<xsd:element name="dataRendicontazione" type="xsd:dateTime" />

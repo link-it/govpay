@@ -21,6 +21,7 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Portale;
+import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.PortaleApplicazione;
 
@@ -46,6 +47,9 @@ public class PortaleConverter {
 		dto.setDefaultCallbackURL(vo.getDefaultCallbackURL());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setAbilitato(vo.isAbilitato());
+		
+		// TODO GP-310
+		dto.setVersione(Versione.GP_02_02_00);
 		
 		if(vo.getPortaleApplicazioneList() != null && !vo.getPortaleApplicazioneList().isEmpty()) {
 			

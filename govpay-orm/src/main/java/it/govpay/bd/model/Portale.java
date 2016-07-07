@@ -22,7 +22,7 @@ package it.govpay.bd.model;
 
 import java.util.List;
 
-public class Portale extends BasicModel {
+public class Portale extends Versionabile {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;

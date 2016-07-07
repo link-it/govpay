@@ -370,11 +370,12 @@ CREATE TABLE versamenti
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
 	aggiornabile BOOLEAN NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_scadenza TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_scadenza TIMESTAMP(3), 
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	causale_versamento VARCHAR(511),
 	debitore_identificativo VARCHAR(35) NOT NULL,
 	debitore_anagrafica VARCHAR(70) NOT NULL,
@@ -449,7 +450,7 @@ CREATE TABLE rpt
 	cod_msg_richiesta VARCHAR(35) NOT NULL,
 	-- Data di creazione dell'RPT
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Stato RPT secondo la codifica AgID
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato LONGTEXT,
@@ -458,13 +459,14 @@ CREATE TABLE rpt
 	psp_redirect_url VARCHAR(512),
 	xml_rpt MEDIUMBLOB NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url LONGTEXT,
 	modello_pagamento VARCHAR(16) NOT NULL,
 	cod_msg_ricevuta VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_ricevuta TIMESTAMP(3) DEFAULT 0,
+	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_msg_ricevuta TIMESTAMP(3),
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
 	cod_esito_pagamento INT,
@@ -501,9 +503,10 @@ CREATE TABLE rr
 	ccp VARCHAR(35) NOT NULL,
 	cod_msg_revoca VARCHAR(35) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_revoca TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_msg_revoca TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_esito TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_msg_esito TIMESTAMP(3),
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(512),
 	importo_totale_richiesto DOUBLE NOT NULL,
@@ -532,13 +535,13 @@ CREATE TABLE notifiche
 (
 	tipo_esito VARCHAR(16) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	stato VARCHAR(16) NOT NULL,
 	descrizione_stato VARCHAR(255),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
-	data_prossima_spedizione DATETIME NOT NULL DEFAULT 0,
+	data_prossima_spedizione DATETIME NOT NULL,
 	tentativi_spedizione BIGINT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -560,7 +563,7 @@ CREATE TABLE iuv
 	prg BIGINT NOT NULL,
 	iuv VARCHAR(35) NOT NULL,
 	application_code INT NOT NULL,
-	data_generazione TIMESTAMP NOT NULL DEFAULT 0,
+	data_generazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	tipo_iuv VARCHAR(1) NOT NULL,
 	cod_versamento_ente VARCHAR(35),
 	-- fk/pk columns
@@ -588,9 +591,11 @@ CREATE TABLE fr
 	iur VARCHAR(35) NOT NULL,
 	anno_riferimento INT NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_flusso TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_ora_flusso TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_regolamento TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_regolamento TIMESTAMP(3),
 	numero_pagamenti BIGINT,
 	importo_totale_pagamenti DOUBLE,
 	cod_bic_riversamento VARCHAR(35),
@@ -637,14 +642,15 @@ CREATE TABLE pagamenti
 	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT 0,
 	iur VARCHAR(35) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	commissioni_psp DOUBLE,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),
 	allegato MEDIUMBLOB,
 	rendicontazione_esito INT,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	rendicontazione_data TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	rendicontazione_data TIMESTAMP(3),
 	codflusso_rendicontazione VARCHAR(35),
 	anno_riferimento INT,
 	indice_singolo_pagamento INT,
@@ -657,7 +663,8 @@ CREATE TABLE pagamenti
 	dati_esito_revoca VARCHAR(140),
 	rendicontazione_esito_revoca INT,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	rendicontazione_data_revoca TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	rendicontazione_data_revoca TIMESTAMP(3),
 	cod_flusso_rendicontaz_revoca VARCHAR(35),
 	anno_riferimento_revoca INT,
 	ind_singolo_pagamento_revoca INT,
@@ -699,9 +706,11 @@ CREATE TABLE eventi
 	parametri_2 VARCHAR(512),
 	esito VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_1 TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_1 TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_2 TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_2 TIMESTAMP(3),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- fk/pk keys constraints
@@ -715,7 +724,7 @@ CREATE TABLE rendicontazioni_senza_rpt
 (
 	importo_pagato DOUBLE NOT NULL,
 	iur VARCHAR(35) NOT NULL,
-	rendicontazione_data TIMESTAMP NOT NULL DEFAULT 0,
+	rendicontazione_data TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_fr_applicazione BIGINT NOT NULL,

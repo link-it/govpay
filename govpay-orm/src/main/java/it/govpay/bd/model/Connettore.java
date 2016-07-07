@@ -47,20 +47,8 @@ public class Connettore extends BasicModel {
 		CLIENT, SERVER
 	}
 	
-	public enum Versione {
-		v1, v2, v2_1;
-
-		public int getVersione() {
-			switch (this) {
-			case v1:
-				return 0100;
-			case v2:
-				return 0200;
-			case v2_1:
-				return 0201;
-			}
-			return 0;
-		} 
+	public enum Tipo {
+		SOAP;
 	}
 
 	private String idConnettore;
@@ -77,7 +65,7 @@ public class Connettore extends BasicModel {
 	private String httpUser;
 	private String httpPassw;
 	private String url;
-	private Versione versione;
+	private Tipo tipo;
 	private boolean azioneInUrl;
 	
 	public Connettore() {
@@ -174,40 +162,12 @@ public class Connettore extends BasicModel {
 		this.azioneInUrl = azioneInUrl;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		Connettore connettore = null;
-		if(obj instanceof Connettore) {
-			connettore = (Connettore) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal = 
-				equals(tipoAutenticazione, connettore.getTipoAutenticazione()) &&
-				equals(tipoSsl, connettore.getTipoSsl()) &&
-				equals(sslKsType, connettore.getSslKsType()) &&
-				equals(sslKsLocation, connettore.getSslKsLocation()) &&
-				equals(sslKsPasswd, connettore.getSslKsPasswd()) &&
-				equals(sslPKeyPasswd, connettore.getSslPKeyPasswd()) &&
-				equals(sslTsType, connettore.getSslTsType()) &&
-				equals(sslTsLocation, connettore.getSslTsLocation()) &&
-				equals(sslTsPasswd, connettore.getSslTsPasswd()) &&
-				equals(sslType, connettore.getSslType()) &&
-				equals(httpUser, connettore.getHttpUser()) &&
-				equals(httpPassw, connettore.getHttpPassw()) &&
-				equals(url, connettore.getUrl()) &&
-				azioneInUrl==connettore.isAzioneInUrl();
-
-		return equal;
+	public Tipo getTipo() {
+		return tipo;
 	}
 
-	public Versione getVersione() {
-		return versione;
-	}
-
-	public void setVersione(Versione versione) {
-		this.versione = versione;
+	public void setTipo(Tipo tipo) {
+		this.tipo = tipo;
 	}
 
 }

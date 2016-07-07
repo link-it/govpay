@@ -29,8 +29,8 @@ import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.govpay.bd.model.Connettore.Versione;
 import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.servizi.PagamentiTelematiciPAService;

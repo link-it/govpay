@@ -392,13 +392,13 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			if(frApplicazione.getPagamenti(bd) != null) {
 				for(Pagamento pagamento : frApplicazione.getPagamenti(bd)) {
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento));
+					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd));
 				}
 			}
 			
 			if(frApplicazione.getRendicontazioniSenzaRpt(bd) != null) {
 				for(RendicontazioneSenzaRpt rendicontazione : frApplicazione.getRendicontazioniSenzaRpt(bd)) {
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rendicontazione, bd));
+					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rendicontazione, applicazioneAutenticata.getVersione(), bd));
 				}
 			}
 			

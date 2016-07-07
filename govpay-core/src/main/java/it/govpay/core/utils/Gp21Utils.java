@@ -28,6 +28,8 @@ import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Versionabile;
+import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoTransazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
@@ -120,23 +122,29 @@ public class Gp21Utils {
 		return p;
 	}
 	
-	public static FlussoRendicontazione.Pagamento toRendicontazionePagamento(Pagamento pagamento) {
+	public static FlussoRendicontazione.Pagamento toRendicontazionePagamento(Pagamento pagamento, Versionabile.Versione versione, BasicBD bd) throws ServiceException {
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
 		p.setCodSingoloVersamentoEnte(pagamento.getCodSingoloVersamentoEnte());
 		p.setImportoRendicontato(pagamento.getImportoPagato());
 		p.setIur(pagamento.getIur());
 		p.setEsitoRendicontazione(TipoRendicontazione.valueOf(pagamento.getEsitoRendicontazione().toString()));
 		p.setDataRendicontazione(pagamento.getDataRendicontazione());
+		if(versione.compareTo(Versione.GP_02_02_00) >= 0) {
+			p.setIuv(pagamento.getRpt(bd).getIuv());
+		}
 		return p;
 	}
 
-	public static FlussoRendicontazione.Pagamento toRendicontazionePagamento(RendicontazioneSenzaRpt rendicontazione, BasicBD bd) throws ServiceException {
+	public static FlussoRendicontazione.Pagamento toRendicontazionePagamento(RendicontazioneSenzaRpt rendicontazione, Versionabile.Versione versione, BasicBD bd) throws ServiceException {
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
 		p.setCodSingoloVersamentoEnte(rendicontazione.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
 		p.setImportoRendicontato(rendicontazione.getImportoPagato());
 		p.setIur(rendicontazione.getIur());
 		p.setEsitoRendicontazione(TipoRendicontazione.ESEGUITO_SENZA_RPT);
 		p.setDataRendicontazione(rendicontazione.getDataRendicontazione());
+		if(versione.compareTo(Versione.GP_02_02_00) >= 0) {
+			p.setIuv(rendicontazione.getIuv(bd).getIuv());
+		}
 		return p;
 	}
 

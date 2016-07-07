@@ -99,7 +99,7 @@ public class InviaNotificaThread implements Runnable {
 					ctx.log("notifica.er");
 			}
 			GpThreadLocal.set(ctx);
-			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(null).getConnettoreNotifica().getVersione());
+			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(null).getVersione());
 			
 			ThreadContext.put("op", ctx.getTransactionId());
 		
