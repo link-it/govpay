@@ -30,13 +30,13 @@ import it.govpay.servizi.pa.ObjectFactory;
 import it.govpay.servizi.pa.PaNotificaStorno;
 import it.govpay.servizi.pa.PaNotificaStorno.RichiestaStorno;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Connettore.Versione;
+import it.govpay.bd.model.Connettore.Tipo;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.Gp21Utils;
-import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.StatoRevoca;
 import it.govpay.servizi.pa.PaNotificaTransazione;
 
@@ -45,12 +45,14 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class NotificaClient extends BasicClient {
 
 	private static Logger log = LogManager.getLogger();
+	private Tipo tipo;
 	private Versione versione;
 	private static ObjectFactory objectFactory;
 	
 	public NotificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.NOTIFICA);
-		versione = applicazione.getConnettoreNotifica().getVersione();
+		tipo = applicazione.getConnettoreNotifica().getTipo();
+		versione = applicazione.getVersione();
 		
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
@@ -75,8 +77,8 @@ public class NotificaClient extends BasicClient {
 		
 		log.debug("Spedisco la notifica di " + notifica.getTipo() + ((notifica.getIdRr() == null) ? " PAGAMENTO" : " STORNO") + " della transazione (" + notifica.getRpt(null).getCodDominio() + ")(" + notifica.getRpt(null).getIuv() + ")(" + notifica.getRpt(null).getCcp() + ") in versione (" + versione.toString() + ") alla URL ("+url+")");
 		
-		switch (versione) {
-		case v2_1:
+		switch (tipo) {
+		case SOAP:
 			if(notifica.getIdRr() == null) {
 				Rpt rpt = notifica.getRpt(null);
 				PaNotificaTransazione paNotificaTransazione = new PaNotificaTransazione();
@@ -109,12 +111,7 @@ public class NotificaClient extends BasicClient {
 				sendSoap("paNotificaStorno", new JAXBElement<PaNotificaStorno>(qname, PaNotificaStorno.class, paNotificaStorno), null, false);
 				return;
 			}
-			
-		case v1:
-		case v2:
-			throw new GovPayException(EsitoOperazione.INTERNAL, "Versione del connettore (" + versione + ") non supportato");
 		}
-		
 	}
 	
 	public class SendEsitoResponse {

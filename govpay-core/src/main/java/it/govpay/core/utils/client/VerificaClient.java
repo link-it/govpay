@@ -31,8 +31,9 @@ import it.govpay.servizi.pa.PaVerificaVersamento;
 import it.govpay.servizi.pa.PaVerificaVersamentoResponse;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Connettore.Versione;
+import it.govpay.bd.model.Connettore.Tipo;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
@@ -49,13 +50,15 @@ public class VerificaClient extends BasicClient {
 
 	private static Logger log = LogManager.getLogger();
 	private Versione versione;
+	private Tipo tipo;
 	private static ObjectFactory objectFactory;
 	private String codApplicazione;
 	
 	
 	public VerificaClient(Applicazione applicazione) throws ClientException {
 		super(applicazione, TipoConnettore.VERIFICA);
-		versione = applicazione.getConnettoreVerifica().getVersione();
+		versione = applicazione.getVersione();
+		tipo = applicazione.getConnettoreVerifica().getTipo();
 		codApplicazione = applicazione.getCodApplicazione();
 		if(objectFactory == null || log == null ){
 			objectFactory = new ObjectFactory();
@@ -81,8 +84,8 @@ public class VerificaClient extends BasicClient {
 			//Chiudo la connessione al DB prima della comunicazione HTTP
 			bd.closeConnection();
 			
-			switch (versione) {
-			case v2_1:
+			switch (tipo) {
+			case SOAP:
 				PaVerificaVersamentoResponse paVerificaVersamentoResponse = null;
 				try {
 					PaVerificaVersamento paVerificaVersamento = new PaVerificaVersamento();
@@ -123,8 +126,8 @@ public class VerificaClient extends BasicClient {
 				}
 			default:
 				bd.setupConnection();
-				ctx.log("versamento.verificaKo", iuv, "Versione del connettore (" + versione + ") non supportato");
-				throw new GovPayException(EsitoOperazione.INTERNAL, "Versione del connettore (" + versione + ") non supportato");
+				ctx.log("versamento.verificaKo", iuv, "Tipo del connettore (" + tipo + ") non supportato");
+				throw new GovPayException(EsitoOperazione.INTERNAL, "Tipo del connettore (" + tipo + ") non supportato");
 			}
 		} catch (ServiceException e) {
 			ctx.log("versamento.verificaKo", iuv, e.getMessage());

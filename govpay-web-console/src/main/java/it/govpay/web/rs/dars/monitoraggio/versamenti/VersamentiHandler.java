@@ -98,7 +98,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		super(log, darsService);
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;

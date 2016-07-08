@@ -100,6 +100,9 @@ public class VersamentoUtils {
 			model.setCausaleVersamento(causale);
 		}
 		
+		model.setCodAnnoTributario(versamento.getCodAnnoTributario());
+		model.setCodBundlekey(versamento.getCodBundlekey());
+		model.setCodLotto(versamento.getCodLotto()); 
 		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		model.setDataCreazione(new Date());
 		model.setDataScadenza(versamento.getDataScadenza());
@@ -144,6 +147,7 @@ public class VersamentoUtils {
 		model.setIdVersamento(0);
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
+		model.setNote(singoloVersamento.getNote()); 
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {
 				model.setTributo(Tributo.BOLLOT, bd);

@@ -21,7 +21,7 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Connettore.Versione;
+import it.govpay.bd.model.Connettore.Tipo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -90,9 +90,14 @@ public class ConnettoreConverter {
 					dto.setAzioneInUrl(Boolean.parseBoolean(connettore.getValore()));
 				}
 				
+				//TODO GP-310 rimuovere
 				if(Connettore.P_VERSIONE.equals(connettore.getCodProprieta())) {
-					dto.setVersione(Versione.valueOf(connettore.getValore()));
+					dto.setTipo(Connettore.Tipo.valueOf(connettore.getValore()));
 				}
+				
+				dto.setTipo(Tipo.SOAP);
+				
+				
 			}
 		}
 		return dto;
@@ -205,11 +210,11 @@ public class ConnettoreConverter {
 			voList.add(vo);
 		}
 		
-		if(connettore.getVersione() != null) {
+		if(connettore.getTipo() != null) {
 			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 			vo.setCodConnettore(connettore.getIdConnettore());
 			vo.setCodProprieta(Connettore.P_VERSIONE);
-			vo.setValore(connettore.getVersione().toString());
+			vo.setValore(connettore.getTipo().toString());
 			voList.add(vo);
 		}
 

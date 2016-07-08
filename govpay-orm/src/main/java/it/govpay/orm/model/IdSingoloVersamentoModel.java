@@ -44,6 +44,8 @@ public class IdSingoloVersamentoModel extends AbstractModel<IdSingoloVersamento>
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new Field("idVersamento",it.govpay.orm.IdVersamento.class,"id-singolo-versamento",IdSingoloVersamento.class));
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new Field("codSingoloVersamentoEnte",java.lang.String.class,"id-singolo-versamento",IdSingoloVersamento.class);
+		this.ID_TRIBUTO = new it.govpay.orm.model.IdTributoModel(new Field("idTributo",it.govpay.orm.IdTributo.class,"id-singolo-versamento",IdSingoloVersamento.class));
+		this.NOTE = new Field("note",java.lang.String.class,"id-singolo-versamento",IdSingoloVersamento.class);
 	
 	}
 	
@@ -53,6 +55,8 @@ public class IdSingoloVersamentoModel extends AbstractModel<IdSingoloVersamento>
 	
 		this.ID_VERSAMENTO = new it.govpay.orm.model.IdVersamentoModel(new ComplexField(father,"idVersamento",it.govpay.orm.IdVersamento.class,"id-singolo-versamento",IdSingoloVersamento.class));
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new ComplexField(father,"codSingoloVersamentoEnte",java.lang.String.class,"id-singolo-versamento",IdSingoloVersamento.class);
+		this.ID_TRIBUTO = new it.govpay.orm.model.IdTributoModel(new ComplexField(father,"idTributo",it.govpay.orm.IdTributo.class,"id-singolo-versamento",IdSingoloVersamento.class));
+		this.NOTE = new ComplexField(father,"note",java.lang.String.class,"id-singolo-versamento",IdSingoloVersamento.class);
 	
 	}
 	
@@ -61,6 +65,10 @@ public class IdSingoloVersamentoModel extends AbstractModel<IdSingoloVersamento>
 	public it.govpay.orm.model.IdVersamentoModel ID_VERSAMENTO = null;
 	 
 	public IField COD_SINGOLO_VERSAMENTO_ENTE = null;
+	 
+	public it.govpay.orm.model.IdTributoModel ID_TRIBUTO = null;
+	 
+	public IField NOTE = null;
 	 
 
 	@Override

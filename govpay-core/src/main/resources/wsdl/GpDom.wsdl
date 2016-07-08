@@ -53,7 +53,9 @@
 							<xsd:element name="pagamento" maxOccurs="unbounded" minOccurs="0">
 								<xsd:complexType>
 									<xsd:sequence>
+										<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0"/>
 										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
+										<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
 										<xsd:element name="importoRendicontato" type="com:importo" />
 										<xsd:element name="iur" type="com:cod35" />
 										<xsd:element name="dataRendicontazione" type="xsd:dateTime" />
@@ -83,6 +85,7 @@
 					<xsd:element name="importoPagato" type="com:importo" />
 					<xsd:element name="iur" type="com:cod35" />
 					<xsd:element name="dataPagamento" type="xsd:date" />
+					<xsd:element name="dataAcquisizione" type="xsd:date" minOccurs="0"/>
 					<xsd:element name="commissioniPsp" type="com:importo" minOccurs="0"/>
 					<xsd:element name="allegato" minOccurs="0">
 						<xsd:complexType>
@@ -92,6 +95,7 @@
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
+					<xsd:element name="dataAcquisizioneRevoca" type="xsd:date" minOccurs="0"/>
 					<xsd:element name="causaleRevoca" type="xsd:string" minOccurs="0"/>
 					<xsd:element name="datiRevoca" type="xsd:string" minOccurs="0"/>
 					<xsd:element name="importoRevocato" type="com:importo" minOccurs="0"/>
@@ -147,6 +151,9 @@
 							<xsd:element name="importoTotale" type="com:importo" />
 							<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0"/>
 							<xsd:element name="aggiornabile" type="xsd:boolean" minOccurs="0"/>
+							<xsd:element name="codLotto" type="com:cod35" minOccurs="0"/>
+							<xsd:element name="codAnnoTributario" type="com:string35" minOccurs="0"/>
+							<xsd:element name="codBundlekey" type="com:string256" minOccurs="0"/>
 							<xsd:choice>
 								<xsd:element name="causale" type="com:string140" minOccurs="0"/>
 								<xsd:element name="spezzoneCausale" type="com:string35" minOccurs="0" maxOccurs="6"/>
@@ -164,6 +171,7 @@
 									<xsd:sequence>
 										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35"/>
 										<xsd:element name="importo" type="com:importo"/>
+										<xsd:element name="note" type="com:string512" minOccurs="0"/> 
 										<xsd:choice>
 											<xsd:element name="codTributo" type="com:cod35"/>
 											<xsd:element name="bolloTelematico">
@@ -268,6 +276,13 @@
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="256" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="string512">
+				<xsd:restriction base="xsd:string">
+					<xsd:minLength value="1" />
+					<xsd:maxLength value="512" />
 				</xsd:restriction>
 			</xsd:simpleType>
 		
@@ -523,7 +538,8 @@
 			<xsd:element name="gpChiediListaFlussiRendicontazione">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="codDominio" type="com:cod35" />
+						<xsd:element name="codDominio" type="com:cod35" minOccurs="0"/>
+						<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0"/>
 						<xsd:element name="dataInizio" type="xsd:date" minOccurs="0"/>
 						<xsd:element name="dataFine" type="xsd:date" minOccurs="0"/>
 					</xsd:sequence>
@@ -539,7 +555,6 @@
 								<xsd:element name="flussiRendicontazione" minOccurs="0" maxOccurs="unbounded">
 									<xsd:complexType>
 										<xsd:sequence>
-											<xsd:element name="codApplicazione" type="com:cod35" />
 											<xsd:element name="flussoRendicontazione" type="com:estremiFlussoRendicontazione" maxOccurs="unbounded"/>
 										</xsd:sequence>
 									</xsd:complexType>
@@ -553,7 +568,7 @@
 			<xsd:element name="gpChiediFlussoRendicontazione">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="codApplicazione" type="com:cod35" />
+						<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0"/>
 						<xsd:element name="annoRiferimento" type="xsd:gYear" />
 						<xsd:element name="codFlusso" type="com:cod35" />
 					</xsd:sequence>
@@ -565,7 +580,6 @@
 					<xsd:complexContent>
 						<xsd:extension base="com:gpResponse">
 							<xsd:sequence minOccurs="0">
-								<xsd:element name="codApplicazione" type="com:cod35" />
 								<xsd:element name="flussoRendicontazione" type="com:flussoRendicontazione"/>
 							</xsd:sequence>
 						</xsd:extension>

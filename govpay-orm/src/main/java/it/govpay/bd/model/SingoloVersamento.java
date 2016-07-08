@@ -70,6 +70,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	private Long idIbanAccredito;
 	private Tributo.TipoContabilta tipoContabilita;
 	private String codContabilita;
+	private String note;
 	
 	
 	public Long getId() {
@@ -168,7 +169,14 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	public void setCodContabilita(String codContabilita) {
 		this.codContabilita = codContabilita;
 	}
+	
+	public String getNote() {
+		return note;
+	}
 
+	public void setNote(String note) {
+		this.note = note;
+	}
 	@Override
 	public int compareTo(SingoloVersamento sv) {
 		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());
@@ -185,6 +193,10 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 			tributo = AnagraficaManager.getTributo(bd, getIdTributo());
 		}
 		return tributo;
+	}
+	
+	public void setTributo(Tributo tributo){
+		this.tributo = tributo;
 	}
 
 	public void setTributo(String codTributo, BasicBD bd) throws ServiceException, NotFoundException {

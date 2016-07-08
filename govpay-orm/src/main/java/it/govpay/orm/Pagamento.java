@@ -40,6 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="commissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
@@ -52,6 +53,7 @@ import java.io.Serializable;
  * 			&lt;element name="annoRiferimento" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="indiceSingoloPagamento" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataAcquisizioneRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="causaleRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
@@ -81,6 +83,7 @@ import java.io.Serializable;
   	"idSingoloVersamento",
   	"codSingoloVersamentoEnte",
   	"importoPagato",
+  	"dataAcquisizione",
   	"iur",
   	"dataPagamento",
   	"commissioniPsp",
@@ -93,6 +96,7 @@ import java.io.Serializable;
   	"_decimalWrapper_annoRiferimento",
   	"_decimalWrapper_indiceSingoloPagamento",
   	"idRr",
+  	"dataAcquisizioneRevoca",
   	"causaleRevoca",
   	"datiRevoca",
   	"importoRevocato",
@@ -157,6 +161,14 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setImportoPagato(double importoPagato) {
     this.importoPagato = importoPagato;
+  }
+
+  public java.util.Date getDataAcquisizione() {
+    return this.dataAcquisizione;
+  }
+
+  public void setDataAcquisizione(java.util.Date dataAcquisizione) {
+    this.dataAcquisizione = dataAcquisizione;
   }
 
   public java.lang.String getIur() {
@@ -265,6 +277,14 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setIdRr(IdRr idRr) {
     this.idRr = idRr;
+  }
+
+  public java.util.Date getDataAcquisizioneRevoca() {
+    return this.dataAcquisizioneRevoca;
+  }
+
+  public void setDataAcquisizioneRevoca(java.util.Date dataAcquisizioneRevoca) {
+    this.dataAcquisizioneRevoca = dataAcquisizioneRevoca;
   }
 
   public java.lang.String getCausaleRevoca() {
@@ -406,6 +426,11 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="importoPagato",required=true,nillable=false)
   protected double importoPagato;
 
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataAcquisizione",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataAcquisizione;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iur",required=true,nillable=false)
   protected java.lang.String iur;
@@ -461,6 +486,11 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   @XmlElement(name="idRr",required=false,nillable=false)
   protected IdRr idRr;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataAcquisizioneRevoca",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataAcquisizioneRevoca;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="causaleRevoca",required=false,nillable=false)

@@ -209,7 +209,6 @@ public class JDBCFrApplicazioneServiceSearchImpl implements IJDBCServiceSearchWi
      				Long idFr = (Long) map.remove("id_fr");
 
      				FrApplicazione frApplicazione = (FrApplicazione)this.getFrApplicazioneFetch().fetch(jdbcProperties.getDatabase(), FrApplicazione.model(), map);
-					list.add(frApplicazione);
 					
      				if(idMappingResolutionBehaviour==null ||
      						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
@@ -233,9 +232,11 @@ public class JDBCFrApplicazioneServiceSearchImpl implements IJDBCServiceSearchWi
      						}else{
      							id_fr_fr = new it.govpay.orm.IdFr();
      						}
-     						id_fr_fr.setId(idApplicazione);
+     						id_fr_fr.setId(idFr);
      						frApplicazione.setIdFr(id_fr_fr);
      					}
+     				
+     				list.add(frApplicazione);
 
              }
      		} catch(NotFoundException e) {}

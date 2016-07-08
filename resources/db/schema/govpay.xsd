@@ -67,6 +67,12 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 	
+	<xsd:simpleType name="String256">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="256" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 	<xsd:simpleType name="String35">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="35" />
@@ -272,6 +278,10 @@
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="xsd:string" />
 			<xsd:element name="idApplicazione" type="id-applicazione" />
+			<xsd:element name="debitoreIdentificativo" type="String35" minOccurs="0"/>
+			<xsd:element name="debitoreAnagrafica" type="String70" minOccurs="0" />
+			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
+			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -279,6 +289,8 @@
 		<xsd:sequence>
 			<xsd:element name="idVersamento" type="id-versamento" />
 			<xsd:element name="codSingoloVersamentoEnte" type="xsd:string" />
+			<xsd:element name="idTributo" type="id-tributo" minOccurs="0" />
+			<xsd:element name="note" type="String512" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1038,7 +1050,6 @@
 				</xsd:annotation>
 			</xsd:element>
 			
-			
 			<xsd:element name="importoTotale" type="xsd:double" />
 			<xsd:element name="statoVersamento" type="String35" />
 			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0" />
@@ -1064,7 +1075,10 @@
 			<xsd:element name="debitoreLocalita" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreProvincia" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreNazione" type="String2" minOccurs="0"/>
-			
+			<xsd:element name="codLotto" type="String35" minOccurs="0"/>
+			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
+			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
+			<xsd:element name="codBundlekey" type="String256" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1183,6 +1197,7 @@
 			</xsd:element>
 			<xsd:element name="tipoContabilita" type="String1" minOccurs="0" />
 			<xsd:element name="codiceContabilita" type="xsd:string" minOccurs="0" />
+			<xsd:element name="note" type="String512" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>	
 
@@ -1414,7 +1429,7 @@
 			</xsd:element>
 			<xsd:element name="codSingoloVersamentoEnte" type="String35"/>
 			<xsd:element name="importoPagato" type="xsd:double" />
-			
+			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
 			<xsd:element name="iur" type="String35" />
 			<xsd:element name="dataPagamento" type="xsd:dateTime" />
 			<xsd:element name="commissioniPsp" type="xsd:decimal" minOccurs="0"/>
@@ -1454,6 +1469,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="dataAcquisizioneRevoca" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="causaleRevoca" type="String140" minOccurs="0"/>
 			<xsd:element name="datiRevoca" type="String140" minOccurs="0"/>
 			<xsd:element name="importoRevocato" type="xsd:decimal" minOccurs="0"/>
@@ -1491,7 +1507,6 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			
 		</xsd:sequence>
 	</xsd:complexType>
 	

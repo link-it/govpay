@@ -85,6 +85,9 @@ public class PagamentoConverter {
 			dto.setEsitoRendicontazione(EsitoRendicontazione.toEnum(vo.getRendicontazioneEsito()));
 		if(vo.getTipoAllegato() != null)
 			dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
+		
+		dto.setDataAcquisizione(vo.getDataAcquisizione());
+		dto.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
 		return dto;
 	}
 
@@ -140,6 +143,9 @@ public class PagamentoConverter {
 			vo.setRendicontazioneEsitoRevoca(dto.getEsitoRendicontazioneRevoca().getCodifica());
 		if(dto.getTipoAllegato() != null)
 			vo.setTipoAllegato(dto.getTipoAllegato().toString());
+		
+		vo.setDataAcquisizione(dto.getDataAcquisizione());
+		vo.setDataAcquisizioneRevoca(dto.getDataAcquisizioneRevoca());
 		return vo;
 	}
 }

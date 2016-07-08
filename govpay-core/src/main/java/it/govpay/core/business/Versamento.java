@@ -30,6 +30,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.bd.model.Portale;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento.StatoVersamento;
@@ -84,13 +85,19 @@ public class Versamento extends BasicBD {
 				doCommit = true;
 			}
 
+			IuvBD iuvBD = new IuvBD(this);
+			
 			it.govpay.bd.model.Iuv iuv = null;
-			if(generaIuv) {
-				Stazione stazione = AnagraficaManager.getStazione(this, versamento.getUo(this).getDominio(this).getIdStazione());
-				IuvBD iuvBD = new IuvBD(this);
-				iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.NUMERICO);
-				log.info("Generato IUV [CodDominio: " + versamento.getUo(this).getDominio(this).getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
+			try {
+				iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+			} catch (NotFoundException e) {
+				if(generaIuv) {
+					Stazione stazione = AnagraficaManager.getStazione(this, versamento.getUo(this).getDominio(this).getIdStazione());
+					iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.NUMERICO);
+					log.info("Generato IUV [CodDominio: " + versamento.getUo(this).getDominio(this).getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
+				}
 			}
+			
 			
 			try {
 				it.govpay.bd.model.Versamento versamentoLetto = versamentiBD.getVersamento(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte());

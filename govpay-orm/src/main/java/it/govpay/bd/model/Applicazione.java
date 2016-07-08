@@ -26,7 +26,7 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class Applicazione extends BasicModel {
+public class Applicazione extends Versionabile {
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;

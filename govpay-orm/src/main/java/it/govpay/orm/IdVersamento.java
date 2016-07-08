@@ -38,6 +38,10 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="debitoreIdentificativo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,7 +57,11 @@ import java.io.Serializable;
 @XmlType(name = "id-versamento", 
   propOrder = {
   	"codVersamentoEnte",
-  	"idApplicazione"
+  	"idApplicazione",
+  	"debitoreIdentificativo",
+  	"debitoreAnagrafica",
+  	"codVersamentoLotto",
+  	"codAnnoTributario"
   }
 )
 
@@ -93,6 +101,38 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
     this.idApplicazione = idApplicazione;
   }
 
+  public java.lang.String getDebitoreIdentificativo() {
+    return this.debitoreIdentificativo;
+  }
+
+  public void setDebitoreIdentificativo(java.lang.String debitoreIdentificativo) {
+    this.debitoreIdentificativo = debitoreIdentificativo;
+  }
+
+  public java.lang.String getDebitoreAnagrafica() {
+    return this.debitoreAnagrafica;
+  }
+
+  public void setDebitoreAnagrafica(java.lang.String debitoreAnagrafica) {
+    this.debitoreAnagrafica = debitoreAnagrafica;
+  }
+
+  public java.lang.String getCodVersamentoLotto() {
+    return this.codVersamentoLotto;
+  }
+
+  public void setCodVersamentoLotto(java.lang.String codVersamentoLotto) {
+    this.codVersamentoLotto = codVersamentoLotto;
+  }
+
+  public java.lang.String getCodAnnoTributario() {
+    return this.codAnnoTributario;
+  }
+
+  public void setCodAnnoTributario(java.lang.String codAnnoTributario) {
+    this.codAnnoTributario = codAnnoTributario;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -106,5 +146,21 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
 
   @XmlElement(name="idApplicazione",required=true,nillable=false)
   protected IdApplicazione idApplicazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreIdentificativo",required=false,nillable=false)
+  protected java.lang.String debitoreIdentificativo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreAnagrafica",required=false,nillable=false)
+  protected java.lang.String debitoreAnagrafica;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codVersamentoLotto",required=false,nillable=false)
+  protected java.lang.String codVersamentoLotto;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codAnnoTributario",required=false,nillable=false)
+  protected java.lang.String codAnnoTributario;
 
 }

@@ -89,6 +89,14 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "debitore_provincia", Versamento.model().DEBITORE_PROVINCIA.getFieldType()));
 				setParameter(object, "setDebitoreNazione", Versamento.model().DEBITORE_NAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "debitore_nazione", Versamento.model().DEBITORE_NAZIONE.getFieldType()));
+				setParameter(object, "setCodLotto", Versamento.model().COD_LOTTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_lotto", Versamento.model().COD_LOTTO.getFieldType()));
+				setParameter(object, "setCodVersamentoLotto", Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_versamento_lotto", Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType()));
+				setParameter(object, "setCodAnnoTributario", Versamento.model().COD_ANNO_TRIBUTARIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_anno_tributario", Versamento.model().COD_ANNO_TRIBUTARIO.getFieldType()));
+				setParameter(object, "setCodBundlekey", Versamento.model().COD_BUNDLEKEY.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_bundlekey", Versamento.model().COD_BUNDLEKEY.getFieldType()));
 				return object;
 			}
 			
@@ -145,6 +153,14 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"debitoreProvincia"));
 				setParameter(object, "setDebitoreNazione", Versamento.model().DEBITORE_NAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"debitoreNazione"));
+				setParameter(object, "setCodLotto", Versamento.model().COD_LOTTO.getFieldType(),
+					this.getObjectFromMap(map,"codLotto"));
+				setParameter(object, "setCodVersamentoLotto", Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType(),
+					this.getObjectFromMap(map,"codVersamentoLotto"));
+				setParameter(object, "setCodAnnoTributario", Versamento.model().COD_ANNO_TRIBUTARIO.getFieldType(),
+					this.getObjectFromMap(map,"codAnnoTributario"));
+				setParameter(object, "setCodBundlekey", Versamento.model().COD_BUNDLEKEY.getFieldType(),
+					this.getObjectFromMap(map,"codBundlekey"));
 				return object;
 			}
 			
