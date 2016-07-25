@@ -37,12 +37,11 @@ import java.io.Serializable;
  * &lt;complexType name="Tributo">
  * 		&lt;sequence>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codTributo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="descrizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoTributo" type="{http://www.govpay.it/orm}TipoTributo" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -58,12 +57,11 @@ import java.io.Serializable;
 @XmlType(name = "Tributo", 
   propOrder = {
   	"idDominio",
-  	"codTributo",
   	"abilitato",
-  	"descrizione",
   	"idIbanAccredito",
   	"tipoContabilita",
-  	"codiceContabilita"
+  	"codiceContabilita",
+  	"tipoTributo"
   }
 )
 
@@ -95,14 +93,6 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.idDominio = idDominio;
   }
 
-  public java.lang.String getCodTributo() {
-    return this.codTributo;
-  }
-
-  public void setCodTributo(java.lang.String codTributo) {
-    this.codTributo = codTributo;
-  }
-
   public boolean isAbilitato() {
     return this.abilitato;
   }
@@ -113,14 +103,6 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   public void setAbilitato(boolean abilitato) {
     this.abilitato = abilitato;
-  }
-
-  public java.lang.String getDescrizione() {
-    return this.descrizione;
-  }
-
-  public void setDescrizione(java.lang.String descrizione) {
-    this.descrizione = descrizione;
   }
 
   public IdIbanAccredito getIdIbanAccredito() {
@@ -147,6 +129,14 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.codiceContabilita = codiceContabilita;
   }
 
+  public TipoTributo getTipoTributo() {
+    return this.tipoTributo;
+  }
+
+  public void setTipoTributo(TipoTributo tipoTributo) {
+    this.tipoTributo = tipoTributo;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -169,17 +159,9 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="idDominio",required=true,nillable=false)
   protected IdDominio idDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codTributo",required=true,nillable=false)
-  protected java.lang.String codTributo;
-
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="descrizione",required=false,nillable=false)
-  protected java.lang.String descrizione;
 
   @XmlElement(name="idIbanAccredito",required=false,nillable=false)
   protected IdIbanAccredito idIbanAccredito;
@@ -191,5 +173,8 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codiceContabilita",required=true,nillable=false)
   protected java.lang.String codiceContabilita;
+
+  @XmlElement(name="tipoTributo",required=true,nillable=false)
+  protected TipoTributo tipoTributo;
 
 }

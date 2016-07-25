@@ -24,13 +24,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import it.govpay.bd.model.Acl;
+import it.govpay.bd.model.Acl.Servizio;
+import it.govpay.bd.model.Acl.Tipo;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 
 /***
  * 
@@ -214,5 +219,38 @@ public class Utils {
 			return true;
 		
 		return lista.isEmpty();
+	}
+	
+	public static Voce<Long> getVoceTutti(){
+		return getVoce(getInstance().getMessageFromResourceBundle("commons.label.tutti"), -1L);
+	}
+	
+	public static <T> Voce<T> getVoce(String label, T valore) {
+		Voce<T> v = new Voce<T>(label, valore);
+		return v;
+	}
+	
+	public static List<Long> getIdsFromAcls(List<Acl> listaAcl, Tipo tipo, Servizio servizio){
+		List<Long> lst = new ArrayList<Long>();
+		for (Acl acl : listaAcl) {
+			if(acl.getServizio().equals(servizio) && acl.getTipo().equals(tipo)){
+				if(tipo.equals(Tipo.DOMINIO)){
+					if(acl.getIdDominio() == null){
+						lst.clear();
+						lst.add(-1L);
+						break;
+					} else 
+						lst.add(acl.getIdDominio());
+				} else {
+					if(acl.getIdTributo() == null){
+						lst.clear();
+						lst.add(-1L);
+						break;
+					} else 
+						lst.add(acl.getIdTributo());
+				}
+			}
+		}
+		return lst;
 	}
 }

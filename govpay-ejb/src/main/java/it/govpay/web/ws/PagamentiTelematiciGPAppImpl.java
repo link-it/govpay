@@ -86,17 +86,18 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	private static Logger log = LogManager.getLogger();
 
 	@Override
-	public GpGeneraIuvResponse gpGeneraIuv(GpGeneraIuv gpGeneraIuv) {
-		log.info("Richiesta operazione gpGeneraIuv di " + gpGeneraIuv.getIuvRichiesto().size() + " Iuv per (" + gpGeneraIuv.getCodApplicazione() + ")");
+	public GpGeneraIuvResponse gpGeneraIuv(GpGeneraIuv bodyrichiesta) {
+		log.info("Richiesta operazione gpGeneraIuv di " + bodyrichiesta.getIuvRichiesto().size() + " Iuv per (" + bodyrichiesta.getCodApplicazione() + ")");
 		GpGeneraIuvResponse response = new GpGeneraIuvResponse();
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Iuv iuvBusiness = new it.govpay.core.business.Iuv(bd);
-			response = iuvBusiness.generaIUV(applicazioneAutenticata, gpGeneraIuv);
+			response = iuvBusiness.generaIUV(applicazioneAutenticata, bodyrichiesta);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gpapp.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
@@ -127,9 +128,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Iuv iuvBusiness = new it.govpay.core.business.Iuv(bd);
 			response = iuvBusiness.caricaIUV(applicazioneAutenticata, bodyrichiesta);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
@@ -162,11 +164,11 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getVersamento().getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-
 			it.govpay.servizi.commons.Versamento versamento = bodyrichiesta.getVersamento();
 			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamento, bd);
 			boolean aggiornaSeEsiste = true;
@@ -210,9 +212,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			versamentoBusiness.annullaVersamento(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
@@ -245,9 +248,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			versamentoBusiness.notificaPagamento(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
@@ -280,18 +284,19 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			Versamento versamento = versamentoBusiness.chiediVersamento(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
+			Versamento versamento = versamentoBusiness.chiediVersamento(bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
 			response.setCodApplicazione(versamento.getApplicazione(bd).getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			response.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
 			List<Rpt> rpts = versamento.getRpt(bd);
 			for(Rpt rpt : rpts) {
-				response.getTransazione().add(Gp21Utils.toTransazione(rpt, bd));
+				response.getTransazione().add(Gp21Utils.toTransazione(applicazioneAutenticata.getVersione(), rpt, bd));
 			}
 			ctx.log("gpapp.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
@@ -322,11 +327,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Rendicontazioni rendicontazioneBusiness = new it.govpay.core.business.Rendicontazioni(bd);
-			List<FrApplicazione> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
+			List<FrApplicazione> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazioneAutenticata);
 			response.setCodApplicazione(applicazioneAutenticata.getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			
@@ -372,11 +378,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Applicazione applicazioneAutenticata = getApplicazioneAutenticata(bd);
 			ctx.log("gpapp.ricevutaRichiesta");
+			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Rendicontazioni rendicontazioneBusiness = new it.govpay.core.business.Rendicontazioni(bd);
-			FrApplicazione frApplicazione = rendicontazioneBusiness.chiediRendicontazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getAnnoRiferimento(), bodyrichiesta.getCodFlusso());
+			FrApplicazione frApplicazione = rendicontazioneBusiness.chiediRendicontazione(applicazioneAutenticata, bodyrichiesta.getAnnoRiferimento(), bodyrichiesta.getCodFlusso());
 			response.setCodApplicazione(applicazioneAutenticata.getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			FlussoRendicontazione fr = new FlussoRendicontazione();
@@ -392,13 +399,13 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			if(frApplicazione.getPagamenti(bd) != null) {
 				for(Pagamento pagamento : frApplicazione.getPagamenti(bd)) {
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento));
+					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd));
 				}
 			}
 			
 			if(frApplicazione.getRendicontazioniSenzaRpt(bd) != null) {
 				for(RendicontazioneSenzaRpt rendicontazione : frApplicazione.getRendicontazioniSenzaRpt(bd)) {
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rendicontazione, bd));
+					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rendicontazione, applicazioneAutenticata.getVersione(), bd));
 				}
 			}
 			
@@ -445,6 +452,14 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			GpThreadLocal.get().getTransaction().getClient().setName(app.getCodApplicazione());
 		}
 		return app;
+	}
+	
+	private void verificaApplicazione(Applicazione applicazioneAutenticata, String codApplicazione) throws GovPayException {
+		if(!applicazioneAutenticata.getCodApplicazione().equals(codApplicazione))
+			throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
+		
+		if(!applicazioneAutenticata.isAbilitato())
+			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
 	}
 
 }

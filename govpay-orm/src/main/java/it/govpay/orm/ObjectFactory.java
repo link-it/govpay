@@ -61,13 +61,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link OperatorePortale }
-     */
-    public OperatorePortale createOperatorePortale() {
-        return new OperatorePortale();
-    }
-
-    /**
      * Create an instance of {@link IdDominio }
      */
     public IdDominio createIdDominio() {
@@ -131,13 +124,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link OperatoreApplicazione }
-     */
-    public OperatoreApplicazione createOperatoreApplicazione() {
-        return new OperatoreApplicazione();
-    }
-
-    /**
      * Create an instance of {@link Dominio }
      */
     public Dominio createDominio() {
@@ -149,13 +135,6 @@ public class ObjectFactory {
      */
     public IdOperatore createIdOperatore() {
         return new IdOperatore();
-    }
-
-    /**
-     * Create an instance of {@link OperatoreUo }
-     */
-    public OperatoreUo createOperatoreUo() {
-        return new OperatoreUo();
     }
 
     /**
@@ -173,10 +152,24 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RendicontazionePagamentoSenzaRPT }
+     */
+    public RendicontazionePagamentoSenzaRPT createRendicontazionePagamentoSenzaRPT() {
+        return new RendicontazionePagamentoSenzaRPT();
+    }
+
+    /**
      * Create an instance of {@link IdFrApplicazione }
      */
     public IdFrApplicazione createIdFrApplicazione() {
         return new IdFrApplicazione();
+    }
+
+    /**
+     * Create an instance of {@link IdTipoTributo }
+     */
+    public IdTipoTributo createIdTipoTributo() {
+        return new IdTipoTributo();
     }
 
     /**
@@ -292,6 +285,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RendicontazionePagamento }
+     */
+    public RendicontazionePagamento createRendicontazionePagamento() {
+        return new RendicontazionePagamento();
+    }
+
+    /**
      * Create an instance of {@link IdIbanAccredito }
      */
     public IdIbanAccredito createIdIbanAccredito() {
@@ -341,6 +341,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link FrFiltroApp }
+     */
+    public FrFiltroApp createFrFiltroApp() {
+        return new FrFiltroApp();
+    }
+
+    /**
      * Create an instance of {@link Tributo }
      */
     public Tributo createTributo() {
@@ -362,10 +369,10 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link PortaleApplicazione }
+     * Create an instance of {@link ACL }
      */
-    public PortaleApplicazione createPortaleApplicazione() {
-        return new PortaleApplicazione();
+    public ACL createACL() {
+        return new ACL();
     }
 
     /**
@@ -376,17 +383,17 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ApplicazioneDominio }
-     */
-    public ApplicazioneDominio createApplicazioneDominio() {
-        return new ApplicazioneDominio();
-    }
-
-    /**
      * Create an instance of {@link Evento }
      */
     public Evento createEvento() {
         return new Evento();
+    }
+
+    /**
+     * Create an instance of {@link IdAcl }
+     */
+    public IdAcl createIdAcl() {
+        return new IdAcl();
     }
 
     /**
@@ -432,13 +439,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ApplicazioneTributo }
-     */
-    public ApplicazioneTributo createApplicazioneTributo() {
-        return new ApplicazioneTributo();
-    }
-
-    /**
      * Create an instance of {@link Connettore }
      */
     public Connettore createConnettore() {
@@ -457,6 +457,13 @@ public class ObjectFactory {
      */
     public IdIuv createIdIuv() {
         return new IdIuv();
+    }
+
+    /**
+     * Create an instance of {@link TipoTributo }
+     */
+    public TipoTributo createTipoTributo() {
+        return new TipoTributo();
     }
 
     /**

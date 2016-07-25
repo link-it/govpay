@@ -61,21 +61,8 @@ public class Iuv extends BasicBD {
 	 * @throws ServiceException
 	 * @throws GovPayException
 	 */
-	public GpGeneraIuvResponse generaIUV(Applicazione applicazioneAutenticata, GpGeneraIuv gpGeneraIuv) throws GovPayException {
+	public GpGeneraIuvResponse generaIUV(Applicazione applicazione, GpGeneraIuv gpGeneraIuv) throws GovPayException {
 		try {
-			Applicazione applicazione = null;
-			try {
-				applicazione = AnagraficaManager.getApplicazione(this, gpGeneraIuv.getCodApplicazione());
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.APP_000, gpGeneraIuv.getCodApplicazione());
-			}
-			
-			if(!applicazione.isAbilitato())
-				throw new GovPayException(EsitoOperazione.APP_001, gpGeneraIuv.getCodApplicazione());
-			
-			if(!applicazione.getCodApplicazione().equals(applicazioneAutenticata.getCodApplicazione()))
-				throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), gpGeneraIuv.getCodApplicazione());
-			
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(this, gpGeneraIuv.getCodDominio());
@@ -122,21 +109,8 @@ public class Iuv extends BasicBD {
 		}
 	}
 
-	public GpCaricaIuvResponse caricaIUV(Applicazione applicazioneAutenticata, GpCaricaIuv gpCaricaIuv) throws GovPayException {
+	public GpCaricaIuvResponse caricaIUV(Applicazione applicazione, GpCaricaIuv gpCaricaIuv) throws GovPayException {
 		try {
-			Applicazione applicazione = null;
-			try {
-				applicazione = AnagraficaManager.getApplicazione(this, gpCaricaIuv.getCodApplicazione());
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.APP_000, gpCaricaIuv.getCodApplicazione());
-			}
-			
-			if(!applicazione.isAbilitato())
-				throw new GovPayException(EsitoOperazione.APP_001, gpCaricaIuv.getCodApplicazione());
-			
-			if(!applicazione.getCodApplicazione().equals(applicazioneAutenticata.getCodApplicazione()))
-				throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), gpCaricaIuv.getCodApplicazione());
-			
 			Dominio dominio = null;
 			try {
 				dominio = AnagraficaManager.getDominio(this, gpCaricaIuv.getCodDominio());

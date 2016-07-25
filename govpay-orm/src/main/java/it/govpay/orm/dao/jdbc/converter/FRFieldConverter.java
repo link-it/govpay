@@ -131,6 +131,13 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "data_regolamento";
 			}
 		}
+		if(field.equals(FR.model().DATA_ACQUISIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".data_acquisizione";
+			}else{
+				return "data_acquisizione";
+			}
+		}
 		if(field.equals(FR.model().NUMERO_PAGAMENTI)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".numero_pagamenti";
@@ -197,6 +204,9 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().DATA_REGOLAMENTO)){
+			return this.toTable(FR.model(), returnAlias);
+		}
+		if(field.equals(FR.model().DATA_ACQUISIZIONE)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().NUMERO_PAGAMENTI)){

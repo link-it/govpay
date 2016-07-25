@@ -20,26 +20,22 @@
  */
 package it.govpay.bd.anagrafica;
 
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.MultipleResultException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.converter.TributoConverter;
 import it.govpay.orm.IdDominio;
+import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.dao.jdbc.JDBCTributoServiceSearch;
-import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
-
-import java.util.List;
-
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.IPaginatedExpression;
-import org.openspcoop2.utils.UtilsException;
 
 public class TributiBD extends BasicBD {
 
@@ -62,7 +58,6 @@ public class TributiBD extends BasicBD {
 		}
 		
 		long id = idTributo.longValue();
-
 		try {
 			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id));
 		} catch (NotImplementedException e) {
@@ -70,7 +65,7 @@ public class TributiBD extends BasicBD {
 		}
 	}
 	
-	/**
+  	/**
 	 * Recupera il tributo identificato dalla chiave logica
 	 * 
 	 * @param idApplicazione
@@ -88,33 +83,13 @@ public class TributiBD extends BasicBD {
 		try {
 			IdTributo idTributo = new IdTributo();
 			IdDominio idDominioOrm = new IdDominio();
+			IdTipoTributo idTipoTributo = new IdTipoTributo();
 			idDominioOrm.setId(idDominio);
 			idTributo.setIdDominio(idDominioOrm);
-			idTributo.setCodTributo(codTributo);
+			idTipoTributo.setCodTributo(codTributo);
+			idTributo.setIdTipoTributo(idTipoTributo); 
 			return TributoConverter.toDTO(this.getTributoService().get(idTributo));
 		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	/**
-	 * recupera i tributi afferenti ad una applicazione
-	 * @param idApplicazione
-	 * @return
-	 * @throws NotFoundException
-	 * @throws ServiceException
-	 */
-	public List<Tributo> getTributi(long idApplicazione) throws NotFoundException, ServiceException {
-		try {
-			IPaginatedExpression exp = this.getTributoService().newPaginatedExpression();
-			ApplicazioneFieldConverter fieldConverter = new ApplicazioneFieldConverter(this.getJdbcProperties().getDatabase());
-			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Applicazione.model().APPLICAZIONE_TRIBUTO)), idApplicazione);
-			return TributoConverter.toDTOList(this.getTributoService().findAll(exp));
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}

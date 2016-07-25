@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -41,8 +40,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.FrApplicazione;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.web.rs.BaseRsService;
@@ -75,9 +72,9 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
 			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			//Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			//ProfiloOperatore profilo = operatore.getProfilo();
+			//boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 
 			Integer offset = this.getOffset(uriInfo);
@@ -101,11 +98,11 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 			if(StringUtils.isNotEmpty(codFlusso))
 				filter.setCodFlusso(codFlusso); 
 
-			boolean eseguiRicerca = isAdmin;
-			if(!isAdmin){
-				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni());
-			}
+			boolean eseguiRicerca = true;// isAdmin;
+//			if(!isAdmin){
+//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
+//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni());
+//			}
 
 			long count = eseguiRicerca ? frBD.countFrApplicazione(filter) : 0;
 

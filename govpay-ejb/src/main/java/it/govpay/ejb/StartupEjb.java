@@ -148,7 +148,7 @@ public class StartupEjb {
 		
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			new Psp(bd).aggiornaRegistro();
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito",e);
@@ -174,6 +174,11 @@ public class StartupEjb {
 		log.info("Deregistrazione risorse JMX");
 		try {
 			JmxOperazioni.unregister();
+		} catch (Exception e) {
+			log.warn("Errore nella de-registrazione JMX: " + e);
+		}
+		try {
+			ConnectionManager.shutdown();
 		} catch (Exception e) {
 			log.warn("Errore nella de-registrazione JMX: " + e);
 		}

@@ -61,5 +61,9 @@ public class Sezione {
 		this.voci.add(new VoceRiferimento<String>(etichetta, valore, avanzata, reference));
 	}
 	
+	public void addVoce(Voce<String> voce ) {
+		this.voci.add(voce);
+	}
+	
 }
 

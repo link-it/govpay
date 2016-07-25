@@ -20,22 +20,18 @@
  */
 package it.govpay.bd.model.converter;
 
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
-import it.govpay.orm.ApplicazioneDominio;
-import it.govpay.orm.ApplicazioneTributo;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdTributo;
-
-import java.util.ArrayList;
+import it.govpay.bd.model.Versionabile.Versione;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class ApplicazioneConverter {
 
-	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica) throws ServiceException {
+	public static Applicazione toDTO(it.govpay.orm.Applicazione vo, Connettore connettoreNotifica, Connettore connettoreVerifica, List<Acl> acls) throws ServiceException {
 		Applicazione dto = new Applicazione();
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setCodApplicazione(vo.getCodApplicazione());
@@ -45,22 +41,8 @@ public class ApplicazioneConverter {
 		dto.setId(vo.getId());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setTrusted(vo.getTrusted());
-		
-		List<Long> idTributi = new ArrayList<Long>();
-		if(vo.getApplicazioneTributoList() != null && !vo.getApplicazioneTributoList().isEmpty()) {
-			for(ApplicazioneTributo tributo: vo.getApplicazioneTributoList()) {
-				idTributi.add(tributo.getIdTributo().getId());
-			}
-		}
-		dto.setIdTributi(idTributi);
-		
-		List<Long> idDomini = new ArrayList<Long>();
-		if(vo.getApplicazioneDominioList() != null && !vo.getApplicazioneDominioList().isEmpty()) {
-			for(ApplicazioneDominio dominio: vo.getApplicazioneDominioList()) {
-				idDomini.add(dominio.getIdDominio().getId());
-			}
-		}
-		dto.setIdDomini(idDomini);
+		dto.setAcls(acls);
+		dto.setVersione(Versione.toEnum(vo.getVersione()));
 		return dto;
 	}
 
@@ -83,30 +65,7 @@ public class ApplicazioneConverter {
 		vo.setFirmaRicevuta(dto.getFirmaRichiesta().getCodifica());
 		vo.setPrincipal(dto.getPrincipal());
 		vo.setTrusted(dto.isTrusted());
-		
-		if(dto.getIdTributi() != null && !dto.getIdTributi().isEmpty()) {
-			List<ApplicazioneTributo> idTributi = new ArrayList<ApplicazioneTributo>();
-			for(Long tributo: dto.getIdTributi()) {
-				ApplicazioneTributo applicazioneTributo = new ApplicazioneTributo();
-				IdTributo idTributo = new IdTributo();
-				idTributo.setId(tributo);
-				applicazioneTributo.setIdTributo(idTributo);
-				idTributi.add(applicazioneTributo);
-			}
-			vo.setApplicazioneTributoList(idTributi);
-		}
-		
-		if(dto.getIdDomini() != null && !dto.getIdDomini().isEmpty()) {
-			List<ApplicazioneDominio> idDomini = new ArrayList<ApplicazioneDominio>();
-			for(Long dominio: dto.getIdDomini()) {
-				ApplicazioneDominio applicazioneDominio = new ApplicazioneDominio();
-				IdDominio idDominio = new IdDominio();
-				idDominio.setId(dominio);
-				applicazioneDominio.setIdDominio(idDominio);
-				idDomini.add(applicazioneDominio);
-			}
-			vo.setApplicazioneDominioList(idDomini);
-		}
+		vo.setVersione(dto.getVersione().getLabel()); 
 		
 		return vo;
 	}

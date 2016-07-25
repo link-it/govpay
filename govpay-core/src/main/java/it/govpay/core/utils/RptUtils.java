@@ -321,14 +321,20 @@ public class RptUtils {
 			return risposta;
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
-			if(bd != null) 
-				bd.setupConnection();
-			else
-				bd = BasicBD.newInstance();
-
-			GiornaleEventi giornale = new GiornaleEventi(bd);
-			buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaRPT, bd);
-			giornale.registraEvento(evento);
+			boolean newCon = bd == null;
+			if(!newCon) 
+				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+			else {
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			}
+			
+			try {
+				GiornaleEventi giornale = new GiornaleEventi(bd);
+				buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaRPT, bd);
+				giornale.registraEvento(evento);
+			} finally {
+				if(newCon) bd.closeConnection();
+			}
 		}
 	}
 
@@ -363,7 +369,7 @@ public class RptUtils {
 				risposta = new it.govpay.core.business.model.Risposta(client.nodoInviaCarrelloRPT(intermediario, stazione, inviaCarrelloRpt, rpts.get(0).getCodCarrello())); 
 				return risposta;
 			} finally {
-				bd.setupConnection();
+				bd.setupConnection(GpThreadLocal.get().getTransactionId());
 
 				GiornaleEventi giornale = new GiornaleEventi(bd);
 				for(Rpt rpt : rpts) {
@@ -446,7 +452,7 @@ public class RptUtils {
 	
 					risposta = client.nodoChiediStatoRpt(richiesta, rpt.getStazione(bd).getIntermediario(bd).getDenominazione());
 				} finally {
-					bd.setupConnection();
+					bd.setupConnection(GpThreadLocal.get().getTransactionId());
 					GpThreadLocal.get().closeTransaction(transactionId);
 				}
 				if(risposta.getFault() != null) {
@@ -488,7 +494,7 @@ public class RptUtils {
 							nodoChiediCopiaRT.setCodiceContestoPagamento(rpt.getCcp());
 							nodoChiediCopiaRTRisposta = client.nodoChiediCopiaRT(nodoChiediCopiaRT, rpt.getIntermediario(bd).getDenominazione());
 						} finally {
-							bd.setupConnection();
+							bd.setupConnection(GpThreadLocal.get().getTransactionId());
 							GpThreadLocal.get().closeTransaction(transactionId);
 						}
 	

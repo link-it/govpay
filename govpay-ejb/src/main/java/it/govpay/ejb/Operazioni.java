@@ -20,26 +20,15 @@
  */
 package it.govpay.ejb;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.core.business.Pagamento;
-import it.govpay.core.business.Psp;
-import it.govpay.core.business.Rendicontazioni;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.thread.InviaNotificaThread;
-import it.govpay.core.utils.thread.ThreadExecutorManager;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Resource;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
-import javax.ejb.Timeout;
 import javax.ejb.Timer;
+import javax.ejb.TimerService;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -47,10 +36,27 @@ import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.business.EstrattoConto;
+import it.govpay.core.business.Pagamento;
+import it.govpay.core.business.Psp;
+import it.govpay.core.business.Rendicontazioni;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
+
 @Singleton
 public class Operazioni{
 
 	private static Logger log = LogManager.getLogger();
+
+	@Resource
+	TimerService timerservice;
 
 	@Schedule(hour="4,8,16,20", persistent=false)
 	public static String acquisizioneRendicontazioni(){
@@ -68,7 +74,7 @@ public class Operazioni{
 			opt.setName("AcquisizioneRendicontazioni");
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			String response = new Rendicontazioni(bd).downloadRendicontazioni();
 			return response;
 		} catch (Exception e) {
@@ -96,7 +102,7 @@ public class Operazioni{
 			opt.setName("AggiornamentoRegistroPsp");
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			return new Psp(bd).aggiornaRegistro();
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
@@ -122,7 +128,7 @@ public class Operazioni{
 			opt.setName("RecuperoRptPendenti");
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			return new Pagamento(bd).verificaTransazioniPendenti();
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
@@ -149,7 +155,7 @@ public class Operazioni{
 			opt.setName("SpedizioneNotifiche");
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			log.trace("Spedizione notifiche non consegnate");
 
 			NotificheBD notificheBD = new NotificheBD(bd);
@@ -204,24 +210,39 @@ public class Operazioni{
 			return false;
 		} 
 	}
-
-	@Timeout 
-	private void generateReport(Timer timer) {
-		log.warn("Timeout del batch: " + timer.getInfo()); 
+	
+	@Schedule(hour="0,12", persistent=false)
+	public void generaEstrattoConto(Timer timer) {
+		estrattoConto();
 	}
 
-	//	@Resource
-	//	private static TimerService timerService;
-	//	
-	//	public static String getTimerInfo(){
-	//		String s = "";
-	//		for(Timer t : timerService.getTimers()){
-	//			s += t.getClass();
-	//			s += t.getNextTimeout();
-	//			s += t.getInfo();
-	//			s += "\n";
-	//		}
-	//		return Response.ok(s).build();
-	//	}
-
+	public static String estrattoConto(){
+		
+		if(!GovpayConfig.getInstance().isBatchEstrattoConto())
+			return "Servizio estratto conto non configurato";
+		
+		BasicBD bd = null;
+		GpContext ctx = null;
+		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "EstrattoConto");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName("Batch");
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
+			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("EstrattoConto");
+			ctx.getTransaction().setOperation(opt);
+			GpThreadLocal.set(ctx);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			return new EstrattoConto(bd).estrattoConto();
+		} catch (Exception e) {
+			log.error("Estratto Conto fallito", e);
+			return "Estratto Conto#" + e.getMessage();
+		} finally {
+			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
+		}
+	}
 }

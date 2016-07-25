@@ -55,6 +55,10 @@ import java.io.Serializable;
  * 			&lt;element name="debitoreLocalita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreProvincia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreNazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codBundlekey" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -87,7 +91,11 @@ import java.io.Serializable;
   	"debitoreCap",
   	"debitoreLocalita",
   	"debitoreProvincia",
-  	"debitoreNazione"
+  	"debitoreNazione",
+  	"codLotto",
+  	"codVersamentoLotto",
+  	"codAnnoTributario",
+  	"codBundlekey"
   }
 )
 
@@ -267,6 +275,38 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.debitoreNazione = debitoreNazione;
   }
 
+  public java.lang.String getCodLotto() {
+    return this.codLotto;
+  }
+
+  public void setCodLotto(java.lang.String codLotto) {
+    this.codLotto = codLotto;
+  }
+
+  public java.lang.String getCodVersamentoLotto() {
+    return this.codVersamentoLotto;
+  }
+
+  public void setCodVersamentoLotto(java.lang.String codVersamentoLotto) {
+    this.codVersamentoLotto = codVersamentoLotto;
+  }
+
+  public java.lang.String getCodAnnoTributario() {
+    return this.codAnnoTributario;
+  }
+
+  public void setCodAnnoTributario(java.lang.String codAnnoTributario) {
+    this.codAnnoTributario = codAnnoTributario;
+  }
+
+  public java.lang.String getCodBundlekey() {
+    return this.codBundlekey;
+  }
+
+  public void setCodBundlekey(java.lang.String codBundlekey) {
+    this.codBundlekey = codBundlekey;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -362,5 +402,21 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="debitoreNazione",required=false,nillable=false)
   protected java.lang.String debitoreNazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codLotto",required=false,nillable=false)
+  protected java.lang.String codLotto;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codVersamentoLotto",required=false,nillable=false)
+  protected java.lang.String codVersamentoLotto;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codAnnoTributario",required=false,nillable=false)
+  protected java.lang.String codAnnoTributario;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codBundlekey",required=false,nillable=false)
+  protected java.lang.String codBundlekey;
 
 }

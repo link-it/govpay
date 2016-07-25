@@ -20,42 +20,26 @@
  */
 package it.govpay.bd.model.converter;
 
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Portale;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.PortaleApplicazione;
+import it.govpay.bd.model.Versionabile.Versione;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class PortaleConverter {
 
-	public static List<Portale> toDTOList(List<it.govpay.orm.Portale> enteLst) {
-		List<Portale> lstDTO = new ArrayList<Portale>();
-		if(enteLst != null && !enteLst.isEmpty()) {
-			for(it.govpay.orm.Portale ente: enteLst){
-				lstDTO.add(toDTO(ente));
-			}
-		}
-		return lstDTO;
-	}
-
-	public static Portale toDTO(it.govpay.orm.Portale vo) {
+	public static Portale toDTO(it.govpay.orm.Portale vo, List<Acl> acls) throws ServiceException {
 		Portale dto = new Portale();
 		dto.setId(vo.getId());
 		dto.setCodPortale(vo.getCodPortale());
 		dto.setDefaultCallbackURL(vo.getDefaultCallbackURL());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setAbilitato(vo.isAbilitato());
-		
-		if(vo.getPortaleApplicazioneList() != null && !vo.getPortaleApplicazioneList().isEmpty()) {
-			
-			List<Long> idEntiLst = new ArrayList<Long>();
-			for(PortaleApplicazione portaleEnte: vo.getPortaleApplicazioneList()) {
-				idEntiLst.add(portaleEnte.getIdApplicazione().getId());
-			}
-			dto.setIdApplicazioni(idEntiLst);
-		}		
-		
+		dto.setTrusted(vo.isTrusted());
+		dto.setAcls(acls);
+		dto.setVersione(Versione.toEnum(vo.getVersione()));
 		return dto;
 	}
 
@@ -66,22 +50,8 @@ public class PortaleConverter {
 		vo.setDefaultCallbackURL(dto.getDefaultCallbackURL());
 		vo.setPrincipal(dto.getPrincipal());
 		vo.setAbilitato(dto.isAbilitato());
-		
-		if(dto.getIdApplicazioni() != null && dto.getIdApplicazioni().size() > 0) {
-			List<PortaleApplicazione> portaleEnteLst = new ArrayList<PortaleApplicazione>();
-			
-			for(Long id: dto.getIdApplicazioni()) {
-				PortaleApplicazione portaleEnte = new PortaleApplicazione();
-				IdApplicazione idEnte = new IdApplicazione();
-				idEnte.setId(id);
-				
-				portaleEnte.setIdApplicazione(idEnte);
-				portaleEnteLst.add(portaleEnte);
-			}
-			
-			vo.setPortaleApplicazioneList(portaleEnteLst);
-		}
-		
+		vo.setTrusted(dto.isTrusted());
+		vo.setVersione(dto.getVersione().getLabel()); 
 		return vo;
 	}
 

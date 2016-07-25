@@ -22,10 +22,13 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Connettore;
+import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
+import it.govpay.orm.ACL;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;
 
@@ -165,6 +168,24 @@ public class ApplicazioniBD extends BasicBD {
 					this.getConnettoreService().create(connettore);
 				}
 			}
+			
+			AclBD aclBD = new AclBD(this);
+			aclBD.deleteAclApplicazione(applicazione.getId());
+			
+			if(applicazione.getAcls() != null && !applicazione.getAcls().isEmpty()) {
+				 
+				for(Acl acl: applicazione.getAcls()) {
+					try{
+						ACL aclVo = AclConverter.toVO(acl, this);
+						IdApplicazione idApplicazione = new IdApplicazione();
+						idApplicazione.setId(applicazione.getId());
+						aclVo.setIdApplicazione(idApplicazione);
+						this.getAclService().create(aclVo);
+					} catch(NotFoundException e) {
+						throw new ServiceException(e);
+					}
+				}
+			}
 
 			AnagraficaManager.removeFromCache(applicazione);
 
@@ -212,6 +233,20 @@ public class ApplicazioniBD extends BasicBD {
 
 				for(it.govpay.orm.Connettore connettore: voConnettoreVerificaLst) {
 					this.getConnettoreService().create(connettore);
+				}
+			}
+			
+			if(applicazione.getAcls() != null && !applicazione.getAcls().isEmpty()) {
+				for(Acl acl: applicazione.getAcls()) {
+					try{
+						ACL aclVo = AclConverter.toVO(acl, this);
+						IdApplicazione idApplicazione = new IdApplicazione();
+						idApplicazione.setId(applicazione.getId());
+						aclVo.setIdApplicazione(idApplicazione);
+						this.getAclService().create(aclVo);
+					} catch(NotFoundException e) {
+						throw new ServiceException(e);
+					}
 				}
 			}
 
@@ -266,9 +301,16 @@ public class ApplicazioniBD extends BasicBD {
 				expVerifica.equals(it.govpay.orm.Connettore.model().COD_CONNETTORE, applicazioneVO.getCodConnettoreVerifica());
 				connettoreVerifica = ConnettoreConverter.toDTO(this.getConnettoreService().findAll(expVerifica));
 			}
-	
-			Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica);
-			return applicazione;
+			
+			AclBD aclBD = new AclBD(this);
+			try{
+				List<Acl> acls = aclBD.getAclApplicazione(applicazioneVO.getId());
+				
+				Applicazione applicazione = ApplicazioneConverter.toDTO(applicazioneVO, connettoreNotifica, connettoreVerifica, acls);
+				return applicazione;
+			} catch(NotFoundException e) {
+				throw new ServiceException(e);
+			}
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {

@@ -45,8 +45,9 @@ public class PortaleModel extends AbstractModel<Portale> {
 		this.COD_PORTALE = new Field("codPortale",java.lang.String.class,"Portale",Portale.class);
 		this.DEFAULT_CALLBACK_URL = new Field("defaultCallbackURL",java.lang.String.class,"Portale",Portale.class);
 		this.PRINCIPAL = new Field("principal",java.lang.String.class,"Portale",Portale.class);
+		this.VERSIONE = new Field("versione",java.lang.String.class,"Portale",Portale.class);
+		this.TRUSTED = new Field("trusted",boolean.class,"Portale",Portale.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Portale",Portale.class);
-		this.PORTALE_APPLICAZIONE = new it.govpay.orm.model.PortaleApplicazioneModel(new Field("PortaleApplicazione",it.govpay.orm.PortaleApplicazione.class,"Portale",Portale.class));
 	
 	}
 	
@@ -57,8 +58,9 @@ public class PortaleModel extends AbstractModel<Portale> {
 		this.COD_PORTALE = new ComplexField(father,"codPortale",java.lang.String.class,"Portale",Portale.class);
 		this.DEFAULT_CALLBACK_URL = new ComplexField(father,"defaultCallbackURL",java.lang.String.class,"Portale",Portale.class);
 		this.PRINCIPAL = new ComplexField(father,"principal",java.lang.String.class,"Portale",Portale.class);
+		this.VERSIONE = new ComplexField(father,"versione",java.lang.String.class,"Portale",Portale.class);
+		this.TRUSTED = new ComplexField(father,"trusted",boolean.class,"Portale",Portale.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Portale",Portale.class);
-		this.PORTALE_APPLICAZIONE = new it.govpay.orm.model.PortaleApplicazioneModel(new ComplexField(father,"PortaleApplicazione",it.govpay.orm.PortaleApplicazione.class,"Portale",Portale.class));
 	
 	}
 	
@@ -70,9 +72,11 @@ public class PortaleModel extends AbstractModel<Portale> {
 	 
 	public IField PRINCIPAL = null;
 	 
-	public IField ABILITATO = null;
+	public IField VERSIONE = null;
 	 
-	public it.govpay.orm.model.PortaleApplicazioneModel PORTALE_APPLICAZIONE = null;
+	public IField TRUSTED = null;
+	 
+	public IField ABILITATO = null;
 	 
 
 	@Override

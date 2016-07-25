@@ -109,11 +109,13 @@ public class GovPayException extends Exception {
 		case PRT_000: return "Portale (" + params[0] + ") inesistente";	
 		case PRT_001: return "Portale (" + params[0] + ") disabilitato";
 		case PRT_002: return "Portale autenticato (" + params[0] + ") diverso dal chiamante (" + params[1] + ")";
-		case PRT_003: return "Portale (" + params[0] + ") non autorizzato a pagare versamenti dell'applicazione (" + params[1] + ")";
+		case PRT_003: return "Portale (" + params[0] + ") non autorizzato a pagare il versamento (" + params[2] + ") dell'applicazione (" + params[1] + ")";
 		case PRT_004: return "Portale non autorizzato ad operare sulla transazione indicata"; 
+		case PRT_005: return "Portale non autorizzato per l'operazione richiesta";
 		case PSP_000: return "Canale (" + params[1] + ") del psp (" + params[0] + ") per pagamenti di tipo (" + params[2] + ") inesistente";
 		case PSP_001: return "Canale (" + params[1] + ") del psp (" + params[0] + ") per pagamenti di tipo (" + params[2] + ") disabilitato";
 		case RND_000: return "Flusso di rendicontazione inesistente";
+		case RND_001: return "Applicazione non abilitata all'acquisizione del flusso indicato.";
 		case STA_000: return "Stazione (" + params[0] + ") inesistente";	
 		case STA_001: return "Stazione (" + params[0] + ") disabilitata";
 		case TRB_000: return "Tributo (" + params[1] + ") inesistente per il dominio (" + params[0] + ")";
@@ -127,7 +129,7 @@ public class GovPayException extends Exception {
 		case VER_005: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") inviato ha un numero di singoli versamenti (" + params[2] + ") diverso da quello originale (" + params[3] + ")";
 		case VER_006: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") inviato ha un singolo versamento con codSingoloVersamentoEnte (" + params[2] + ") non presente nell'originale";
 		case VER_007: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha il singolo versamento con codSingoloVersamentoEnte (" + params[2] + ") inviato ha un tipo tributo (" + params[3] + ") diverso dall'originale (" + params[4] + ")";
-		case VER_008: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") non esiste.";
+		case VER_008: return "Il versamento non esiste.";
 		case VER_009: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' in uno stato che non consente l'annullamento (" + params[2] + ")";
 		case VER_010: return "La verifica del versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha dato esito PAA_PAGAMENTO_SCADUTO";
 		case VER_011: return "La verifica del versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha dato esito PAA_PAGAMENTO_SCONOSCIUTO";

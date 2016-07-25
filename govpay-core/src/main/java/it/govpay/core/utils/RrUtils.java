@@ -251,9 +251,9 @@ public class RrUtils extends NdpValidationUtils {
 		} finally {
 			// Se mi chiama InviaRptThread, BD e' null
 			if(bd != null) 
-				bd.setupConnection();
+				bd.setupConnection(GpThreadLocal.get().getTransactionId());
 			else
-				bd = BasicBD.newInstance();
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			GiornaleEventi giornale = new GiornaleEventi(bd);
 			buildEvento(evento, rpt, risposta, TipoEvento.nodoInviaRichiestaStorno, bd);

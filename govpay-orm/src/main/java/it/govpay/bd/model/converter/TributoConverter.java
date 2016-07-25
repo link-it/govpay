@@ -24,6 +24,7 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Tributo.TipoContabilta;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;
+import it.govpay.orm.TipoTributo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,9 +47,10 @@ public class TributoConverter {
 		Tributo dto = new Tributo();
 		dto.setId(vo.getId());
 		dto.setIdDominio(vo.getIdDominio().getId());
-		dto.setCodTributo(vo.getCodTributo());
+		dto.setCodTributo(vo.getTipoTributo().getCodTributo());
 		dto.setAbilitato(vo.getAbilitato());
-		dto.setDescrizione(vo.getDescrizione());
+		dto.setDescrizione(vo.getTipoTributo().getDescrizione());
+		dto.setIdTipoTributo(vo.getTipoTributo().getId()); 
 		if(vo.getIdIbanAccredito() != null)
 			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
 		dto.setTipoContabilita(TipoContabilta.toEnum(vo.getTipoContabilita()));
@@ -59,11 +61,15 @@ public class TributoConverter {
 	public static it.govpay.orm.Tributo toVO(Tributo dto) {
 		it.govpay.orm.Tributo vo = new it.govpay.orm.Tributo();
 		vo.setId(dto.getId());
-		vo.setCodTributo(dto.getCodTributo());
 		vo.setAbilitato(dto.isAbilitato());
-		vo.setDescrizione(dto.getDescrizione());
 		vo.setTipoContabilita(dto.getTipoContabilita().getCodifica());
 		vo.setCodiceContabilita(dto.getCodContabilita());
+		
+		TipoTributo tipoTributo = new TipoTributo();
+		tipoTributo.setId(dto.getIdTipoTributo());
+		tipoTributo.setCodTributo(dto.getCodTributo());
+		tipoTributo.setDescrizione(dto.getDescrizione());
+		vo.setTipoTributo(tipoTributo);
 
 		IdDominio idDominio = new IdDominio();
 		idDominio.setId(dto.getIdDominio());

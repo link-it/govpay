@@ -98,7 +98,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		super(log, darsService);
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
@@ -175,12 +174,12 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			}
 			
 
-			boolean eseguiRicerca = isAdmin;
+			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
 			if(!isAdmin){
-				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
-				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				filter.setIdUo(operatore.getIdEnti()); 
+//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
+//				filter.setIdUo(operatore.getIdEnti()); 
 			}
 
 			long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
@@ -325,15 +324,15 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			ProfiloOperatore profilo = operatore.getProfilo();
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
-			boolean eseguiRicerca = isAdmin;
+			boolean eseguiRicerca = true; //isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
 			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
 			if(!isAdmin){
-				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				filter.setIdUo(operatore.getIdEnti()); 
+//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
+//				filter.setIdUo(operatore.getIdEnti()); 
 
 				FilterSortWrapper fsw = new FilterSortWrapper();
 				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);

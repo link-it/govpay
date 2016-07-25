@@ -35,7 +35,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Uo;
-import it.govpay.orm.dao.jdbc.converter.OperatoreFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.UoFieldConverter;
 
 public class UnitaOperativaFilter extends AbstractFilter {
@@ -46,7 +45,6 @@ public class UnitaOperativaFilter extends AbstractFilter {
 
 	private String dbType;
 	private Long idDominio;
-	private Long idOperatore; 
 	private List<Long> listaIdUo = null;
 	private String codUo= null;
 	private boolean excludeEC = false;
@@ -64,12 +62,6 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			if(this.idDominio != null){
 				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
 				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), idDominio);
-				addAnd = true;
-			}
-			if(this.idOperatore != null) {
-				if(addAnd) newExpression.and();
-				OperatoreFieldConverter fieldConverter = new OperatoreFieldConverter(dbType);
-				newExpression.equals(new CustomField("id_operatore", Long.class, "id_operatore", fieldConverter.toTable(it.govpay.orm.Operatore.model().OPERATORE_UO)), idOperatore);
 				addAnd = true;
 			}
 			
@@ -110,10 +102,6 @@ public class UnitaOperativaFilter extends AbstractFilter {
 
 	public void setDominioFilter(long idDominio) {
 		this.idDominio = idDominio;
-	}
-
-	public void setOperatoreFilter(long idOperatore) {
-		this.idOperatore = idOperatore;
 	}
 
 	public List<Long> getListaIdUo() {

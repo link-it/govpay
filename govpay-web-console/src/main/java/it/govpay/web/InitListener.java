@@ -65,6 +65,10 @@ public class InitListener implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-
+		try {
+			ConnectionManager.shutdown();
+		} catch (Exception e) {
+			LogManager.getLogger().warn("Errore nella de-registrazione JMX: " + e);
+		}
 	}
 }

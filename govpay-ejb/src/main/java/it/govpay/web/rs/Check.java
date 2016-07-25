@@ -60,7 +60,7 @@ public class Check {
 		try {
 			DominiBD dominiBD = null;
 			try {
-				bd = BasicBD.newInstance();
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 				dominiBD = new DominiBD(bd);
 				dominiBD.count(dominiBD.newFilter());
 			} catch(Exception e) {
@@ -141,7 +141,7 @@ public class Check {
 			ThreadContext.put("op", ctx.getTransactionId());
 			GpThreadLocal.set(ctx);
 			
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio d = null;
 			

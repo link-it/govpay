@@ -43,7 +43,7 @@ public class IdTributoModel extends AbstractModel<IdTributo> {
 		super();
 	
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"id-tributo",IdTributo.class));
-		this.COD_TRIBUTO = new Field("codTributo",java.lang.String.class,"id-tributo",IdTributo.class);
+		this.ID_TIPO_TRIBUTO = new it.govpay.orm.model.IdTipoTributoModel(new Field("idTipoTributo",it.govpay.orm.IdTipoTributo.class,"id-tributo",IdTributo.class));
 	
 	}
 	
@@ -52,7 +52,7 @@ public class IdTributoModel extends AbstractModel<IdTributo> {
 		super(father);
 	
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"id-tributo",IdTributo.class));
-		this.COD_TRIBUTO = new ComplexField(father,"codTributo",java.lang.String.class,"id-tributo",IdTributo.class);
+		this.ID_TIPO_TRIBUTO = new it.govpay.orm.model.IdTipoTributoModel(new ComplexField(father,"idTipoTributo",it.govpay.orm.IdTipoTributo.class,"id-tributo",IdTributo.class));
 	
 	}
 	
@@ -60,7 +60,7 @@ public class IdTributoModel extends AbstractModel<IdTributo> {
 
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
-	public IField COD_TRIBUTO = null;
+	public it.govpay.orm.model.IdTipoTributoModel ID_TIPO_TRIBUTO = null;
 	 
 
 	@Override

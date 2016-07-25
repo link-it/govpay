@@ -21,6 +21,7 @@
 package it.govpay.bd.pagamento;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -44,10 +45,12 @@ import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
 import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.orm.FR;
+import it.govpay.orm.FrFiltroApp;
 import it.govpay.orm.IdFr;
 import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
 import it.govpay.orm.dao.jdbc.JDBCFrApplicazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.FrApplicazioneFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.FrFiltroAppFieldConverter;
 
 public class FrBD extends BasicBD {
 
@@ -153,6 +156,36 @@ public class FrBD extends BasicBD {
 			}
 			return frLst;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public List<Fr> findAll(Long idDominio, Long idApplicazione, Date da, Date a) throws ServiceException {
+		try {
+			List<Fr> frLst = new ArrayList<Fr>();
+			
+			FrFiltroAppFieldConverter conv = new FrFiltroAppFieldConverter(this.getJdbcProperties().getDatabase()); 
+			IPaginatedExpression exp = this.getFrFiltroAppService().newPaginatedExpression();
+			
+			if(da != null)
+				exp.greaterEquals(FrFiltroApp.model().FR.DATA_ACQUISIZIONE, da);
+			if(a != null)
+				exp.lessEquals(FrFiltroApp.model().FR.DATA_ACQUISIZIONE, a);
+			if(idDominio != null)
+				exp.equals(new CustomField("id_dominio", Long.class, "id_dominio", conv.toTable(FrFiltroApp.model().FR)), idDominio);
+			if(idApplicazione != null)
+				exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", conv.toTable(FrFiltroApp.model().FR_APPLICAZIONE)), idApplicazione);
+			
+			List<it.govpay.orm.FrFiltroApp> frVOLst = this.getFrFiltroAppService().findAll(exp);
+			for(it.govpay.orm.FrFiltroApp frVO: frVOLst) {
+				frLst.add(FrConverter.toDTO(frVO.getFr()));
+			}
+			return frLst;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}

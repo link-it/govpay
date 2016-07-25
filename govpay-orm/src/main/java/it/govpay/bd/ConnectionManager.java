@@ -21,12 +21,13 @@
 package it.govpay.bd;
 
 import java.sql.Connection;
+import java.util.Properties;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
 import javax.naming.NameNotFoundException;
-import javax.sql.DataSource;
 
+import org.openspcoop2.utils.datasource.DataSource;
+import org.openspcoop2.utils.datasource.DataSourceFactory;
+import org.openspcoop2.utils.datasource.DataSourceParams;
 import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -50,21 +51,35 @@ public class ConnectionManager {
 		ConnectionManager.jdbcProperties.setShowSql(GovpayConfig.getInstance().isDatabaseShowSql());
 		ConnectionManager.jdbcProperties.setAutomaticTransactionManagement(false);
 		
-		Context initialContext = new InitialContext();
+		DataSourceParams dsParams = new DataSourceParams();
+		dsParams.setBindJmx(true);
+		dsParams.setWrapOriginalMethods(true); // per poter usare anche getConnection e getConnection(String,String)
+		dsParams.setDatabaseType(ConnectionManager.jdbcProperties.getDatabase());
+		
+		
+		dsParams.setApplicativeId(GovpayConfig.getInstance().getDataSourceAppName());
+		dsParams.setJmxDomain("it.govpay.core.connection");
+		dsParams.setJmxName(GovpayConfig.getInstance().getDataSourceAppName());
+		
 		try{
-			ConnectionManager.ds = (DataSource)initialContext.lookup(GovpayConfig.getInstance().getDataSourceJNDIName());
+			ConnectionManager.ds = DataSourceFactory.newInstance(GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);
 		} catch(NameNotFoundException e) {
-			ConnectionManager.ds = (DataSource)initialContext.lookup("java:/"+GovpayConfig.getInstance().getDataSourceJNDIName());
+			ConnectionManager.ds = DataSourceFactory.newInstance("java:/"+GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);
 		}
-
 		ConnectionManager.log.info("Init ConnectionManager terminata");
 		initialized = true;
 	}
 	
-	public static Connection getConnection() throws ServiceException {
+	public static void shutdown() throws Exception {
+		if(!initialized) return;
+		DataSourceFactory.closeResources();
+		initialized = false;
+	}
+	
+	public static Connection getConnection(String idTransaction, String idModulo) throws ServiceException {
 		try {
 			initialize();
-			return ConnectionManager.ds.getConnection();
+			return ConnectionManager.ds.getConnection(idTransaction, idModulo);
 		} catch (Exception e) {
 			throw new ServiceException(e);
 		}

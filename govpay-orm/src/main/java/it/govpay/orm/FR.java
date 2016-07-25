@@ -45,6 +45,7 @@ import java.io.Serializable;
  * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataRegolamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="numeroPagamenti" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -72,6 +73,7 @@ import java.io.Serializable;
   	"annoRiferimento",
   	"dataOraFlusso",
   	"dataRegolamento",
+  	"dataAcquisizione",
   	"numeroPagamenti",
   	"importoTotalePagamenti",
   	"codBicRiversamento",
@@ -171,6 +173,14 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.dataRegolamento = dataRegolamento;
   }
 
+  public java.util.Date getDataAcquisizione() {
+    return this.dataAcquisizione;
+  }
+
+  public void setDataAcquisizione(java.util.Date dataAcquisizione) {
+    this.dataAcquisizione = dataAcquisizione;
+  }
+
   public long getNumeroPagamenti() {
     return this.numeroPagamenti;
   }
@@ -257,6 +267,11 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataRegolamento",required=false,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataRegolamento;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="dataAcquisizione",required=true,nillable=false,type=java.lang.String.class)
+  protected java.util.Date dataAcquisizione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="numeroPagamenti",required=false,nillable=false)

@@ -36,7 +36,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.Tributo;
 import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
 
 public class TributoFilter extends AbstractFilter {
@@ -44,8 +43,8 @@ public class TributoFilter extends AbstractFilter {
 	private String codDominio = null;
 	private List<Long> listaIdTributi = null;
 	private CustomField cf;
-	private String codTributo = null;
 	private Long idDominio;
+	private String codTributo = null;
 	
 	public enum SortFields { }
 	
@@ -85,15 +84,15 @@ public class TributoFilter extends AbstractFilter {
 				
 				addAnd = true;
 			}
-
-			if(this.codTributo != null){
+			
+			if(this.codTributo != null && StringUtils.isNotEmpty(this.codTributo)){
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.ilike(Tributo.model().COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
+				newExpression.ilike(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO, this.codTributo,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			
+
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -126,20 +125,20 @@ public class TributoFilter extends AbstractFilter {
 		this.listaIdTributi = listaIdTributi;
 	}
 
-	public String getCodTributo() {
-		return codTributo;
-	}
-
-	public void setCodTributo(String codTributo) {
-		this.codTributo = codTributo;
-	}
-
 	public Long getIdDominio() {
 		return idDominio;
 	}
 
 	public void setIdDominio(Long idDominio) {
 		this.idDominio = idDominio;
+	}
+
+	public String getCodTributo() {
+		return codTributo;
+	}
+
+	public void setCodTributo(String codTributo) {
+		this.codTributo = codTributo;
 	}
 
 	

@@ -93,6 +93,7 @@ CREATE TABLE applicazioni
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
+	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
 	trusted BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -182,36 +183,6 @@ CREATE INDEX index_operatori_1 ON operatori (principal);
 
 
 
-CREATE TABLE operatori_uo
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT NOT NULL,
-	id_uo BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_uo_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_uo_2 FOREIGN KEY (id_uo) REFERENCES uo(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_uo PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
-
-
-
-CREATE TABLE operatori_applicazioni
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT NOT NULL,
-	id_applicazione BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_applicazioni_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_applicazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
-
-
-
 CREATE TABLE connettori
 (
 	cod_connettore VARCHAR(255) NOT NULL,
@@ -235,6 +206,8 @@ CREATE TABLE portali
 	cod_portale VARCHAR(35) NOT NULL,
 	default_callback_url VARCHAR(512) NOT NULL,
 	principal VARCHAR(255) NOT NULL,
+	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
+	trusted BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -248,36 +221,6 @@ CREATE TABLE portali
 -- index
 CREATE INDEX index_portali_1 ON portali (cod_portale);
 CREATE INDEX index_portali_2 ON portali (principal);
-
-
-
-CREATE TABLE operatori_portali
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_operatore BIGINT NOT NULL,
-	id_portale BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_portali_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_portali_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_portali PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
-
-
-
-CREATE TABLE portali_applicazioni
-(
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_portale BIGINT NOT NULL,
-	id_applicazione BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_portali_applicazioni_1 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
-	CONSTRAINT fk_portali_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT pk_portali_applicazioni PRIMARY KEY (id)
-)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
-
 
 
 
@@ -306,56 +249,64 @@ CREATE TABLE iban_accredito
 CREATE INDEX index_iban_accredito_1 ON iban_accredito (cod_iban,id_dominio);
 
 
-
-CREATE TABLE tributi
+CREATE TABLE tipi_tributo
 (
-	cod_tributo VARCHAR(35) NOT NULL,
-	abilitato BOOLEAN NOT NULL,
+	cod_tributo VARCHAR(255) NOT NULL,
 	descrizione VARCHAR(255),
-	tipo_contabilita VARCHAR(1) NOT NULL,
-	codice_contabilita VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_dominio BIGINT NOT NULL,
-	id_iban_accredito BIGINT,
 	-- unique constraints
-	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,cod_tributo),
+	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
-	CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
-	CONSTRAINT pk_tributi PRIMARY KEY (id)
+	CONSTRAINT pk_tipi_tributo PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
-CREATE INDEX index_tributi_1 ON tributi (id_dominio,cod_tributo);
+CREATE INDEX index_tipi_tributo_1 ON tipi_tributo (cod_tributo);
 
 
-
-CREATE TABLE applicazioni_tributi
+CREATE TABLE tributi
 (
-	-- fk/pk columns
-	id BIGINT AUTO_INCREMENT,
-	id_applicazione BIGINT,
-	id_tributo BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_applicazioni_tributi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_applicazioni_tributi_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id) ON DELETE CASCADE,
-	CONSTRAINT pk_applicazioni_tributi PRIMARY KEY (id)
+        abilitato BOOLEAN NOT NULL,
+        tipo_contabilita VARCHAR(1) NOT NULL,
+        codice_contabilita VARCHAR(255) NOT NULL,
+        -- fk/pk columns
+        id BIGINT AUTO_INCREMENT,
+        id_dominio BIGINT NOT NULL,
+        id_iban_accredito BIGINT,
+        id_tipo_tributo BIGINT NOT NULL,
+        -- unique constraints
+        CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
+        -- fk/pk keys constraints
+        CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+        CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
+        CONSTRAINT fk_tributi_3 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
+        CONSTRAINT pk_tributi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+-- index
+CREATE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 
 
 
-CREATE TABLE applicazioni_domini
+CREATE TABLE acl
 (
+	cod_tipo VARCHAR(1) NOT NULL,
+	cod_servizio VARCHAR(1) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,
-	id_dominio BIGINT NOT NULL,
+	id_portale BIGINT,
+	id_operatore BIGINT,
+	id_dominio BIGINT,
+	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_applicazioni_domini_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_applicazioni_domini_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
-	CONSTRAINT pk_applicazioni_domini PRIMARY KEY (id)
+	CONSTRAINT fk_acl_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
+	CONSTRAINT pk_acl PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 
@@ -370,11 +321,12 @@ CREATE TABLE versamenti
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
 	aggiornabile BOOLEAN NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_scadenza TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_scadenza TIMESTAMP(3), 
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_ora_ultimo_aggiornamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	causale_versamento VARCHAR(511),
 	debitore_identificativo VARCHAR(35) NOT NULL,
 	debitore_anagrafica VARCHAR(70) NOT NULL,
@@ -384,6 +336,10 @@ CREATE TABLE versamenti
 	debitore_localita VARCHAR(35),
 	debitore_provincia VARCHAR(35),
 	debitore_nazione VARCHAR(2),
+	cod_lotto VARCHAR(35),
+	cod_versamento_lotto VARCHAR(35),
+	cod_anno_tributario VARCHAR(35),
+	cod_bundlekey VARCHAR(256),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_uo BIGINT NOT NULL,
@@ -415,6 +371,7 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR(2),
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
+	note VARCHAR(512),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_versamento BIGINT NOT NULL,
@@ -444,7 +401,7 @@ CREATE TABLE rpt
 	cod_msg_richiesta VARCHAR(35) NOT NULL,
 	-- Data di creazione dell'RPT
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_msg_richiesta TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Stato RPT secondo la codifica AgID
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato LONGTEXT,
@@ -453,13 +410,14 @@ CREATE TABLE rpt
 	psp_redirect_url VARCHAR(512),
 	xml_rpt MEDIUMBLOB NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url LONGTEXT,
 	modello_pagamento VARCHAR(16) NOT NULL,
 	cod_msg_ricevuta VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_ricevuta TIMESTAMP(3) DEFAULT 0,
+	-- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_msg_ricevuta TIMESTAMP(3),
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
 	cod_esito_pagamento INT,
@@ -496,9 +454,10 @@ CREATE TABLE rr
 	ccp VARCHAR(35) NOT NULL,
 	cod_msg_revoca VARCHAR(35) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_revoca TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_msg_revoca TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_msg_esito TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_msg_esito TIMESTAMP(3),
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato VARCHAR(512),
 	importo_totale_richiesto DOUBLE NOT NULL,
@@ -527,13 +486,13 @@ CREATE TABLE notifiche
 (
 	tipo_esito VARCHAR(16) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_creazione TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_creazione TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	stato VARCHAR(16) NOT NULL,
 	descrizione_stato VARCHAR(255),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_aggiornamento_stato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	-- DATETIME invece che TIMESTAMP(3) per supportare la data di default 31-12-9999
-	data_prossima_spedizione DATETIME NOT NULL DEFAULT 0,
+	data_prossima_spedizione DATETIME NOT NULL,
 	tentativi_spedizione BIGINT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
@@ -555,7 +514,7 @@ CREATE TABLE iuv
 	prg BIGINT NOT NULL,
 	iuv VARCHAR(35) NOT NULL,
 	application_code INT NOT NULL,
-	data_generazione TIMESTAMP NOT NULL DEFAULT 0,
+	data_generazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	tipo_iuv VARCHAR(1) NOT NULL,
 	cod_versamento_ente VARCHAR(35),
 	-- fk/pk columns
@@ -583,9 +542,12 @@ CREATE TABLE fr
 	iur VARCHAR(35) NOT NULL,
 	anno_riferimento INT NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_ora_flusso TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_ora_flusso TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_regolamento TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_regolamento TIMESTAMP(3),
+	data_acquisizione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	numero_pagamenti BIGINT,
 	importo_totale_pagamenti DOUBLE,
 	cod_bic_riversamento VARCHAR(35),
@@ -628,19 +590,24 @@ CREATE TABLE pagamenti
 (
 	cod_singolo_versamento_ente VARCHAR(35) NOT NULL,
 	importo_pagato DOUBLE NOT NULL,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_acquisizione TIMESTAMP(3) NOT NULL DEFAULT 0,
 	iur VARCHAR(35) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT 0,
+	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 	commissioni_psp DOUBLE,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),
 	allegato MEDIUMBLOB,
 	rendicontazione_esito INT,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	rendicontazione_data TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	rendicontazione_data TIMESTAMP(3),
 	codflusso_rendicontazione VARCHAR(35),
 	anno_riferimento INT,
 	indice_singolo_pagamento INT,
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_acquisizione_revoca TIMESTAMP(3) DEFAULT 0,
 	causale_revoca VARCHAR(140),
 	dati_revoca VARCHAR(140),
 	importo_revocato DOUBLE,
@@ -648,13 +615,14 @@ CREATE TABLE pagamenti
 	dati_esito_revoca VARCHAR(140),
 	rendicontazione_esito_revoca INT,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	rendicontazione_data_revoca TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	rendicontazione_data_revoca TIMESTAMP(3),
 	cod_flusso_rendicontaz_revoca VARCHAR(35),
 	anno_riferimento_revoca INT,
 	ind_singolo_pagamento_revoca INT,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
-	id_rpt BIGINT NOT NULL,
+	id_rpt BIGINT,
 	id_singolo_versamento BIGINT NOT NULL,
 	id_fr_applicazione BIGINT,
 	id_rr BIGINT,
@@ -690,9 +658,11 @@ CREATE TABLE eventi
 	parametri_2 VARCHAR(512),
 	esito VARCHAR(35),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_1 TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_1 TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
-	data_2 TIMESTAMP(3) DEFAULT 0,
+    -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
+	data_2 TIMESTAMP(3),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- fk/pk keys constraints
@@ -706,7 +676,7 @@ CREATE TABLE rendicontazioni_senza_rpt
 (
 	importo_pagato DOUBLE NOT NULL,
 	iur VARCHAR(35) NOT NULL,
-	rendicontazione_data TIMESTAMP NOT NULL DEFAULT 0,
+	rendicontazione_data TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_fr_applicazione BIGINT NOT NULL,

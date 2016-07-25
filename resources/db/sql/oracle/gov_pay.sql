@@ -139,6 +139,7 @@ CREATE TABLE applicazioni
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
+	versione VARCHAR(10) NOT NULL,
 	trusted NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -148,6 +149,9 @@ CREATE TABLE applicazioni
 	-- fk/pk keys constraints
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 );
+
+
+ALTER TABLE applicazioni MODIFY versione DEFAULT '2.1';
 
 CREATE TRIGGER trg_applicazioni
 BEFORE
@@ -272,62 +276,6 @@ end;
 
 
 
-CREATE SEQUENCE seq_operatori_uo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE operatori_uo
-(
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_operatore NUMBER NOT NULL,
-	id_uo NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_uo_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_uo_2 FOREIGN KEY (id_uo) REFERENCES uo(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_uo PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_operatori_uo
-BEFORE
-insert on operatori_uo
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_operatori_uo.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_operatori_applicazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE operatori_applicazioni
-(
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_operatore NUMBER NOT NULL,
-	id_applicazione NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_applicazioni_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_applicazioni PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_operatori_applicazioni
-BEFORE
-insert on operatori_applicazioni
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_operatori_applicazioni.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
 CREATE SEQUENCE seq_connettori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE connettori
@@ -364,6 +312,8 @@ CREATE TABLE portali
 	cod_portale VARCHAR(35) NOT NULL,
 	default_callback_url VARCHAR(512) NOT NULL,
 	principal VARCHAR(255) NOT NULL,
+	versione VARCHAR(10) NOT NULL,
+	trusted NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -374,6 +324,9 @@ CREATE TABLE portali
 	CONSTRAINT pk_portali PRIMARY KEY (id)
 );
 
+
+ALTER TABLE portali MODIFY versione DEFAULT '2.1';
+
 CREATE TRIGGER trg_portali
 BEFORE
 insert on portali
@@ -381,62 +334,6 @@ for each row
 begin
    IF (:new.id IS NULL) THEN
       SELECT seq_portali.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_operatori_portali MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE operatori_portali
-(
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_operatore NUMBER NOT NULL,
-	id_portale NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_portali_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_portali_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_portali PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_operatori_portali
-BEFORE
-insert on operatori_portali
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_operatori_portali.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_portali_applicazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE portali_applicazioni
-(
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_portale NUMBER NOT NULL,
-	id_applicazione NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_portali_applicazioni_1 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
-	CONSTRAINT fk_portali_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT pk_portali_applicazioni PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_portali_applicazioni
-BEFORE
-insert on portali_applicazioni
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_portali_applicazioni.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -481,24 +378,52 @@ end;
 
 
 
+CREATE SEQUENCE seq_tipi_tributo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE tipi_tributo
+(
+	cod_tributo VARCHAR(255) NOT NULL,
+	descrizione VARCHAR(255),
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tipi_tributo PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_tipi_tributo
+BEFORE
+insert on tipi_tributo
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_tipi_tributo.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE SEQUENCE seq_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
 CREATE TABLE tributi
 (
-	cod_tributo VARCHAR(35) NOT NULL,
 	abilitato NUMBER NOT NULL,
-	descrizione VARCHAR(255),
 	tipo_contabilita VARCHAR(1) NOT NULL,
 	codice_contabilita VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
 	id_iban_accredito NUMBER,
+	id_tipo_tributo NUMBER NOT NULL,
 	-- unique constraints
-	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,cod_tributo),
+	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
+	CONSTRAINT fk_tributi_3 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 );
 
@@ -516,55 +441,35 @@ end;
 
 
 
-CREATE SEQUENCE seq_applicazioni_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+CREATE SEQUENCE seq_acl MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
 
-CREATE TABLE applicazioni_tributi
+CREATE TABLE acl
 (
+	cod_tipo VARCHAR(1) NOT NULL,
+	cod_servizio VARCHAR(1) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
-	id_tributo NUMBER NOT NULL,
+	id_portale NUMBER,
+	id_operatore NUMBER,
+	id_dominio NUMBER,
+	id_tipo_tributo NUMBER,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_applicazioni_tributi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_applicazioni_tributi_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id) ON DELETE CASCADE,
-	CONSTRAINT pk_applicazioni_tributi PRIMARY KEY (id)
+	CONSTRAINT fk_acl_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
+	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
 
-CREATE TRIGGER trg_applicazioni_tributi
+CREATE TRIGGER trg_acl
 BEFORE
-insert on applicazioni_tributi
+insert on acl
 for each row
 begin
    IF (:new.id IS NULL) THEN
-      SELECT seq_applicazioni_tributi.nextval INTO :new.id
-                FROM DUAL;
-   END IF;
-end;
-/
-
-
-
-CREATE SEQUENCE seq_applicazioni_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
-
-CREATE TABLE applicazioni_domini
-(
-	-- fk/pk columns
-	id NUMBER NOT NULL,
-	id_applicazione NUMBER,
-	id_dominio NUMBER NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_applicazioni_domini_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_applicazioni_domini_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
-	CONSTRAINT pk_applicazioni_domini PRIMARY KEY (id)
-);
-
-CREATE TRIGGER trg_applicazioni_domini
-BEFORE
-insert on applicazioni_domini
-for each row
-begin
-   IF (:new.id IS NULL) THEN
-      SELECT seq_applicazioni_domini.nextval INTO :new.id
+      SELECT seq_acl.nextval INTO :new.id
                 FROM DUAL;
    END IF;
 end;
@@ -594,6 +499,10 @@ CREATE TABLE versamenti
 	debitore_localita VARCHAR(35),
 	debitore_provincia VARCHAR(35),
 	debitore_nazione VARCHAR(2),
+	cod_lotto VARCHAR(35),
+	cod_versamento_lotto VARCHAR(35),
+	cod_anno_tributario VARCHAR(35),
+	cod_bundlekey VARCHAR(256),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_uo NUMBER NOT NULL,
@@ -636,6 +545,7 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR(2),
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
+	note VARCHAR(512),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -853,6 +763,7 @@ CREATE TABLE fr
 	anno_riferimento NUMBER NOT NULL,
 	data_ora_flusso TIMESTAMP,
 	data_regolamento TIMESTAMP,
+	data_acquisizione TIMESTAMP NOT NULL,
 	numero_pagamenti NUMBER,
 	importo_totale_pagamenti BINARY_DOUBLE,
 	cod_bic_riversamento VARCHAR(35),
@@ -919,6 +830,7 @@ CREATE TABLE pagamenti
 (
 	cod_singolo_versamento_ente VARCHAR(35) NOT NULL,
 	importo_pagato BINARY_DOUBLE NOT NULL,
+	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR(35) NOT NULL,
 	data_pagamento TIMESTAMP NOT NULL,
 	commissioni_psp BINARY_DOUBLE,
@@ -930,6 +842,7 @@ CREATE TABLE pagamenti
 	codflusso_rendicontazione VARCHAR(35),
 	anno_riferimento NUMBER,
 	indice_singolo_pagamento NUMBER,
+	data_acquisizione_revoca TIMESTAMP,
 	causale_revoca VARCHAR(140),
 	dati_revoca VARCHAR(140),
 	importo_revocato BINARY_DOUBLE,
@@ -942,7 +855,7 @@ CREATE TABLE pagamenti
 	ind_singolo_pagamento_revoca NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
-	id_rpt NUMBER NOT NULL,
+	id_rpt NUMBER,
 	id_singolo_versamento NUMBER NOT NULL,
 	id_fr_applicazione NUMBER,
 	id_rr NUMBER,

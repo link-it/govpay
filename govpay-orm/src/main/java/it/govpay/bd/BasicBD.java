@@ -20,9 +20,11 @@
  */
 package it.govpay.bd;
 
+import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.IConnettoreService;
+import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
 import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IDBConnettoreService;
@@ -43,6 +45,7 @@ import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
+import it.govpay.orm.dao.IDBTipoTributoService;
 import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
 import it.govpay.orm.dao.IDBVersamentoService;
@@ -50,6 +53,7 @@ import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IFRService;
 import it.govpay.orm.dao.IFrApplicazioneService;
+import it.govpay.orm.dao.IFrFiltroAppServiceSearch;
 import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIntermediarioService;
@@ -60,9 +64,12 @@ import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
+import it.govpay.orm.dao.IRendicontazionePagamentoSenzaRPTServiceSearch;
+import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
+import it.govpay.orm.dao.ITipoTributoService;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IVersamentoService;
@@ -82,11 +89,13 @@ public class BasicBD {
 	private JDBCServiceManagerProperties jdbcProperties;
 	
 	private IApplicazioneService applicazioneService;
+	private IACLService aclService;
 	private ICanaleService canaleService;
 	private IConnettoreService connettoreService;
 	private IDominioService dominioService;
 	private IEventoService eventoService;
 	private IFRService frService;
+	private IFrFiltroAppServiceSearch frFiltroAppService;
 	private IFrApplicazioneService frApplicazioneService;
 	private IIbanAccreditoService ibanAccreditoService;
 	private IIntermediarioService intermediarioService;
@@ -97,13 +106,19 @@ public class BasicBD {
 	private IPortaleService portaleService;
 	private IPspService pspService;
 	private IRendicontazioneSenzaRPTService rendicontazioneSenzaRPTService;
+	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
+	private IRendicontazionePagamentoSenzaRPTServiceSearch rendicontazionePagamentoSenzaRPTServiceSearch;
 	private IRPTService rptService;
 	private IRRService rrService;
 	private ISingoloVersamentoService singoloVersamentoService;
 	private IStazioneService stazioneService;
+	private ITipoTributoService tipoTributoService;
 	private ITributoService tributoService;
 	private IUoService uoService;
 	private IVersamentoService versamentoService;
+	
+	private String idTransaction;
+	private String idModulo;
 	
 	private Connection connection;
 	private boolean isClosed;
@@ -115,34 +130,41 @@ public class BasicBD {
 		father = basicBD;
 	}
 	
-	public static BasicBD newInstance() throws ServiceException {
-		return new BasicBD();
+	public static BasicBD newInstance(String idTransaction) throws ServiceException {
+		return new BasicBD(idTransaction);
 	}
 	
-	private BasicBD() throws ServiceException {
+	private BasicBD(String idTransaction) throws ServiceException {
 		this.isClosed = true;
-		this.setupConnection();
+		this.idTransaction = idTransaction;
+		this.idModulo = getCaller();
+		this.setupConnection(idTransaction, idModulo);
+	}
+	
+	public void setupConnection(String idTransaction) throws ServiceException {
+		this.idModulo = getCaller();
+		this.setupConnection(idTransaction, idModulo);
 	}
 
-	public void setupConnection() throws ServiceException {
+	private void setupConnection(String idTransaction, String idModulo) throws ServiceException {
 		if(father != null) {
-			father.setupConnection();
+			father.setupConnection(idTransaction);
 			return;
 		}
 		if(isClosed) {
-			this.connection = ConnectionManager.getConnection();
-			log.debug("[" + this.connection.toString() + "] !!OPEN!! " + getCaller() );
-			
+			this.connection = ConnectionManager.getConnection(idTransaction, idModulo);
 			this.serviceManager = new JDBCServiceManager(this.connection, ConnectionManager.getJDBCServiceManagerProperties(), log);
 			this.jdbcProperties = this.serviceManager.getJdbcProperties();
 			
 			try {
 				this.applicazioneService = this.serviceManager.getApplicazioneService();
+				this.aclService = this.serviceManager.getACLService();
 				this.canaleService = this.serviceManager.getCanaleService();
 				this.connettoreService = this.serviceManager.getConnettoreService();
 				this.dominioService = this.serviceManager.getDominioService();
 				this.eventoService = this.serviceManager.getEventoService();
 				this.frService = this.serviceManager.getFRService();
+				this.frFiltroAppService = this.serviceManager.getFrFiltroAppServiceSearch();
 				this.frApplicazioneService = this.serviceManager.getFrApplicazioneService();
 				this.ibanAccreditoService = this.serviceManager.getIbanAccreditoService();
 				this.intermediarioService = this.serviceManager.getIntermediarioService();
@@ -153,10 +175,13 @@ public class BasicBD {
 				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.pspService = this.serviceManager.getPspService();
 				this.rendicontazioneSenzaRPTService = this.serviceManager.getRendicontazioneSenzaRPTService();
+				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
+				this.rendicontazionePagamentoSenzaRPTServiceSearch = this.serviceManager.getRendicontazionePagamentoSenzaRPTServiceSearch();
 				this.rptService = this.serviceManager.getRPTService();
 				this.rrService = this.serviceManager.getRRService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
 				this.stazioneService = this.serviceManager.getStazioneService();
+				this.tipoTributoService = this.serviceManager.getTipoTributoService();
 				this.tributoService = this.serviceManager.getTributoService();
 				this.uoService = this.serviceManager.getUoService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
@@ -175,6 +200,7 @@ public class BasicBD {
 		}
 		try {
 			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
+			((IDBACLService)this.aclService).enableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
 			((IDBDominioService)this.dominioService).enableSelectForUpdate();
@@ -194,6 +220,7 @@ public class BasicBD {
 			((IDBRRService)this.rrService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
+			((IDBTipoTributoService)this.tipoTributoService).enableSelectForUpdate();
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
 			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
@@ -209,6 +236,7 @@ public class BasicBD {
 		}
 		try {
 			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
+			((IDBACLService)this.aclService).disableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
 			((IDBDominioService)this.dominioService).disableSelectForUpdate();
@@ -228,6 +256,7 @@ public class BasicBD {
 			((IDBRRService)this.rrService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
+			((IDBTipoTributoService)this.tipoTributoService).disableSelectForUpdate();
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
 			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
@@ -236,11 +265,26 @@ public class BasicBD {
 		}
 	}
 	
+	public String getIdTransaction() {
+		return idTransaction;
+	}
+	
+	public String getIdModulo() {
+		return idModulo;
+	}
+	
 	public IApplicazioneService getApplicazioneService() {
 		if(father != null) {
 			return father.getApplicazioneService();
 		}
 		return applicazioneService;
+	}
+
+	public IACLService getAclService() {
+		if(father != null) {
+			return father.getAclService();
+		}
+		return aclService;
 	}
 
 	public ICanaleService getCanaleService() {
@@ -276,6 +320,13 @@ public class BasicBD {
 			return father.getFrService();
 		}
 		return frService;
+	}
+
+	public IFrFiltroAppServiceSearch getFrFiltroAppService() {
+		if(father != null) {
+			return father.getFrFiltroAppService();
+		}
+		return frFiltroAppService;
 	}
 
 	public IFrApplicazioneService getFrApplicazioneService() {
@@ -349,6 +400,20 @@ public class BasicBD {
 		return rendicontazioneSenzaRPTService;
 	}
 
+	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
+		if(father != null) {
+			return father.getRendicontazionePagamentoServiceSearch();
+		}
+		return rendicontazionePagamentoServiceSearch;
+	}
+	
+	public IRendicontazionePagamentoSenzaRPTServiceSearch getRendicontazionePagamentoSenzaRPTServiceSearch() {
+		if(father != null) {
+			return father.getRendicontazionePagamentoSenzaRPTServiceSearch();
+		}
+		return rendicontazionePagamentoSenzaRPTServiceSearch;
+	}
+
 	public IRPTService getRptService() {
 		if(father != null) {
 			return father.getRptService();
@@ -375,6 +440,13 @@ public class BasicBD {
 			return father.getStazioneService();
 		}
 		return stazioneService;
+	}
+	
+	public ITipoTributoService getTipoTributoService() {
+		if(father != null) {
+			return father.getTipoTributoService();
+		}
+		return tipoTributoService;
 	}
 
 	public ITributoService getTributoService() {
@@ -405,7 +477,6 @@ public class BasicBD {
 		}
 		
 		try {
-			log.debug("[" + this.connection.toString() + "] !!AUTOCOMMIT(" + autoCommit + ")!! " + getCaller() );
 			this.connection.setAutoCommit(autoCommit);
 		} catch (SQLException e) {
 			throw new ServiceException("Errore durante la gestione dell'AutoCommit della connesione.", e);
@@ -429,8 +500,6 @@ public class BasicBD {
 			return;
 		}
 		
-		log.debug("[" + this.connection.toString() + "] !!CLOSE!! " + getCaller() );
-		
 		try {
 			if(this.connection != null && !isClosed) {
 				this.connection.close();
@@ -448,7 +517,6 @@ public class BasicBD {
 		}
 		
 		try {
-			log.debug("[" + this.connection.toString() + "] !!COMMIT!! " + getCaller() );
 			this.connection.commit();
 		} catch (Throwable e) {
 			log.error("Errore durante la gestione della commit della connesione.", e);
@@ -499,3 +567,4 @@ public class BasicBD {
 		return isClosed;
 	}
 }
+

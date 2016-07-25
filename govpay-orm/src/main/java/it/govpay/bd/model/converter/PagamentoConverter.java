@@ -23,10 +23,12 @@ package it.govpay.bd.model.converter;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.PagamentoExt;
 import it.govpay.bd.model.Pagamento.EsitoRendicontazione;
 import it.govpay.bd.model.Pagamento.TipoAllegato;
 import it.govpay.orm.IdFrApplicazione;
@@ -85,6 +87,9 @@ public class PagamentoConverter {
 			dto.setEsitoRendicontazione(EsitoRendicontazione.toEnum(vo.getRendicontazioneEsito()));
 		if(vo.getTipoAllegato() != null)
 			dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
+		
+		dto.setDataAcquisizione(vo.getDataAcquisizione());
+		dto.setDataAcquisizioneRevoca(vo.getDataAcquisizioneRevoca());
 		return dto;
 	}
 
@@ -140,6 +145,82 @@ public class PagamentoConverter {
 			vo.setRendicontazioneEsitoRevoca(dto.getEsitoRendicontazioneRevoca().getCodifica());
 		if(dto.getTipoAllegato() != null)
 			vo.setTipoAllegato(dto.getTipoAllegato().toString());
+		
+		vo.setDataAcquisizione(dto.getDataAcquisizione());
+		vo.setDataAcquisizioneRevoca(dto.getDataAcquisizioneRevoca());
 		return vo;
+	}
+	
+	public static PagamentoExt toDTOExt(it.govpay.orm.Pagamento vo,Map<String, Object> map) throws ServiceException {
+		PagamentoExt dto = new PagamentoExt();
+		dto.setAllegato(vo.getAllegato());
+		dto.setAnnoRiferimento(vo.getAnnoRiferimento());
+		dto.setAnnoRiferimentoRevoca(vo.getAnnoRiferimentoRevoca());
+		dto.setCausaleRevoca(vo.getCausaleRevoca());
+		dto.setCodFlussoRendicontazione(vo.getCodflussoRendicontazione());
+		dto.setCodFlussoRendicontazioneRevoca(vo.getCodFlussoRendicontazioneRevoca());
+		dto.setCodSingoloVersamentoEnte(vo.getCodSingoloVersamentoEnte());
+		if(vo.getCommissioniPsp() != null)
+			dto.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
+		dto.setDataPagamento(vo.getDataPagamento());
+		dto.setDataRendicontazione(vo.getRendicontazioneData());
+		dto.setDataRendicontazioneRevoca(vo.getRendicontazioneDataRevoca());
+		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
+		dto.setDatiRevoca(vo.getDatiRevoca());
+		if(vo.getRendicontazioneEsito() != null)
+			dto.setEsitoRendicontazione(EsitoRendicontazione.toEnum(vo.getRendicontazioneEsito()));
+		if(vo.getRendicontazioneEsitoRevoca() != null)
+			dto.setEsitoRendicontazioneRevoca(EsitoRendicontazione.toEnum(vo.getRendicontazioneEsitoRevoca()));
+		dto.setEsitoRevoca(vo.getEsitoRevoca());
+		dto.setId(vo.getId());
+		if(vo.getIdFrApplicazione() != null)
+			dto.setIdFrApplicazione(vo.getIdFrApplicazione().getId());
+		if(vo.getIdFrApplicazioneRevoca() != null)
+			dto.setIdFrApplicazioneRevoca(vo.getIdFrApplicazioneRevoca().getId());
+		if(vo.getIdRPT() != null)
+			dto.setIdRpt(vo.getIdRPT().getId());
+		if(vo.getIdRr() != null)
+			dto.setIdRr(vo.getIdRr().getId());
+		if(vo.getIdSingoloVersamento() != null)
+			dto.setIdSingoloVersamento(vo.getIdSingoloVersamento().getId());
+		dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
+		dto.setIndice(vo.getIndiceSingoloPagamento());
+		dto.setIndiceRevoca(vo.getIndiceSingoloPagamentoRevoca());
+		if(vo.getImportoRevocato() != null)
+			dto.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
+		dto.setIur(vo.getIur());
+		if(vo.getRendicontazioneEsito() != null)
+			dto.setEsitoRendicontazione(EsitoRendicontazione.toEnum(vo.getRendicontazioneEsito()));
+		if(vo.getTipoAllegato() != null)
+			dto.setTipoAllegato(TipoAllegato.valueOf(vo.getTipoAllegato()));
+		
+		String codSingoloVersamentoEnte = (String) getObjectFromMap(map, "idSingoloVersamento."+it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE.getFieldName());
+		dto.setCodSingoloVersamentoEnte(codSingoloVersamentoEnte);
+		
+//		String note = (String) getObjectFromMap(map, "idSingoloVersamento."+it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE.getFieldName());
+//		dto.setNote(note); 
+		
+		String codTributo = (String) getObjectFromMap(map, "idSingoloVersamento.idTributo."+it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO.COD_TRIBUTO.getFieldName());
+		dto.setCodTributo(codTributo);
+		
+		return dto;
+	}
+	
+	public static Object getObjectFromMap(Map<String,Object> map,String name){
+		if(map==null){
+			return null;
+		}
+		else if(map.containsKey(name)){
+			Object o = map.get(name);
+			if(o instanceof org.apache.commons.lang.ObjectUtils.Null){
+				return null;
+			}
+			else{
+				return o;
+			}
+		}
+		else{
+			return null;
+		}
 	}
 }

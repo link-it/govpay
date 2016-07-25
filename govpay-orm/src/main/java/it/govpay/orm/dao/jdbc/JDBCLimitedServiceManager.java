@@ -20,59 +20,66 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.orm.dao.IACLService;
+import it.govpay.orm.dao.IACLServiceSearch;
+import it.govpay.orm.dao.IApplicazioneService;
+import it.govpay.orm.dao.IApplicazioneServiceSearch;
+import it.govpay.orm.dao.ICanaleService;
+import it.govpay.orm.dao.ICanaleServiceSearch;
+import it.govpay.orm.dao.IConnettoreService;
+import it.govpay.orm.dao.IConnettoreServiceSearch;
+import it.govpay.orm.dao.IDominioService;
+import it.govpay.orm.dao.IDominioServiceSearch;
+import it.govpay.orm.dao.IEventoService;
+import it.govpay.orm.dao.IEventoServiceSearch;
+import it.govpay.orm.dao.IFRService;
+import it.govpay.orm.dao.IFRServiceSearch;
+import it.govpay.orm.dao.IFrApplicazioneService;
+import it.govpay.orm.dao.IFrApplicazioneServiceSearch;
+import it.govpay.orm.dao.IFrFiltroAppServiceSearch;
+import it.govpay.orm.dao.IIUVService;
+import it.govpay.orm.dao.IIUVServiceSearch;
+import it.govpay.orm.dao.IIbanAccreditoService;
+import it.govpay.orm.dao.IIbanAccreditoServiceSearch;
+import it.govpay.orm.dao.IIntermediarioService;
+import it.govpay.orm.dao.IIntermediarioServiceSearch;
+import it.govpay.orm.dao.INotificaService;
+import it.govpay.orm.dao.INotificaServiceSearch;
+import it.govpay.orm.dao.IOperatoreService;
+import it.govpay.orm.dao.IOperatoreServiceSearch;
+import it.govpay.orm.dao.IPagamentoService;
+import it.govpay.orm.dao.IPagamentoServiceSearch;
+import it.govpay.orm.dao.IPortaleService;
+import it.govpay.orm.dao.IPortaleServiceSearch;
+import it.govpay.orm.dao.IPspService;
+import it.govpay.orm.dao.IPspServiceSearch;
+import it.govpay.orm.dao.IRPTService;
+import it.govpay.orm.dao.IRPTServiceSearch;
+import it.govpay.orm.dao.IRRService;
+import it.govpay.orm.dao.IRRServiceSearch;
+import it.govpay.orm.dao.IRendicontazionePagamentoSenzaRPTServiceSearch;
+import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
+import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
+import it.govpay.orm.dao.IRendicontazioneSenzaRPTServiceSearch;
+import it.govpay.orm.dao.ISingoloVersamentoService;
+import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
+import it.govpay.orm.dao.IStazioneService;
+import it.govpay.orm.dao.IStazioneServiceSearch;
+import it.govpay.orm.dao.ITipoTributoService;
+import it.govpay.orm.dao.ITipoTributoServiceSearch;
+import it.govpay.orm.dao.ITributoService;
+import it.govpay.orm.dao.ITributoServiceSearch;
+import it.govpay.orm.dao.IUoService;
+import it.govpay.orm.dao.IUoServiceSearch;
+import it.govpay.orm.dao.IVersamentoService;
+import it.govpay.orm.dao.IVersamentoServiceSearch;
 
 import java.sql.Connection;
 
 import javax.sql.DataSource;
 
-import it.govpay.orm.dao.IDominioServiceSearch;
-import it.govpay.orm.dao.IDominioService;
-import it.govpay.orm.dao.IPspServiceSearch;
-import it.govpay.orm.dao.IPspService;
-import it.govpay.orm.dao.ICanaleServiceSearch;
-import it.govpay.orm.dao.ICanaleService;
-import it.govpay.orm.dao.IUoServiceSearch;
-import it.govpay.orm.dao.IUoService;
-import it.govpay.orm.dao.IPortaleServiceSearch;
-import it.govpay.orm.dao.IPortaleService;
-import it.govpay.orm.dao.IConnettoreServiceSearch;
-import it.govpay.orm.dao.IConnettoreService;
-import it.govpay.orm.dao.IIntermediarioServiceSearch;
-import it.govpay.orm.dao.IIntermediarioService;
-import it.govpay.orm.dao.IStazioneServiceSearch;
-import it.govpay.orm.dao.IStazioneService;
-import it.govpay.orm.dao.IApplicazioneServiceSearch;
-import it.govpay.orm.dao.IApplicazioneService;
-import it.govpay.orm.dao.IIbanAccreditoServiceSearch;
-import it.govpay.orm.dao.IIbanAccreditoService;
-import it.govpay.orm.dao.ITributoServiceSearch;
-import it.govpay.orm.dao.ITributoService;
-import it.govpay.orm.dao.IOperatoreServiceSearch;
-import it.govpay.orm.dao.IOperatoreService;
-import it.govpay.orm.dao.IIUVServiceSearch;
-import it.govpay.orm.dao.IIUVService;
-import it.govpay.orm.dao.IVersamentoServiceSearch;
-import it.govpay.orm.dao.IVersamentoService;
-import it.govpay.orm.dao.IEventoServiceSearch;
-import it.govpay.orm.dao.IEventoService;
-import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
-import it.govpay.orm.dao.ISingoloVersamentoService;
-import it.govpay.orm.dao.IRPTServiceSearch;
-import it.govpay.orm.dao.IRPTService;
-import it.govpay.orm.dao.IRRServiceSearch;
-import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IPagamentoServiceSearch;
-import it.govpay.orm.dao.IPagamentoService;
-import it.govpay.orm.dao.INotificaServiceSearch;
-import it.govpay.orm.dao.INotificaService;
-import it.govpay.orm.dao.IFRServiceSearch;
-import it.govpay.orm.dao.IFRService;
-import it.govpay.orm.dao.IFrApplicazioneServiceSearch;
-import it.govpay.orm.dao.IFrApplicazioneService;
-import it.govpay.orm.dao.IRendicontazioneSenzaRPTServiceSearch;
-import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 /**     
  * Manager that allows you to obtain the services of research and management of objects
@@ -469,6 +476,70 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:tipoTributo type:TipoTributo
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TipoTributo}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TipoTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoTributoServiceSearch getTipoTributoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTipoTributoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoTributo}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITipoTributoService getTipoTributoService() throws ServiceException,NotImplementedException{
+		return new JDBCTipoTributoService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:ACL type:ACL
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.ACL}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.ACL}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IACLServiceSearch getACLServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCACLServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.ACL}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.ACL}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IACLService getACLService() throws ServiceException,NotImplementedException{
+		return new JDBCACLService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Operatore type:Operatore
 	 =====================================================================================================================
 	*/
@@ -848,6 +919,69 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() throws ServiceException,NotImplementedException{
 		return new JDBCRendicontazioneSenzaRPTService(this.unlimitedJdbcServiceManager);
 	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:RendicontazionePagamento type:RendicontazionePagamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCRendicontazionePagamentoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:RendicontazionePagamentoSenzaRPT type:RendicontazionePagamentoSenzaRPT
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IRendicontazionePagamentoSenzaRPTServiceSearch getRendicontazionePagamentoSenzaRPTServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCRendicontazionePagamentoSenzaRPTServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:FrFiltroApp type:FrFiltroApp
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IFrFiltroAppServiceSearch getFrFiltroAppServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCFrFiltroAppServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
 	
 	
 	

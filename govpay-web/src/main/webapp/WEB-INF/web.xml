@@ -10,13 +10,24 @@
 
 	<security-constraint>
 		<web-resource-collection>
-			<web-resource-name>All resources</web-resource-name>
+			<web-resource-name>Protetto</web-resource-name>
 			<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
+			<url-pattern>/PagamentiTelematiciGPRndService</url-pattern>
+			<url-pattern>/rs/caricatore/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
 			<role-name>*</role-name>
 		</auth-constraint>
+	</security-constraint>
+	
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Libero</web-resource-name>
+			<url-pattern>/PagamentiTelematiciGPAppService?wsdl</url-pattern>
+			<url-pattern>/PagamentiTelematiciGPPrtService?wsdl</url-pattern>
+			<url-pattern>/PagamentiTelematiciGPRndService?wsdl</url-pattern>
+		</web-resource-collection>
 	</security-constraint>
 
 	<security-role>

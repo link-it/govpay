@@ -74,7 +74,7 @@ public class Operatori extends BaseDarsService {
 
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			Operatore operatore = this.getOperatoreByPrincipal(bd);
 
 			// Reset ID DB
@@ -112,7 +112,7 @@ public class Operatori extends BaseDarsService {
 
 		BasicBD bd = null;
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			Operatore operatore = this.getOperatoreByPrincipal(bd,"UTENTE_NON_ESISTENTE");
 
 			// Reset ID DB

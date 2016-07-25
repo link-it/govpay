@@ -31,7 +31,6 @@ import java.util.Map;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
-import it.govpay.orm.PortaleApplicazione;
 import it.govpay.orm.Portale;
 
 
@@ -62,14 +61,12 @@ public class PortaleFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "default_callback_url", Portale.model().DEFAULT_CALLBACK_URL.getFieldType()));
 				setParameter(object, "setPrincipal", Portale.model().PRINCIPAL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "principal", Portale.model().PRINCIPAL.getFieldType()));
+				setParameter(object, "setVersione", Portale.model().VERSIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "versione", Portale.model().VERSIONE.getFieldType()));
+				setParameter(object, "setTrusted", Portale.model().TRUSTED.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "trusted", Portale.model().TRUSTED.getFieldType()));
 				setParameter(object, "setAbilitato", Portale.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Portale.model().ABILITATO.getFieldType()));
-				return object;
-			}
-			if(model.equals(Portale.model().PORTALE_APPLICAZIONE)){
-				PortaleApplicazione object = new PortaleApplicazione();
-				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
 				return object;
 			}
 			
@@ -98,14 +95,12 @@ public class PortaleFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"defaultCallbackURL"));
 				setParameter(object, "setPrincipal", Portale.model().PRINCIPAL.getFieldType(),
 					this.getObjectFromMap(map,"principal"));
+				setParameter(object, "setVersione", Portale.model().VERSIONE.getFieldType(),
+					this.getObjectFromMap(map,"versione"));
+				setParameter(object, "setTrusted", Portale.model().TRUSTED.getFieldType(),
+					this.getObjectFromMap(map,"trusted"));
 				setParameter(object, "setAbilitato", Portale.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
-				return object;
-			}
-			if(model.equals(Portale.model().PORTALE_APPLICAZIONE)){
-				PortaleApplicazione object = new PortaleApplicazione();
-				setParameter(object, "setId", Long.class,
-					this.getObjectFromMap(map,"PortaleApplicazione.id"));
 				return object;
 			}
 			
@@ -127,9 +122,6 @@ public class PortaleFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Portale.model())){
 				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("portali","id","seq_portali","portali_init_seq");
-			}
-			if(model.equals(Portale.model().PORTALE_APPLICAZIONE)){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("portali_applicazioni","id","seq_portali_applicazioni","portali_applicazioni_init_seq");
 			}
 			
 			else{

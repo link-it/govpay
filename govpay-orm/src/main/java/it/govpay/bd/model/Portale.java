@@ -22,7 +22,7 @@ package it.govpay.bd.model;
 
 import java.util.List;
 
-public class Portale extends BasicModel {
+public class Portale extends Versionabile {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
@@ -30,7 +30,8 @@ public class Portale extends BasicModel {
 	private String principal;
 	private String defaultCallbackURL;
 	private boolean abilitato;
-	private List<Long> idApplicazioni;
+	private boolean trusted;
+	private List<Acl> acls;
    
 	public String getDefaultCallbackURL() {
 		return defaultCallbackURL;
@@ -62,31 +63,16 @@ public class Portale extends BasicModel {
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
 	}
-	public List<Long> getIdApplicazioni() {
-		return idApplicazioni;
+	public List<Acl> getAcls() {
+		return acls;
 	}
-	public void setIdApplicazioni(List<Long> idApplicazioni) {
-		this.idApplicazioni = idApplicazioni;
+	public void setAcls(List<Acl> acls) {
+		this.acls = acls;
 	}
-	
-	@Override
-	public boolean equals(Object obj) {
-		Portale portale = null;
-		if(obj instanceof Portale) {
-			portale = (Portale) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal =
-			equals(codPortale, portale.getCodPortale()) &&
-			equals(principal, portale.getPrincipal()) &&
-			equals(idApplicazioni, portale.getIdApplicazioni()) &&
-			equals(defaultCallbackURL, portale.getDefaultCallbackURL()) &&
-			abilitato==portale.isAbilitato();
-		
-		return equal;
+	public boolean isTrusted() {
+		return trusted;
 	}
-
-
+	public void setTrusted(boolean trusted) {
+		this.trusted = trusted;
+	}
 }

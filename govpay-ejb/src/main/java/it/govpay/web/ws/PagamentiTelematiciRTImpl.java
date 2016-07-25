@@ -115,7 +115,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		evento.setFruitore("NodoDeiPagamentiSPC");
 		
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			Dominio dominio = null;
 			try {
@@ -218,7 +218,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		evento.setFruitore("NodoDeiPagamentiSPC");
 		
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			Dominio dominio = null;
 			try {

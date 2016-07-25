@@ -182,7 +182,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione);
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
 		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 		String denominazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
@@ -276,7 +276,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Intermediario entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica);
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
 		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 		String denominazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");

@@ -84,7 +84,7 @@ public class Domini extends BaseDarsService {
 		BasicBD bd = null;
 
 		try{
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(id);
 
@@ -133,7 +133,7 @@ public class Domini extends BaseDarsService {
 		BasicBD bd = null;
 
 		try{
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(id);
 

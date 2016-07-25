@@ -32,10 +32,10 @@ import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Pagamento extends BasicModel {
-	
+
 	public enum EsitoRendicontazione {
 		ESEGUITO(0), REVOCATO(3), ESEGUITO_SENZA_RPT(9);
-		
+
 		private int codifica;
 
 		EsitoRendicontazione(int codifica) {
@@ -45,7 +45,7 @@ public class Pagamento extends BasicModel {
 		public int getCodifica() {
 			return codifica;
 		}
-		
+
 		public static EsitoRendicontazione toEnum(String codifica) throws ServiceException {
 			return toEnum(Integer.parseInt(codifica));
 		}
@@ -60,7 +60,7 @@ public class Pagamento extends BasicModel {
 	}
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public enum TipoAllegato {
 		ES, BD
 	}
@@ -75,92 +75,100 @@ public class Pagamento extends BasicModel {
 	private Date dataPagamento;
 	private TipoAllegato tipoAllegato;
 	private byte[] allegato;
-	
+
 	private Long idFrApplicazione;
 	private EsitoRendicontazione esitoRendicontazione;
 	private Date dataRendicontazione;
 	private Integer annoRiferimento;
 	private String codFlussoRendicontazione;
 	private Integer indice;
-	
+	private Date dataAcquisizione;
+
 	private Long idRr;
 	private String causaleRevoca;
 	private String datiRevoca;
 	private String esitoRevoca;
 	private String datiEsitoRevoca;
 	private BigDecimal importoRevocato;
-	
+
 	private Long idFrApplicazioneRevoca;
 	private EsitoRendicontazione esitoRendicontazioneRevoca;
 	private Date dataRendicontazioneRevoca;
 	private String codFlussoRendicontazioneRevoca;
 	private Integer annoRiferimentoRevoca;
 	private Integer indiceRevoca;
-	
+	private Date dataAcquisizioneRevoca;
+
+
+	public Pagamento() {
+		super();
+		this.dataAcquisizione = new Date();
+	}
+
 	public Long getId() {
 		return id;
 	}
-	
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 	public long getIdRpt() {
 		return idRpt;
 	}
-	
+
 	public void setIdRpt(long idRpt) {
 		this.idRpt = idRpt;
 	}
-	
+
 	public long getIdSingoloVersamento() {
 		return idSingoloVersamento;
 	}
-	
+
 	public void setIdSingoloVersamento(long idSingoloVersamento) {
 		this.idSingoloVersamento = idSingoloVersamento;
 	}
-	
+
 	public BigDecimal getImportoPagato() {
 		return importoPagato;
 	}
-	
+
 	public void setImportoPagato(BigDecimal importoPagato) {
 		this.importoPagato = importoPagato;
 	}
-	
+
 	public String getIur() {
 		return iur;
 	}
-	
+
 	public void setIur(String iur) {
 		this.iur = iur;
 	}
-	
+
 	public Date getDataPagamento() {
 		return dataPagamento;
 	}
-	
+
 	public void setDataPagamento(Date dataPagamento) {
 		this.dataPagamento = dataPagamento;
 	}
-	
+
 	public TipoAllegato getTipoAllegato() {
 		return tipoAllegato;
 	}
-	
+
 	public void setTipoAllegato(TipoAllegato tipoAllegato) {
 		this.tipoAllegato = tipoAllegato;
 	}
-	
+
 	public byte[] getAllegato() {
 		return allegato;
 	}
-	
+
 	public void setAllegato(byte[] allegato) {
 		this.allegato = allegato;
 	}
-	
+
 	public EsitoRendicontazione getEsitoRendicontazione() {
 		return esitoRendicontazione;
 	}
@@ -192,7 +200,7 @@ public class Pagamento extends BasicModel {
 	public void setCommissioniPsp(BigDecimal commissioniPsp) {
 		this.commissioniPsp = commissioniPsp;
 	}
-	
+
 	public Integer getAnnoRiferimento() {
 		return annoRiferimento;
 	}
@@ -304,13 +312,29 @@ public class Pagamento extends BasicModel {
 	public void setIndiceRevoca(Integer indiceRevoca) {
 		this.indiceRevoca = indiceRevoca;
 	}
-	
+
+	public Date getDataAcquisizione() {
+		return dataAcquisizione;
+	}
+
+	public void setDataAcquisizione(Date dataAcquisizione) {
+		this.dataAcquisizione = dataAcquisizione;
+	}
+
+	public Date getDataAcquisizioneRevoca() {
+		return dataAcquisizioneRevoca;
+	}
+
+	public void setDataAcquisizioneRevoca(Date dataAcquisizioneRevoca) {
+		this.dataAcquisizioneRevoca = dataAcquisizioneRevoca;
+	}
+
 	// Business
-	
+
 	private Rpt rpt;
 	private SingoloVersamento singoloVersamento;
 	private Rr rr;
-	
+
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(rpt == null) {
 			RptBD rptBD = new RptBD(bd);
@@ -323,7 +347,7 @@ public class Pagamento extends BasicModel {
 		this.rpt = rpt;
 		this.idRpt = rpt.getId();
 	}
-	
+
 	public Rr getRr(BasicBD bd) throws ServiceException {
 		if(rr == null) {
 			RrBD rrBD = new RrBD(bd);
@@ -367,6 +391,6 @@ public class Pagamento extends BasicModel {
 	}
 
 
-	
+
 }
 

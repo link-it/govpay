@@ -41,10 +41,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
+import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
+import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.IbanAccredito;
+import it.govpay.bd.model.TipoTributo;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Tributo.TipoContabilta;
 import it.govpay.web.rs.BaseRsService;
@@ -55,6 +58,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -101,7 +105,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Tributo.model().COD_TRIBUTO);
+			fsw.setField(it.govpay.orm.Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
@@ -109,7 +113,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 
 			filter.setIdDominio(this.idDominio);
-			
+
 			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
 			filter.setCodTributo(codTributo); 
@@ -165,12 +169,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
 		codTributo.setDefaultValue(null);
 		sezioneRoot.addField(codTributo);
-
-//		InputNumber idDominio = (InputNumber) infoRicercaMap.get(idDominioId);
-//		idDominio.setDefaultValue(this.idDominio);
-//		sezioneRoot.addField(idDominio);
-
-
 		return infoRicerca;
 	}
 
@@ -179,16 +177,12 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-//			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
 			// codTributo
 			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, false, false, true, 1, 255);
 			infoRicercaMap.put(codTributoId, codTributo);
 
-			// idDominio
-//			InputNumber idDominio = new InputNumber(idDominioId, null, null, true, true, false, 1, 255);
-//			infoRicercaMap.put(idDominioId, idDominio);
 		}
 	}
 
@@ -196,16 +190,15 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione);
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String idIbanAccreditoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
 		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 		String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 		String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+		String idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -218,15 +211,39 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		idITributo.setDefaultValue(null);
 		sezioneRoot.addField(idITributo);
 
-		InputText codTributo = (InputText) infoCreazioneMap.get(codTributoId);
-		codTributo.setDefaultValue(null);
-		codTributo.setEditable(true);
-		sezioneRoot.addField(codTributo);
+		SelectList<Long> idTipoTributo  = (SelectList<Long>) infoCreazioneMap.get(idTipoTributoId);
+		List<Voce<Long>> idTipoTributoValues = new ArrayList<Voce<Long>>();
 
-		InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
-		descrizione.setDefaultValue(null);
-		descrizione.setEditable(true);
-		sezioneRoot.addField(descrizione);
+		try{
+			TributiBD tributiBD = new TributiBD(bd);
+			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
+			TipoTributoFilter filterIban = tipiTributoBD.newFilter();
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
+			fsw.setSortOrder(SortOrder.ASC);
+			filterIban.getFilterSortList().add(fsw);
+			List<it.govpay.bd.model.TipoTributo> findAll = tipiTributoBD.findAll(filterIban);
+			it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tributiDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
+			TipiTributoHandler tributiHandler = (TipiTributoHandler) tributiDars.getDarsHandler();
+
+			if(findAll != null && findAll.size() > 0){
+				for (it.govpay.bd.model.TipoTributo tipoTributo : findAll) {
+					try{
+						tributiBD.getTributo(this.idDominio, tipoTributo.getCodTributo());
+					}catch(NotFoundException e){
+						Elemento elemento = tributiHandler.getElemento(tipoTributo, tipoTributo.getId(), null, bd);
+						idTipoTributoValues.add(new Voce<Long>(elemento.getTitolo(), tipoTributo.getId()));
+					}
+				}
+			}
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+		idTipoTributo.setEditable(true);
+		idTipoTributo.setHidden(false);
+		idTipoTributo.setValues(idTipoTributoValues);
+		idTipoTributo.setDefaultValue(null);
+		sezioneRoot.addField(idTipoTributo);
 
 		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(this.idDominio);
@@ -282,12 +299,11 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		if(infoCreazioneMap == null){
 			infoCreazioneMap = new HashMap<String, ParamField<?>>();
 
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idIbanAccreditoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
 			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			String idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
 			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 
@@ -295,12 +311,12 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			InputNumber id = new InputNumber(tributoId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(tributoId, id);
 
-			// codUnitaOperativa
-			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
-			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, true, false, true, 1, 35);
-			codTributo.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.suggestion"));
-			codTributo.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.errorMessage"));
-			infoCreazioneMap.put(codTributoId, codTributo);
+			// tipoTributo
+			String idTipoTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.label");
+			List<Voce<Long>> idTipoTributoValues = new ArrayList<Voce<Long>>();
+			SelectList<Long> idTipoTributo = new SelectList<Long>(idTipoTributoId, idTipoTributoLabel, null, true, false, true, idTipoTributoValues );
+			idTipoTributo.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.suggestion"));
+			infoCreazioneMap.put(idTipoTributoId, idTipoTributo);
 
 			// idDominio
 			InputNumber idDominio = new InputNumber(idDominioId, null, null, true, true, false, 1, 255);
@@ -310,11 +326,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			List<Voce<Long>> ibanValues = new ArrayList<Voce<Long>>();
 			SelectList<Long> idIbanAccredito = new SelectList<Long>(idIbanAccreditoId, idIbanAccreditoLabel, null, true, false, true, ibanValues );
 			infoCreazioneMap.put(idIbanAccreditoId, idIbanAccredito);
-
-			//descrizione
-			String descrizioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
-			InputText descrizione = new InputText(descrizioneId, descrizioneLabel, null, true, false, true, 1, 255);
-			infoCreazioneMap.put(descrizioneId, descrizione);
 
 			// tipoContabilita
 			String tipoContabilitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
@@ -346,16 +357,15 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica);
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String idIbanAccreditoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
 		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 		String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 		String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+		String idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -366,20 +376,9 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		idTributo.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idTributo);
 
-		InputText codTributo = (InputText) infoCreazioneMap.get(codTributoId);
-		codTributo.setDefaultValue(entry.getCodTributo());
-		codTributo.setEditable(false); 
-		sezioneRoot.addField(codTributo);
-
-		InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
-		descrizione.setDefaultValue(entry.getDescrizione());
-
-		if(!entry.getCodTributo().equals(Tributo.BOLLOT))
-			descrizione.setEditable(false);
-		else 
-			descrizione.setEditable(true);
-
-		sezioneRoot.addField(descrizione);
+		InputNumber idTipoTributo = new InputNumber(idTipoTributoId, null, null, true, true, false, 1, 255);
+		idTipoTributo.setDefaultValue(entry.getIdTipoTributo());
+		sezioneRoot.addField(idTipoTributo);
 
 		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(entry.getIdDominio());
@@ -450,11 +449,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			if(infoCreazioneMap.containsKey(fieldId)){
 				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
-
 				paramField.aggiornaParametro(values,bd);
-
 				return paramField;
-
 			}
 
 			this.log.debug("Field ["+fieldId+"] non presente.");
@@ -595,6 +591,11 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			entry.setTipoContabilita(tipoContabilita); 
 
 
+			TipiTributoBD tributiBD = new TipiTributoBD(bd);
+			TipoTributo t = tributiBD.getTipoTributo(entry.getIdTipoTributo());
+			entry.setCodTributo(t.getCodTributo());
+			entry.setDescrizione(t.getDescrizione());
+
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -606,16 +607,15 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 	@Override
 	public void checkEntry(Tributo entry, Tributo oldEntry) throws ValidationException {
-		if(entry == null || entry.getCodTributo() == null || entry.getCodTributo().isEmpty()) throw new ValidationException("Il campo Cod Tributo e' obbligatorio");
-		if(entry == null || entry.getDescrizione() == null || entry.getDescrizione().isEmpty()) throw new ValidationException("Il campo Descrizione e' obbligatorio");
-		if(entry == null || entry.getIdDominio() == 0) throw new ValidationException("Il campo Dominio e' obbligatorio");
-		if(entry == null || entry.getIdIbanAccredito() == 0 ) throw new ValidationException("Il campo Iban Accredito e' obbligatorio");
-		if(entry == null || entry.getTipoContabilita() == null || entry.getDescrizione().isEmpty()) throw new ValidationException("Il campo Tipo Contabilita' e' obbligatorio");
-		if(entry == null || entry.getCodContabilita() == null || entry.getCodContabilita().isEmpty()) throw new ValidationException("Il campo Cod Contabilita e' obbligatorio");
+		if(entry == null || entry.getIdTipoTributo() == 0 ) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoObbligatorio"));
+		if(entry == null || entry.getIdDominio() == 0) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDominioObbligatorio"));
+		if(entry == null || entry.getIdIbanAccredito() == 0 ) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreIbanAccreditoObbligatorio"));
+		if(entry == null || entry.getTipoContabilita() == null) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
+		if(entry == null || entry.getCodContabilita() == null || entry.getCodContabilita().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
 
 		if(oldEntry != null) {
-			if(!entry.getCodTributo().equals(oldEntry.getCodTributo())) throw new ValidationException("Il campo Cod Tributo non e' modificabile");
-			if(entry.getIdDominio() != oldEntry.getIdDominio()) throw new ValidationException("Il campo Dominio non e' modificabile");
+			if(entry.getIdTipoTributo() != oldEntry.getIdTipoTributo()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreTipoModificato"));
+			if(entry.getIdDominio() != oldEntry.getIdDominio()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreDominioModificato"));
 		}
 	}
 

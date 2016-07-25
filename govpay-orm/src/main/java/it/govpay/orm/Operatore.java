@@ -27,8 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /** <p>Java class for Operatore complex type.
@@ -42,9 +40,6 @@ import java.util.List;
  * 			&lt;element name="nome" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="profilo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="true"/>
- * 			&lt;element name="OperatoreUo" type="{http://www.govpay.it/orm}OperatoreUo" minOccurs="1" maxOccurs="unbounded"/>
- * 			&lt;element name="OperatoreApplicazione" type="{http://www.govpay.it/orm}OperatoreApplicazione" minOccurs="1" maxOccurs="unbounded"/>
- * 			&lt;element name="OperatorePortale" type="{http://www.govpay.it/orm}OperatorePortale" minOccurs="1" maxOccurs="unbounded"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -62,10 +57,7 @@ import java.util.List;
   	"principal",
   	"nome",
   	"profilo",
-  	"abilitato",
-  	"operatoreUo",
-  	"operatoreApplicazione",
-  	"operatorePortale"
+  	"abilitato"
   }
 )
 
@@ -125,78 +117,6 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
     this.abilitato = abilitato;
   }
 
-  public void addOperatoreUo(OperatoreUo operatoreUo) {
-    this.operatoreUo.add(operatoreUo);
-  }
-
-  public OperatoreUo getOperatoreUo(int index) {
-    return this.operatoreUo.get( index );
-  }
-
-  public OperatoreUo removeOperatoreUo(int index) {
-    return this.operatoreUo.remove( index );
-  }
-
-  public List<OperatoreUo> getOperatoreUoList() {
-    return this.operatoreUo;
-  }
-
-  public void setOperatoreUoList(List<OperatoreUo> operatoreUo) {
-    this.operatoreUo=operatoreUo;
-  }
-
-  public int sizeOperatoreUoList() {
-    return this.operatoreUo.size();
-  }
-
-  public void addOperatoreApplicazione(OperatoreApplicazione operatoreApplicazione) {
-    this.operatoreApplicazione.add(operatoreApplicazione);
-  }
-
-  public OperatoreApplicazione getOperatoreApplicazione(int index) {
-    return this.operatoreApplicazione.get( index );
-  }
-
-  public OperatoreApplicazione removeOperatoreApplicazione(int index) {
-    return this.operatoreApplicazione.remove( index );
-  }
-
-  public List<OperatoreApplicazione> getOperatoreApplicazioneList() {
-    return this.operatoreApplicazione;
-  }
-
-  public void setOperatoreApplicazioneList(List<OperatoreApplicazione> operatoreApplicazione) {
-    this.operatoreApplicazione=operatoreApplicazione;
-  }
-
-  public int sizeOperatoreApplicazioneList() {
-    return this.operatoreApplicazione.size();
-  }
-
-  public void addOperatorePortale(OperatorePortale operatorePortale) {
-    this.operatorePortale.add(operatorePortale);
-  }
-
-  public OperatorePortale getOperatorePortale(int index) {
-    return this.operatorePortale.get( index );
-  }
-
-  public OperatorePortale removeOperatorePortale(int index) {
-    return this.operatorePortale.remove( index );
-  }
-
-  public List<OperatorePortale> getOperatorePortaleList() {
-    return this.operatorePortale;
-  }
-
-  public void setOperatorePortaleList(List<OperatorePortale> operatorePortale) {
-    this.operatorePortale=operatorePortale;
-  }
-
-  public int sizeOperatorePortaleList() {
-    return this.operatorePortale.size();
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -231,95 +151,5 @@ public class Operatore extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false,defaultValue="true")
   protected boolean abilitato = true;
-
-  @XmlElement(name="OperatoreUo",required=true,nillable=false)
-  protected List<OperatoreUo> operatoreUo = new ArrayList<OperatoreUo>();
-
-  /**
-   * @deprecated Use method getOperatoreUoList
-   * @return List<OperatoreUo>
-  */
-  @Deprecated
-  public List<OperatoreUo> getOperatoreUo() {
-  	return this.operatoreUo;
-  }
-
-  /**
-   * @deprecated Use method setOperatoreUoList
-   * @param operatoreUo List<OperatoreUo>
-  */
-  @Deprecated
-  public void setOperatoreUo(List<OperatoreUo> operatoreUo) {
-  	this.operatoreUo=operatoreUo;
-  }
-
-  /**
-   * @deprecated Use method sizeOperatoreUoList
-   * @return lunghezza della lista
-  */
-  @Deprecated
-  public int sizeOperatoreUo() {
-  	return this.operatoreUo.size();
-  }
-
-  @XmlElement(name="OperatoreApplicazione",required=true,nillable=false)
-  protected List<OperatoreApplicazione> operatoreApplicazione = new ArrayList<OperatoreApplicazione>();
-
-  /**
-   * @deprecated Use method getOperatoreApplicazioneList
-   * @return List<OperatoreApplicazione>
-  */
-  @Deprecated
-  public List<OperatoreApplicazione> getOperatoreApplicazione() {
-  	return this.operatoreApplicazione;
-  }
-
-  /**
-   * @deprecated Use method setOperatoreApplicazioneList
-   * @param operatoreApplicazione List<OperatoreApplicazione>
-  */
-  @Deprecated
-  public void setOperatoreApplicazione(List<OperatoreApplicazione> operatoreApplicazione) {
-  	this.operatoreApplicazione=operatoreApplicazione;
-  }
-
-  /**
-   * @deprecated Use method sizeOperatoreApplicazioneList
-   * @return lunghezza della lista
-  */
-  @Deprecated
-  public int sizeOperatoreApplicazione() {
-  	return this.operatoreApplicazione.size();
-  }
-
-  @XmlElement(name="OperatorePortale",required=true,nillable=false)
-  protected List<OperatorePortale> operatorePortale = new ArrayList<OperatorePortale>();
-
-  /**
-   * @deprecated Use method getOperatorePortaleList
-   * @return List<OperatorePortale>
-  */
-  @Deprecated
-  public List<OperatorePortale> getOperatorePortale() {
-  	return this.operatorePortale;
-  }
-
-  /**
-   * @deprecated Use method setOperatorePortaleList
-   * @param operatorePortale List<OperatorePortale>
-  */
-  @Deprecated
-  public void setOperatorePortale(List<OperatorePortale> operatorePortale) {
-  	this.operatorePortale=operatorePortale;
-  }
-
-  /**
-   * @deprecated Use method sizeOperatorePortaleList
-   * @return lunghezza della lista
-  */
-  @Deprecated
-  public int sizeOperatorePortale() {
-  	return this.operatorePortale.size();
-  }
 
 }

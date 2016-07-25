@@ -20,53 +20,24 @@
  */
 package it.govpay.bd.model.converter;
 
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
-import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdUo;
-import it.govpay.orm.OperatoreApplicazione;
-import it.govpay.orm.OperatoreUo;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class OperatoreConverter {
 
-	public static List<Operatore> toDTOList(List<it.govpay.orm.Operatore> operatoreLst) throws ServiceException {
-		List<Operatore> lstDTO = new ArrayList<Operatore>();
-		if(operatoreLst != null && !operatoreLst.isEmpty()) {
-			for(it.govpay.orm.Operatore operatore: operatoreLst){
-				lstDTO.add(toDTO(operatore));
-			}
-		}
-		return lstDTO;
-	}
 
-	public static Operatore toDTO(it.govpay.orm.Operatore vo) throws ServiceException {
+	public static Operatore toDTO(it.govpay.orm.Operatore vo, List<Acl> acls) throws ServiceException {
 		Operatore dto = new Operatore();
 		dto.setId(vo.getId());
 		dto.setPrincipal(vo.getPrincipal());
 		dto.setNome(vo.getNome());
 		dto.setProfilo(ProfiloOperatore.toEnum(vo.getProfilo()));
 		dto.setAbilitato(vo.isAbilitato());
-		if(vo.getOperatoreUoList() != null && !vo.getOperatoreUoList().isEmpty()) {
-			List<Long> operatoreUoId = new ArrayList<Long>();
-			for(OperatoreUo operatoreUo: vo.getOperatoreUoList()) {
-				operatoreUoId.add(operatoreUo.getIdUo().getId());
-			}
-			dto.setIdEnti(operatoreUoId);
-		}
-
-		if(vo.getOperatoreApplicazioneList() != null && !vo.getOperatoreApplicazioneList().isEmpty()) {
-			List<Long> operatoreApplicazioneId = new ArrayList<Long>();
-			for(OperatoreApplicazione operatoreApplicazione: vo.getOperatoreApplicazioneList()) {
-				operatoreApplicazioneId.add(operatoreApplicazione.getIdApplicazione().getId());
-			}
-			dto.setIdApplicazioni(operatoreApplicazioneId);
-		}
-
+		dto.setAcls(acls);
 		return dto;
 	}
 
@@ -77,32 +48,6 @@ public class OperatoreConverter {
 		vo.setNome(dto.getNome());
 		vo.setProfilo(dto.getProfilo().getCodifica());
 		vo.setAbilitato(dto.isAbilitato());
-		if(dto.getIdEnti() != null && dto.getIdEnti().size() > 0) {
-			List<OperatoreUo> operatoreUoLst = new ArrayList<OperatoreUo>();
-			for(Long ente: dto.getIdEnti()) {
-				OperatoreUo operatoreUo = new OperatoreUo();
-				IdUo idUo = new IdUo();
-				idUo.setId(ente);
-				
-				operatoreUo.setIdUo(idUo);
-				operatoreUoLst.add(operatoreUo);
-			}
-			vo.setOperatoreUoList(operatoreUoLst);
-		}
-		
-		if(dto.getIdApplicazioni() != null && dto.getIdApplicazioni().size() > 0) {
-			List<OperatoreApplicazione> operatoreApplicazioneLst = new ArrayList<OperatoreApplicazione>();
-			for(Long applicazione: dto.getIdApplicazioni()) {
-				OperatoreApplicazione operatoreApplicazione = new OperatoreApplicazione();
-				IdApplicazione idApplicazione = new IdApplicazione();
-				idApplicazione.setId(applicazione);
-				
-				operatoreApplicazione.setIdApplicazione(idApplicazione);
-				operatoreApplicazioneLst.add(operatoreApplicazione);
-			}
-			vo.setOperatoreApplicazioneList(operatoreApplicazioneLst);
-		}
-		
 		return vo;
 	}
 

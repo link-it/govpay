@@ -136,7 +136,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione);
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
 		String stazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 		String codStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
@@ -235,7 +235,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Stazione entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica);
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
 		String stazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 		String codStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");

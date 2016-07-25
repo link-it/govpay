@@ -144,7 +144,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		evento.setFruitore("NodoDeiPagamentiSPC");
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			Intermediario intermediario = null;
 			try {
@@ -316,12 +316,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
-			ctx.log("rt.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
+			ctx.log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, codDominio, response);
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
-			ctx.log("rt.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
+			ctx.log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
 			GiornaleEventi ge = new GiornaleEventi(bd);
 			evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
@@ -380,7 +380,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		evento.setFruitore("NodoDeiPagamentiSPC");
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			try {
 				Intermediario intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
@@ -513,12 +513,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
 			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
-			ctx.log("rt.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
+			ctx.log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} catch (Exception e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, codDominio, response);
 			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
-			ctx.log("rt.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
+			ctx.log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
 			GiornaleEventi ge = new GiornaleEventi(bd);
 			evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());

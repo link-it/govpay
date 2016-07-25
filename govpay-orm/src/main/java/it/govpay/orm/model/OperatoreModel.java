@@ -46,9 +46,6 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 		this.NOME = new Field("nome",java.lang.String.class,"Operatore",Operatore.class);
 		this.PROFILO = new Field("profilo",java.lang.String.class,"Operatore",Operatore.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Operatore",Operatore.class);
-		this.OPERATORE_UO = new it.govpay.orm.model.OperatoreUoModel(new Field("OperatoreUo",it.govpay.orm.OperatoreUo.class,"Operatore",Operatore.class));
-		this.OPERATORE_APPLICAZIONE = new it.govpay.orm.model.OperatoreApplicazioneModel(new Field("OperatoreApplicazione",it.govpay.orm.OperatoreApplicazione.class,"Operatore",Operatore.class));
-		this.OPERATORE_PORTALE = new it.govpay.orm.model.OperatorePortaleModel(new Field("OperatorePortale",it.govpay.orm.OperatorePortale.class,"Operatore",Operatore.class));
 	
 	}
 	
@@ -60,9 +57,6 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 		this.NOME = new ComplexField(father,"nome",java.lang.String.class,"Operatore",Operatore.class);
 		this.PROFILO = new ComplexField(father,"profilo",java.lang.String.class,"Operatore",Operatore.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Operatore",Operatore.class);
-		this.OPERATORE_UO = new it.govpay.orm.model.OperatoreUoModel(new ComplexField(father,"OperatoreUo",it.govpay.orm.OperatoreUo.class,"Operatore",Operatore.class));
-		this.OPERATORE_APPLICAZIONE = new it.govpay.orm.model.OperatoreApplicazioneModel(new ComplexField(father,"OperatoreApplicazione",it.govpay.orm.OperatoreApplicazione.class,"Operatore",Operatore.class));
-		this.OPERATORE_PORTALE = new it.govpay.orm.model.OperatorePortaleModel(new ComplexField(father,"OperatorePortale",it.govpay.orm.OperatorePortale.class,"Operatore",Operatore.class));
 	
 	}
 	
@@ -75,12 +69,6 @@ public class OperatoreModel extends AbstractModel<Operatore> {
 	public IField PROFILO = null;
 	 
 	public IField ABILITATO = null;
-	 
-	public it.govpay.orm.model.OperatoreUoModel OPERATORE_UO = null;
-	 
-	public it.govpay.orm.model.OperatoreApplicazioneModel OPERATORE_APPLICAZIONE = null;
-	 
-	public it.govpay.orm.model.OperatorePortaleModel OPERATORE_PORTALE = null;
 	 
 
 	@Override
