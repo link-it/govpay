@@ -21,7 +21,7 @@ import net.sf.json.JsonConfig;
 
 public class VersamentoUtils {
 
-	public static Versamento readVersamentoFromRequest(Caricatore c, Logger log,InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws WebApplicationException,Exception{
+	public static Versamento readVersamentoFromRequest(Caricatore c, Logger log,InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders, String methodName) throws WebApplicationException,Exception{
 		String nomeMetodo = "readVersamentoFromRequest";
 		Versamento entry = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
