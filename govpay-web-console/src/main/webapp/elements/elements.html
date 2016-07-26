@@ -24969,6 +24969,14 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     color: #9e9e9e;
   }
 
+  .sezioneForm {
+    padding-left: 24px;
+    background: #fff;
+    padding-bottom: 16px;
+    margin-bottom: 2px;
+    padding-right: 24px;
+  }
+
   .titoloElemento {
     padding: 24px 0 0 0;
   }
@@ -24976,6 +24984,13 @@ is separate from validation, and `allowed-pattern` does not affect how the input
   .sottotitoloElemento {
     font-size: 12px;
     color: #C1C1C1;
+  }
+
+  .titoloMultiselect {
+    padding-top: 24px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #9e9e9e;
   }
 </style>
 <script>
@@ -25018,11 +25033,17 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       for (var s = 0; s < data.sezioni.length; s++) {
         var showTitle = false;
         var sezione = data.sezioni[s];
+
+        var sezioneDiv = document.createElement('div');
+        Polymer.dom(sezioneDiv).innerHTML='';
+        sezioneDiv.className = 'sezioneForm';
+        target.appendChild(sezioneDiv);
+
         if (sezione.etichetta){
           var lb = document.createElement('div');
           Polymer.dom(lb).innerHTML=sezione.etichetta;
           lb.className = 'titoloSezione';
-          target.appendChild(lb);
+          sezioneDiv.appendChild(lb);
         }
         for (var i = 0; i < sezione.fields.length; i++) {
           var obj = sezione.fields[i];
@@ -25031,69 +25052,69 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               //MultiselectionDropdown
               var msl = document.createElement('div');
               this.setMultiSelectionList(msl, obj);
-              target.appendChild(msl);
+              sezioneDiv.appendChild(msl);
 //              msl.disabled = !obj.editable;
               break;
             case 'SelectList':
               //Dropdown
               var pdm = document.createElement('paper-dropdown-menu');
               this.setDropDownProperties(pdm, obj);
-              target.appendChild(pdm);
+              sezioneDiv.appendChild(pdm);
               pdm.disabled = !obj.editable;
               break;
             case 'CheckButton':
               //Toggle button
               var ptb = document.createElement('paper-checkbox');
               this.setCheckboxProperties(ptb, obj);
-              target.appendChild(ptb);
+              sezioneDiv.appendChild(ptb);
               ptb.disabled = !obj.editable;
               break;
             case 'InputText':
               //Text input
               var pti = document.createElement('paper-input');
               this.setInputProperties(pti, 'text', obj);
-              target.appendChild(pti);
+              sezioneDiv.appendChild(pti);
               pti.disabled = !obj.editable;
               break;
             case 'InputNumber':
               //Number input
               var pin = document.createElement('paper-input');
               this.setInputProperties(pin, 'number', obj);
-              target.appendChild(pin);
+              sezioneDiv.appendChild(pin);
               pin.disabled = !obj.editable;
               break;
             case 'InputSecret':
               //Secret input
               var pis = document.createElement('paper-input');
               this.setInputProperties(pis, 'password', obj);
-              target.appendChild(pis);
+              sezioneDiv.appendChild(pis);
               pis.disabled = !obj.editable;
               break;
             case 'InputTextArea':
               //TEXTAREA
               var pta = document.createElement('paper-textarea');
               this.setTextareaProperties(pta, obj);
-              target.appendChild(pta);
+              sezioneDiv.appendChild(pta);
               pti.disabled = !obj.editable;
               break;
             case 'InputDate':
               //Date input
               var pdi = document.createElement('paper-input');
               this.setDateInputProperties(pdi, obj);
-              target.appendChild(pdi);
+              sezioneDiv.appendChild(pdi);
               pdi.disabled = !obj.editable;
               break;
             case 'InputFile':
               //File input
               var pif = document.createElement('paper-input');
               this.setFileInputProperties(pif, obj);
-              target.appendChild(pif);
+              sezioneDiv.appendChild(pif);
               pif.disabled = !obj.editable;
               break;
             case 'RadioButton':
               var prg = document.createElement('paper-radio-group');
               this.setRadioGroupProperties(prg, obj);
-              target.appendChild(prg);
+              sezioneDiv.appendChild(prg);
               prg.disabled = !obj.editable;
               break;
           }
@@ -25117,13 +25138,22 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       // temp.value è il valore da passare
       var temp={ok:false};
       switch (this.$$('#'+obj).localName){
-        /*case 'paper-input':
+        // pintori 12/07/2016 quando vengono effettuati gli aggiornamenti non considera gli id  degli elemeni dono di scelta
+        case 'paper-input':
           temp.ok=true;
-          temp.value=''+this.$$('#'+obj).text;
-          break;*/
+          temp.value=''+this.$$('#'+obj).value;
+          break;
+        case 'paper-textarea':
+          temp.ok=true;
+          temp.value=''+this.$$('#'+obj).value;
+          break;
         case 'paper-checkbox':
           temp.ok=true;
           temp.value=''+this.$$('#'+obj).checked;
+          break;
+        case 'paper-radio-group':
+          temp.ok=true;
+          temp.value=''+this.$$('#'+obj).value;
           break;
         case 'paper-dropdown-menu':
           if (this.$$('#'+obj).selectedItem){
@@ -25143,7 +25173,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
       var etichetta = document.createElement('div');
       etichetta.innerHTML = data.label;
-      etichetta.className = 'titoloElemento';
+      etichetta.className = 'titoloMultiselect'; //'titoloElemento';
       var sottotitoloRadio = document.createElement('div');
       sottotitoloRadio.innerHTML = data.suggestion;
       sottotitoloRadio.className = 'sottotitoloElemento';
@@ -26452,7 +26482,8 @@ It will also ensure that focus remains in the dialog.
       }
 
       #editForm {
-        padding: 24px;
+        /*padding: 24px;*/
+        background: #eee;
       }
 
       .mainDialog {
@@ -26985,7 +27016,12 @@ It will also ensure that focus remains in the dialog.
           temp.method='POST';
           temp.addEventListener('saved', this.saved.bind(this));
           temp.modal=true;
-          temp.titolo = this.obj.titolo;
+          if (this.obj.infoCreazione.titolo){
+            temp.titolo = this.obj.infoCreazione.titolo;
+          } else {
+            temp.titolo = this.obj.titolo;
+          }
+          //temp.titolo = this.obj.titolo;
           temp.template = this.obj.infoCreazione;
         }
       },
@@ -28613,7 +28649,12 @@ It will also ensure that focus remains in the dialog.
           temp.method='PUT';
           temp.addEventListener('saved', this.saved.bind(this));
           temp.modal=true;
-          temp.titolo = this.obj.titolo;
+          if (this.obj.infoModifica.titolo){
+            temp.titolo = this.obj.infoModifica.titolo + ': ' + this.obj.titolo;
+          } else {
+            temp.titolo = this.obj.titolo;
+          }
+      //    temp.titolo = this.obj.titolo;
           temp.template = this.obj.infoModifica;
         }
       },

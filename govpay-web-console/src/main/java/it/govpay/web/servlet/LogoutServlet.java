@@ -56,10 +56,12 @@ public class LogoutServlet extends HttpServlet {
 			this.initLogger("logout", resp);
 			this.log.debug("Logout in corso...");
 			
+			String msg = req.getParameter("msg");
+			
 			HttpSession session = req.getSession(false);
 			if(session != null)
 				session.invalidate();
-			String location = req.getContextPath() ;//+ "/public/login.html";
+			String location = req.getContextPath() + (msg != null ? ("?msg="+msg):"")	;//+ "/public/login.html";
 			resp.sendRedirect(location);
 		}catch(Exception e){
 			this.log.error("Si e' verificato un errore durante il logout: "+e.getMessage(),e);
