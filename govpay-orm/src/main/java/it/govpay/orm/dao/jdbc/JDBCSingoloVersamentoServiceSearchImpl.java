@@ -187,6 +187,8 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 			fields.add(SingoloVersamento.model().TIPO_CONTABILITA);
 			fields.add(SingoloVersamento.model().CODICE_CONTABILITA);
 			fields.add(SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO);
+			fields.add(SingoloVersamento.model().PROVINCIA_RESIDENZA);
+			fields.add(SingoloVersamento.model().NOTE);
 
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
 			fields.add(new CustomField("id_tributo", Long.class, "id_tributo", this.getSingoloVersamentoFieldConverter().toTable(SingoloVersamento.model())));
@@ -607,11 +609,26 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
+		
 		if(expression.inUseModel(SingoloVersamento.model().ID_TRIBUTO,false)){
 			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
 			String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_TRIBUTO);
 			sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+		}
+		
+		if(expression.inUseModel(SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO,false)){
+
+			if(!expression.inUseModel(SingoloVersamento.model().ID_TRIBUTO,false)){
+				String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+				String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_TRIBUTO);
+				sqlQueryObject.addFromTable(tableName2);
+				sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
+			}
+
+			String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_TRIBUTO);
+			String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_TRIBUTO.ID_TIPO_TRIBUTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_tipo_tributo="+tableName2+".id");
+			
 		}
 		
 		if(expression.inUseModel(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO,false)){
@@ -635,7 +652,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 		
 		if(expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO.ID_APPLICAZIONE,false)){
 			
-			if(expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO,false)){
+			if(!expression.inUseModel(SingoloVersamento.model().ID_VERSAMENTO,false)){
 				String tableName1 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
 				String tableName2 = this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model().ID_VERSAMENTO);
 				sqlQueryObject.addFromTable(tableName2);

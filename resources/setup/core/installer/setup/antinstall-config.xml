@@ -32,6 +32,7 @@
 	<comment displayText=""/>
 
 	<directory defaultValue="/var/govpay" defaultValueWin="C:\govpay" displayText="Work Folder" checkExists="false" property="antinstaller_work_folder" />
+	<directory defaultValue="/var/govpay/console" defaultValueWin="C:\govpay\console" displayText="Console Work Folder" checkExists="false" property="antinstaller_console_work_folder" />
 
 	<comment displayText=""/>
 

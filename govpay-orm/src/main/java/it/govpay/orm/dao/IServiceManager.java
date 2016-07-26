@@ -323,6 +323,58 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:tipoTributo type:TipoTributo
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.TipoTributo}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.TipoTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITipoTributoServiceSearch getTipoTributoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoTributo}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.TipoTributo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public ITipoTributoService getTipoTributoService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:ACL type:ACL
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.ACL}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.ACL}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IACLServiceSearch getACLServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.ACL}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.ACL}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IACLService getACLService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Operatore type:Operatore
 	 =====================================================================================================================
 	*/
@@ -630,6 +682,60 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:RendicontazionePagamento type:RendicontazionePagamento
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamento}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() throws ServiceException,NotImplementedException;
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:RendicontazionePagamentoSenzaRPT type:RendicontazionePagamentoSenzaRPT
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IRendicontazionePagamentoSenzaRPTServiceSearch getRendicontazionePagamentoSenzaRPTServiceSearch() throws ServiceException,NotImplementedException;
+	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:FrFiltroApp type:FrFiltroApp
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IFrFiltroAppServiceSearch getFrFiltroAppServiceSearch() throws ServiceException,NotImplementedException;
+	
 	
 	
 	

@@ -46,6 +46,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Pagamento",Pagamento.class));
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new Field("codSingoloVersamentoEnte",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_PAGATO = new Field("importoPagato",double.class,"Pagamento",Pagamento.class);
+		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new Field("iur",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
@@ -58,6 +59,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.ANNO_RIFERIMENTO = new Field("annoRiferimento",java.lang.Integer.class,"Pagamento",Pagamento.class);
 		this.INDICE_SINGOLO_PAGAMENTO = new Field("indiceSingoloPagamento",java.lang.Integer.class,"Pagamento",Pagamento.class);
 		this.ID_RR = new it.govpay.orm.model.IdRrModel(new Field("idRr",it.govpay.orm.IdRr.class,"Pagamento",Pagamento.class));
+		this.DATA_ACQUISIZIONE_REVOCA = new Field("dataAcquisizioneRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.CAUSALE_REVOCA = new Field("causaleRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_REVOCA = new Field("datiRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_REVOCATO = new Field("importoRevocato",java.lang.Double.class,"Pagamento",Pagamento.class);
@@ -80,6 +82,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Pagamento",Pagamento.class));
 		this.COD_SINGOLO_VERSAMENTO_ENTE = new ComplexField(father,"codSingoloVersamentoEnte",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",double.class,"Pagamento",Pagamento.class);
+		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
@@ -92,6 +95,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.ANNO_RIFERIMENTO = new ComplexField(father,"annoRiferimento",java.lang.Integer.class,"Pagamento",Pagamento.class);
 		this.INDICE_SINGOLO_PAGAMENTO = new ComplexField(father,"indiceSingoloPagamento",java.lang.Integer.class,"Pagamento",Pagamento.class);
 		this.ID_RR = new it.govpay.orm.model.IdRrModel(new ComplexField(father,"idRr",it.govpay.orm.IdRr.class,"Pagamento",Pagamento.class));
+		this.DATA_ACQUISIZIONE_REVOCA = new ComplexField(father,"dataAcquisizioneRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.CAUSALE_REVOCA = new ComplexField(father,"causaleRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_REVOCA = new ComplexField(father,"datiRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_REVOCATO = new ComplexField(father,"importoRevocato",java.lang.Double.class,"Pagamento",Pagamento.class);
@@ -116,6 +120,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	 
 	public IField IMPORTO_PAGATO = null;
 	 
+	public IField DATA_ACQUISIZIONE = null;
+	 
 	public IField IUR = null;
 	 
 	public IField DATA_PAGAMENTO = null;
@@ -139,6 +145,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	public IField INDICE_SINGOLO_PAGAMENTO = null;
 	 
 	public it.govpay.orm.model.IdRrModel ID_RR = null;
+	 
+	public IField DATA_ACQUISIZIONE_REVOCA = null;
 	 
 	public IField CAUSALE_REVOCA = null;
 	 

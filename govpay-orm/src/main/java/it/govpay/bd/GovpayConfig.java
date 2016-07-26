@@ -38,6 +38,7 @@ public class GovpayConfig {
 	private String databaseType;
 	private boolean databaseShowSql;
 	private String dataSourceJNDIName;
+	private String dataSourceAppName;
 	
 	public GovpayConfig() throws Exception {
 		InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
@@ -48,6 +49,7 @@ public class GovpayConfig {
 		String databaseShowSqlString = getProperty("it.govpay.orm.showSql", props, true);
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
 		this.dataSourceJNDIName = getProperty("it.govpay.orm.dataSourceJNDIName", props, true);
+		this.dataSourceAppName = getProperty("it.govpay.orm.dataSourceAppName", props, true);
 	}
 
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {
@@ -71,5 +73,9 @@ public class GovpayConfig {
 
 	public String getDataSourceJNDIName() {
 		return dataSourceJNDIName;
+	}
+
+	public String getDataSourceAppName() {
+		return dataSourceAppName;
 	}
 }

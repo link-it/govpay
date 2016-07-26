@@ -99,7 +99,7 @@ public class InviaNotificaThread implements Runnable {
 					ctx.log("notifica.er");
 			}
 			GpThreadLocal.set(ctx);
-			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(null).getConnettoreNotifica().getVersione());
+			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(null).getVersione());
 			
 			ThreadContext.put("op", ctx.getTransactionId());
 		
@@ -108,7 +108,7 @@ public class InviaNotificaThread implements Runnable {
 				ctx.log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");
 				if(bd == null)
-					bd = BasicBD.newInstance();
+					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 				NotificheBD notificheBD = new NotificheBD(bd);
 				long tentativi = notifica.getTentativiSpedizione() + 1;
 				Date prossima = new GregorianCalendar(9999,12,31).getTime();
@@ -121,7 +121,7 @@ public class InviaNotificaThread implements Runnable {
 			notifica.setStato(StatoSpedizione.SPEDITO);
 			notifica.setDescrizioneStato(null);
 			notifica.setDataAggiornamento(new Date());
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			NotificheBD notificheBD = new NotificheBD(bd);
 			notificheBD.updateSpedito(notifica.getId());
 			ctx.log("notifica.ok");
@@ -133,7 +133,7 @@ public class InviaNotificaThread implements Runnable {
 				log.error("Errore nella consegna della notifica", e);
 			try {
 				if(bd == null)
-					bd = BasicBD.newInstance();
+					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 				long tentativi = notifica.getTentativiSpedizione() + 1;
 				NotificheBD notificheBD = new NotificheBD(bd);
 				Date prossima = new Date(new Date().getTime() + (tentativi * tentativi * 60 * 1000));

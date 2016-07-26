@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Acl.Servizio;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.SingoloVersamento;
@@ -100,6 +101,9 @@ public class VersamentoUtils {
 			model.setCausaleVersamento(causale);
 		}
 		
+		model.setCodAnnoTributario(versamento.getAnnoTributario());
+		model.setCodBundlekey(versamento.getBundlekey());
+		model.setCodLotto(versamento.getCodDebito()); 
 		model.setCodVersamentoEnte(versamento.getCodVersamentoEnte());
 		model.setDataCreazione(new Date());
 		model.setDataScadenza(versamento.getDataScadenza());
@@ -144,6 +148,7 @@ public class VersamentoUtils {
 		model.setIdVersamento(0);
 		model.setImportoSingoloVersamento(singoloVersamento.getImporto());
 		model.setStatoSingoloVersamento(StatoSingoloVersamento.NON_ESEGUITO);
+		model.setNote(singoloVersamento.getNote()); 
 		if(singoloVersamento.getBolloTelematico() != null) {
 			try {
 				model.setTributo(Tributo.BOLLOT, bd);
@@ -162,7 +167,7 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.TRB_000, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 			
-			if(!versamento.getApplicazione(bd).isTrusted() && !versamento.getApplicazione(bd).getIdTributi().contains(model.getIdTributo())) {
+			if(!versamento.getApplicazione(bd).isTrusted() && !AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo())) {
 				throw new GovPayException(EsitoOperazione.VER_022, versamento.getUo(bd).getDominio(bd).getCodDominio(), singoloVersamento.getCodTributo());
 			}
 		}
@@ -172,7 +177,7 @@ public class VersamentoUtils {
 			if(!versamento.getApplicazione(bd).isTrusted())
 				throw new GovPayException(EsitoOperazione.VER_019);
 			
-			if(!versamento.getApplicazione(bd).getIdDomini().contains(versamento.getUo(bd).getDominio(bd).getId()))
+			if(!AclEngine.isAuthorized(versamento.getApplicazione(bd), Servizio.VERSAMENTI, versamento.getUo(bd).getDominio(bd).getCodDominio(), null))
 				throw new GovPayException(EsitoOperazione.VER_021);
 			
 			try {

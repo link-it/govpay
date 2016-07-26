@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
@@ -32,8 +33,10 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
@@ -43,8 +46,11 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
+import net.sf.json.JSONObject;
 
 public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
@@ -224,5 +230,30 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		}
 		
 		return !nascondi;
+	}
+	
+	public SelectList<String> getSelectListVersione(String versioneId){
+		if(versioneId == null) versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		
+		String firmaRichiestaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.label");
+		List<Voce<String>> valoriVersione = new ArrayList<Voce<String>>(); 
+		valoriVersione.add(new Voce<String>(Versione.GP_02_02_00.getLabel(), Versione.GP_02_02_00.getLabel()));
+		valoriVersione.add(new Voce<String>(Versione.GP_02_01_00.getLabel(), Versione.GP_02_01_00.getLabel()));
+		SelectList<String> versione = new SelectList<String>(versioneId, firmaRichiestaLabel, null, true, false, true, valoriVersione);
+		versione.setAvanzata(true);
+		versione.setDefaultValue(Versione.GP_02_02_00.getLabel()); 
+		
+		return versione;
+	}
+	
+	public Versione getVersioneSelezionata(JSONObject jsonObject, String versioneId, boolean remove) throws ServiceException{
+		if(versioneId == null) versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		
+		String versioneJson = jsonObject.getString(versioneId);
+		
+		if(remove)
+			jsonObject.remove(versioneId);
+		
+		return Versione.toEnum(versioneJson);
 	}
 }

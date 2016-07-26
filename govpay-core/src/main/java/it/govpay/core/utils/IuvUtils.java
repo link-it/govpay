@@ -29,6 +29,7 @@ import java.util.Locale;
 
 import javax.xml.bind.JAXBException;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.xml.sax.SAXException;
 
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.CtNumeroAvviso;
@@ -69,20 +70,24 @@ public class IuvUtils {
 		return payToLoc + gln + refNo + "0" + applicationCode + iuv + amount + importo;
 	}
 	
-	public static IuvGenerato toIuvGenerato(Applicazione applicazione, Dominio dominio, it.govpay.bd.model.Iuv iuv, BigDecimal importoTotale) throws Exception {
+	public static IuvGenerato toIuvGenerato(Applicazione applicazione, Dominio dominio, it.govpay.bd.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
 		IuvGenerato iuvGenerato = new IuvGenerato();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
 		iuvGenerato.setCodVersamentoEnte(iuv.getCodVersamentoEnte());
 		iuvGenerato.setIuv(iuv.getIuv());
 		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
+		try {
 		switch (GovpayConfig.getInstance().getVersioneAvviso()) {
-		case v001:
-			iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
-			break;
-		case v002:
-			iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
-			break;
+			case v001:
+				iuvGenerato.setQrCode(buildQrCode001(dominio.getCodDominio(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
+				break;
+			case v002:
+				iuvGenerato.setQrCode(buildQrCode002(dominio.getCodDominio(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale));
+				break;
+			}
+		} catch (Exception e) {
+			throw new ServiceException(e);
 		}
 		
 		return iuvGenerato;

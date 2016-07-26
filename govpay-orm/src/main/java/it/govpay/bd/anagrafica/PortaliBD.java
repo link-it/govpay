@@ -21,12 +21,13 @@
 package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.PortaleFilter;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Portale;
 import it.govpay.bd.model.converter.PortaleConverter;
 import it.govpay.orm.IdPortale;
 import it.govpay.orm.dao.jdbc.JDBCPortaleServiceSearch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -37,6 +38,8 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.utils.UtilsException;
+
+import it.govpay.bd.anagrafica.filters.PortaleFilter;
 
 public class PortaliBD extends BasicBD {
 
@@ -56,13 +59,16 @@ public class PortaliBD extends BasicBD {
 	public Portale getPortale(long id) throws NotFoundException, ServiceException, MultipleResultException {
 		try {
 			it.govpay.orm.Portale portaleVO = ((JDBCPortaleServiceSearch)this.getPortaleService()).get(id);
-			Portale ente = PortaleConverter.toDTO(portaleVO);
+			AclBD aclBD = new AclBD(this);
+			List<Acl> acls = aclBD.getAclPortale(portaleVO.getId());
+
+			Portale ente = PortaleConverter.toDTO(portaleVO, acls);
 			return ente;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	/**
 	 * Recupera l'portale tramite l'id logico
 	 * 
@@ -77,15 +83,18 @@ public class PortaliBD extends BasicBD {
 			IdPortale id = new IdPortale();
 			id.setCodPortale(codPortale);
 			it.govpay.orm.Portale portaleVO = this.getPortaleService().get(id);
-			Portale ente = PortaleConverter.toDTO(portaleVO);
+			AclBD aclBD = new AclBD(this);
+			List<Acl> acls = aclBD.getAclPortale(portaleVO.getId());
+
+			Portale ente = PortaleConverter.toDTO(portaleVO, acls);
 			return ente;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
 
-	
-	
+
+
 	/**
 	 * Recupera l'portale identificata dal Principal fornito
 	 * 
@@ -99,7 +108,11 @@ public class PortaliBD extends BasicBD {
 			IExpression exp = this.getPortaleService().newExpression();
 			exp.equals(it.govpay.orm.Portale.model().PRINCIPAL, principal);
 			it.govpay.orm.Portale portaleVO = this.getPortaleService().find(exp);
-			Portale ente = PortaleConverter.toDTO(portaleVO);
+
+			AclBD aclBD = new AclBD(this);
+			List<Acl> acls = aclBD.getAclPortale(portaleVO.getId());
+
+			Portale ente = PortaleConverter.toDTO(portaleVO, acls);
 			return ente;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -109,7 +122,7 @@ public class PortaliBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	/**
 	 * Aggiorna l'portale con i dati forniti
 	 * @param portale
@@ -118,7 +131,7 @@ public class PortaliBD extends BasicBD {
 	 */
 	public void updatePortale(Portale portale) throws NotFoundException, ServiceException {
 		try {
-			
+
 			it.govpay.orm.Portale vo = PortaleConverter.toVO(portale);
 			IdPortale idPortale = this.getPortaleService().convertToId(vo);
 
@@ -126,6 +139,9 @@ public class PortaliBD extends BasicBD {
 				throw new NotFoundException("Portale con id ["+idPortale.toJson()+"] non trovato");
 			}
 
+			AclBD aclBD = new AclBD(this);
+			aclBD.deleteAclPortale(portale.getId());
+			aclBD.insertAclPortale(portale.getId(), portale.getAcls());
 			this.getPortaleService().update(idPortale, vo);
 			portale.setId(vo.getId());
 			AnagraficaManager.removeFromCache(portale);
@@ -135,10 +151,10 @@ public class PortaliBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
 			throw new ServiceException(e);
-		}
+		} 
 
 	}
-	
+
 	/**
 	 * Crea una nuova portale con i dati forniti
 	 * @param portale
@@ -149,20 +165,14 @@ public class PortaliBD extends BasicBD {
 			it.govpay.orm.Portale vo = PortaleConverter.toVO(portale);
 			this.getPortaleService().create(vo);
 			portale.setId(vo.getId());
+
+			AclBD aclBD = new AclBD(this);
+			aclBD.insertAclPortale(portale.getId(), portale.getAcls());	
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
 
-	/**
-	 * Recupera tutti i portali censiti.
-	 * @return
-	 * @throws ServiceException 
-	 */
-	public List<Portale> getPortali() throws ServiceException {
-		return this.findAll(this.newFilter());
-	}
-	
 	public PortaleFilter newFilter() throws ServiceException {
 		return new PortaleFilter(this.getPortaleService());
 	}
@@ -177,11 +187,27 @@ public class PortaliBD extends BasicBD {
 
 	public List<Portale> findAll(PortaleFilter filter) throws ServiceException {
 		try {
-			return PortaleConverter.toDTOList(this.getPortaleService().findAll(filter.toPaginatedExpression()));
+			List<it.govpay.orm.Portale> findAll = this.getPortaleService().findAll(filter.toPaginatedExpression());
+			List<Portale> lst = new ArrayList<Portale>();
+			
+			for (it.govpay.orm.Portale portale : findAll) {
+				
+				AclBD aclBD = new AclBD(this);
+				List<Acl> acls = new ArrayList<Acl>();
+				try {
+					acls = aclBD.getAclPortale(portale.getId());
+				} catch (NotFoundException e) {
+
+				}
+
+				Portale ente = PortaleConverter.toDTO(portale, acls);
+				lst.add(ente);
+			}
+			
+			return lst;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
-
 
 }

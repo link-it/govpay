@@ -32,9 +32,15 @@ public class InfoForm {
 	
 	private URI uri;
 	private List<Sezione> sezioni;
+	private String titolo;
 	
 	public InfoForm(URI uri) {
+		this(uri, null);
+	}
+	
+	public InfoForm(URI uri,String titolo) {
 		this.uri = uri;
+		this.titolo = titolo;
 		this.sezioni = new ArrayList<Sezione>();
 		this.sezioni.add(new Sezione(null));
 	}
@@ -79,4 +85,13 @@ public class InfoForm {
 			this.fields.add(field);
 		}
 	}
+
+	public String getTitolo() {
+		return titolo;
+	}
+
+	public void setTitolo(String titolo) {
+		this.titolo = titolo;
+	}
+	
 }

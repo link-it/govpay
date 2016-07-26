@@ -37,7 +37,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-tributo">
  * 		&lt;sequence>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codTributo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idTipoTributo" type="{http://www.govpay.it/orm}id-tipo-tributo" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,7 +53,7 @@ import java.io.Serializable;
 @XmlType(name = "id-tributo", 
   propOrder = {
   	"idDominio",
-  	"codTributo"
+  	"idTipoTributo"
   }
 )
 
@@ -85,12 +85,12 @@ public class IdTributo extends org.openspcoop2.utils.beans.BaseBean implements S
     this.idDominio = idDominio;
   }
 
-  public java.lang.String getCodTributo() {
-    return this.codTributo;
+  public IdTipoTributo getIdTipoTributo() {
+    return this.idTipoTributo;
   }
 
-  public void setCodTributo(java.lang.String codTributo) {
-    this.codTributo = codTributo;
+  public void setIdTipoTributo(IdTipoTributo idTipoTributo) {
+    this.idTipoTributo = idTipoTributo;
   }
 
   private static final long serialVersionUID = 1L;
@@ -103,8 +103,7 @@ public class IdTributo extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="idDominio",required=true,nillable=false)
   protected IdDominio idDominio;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codTributo",required=true,nillable=false)
-  protected java.lang.String codTributo;
+  @XmlElement(name="idTipoTributo",required=true,nillable=false)
+  protected IdTipoTributo idTipoTributo;
 
 }

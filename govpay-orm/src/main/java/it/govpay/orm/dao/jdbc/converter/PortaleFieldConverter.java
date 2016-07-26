@@ -89,18 +89,25 @@ public class PortaleFieldConverter extends AbstractSQLFieldConverter {
 				return "principal";
 			}
 		}
+		if(field.equals(Portale.model().VERSIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".versione";
+			}else{
+				return "versione";
+			}
+		}
+		if(field.equals(Portale.model().TRUSTED)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trusted";
+			}else{
+				return "trusted";
+			}
+		}
 		if(field.equals(Portale.model().ABILITATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".abilitato";
 			}else{
 				return "abilitato";
-			}
-		}
-		if(field.equals(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
 			}
 		}
 
@@ -125,11 +132,14 @@ public class PortaleFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Portale.model().PRINCIPAL)){
 			return this.toTable(Portale.model(), returnAlias);
 		}
-		if(field.equals(Portale.model().ABILITATO)){
+		if(field.equals(Portale.model().VERSIONE)){
 			return this.toTable(Portale.model(), returnAlias);
 		}
-		if(field.equals(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE)){
-			return this.toTable(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE, returnAlias);
+		if(field.equals(Portale.model().TRUSTED)){
+			return this.toTable(Portale.model(), returnAlias);
+		}
+		if(field.equals(Portale.model().ABILITATO)){
+			return this.toTable(Portale.model(), returnAlias);
 		}
 
 
@@ -146,12 +156,6 @@ public class PortaleFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Portale.model())){
 			return "portali";
-		}
-		if(model.equals(Portale.model().PORTALE_APPLICAZIONE)){
-			return "portali_applicazioni";
-		}
-		if(model.equals(Portale.model().PORTALE_APPLICAZIONE.ID_APPLICAZIONE)){
-			return "applicazioni";
 		}
 
 

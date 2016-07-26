@@ -89,8 +89,8 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			ProfiloOperatore profilo = operatore.getProfilo();
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-			List<Long> idApplicazioniOperatore = operatore.getIdApplicazioni();
-			List<Long> idUoOperatore = operatore.getIdEnti();
+			List<Long> idApplicazioniOperatore = null; //operatore.getIdApplicazioni();
+			List<Long> idUoOperatore = null;// operatore.getIdEnti();
 
 			URI esportazione = null; 
 			URI cancellazione = null;

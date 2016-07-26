@@ -22,8 +22,11 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.bd.model.converter.OperatoreConverter;
+import it.govpay.orm.ACL;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;
 
@@ -90,8 +93,18 @@ public class OperatoriBD extends BasicBD {
 
 	
 	private Operatore getOperatore(it.govpay.orm.Operatore operatoreVO) throws ServiceException, NotFoundException, MultipleResultException, NotImplementedException {
-		Operatore operatore = OperatoreConverter.toDTO(operatoreVO);
-		return operatore;
+		
+		AclBD aclBD = new AclBD(this);
+		try{
+			List<Acl> acls = aclBD.getAclOperatore(operatoreVO.getId());
+
+			Operatore operatore = OperatoreConverter.toDTO(operatoreVO, acls);
+			return operatore;
+
+		} catch(NotFoundException e) {
+			throw new ServiceException(e);
+		}
+
 	}
 	
 	/**
@@ -122,8 +135,28 @@ public class OperatoriBD extends BasicBD {
 			if(!this.getOperatoreService().exists(idOperatore)) {
 				throw new NotFoundException("Operatore con id ["+idOperatore.toJson()+"] non trovato");
 			}
-
 			this.getOperatoreService().update(idOperatore, vo);
+
+			AclBD aclBD = new AclBD(this);
+			aclBD.deleteAclOperatore(operatore.getId());
+			
+			if(operatore.getAcls() != null && !operatore.getAcls().isEmpty()) {
+				 
+				for(Acl acl: operatore.getAcls()) {
+					try{
+						ACL aclVo = AclConverter.toVO(acl, this);
+						IdOperatore idOperatoreACL = new IdOperatore();
+						idOperatoreACL.setId(operatore.getId());
+						aclVo.setIdOperatore(idOperatoreACL);
+						this.getAclService().create(aclVo);
+					} catch(NotFoundException e) {
+						throw new ServiceException(e);
+					}
+				}
+			}
+
+			
+			
 			operatore.setId(vo.getId());
 			AnagraficaManager.removeFromCache(operatore);
 		} catch (NotImplementedException e) {
@@ -149,7 +182,21 @@ public class OperatoriBD extends BasicBD {
 
 			this.getOperatoreService().create(vo);
 			operatore.setId(vo.getId());
-
+			
+			if(operatore.getAcls() != null && !operatore.getAcls().isEmpty()) {
+				 
+				for(Acl acl: operatore.getAcls()) {
+					try{
+						ACL aclVo = AclConverter.toVO(acl, this);
+						IdOperatore idOperatoreACL = new IdOperatore();
+						idOperatoreACL.setId(operatore.getId());
+						aclVo.setIdOperatore(idOperatoreACL);
+						this.getAclService().create(aclVo);
+					} catch(NotFoundException e) {
+						throw new ServiceException(e);
+					}
+				}
+			}
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

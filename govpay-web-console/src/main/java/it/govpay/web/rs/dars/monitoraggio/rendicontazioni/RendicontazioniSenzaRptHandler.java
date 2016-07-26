@@ -40,8 +40,6 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Iuv;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -76,10 +74,10 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
 			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-			List<Long> idApplicazioniOperatore = operatore.getIdApplicazioni();
+//			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+//			ProfiloOperatore profilo = operatore.getProfilo();
+//			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+//			List<Long> idApplicazioniOperatore = null ;// operatore.getIdApplicazioni();
 
 			URI esportazione = null; 
 			URI cancellazione = null;
@@ -89,7 +87,7 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 			String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.id");
 			String idFrApplicazione = this.getParameter(uriInfo, idFrApplicazioneId, String.class);
 
-			boolean eseguiRicerca = isAdmin;
+			boolean eseguiRicerca = true;// isAdmin;
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			PagamentoFilter filter = pagamentiBD.newFilter();
@@ -99,13 +97,13 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 			filter.getFilterSortList().add(fsw);
 
 			if(StringUtils.isNotEmpty(idFrApplicazione)){
-				if(!isAdmin){
-					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore);
-
-					if(eseguiRicerca){
-						eseguiRicerca = eseguiRicerca && idApplicazioniOperatore.contains(Long.parseLong(idFrApplicazione));
-					} 
-				}
+//				if(!isAdmin){
+//					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore);
+//
+//					if(eseguiRicerca){
+//						eseguiRicerca = eseguiRicerca && idApplicazioniOperatore.contains(Long.parseLong(idFrApplicazione));
+//					} 
+//				}
 			}
 
 			long count = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(Long.parseLong(idFrApplicazione)) : 0;			

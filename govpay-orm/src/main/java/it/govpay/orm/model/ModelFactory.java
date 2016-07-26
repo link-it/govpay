@@ -52,6 +52,10 @@ public class ModelFactory {
 	
 	public static TributoModel TRIBUTO = new TributoModel();
 	
+	public static TipoTributoModel TIPO_TRIBUTO = new TipoTributoModel();
+	
+	public static ACLModel ACL = new ACLModel();
+	
 	public static OperatoreModel OPERATORE = new OperatoreModel();
 	
 	public static IUVModel IUV = new IUVModel();
@@ -75,6 +79,12 @@ public class ModelFactory {
 	public static FrApplicazioneModel FR_APPLICAZIONE = new FrApplicazioneModel();
 	
 	public static RendicontazioneSenzaRPTModel RENDICONTAZIONE_SENZA_RPT = new RendicontazioneSenzaRPTModel();
+	
+	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
+	
+	public static RendicontazionePagamentoSenzaRPTModel RENDICONTAZIONE_PAGAMENTO_SENZA_RPT = new RendicontazionePagamentoSenzaRPTModel();
+	
+	public static FrFiltroAppModel FR_FILTRO_APP = new FrFiltroAppModel();
 	
 
 }

@@ -24,6 +24,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.core.utils.GpThreadLocal;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -44,7 +45,7 @@ public class GestioneRedirectGw {
 		Rpt rpt = null;
 
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			RptBD rptBD = new RptBD(bd);
 			rpt = rptBD.getRptByCodSessione(codDominio, codSessione);
 

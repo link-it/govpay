@@ -1,4 +1,4 @@
-VERSION=2.1-p1
+VERSION=2.2
 
 # Directory
 COPYING_FILE=../../COPYING
@@ -48,12 +48,19 @@ then
         exit 3
 fi
 cp ${DOC}/GovPay-ManualeInstallazione.pdf core.template/doc/
-if [ ! -e "${DOC}/GovPay-ManualeIntegrazione.pdf" ]
+if [ ! -e "${DOC}/GovPay-ManualeIntegrazioneSOAP.pdf" ]
 then
-        echo "Manuale di Integrazione non esistente"
+        echo "Manuale di Integrazione SOAP non esistente"
         exit 4
 fi 
-cp ${DOC}/GovPay-ManualeIntegrazione.pdf core.template/doc/
+cp ${DOC}/GovPay-ManualeIntegrazioneSOAP.pdf core.template/doc/
+if [ ! -e "${DOC}/GovPay-ManualeIntegrazioneREST.pdf" ]
+then
+        echo "Manuale di Integrazione REST non esistente"
+        exit 4
+fi
+cp ${DOC}/GovPay-ManualeIntegrazioneREST.pdf core.template/doc/
+
 if [ ! -e "${DOC}/GovPay-ManualeUtente.pdf" ]
 then
         echo "Manuale Utente non esistente"

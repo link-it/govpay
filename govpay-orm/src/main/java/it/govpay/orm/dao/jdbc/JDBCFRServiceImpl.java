@@ -110,6 +110,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().ANNO_RIFERIMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_REGOLAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ACQUISIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().NUMERO_PAGAMENTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().IMPORTO_TOTALE_PAGAMENTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().COD_BIC_RIVERSAMENTO,false),"?");
@@ -127,6 +128,7 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getAnnoRiferimento(),FR.model().ANNO_RIFERIMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataOraFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataRegolamento(),FR.model().DATA_REGOLAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataAcquisizione(),FR.model().DATA_ACQUISIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getNumeroPagamenti(),FR.model().NUMERO_PAGAMENTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getImportoTotalePagamenti(),FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getCodBicRiversamento(),FR.model().COD_BIC_RIVERSAMENTO.getFieldType()),
@@ -237,6 +239,8 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		lstObjects_fr.add(new JDBCObject(fr.getDataOraFlusso(), FR.model().DATA_ORA_FLUSSO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_REGOLAMENTO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getDataRegolamento(), FR.model().DATA_REGOLAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_ACQUISIZIONE,false), "?");
+		lstObjects_fr.add(new JDBCObject(fr.getDataAcquisizione(), FR.model().DATA_ACQUISIZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().NUMERO_PAGAMENTI,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getNumeroPagamenti(), FR.model().NUMERO_PAGAMENTI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().IMPORTO_TOTALE_PAGAMENTI,false), "?");

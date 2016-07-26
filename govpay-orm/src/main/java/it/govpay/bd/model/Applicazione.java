@@ -26,19 +26,18 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class Applicazione extends BasicModel {
+public class Applicazione extends Versionabile {
 	
 	private static final long serialVersionUID = 1L;
 	private Long id;
 	private String codApplicazione;
 	private String principal;
 	private boolean abilitato;
-	private List<Long> idTributi;
-	private List<Long> idDomini;
     private Connettore connettoreNotifica;
     private Connettore connettoreVerifica;
     private FirmaRichiesta firmaRichiesta;
     private boolean trusted;
+    private List<Acl> acls;
     
     public Long getId() {
 		return id;
@@ -76,12 +75,6 @@ public class Applicazione extends BasicModel {
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
 	}
-	public List<Long> getIdTributi() {
-		return idTributi;
-	}
-	public void setIdTributi(List<Long> idTributi) {
-		this.idTributi = idTributi;
-	}
 	public FirmaRichiesta getFirmaRichiesta() {
 		return firmaRichiesta;
 	}
@@ -91,16 +84,16 @@ public class Applicazione extends BasicModel {
 	public void setCodFirmaRichiesta(String codifica) throws ServiceException {
 		this.firmaRichiesta = FirmaRichiesta.toEnum(codifica);
 	}
-	public List<Long> getIdDomini() {
-		return idDomini;
-	}
-	public void setIdDomini(List<Long> idDomini) {
-		this.idDomini = idDomini;
-	}
 	public boolean isTrusted() {
 		return trusted;
 	}
 	public void setTrusted(boolean trusted) {
 		this.trusted = trusted;
+	}
+	public List<Acl> getAcls() {
+		return acls;
+	}
+	public void setAcls(List<Acl> acls) {
+		this.acls = acls;
 	}
 }

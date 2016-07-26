@@ -21,10 +21,7 @@
 package it.govpay.orm.dao.jdbc;
 
 import it.govpay.orm.Applicazione;
-import it.govpay.orm.ApplicazioneDominio;
-import it.govpay.orm.ApplicazioneTributo;
 import it.govpay.orm.IdApplicazione;
-import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.converter.ApplicazioneFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.ApplicazioneFetch;
 
@@ -158,9 +155,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
         }
 
         List<Applicazione> list = new ArrayList<Applicazione>();
-        
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-				new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 
 		try{
 			List<IField> fields = new ArrayList<IField>();
@@ -171,6 +165,7 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 			fields.add(Applicazione.model().FIRMA_RICEVUTA);
 			fields.add(Applicazione.model().COD_CONNETTORE_ESITO);
 			fields.add(Applicazione.model().COD_CONNETTORE_VERIFICA);
+			fields.add(Applicazione.model().VERSIONE);
 			fields.add(Applicazione.model().TRUSTED);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
@@ -178,61 +173,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 			for(Map<String, Object> map: returnMap) {
 
 				Applicazione applicazione = (Applicazione)this.getApplicazioneFetch().fetch(jdbcProperties.getDatabase(), Applicazione.model(), map);
-
-				// Object applicazione_applicazioneTributo
-				ISQLQueryObject sqlQueryObjectGet_applicazione_applicazioneTributo = sqlQueryObject.newSQLQueryObject();
-				sqlQueryObjectGet_applicazione_applicazioneTributo.setANDLogicOperator(true);
-				sqlQueryObjectGet_applicazione_applicazioneTributo.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_TRIBUTO));
-				sqlQueryObjectGet_applicazione_applicazioneTributo.addSelectField("id_tributo");
-				sqlQueryObjectGet_applicazione_applicazioneTributo.addWhereCondition("id_applicazione=?");
-
-				// Get applicazione_applicazioneTributo
-				java.util.List<Object> applicazione_applicazioneTributo_listIdTributo = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_applicazione_applicazioneTributo.createSQLQuery(), jdbcProperties.isShowSql(), Long.class,
-						new JDBCObject(applicazione.getId(),Long.class));
-
-				if(applicazione_applicazioneTributo_listIdTributo != null) {
-					for (Object applicazione_applicazioneTributo_objectId: applicazione_applicazioneTributo_listIdTributo) {
-						Long applicazione_applicazioneTributo = (Long) applicazione_applicazioneTributo_objectId;
-						ApplicazioneTributo applicazioneTributo = new ApplicazioneTributo();
-						it.govpay.orm.IdTributo id_applicazione_applicazioneTributo_tributo = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_applicazione_applicazioneTributo_tributo = ((JDBCTributoServiceSearch)(this.getServiceManager().getTributoServiceSearch())).findId(applicazione_applicazioneTributo, false);
-						}else{
-							id_applicazione_applicazioneTributo_tributo = new it.govpay.orm.IdTributo();
-						}
-						id_applicazione_applicazioneTributo_tributo.setId(applicazione_applicazioneTributo);
-						applicazioneTributo.setIdTributo(id_applicazione_applicazioneTributo_tributo);
-						applicazione.addApplicazioneTributo(applicazioneTributo);
-					}
-				}
-
-				// Object applicazione_applicazioneTributo
-				ISQLQueryObject sqlQueryObjectGet_applicazione_applicazioneDominio = sqlQueryObject.newSQLQueryObject();
-				sqlQueryObjectGet_applicazione_applicazioneDominio.setANDLogicOperator(true);
-				sqlQueryObjectGet_applicazione_applicazioneDominio.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
-				sqlQueryObjectGet_applicazione_applicazioneDominio.addSelectField("id_dominio");
-				sqlQueryObjectGet_applicazione_applicazioneDominio.addWhereCondition("id_applicazione=?");
-
-				// Get applicazione_applicazioneTributo
-				java.util.List<Object> applicazione_applicazioneTributo_listIdDominio = (java.util.List<Object>) jdbcUtilities.executeQuery(sqlQueryObjectGet_applicazione_applicazioneDominio.createSQLQuery(), jdbcProperties.isShowSql(), Long.class,
-						new JDBCObject(applicazione.getId(),Long.class));
-
-				if(applicazione_applicazioneTributo_listIdDominio != null) {
-					for (Object applicazione_applicazioneDominio_objectId: applicazione_applicazioneTributo_listIdDominio) {
-						Long applicazione_applicazioneDominio = (Long) applicazione_applicazioneDominio_objectId;
-						ApplicazioneDominio applicazioneDominio = new ApplicazioneDominio();
-						IdDominio id_applicazione_applicazioneDominio_dominio = null;
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_applicazione_applicazioneDominio_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(applicazione_applicazioneDominio, false);
-						}else{
-							id_applicazione_applicazioneDominio_dominio = new it.govpay.orm.IdDominio();
-						}
-						id_applicazione_applicazioneDominio_dominio.setId(applicazione_applicazioneDominio);
-						applicazioneDominio.setIdDominio(id_applicazione_applicazioneDominio_dominio);
-						applicazione.addApplicazioneDominio(applicazioneDominio);
-					}
-				}
-
 
 				list.add(applicazione);
 			}
@@ -517,58 +457,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 			return;
 		}
 		obj.setId(imgSaved.getId());
-		if(obj.getApplicazioneTributoList()!=null){
-			List<it.govpay.orm.ApplicazioneTributo> listObj_ = obj.getApplicazioneTributoList();
-			for(it.govpay.orm.ApplicazioneTributo itemObj_ : listObj_){
-				it.govpay.orm.ApplicazioneTributo itemAlreadySaved_ = null;
-				if(imgSaved.getApplicazioneTributoList()!=null){
-					List<it.govpay.orm.ApplicazioneTributo> listImgSaved_ = imgSaved.getApplicazioneTributoList();
-					for(it.govpay.orm.ApplicazioneTributo itemImgSaved_ : listImgSaved_){
-						boolean objEqualsToImgSaved_ = false;
-						objEqualsToImgSaved_ = org.openspcoop2.generic_project.utils.Utilities.equals(itemObj_.getIdTributo(),itemImgSaved_.getIdTributo());
-						if(objEqualsToImgSaved_){
-							itemAlreadySaved_=itemImgSaved_;
-							break;
-						}
-					}
-				}
-				if(itemAlreadySaved_!=null){
-					itemObj_.setId(itemAlreadySaved_.getId());
-					if(itemObj_.getIdTributo()!=null && 
-							itemAlreadySaved_.getIdTributo()!=null){
-						itemObj_.getIdTributo().setId(itemAlreadySaved_.getIdTributo().getId());
-						if(itemObj_.getIdTributo().getIdDominio()!=null && 
-								itemAlreadySaved_.getIdTributo().getIdDominio()!=null){
-							itemObj_.getIdTributo().getIdDominio().setId(itemAlreadySaved_.getIdTributo().getIdDominio().getId());
-						}
-					}
-				}
-			}
-		}
-		if(obj.getApplicazioneDominioList()!=null){
-			List<it.govpay.orm.ApplicazioneDominio> listObj_ = obj.getApplicazioneDominioList();
-			for(it.govpay.orm.ApplicazioneDominio itemObj_ : listObj_){
-				it.govpay.orm.ApplicazioneDominio itemAlreadySaved_ = null;
-				if(imgSaved.getApplicazioneDominioList()!=null){
-					List<it.govpay.orm.ApplicazioneDominio> listImgSaved_ = imgSaved.getApplicazioneDominioList();
-					for(it.govpay.orm.ApplicazioneDominio itemImgSaved_ : listImgSaved_){
-						boolean objEqualsToImgSaved_ = false;
-						objEqualsToImgSaved_ = org.openspcoop2.generic_project.utils.Utilities.equals(itemObj_.getIdDominio(),itemImgSaved_.getIdDominio());
-						if(objEqualsToImgSaved_){
-							itemAlreadySaved_=itemImgSaved_;
-							break;
-						}
-					}
-				}
-				if(itemAlreadySaved_!=null){
-					itemObj_.setId(itemAlreadySaved_.getId());
-					if(itemObj_.getIdDominio()!=null && 
-							itemAlreadySaved_.getIdDominio()!=null){
-						itemObj_.getIdDominio().setId(itemAlreadySaved_.getIdDominio().getId());
-					}
-				}
-			}
-		}
 
 	}
 	
@@ -629,66 +517,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-	
-		if(expression.inUseModel(Applicazione.model().APPLICAZIONE_TRIBUTO,false)){
-			String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model());
-			String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_applicazione");
-		}
-		
-		if(expression.inUseModel(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO,false)){
-			if(!expression.inUseModel(Applicazione.model().APPLICAZIONE_TRIBUTO,false)){
-				sqlQueryObject.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_TRIBUTO));
-				String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model());
-				String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO);
-				sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_applicazione");
-			}
-			String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO);
-			String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
-		}
-		if(expression.inUseModel(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO,false)){
-
-			if(!expression.inUseModel(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO,false)){
-				if(!expression.inUseModel(Applicazione.model().APPLICAZIONE_TRIBUTO,false)){
-					sqlQueryObject.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_TRIBUTO));
-					String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model());
-					String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO);
-					sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_applicazione");
-			}
-				sqlQueryObject.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO));
-				String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO);
-				String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO);
-				sqlQueryObject.addWhereCondition(tableName1+".id_tributo="+tableName2+".id");
-		}
-		
-			String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO);
-			String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
-		}
-
-
-		
-		if(expression.inUseModel(Applicazione.model().APPLICAZIONE_DOMINIO,false)){
-			String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model());
-			String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_DOMINIO);
-			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_applicazione");
-		}
-		
-		if(expression.inUseModel(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO,false)){
-			if(!expression.inUseModel(Applicazione.model().APPLICAZIONE_DOMINIO,false)){
-				sqlQueryObject.addFromTable(this.getApplicazioneFieldConverter().toTable(Applicazione.model().APPLICAZIONE_DOMINIO));
-				String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model());
-				String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_DOMINIO);
-				sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_applicazione");
-			}
-			String tableName1 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_DOMINIO);
-			String tableName2 = this.getApplicazioneFieldConverter().toAliasTable(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_dominio="+tableName2+".id");
-		}
-		
-	
-
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdApplicazione id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
@@ -714,37 +542,6 @@ public class JDBCApplicazioneServiceSearchImpl implements IJDBCServiceSearchWith
 				new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model()))
 			));
 
-		// Applicazione.model().APPLICAZIONE_TRIBUTO
-		mapTableToPKColumn.put(converter.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO))
-			));
-
-		// Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO
-		mapTableToPKColumn.put(converter.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO))
-			));
-
-		// Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model().APPLICAZIONE_TRIBUTO.ID_TRIBUTO.ID_DOMINIO))
-			));
-
-		// Applicazione.model().APPLICAZIONE_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(Applicazione.model().APPLICAZIONE_DOMINIO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model().APPLICAZIONE_DOMINIO))
-			));
-
-		// Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO
-		mapTableToPKColumn.put(converter.toTable(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(Applicazione.model().APPLICAZIONE_DOMINIO.ID_DOMINIO))
-			));
-
-        
         return mapTableToPKColumn;		
 	}
 	

@@ -74,7 +74,7 @@ public class Wisp extends BasicBD {
 			nodoChiediSceltaWISP.setKeyWISP(codKeyWISP);
 			nodoChiediSceltaWISP.setPassword(stazione.getPassword());
 			NodoChiediSceltaWISPRisposta risposta = client.nodoChiediSceltaWISP(nodoChiediSceltaWISP, intermediario.getDenominazione());
-			setupConnection();
+			setupConnection(GpThreadLocal.get().getTransactionId());
 			if(risposta.getFault() != null) {
 				FaultNodo fault = FaultNodo.valueOf(risposta.getFault().getFaultCode());
 				switch (fault) {

@@ -27,8 +27,6 @@ import it.govpay.bd.anagrafica.cache.CanaliBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.CanaliBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.DominiBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.DominiBDCacheWrapper;
-import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
-import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.IbanAccreditoBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.IbanAccreditoBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.IntermediariBDCacheJmx;
@@ -41,19 +39,24 @@ import it.govpay.bd.anagrafica.cache.PspBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.PspBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.StazioniBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.StazioniBDCacheWrapper;
+import it.govpay.bd.anagrafica.cache.TipiTributoBDCacheJmx;
+import it.govpay.bd.anagrafica.cache.TipiTributoBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.TributiBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.TributiBDCacheWrapper;
+import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
+import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
 import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Portale;
 import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.TipoTributo;
 
 import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -77,6 +80,7 @@ public class AnagraficaManager {
 	private static PspBDCacheWrapper pspBDCacheWrapper;
 	private static StazioniBDCacheWrapper stazioniBDCacheWrapper;
 	private static TributiBDCacheWrapper tributiBDCacheWrapper;
+	private static TipiTributoBDCacheWrapper tipiTributoBDCacheWrapper;
 
 	private AnagraficaManager(boolean enableCaching) throws UtilsException {
 		dominiBDCacheWrapper = new DominiBDCacheWrapper(enableCaching, Logger.getLogger(DominiBDCacheWrapper.class));
@@ -90,6 +94,7 @@ public class AnagraficaManager {
 		pspBDCacheWrapper = new PspBDCacheWrapper(enableCaching, Logger.getLogger(PspBDCacheWrapper.class));
 		stazioniBDCacheWrapper = new StazioniBDCacheWrapper(enableCaching, Logger.getLogger(StazioniBDCacheWrapper.class));
 		tributiBDCacheWrapper = new TributiBDCacheWrapper(enableCaching, Logger.getLogger(TributiBDCacheWrapper.class));
+		tipiTributoBDCacheWrapper = new TipiTributoBDCacheWrapper(enableCaching, Logger.getLogger(TipiTributoBDCacheWrapper.class));
 
 		if(enableCaching) {
 			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new DominiBDCacheJmx(), jmxDomain, "domini");
@@ -103,6 +108,7 @@ public class AnagraficaManager {
 			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new PspBDCacheJmx(), jmxDomain, "psp");
 			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new StazioniBDCacheJmx(), jmxDomain, "stazioni");
 			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new TributiBDCacheJmx(), jmxDomain, "tributi");
+			CacheJMXUtils.register(Logger.getLogger(AnagraficaManager.class), new TipiTributoBDCacheJmx(), jmxDomain, "tipiTributo");
 		}
 	}
 
@@ -158,6 +164,10 @@ public class AnagraficaManager {
 		return tributiBDCacheWrapper;
 	}
 	
+	public static TipiTributoBDCacheWrapper getTipiTributoBDCacheWrapper() {
+		return tipiTributoBDCacheWrapper;
+	}
+	
 	public static void removeFromCache(Applicazione applicazione) {
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", String.valueOf(applicazione.getId())));} catch (Exception e) {	}
 		try {applicazioniBDCacheWrapper.removeObjectCache(applicazioniBDCacheWrapper.getKeyCache("getApplicazione", applicazione.getCodApplicazione()));} catch (Exception e) {	}
@@ -203,6 +213,11 @@ public class AnagraficaManager {
 	public static void removeFromCache(Tributo tributo) {
 		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache("getTributo", String.valueOf(tributo.getId())));} catch (Exception e) {	}
 		try {tributiBDCacheWrapper.removeObjectCache(tributiBDCacheWrapper.getKeyCache("getTributo", String.valueOf(tributo.getCodTributo() + "@" + tributo.getIdDominio())));} catch (Exception e) {	}
+	}
+	
+	public static void removeFromCache(TipoTributo tipoTributo) {
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache("getTipoTributo", String.valueOf(tipoTributo.getId())));} catch (Exception e) {	}
+		try {tipiTributoBDCacheWrapper.removeObjectCache(tipiTributoBDCacheWrapper.getKeyCache("getTipoTributo", String.valueOf(tipoTributo.getCodTributo())));} catch (Exception e) {	}
 	}
 	
 	public static void removeFromCache(Psp psp) {
@@ -677,6 +692,44 @@ public class AnagraficaManager {
 		}
 	}
 
+	public static TipoTributo getTipoTributo(BasicBD basicBD, long id) throws ServiceException {
+		try {
+			String method = "getTipoTributo";
+			Object tipoTributo = tipiTributoBDCacheWrapper.getObjectCache(basicBD, DEBUG, String.valueOf(id), method, Long.valueOf(id));
+			return (TipoTributo) tipoTributo;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
+
+	public static TipoTributo getTipoTributo(BasicBD basicBD, String codTributo) throws ServiceException, NotFoundException {
+		try {
+			String method = "getTipoTributo";
+			Object tributo = tipiTributoBDCacheWrapper.getObjectCache(basicBD, DEBUG, codTributo, method, codTributo);
+			return (TipoTributo) tributo;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
+
 	public static void unregister() {
 		CacheJMXUtils.unregister();
 	}
@@ -692,6 +745,7 @@ public class AnagraficaManager {
 		pspBDCacheWrapper.resetCache();
 		stazioniBDCacheWrapper.resetCache();
 		tributiBDCacheWrapper.resetCache();
+		tipiTributoBDCacheWrapper.resetCache();
 		canaliBDCacheWrapper.resetCache();
 	}
 

@@ -81,15 +81,15 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
-			boolean eseguiRicerca = isAdmin;
+			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
 			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
 			if(!isAdmin){
-				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				filter.setIdUo(operatore.getIdEnti()); 
+//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
+//				filter.setIdUo(operatore.getIdEnti()); 
 
 				FilterSortWrapper fsw = new FilterSortWrapper();
 				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);

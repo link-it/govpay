@@ -30,24 +30,17 @@ public class Operatore extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	
 	private Long id;
-	private List<Long> idEnti;
-	private List<Long> idApplicazioni;
 	private String principal;
 	private String nome;
 	private ProfiloOperatore profilo;
 	private boolean abilitato;
+	private List<Acl> acls;
 	
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
-	}
-	public List<Long> getIdEnti() {
-		return idEnti;
-	}
-	public void setIdEnti(List<Long> idEnti) {
-		this.idEnti = idEnti;
 	}
 	public String getPrincipal() {
 		return principal;
@@ -90,35 +83,18 @@ public class Operatore extends BasicModel {
 		}
 	}
 	
-	@Override
-	public boolean equals(Object obj) {
-		Operatore operatore = null;
-		if(obj instanceof Operatore) {
-			operatore = (Operatore) obj;
-		} else {
-			return false;
-		}
-		
-		boolean equal =
-				equals(idEnti, operatore.getIdEnti()) &&
-				equals(getIdApplicazioni(), operatore.getIdApplicazioni()) &&
-				equals(principal, operatore.getPrincipal()) &&
-				equals(profilo, operatore.getProfilo()) &&
-				equals(nome, operatore.getNome()) &&
-				abilitato == operatore.isAbilitato();
-		
-		return equal;
+	public List<Acl> getAcls() {
+		return acls;
 	}
-	public List<Long> getIdApplicazioni() {
-		return idApplicazioni;
+	public void setAcls(List<Acl> acls) {
+		this.acls = acls;
 	}
-	public void setIdApplicazioni(List<Long> idApplicazioni) {
-		this.idApplicazioni = idApplicazioni;
-	}
+
 	public String getNome() {
 		return nome;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
+
 }

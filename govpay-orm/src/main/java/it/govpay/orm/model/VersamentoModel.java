@@ -61,6 +61,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_LOCALITA = new Field("debitoreLocalita",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_PROVINCIA = new Field("debitoreProvincia",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_NAZIONE = new Field("debitoreNazione",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_LOTTO = new Field("codLotto",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_VERSAMENTO_LOTTO = new Field("codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_BUNDLEKEY = new Field("codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -87,6 +91,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_LOCALITA = new ComplexField(father,"debitoreLocalita",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_PROVINCIA = new ComplexField(father,"debitoreProvincia",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_NAZIONE = new ComplexField(father,"debitoreNazione",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_LOTTO = new ComplexField(father,"codLotto",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_VERSAMENTO_LOTTO = new ComplexField(father,"codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
+		this.COD_BUNDLEKEY = new ComplexField(father,"codBundlekey",java.lang.String.class,"Versamento",Versamento.class);
 	
 	}
 	
@@ -129,6 +137,14 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DEBITORE_PROVINCIA = null;
 	 
 	public IField DEBITORE_NAZIONE = null;
+	 
+	public IField COD_LOTTO = null;
+	 
+	public IField COD_VERSAMENTO_LOTTO = null;
+	 
+	public IField COD_ANNO_TRIBUTARIO = null;
+	 
+	public IField COD_BUNDLEKEY = null;
 	 
 
 	@Override

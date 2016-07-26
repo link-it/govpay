@@ -28,11 +28,13 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazioneRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoIdRendicontazione;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Fr.StatoFr;
+import it.govpay.bd.model.Acl.Servizio;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.FrApplicazione;
 import it.govpay.bd.model.Intermediario;
@@ -46,6 +48,7 @@ import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.client.NodoClient;
@@ -57,6 +60,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -93,7 +97,7 @@ public class Rendicontazioni extends BasicBD {
 			for(Dominio dominio : lstDomini) { 
 				
 				ThreadContext.put("dom", dominio.getCodDominio());
-				setupConnection();
+				setupConnection(GpThreadLocal.get().getTransactionId());
 				Stazione stazione = dominio.getStazione(this);
 				Intermediario intermediario = stazione.getIntermediario(this);
 				
@@ -157,7 +161,7 @@ public class Rendicontazioni extends BasicBD {
 							
 							for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
 								int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(idRendicontazione.getDataOraFlusso()));
-								setupConnection();
+								setupConnection(GpThreadLocal.get().getTransactionId());
 								FrBD frBD = new FrBD(this);
 								boolean exists = frBD.exists(annoFlusso, idRendicontazione.getIdentificativoFlusso());
 								closeConnection();
@@ -228,7 +232,7 @@ public class Rendicontazioni extends BasicBD {
 											
 											log.info("Ricevuto flusso rendicontazione per " + flussoRendicontazione.getDatiSingoliPagamenti().size() + " singoli pagamenti");
 											
-											setupConnection();
+											setupConnection(GpThreadLocal.get().getTransactionId());
 											
 											Fr fr = new Fr();
 											fr.setAnnoRiferimento(annoFlusso);
@@ -236,6 +240,7 @@ public class Rendicontazioni extends BasicBD {
 											fr.setCodFlusso(idRendicontazione.getIdentificativoFlusso());
 											fr.setIdPsp(psp.getId());
 											fr.setIur(flussoRendicontazione.getIdentificativoUnivocoRegolamento());
+											fr.setDataAcquisizione(new Date());
 											fr.setDataFlusso(flussoRendicontazione.getDataOraFlusso());
 											fr.setDataRegolamento(flussoRendicontazione.getDataRegolamento());
 											fr.setNumeroPagamenti(flussoRendicontazione.getNumeroTotalePagamenti().longValue());
@@ -419,30 +424,24 @@ public class Rendicontazioni extends BasicBD {
 	}
 	
 	
-	public List<FrApplicazione> chiediListaRendicontazioni(Applicazione applicazioneAutenticata, String codApplicazione) throws GovPayException, ServiceException {
-		
-		if(!applicazioneAutenticata.isAbilitato())
-			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
-		
-		if(!applicazioneAutenticata.getCodApplicazione().equals(applicazioneAutenticata.getCodApplicazione()))
-			throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
+	public List<FrApplicazione> chiediListaRendicontazioni(Applicazione applicazione) throws GovPayException, ServiceException {
+		FrBD frBD = new FrBD(this);
+		return frBD.getFrApplicazioni(applicazione.getId());
+	}
+	
+	public List<Fr> chiediListaRendicontazioni(Applicazione applicazione, String codDominio, String codApplicazione, Date da, Date a) throws GovPayException, ServiceException, NotFoundException {
+		AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null);
 		
 		FrBD frBD = new FrBD(this);
-		return frBD.getFrApplicazioni(applicazioneAutenticata.getId());
+		return frBD.findAll(AnagraficaManager.getDominio(this, codDominio).getId(), AnagraficaManager.getApplicazione(this, codApplicazione).getId(), da, a);
 	}
 
-	public FrApplicazione chiediRendicontazione(Applicazione applicazioneAutenticata, String codApplicazione, int anno, String codFlusso) throws GovPayException, ServiceException {
-		if(!applicazioneAutenticata.isAbilitato())
-			throw new GovPayException(EsitoOperazione.APP_001, applicazioneAutenticata.getCodApplicazione());
-		
-		if(!applicazioneAutenticata.getCodApplicazione().equals(applicazioneAutenticata.getCodApplicazione()))
-			throw new GovPayException(EsitoOperazione.APP_002, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
-		
+	public FrApplicazione chiediRendicontazione(Applicazione applicazione, int anno, String codFlusso) throws GovPayException, ServiceException {
 		FrBD frBD = new FrBD(this);
 		try {
-			return frBD.getFrApplicazione(applicazioneAutenticata.getId(), anno, codFlusso);
+			return frBD.getFrApplicazione(applicazione.getId(), anno, codFlusso);
 		} catch (NotFoundException e) {
-			throw new GovPayException(EsitoOperazione.RND_000, applicazioneAutenticata.getCodApplicazione(), codApplicazione);
+			throw new GovPayException(EsitoOperazione.RND_000);
 		}
 	}
 }

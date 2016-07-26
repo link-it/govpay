@@ -75,25 +75,11 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_dominio";
 			}
 		}
-		if(field.equals(Tributo.model().COD_TRIBUTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_tributo";
-			}else{
-				return "cod_tributo";
-			}
-		}
 		if(field.equals(Tributo.model().ABILITATO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".abilitato";
 			}else{
 				return "abilitato";
-			}
-		}
-		if(field.equals(Tributo.model().DESCRIZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".descrizione";
-			}else{
-				return "descrizione";
 			}
 		}
 		if(field.equals(Tributo.model().ID_IBAN_ACCREDITO.COD_IBAN)){
@@ -124,6 +110,20 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 				return "codice_contabilita";
 			}
 		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tributo";
+			}else{
+				return "cod_tributo";
+			}
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".descrizione";
+			}else{
+				return "descrizione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -140,13 +140,7 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tributo.model().ID_DOMINIO.COD_DOMINIO)){
 			return this.toTable(Tributo.model().ID_DOMINIO, returnAlias);
 		}
-		if(field.equals(Tributo.model().COD_TRIBUTO)){
-			return this.toTable(Tributo.model(), returnAlias);
-		}
 		if(field.equals(Tributo.model().ABILITATO)){
-			return this.toTable(Tributo.model(), returnAlias);
-		}
-		if(field.equals(Tributo.model().DESCRIZIONE)){
 			return this.toTable(Tributo.model(), returnAlias);
 		}
 		if(field.equals(Tributo.model().ID_IBAN_ACCREDITO.COD_IBAN)){
@@ -160,6 +154,12 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Tributo.model().CODICE_CONTABILITA)){
 			return this.toTable(Tributo.model(), returnAlias);
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO)){
+			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE)){
+			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
 		}
 
 
@@ -184,7 +184,10 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 			return "iban_accredito";
 		}
 		if(model.equals(Tributo.model().ID_IBAN_ACCREDITO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
+		}
+		if(model.equals(Tributo.model().TIPO_TRIBUTO)){
+			return "tipi_tributo";
 		}
 
 

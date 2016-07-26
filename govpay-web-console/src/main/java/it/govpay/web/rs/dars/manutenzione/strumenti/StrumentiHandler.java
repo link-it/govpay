@@ -119,7 +119,11 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 					
 					for (String string : voci) {
 						String[] voce = string.split("#");
-						root.addVoce(voce[0],voce[1]);
+						if(voce.length == 2)
+							root.addVoce(voce[0],voce[1]);
+						else
+							if(voce.length == 1)
+								root.addVoce(voce[0],null);
 					}
 
 				}

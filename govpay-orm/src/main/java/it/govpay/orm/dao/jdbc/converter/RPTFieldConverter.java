@@ -82,6 +82,34 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_identificativo";
+			}else{
+				return "debitore_identificativo";
+			}
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_anagrafica";
+			}else{
+				return "debitore_anagrafica";
+			}
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_versamento_lotto";
+			}else{
+				return "cod_versamento_lotto";
+			}
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_anno_tributario";
+			}else{
+				return "cod_anno_tributario";
+			}
+		}
 		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_psp";
@@ -289,6 +317,18 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(RPT.model().ID_VERSAMENTO.ID_APPLICAZIONE, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO)){
+			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.DEBITORE_ANAGRAFICA)){
+			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.COD_VERSAMENTO_LOTTO)){
+			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
 			return this.toTable(RPT.model().ID_CANALE.ID_PSP, returnAlias);

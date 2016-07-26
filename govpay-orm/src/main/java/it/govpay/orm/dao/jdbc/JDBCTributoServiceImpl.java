@@ -105,27 +105,42 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			}
 		}
 
+		// Object _tipoTributo
+		Long id_tipoTributo = null;
+		it.govpay.orm.IdTipoTributo idLogic_tipoTributo = new it.govpay.orm.IdTipoTributo();
+		idLogic_tipoTributo.setCodTributo(tributo.getTipoTributo().getCodTributo());
+		idLogic_tipoTributo.setId(tributo.getTipoTributo().getId());
+		if(idLogic_tipoTributo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findTableId(idLogic_tipoTributo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tipoTributo = idLogic_tipoTributo.getId();
+				if(id_tipoTributo==null || id_tipoTributo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
 
 		// Object tributo
 		sqlQueryObjectInsert.addInsertTable(this.getTributoFieldConverter().toTable(Tributo.model()));
-		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().ABILITATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().DESCRIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().TIPO_CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
+		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
 
 		// Insert tributo
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getTributoFetch().getKeyGeneratorObject(Tributo.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodTributo(),Tributo.model().COD_TRIBUTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getAbilitato(),Tributo.model().ABILITATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getDescrizione(),Tributo.model().DESCRIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getTipoContabilita(),Tributo.model().TIPO_CONTABILITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodiceContabilita(),Tributo.model().CODICE_CONTABILITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
 		);
 		tributo.setId(id);
 
@@ -206,18 +221,45 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			}
 		}
 
+		// Object _tributo_tipoTributo
+		Long id_tributo_tipoTributo = null;
+		it.govpay.orm.IdTipoTributo idLogic_tributo_tipoTributo = new it.govpay.orm.IdTipoTributo();
+		idLogic_tributo_tipoTributo.setCodTributo(tributo.getTipoTributo().getCodTributo());
+		idLogic_tributo_tipoTributo.setId(tributo.getTipoTributo().getId());
+		if(idLogic_tributo_tipoTributo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tributo_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findTableId(idLogic_tributo_tipoTributo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tributo_tipoTributo = idLogic_tributo_tipoTributo.getId();
+				if(id_tributo_tipoTributo==null || id_tributo_tipoTributo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
+		if(idLogic_tributo_tipoTributo!=null){
+			if(idMappingResolutionBehaviour==null ||
+				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
+				id_tributo_tipoTributo = ((JDBCTipoTributoServiceSearch)(this.getServiceManager().getTipoTributoServiceSearch())).findTableId(idLogic_tributo_tipoTributo, false);
+			}
+			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
+				id_tributo_tipoTributo = idLogic_tributo_tipoTributo.getId();
+				if(id_tributo_tipoTributo==null || id_tributo_tipoTributo<=0){
+					throw new Exception("Logic id not contains table id");
+				}
+			}
+		}
+
 
 		// Object tributo
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getTributoFieldConverter().toTable(Tributo.model()));
 		boolean isUpdate_tributo = true;
 		java.util.List<JDBCObject> lstObjects_tributo = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO,false), "?");
-		lstObjects_tributo.add(new JDBCObject(tributo.getCodTributo(), Tributo.model().COD_TRIBUTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().ABILITATO,false), "?");
 		lstObjects_tributo.add(new JDBCObject(tributo.getAbilitato(), Tributo.model().ABILITATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().DESCRIZIONE,false), "?");
-		lstObjects_tributo.add(new JDBCObject(tributo.getDescrizione(), Tributo.model().DESCRIZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().TIPO_CONTABILITA,false), "?");
 		lstObjects_tributo.add(new JDBCObject(tributo.getTipoContabilita(), Tributo.model().TIPO_CONTABILITA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,false), "?");
@@ -229,10 +271,16 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_iban_accredito","?");
 		}
 		if(setIdMappingResolutionBehaviour){
+			sqlQueryObjectUpdate.addUpdateField("id_tipo_tributo","?");
+		}
+		if(setIdMappingResolutionBehaviour){
 			lstObjects_tributo.add(new JDBCObject(id_tributo_dominio, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_tributo.add(new JDBCObject(id_tributo_ibanAccredito, Long.class));
+		}
+		if(setIdMappingResolutionBehaviour){
+			lstObjects_tributo.add(new JDBCObject(id_tributo_tipoTributo, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_tributo.add(new JDBCObject(tableId, Long.class));

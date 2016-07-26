@@ -153,7 +153,7 @@ public class Psp extends BasicBD {
 						Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 						informativePsp = (ListaInformativePSP) jaxbUnmarshaller.unmarshal(risposta.getXmlInformativa().getDataSource().getInputStream());
 					} finally {
-						setupConnection();
+						setupConnection(GpThreadLocal.get().getTransactionId());
 					}
 					
 					if(informativePsp == null) {

@@ -95,6 +95,7 @@ CREATE TABLE applicazioni
 	firma_ricevuta VARCHAR(1) NOT NULL,
 	cod_connettore_esito VARCHAR(255),
 	cod_connettore_verifica VARCHAR(255),
+	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
 	trusted BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_applicazioni') NOT NULL,
@@ -181,40 +182,6 @@ CREATE TABLE operatori
 
 
 
-CREATE SEQUENCE seq_operatori_uo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE operatori_uo
-(
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_operatori_uo') NOT NULL,
-	id_operatore BIGINT NOT NULL,
-	id_uo BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_uo_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_uo_2 FOREIGN KEY (id_uo) REFERENCES uo(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_uo PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_operatori_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE operatori_applicazioni
-(
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_operatori_applicazioni') NOT NULL,
-	id_operatore BIGINT NOT NULL,
-	id_applicazione BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_applicazioni_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_applicazioni PRIMARY KEY (id)
-);
-
-
-
-
 CREATE SEQUENCE seq_connettori start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE connettori
@@ -240,6 +207,8 @@ CREATE TABLE portali
 	cod_portale VARCHAR(35) NOT NULL,
 	default_callback_url VARCHAR(512) NOT NULL,
 	principal VARCHAR(255) NOT NULL,
+	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
+	trusted BOOLEAN NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_portali') NOT NULL,
@@ -248,40 +217,6 @@ CREATE TABLE portali
 	CONSTRAINT unique_portali_2 UNIQUE (principal),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_portali PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_operatori_portali start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE operatori_portali
-(
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_operatori_portali') NOT NULL,
-	id_operatore BIGINT NOT NULL,
-	id_portale BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_operatori_portali_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_operatori_portali_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
-	CONSTRAINT pk_operatori_portali PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_portali_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE portali_applicazioni
-(
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_portali_applicazioni') NOT NULL,
-	id_portale BIGINT NOT NULL,
-	id_applicazione BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_portali_applicazioni_1 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
-	CONSTRAINT fk_portali_applicazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT pk_portali_applicazioni PRIMARY KEY (id)
 );
 
 
@@ -313,59 +248,67 @@ CREATE TABLE iban_accredito
 
 
 
+CREATE SEQUENCE seq_tipi_tributo start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE tipi_tributo
+(
+	cod_tributo VARCHAR(255) NOT NULL,
+	descrizione VARCHAR(255),
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_tipi_tributo') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_tipi_tributo_1 UNIQUE (cod_tributo),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_tipi_tributo PRIMARY KEY (id)
+);
+
+
+
+
 CREATE SEQUENCE seq_tributi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
 CREATE TABLE tributi
 (
-	cod_tributo VARCHAR(35) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
-	descrizione VARCHAR(255),
 	tipo_contabilita VARCHAR(1) NOT NULL,
 	codice_contabilita VARCHAR(255) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,
 	id_iban_accredito BIGINT,
+	id_tipo_tributo BIGINT NOT NULL,
 	-- unique constraints
-	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,cod_tributo),
+	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
 	CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
+	CONSTRAINT fk_tributi_3 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 );
 
 
 
 
-CREATE SEQUENCE seq_applicazioni_tributi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+CREATE SEQUENCE seq_acl start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
 
-CREATE TABLE applicazioni_tributi
+CREATE TABLE acl
 (
+	cod_tipo VARCHAR(1) NOT NULL,
+	cod_servizio VARCHAR(1) NOT NULL,
 	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_applicazioni_tributi') NOT NULL,
+	id BIGINT DEFAULT nextval('seq_acl') NOT NULL,
 	id_applicazione BIGINT,
-	id_tributo BIGINT NOT NULL,
+	id_portale BIGINT,
+	id_operatore BIGINT,
+	id_dominio BIGINT,
+	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_applicazioni_tributi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_applicazioni_tributi_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id) ON DELETE CASCADE,
-	CONSTRAINT pk_applicazioni_tributi PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_applicazioni_domini start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE applicazioni_domini
-(
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_applicazioni_domini') NOT NULL,
-	id_applicazione BIGINT,
-	id_dominio BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_applicazioni_domini_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_applicazioni_domini_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
-	CONSTRAINT pk_applicazioni_domini PRIMARY KEY (id)
+	CONSTRAINT fk_acl_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
+	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
 
 
@@ -393,6 +336,10 @@ CREATE TABLE versamenti
 	debitore_localita VARCHAR(35),
 	debitore_provincia VARCHAR(35),
 	debitore_nazione VARCHAR(2),
+	cod_lotto VARCHAR(35),
+	cod_versamento_lotto VARCHAR(35),
+	cod_anno_tributario VARCHAR(35),
+	cod_bundlekey VARCHAR(256),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_versamenti') NOT NULL,
 	id_uo BIGINT NOT NULL,
@@ -424,6 +371,7 @@ CREATE TABLE singoli_versamenti
 	provincia_residenza VARCHAR(2),
 	tipo_contabilita VARCHAR(1),
 	codice_contabilita VARCHAR(255),
+	note VARCHAR(512),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_singoli_versamenti') NOT NULL,
 	id_versamento BIGINT NOT NULL,
@@ -586,6 +534,7 @@ CREATE TABLE fr
 	anno_riferimento INT NOT NULL,
 	data_ora_flusso TIMESTAMP,
 	data_regolamento TIMESTAMP,
+	data_acquisizione TIMESTAMP NOT NULL,
 	numero_pagamenti BIGINT,
 	importo_totale_pagamenti DOUBLE PRECISION,
 	cod_bic_riversamento VARCHAR(35),
@@ -630,6 +579,7 @@ CREATE TABLE pagamenti
 (
 	cod_singolo_versamento_ente VARCHAR(35) NOT NULL,
 	importo_pagato DOUBLE PRECISION NOT NULL,
+	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR(35) NOT NULL,
 	data_pagamento TIMESTAMP NOT NULL,
 	commissioni_psp DOUBLE PRECISION,
@@ -641,6 +591,7 @@ CREATE TABLE pagamenti
 	codflusso_rendicontazione VARCHAR(35),
 	anno_riferimento INT,
 	indice_singolo_pagamento INT,
+	data_acquisizione_revoca TIMESTAMP,
 	causale_revoca VARCHAR(140),
 	dati_revoca VARCHAR(140),
 	importo_revocato DOUBLE PRECISION,
@@ -653,7 +604,7 @@ CREATE TABLE pagamenti
 	ind_singolo_pagamento_revoca INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti') NOT NULL,
-	id_rpt BIGINT NOT NULL,
+	id_rpt BIGINT,
 	id_singolo_versamento BIGINT NOT NULL,
 	id_fr_applicazione BIGINT,
 	id_rr BIGINT,

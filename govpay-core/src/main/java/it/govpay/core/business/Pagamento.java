@@ -58,8 +58,10 @@ import it.govpay.bd.model.Notifica.TipoNotifica;
 import it.govpay.bd.model.Rpt.StatoRpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Rr.StatoRr;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Acl.Servizio;
 import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
@@ -74,6 +76,7 @@ import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
+import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
@@ -169,8 +172,13 @@ public class Pagamento extends BasicBD {
 				
 				ctx.log("rpt.validazioneSemantica", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 				
-				if(!portale.getIdApplicazioni().contains(versamentoModel.getApplicazione(this).getId())) {
-					throw new GovPayException(EsitoOperazione.PRT_003, portale.getCodPortale(), versamentoModel.getApplicazione(this).getCodApplicazione());
+				for(SingoloVersamento sv : versamentoModel.getSingoliVersamenti(this)) {
+					
+					String codTributo = sv.getTributo(this) != null ? sv.getTributo(this).getCodTributo() : null;
+					
+					if(!AclEngine.isAuthorized(portale, Servizio.PAGAMENTI_ATTESA, versamentoModel.getUo(this).getDominio(this).getCodDominio(), codTributo)) {
+						throw new GovPayException(EsitoOperazione.PRT_003, portale.getCodPortale(), versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+					}
 				}
 				
 				if(versamentoModel.isBolloTelematico()) isBollo = true;
@@ -180,7 +188,6 @@ public class Pagamento extends BasicBD {
 				}
 				
 				if(versamentoModel.getDataScadenza() != null && versamentoModel.getDataScadenza().before(adesso) && versamentoModel.isAggiornabile()) {
-					
 					try {
 						versamentoModel = VersamentoUtils.aggiornaVersamento(versamentoModel, this);
 					} catch (VersamentoAnnullatoException e){
@@ -330,7 +337,7 @@ public class Pagamento extends BasicBD {
 				
 				Risposta risposta = RptUtils.inviaRPT(intermediario, stazione, rpts, this);
 			
-				setupConnection();
+				setupConnection(GpThreadLocal.get().getTransactionId());
 				if(risposta.getEsito() == null || !risposta.getEsito().equals("OK")) {
 					ctx.log("rpt.invioKo");
 					// RPT rifiutata dal Nodo
@@ -412,7 +419,7 @@ public class Pagamento extends BasicBD {
 	}
 
 	private List<Rpt> updateStatoRpt(List<Rpt> rpts, StatoRpt statoRpt, String url, Exception e) throws ServiceException, GovPayException {
-		setupConnection();
+		setupConnection(GpThreadLocal.get().getTransactionId());
 		String sessionId = null;
 		NotificheBD notificheBD = new NotificheBD(this);
 		try {
@@ -547,7 +554,7 @@ public class Pagamento extends BasicBD {
 
 				// Ho acquisito tutti gli stati pendenti. 
 				// Tutte quelle in stato terminale, 
-				setupConnection();
+				setupConnection(GpThreadLocal.get().getTransactionId());
 
 				RptBD rptBD = new RptBD(this);
 				

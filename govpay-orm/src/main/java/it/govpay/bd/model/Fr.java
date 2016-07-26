@@ -46,6 +46,7 @@ public class Fr extends BasicModel{
 	private int annoRiferimento;
 	private Date dataFlusso;
 	private Date dataRegolamento;
+	private Date dataAcquisizione;
 	private long numeroPagamenti;
 	private double importoTotalePagamenti;
 	private byte[] xml;
@@ -129,6 +130,19 @@ public class Fr extends BasicModel{
 		this.xml = xml;
 	}
 	
+	public String getCodBicRiversamento() {
+		return codBicRiversamento;
+	}
+	public void setCodBicRiversamento(String codBicRiversamento) {
+		this.codBicRiversamento = codBicRiversamento;
+	}
+	public Date getDataAcquisizione() {
+		return dataAcquisizione;
+	}
+	public void setDataAcquisizione(Date dataAcquisizione) {
+		this.dataAcquisizione = dataAcquisizione;
+	}
+	
 	// Business
 	private Dominio dominio;
 	private Psp psp;
@@ -152,13 +166,4 @@ public class Fr extends BasicModel{
 	public void setPsp(Psp psp) {
 		this.psp = psp;
 	}
-	public String getCodBicRiversamento() {
-		return codBicRiversamento;
-	}
-	public void setCodBicRiversamento(String codBicRiversamento) {
-		this.codBicRiversamento = codBicRiversamento;
-	}
-
-	
-	
 }

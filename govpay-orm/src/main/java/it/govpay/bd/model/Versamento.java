@@ -22,6 +22,8 @@ package it.govpay.bd.model;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Iuv.TipoIUV;
+import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
@@ -66,6 +68,11 @@ public class Versamento extends BasicModel {
 	private Date dataUltimoAggiornamento;
 	private Causale causaleVersamento;
 	private Anagrafica anagraficaDebitore;
+	private String iuvProposto;
+	private String codLotto;
+	private String codVersamentoLotto;
+	private Integer codAnnoTributario;
+	private String codBundlekey;
 	
 	public Long getId() {
 		return id;
@@ -163,6 +170,14 @@ public class Versamento extends BasicModel {
 		this.anagraficaDebitore = anagraficaDebitore;
 	}
 	
+	public String getCodBundlekey() {
+		return codBundlekey;
+	}
+
+	public void setCodBundlekey(String codBundlekey) {
+		this.codBundlekey = codBundlekey;
+	}
+
 	public Causale getCausaleVersamento() {
 		return causaleVersamento;
 	}
@@ -311,6 +326,46 @@ public class Versamento extends BasicModel {
 		throw new UnsupportedEncodingException();
 	}
 	
+	public boolean isBolloTelematico() {
+		return bolloTelematico;
+	}
+
+	public void setBolloTelematico(boolean bolloTelematico) {
+		this.bolloTelematico = bolloTelematico;
+	}
+	
+	public String getIuvProposto() {
+		return iuvProposto;
+	}
+
+	public void setIuvProposto(String iuvProposto) {
+		this.iuvProposto = iuvProposto;
+	}
+
+	public String getCodLotto() {
+		return codLotto;
+	}
+
+	public void setCodLotto(String codLotto) {
+		this.codLotto = codLotto;
+	}
+
+	public String getCodVersamentoLotto() {
+		return codVersamentoLotto;
+	}
+
+	public void setCodVersamentoLotto(String codVersamentoLotto) {
+		this.codVersamentoLotto = codVersamentoLotto;
+	}
+
+	public Integer getCodAnnoTributario() {
+		return codAnnoTributario;
+	}
+
+	public void setCodAnnoTributario(Integer codAnnoTributario) {
+		this.codAnnoTributario = codAnnoTributario;
+	}
+	
 	// BUSINESS
 	
 	private List<SingoloVersamento> singoliVersamenti;
@@ -318,7 +373,7 @@ public class Versamento extends BasicModel {
 	private Applicazione applicazione;
 	private UnitaOperativa uo;
 	private boolean bolloTelematico;
-	private String iuvProposto;
+	private Iuv iuv;
 	
 	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
@@ -369,14 +424,6 @@ public class Versamento extends BasicModel {
 		return uo;
 	}
 	
-	public boolean isBolloTelematico() {
-		return bolloTelematico;
-	}
-
-	public void setBolloTelematico(boolean bolloTelematico) {
-		this.bolloTelematico = bolloTelematico;
-	}
-	
 	public List<Rpt> getRpt(BasicBD bd) throws ServiceException {
 		if(rpts == null) {
 			RptBD rptBD = new RptBD(bd);
@@ -386,13 +433,16 @@ public class Versamento extends BasicModel {
 		}
 		return rpts;
 	}
-
-	public String getIuvProposto() {
-		return iuvProposto;
+	
+	public Iuv getIuv(BasicBD bd) throws ServiceException {
+		if(iuv == null) {
+			IuvBD iuvBD = new IuvBD(bd);
+			try {
+				iuv = iuvBD.getIuv(idApplicazione, codVersamentoEnte, TipoIUV.NUMERICO);
+			} catch (NotFoundException e) {
+				// Iuv non assegnato.
+			}
+		}
+		return iuv;
 	}
-
-	public void setIuvProposto(String iuvProposto) {
-		this.iuvProposto = iuvProposto;
-	}
-
 }

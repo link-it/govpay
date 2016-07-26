@@ -59,8 +59,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	public static final String PATH_FIELD = "field";
 	public static final String PATH_ESPORTA = "esporta";
 	public static final String PATH_CANCELLA = "cancella";
-
-
+	
 	protected Logger log = LogManager.getLogger();
 
 	public BaseDarsService() {
@@ -79,7 +78,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		BasicBD bd = null;
 
 		try{
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			Elenco elenco = this.getDarsHandler().getElenco(uriInfo,bd);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
@@ -115,7 +114,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			Object field = this.getDarsHandler().getField(uriInfo, rawValues, id, bd);
 
 			// Field richiesto non valido
@@ -159,7 +158,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 
 			Dettaglio dettaglio = this.getDarsHandler().getDettaglio(id,uriInfo,bd);
 
@@ -206,7 +205,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 
 			this.getDarsHandler().delete(idsToDelete, uriInfo, bd);
 
@@ -252,7 +251,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ZipOutputStream zout = new ZipOutputStream(baos);
 			
@@ -288,7 +287,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ZipOutputStream zout = new ZipOutputStream(baos);
 			
@@ -324,7 +323,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 
 			Dettaglio dettaglio = this.getDarsHandler().insert(is,uriInfo,bd);
 
@@ -372,7 +371,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
 		try {
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 
 			Dettaglio dettaglio = this.getDarsHandler().update(is,uriInfo,bd);
 

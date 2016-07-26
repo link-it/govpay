@@ -26,7 +26,7 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class Tributo extends BasicModel {
+public class Tributo extends TipoTributo {
 	private static final long serialVersionUID = 1L;
 	
 	public static final String BOLLOT = "BOLLOT";
@@ -55,33 +55,13 @@ public class Tributo extends BasicModel {
 		}
 	}
 	
-	private Long id; 
+	private long idTipoTributo;
 	private long idDominio;
 	private Long idIbanAccredito;
-	private String codTributo;
-	private String descrizione;
 	private boolean abilitato;
 	private TipoContabilta tipoContabilita;
 	private String codContabilita;
 	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public String getCodTributo() {
-		return codTributo;
-	}
-	public void setCodTributo(String codTributo) {
-		this.codTributo = codTributo;
-	}
-	public String getDescrizione() {
-		return descrizione;
-	}
-	public void setDescrizione(String descrizione) {
-		this.descrizione = descrizione;
-	}
 	public Long getIdIbanAccredito() {
 		return idIbanAccredito;
 	}
@@ -123,6 +103,13 @@ public class Tributo extends BasicModel {
 	}
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
+	}
+
+	public long getIdTipoTributo() {
+		return idTipoTributo;
+	}
+	public void setIdTipoTributo(long idTipoTributo) {
+		this.idTipoTributo = idTipoTributo;
 	}
 
 	private IbanAccredito ibanAccredito;

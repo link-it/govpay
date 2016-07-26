@@ -69,7 +69,7 @@ public class InviaRptThread implements Runnable {
 			Risposta risposta = RptUtils.inviaRPT(rpt, bd);
 
 			if(bd == null) {
-				bd = BasicBD.newInstance();
+				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			}
 			
 			RptBD rptBD = new RptBD(bd);
@@ -101,10 +101,10 @@ public class InviaRptThread implements Runnable {
 			// ERRORE DI RETE. Non so se la RPT e' stata effettivamente consegnata.
 			log.error("Errore di rete nella spedizione della RPT: " + e);
 			bd.rollback();
-			bd.closeConnection();
 			return;
 		} finally {
 			if(ctx != null) ctx.log();
+			if(bd != null) bd.closeConnection();
 		}
 	}
 }

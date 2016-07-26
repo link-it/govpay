@@ -27,8 +27,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /** <p>Java class for Portale complex type.
@@ -41,8 +39,9 @@ import java.util.List;
  * 			&lt;element name="codPortale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="defaultCallbackURL" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="principal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1" default="2.1"/>
+ * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="PortaleApplicazione" type="{http://www.govpay.it/orm}PortaleApplicazione" minOccurs="1" maxOccurs="unbounded"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -60,8 +59,9 @@ import java.util.List;
   	"codPortale",
   	"defaultCallbackURL",
   	"principal",
-  	"abilitato",
-  	"portaleApplicazione"
+  	"versione",
+  	"trusted",
+  	"abilitato"
   }
 )
 
@@ -109,6 +109,26 @@ public class Portale extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.principal = principal;
   }
 
+  public java.lang.String getVersione() {
+    return this.versione;
+  }
+
+  public void setVersione(java.lang.String versione) {
+    this.versione = versione;
+  }
+
+  public boolean isTrusted() {
+    return this.trusted;
+  }
+
+  public boolean getTrusted() {
+    return this.trusted;
+  }
+
+  public void setTrusted(boolean trusted) {
+    this.trusted = trusted;
+  }
+
   public boolean isAbilitato() {
     return this.abilitato;
   }
@@ -119,30 +139,6 @@ public class Portale extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   public void setAbilitato(boolean abilitato) {
     this.abilitato = abilitato;
-  }
-
-  public void addPortaleApplicazione(PortaleApplicazione portaleApplicazione) {
-    this.portaleApplicazione.add(portaleApplicazione);
-  }
-
-  public PortaleApplicazione getPortaleApplicazione(int index) {
-    return this.portaleApplicazione.get( index );
-  }
-
-  public PortaleApplicazione removePortaleApplicazione(int index) {
-    return this.portaleApplicazione.remove( index );
-  }
-
-  public List<PortaleApplicazione> getPortaleApplicazioneList() {
-    return this.portaleApplicazione;
-  }
-
-  public void setPortaleApplicazioneList(List<PortaleApplicazione> portaleApplicazione) {
-    this.portaleApplicazione=portaleApplicazione;
-  }
-
-  public int sizePortaleApplicazioneList() {
-    return this.portaleApplicazione.size();
   }
 
   private static final long serialVersionUID = 1L;
@@ -176,38 +172,16 @@ public class Portale extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="principal",required=true,nillable=false)
   protected java.lang.String principal;
 
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="versione",required=true,nillable=false,defaultValue="2.1")
+  protected java.lang.String versione = "2.1";
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="trusted",required=true,nillable=false)
+  protected boolean trusted;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
-
-  @XmlElement(name="PortaleApplicazione",required=true,nillable=false)
-  protected List<PortaleApplicazione> portaleApplicazione = new ArrayList<PortaleApplicazione>();
-
-  /**
-   * @deprecated Use method getPortaleApplicazioneList
-   * @return List<PortaleApplicazione>
-  */
-  @Deprecated
-  public List<PortaleApplicazione> getPortaleApplicazione() {
-  	return this.portaleApplicazione;
-  }
-
-  /**
-   * @deprecated Use method setPortaleApplicazioneList
-   * @param portaleApplicazione List<PortaleApplicazione>
-  */
-  @Deprecated
-  public void setPortaleApplicazione(List<PortaleApplicazione> portaleApplicazione) {
-  	this.portaleApplicazione=portaleApplicazione;
-  }
-
-  /**
-   * @deprecated Use method sizePortaleApplicazioneList
-   * @return lunghezza della lista
-  */
-  @Deprecated
-  public int sizePortaleApplicazione() {
-  	return this.portaleApplicazione.size();
-  }
 
 }

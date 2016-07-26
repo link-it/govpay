@@ -69,6 +69,8 @@ public class FRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "data_ora_flusso", FR.model().DATA_ORA_FLUSSO.getFieldType()));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_regolamento", FR.model().DATA_REGOLAMENTO.getFieldType()));
+				setParameter(object, "setDataAcquisizione", FR.model().DATA_ACQUISIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data_acquisizione", FR.model().DATA_ACQUISIZIONE.getFieldType()));
 				setParameter(object, "setNumeroPagamenti", FR.model().NUMERO_PAGAMENTI.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "numero_pagamenti", FR.model().NUMERO_PAGAMENTI.getFieldType()));
 				setParameter(object, "setImportoTotalePagamenti", FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType(),
@@ -113,6 +115,8 @@ public class FRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"dataOraFlusso"));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataRegolamento"));
+				setParameter(object, "setDataAcquisizione", FR.model().DATA_ACQUISIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"dataAcquisizione"));
 				setParameter(object, "setNumeroPagamenti", FR.model().NUMERO_PAGAMENTI.getFieldType(),
 					this.getObjectFromMap(map,"numeroPagamenti"));
 				setParameter(object, "setImportoTotalePagamenti", FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType(),

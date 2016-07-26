@@ -248,7 +248,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione);
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
 		String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 		String ragioneSocialeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
@@ -446,7 +446,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Dominio entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica);
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
 		String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 		String ragioneSocialeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");

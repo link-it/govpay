@@ -44,6 +44,7 @@ import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
 import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.anagrafica.portali.Portali;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
+import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.manutenzione.strumenti.Strumenti;
 import it.govpay.web.rs.dars.model.Console;
@@ -84,7 +85,7 @@ public class Menu extends BaseRsService {
 		BasicBD bd = null;
 
 		try{
-			bd = BasicBD.newInstance();
+			bd = BasicBD.newInstance(this.codOperazione);
 
 			// controllo delle autorizzazioni dell'utente
 			Operatore operatore = this.getOperatoreByPrincipal(bd);
@@ -123,6 +124,11 @@ public class Menu extends BaseRsService {
 				URI intermediariURI = BaseRsService.checkDarsURI(uriInfo).path(intermediariDars.getPathServizio()).build();
 				VoceMenu voceMenuIntermediari = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, false);
 				anagrafica.getVociMenu().add(voceMenuIntermediari);
+				
+				TipiTributo tipoTributiDars = new TipiTributo();
+				URI tipiTributiURI = BaseRsService.checkDarsURI(uriInfo).path(tipoTributiDars.getPathServizio()).build();
+				VoceMenu voceMenuTipoTributi = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(tipoTributiDars.getNomeServizio() + ".titolo"),	tipiTributiURI, false);
+				anagrafica.getVociMenu().add(voceMenuTipoTributi);
 
 				Domini dominiDars = new Domini();
 				URI dominiURI = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).build();

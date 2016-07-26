@@ -31,10 +31,7 @@ import java.util.Map;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
-import it.govpay.orm.OperatorePortale;
-import it.govpay.orm.OperatoreUo;
 import it.govpay.orm.Operatore;
-import it.govpay.orm.OperatoreApplicazione;
 
 
 /**     
@@ -68,24 +65,6 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Operatore.model().ABILITATO.getFieldType()));
 				return object;
 			}
-			if(model.equals(Operatore.model().OPERATORE_UO)){
-				OperatoreUo object = new OperatoreUo();
-				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				return object;
-			}
-			if(model.equals(Operatore.model().OPERATORE_APPLICAZIONE)){
-				OperatoreApplicazione object = new OperatoreApplicazione();
-				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				return object;
-			}
-			if(model.equals(Operatore.model().OPERATORE_PORTALE)){
-				OperatorePortale object = new OperatorePortale();
-				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				return object;
-			}
 			
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
@@ -116,24 +95,6 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				return object;
 			}
-			if(model.equals(Operatore.model().OPERATORE_UO)){
-				OperatoreUo object = new OperatoreUo();
-				setParameter(object, "setId", Long.class,
-					this.getObjectFromMap(map,"OperatoreUo.id"));
-				return object;
-			}
-			if(model.equals(Operatore.model().OPERATORE_APPLICAZIONE)){
-				OperatoreApplicazione object = new OperatoreApplicazione();
-				setParameter(object, "setId", Long.class,
-					this.getObjectFromMap(map,"OperatoreApplicazione.id"));
-				return object;
-			}
-			if(model.equals(Operatore.model().OPERATORE_PORTALE)){
-				OperatorePortale object = new OperatorePortale();
-				setParameter(object, "setId", Long.class,
-					this.getObjectFromMap(map,"OperatorePortale.id"));
-				return object;
-			}
 			
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
@@ -153,15 +114,6 @@ public class OperatoreFetch extends AbstractJDBCFetch {
 
 			if(model.equals(Operatore.model())){
 				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("operatori","id","seq_operatori","operatori_init_seq");
-			}
-			if(model.equals(Operatore.model().OPERATORE_UO)){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("operatori_uo","id","seq_operatori_uo","operatori_uo_init_seq");
-			}
-			if(model.equals(Operatore.model().OPERATORE_APPLICAZIONE)){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("operatori_applicazioni","id","seq_operatori_applicazioni","operatori_applicazioni_init_seq");
-			}
-			if(model.equals(Operatore.model().OPERATORE_PORTALE)){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("operatori_portali","id","seq_operatori_portali","operatori_portali_init_seq");
 			}
 			
 			else{

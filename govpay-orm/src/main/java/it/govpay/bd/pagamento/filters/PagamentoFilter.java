@@ -20,6 +20,7 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -44,6 +45,10 @@ public class PagamentoFilter extends AbstractFilter {
 	private Long idFrApplicazione;
 	private Long idFrApplicazioneRevoca;
 	private List<Long> idFrApplicazioneOrIdFrApplicazioneRevoca;
+	
+	private String codDominio;
+	private Date dataInizio;
+	private Date dataFine;
 	
 	public enum SortFields {
 		DATA
@@ -114,6 +119,22 @@ public class PagamentoFilter extends AbstractFilter {
 				
 			}
 			
+			if(this.dataInizio != null && this.dataFine != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.between(Pagamento.model().DATA_ACQUISIZIONE, this.dataInizio,this.dataFine);
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null) {
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.equals(Pagamento.model().ID_RPT.COD_DOMINIO,this.codDominio);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -127,7 +148,7 @@ public class PagamentoFilter extends AbstractFilter {
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		if(field.equals(SortFields.DATA)) 
-			filterSortWrapper.setField(Pagamento.model().DATA_PAGAMENTO); 
+			filterSortWrapper.setField(Pagamento.model().DATA_ACQUISIZIONE); 
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}
@@ -170,6 +191,29 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setIdFrApplicazioneOrIdFrApplicazioneRevoca(List<Long> idFrApplicazioneOrIdFrApplicazioneRevoca) {
 		this.idFrApplicazioneOrIdFrApplicazioneRevoca = idFrApplicazioneOrIdFrApplicazioneRevoca;
+	}
+
+	public String getCodDominio() {
+		return codDominio;
+	}
+
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
+	public Date getDataInizio() {
+		return dataInizio;
+	}
+
+	public void setDataInizio(Date dataInizio) {
+		this.dataInizio = dataInizio;
+	}
+
+	public Date getDataFine() {
+		return dataFine;
+	}
+
+	public void setDataFine(Date dataFine) {
+		this.dataFine = dataFine;
 	}
 
  
