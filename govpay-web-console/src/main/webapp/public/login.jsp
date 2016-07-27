@@ -17,6 +17,7 @@
 <%
 String msg = request.getParameter("msg"); 
 String msgString = null;
+String msg2String = null;
 String msgType = null;
     		
 if(StringUtils.isNotEmpty(msg)){
@@ -29,6 +30,10 @@ if(StringUtils.isNotEmpty(msg)){
 	}else if(msg.equals("se")) { // sessione scaduta
 		msgString = "govpay.sessioneScaduta";
 		msgType= "alert alert-warning";
+	}else if(msg.equals("er")) { // errore interno
+		msgString = "govpay.erroreInterno";
+		msg2String = "govpay.erroreInterno.secondLine";
+		msgType= "alert alert-danger";
 	}else { // utente sconosciuto in govpay
 		msgString = "govpay.utenteNonAutorizzato";
 		msgType= "alert alert-danger";
@@ -51,6 +56,9 @@ if(StringUtils.isNotEmpty(msg)){
         <% if(StringUtils.isNotEmpty(msg)){ %>
         	<div class="<%=msgType %>" role="alert">
         		<p><%=Utils.getInstance().getMessageFromResourceBundle(msgString) %></p>
+        		<% if(StringUtils.isNotEmpty(msg2String)){ %>
+        			<p><%=Utils.getInstance().getMessageFromResourceBundle(msg2String) %></p>
+        		<% } %>
         	</div>
         <% } %>
         <label for="inputEmail" class="sr-only">Username</label>
