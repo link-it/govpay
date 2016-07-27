@@ -30,7 +30,7 @@ if(StringUtils.isNotEmpty(msg)){
 	}else if(msg.equals("se")) { // sessione scaduta
 		msgString = "govpay.sessioneScaduta";
 		msgType= "alert alert-warning";
-	}else if(msg.equals("er")) { // sessione scaduta
+	}else if(msg.equals("er")) { // errore interno
 		msgString = "govpay.erroreInterno";
 		msg2String = "govpay.erroreInterno.secondLine";
 		msgType= "alert alert-danger";
