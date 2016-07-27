@@ -26,6 +26,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.utils.GpThreadLocal;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -40,7 +41,7 @@ public class GestioneRedirectGw {
 	public Response backUrl(
 			@QueryParam(value = "idDominio") String codDominio, 
 			@QueryParam(value = "idSession") String codSessione,
-			@QueryParam(value = "esito") String esito) {
+			@QueryParam(value = "esito") @DefaultValue("ERROR") String esito) {
 		BasicBD bd = null;
 		Rpt rpt = null;
 
