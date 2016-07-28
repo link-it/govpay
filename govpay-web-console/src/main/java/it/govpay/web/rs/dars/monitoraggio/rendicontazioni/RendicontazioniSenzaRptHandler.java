@@ -199,6 +199,11 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 		StringBuilder sb = new StringBuilder();
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(RendicontazioneSenzaRpt entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

@@ -1055,6 +1055,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Applicazione entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

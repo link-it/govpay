@@ -478,6 +478,11 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	public String getSottotitolo(Stazione entry, BasicBD bd) {
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
+	
+	@Override
+	public List<String> getValori(Stazione entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars.anagrafica.tributi;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,6 +51,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -107,7 +109,11 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
-			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
+			List<String> titoli = new ArrayList<String>();
+			titoli.add("Codice Tributo");
+			titoli.add("Descrizione");
+			Elemento intestazione = new Elemento(-1, titoli , null);
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione, true,intestazione);  
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
@@ -450,6 +456,16 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	public String getSottotitolo(TipoTributo entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 		return sb.toString();
+	}
+	
+	@Override
+	public List<String> getValori(TipoTributo entry, BasicBD bd) throws ConsoleException {
+		List<String> valori = new ArrayList<String>();
+		
+		valori.add(entry.getCodTributo());
+		valori.add(entry.getDescrizione());
+		
+		return valori;
 	}
 
 	@Override

@@ -500,6 +500,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		return sb.toString();
 	} 
+	
+	@Override
+	public List<String> getValori(Versamento entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

@@ -613,6 +613,11 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
+	
+	@Override
+	public List<String> getValori(IbanAccredito entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

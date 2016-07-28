@@ -540,6 +540,11 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Intermediario entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

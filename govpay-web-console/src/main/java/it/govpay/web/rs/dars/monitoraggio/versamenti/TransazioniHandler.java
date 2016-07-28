@@ -393,6 +393,11 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Rpt entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

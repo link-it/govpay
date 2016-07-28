@@ -189,8 +189,11 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		String sottotitolo = this.getSottotitolo(entry,bd);
 		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
 		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
+		elemento.setValori(this.getValori(entry, bd)); 
 		return elemento;
 	}
+	
+	public abstract List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
 
 	public <P> P getParameter(UriInfo uriInfo, String parameterName, Class<P> type) throws ConsoleException{
 		P toReturn = null;

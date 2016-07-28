@@ -291,6 +291,9 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 		return sb.toString();
 	} 
+	
+	@Override
+	public List<String> getValori(Evento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
