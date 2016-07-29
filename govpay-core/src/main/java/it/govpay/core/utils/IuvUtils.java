@@ -45,7 +45,7 @@ public class IuvUtils {
 		info.setCodiceIdentificativoEnte(codDominio);
 		info.setImportoVersamento(importoTotale);
 		CtNumeroAvviso numeroAvviso = new CtNumeroAvviso();
-		numeroAvviso.setApplicationCode("" + applicationCode);
+		numeroAvviso.setApplicationCode(String.format("%02d", applicationCode));
 		numeroAvviso.setAuxDigit("0");
 		numeroAvviso.setIUV(iuv);
 		info.setNumeroAvviso(numeroAvviso);
@@ -55,7 +55,7 @@ public class IuvUtils {
 	
 	private static byte[] buildQrCode002(String codDominio, int applicationCode, String iuv, BigDecimal importoTotale) throws JAXBException, SAXException {
 		// Da "L’Avviso di pagamento analogico nel sistema pagoPA" par. 2.1
-		String qrCode = "PAGOPA|002|0" + applicationCode + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
+		String qrCode = "PAGOPA|002|0" + String.format("%02d", applicationCode) + iuv + "|" + codDominio + "|" + (nFormatter.format(importoTotale).replace(".", ""));
 		return qrCode.getBytes();
 	}
 
@@ -67,7 +67,7 @@ public class IuvUtils {
 		String refNo = "8020";
 		String amount = "3902";
 		String importo = nFormatter.format(importoTotale).replace(".", "");
-		return payToLoc + gln + refNo + "0" + applicationCode + iuv + amount + importo;
+		return payToLoc + gln + refNo + "0" + String.format("%02d", applicationCode) + iuv + amount + importo;
 	}
 	
 	public static IuvGenerato toIuvGenerato(Applicazione applicazione, Dominio dominio, it.govpay.bd.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
