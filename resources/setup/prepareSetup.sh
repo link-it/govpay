@@ -1,4 +1,4 @@
-VERSION=2.2
+VERSION=2.2-p1
 
 # Directory
 COPYING_FILE=../../COPYING
