@@ -36,6 +36,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -59,6 +60,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -142,9 +144,19 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
+			List<String> valori = new ArrayList<String>();
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esito.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"));
+			
+			Elemento intestazione = new Elemento(-1, valori , null);
+			
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, cancellazione, true, intestazione ); 
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
@@ -293,7 +305,25 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	} 
 	
 	@Override
-	public List<String> getValori(Evento entry, BasicBD bd) throws ConsoleException { return null; }
+	public List<String> getValori(Evento entry, BasicBD bd) throws ConsoleException { 
+		List<String> valori = new ArrayList<String>();
+		
+		TipoEvento tipoEvento = entry.getTipoEvento();
+		Date dataRichiesta = entry.getDataRichiesta();
+		String esito = entry.getEsito();
+		String codDominio = entry.getCodDominio();
+		String iuv = entry.getIuv();
+		String ccp = entry.getCcp();
+		
+		valori.add(this.sdf.format(dataRichiesta));
+		valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+ tipoEvento.name()));
+		valori.add(esito);
+		valori.add(codDominio);
+		valori.add(iuv);
+		valori.add(ccp);
+		
+		return valori; 
+		}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -459,4 +489,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
+	
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

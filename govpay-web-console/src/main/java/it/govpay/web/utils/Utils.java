@@ -31,6 +31,8 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.ws.rs.core.MultivaluedMap;
+
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Acl.Servizio;
 import it.govpay.bd.model.Acl.Tipo;
@@ -252,5 +254,21 @@ public class Utils {
 			}
 		}
 		return lst;
+	}
+	
+	public static String getFileName(MultivaluedMap<String, String> header) {
+
+		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+		
+		for (String filename : contentDisposition) {
+			if ((filename.trim().startsWith("filename"))) {
+
+				String[] name = filename.split("=");
+				
+				String finalFileName = name[1].trim().replaceAll("\"", "");
+				return finalFileName;
+			}
+		}
+		return "unknown";
 	}
 }

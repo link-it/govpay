@@ -973,10 +973,6 @@
 			<xsd:element ref="RendicontazioneSenzaRPT"/>
 			<xsd:element ref="SingoloVersamento"/>
 			<xsd:element ref="Versamento"/>
-<<<<<<< HEAD
-			<xsd:element ref="RPT"/>
-=======
->>>>>>> v2.2
 		</xsd:sequence>
 	</xsd:complexType>
 	

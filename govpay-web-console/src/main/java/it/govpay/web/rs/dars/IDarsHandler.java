@@ -28,6 +28,8 @@ import java.util.zip.ZipOutputStream;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
@@ -50,11 +52,12 @@ public interface IDarsHandler<T> {
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, T entry) throws ConsoleException;
 	public URI getUriModifica(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	
+	public URI getUriUpload(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id) throws ConsoleException;
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,long id) throws ConsoleException;
-	
+		
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;
 	
@@ -65,10 +68,14 @@ public interface IDarsHandler<T> {
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException,DuplicatedEntryException;
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
 	
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
+	
 	public void checkEntry(T entry, T oldEntry) throws ValidationException;
 	
 	public String getTitolo(T entry, BasicBD bd) throws ConsoleException;
 	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
+	public List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
+	
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 }

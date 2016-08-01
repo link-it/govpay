@@ -40,6 +40,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.web.rs.BaseRsService;
@@ -59,6 +60,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	public static final String PATH_FIELD = "field";
 	public static final String PATH_ESPORTA = "esporta";
 	public static final String PATH_CANCELLA = "cancella";
+	public static final String PATH_UPLOAD = "upload";
 	
 	protected Logger log = LogManager.getLogger();
 
@@ -394,6 +396,44 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreGenerico"));
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		this.log.info("Richiesta evasa con successo");
+		return darsResponse;
+	}
+	
+	@POST
+	@Path("/upload")
+	@Consumes({MediaType.MULTIPART_FORM_DATA})
+	@Produces({MediaType.APPLICATION_JSON})
+	public DarsResponse upload(MultipartFormDataInput input, @Context UriInfo uriInfo) throws ConsoleException,WebApplicationException {
+		String methodName = "upload " + this.getNomeServizio(); 
+		this.initLogger(methodName);
+
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		try {
+			bd = BasicBD.newInstance(this.codOperazione);
+			
+			this.getDarsHandler().uplaod(input, uriInfo, bd);
+			
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".upload.ok")); 
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+
+			if(bd != null) 
+				bd.rollback();
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".upload.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();

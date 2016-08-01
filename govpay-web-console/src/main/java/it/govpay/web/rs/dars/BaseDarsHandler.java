@@ -33,6 +33,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -147,6 +148,16 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public URI getUriUpload(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		try{
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_UPLOAD).build(); 
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
 
 	@Override
 	public abstract Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException ;
@@ -172,6 +183,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public abstract void checkEntry(T entry, T oldEntry) throws ValidationException;
 	@Override
 	public abstract Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
+	
+	@Override
+	public abstract Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException;
 
 	@Override
 	public  abstract String getTitolo(T entry, BasicBD bd) throws ConsoleException;
@@ -194,7 +208,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 	
 	public abstract List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
-
+		
 	public <P> P getParameter(UriInfo uriInfo, String parameterName, Class<P> type) throws ConsoleException{
 		P toReturn = null;
 		try{

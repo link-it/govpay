@@ -61,8 +61,14 @@
 			<version>${frontend-maven-plugin-version}</version>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.jboss.resteasy</groupId>
+		    <artifactId>resteasy-multipart-provider</artifactId>
+		    <version>2.3.2.Final</version>
+		    <scope>provided</scope>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<filters>
 			<filter>../resources/filters/${env}.filter.properties</filter>
