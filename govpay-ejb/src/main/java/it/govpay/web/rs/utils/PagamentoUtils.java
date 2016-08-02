@@ -40,7 +40,7 @@ public class PagamentoUtils {
 		datePatterns.add(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
 	}
 
-	public static EstrattoContoRequest readEstrattoContoRequestFromRequest(Caricatore c, Logger log,InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws WebApplicationException,Exception{
+	public static EstrattoContoRequest readEstrattoContoRequestFromRequest(Caricatore c, Logger log,InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders,String methodName) throws WebApplicationException,Exception{
 		String nomeMetodo = "readEstrattoContoRequestFromRequest";
 		EstrattoContoRequest entry = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -124,7 +124,7 @@ public class PagamentoUtils {
 		}
 	}
 	
-	public static void readGetRequest(Caricatore c, Logger log,UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws WebApplicationException,Exception{
+	public static void readGetRequest(Caricatore c, Logger log,UriInfo uriInfo, HttpHeaders httpHeaders,String methodName) throws WebApplicationException,Exception{
 		String nomeMetodo = "readGetRequest: " +  methodName;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try{

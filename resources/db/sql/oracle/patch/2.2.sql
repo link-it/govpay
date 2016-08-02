@@ -37,7 +37,7 @@ end;
 -- index
 CREATE INDEX index_tipi_tributo_1 ON tipi_tributo (cod_tributo);
 
-INSERT INTO tipi_tributo (cod_tributo, descrizione) (SELECT cod_tributo, descrizione FROM tributi);
+INSERT INTO tipi_tributo (cod_tributo, descrizione) (SELECT cod_tributo, max(descrizione) FROM tributi GROUP BY cod_tributo);
 ALTER TABLE tributi ADD id_tipo_tributo BIGINT;
 UPDATE tributi SET id_tipo_tributo = (SELECT id FROM tipi_tributo WHERE tipi_tributo.cod_tributo=tributi.cod_tributo);
 ALTER TABLE tributi MODIFY (id_tipo_tributo NOT NULL);

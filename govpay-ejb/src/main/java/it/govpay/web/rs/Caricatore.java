@@ -74,9 +74,9 @@ public class Caricatore extends BaseRsService{
 		GpContext ctx = null; 
 		VersamentoResponse versamentoResponse = new VersamentoResponse();
 		try{
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			Versamento request = VersamentoUtils.readVersamentoFromRequest(this, log, is, uriInfo, httpHeaders, methodName);
 			
-			Versamento request = VersamentoUtils.readVersamentoFromRequest(this, log, is, uriInfo, httpHeaders, bd, methodName);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
 			
 			applicazioneAutenticata = getApplicazioneAutenticata(bd); 
@@ -169,9 +169,10 @@ public class Caricatore extends BaseRsService{
 		GpContext ctx = null; 
 		List<Pagamento> lst = new ArrayList<Pagamento>();
 		try{
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			EstrattoContoRequest request = PagamentoUtils.readEstrattoContoRequestFromRequest(this, log, is, uriInfo, httpHeaders, bd, methodName);
+			EstrattoContoRequest request = PagamentoUtils.readEstrattoContoRequestFromRequest(this, log, is, uriInfo, httpHeaders, methodName);
+			
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx = GpThreadLocal.get();
 
 			// la data fine puo' essere null, default e' ieri
@@ -244,9 +245,9 @@ public class Caricatore extends BaseRsService{
 		GpContext ctx = null;
 		
 		try{
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			PagamentoUtils.readGetRequest(this, log, uriInfo, httpHeaders, methodName);
 			
-			PagamentoUtils.readGetRequest(this, log, uriInfo, httpHeaders, bd, methodName);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx = GpThreadLocal.get();
 			
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
@@ -296,9 +297,9 @@ public class Caricatore extends BaseRsService{
 		GpContext ctx = null;
 		
 		try{
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			PagamentoUtils.readGetRequest(this, log, uriInfo, httpHeaders, methodName);
 			
-			PagamentoUtils.readGetRequest(this, log, uriInfo, httpHeaders, bd, methodName);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx = GpThreadLocal.get();
 			
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
