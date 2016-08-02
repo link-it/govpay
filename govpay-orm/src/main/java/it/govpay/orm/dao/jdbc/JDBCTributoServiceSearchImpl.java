@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.openspcoop2.generic_project.beans.AliasField;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.beans.IField;
@@ -195,11 +196,13 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
         List<Tributo> list = new ArrayList<Tributo>();
 		try{
 			List<IField> fields = new ArrayList<IField>();
-			fields.add(new CustomField("id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model())));
+			AliasField tributoId = new AliasField(new CustomField("id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model())), "id");
+			fields.add(tributoId);
 			fields.add(Tributo.model().ABILITATO);
 			fields.add(Tributo.model().TIPO_CONTABILITA);
 			fields.add(Tributo.model().CODICE_CONTABILITA);
-			fields.add(new CustomField("tipoTributo.id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)));
+			AliasField tipoTributoId = new AliasField(new CustomField("tipoTributo.id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)), this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)+"_id");
+			fields.add(tipoTributoId);
 			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fields.add(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
