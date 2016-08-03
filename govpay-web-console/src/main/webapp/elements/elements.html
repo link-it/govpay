@@ -26570,7 +26570,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
                 lbl.className = 'titoloMultiselect';
                 pif.appendChild(lbl);
               }
-              
+
               pif.appendChild(vau);
               sezioneDiv.appendChild(pif);
               this.setFileInputProperties(vau, obj);
@@ -27083,8 +27083,12 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
       // vaadin properties
       var fu = fu || this.$$('#'+fileInput.id);
-      fu.maxFileSize = data.maxFileSize;
-      fu.maxFiles = data.maxFiles;
+      if(data.maxFileSize) {
+        fu.maxFileSize = data.maxFileSize;
+      }
+      if(data.maxFiles) {
+        fu.maxFiles = data.maxFiles;
+      }
       if(data.acceptedMimeTypes){
         var acc = '';
         for(var i = 0; i < data.acceptedMimeTypes.length ; i++){
@@ -27094,11 +27098,68 @@ is separate from validation, and `allowed-pattern` does not affect how the input
             acc += data.acceptedMimeTypes[i];
         }
         fu.accept = acc;
-        fu.nodrop = true;
-        fu.target = data.target;
-
-
       }
+      fu.nodrop = true;
+      if(data.target) {
+        fu.target = data.target;
+      }
+
+      fu.addEventListener('upload-success', function(event) {
+        console.log("Upload Success: ");
+        if(event.detail){
+          if(event.detail.xhr){
+            if(event.detail.xhr.response){
+              var jsonResponse = JSON.parse(event.detail.xhr.response);
+
+              var isOk = false;
+              if (jsonResponse.dettaglioEsito){
+                switch (jsonResponse.esitoOperazione){
+                  case 'ESEGUITA':
+                    isOk = true;
+                    app.showPaperToast(jsonResponse.dettaglioEsito, 'success');
+                    break;
+                  case 'NONESEGUITA':
+                    app.showPaperToast(jsonResponse.dettaglioEsito, 'warning');
+                    break;
+                  case 'ERRORE':
+                    app.showPaperToast(jsonResponse.dettaglioEsito, 'error');
+                    break;
+                }
+              } else {
+                switch (jsonResponse.esitoOperazione){
+                  case 'ESEGUITA':
+                    isOk = true;
+                    app.showPaperToast('Upload completato con successo', 'success');
+                    break;
+                  case 'NONESEGUITA':
+                    app.showPaperToast('Upload non eseguito, IdOperazione: ' + jsonResponse.codOperazione, 'warning');
+                    break;
+                  case 'ERRORE':
+                    app.showPaperToast('Si e\' verificato un errore durante l\'Upload, IdOperazione: ' + jsonResponse.codOperazione, 'error');
+                    break;
+                }
+              }
+
+              if(isOk){
+                var response = jsonResponse.response;
+
+                for (var i = 0 ; i < response.length; i ++) {
+                  var toUpdate = response[i];
+                  var idElemento = toUpdate.etichetta;
+                  var valoreElemento = toUpdate.valore;
+
+                  var elemento = document.querySelector('#'+idElemento);
+
+                  elemento.value = ''+valoreElemento;
+
+                  console.log(elemento);
+                }
+              }
+            }
+          }
+        }
+      });
+
     },
 
     refreshFileInputData: function(target){
@@ -32923,7 +32984,7 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
           </thead>
           <tbody>
           <template is="dom-repeat" items="[[dataProvider]]" as="riga">
-            <tr class="[[classFromIndex(index)]]">
+            <tr class="[[classFromIndex(index)]]" id="tableRow_{{index}}">
               <td>[[rowNumberFromIndex(index)]]</td>
               <template is="dom-repeat" items="[[riga.valori]]" as="cella">
                 <td>[[cella]]</td>
