@@ -27152,7 +27152,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
                   elemento.value = ''+valoreElemento;
 
-                  console.log(elemento);
                 }
               }
             }
@@ -32962,7 +32961,7 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
       }
     </style>
     <paper-material elevation="0">
-      <vaadin-grid id="vaadinResultsBox_grid" selection-mode="[[selectionMode(selectable)]]">
+      <vaadin-grid id="vaadinResultsBox_grid" selection-mode="[[selectionMode(selectable)]]" visible-rows="[[righeVisibili(dataProvider)]]">
         <table>
           <colgroup>
             <col name="colIdx" width="100px">
@@ -33070,6 +33069,8 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
 
       nextLevel: function(event){
         if (event.target.parentElement){
+          console.log(event.target);
+          console.log(event.target.parentElement);
           var idx = event.target.parentElement.id.substring(event.target.parentElement.id.indexOf('_'));
           var id = '#uri' + idx;
           var uriInput = this.$$(id);
@@ -33131,6 +33132,13 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
 
       columnNameFromIndex: function(index){
         return 'col' + index;
+      },
+
+      righeVisibili: function(dataProvider){
+        if(dataProvider){
+          return Math.min(25, dataProvider.length);
+        }
+        return 0;
       },
 
       rowNumberFromIndex: function(index){
