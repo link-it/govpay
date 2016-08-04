@@ -30078,6 +30078,7 @@ It will also ensure that focus remains in the dialog.
     <paper-fab class="addFAB" icon="add" on-tap="addElemento" hidden$="[[hideAddFAB(selectedTab, obj)]]"></paper-fab>
     <paper-fab class="editFAB" icon="create" on-tap="editElemento" hidden$="[[hideEditFAB(selectedTab, obj)]]"></paper-fab>
     <iron-ajax id="getDetail" handle-as="json" on-response="getDetail_responseHandler" on-error="getDetail_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="downloadDati" url="[[downloadUrl]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="downloadDati_responseHandler" on-error="downloadDati_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
   <script>
   (function() {
@@ -30120,6 +30121,10 @@ It will also ensure that focus remains in the dialog.
           type: String,
           value: ''
         },
+        downloadUrl: {
+          type: String,
+          value: ''
+        },
         showHome: {
           type: Boolean,
           value: false
@@ -30159,7 +30164,7 @@ It will also ensure that focus remains in the dialog.
       },
 
       classeValore: function(voce){
-        if (voce.riferimento){
+        if (voce.riferimento || voce.downloadLink){
           return 'valoreRiferimento';
         }
         return 'valore';
@@ -30173,7 +30178,7 @@ It will also ensure that focus remains in the dialog.
       },
 
       classeEtichetta: function(voce){
-        if (voce.riferimento && !voce.valore){
+        if ((voce.riferimento || voce.downloadLink) && !voce.valore){
           return 'etichettaRiferimento';
         }
         return 'etichetta';
@@ -30195,6 +30200,29 @@ It will also ensure that focus remains in the dialog.
         if (event.model.voce.riferimento){
           this.fire('view-detail', event.model.voce.riferimento, true);
         }
+
+        // download link
+        if (event.model.voce.downloadLink){
+          this.$.downloadDati.url = event.model.voce.downloadLink;
+          app.showSpinner();
+          this.$.downloadDati.generateRequest();
+        }
+      },
+
+      downloadDati_responseHandler: function(event){
+        app.hideSpinner();
+        var a         = document.createElement('a');
+        a.href        = window.URL.createObjectURL(event.detail.xhr.response);
+        a.target      = '_blank';
+        var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
+        a.download    = nomeFile;
+        document.body.appendChild(a);
+        a.click();
+      },
+
+      downloadDati_errorHandler: function(event){
+        app.hideSpinner();
+        app.dars_errorHandler(event);
       },
 
       resultText: function(numResults){

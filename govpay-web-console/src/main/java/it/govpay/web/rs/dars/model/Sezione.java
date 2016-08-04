@@ -24,6 +24,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class Sezione {
 	private String etichetta;
 	private List<Voce<String>> voci;
@@ -59,6 +60,14 @@ public class Sezione {
 	
 	public void addVoce(String etichetta, String valore, URI reference, boolean avanzata) {
 		this.voci.add(new VoceRiferimento<String>(etichetta, valore, avanzata, reference));
+	}
+	
+	public void addDownloadLink(String etichetta, String valore, URI reference) {
+		this.addDownloadLink(etichetta, valore, reference, false);
+	}
+	
+	public void addDownloadLink(String etichetta, String valore, URI reference, boolean avanzata) {
+		this.voci.add(new VoceDownload<String>(etichetta, valore, avanzata, reference));
 	}
 	
 	public void addVoce(Voce<String> voce ) {
