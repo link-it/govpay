@@ -68,11 +68,6 @@ public class PagamentoUtils {
 			
 			log.debug("Lettura del versamento dall'inputStream completata.");
 			
-			log.info("Validazione della entry in corso...");
-			// validazione richiesta
-			ValidationUtils.validaRichiestaEstrattoConto(entry);
-			log.info("Validazione della entry completata.");
-			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 			return entry;
 		}catch(WebApplicationException e){

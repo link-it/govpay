@@ -109,7 +109,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			}
 
 			long count = intermediariBD.count(filter);
-			
+
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
@@ -189,6 +189,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String denominazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
 		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String intermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd,false);
@@ -205,9 +206,15 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		codIntermediario.setDefaultValue(null);
 		codIntermediario.setEditable(true); 
 		sezioneRoot.addField(codIntermediario);
+		
 		InputText denominazione = (InputText) infoCreazioneMap.get(denominazioneId);
 		denominazione.setDefaultValue(null);
 		sezioneRoot.addField(denominazione);
+		
+		InputText principal = (InputText) infoCreazioneMap.get(principalId);
+		principal.setDefaultValue(null);
+		sezioneRoot.addField(principal);
+		
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
@@ -246,6 +253,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 			String denominazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
 			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 
 			// codIntermediario
 			String codIntermediarioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label");
@@ -253,6 +261,12 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			codIntermediario.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.suggestion"));
 			codIntermediario.setValidation("[0-9]{11}", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.errorMessage"));
 			infoCreazioneMap.put(codIntermediarioId, codIntermediario);
+
+			// principal
+			String principalLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
+			InputText principal = new InputText(principalId, principalLabel, null, true, false, true, 1, 255);
+			principal.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.errorMessage"));
+			infoCreazioneMap.put(principalId, principal);
 
 			// denominazione
 			String denominazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.label");
@@ -283,6 +297,8 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String denominazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
 		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String intermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoModificaConnettore = connettoreHandler.getInfoModifica(uriInfo, bd, entry.getConnettorePdd(),false);
@@ -299,9 +315,15 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		codIntermediario.setDefaultValue(entry.getCodIntermediario());
 		codIntermediario.setEditable(false); 
 		sezioneRoot.addField(codIntermediario);
+		
 		InputText denominazione = (InputText) infoCreazioneMap.get(denominazioneId);
 		denominazione.setDefaultValue(entry.getDenominazione());
 		sezioneRoot.addField(denominazione);
+		
+		InputText principal = (InputText) infoCreazioneMap.get(principalId);
+		principal.setDefaultValue(entry.getConnettorePdd() == null ? null : entry.getConnettorePdd().getPrincipal());
+		sezioneRoot.addField(principal);
+		
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
@@ -321,7 +343,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
-			
+
 			if(infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
@@ -364,13 +386,17 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
+			
+			Connettore connettore = intermediario.getConnettorePdd();
+						
 			// dati dell'intermediario
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label"), intermediario.getCodIntermediario());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.label"), intermediario.getDenominazione());
+			if(connettore != null && StringUtils.isNotEmpty(connettore.getPrincipal()))
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), connettore.getPrincipal());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(intermediario.isAbilitato()));
 
 			// sezione connettore
-			Connettore connettore = intermediario.getConnettorePdd();
 			it.govpay.web.rs.dars.model.Sezione sezioneConnettore = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_PDD + ".titolo"));
 			ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
 			connettoreHandler.fillSezione(sezioneConnettore, connettore,false);
@@ -439,6 +465,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	public Intermediario creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {
 		String methodName = "creaEntry " + this.titoloServizio;
 		Intermediario entry = null;
+		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -452,6 +479,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			baos.close();
 
 			JSONObject jsonObjectIntermediario = JSONObject.fromObject( baos.toString() );  
+			
+			String principal = jsonObjectIntermediario.getString(principalId);
+			jsonObjectIntermediario.remove(principalId);
+			
 			jsonConfig.setRootClass(Intermediario.class);
 			entry = (Intermediario) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
 
@@ -459,6 +490,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			jsonConfig.setRootClass(Connettore.class);
 			Connettore c = (Connettore) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
 
+			c.setPrincipal(principal);
 			entry.setConnettorePdd(c); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -486,6 +518,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		if(entry.getDenominazione() == null || entry.getDenominazione().isEmpty()) throw new ValidationException("Il campo Denominazione deve essere valorizzato.");
 
 		Connettore connettore = entry.getConnettorePdd();
+		
+		if(connettore.getPrincipal() == null || connettore.getPrincipal().isEmpty()) throw new ValidationException("Il campo Principal deve essere valorizzato.");
+
+		
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD, this.titoloServizio, this.pathServizio);
 		connettoreHandler.valida(connettore,false); 
 
@@ -552,7 +588,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;

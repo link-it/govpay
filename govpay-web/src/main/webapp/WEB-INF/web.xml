@@ -11,6 +11,8 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Protetto</web-resource-name>
+                        <url-pattern>/PagamentiTelematiciCCPservice</url-pattern>
+                        <url-pattern>/PagamentiTelematiciRTservice</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPRndService</url-pattern>
@@ -24,6 +26,8 @@
 	<security-constraint>
 		<web-resource-collection>
 			<web-resource-name>Libero</web-resource-name>
+			<url-pattern>/PagamentiTelematiciCCPservice?wsdl</url-pattern>
+                        <url-pattern>/PagamentiTelematiciRTservice?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPAppService?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPPrtService?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPRndService?wsdl</url-pattern>

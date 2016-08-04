@@ -134,7 +134,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			String codVersamento = this.getParameter(uriInfo, codVersamentoId, String.class);
 			if(StringUtils.isNotEmpty(codVersamento))
 				filter.setCodVersamento(codVersamento);
-			
+
 
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
@@ -170,17 +170,17 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				for (Rpt rpt : findAll) {
 					idVersamentoL.add(rpt.getIdVersamento());
 				}
-				
+
 				filter.setIdVersamento(idVersamentoL);  
 			}
-			
+
 
 			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
 			if(!isAdmin){
-//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
-//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-//				filter.setIdUo(operatore.getIdEnti()); 
+				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+				//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
+				//				filter.setIdUo(operatore.getIdEnti()); 
 			}
 
 			long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
@@ -329,11 +329,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
 			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
 			if(!isAdmin){
-//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-//				filter.setIdUo(operatore.getIdEnti()); 
+				//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
+				//				filter.setIdUo(operatore.getIdEnti()); 
 
 				FilterSortWrapper fsw = new FilterSortWrapper();
 				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
@@ -367,8 +367,13 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), versamento.getCodVersamentoEnte());
 				// Uo
 				UnitaOperativa uo = versamento.getUo(bd);
-				if(uo != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".unitaOperativa.label"), uo.getCodUo());  
+				if(uo != null){
+					Dominio dominio = uo.getDominio(bd);
+					Domini dominiDars = new Domini();
+					UriBuilder uriDettaglioDominioBuilder = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).path("{id}");
+					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), uriDettaglioDominioBuilder, bd);
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo(),uriDettaglioDominioBuilder.build(dominio.getId())); 
+				}
 
 				// Applicazione
 				Applicazione applicazione = versamento.getApplicazione(bd);
@@ -444,13 +449,27 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	@Override
 	public String getTitolo(Versamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
-		
+
 		String codVersamentoEnte = entry.getCodVersamentoEnte();
-		
+
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
+
+		String dominioLabel =  null;
+
+		try{
+			// Uo
+			UnitaOperativa uo = entry.getUo(bd);
+			if(uo != null){
+				Dominio dominio = uo.getDominio(bd);
+				Domini dominiDars = new Domini();
+				Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), null, bd);
+				dominioLabel = elemento.getTitolo(); 
+			}
+		}catch(Exception e){log.error(e);}
+
 		switch (statoVersamento) {
 		case NON_ESEGUITO:
-			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo.nonEseguito", codVersamentoEnte));
+			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo.nonEseguito", codVersamentoEnte,dominioLabel));
 			break;
 		case ANNULLATO:
 		case ANOMALO:
@@ -459,12 +478,12 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		case ESEGUITO:
 		default:
 			sb.append(
-					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", codVersamentoEnte,
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name())));
+					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", codVersamentoEnte,dominioLabel,
+							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name())));
 			break;
 		}
-		
-//		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append("€");
+
+		//		sb.append("Versamento ").append(codVersamentoEnte).append(" di ").append(importoTotale).append("€");
 
 		return sb.toString();
 	}
@@ -477,7 +496,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
 		Date dataScadenza = entry.getDataScadenza();
-		
+
 		switch (statoVersamento) {
 		case NON_ESEGUITO:
 			if(dataScadenza != null)
@@ -495,7 +514,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		default:
 			sb.append(
 					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),this.sdf.format(dataUltimoAggiornamento) ));
+							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),this.sdf.format(dataUltimoAggiornamento) ));
 			break;
 		}
 
@@ -574,7 +593,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				rptFsw.setSortOrder(SortOrder.DESC);
 				rptFilter.getFilterSortList().add(rptFsw);
 				rptFilter.setIdVersamento(idVersamento); 
-				
+
 				RrBD rrBD = new RrBD(bd);
 				FilterSortWrapper rrFsw = new FilterSortWrapper();
 				rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
@@ -596,7 +615,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							zout.write(rpt.getXmlRt());
 							zout.closeEntry();
 						}
-						
+
 						RrFilter rrFilter = rrBD.newFilter();
 						rrFilter.getFilterSortList().add(rrFsw);
 						rrFilter.setIdRpt(rpt.getId()); 
@@ -604,7 +623,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						if(findAll != null && findAll.size() > 0){
 							for (Rr rr : findAll) {
 								String folderNameRr = "TransazioneRevoca_"+ rr.getCodMsgRevoca();
-								
+
 								ZipEntry rrXml = new ZipEntry(folderName + "/"+ folderNameRr+"/rr.xml");
 								zout.putNextEntry(rrXml);
 								zout.write(rr.getXmlRr());
@@ -684,7 +703,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			rptFsw.setSortOrder(SortOrder.DESC);
 			rptFilter.getFilterSortList().add(rptFsw);
 			rptFilter.setIdVersamento(idToExport); 
-			
+
 			RrBD rrBD = new RrBD(bd);
 			FilterSortWrapper rrFsw = new FilterSortWrapper();
 			rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
@@ -706,7 +725,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						zout.write(rpt.getXmlRt());
 						zout.closeEntry();
 					}
-					
+
 					RrFilter rrFilter = rrBD.newFilter();
 					rrFilter.getFilterSortList().add(rrFsw);
 					rrFilter.setIdRpt(rpt.getId()); 
@@ -714,7 +733,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					if(findAll != null && findAll.size() > 0){
 						for (Rr rr : findAll) {
 							String folderNameRr = "TransazioneRevoca_"+ rr.getCodMsgRevoca();
-							
+
 							ZipEntry rrXml = new ZipEntry(folderNameRr+"/rr.xml");
 							zout.putNextEntry(rrXml);
 							zout.write(rr.getXmlRr());

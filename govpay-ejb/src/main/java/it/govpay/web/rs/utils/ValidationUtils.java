@@ -29,9 +29,6 @@ public class ValidationUtils {
 		
 		if(request.getImporto() == null)
 			throw new WebApplicationException(BaseRsService.getBadRequestResponse("Importo Obbligatorio"));
-		
-		if(StringUtils.isEmpty(request.getCausale()))
-			throw new WebApplicationException(BaseRsService.getBadRequestResponse("Causale Obbligatoria"));
 	}
 
 	public static void validaRichiestaNotificaPagamento(Pagamento request) throws WebApplicationException {

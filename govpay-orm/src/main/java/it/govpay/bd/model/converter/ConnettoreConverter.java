@@ -90,6 +90,10 @@ public class ConnettoreConverter {
 					dto.setAzioneInUrl(Boolean.parseBoolean(connettore.getValore()));
 				}
 				
+				if(Connettore.P_PRINCIPAL_NAME.equals(connettore.getCodProprieta())) {
+					dto.setPrincipal(connettore.getValore());
+				}
+				
 				dto.setTipo(Tipo.SOAP);
 
 			}
@@ -211,6 +215,14 @@ public class ConnettoreConverter {
 //			vo.setValore(connettore.getTipo().toString());
 //			voList.add(vo);
 //		}
+		
+		if(connettore.getPrincipal() != null && !connettore.getPrincipal().trim().isEmpty()) {
+			it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
+			vo.setCodConnettore(connettore.getIdConnettore());
+			vo.setCodProprieta(Connettore.P_PRINCIPAL_NAME);
+			vo.setValore(connettore.getPrincipal());
+			voList.add(vo);
+		}
 
 		it.govpay.orm.Connettore vo = new it.govpay.orm.Connettore();
 		vo.setCodConnettore(connettore.getIdConnettore());
