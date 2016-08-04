@@ -37,6 +37,7 @@ public class Connettore extends BasicModel {
 	public static final String P_HTTPPASSW_NAME = "HTTPPASSW";
 	public static final String P_URL_NAME = "URL";
 	public static final String P_AZIONEINURL_NAME = "AZIONEINURL";
+	public static final String P_PRINCIPAL_NAME = "PRINCIPAL";
 //	public static final String P_VERSIONE = "VERSIONE";
 	
 	public enum EnumAuthType {
@@ -67,6 +68,8 @@ public class Connettore extends BasicModel {
 	private String url;
 	private Tipo tipo;
 	private boolean azioneInUrl;
+	
+	private String principal;
 	
 	public Connettore() {
 	}
@@ -170,4 +173,10 @@ public class Connettore extends BasicModel {
 		this.tipo = tipo;
 	}
 
+	public String getPrincipal() {
+		return principal;
+	}
+	public void setPrincipal(String principal) {
+		this.principal = principal;
+	}
 }

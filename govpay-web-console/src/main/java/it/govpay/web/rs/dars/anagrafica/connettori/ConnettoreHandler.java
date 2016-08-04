@@ -131,7 +131,7 @@ public class ConnettoreHandler {
 			// username
 			String usernameLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".username.label");
 			URI refreshUsernameUri = this.getUriField(uriInfo, bd, usernameId); 
-			Username username = new Username(this.nomeConnettore,this.nomeServizio,usernameId, usernameLabel, 1, 20, refreshUsernameUri , tipoAutenticazioneValues);
+			Username username = new Username(this.nomeConnettore,this.nomeServizio,usernameId, usernameLabel, 1, 255, refreshUsernameUri , tipoAutenticazioneValues);
 			username.addDependencyField(tipoAutenticazione);
 			username.init(tipoAutenticazioneValues);
 			username.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".username.errorMessage"));
@@ -140,7 +140,7 @@ public class ConnettoreHandler {
 			// password
 			String passwordLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".password.label");
 			URI refreshPasswordUri = this.getUriField(uriInfo, bd, passwordId); 
-			Password password = new Password(this.nomeConnettore,this.nomeServizio,passwordId, passwordLabel, 1, 20, refreshPasswordUri , tipoAutenticazioneValues);
+			Password password = new Password(this.nomeConnettore,this.nomeServizio,passwordId, passwordLabel, 1, 255, refreshPasswordUri , tipoAutenticazioneValues);
 			password.addDependencyField(tipoAutenticazione);
 			password.init(tipoAutenticazioneValues);
 			password.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".password.errorMessage"));

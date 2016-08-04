@@ -77,11 +77,14 @@ import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.Spezzo
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.Property;
@@ -106,6 +109,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaaAttivaRPTRisposta paaAttivaRPT(PaaAttivaRPT bodyrichiesta, IntestazionePPT header) {
+		
 		String codIntermediario = header.getIdentificativoIntermediarioPA();
 		String codStazione = header.getIdentificativoStazioneIntermediarioPA();
 		String codDominio = header.getIdentificativoDominio();
@@ -129,7 +133,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
 		ctx.log("ccp.ricezioneAttiva");
-
+		
 		BasicBD bd = null;
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
 		log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
@@ -146,9 +150,23 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
+			String principal = getPrincipal();
+			if(principal == null) {
+				ctx.log("ccp.erroreNoAutorizzazione");
+				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+			}
+				
+			
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
+				
+				// Controllo autorizzazione
+				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+					ctx.log("ccp.erroreAutorizzazione", principal);
+					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + codIntermediario);
+				}
+				
 				evento.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
@@ -323,10 +341,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
-			GiornaleEventi ge = new GiornaleEventi(bd);
-			evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
-			evento.setDataRisposta(new Date());
-			ge.registraEvento(evento);
+			if(bd != null) {
+				GiornaleEventi ge = new GiornaleEventi(bd);
+				evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
+				evento.setDataRisposta(new Date());
+				ge.registraEvento(evento);
+			}
 			
 			if(ctx != null) {
 				ctx.setResult(response.getPaaAttivaRPTRisposta().getFault() == null ? null : response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
@@ -337,6 +357,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 		return response;
 	}
+
+	
 
 	@Override
 	public PaaVerificaRPTRisposta paaVerificaRPT(PaaVerificaRPT bodyrichiesta, IntestazionePPT header) {
@@ -382,8 +404,22 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
+			String principal = getPrincipal();
+			if(principal == null) {
+				ctx.log("ccp.erroreNoAutorizzazione");
+				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
+			}
+			
+			Intermediario intermediario = null;
 			try {
-				Intermediario intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
+				intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
+				
+				// Controllo autorizzazione
+				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+					ctx.log("ccp.erroreAutorizzazione", principal);
+					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + codIntermediario);
+				}
+
 				evento.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
@@ -520,10 +556,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
-			GiornaleEventi ge = new GiornaleEventi(bd);
-			evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
-			evento.setDataRisposta(new Date());
-			ge.registraEvento(evento);
+			if(bd != null) {
+				GiornaleEventi ge = new GiornaleEventi(bd);
+				evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
+				evento.setDataRisposta(new Date());
+				ge.registraEvento(evento);
+			}
 			
 			if(ctx != null) {
 				ctx.setResult(response.getPaaVerificaRPTRisposta().getFault() == null ? null : response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
@@ -586,5 +624,13 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 
 		return risposta;
+	}
+	
+	private String getPrincipal() throws GovPayException {
+		if(wsCtxt.getUserPrincipal() == null) {
+			return null;
+		}
+
+		return wsCtxt.getUserPrincipal().getName();
 	}
 }

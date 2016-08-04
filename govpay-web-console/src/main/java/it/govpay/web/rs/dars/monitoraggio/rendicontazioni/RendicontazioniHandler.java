@@ -329,7 +329,11 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 			break;
 		case RIFIUTATA:
 		default:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata"));
+			sb.append(
+					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
+					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
+							)
+					);
 			break;
 		}
 

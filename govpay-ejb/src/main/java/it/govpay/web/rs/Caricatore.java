@@ -43,6 +43,7 @@ import it.govpay.web.rs.model.Versamento;
 import it.govpay.web.rs.model.VersamentoResponse;
 import it.govpay.web.rs.utils.PagamentoUtils;
 import it.govpay.web.rs.utils.RestUtils;
+import it.govpay.web.rs.utils.ValidationUtils;
 import it.govpay.web.rs.utils.VersamentoUtils;
 
 @Path("/caricatore")
@@ -78,6 +79,11 @@ public class Caricatore extends BaseRsService{
 			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
+
+			log.info("Validazione della entry in corso...");
+			// validazione richiesta
+			ValidationUtils.validaRichiestaCaricaVersamento(request);
+			log.info("Validazione della entry completata.");
 			
 			applicazioneAutenticata = getApplicazioneAutenticata(bd); 
 			versamentoBusiness = new it.govpay.core.business.Versamento(bd);
@@ -174,6 +180,11 @@ public class Caricatore extends BaseRsService{
 			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx = GpThreadLocal.get();
+			
+			log.info("Validazione della entry in corso...");
+			// validazione richiesta
+			ValidationUtils.validaRichiestaEstrattoConto(request);
+			log.info("Validazione della entry completata.");
 
 			// la data fine puo' essere null, default e' ieri
 			if(request.getDataFine() == null){

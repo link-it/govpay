@@ -38,12 +38,14 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Evento.TipoEvento;
 import it.govpay.bd.model.Stazione;
 import it.govpay.core.business.GiornaleEventi;
+import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
+
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
@@ -52,6 +54,7 @@ import javax.xml.ws.WebServiceContext;
 import org.apache.cxf.annotations.SchemaValidation.SchemaValidationType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
@@ -117,19 +120,33 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			Dominio dominio = null;
-			try {
-				dominio = AnagraficaManager.getDominio(bd, identificativoDominio);
-			} catch (NotFoundException e) {
-				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, identificativoDominio);
+			String principal = getPrincipal();
+			if(principal == null) {
+				ctx.log("er.erroreNoAutorizzazione");
+				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
 			
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(bd, identificativoIntermediarioPA);
+				
+				// Controllo autorizzazione
+				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+					ctx.log("er.erroreAutorizzazione", principal);
+					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + identificativoIntermediarioPA);
+				}
+
 				evento.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, identificativoDominio);
+			}
+
+			
+			Dominio dominio = null;
+			try {
+				dominio = AnagraficaManager.getDominio(bd, identificativoDominio);
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, identificativoDominio);
 			}
 			
 			Stazione stazione = null;
@@ -163,10 +180,12 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			String faultDescription = response.getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getFault().getDescription(); 
 			ctx.log("er.ricezioneKo", response.getFault().getFaultCode(), response.getFault().getFaultString(), faultDescription);
 		} finally {
-			GiornaleEventi ge = new GiornaleEventi(bd);
-			evento.setEsito(response.getEsito());
-			evento.setDataRisposta(new Date());
-			ge.registraEvento(evento);
+			if(bd != null) {
+				GiornaleEventi ge = new GiornaleEventi(bd);
+				evento.setEsito(response.getEsito());
+				evento.setDataRisposta(new Date());
+				ge.registraEvento(evento);
+			}
 			
 			if(ctx != null) {
 				ctx.setResult(response.getFault() == null ? null : response.getFault().getFaultCode());
@@ -220,19 +239,32 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			Dominio dominio = null;
-			try {
-				dominio = AnagraficaManager.getDominio(bd, codDominio);
-			} catch (NotFoundException e) {
-				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
+			String principal = getPrincipal();
+			if(principal == null) {
+				ctx.log("rt.erroreNoAutorizzazione");
+				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
 			
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
+				
+				// Controllo autorizzazione
+				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+					ctx.log("rt.erroreAutorizzazione", principal);
+					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA());
+				}
+
 				evento.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
+			}
+			
+			Dominio dominio = null;
+			try {
+				dominio = AnagraficaManager.getDominio(bd, codDominio);
+			} catch (NotFoundException e) {
+				throw new NdpException(FaultPa.PAA_ID_DOMINIO_ERRATO, codDominio);
 			}
 			
 			Stazione stazione = null;
@@ -269,10 +301,13 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			String faultDescription = response.getPaaInviaRTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaInviaRTRisposta().getFault().getDescription(); 
 			ctx.log("rt.ricezioneKo", response.getPaaInviaRTRisposta().getFault().getFaultCode(), response.getPaaInviaRTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
-			GiornaleEventi ge = new GiornaleEventi(bd);
-			evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
-			evento.setDataRisposta(new Date());
-			ge.registraEvento(evento);
+			if(bd != null) {
+				GiornaleEventi ge = new GiornaleEventi(bd);
+				evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
+				evento.setDataRisposta(new Date());
+				ge.registraEvento(evento);
+			}
+			
 			
 			if(ctx != null) {
 				ctx.setResult(response.getPaaInviaRTRisposta().getFault() == null ? null : response.getPaaInviaRTRisposta().getFault().getFaultCode());
@@ -320,5 +355,13 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		}
 
 		return r;
+	}
+	
+	private String getPrincipal() throws GovPayException {
+		if(wsCtxt.getUserPrincipal() == null) {
+			return null;
+		}
+
+		return wsCtxt.getUserPrincipal().getName();
 	}
 }
