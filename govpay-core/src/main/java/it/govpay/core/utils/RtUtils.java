@@ -81,10 +81,10 @@ public class RtUtils extends NdpValidationUtils {
 			case XA_DES:
 				return validaFirmaXades(rt, idDominio);
 			default:
-				throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
+				throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
 			}
 		} catch (ServiceException e) {
-			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
+			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, "La firma non e' quella richiesta nella RPT (Tipo Firma " + tipoFirma + ")");
 		}
 	}
 
@@ -107,26 +107,26 @@ public class RtUtils extends NdpValidationUtils {
 	public static void validaSemantica(CtRichiestaPagamentoTelematico rpt, CtRicevutaTelematica rt) throws NdpException {
 
 		if(!equals(rpt.getIdentificativoMessaggioRichiesta(), rt.getRiferimentoMessaggioRichiesta())) {
-			throw new NdpException(FaultPa.PAA_SEMANTICA, "RiferimentoMessaggioRichiesta non corrisponde all'RPT");
+			throw new NdpException(FaultPa.PAA_SEMANTICA, rpt.getDominio().getIdentificativoDominio(), "RiferimentoMessaggioRichiesta non corrisponde all'RPT");
 		}
 		String errore = null;
 		if( (errore = validaSemantica(rpt.getDominio(), rt.getDominio())) != null){
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
+			throw new NdpException(FaultPa.PAA_SEMANTICA, rpt.getDominio().getIdentificativoDominio(), errore);
 		}
 		if( (errore = validaSemantica(rpt.getEnteBeneficiario(), rt.getEnteBeneficiario()) )!= null){
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
+			throw new NdpException(FaultPa.PAA_SEMANTICA, rpt.getDominio().getIdentificativoDominio(), errore);
 		}
 		if( (errore = validaSemantica(rpt.getSoggettoPagatore(), rt.getSoggettoPagatore())) != null){
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
+			throw new NdpException(FaultPa.PAA_SEMANTICA, rpt.getDominio().getIdentificativoDominio(), errore);
 		}
 		if( (errore = validaSemantica(rpt.getSoggettoVersante(), rt.getSoggettoVersante())) != null){
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
+			throw new NdpException(FaultPa.PAA_SEMANTICA, rpt.getDominio().getIdentificativoDominio(), errore);
 		}
 
 		CtDatiVersamentoRT datiVersamentoRT = rt.getDatiPagamento();
 
 		if ((errore = validaSemantica(rpt.getDatiVersamento(), datiVersamentoRT)) != null) {
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
+			throw new NdpException(FaultPa.PAA_SEMANTICA, rpt.getDominio().getIdentificativoDominio(), errore);
 		}
 	}
 
@@ -246,7 +246,7 @@ public class RtUtils extends NdpValidationUtils {
 				ctRt = JaxbUtils.toRT(rtByteValidato);
 			} catch (Exception e) {
 				log.error("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
-				throw new NdpException(FaultPa.PAA_SINTASSI_XSD, e.getCause().getMessage());
+				throw new NdpException(FaultPa.PAA_SINTASSI_XSD, codDominio, e.getCause().getMessage());
 			}
 			
 			// Validazione Semantica
@@ -258,9 +258,13 @@ public class RtUtils extends NdpValidationUtils {
 				throw new ServiceException(e);
 			}
 		} catch (NdpException e) {
+			log.error("Rt rifiutata: " + e.getDescrizione());
 			rpt.setStato(StatoRpt.RT_RIFIUTATA_PA);
+			rpt.setDescrizioneStato(e.getDescrizione());
 			rpt.setXmlRt(rtByte);
 			rptBD.updateRpt(rpt.getId(), rpt);
+			bd.commit();
+			bd.disableSelectForUpdate();
 			throw e;
 		}
 		

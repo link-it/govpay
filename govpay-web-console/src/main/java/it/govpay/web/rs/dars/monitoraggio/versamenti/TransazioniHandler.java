@@ -187,6 +187,8 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			StatoRpt stato = rpt.getStato(); 
 			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
 					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()));
+			if(StringUtils.isNotEmpty(rpt.getDescrizioneStato()))
+				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rpt.getDescrizioneStato());
 			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),rpt.getIuv());
 			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),rpt.getCcp());
 			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codMsgRichiesta.label"),rpt.getCodMsgRichiesta());
@@ -267,8 +269,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCarrello.label"),rpt.getCodCarrello());
 			if(StringUtils.isNotEmpty(rpt.getCodSessione()))
 				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSessione.label"),rpt.getCodSessione());
-			if(StringUtils.isNotEmpty(rpt.getDescrizioneStato()))
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rpt.getDescrizioneStato());
+	
 
 			// Singoli Rt 
 			String etichettaRt = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneRT.titolo");

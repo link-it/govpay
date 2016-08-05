@@ -64,7 +64,7 @@ public class GovpayConfig {
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
 	private TipiDatabase mLogDBType;
-	private boolean mLogOnLog4j, mLogOnDB, mLogSql;
+	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
 
 	private boolean batchEstrattoConto;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
@@ -89,6 +89,7 @@ public class GovpayConfig {
 		this.mLogDBType = null;
 		this.mLogDS = null;
 		this.batchEstrattoConto = false;
+		this.pddAuthEnable = true;
 
 		try {
 
@@ -250,6 +251,10 @@ public class GovpayConfig {
 						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pathEsportazione\" (" + pathEstrattoConto + ") non esiste o non e' un folder.");
 				}
 			}
+			
+			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", props, false);
+			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
+				this.pddAuthEnable = false;
 
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
@@ -366,6 +371,10 @@ public class GovpayConfig {
 
 	public String getPathEstrattoConto() {
 		return pathEstrattoConto;
+	}
+
+	public boolean isPddAuthEnable() {
+		return pddAuthEnable;
 	}
 
 }
