@@ -28,6 +28,8 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Connettore;
+import it.govpay.bd.model.Connettore.EnumSslType;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
@@ -41,12 +43,14 @@ public class TipoSsl extends SelectList<String> {
 	public static final String TIPO_SSL_VALUE_SERVER = "SERVER";
 	public static final String TIPO_SSL_VALUE_CLIENT = "CLIENT";
 	private String tipoAutenticazioneId= null;
+	private String idOwnerId = null;
 	
 	public TipoSsl(String nomeConnettore,String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> rawvalues, BasicBD bd) {
 		super(id, label, refreshUri, rawvalues, bd);
 		this.nomeServizio = nomeServizio;
 		this.nomeConnettore = nomeConnettore;
 		this.tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
+		this.idOwnerId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
@@ -60,9 +64,29 @@ public class TipoSsl extends SelectList<String> {
 	@Override
 	protected String getDefaultValue(List<RawParamValue> values, Object... objects) {
 		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
+		String idOwner = Utils.getValue(values, this.idOwnerId);
+		Connettore c = null;
 		
-		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
-			return "";
+		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && !tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
+			return null;
+		}
+		
+		if(StringUtils.isEmpty(idOwner)){
+			return null;
+		}
+		
+		BasicBD bd = (BasicBD) objects[0];
+		c= Utils.getConnettore(idOwner, this.nomeConnettore,bd);
+		
+		if(c!= null){
+			EnumSslType tipoSsl2 = (c.getTipoSsl() != null ? c.getTipoSsl() : EnumSslType.CLIENT);
+			switch (tipoSsl2) {
+			case SERVER:
+				return TipoSsl.TIPO_SSL_VALUE_SERVER;
+			case CLIENT:
+			default:
+				return TipoSsl.TIPO_SSL_VALUE_CLIENT;
+			}
 		}
 		
 		return null;
