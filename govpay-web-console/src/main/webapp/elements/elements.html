@@ -33053,6 +33053,10 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
         selectable: {
           type: Boolean,
           value: false
+        },
+        detailOnButton: {
+          type: Boolean,
+          value: true
         }
       },
 
@@ -33096,16 +33100,69 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
       },
 
       nextLevel: function(event){
-        if (event.target.parentElement){
-          console.log(event.target);
-          console.log(event.target.parentElement);
-          var idx = event.target.parentElement.id.substring(event.target.parentElement.id.indexOf('_'));
-          var id = '#uri' + idx;
+        var id;
+
+        if(!this.detailOnButton) {
+          if (event.target.parentElement) {
+            var row = this.getTableRow(event.target.parentElement);
+            if(row) {
+              var lastTd = row.getElementsByTagName('td')[row.getElementsByTagName('td').length - 1];
+              var inputLs = lastTd.getElementsByTagName('input');
+              if (inputLs.length > 0) {
+                console.log(inputLs);
+                //var idx = event.target.parentElement.id.substring(event.target.parentElement.id.indexOf('_'));
+                id = '#' + inputLs[0].id; //'#uri' + idx;
+                var uriInput = this.$$(id);
+                if (uriInput.value) {
+                  this.fire('view-detail', uriInput.value, true);
+                }
+              }
+            }
+          }
+        }else {
+          var button = this.getClickedButton(event.target);
+          if (button) {
+            var idx = button.id.substring(button.id.indexOf('_'));
+            id = '#uri' + idx;
+          }
+        }
+
+        if(id){
           var uriInput = this.$$(id);
-          if(uriInput.value) {
+          if (uriInput.value) {
             this.fire('view-detail', uriInput.value, true);
           }
         }
+      },
+
+      getClickedButton: function(element) {
+        // ho cliccato sul tasto
+        if(element.tagName.toUpperCase() === 'PAPER-ICON-BUTTON')
+          return element;
+
+        // se ho cliccato sull'icona restiutisco il parent
+        if(element.parentElement.tagName.toUpperCase() === 'PAPER-ICON-BUTTON')
+          return element.parentElement;
+
+        return null;
+      },
+
+
+      getTableRow: function(element) {
+        // parent e' la riga allora sono apposto
+        if(element.tagName.toUpperCase() === 'TR')
+          return element;
+
+        // se ho un TD allora restituisco il parent
+        if(element.tagName.toUpperCase() === 'TD')
+          return element.parentElement;
+
+        // se ho un PAPER_ICON_BUTTON allora restituisco il parent del parent
+        if(element.tagName.toUpperCase() === 'PAPER-ICON-BUTTON')
+          return element.parentElement.parentElement;
+
+        console.log(element);
+        return null;
       },
 
       isVisible: function (item) {
