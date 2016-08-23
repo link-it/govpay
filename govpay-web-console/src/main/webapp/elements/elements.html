@@ -28357,7 +28357,7 @@ It will also ensure that focus remains in the dialog.
             <link-searchbox id="searchbox" auto="" on-append-response="appendResults" hidden$="[[!ricercaUrl]]" on-response="setResults"></link-searchbox>
             <span class="gap" hidden$="[[showSpaceBetween(results.length, ricercaUrl)]]"></span>
             <template is="dom-if" if="{{useVaadin}}">
-              <link-vaadinlistbox id="vaadinResultsBox" filtrabile="[[filtrabile]]" class="allSpace" selection-mode="[[vaadinSelectionMode(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" intestazione="{{intestazione}}"></link-vaadinlistbox>
+              <link-vaadinlistbox id="vaadinResultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" intestazione="{{intestazione}}"></link-vaadinlistbox>
             </template>
             <template is="dom-if" if="{{!useVaadin}}">
                <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
@@ -28540,10 +28540,6 @@ It will also ensure that focus remains in the dialog.
         return (this.cancellazioneUrl || this.esportazioneUrl) ? true : false;
       },
 
-      vaadinSelectionMode: function(numResults){
-        return (this.cancellazioneUrl || this.esportazioneUrl) ? 'multi' : 'disable';
-      },
-
       showSpaceBetween: function(numResults, url){
         return numResults!=0 && !url;
       },
@@ -28571,11 +28567,13 @@ It will also ensure that focus remains in the dialog.
         } else {
           var grid = grid || document.querySelector('vaadin-grid');
           if(grid){
-            var selection = grid.selection.selected();
-            console.log(selection);
-            for (var i = 0; i < selection.length; i++) {
-              var obj = this.results[i];
-              listaId.push(obj.id);
+            var selMode =  grid.selectionMode || 'disable';
+            if(selMode != 'disable') {
+              var selection = grid.selection.selected();
+              for (var i = 0; i < selection.length; i++) {
+                var obj = this.results[i];
+                listaId.push(obj.id);
+              }
             }
           }
         }
@@ -33005,18 +33003,60 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
       }
     </style>
     <paper-material elevation="0">
-      <vaadin-grid id="vaadinResultsBox_grid" selection-mode="multi" visible-rows="[[righeVisibili(dataProvider)]]">
-        <table>
-          <colgroup>
-            <col name="colIdx" width="100px">
-            <template is="dom-repeat" items="[[intestazione.valori]]">
-              <col name="[[columnNameFromIndex(index)]]">
-            </template>
-            <col name="colAction" width="100px">
-          </colgroup>
+      <template is="dom-if" if="{{selectable}}">
+        <vaadin-grid id="vaadinResultsBox_grid" selection-mode="multi" visible-rows="[[righeVisibili(dataProvider)]]">
+          <table>
+            <colgroup>
+              <col name="colIdx" width="100px">
+              <template is="dom-repeat" items="[[intestazione.valori]]">
+                <col name="[[columnNameFromIndex(index)]]">
+              </template>
+              <col name="colAction" width="100px">
+            </colgroup>
 
-          
-          <thead>
+            
+            <thead>
+              <tr>
+                <th>#</th>
+                <template is="dom-repeat" items="[[intestazione.valori]]">
+                  <th>[[item]]</th>
+                </template>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+            <template is="dom-repeat" items="[[dataProvider]]" as="riga">
+              <tr class="[[classFromIndex(index)]]" id="tableRow_{{index}}">
+                <td>[[rowNumberFromIndex(index)]]</td>
+                <template is="dom-repeat" items="[[riga.valori]]" as="cella">
+                  <td>[[cella]]</td>
+                </template>
+                <td>
+                  <template is="dom-if" if="{{mostraLinkDettaglio(riga)}}">
+                    <input type="hidden" id="uri_{{index}}" value="[[riga.uri]]">
+                    <paper-icon-button id="detailButton_{{index}}" on-tap="nextLevel" icon="search" title="Dettaglio">
+                    </paper-icon-button>
+                  </template>
+                </td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </vaadin-grid>
+      </template>
+      <template is="dom-if" if="{{!selectable}}">
+        <vaadin-grid id="vaadinResultsBox_grid" selection-mode="disabled" visible-rows="[[righeVisibili(dataProvider)]]">
+          <table>
+            <colgroup>
+              <col name="colIdx" width="100px">
+              <template is="dom-repeat" items="[[intestazione.valori]]">
+                <col name="[[columnNameFromIndex(index)]]">
+              </template>
+              <col name="colAction" width="100px">
+            </colgroup>
+
+            
+            <thead>
             <tr>
               <th>#</th>
               <template is="dom-repeat" items="[[intestazione.valori]]">
@@ -33024,26 +33064,27 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
               </template>
               <th></th>
             </tr>
-          </thead>
-          <tbody>
-          <template is="dom-repeat" items="[[dataProvider]]" as="riga">
-            <tr class="[[classFromIndex(index)]]" id="tableRow_{{index}}">
-              <td>[[rowNumberFromIndex(index)]]</td>
-              <template is="dom-repeat" items="[[riga.valori]]" as="cella">
-                <td>[[cella]]</td>
-              </template>
-              <td>
-                <template is="dom-if" if="{{mostraLinkDettaglio(riga)}}">
-                  <input type="hidden" id="uri_{{index}}" value="[[riga.uri]]">
-                  <paper-icon-button id="detailButton_{{index}}" on-tap="nextLevel" icon="search" title="Dettaglio">
-                  </paper-icon-button>
+            </thead>
+            <tbody>
+            <template is="dom-repeat" items="[[dataProvider]]" as="riga">
+              <tr class="[[classFromIndex(index)]]" id="tableRow_{{index}}">
+                <td>[[rowNumberFromIndex(index)]]</td>
+                <template is="dom-repeat" items="[[riga.valori]]" as="cella">
+                  <td>[[cella]]</td>
                 </template>
-              </td>
-            </tr>
-          </template>
-          </tbody>
-        </table>
-      </vaadin-grid>
+                <td>
+                  <template is="dom-if" if="{{mostraLinkDettaglio(riga)}}">
+                    <input type="hidden" id="uri_{{index}}" value="[[riga.uri]]">
+                    <paper-icon-button id="detailButton_{{index}}" on-tap="nextLevel" icon="search" title="Dettaglio">
+                    </paper-icon-button>
+                  </template>
+                </td>
+              </tr>
+            </template>
+            </tbody>
+          </table>
+        </vaadin-grid>
+      </template>
     </paper-material>
   </template>
   <script>
@@ -33052,10 +33093,6 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
 
     Polymer({
       is: 'link-vaadinlistbox',
-
-      observers: [
-        'selObserver(selectionMode)'
-      ],
 
       properties: {
         filtrabile: {
@@ -33079,16 +33116,6 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
 
       listeners: {
         'tap': 'nextLevel',
-      },
-
-      selObserver: function(selectionMode){
-        console.log(selectionMode);
-        var grid = grid || this.$$('#vaadinResultsBox_grid');
-        if(grid) {
-          grid.selectionMode = selectionMode;
-          console.log(grid.selectionMode);
-        }
-
       },
 
       loadTable: function(data){
