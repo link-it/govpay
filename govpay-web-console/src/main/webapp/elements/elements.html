@@ -28357,7 +28357,7 @@ It will also ensure that focus remains in the dialog.
             <link-searchbox id="searchbox" auto="" on-append-response="appendResults" hidden$="[[!ricercaUrl]]" on-response="setResults"></link-searchbox>
             <span class="gap" hidden$="[[showSpaceBetween(results.length, ricercaUrl)]]"></span>
             <template is="dom-if" if="{{useVaadin}}">
-              <link-vaadinlistbox id="vaadinResultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" intestazione="{{intestazione}}"></link-vaadinlistbox>
+              <link-vaadinlistbox id="vaadinResultsBox" filtrabile="[[filtrabile]]" class="allSpace" selection-mode="[[vaadinSelectionMode(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" intestazione="{{intestazione}}"></link-vaadinlistbox>
             </template>
             <template is="dom-if" if="{{!useVaadin}}">
                <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
@@ -28537,7 +28537,11 @@ It will also ensure that focus remains in the dialog.
       },
 
       isSelectable: function(numResults){
-        return (this.cancellazioneUrl || this.esportazioneUrl);
+        return (this.cancellazioneUrl || this.esportazioneUrl) ? true : false;
+      },
+
+      vaadinSelectionMode: function(numResults){
+        return (this.cancellazioneUrl || this.esportazioneUrl) ? 'multi' : 'disable';
       },
 
       showSpaceBetween: function(numResults, url){
@@ -28557,10 +28561,22 @@ It will also ensure that focus remains in the dialog.
 
       export: function(event){
         var listaId = [];
-        for (var i = 0; i < this.results.length; i++) {
-          var obj = this.results[i];
-          if (obj.checked){
-            listaId.push(obj.id);
+        if(!this.useVaadin) {
+          for (var i = 0; i < this.results.length; i++) {
+            var obj = this.results[i];
+            if (obj.checked) {
+              listaId.push(obj.id);
+            }
+          }
+        } else {
+          var grid = grid || document.querySelector('vaadin-grid');
+          if(grid){
+            var selection = grid.selection.selected();
+            console.log(selection);
+            for (var i = 0; i < selection.length; i++) {
+              var obj = this.results[i];
+              listaId.push(obj.id);
+            }
           }
         }
         this.$.esportaDati.body=listaId;
@@ -32989,7 +33005,7 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
       }
     </style>
     <paper-material elevation="0">
-      <vaadin-grid id="vaadinResultsBox_grid" selection-mode="[[selectionMode(selectable)]]" visible-rows="[[righeVisibili(dataProvider)]]">
+      <vaadin-grid id="vaadinResultsBox_grid" selection-mode="multi" visible-rows="[[righeVisibili(dataProvider)]]">
         <table>
           <colgroup>
             <col name="colIdx" width="100px">
@@ -33037,6 +33053,10 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
     Polymer({
       is: 'link-vaadinlistbox',
 
+      observers: [
+        'selObserver(selectionMode)'
+      ],
+
       properties: {
         filtrabile: {
           type: Boolean,
@@ -33050,10 +33070,7 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
           type: Object,
           value: null
         },
-        selectable: {
-          type: Boolean,
-          value: false
-        },
+
         detailOnButton: {
           type: Boolean,
           value: true
@@ -33062,6 +33079,16 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
 
       listeners: {
         'tap': 'nextLevel',
+      },
+
+      selObserver: function(selectionMode){
+        console.log(selectionMode);
+        var grid = grid || this.$$('#vaadinResultsBox_grid');
+        if(grid) {
+          grid.selectionMode = selectionMode;
+          console.log(grid.selectionMode);
+        }
+
       },
 
       loadTable: function(data){
@@ -33195,13 +33222,6 @@ function pI(a){return this.b.qf(a)}function qI(){return this.b.Xc()}function rI(
       onlyOne: function(numresults){
         console.debug('Filtro:'+this.filtrabile);
         return (numresults<=1 || !this.filtrabile);
-      },
-
-      selectionMode: function(selectable){
-        if(selectable){
-          return 'multi';
-        }
-        return 'disable';
       },
 
       mostraLinkDettaglio: function(item){
