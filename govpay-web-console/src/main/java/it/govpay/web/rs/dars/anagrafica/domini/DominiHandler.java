@@ -45,6 +45,7 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
@@ -56,6 +57,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.TipoTributo;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Tributo.TipoContabilta;
 import it.govpay.bd.model.UnitaOperativa;
@@ -728,14 +730,20 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
 			
 			Tributi tributiDars = new Tributi();
+			
+			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
+			TipoTributo bolloT = tipiTributoBD.getTipoTributo(Tributo.BOLLOT);
+			
 			TributiBD tributiBD = new TributiBD(bd);
+			
 			Tributo tributo = new Tributo();
 			tributo.setCodTributo(Tributo.BOLLOT);
 			tributo.setAbilitato(false);
 			tributo.setDescrizione(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.descrizione"));
 			tributo.setCodContabilita(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.codContabilita")); 
 			tributo.setTipoContabilita(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
-
+			tributo.setIdTipoTributo(bolloT.getId());
+			
 			// Inserimento di Dominio, UO e Tributo BolloTelematico in maniera transazionale.
 			bd.setAutoCommit(false); 
 			dominiBD.insertDominio(entry);
