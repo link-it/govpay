@@ -179,15 +179,15 @@ public class BasicClient {
 	
 	
 	public byte[] sendXml(JAXBElement<?> body, boolean isAzioneInUrl) throws ClientException {
-		return sendSoap(false, null, body, null, isAzioneInUrl);
+		return send(false, null, body, null, isAzioneInUrl);
 	}
 	
 	
 	public byte[] sendSoap(String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
-		return sendSoap(true, azione, body, header, isAzioneInUrl);
+		return send(true, azione, body, header, isAzioneInUrl);
 	}
 	
-	private byte[] sendSoap(boolean soap, String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
+	private byte[] send(boolean soap, String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
 
 		// Creazione Connessione
 		int responseCode;

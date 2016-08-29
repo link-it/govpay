@@ -587,8 +587,14 @@ public class Pagamento extends BasicBD {
 							log.error("Errore durante l'aggiornamento della RPT", e);
 							continue;
 						}
-						log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
-						response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
+						
+						if(rpt.getStato().equals(StatoRpt.RPT_ATTIVATA)) {
+							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt in stato " + rpt.getStato().toString() + ". Avviata rispedizione al Nodo.");
+							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt in stato " + rpt.getStato().toString() + ". Avviata rispedizione al Nodo.");
+						} else {
+							log.info("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
+							response.add("[" + rpt.getCodDominio() + "][" + rpt.getIuv() + "][" + rpt.getCcp() + "]#Rpt pendente aggiornata in stato " + rpt.getStato().toString());
+						}
 					}
 				}
 			}

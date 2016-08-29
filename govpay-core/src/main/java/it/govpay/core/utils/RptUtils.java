@@ -433,6 +433,12 @@ public class RptUtils {
 			case RT_ACCETTATA_PA:
 				log.info("Rpt in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario.");
 				return false;
+				
+			case RPT_ATTIVATA:
+				log.info("Rpt in stato non terminale [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
+				inviaRPTAsync(rpt, bd);
+				return false;
+				
 			default:
 				log.info("Rpt in stato non terminale [" + rpt.getStato()+ "]. Eseguo un aggiornamento dello stato.");
 	

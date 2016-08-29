@@ -99,10 +99,11 @@ public class InviaNotificaThread implements Runnable {
 					ctx.log("notifica.er");
 			}
 			GpThreadLocal.set(ctx);
-			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(null).getVersione());
+			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getVersione());
 			
 			ThreadContext.put("op", ctx.getTransactionId());
-		
+			ctx.log("notifica.spedizione");
+			
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
 			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null) {
 				ctx.log("notifica.annullata");

@@ -77,8 +77,8 @@ public class VerificaClient extends BasicClient {
 		String idTransaction = ctx.openTransaction();
 		
 		try {
-			ctx.setupPaClient(codApplicazione, "paVerificaVersamento", versione);
-			ctx.log("versamento.verifica", codApplicazione, iuv, url.toExternalForm());
+			ctx.setupPaClient(codApplicazione, "paVerificaVersamento", url.toExternalForm(), versione);
+			ctx.log("versamento.verifica", codApplicazione, iuv);
 			
 			
 			//Chiudo la connessione al DB prima della comunicazione HTTP

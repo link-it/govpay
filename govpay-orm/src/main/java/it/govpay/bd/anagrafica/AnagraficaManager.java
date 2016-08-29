@@ -748,6 +748,4 @@ public class AnagraficaManager {
 		tipiTributoBDCacheWrapper.resetCache();
 		canaliBDCacheWrapper.resetCache();
 	}
-
-	
 }

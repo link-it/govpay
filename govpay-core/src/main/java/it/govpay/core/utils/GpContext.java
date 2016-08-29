@@ -236,7 +236,7 @@ public class GpContext {
 		}
 	}
 	
-	public void setupPaClient(String codApplicazione, String azione, Versione versione) {
+	public void setupPaClient(String codApplicazione, String azione, String url, Versione versione) {
 		Actor to = new Actor();
 		to.setName(codApplicazione);
 		to.setType(TIPO_SOGGETTO_APP);
@@ -251,6 +251,7 @@ public class GpContext {
 		
 		Server server = new Server();
 		server.setName(codApplicazione);
+		server.setEndpoint(url);
 		GpThreadLocal.get().getTransaction().setServer(server);
 		
 		Client client = new Client();
