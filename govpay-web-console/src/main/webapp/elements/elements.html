@@ -28348,8 +28348,8 @@ It will also ensure that focus remains in the dialog.
               </div>
               <span class="space"></span>
               <div>
-                <paper-icon-button icon="file-download" on-tap="export" hidden$="[[!esportazioneUrl]]"></paper-icon-button>
-                <paper-icon-button icon="remove" hidden$="[[!cancellazioneUrl]]"></paper-icon-button>
+                <paper-icon-button icon="file-download" on-tap="export" hidden$="[[!esportazioneUrl]]" title="Scarica gli elementi selezionati in formato zip"></paper-icon-button>
+                <paper-icon-button icon="remove" hidden$="[[!cancellazioneUrl]]" title="Elimina gli elementi selezionati"></paper-icon-button>
               </div>
             </div>
           </div>
@@ -28565,15 +28565,12 @@ It will also ensure that focus remains in the dialog.
             }
           }
         } else {
-          var grid = grid || document.querySelector('vaadin-grid');
+          var grid = grid || document.querySelector('#vaadinResultsBox_grid');
           if(grid){
-            var selMode =  grid.selectionMode || 'disable';
-            if(selMode != 'disable') {
-              var selection = grid.selection.selected();
-              for (var i = 0; i < selection.length; i++) {
-                var obj = this.results[i];
-                listaId.push(obj.id);
-              }
+            var selection = grid.selection.selected();
+            for (var i = 0; i < selection.length; i++) {
+              var obj = this.results[i];
+              listaId.push(obj.id);
             }
           }
         }
