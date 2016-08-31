@@ -20,12 +20,16 @@
  */
 package it.govpay.core.utils;
 
+import it.govpay.core.utils.client.handler.IntegrationOutHandler;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
@@ -55,9 +59,12 @@ public class GovpayConfig {
 		return instance;
 	}
 
+	private List<String> outHandlers;
+
 	private URI log4j2Config;
 	private URL urlPddVerifica;
 	private String logoDir;
+	private String resourceDir;
 	private VersioneAvviso versioneAvviso;
 	private int dimensionePool;
 	private String ksLocation, ksPassword, ksAlias;
@@ -108,21 +115,21 @@ public class GovpayConfig {
 			// Se e' configurata, la uso come prioritaria
 
 			try {
-				String resourceDir = getProperty("it.govpay.resource.path", props1, false);
+				this.resourceDir = getProperty("it.govpay.resource.path", props1, false);
 
-				if(resourceDir != null) {
-					File resourceDirFile = new File(resourceDir);
+				if(this.resourceDir != null) {
+					File resourceDirFile = new File(this.resourceDir);
 					if(!resourceDirFile.isDirectory())
-						throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + resourceDir + ") non esiste o non e' un folder.");
+						throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
 
-					File log4j2ConfigFile = new File(resourceDir + File.separatorChar + "log4j2.xml");
+					File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + "log4j2.xml");
 
 					if(log4j2ConfigFile.exists()) {
 						log.info("Caricata configurazione logger: " + log4j2ConfigFile.getAbsolutePath());
 						this.log4j2Config = log4j2ConfigFile.toURI();
 					}
 
-					File gpConfigFile = new File(resourceDir + File.separatorChar + "govpay.properties");
+					File gpConfigFile = new File(this.resourceDir + File.separatorChar + "govpay.properties");
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
 						props0.load(new FileInputStream(gpConfigFile));
@@ -256,6 +263,27 @@ public class GovpayConfig {
 			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
 				this.pddAuthEnable = false;
 
+			
+			
+			String listaHandlers = getProperty("it.govpay.integration.client.out", props, false);
+			
+			this.outHandlers = new ArrayList<String>();
+			
+			if(listaHandlers != null && !listaHandlers.isEmpty()) {
+				String[] splitHandlers = listaHandlers.split(",");
+				for(String handler: splitHandlers) {
+					String handlerClass = getProperty("it.govpay.integration.client.out."+handler, props, true);
+					Class<?> c = this.getClass().getClassLoader().loadClass(handlerClass);
+					Object instance = c.newInstance();
+					if(!(instance instanceof IntegrationOutHandler)) {
+						throw new Exception("La classe ["+handlerClass+"] specificata per l'handler ["+handler+"] deve implementare l'interfaccia " + IntegrationOutHandler.class.getName());
+					}
+
+					
+					this.outHandlers.add(handlerClass);
+				}
+			}
+
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -375,6 +403,14 @@ public class GovpayConfig {
 
 	public boolean isPddAuthEnable() {
 		return pddAuthEnable;
+	}
+
+	public List<String> getOutHandlers() {
+		return outHandlers;
+	}
+
+	public String getResourceDir() {
+		return resourceDir;
 	}
 
 }

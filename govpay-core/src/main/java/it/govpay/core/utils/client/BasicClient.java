@@ -22,12 +22,15 @@ package it.govpay.core.utils.client;
 
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Connettore.EnumAuthType;
 import it.govpay.bd.model.Connettore.EnumSslType;
+import it.govpay.bd.model.Intermediario;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.client.handler.IntegrationContext;
+import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -38,6 +41,7 @@ import java.net.URL;
 import java.security.KeyStore;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -86,10 +90,14 @@ public class BasicClient {
 	protected String errMsg;
 	protected String destinatario;
 	protected String mittente;
-	
-	
+	protected TipoDestinatario tipoDestinatario;
+
 	public enum TipoConnettore {
 		VERIFICA, NOTIFICA;
+	}
+	
+	public enum TipoDestinatario {
+		APPLICAZIONE, INTERMEDIARIO;
 	}
 	
 	protected BasicClient(Intermediario intermediario) throws ClientException {
@@ -101,6 +109,7 @@ public class BasicClient {
 	
 	protected BasicClient(Applicazione applicazione, TipoConnettore tipoConnettore) throws ClientException {
 		this("A_" + tipoConnettore + applicazione.getCodApplicazione(), tipoConnettore == TipoConnettore.NOTIFICA ? applicazione.getConnettoreNotifica() : applicazione.getConnettoreVerifica());
+		GpThreadLocal.get().getIntegrationCtx().setApplicazione(applicazione);
 		errMsg = tipoConnettore.toString() + " dell'applicazione (" + applicazione.getCodApplicazione() + ")";
 		mittente = "GovPay";
 		destinatario = applicazione.getCodApplicazione();
@@ -181,6 +190,30 @@ public class BasicClient {
 	public byte[] sendXml(JAXBElement<?> body, boolean isAzioneInUrl) throws ClientException {
 		return sendSoap(false, null, body, null, isAzioneInUrl);
 	}
+
+	private void invokeOutHandlers() throws ClientException {
+		
+		try {
+			List<String> outHandlers = GovpayConfig.getInstance().getOutHandlers();
+			if(!outHandlers.isEmpty()) {
+				IntegrationContext ic = GpThreadLocal.get().getIntegrationCtx();
+	
+				log.info("Applicazione al messaggio degli handlers configurati...");
+				for(String handler: outHandlers) {
+					Class<?> c = Class.forName(handler);
+					IntegrationOutHandler instance = (IntegrationOutHandler) c.newInstance();
+					log.info("Applicazione al messaggio dell'handler ["+handler+"]...");
+					instance.invoke(ic);
+					log.info("Applicazione al messaggio dell'handler ["+handler+"] completata con successo");
+				}
+				log.info("Applicazione al messaggio degli handlers configurati completata con successo");
+			} else {
+				log.info("Nessun handler configurato");
+			}
+		} catch(Exception e) {
+			throw new ClientException("Errore durante l'applicazione al messaggio degli handlers configurati: " + e.getMessage(), e);
+		}
+	}
 	
 	
 	public byte[] sendSoap(String azione, JAXBElement<?> body, Object header, boolean isAzioneInUrl) throws ClientException {
@@ -251,12 +284,15 @@ public class BasicClient {
 				log.trace(sb.toString());
 			}
 			
-			requestMsg.setContent(baos.toByteArray());
+			ctx.getIntegrationCtx().setMsg(baos.toByteArray());
+			invokeOutHandlers();
+			requestMsg.setContent(ctx.getIntegrationCtx().getMsg());
+			
 			ctx.getContext().getRequest().setOutDate(new Date());
 			ctx.getContext().getRequest().setOutSize(Long.valueOf(baos.size()));
 			ctx.log(requestMsg);
 			
-			connection.getOutputStream().write(baos.toByteArray());
+			connection.getOutputStream().write(ctx.getIntegrationCtx().getMsg());
 	
 		} catch (Exception e) {
 			throw new ClientException(e);
