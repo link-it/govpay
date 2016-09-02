@@ -59,6 +59,7 @@ public class PagamentoConverter {
 		if(vo.getCommissioniPsp() != null)
 			dto.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
 		dto.setDataPagamento(vo.getDataPagamento());
+		dto.setIbanAccredito(vo.getIbanAccredito());
 		dto.setDataRendicontazione(vo.getRendicontazioneData());
 		dto.setDataRendicontazioneRevoca(vo.getRendicontazioneDataRevoca());
 		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
@@ -105,6 +106,7 @@ public class PagamentoConverter {
 		if(dto.getCommissioniPsp() != null)
 			vo.setCommissioniPsp(dto.getCommissioniPsp().doubleValue());
 		vo.setDataPagamento(dto.getDataPagamento());
+		vo.setIbanAccredito(dto.getIbanAccredito());
 		vo.setDatiEsitoRevoca(dto.getDatiEsitoRevoca());
 		vo.setDatiRevoca(dto.getDatiRevoca());
 		vo.setEsitoRevoca(dto.getEsitoRevoca());

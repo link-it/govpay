@@ -814,6 +814,7 @@
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
 			<xsd:element name="iur" type="String35"/>
 			<xsd:element name="dataPagamento" type="xsd:dateTime"/>
+			<xsd:element minOccurs="0" name="ibanAccredito" type="IBANType"/>
 			<xsd:element minOccurs="0" name="commissioniPsp" type="xsd:decimal"/>
 			<xsd:element minOccurs="0" name="tipoAllegato" type="String2">
 				
@@ -973,10 +974,6 @@
 			<xsd:element ref="RendicontazioneSenzaRPT"/>
 			<xsd:element ref="SingoloVersamento"/>
 			<xsd:element ref="Versamento"/>
-<<<<<<< HEAD
-			<xsd:element ref="RPT"/>
-=======
->>>>>>> v2.2
 		</xsd:sequence>
 	</xsd:complexType>
 	

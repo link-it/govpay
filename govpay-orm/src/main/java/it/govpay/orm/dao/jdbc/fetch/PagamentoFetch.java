@@ -65,6 +65,8 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iur", Pagamento.model().IUR.getFieldType()));
 				setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_pagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType()));
+				setParameter(object, "setIbanAccredito", Pagamento.model().IBAN_ACCREDITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iban_accredito", Pagamento.model().IBAN_ACCREDITO.getFieldType()));
 				setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "commissioni_psp", Pagamento.model().COMMISSIONI_PSP.getFieldType()));
 				setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),
@@ -135,6 +137,8 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"iur"));
 				setParameter(object, "setDataPagamento", Pagamento.model().DATA_PAGAMENTO.getFieldType(),
 					this.getObjectFromMap(map,"dataPagamento"));
+				setParameter(object, "setIbanAccredito", Pagamento.model().IBAN_ACCREDITO.getFieldType(),
+					this.getObjectFromMap(map,"ibanAccredito"));
 				setParameter(object, "setCommissioniPsp", Pagamento.model().COMMISSIONI_PSP.getFieldType(),
 					this.getObjectFromMap(map,"commissioniPsp"));
 				setParameter(object, "setTipoAllegato", Pagamento.model().TIPO_ALLEGATO.getFieldType(),

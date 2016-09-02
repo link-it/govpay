@@ -73,6 +73,7 @@ public class Pagamento extends BasicModel {
 	private BigDecimal commissioniPsp;
 	private String iur;
 	private Date dataPagamento;
+	private String ibanAccredito;
 	private TipoAllegato tipoAllegato;
 	private byte[] allegato;
 
@@ -388,6 +389,14 @@ public class Pagamento extends BasicModel {
 
 	public void setIdFrApplicazione(Long idFrApplicazione) {
 		this.idFrApplicazione = idFrApplicazione;
+	}
+
+	public String getIbanAccredito() {
+		return ibanAccredito;
+	}
+
+	public void setIbanAccredito(String ibanAccredito) {
+		this.ibanAccredito = ibanAccredito;
 	}
 
 

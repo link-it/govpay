@@ -164,6 +164,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUR,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_PAGAMENTO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IBAN_ACCREDITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COMMISSIONI_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO_ALLEGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ALLEGATO,false),"?");
@@ -197,6 +198,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataAcquisizione(),Pagamento.model().DATA_ACQUISIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIur(),Pagamento.model().IUR.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataPagamento(),Pagamento.model().DATA_PAGAMENTO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIbanAccredito(),Pagamento.model().IBAN_ACCREDITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCommissioniPsp(),Pagamento.model().COMMISSIONI_PSP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getTipoAllegato(),Pagamento.model().TIPO_ALLEGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getAllegato(),Pagamento.model().ALLEGATO.getFieldType()),
@@ -369,6 +371,8 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getIur(), Pagamento.model().IUR.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_PAGAMENTO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getDataPagamento(), Pagamento.model().DATA_PAGAMENTO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IBAN_ACCREDITO,false), "?");
+		lstObjects_pagamento.add(new JDBCObject(pagamento.getIbanAccredito(), Pagamento.model().IBAN_ACCREDITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COMMISSIONI_PSP,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getCommissioniPsp(), Pagamento.model().COMMISSIONI_PSP.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO_ALLEGATO,false), "?");

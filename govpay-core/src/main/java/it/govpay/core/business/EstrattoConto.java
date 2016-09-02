@@ -1,26 +1,5 @@
 package it.govpay.core.business;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.expression.SortOrder;
-import org.openspcoop2.utils.csv.Format;
-import org.openspcoop2.utils.csv.FormatReader;
-import org.openspcoop2.utils.csv.Printer;
-import org.openspcoop2.utils.logger.beans.Property;
-
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
@@ -34,6 +13,29 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.orm.Dominio;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.csv.Format;
+import org.openspcoop2.utils.csv.FormatReader;
+import org.openspcoop2.utils.csv.Printer;
+import org.openspcoop2.utils.logger.beans.Property;
+
 public class EstrattoConto extends BasicBD {
 
 	private static final String CSV_SEPARATOR = "|";
@@ -46,7 +48,12 @@ public class EstrattoConto extends BasicBD {
 	private static final String CODICE_RIVERSAMENTO_HEADER = "Codice Riversamento";
 	private static final String CODICE_RENDICONTAZIONE_HEADER = "Codice Rendicontazione";
 	private static final String NOTE_HEADER = "Note";
+	private static final String BIC_RIVERSAMENTO_HEADER = "Bic Riversamento";
+	private static final String ID_REGOLAMENTO_HEADER = "Id Regolamento";
+	private static final String IBAN_ACCREDITO_HEADER = "Iban Accredito";
 	private static final String IUV_HEADER = "Iuv";
+
+	private static final int LIMIT = 50;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -148,6 +155,8 @@ public class EstrattoConto extends BasicBD {
 				response.add("Dominio "+denominazioneDominio+"#");
 
 				for (int contatoreMese = 0; contatoreMese < numeroMesi; contatoreMese++) {
+					
+					Map<String, Printer> ecPerIban = new HashMap<String, Printer>();
 					StringBuilder sb = new StringBuilder();
 					// ad ogni iterazione tolgo un mese
 					Date dataFine = cf.getTime();
@@ -171,7 +180,8 @@ public class EstrattoConto extends BasicBD {
 						creaEstrattoConto = false;
 					}
 					if(creaEstrattoConto){
-						List<Pagamento> estrattoConto = this.getEstrattoConto(dominio.getCodDominio(), dataInizio, dataFine, null, null);
+						
+						int offset = 0;
 
 						try{
 							// per ogni mese fino al quello indicato  nelle properties calcolo l'estratto conto
@@ -179,18 +189,62 @@ public class EstrattoConto extends BasicBD {
 							printer = new Printer(this.formatW , fos);
 
 							printer.printRecord(getCsvHeader());
+							List<it.govpay.bd.model.EstrattoConto> estrattoConto = this.getEstrattoContoExt(dominio.getCodDominio(), dataInizio, dataFine, offset, LIMIT);
+							
+							while(estrattoConto != null && !estrattoConto.isEmpty()) {
+								List<FileOutputStream> fosList = new ArrayList<FileOutputStream>();
 
-							for (Pagamento pagamentoExt : estrattoConto) {
-								printer.printRecord(this.getCsvRow(pagamentoExt)); 
+								for (it.govpay.bd.model.EstrattoConto pagamentoExt : estrattoConto) {
+									List<String> csvRow = this.getCsvRow(pagamentoExt);
+									printer.printRecord(csvRow);
+									
+									if(pagamentoExt.getIbanAccredito() != null) {
+										Printer printerIban;
+										if(ecPerIban.containsKey(pagamentoExt.getIbanAccredito())) {
+											printerIban = ecPerIban.get(pagamentoExt.getIbanAccredito());
+										} else {
+											String dominioPerIbanCsvFileName = dominio.getCodDominio() + "_" + pagamentoExt.getIbanAccredito() + "_" + f2.format(dataInizio) +".csv";
+											log.debug("Nome del file CSV destinazione: "+dominioPerIbanCsvFileName);
+
+											File dominioPerIbanFile = new File(basePath+File.separator + dominio.getCodDominio() + File.separator + dominioPerIbanCsvFileName );
+											
+											if(!dominioPerIbanFile.exists()){
+												log.debug("creo il file CSV: "+dominioPerIbanFile.getAbsolutePath());
+												dominioPerIbanFile.createNewFile();
+											}
+
+											FileOutputStream fosIban = new FileOutputStream(dominioPerIbanFile);
+											fosList.add(fosIban);
+
+											printerIban = new Printer(this.formatW , fosIban);
+											printerIban.printRecord(getCsvHeader());
+
+											ecPerIban.put(pagamentoExt.getIbanAccredito(), printerIban);
+										}
+										printerIban.printRecord(csvRow);
+										
+									}
+								}
+								
+								offset += estrattoConto.size();
+								estrattoConto = this.getEstrattoContoExt(dominio.getCodDominio(), dataInizio, dataFine, offset, LIMIT);
 							}
-
+							
 							sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " eseguita correttamente")
-							.append("#serializzati "+estrattoConto.size()+" pagamenti sul file "+dominioCsvFileName+".");
+							.append("#serializzati "+offset+" pagamenti sul file "+dominioCsvFileName+".");
 							ctx.log("estrattoConto.fineDominioMeseOk", denominazioneDominio, f3.format(dataInizio), estrattoConto.size() +"" ,dominioCsvFileName);
 						} finally{
 							try{
 								if(printer!=null){
 									printer.close();
+								}
+							}catch (Exception e) {
+								throw new Exception("Errore durante la chiusura dello stream ",e);
+							}
+							for(Printer printerIban: ecPerIban.values())
+							try{
+								if(printerIban!=null){
+									printerIban.close();
 								}
 							}catch (Exception e) {
 								throw new Exception("Errore durante la chiusura dello stream ",e);
@@ -205,7 +259,7 @@ public class EstrattoConto extends BasicBD {
 
 					log.debug("Estratto Conto per il Dominio ["+denominazioneDominio+"] completato con esito: "+sb.toString());
 					response.add(sb.toString());
-
+					
 					cf.add(Calendar.MONTH, -1);
 				}
 
@@ -227,13 +281,12 @@ public class EstrattoConto extends BasicBD {
 		}
 	}
 
-
-	public List<Pagamento> getEstrattoConto(String codDomino, Date dataInizio, Date dataFine, Integer offset, Integer limit) throws Exception{
+	public List<it.govpay.bd.model.rest.Pagamento> getEstrattoConto(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit) throws Exception{
 		PagamentiBD pagamentiBD = new PagamentiBD(this);
 		PagamentoFilter filter = pagamentiBD.newFilter();
 		filter.setOffset(offset );
 		filter.setLimit(limit); 
-		filter.setCodDominio(codDomino);
+		filter.setCodDominio(codDominio);
 		FilterSortWrapper fsw = new FilterSortWrapper();
 		fsw.setField(it.govpay.orm.Pagamento.model().DATA_ACQUISIZIONE);
 		fsw.setSortOrder(SortOrder.DESC);
@@ -241,7 +294,14 @@ public class EstrattoConto extends BasicBD {
 		filter.setDataInizio(dataInizio);
 		filter.setDataFine(dataFine);
 
-		List<it.govpay.bd.model.rest.Pagamento> findAll = pagamentiBD.estrattoConto(filter);
+		List<Pagamento> findAll = pagamentiBD.estrattoConto(filter);
+				
+		return findAll;
+	}
+
+	public List<it.govpay.bd.model.EstrattoConto> getEstrattoContoExt(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit) throws Exception{
+		PagamentiBD pagamentiBD = new PagamentiBD(this);
+		List<it.govpay.bd.model.EstrattoConto> findAll = pagamentiBD.estrattoConto(codDominio, dataInizio, dataFine, offset, limit);
 		return findAll;
 	}
 
@@ -254,11 +314,14 @@ public class EstrattoConto extends BasicBD {
 		header.add(CODICE_RIVERSAMENTO_HEADER);
 		header.add(CODICE_RENDICONTAZIONE_HEADER);
 		header.add(NOTE_HEADER);
+		header.add(BIC_RIVERSAMENTO_HEADER);
+		header.add(ID_REGOLAMENTO_HEADER);
+		header.add(IBAN_ACCREDITO_HEADER);
 
 		return header;
 	}
 
-	private List<String> getCsvRow(Pagamento pagamento){
+	private List<String> getCsvRow(it.govpay.bd.model.EstrattoConto pagamento){
 
 
 		List<String> oneLine = new ArrayList<String>();
@@ -273,6 +336,9 @@ public class EstrattoConto extends BasicBD {
 		oneLine.add(pagamento.getIur());
 		oneLine.add(pagamento.getCodFlussoRendicontazione());
 		oneLine.add(pagamento.getNote());
+		oneLine.add(pagamento.getCodBicRiversamento());
+		oneLine.add(pagamento.getIdRegolamento());
+		oneLine.add(pagamento.getIbanAccredito());
 
 		return oneLine;
 	}

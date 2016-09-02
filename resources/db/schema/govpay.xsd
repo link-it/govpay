@@ -1383,6 +1383,7 @@
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
 			<xsd:element name="iur" type="String35" />
 			<xsd:element name="dataPagamento" type="xsd:dateTime" />
+			<xsd:element name="ibanAccredito" type="IBANType" minOccurs="0"/>
 			<xsd:element name="commissioniPsp" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="tipoAllegato" type="String2"  minOccurs="0" >
 				<xsd:annotation>
