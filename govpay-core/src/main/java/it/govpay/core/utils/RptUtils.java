@@ -433,6 +433,12 @@ public class RptUtils {
 			case RT_ACCETTATA_PA:
 				log.info("Rpt in stato terminale [" + rpt.getStato()+ "]. Aggiornamento non necessario.");
 				return false;
+				
+			case RPT_ATTIVATA:
+				log.info("Rpt in stato non terminale [" + rpt.getStato()+ "]. Eseguo una rispedizione della RPT.");
+				inviaRPTAsync(rpt, bd);
+				return false;
+				
 			default:
 				log.info("Rpt in stato non terminale [" + rpt.getStato()+ "]. Eseguo un aggiornamento dello stato.");
 	
@@ -498,6 +504,8 @@ public class RptUtils {
 							GpThreadLocal.get().closeTransaction(transactionId);
 						}
 	
+						rptBD = new RptBD(bd);
+						
 						byte[] rtByte = null;
 						try {
 							ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -506,10 +514,11 @@ public class RptUtils {
 							rtByte = output.toByteArray();
 						} catch (IOException e) {
 							log.error("Errore durante la lettura dell'RT: " + e);
+							rptBD.updateRpt(rpt.getId(), nuovoStato, null, null, null);
+							rpt.setStato(nuovoStato);
+							rpt.setDescrizioneStato(null);
 							throw new GovPayException(EsitoOperazione.INTERNAL, e);
 						}
-	
-						rptBD = new RptBD(bd);
 	
 						if(nodoChiediCopiaRTRisposta.getFault() != null) {
 							log.info("Fault nell'acquisizione dell'RT: [" + risposta.getFault().getFaultCode() + "] " + risposta.getFault().getFaultString());

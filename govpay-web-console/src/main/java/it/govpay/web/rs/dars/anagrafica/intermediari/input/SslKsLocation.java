@@ -25,6 +25,8 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Connettore;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.input.dinamic.InputText;
@@ -35,23 +37,38 @@ public class SslKsLocation  extends InputText{
 	private String tipoAutenticazioneId= null;
 	private String nomeServizio = null;
 	private String nomeConnettore = null;
+	private String idOwnerId = null;
 
 	public SslKsLocation(String nomeConnettore,String nomeServizio,String id, String label, int minLength, int maxLength, URI refreshUri,	List<RawParamValue> values, Object... objects) {
 		super(id, label, minLength, maxLength, refreshUri, values);
 		this.nomeServizio = nomeServizio;
 		this.nomeConnettore = nomeConnettore;
 		this.tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
+		this.idOwnerId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
 	protected String getDefaultValue(List<RawParamValue> values, Object... objects) {
 		String tipoAutenticazioneValue = Utils.getValue(values, this.tipoAutenticazioneId);
+		String idOwner = Utils.getValue(values, this.idOwnerId);
+		Connettore c = null;
 		
-		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
+		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && !tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
 			return "";
 		}
 		
-		return null;
+		if(StringUtils.isEmpty(idOwner)){
+			return "";
+		}
+		
+		BasicBD bd = (BasicBD) objects[0];
+		c= Utils.getConnettore(idOwner, this.nomeConnettore,bd);
+		
+		if(c!= null){
+			return c.getSslKsLocation();
+		}
+		
+		return "";
 	}
 
 	@Override

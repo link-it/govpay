@@ -412,7 +412,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			Rr rr = pagamentoBusiness.chiediStorno(portaleAutenticato, bodyrichiesta.getCodRichiestaStorno());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			response.setStorno(Gp21Utils.toStorno(rr, bd));
+			response.setStorno(Gp21Utils.toStorno(rr, portaleAutenticato.getVersione(), bd));
 			ctx.log("gpprt.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());

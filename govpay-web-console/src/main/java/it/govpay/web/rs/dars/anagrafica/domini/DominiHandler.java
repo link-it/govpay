@@ -46,6 +46,7 @@ import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
@@ -57,6 +58,7 @@ import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.TipoTributo;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.Tributo.TipoContabilta;
 import it.govpay.bd.model.UnitaOperativa;
@@ -319,6 +321,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
 
+		applicazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.nessuna"), -1L));
 		try{
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
@@ -340,7 +343,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		}
 
 		SelectList<Long> idApplicazioneDefault = (SelectList<Long>) infoCreazioneMap.get(idApplicazioneDefaultId);
-		idApplicazioneDefault.setDefaultValue(null);
+		idApplicazioneDefault.setDefaultValue(-1L);
 		idApplicazioneDefault.setValues(applicazioni);
 		sezioneRoot.addField(idApplicazioneDefault); 
 
@@ -423,7 +426,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// idApplicazioneDefault
 			String idApplicazioneDefaultlabel =Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label");
 			List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-			SelectList<Long> idApplicazioneDefault = new SelectList<Long>(idApplicazioneDefaultId, idApplicazioneDefaultlabel, null, false, false, true, applicazioni );
+			SelectList<Long> idApplicazioneDefault = new SelectList<Long>(idApplicazioneDefaultId, idApplicazioneDefaultlabel, -1L, false, false, true, applicazioni );
 			idApplicazioneDefault.setAvanzata(true); 
 			infoCreazioneMap.put(idApplicazioneDefaultId, idApplicazioneDefault);
 
@@ -524,7 +527,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		sezioneRoot.addField(gln);
 
 		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-
+		applicazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.nessuna"), -1L));
 		try{
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter();
@@ -538,7 +541,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			if(findAll != null && findAll.size() > 0){
 				for (Applicazione applicazione : findAll) {
-					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), entry.getId()));
+					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));
 				}
 			}
 		}catch(Exception e){
@@ -546,7 +549,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		}
 
 		SelectList<Long> idApplicazioneDefault = (SelectList<Long>) infoCreazioneMap.get(idApplicazioneDefaultId);
-		idApplicazioneDefault.setDefaultValue(entry.getIdApplicazioneDefault());
+		idApplicazioneDefault.setDefaultValue(entry.getIdApplicazioneDefault() != null ? entry.getIdApplicazioneDefault() : -1L);
 		idApplicazioneDefault.setValues(applicazioni);
 		sezioneRoot.addField(idApplicazioneDefault); 
 
@@ -635,6 +638,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 				UriBuilder uriDettaglioApplicazioniBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).path("{id}");
 				URI applicazioneURI = uriDettaglioApplicazioniBuilder.build(applicazione.getId());
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), applicazione.getCodApplicazione(),applicazioneURI,true); 
+			} else {
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), Utils.getInstance().getMessageFromResourceBundle("commons.label.nessuna"),true);
 			}
 
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label"), Utils.getSiNoAsLabel(dominio.isRiusoIuv()),true);
@@ -729,14 +734,20 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
 			
 			Tributi tributiDars = new Tributi();
+			
+			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
+			TipoTributo bolloT = tipiTributoBD.getTipoTributo(Tributo.BOLLOT);
+			
 			TributiBD tributiBD = new TributiBD(bd);
+			
 			Tributo tributo = new Tributo();
 			tributo.setCodTributo(Tributo.BOLLOT);
 			tributo.setAbilitato(false);
 			tributo.setDescrizione(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.descrizione"));
 			tributo.setCodContabilita(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.codContabilita")); 
 			tributo.setTipoContabilita(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
-
+			tributo.setIdTipoTributo(bolloT.getId());
+			
 			// Inserimento di Dominio, UO e Tributo BolloTelematico in maniera transazionale.
 			bd.setAutoCommit(false); 
 			dominiBD.insertDominio(entry);
@@ -822,6 +833,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			Dominio  entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
 			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
+			
+			// azzero l'id applicazione default se ho selezionato nessuna.
+			if(entry.getIdApplicazioneDefault() != null && entry.getIdApplicazioneDefault().longValue() == -1l)
+				entry.setIdApplicazioneDefault(null); 
 
 			jsonConfig.setRootClass(Anagrafica.class);
 			Anagrafica anagrafica = (Anagrafica) JSONObject.toBean( jsonObjectDominio, jsonConfig );

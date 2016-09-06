@@ -177,7 +177,7 @@ public class Iuv extends BasicBD {
 			iuv.setCodVersamentoEnte(codVersamentoEnte);
 			iuv.setApplicationCode(dominio.getStazione(this).getApplicationCode());
 			iuvBD.insertIuv(iuv);
-			GpThreadLocal.get().log("iuv.caricamentoIUVOk", applicazione.getCodApplicazione(), iuvProposto, dominio.getCodDominio(), iuv.getIuv());
+			GpThreadLocal.get().log("iuv.caricamentoIUVOk", applicazione.getCodApplicazione(), iuv.getCodVersamentoEnte(), dominio.getCodDominio(), iuv.getIuv());
 		}
 		return iuv;
 	}

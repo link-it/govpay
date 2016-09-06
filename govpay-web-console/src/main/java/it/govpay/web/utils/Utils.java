@@ -33,9 +33,18 @@ import java.util.ResourceBundle;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.logging.log4j.LogManager;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.ApplicazioniBD;
+import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Acl.Servizio;
 import it.govpay.bd.model.Acl.Tipo;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Connettore;
+import it.govpay.bd.model.Intermediario;
+import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 
@@ -193,7 +202,7 @@ public class Utils {
 	public static String getAbilitatoAsLabel(boolean abilitato){
 		return getBooleanAsLabel(abilitato, "commons.label.abilitato","commons.label.nonAbilitato");
 	}
-	
+
 	public static String getSiNoAsLabel(boolean abilitato){
 		return getBooleanAsLabel(abilitato, "commons.label.si","commons.label.no");
 	}
@@ -215,23 +224,23 @@ public class Utils {
 
 		return toReturn;
 	}
-	
+
 	public static boolean isEmpty(List<?> lista){
 		if(lista == null)
 			return true;
-		
+
 		return lista.isEmpty();
 	}
-	
+
 	public static Voce<Long> getVoceTutti(){
 		return getVoce(getInstance().getMessageFromResourceBundle("commons.label.tutti"), -1L);
 	}
-	
+
 	public static <T> Voce<T> getVoce(String label, T valore) {
 		Voce<T> v = new Voce<T>(label, valore);
 		return v;
 	}
-	
+
 	public static List<Long> getIdsFromAcls(List<Acl> listaAcl, Tipo tipo, Servizio servizio){
 		List<Long> lst = new ArrayList<Long>();
 		for (Acl acl : listaAcl) {
@@ -270,5 +279,37 @@ public class Utils {
 			}
 		}
 		return "unknown";
+	}
+
+	public static Connettore getConnettore(String ownerId, String nomeConnettore, BasicBD bd) {
+		Connettore c = null;
+		try {
+			long id = Long.parseLong(ownerId);
+			// connettore pdd, cerco l'intermediario
+			if(ConnettoreHandler.CONNETTORE_PDD.equals(nomeConnettore)){
+				IntermediariBD intermediariBD = new IntermediariBD(bd);
+				Intermediario intermediario = intermediariBD.getIntermediario(id);
+				c = intermediario.getConnettorePdd();
+			}
+
+			// connettore notifica, cerco l'applicazione
+			if(ConnettoreHandler.CONNETTORE_NOTIFICA.equals(nomeConnettore)){
+				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+				Applicazione applicazione = applicazioniBD.getApplicazione(id);
+				c = applicazione.getConnettoreNotifica();
+			}
+
+			// connettore verifica, cerco l'applicazione
+			if(ConnettoreHandler.CONNETTORE_VERIFICA.equals(nomeConnettore)){
+				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+				Applicazione applicazione = applicazioniBD.getApplicazione(id);
+				c = applicazione.getConnettoreVerifica();
+			}
+
+		} catch (Exception e) {
+			LogManager.getLogger().error(e);
+		}
+
+		return c;
 	}
 }

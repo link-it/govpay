@@ -44,7 +44,9 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
+import org.openspcoop2.utils.logger.beans.proxy.Server;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 
@@ -129,6 +131,15 @@ public class Check {
 			operation.setMode(FlowMode.INPUT_OUTPUT);
 			operation.setName("VerificaDominio");
 			ctx.getTransaction().setOperation(operation);
+			
+			Server server = new Server();
+			server.setName(GpContext.GovPay);
+			ctx.getTransaction().setServer(server);
+			
+			Actor to = new Actor();
+			to.setName(GpContext.GovPay);
+			to.setType(GpContext.TIPO_SOGGETTO_GOVPAY);
+			ctx.getTransaction().setTo(to);
 			
 //			HttpServletRequest servletRequest = (HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST);
 //			Client client = new Client();

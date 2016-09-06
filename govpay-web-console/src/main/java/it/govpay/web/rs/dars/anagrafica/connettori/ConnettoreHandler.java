@@ -68,6 +68,10 @@ public class ConnettoreHandler {
 	public static final String TIPO_AUTENTICAZIONE_VALUE_NONE = "NONE";
 	public static final String TIPO_AUTENTICAZIONE_VALUE_HTTP_BASIC = "HTTPBasic";
 	public static final String TIPO_AUTENTICAZIONE_VALUE_SSL = "SSL";
+	
+	public static final String CONNETTORE_PDD = "connettorePdd";
+	public static final String CONNETTORE_VERIFICA = "connettoreVerifica";
+	public static final String CONNETTORE_NOTIFICA = "connettoreNotifica"; 
 
 
 	public ConnettoreHandler(String nomeConnettore,String nomeServizio,String pathServizio){
@@ -81,6 +85,9 @@ public class ConnettoreHandler {
 
 	@SuppressWarnings("unchecked")
 	public List<ParamField<?>> getInfoCreazione(UriInfo uriInfo, BasicBD bd,boolean isConnettoreApplicazione) throws ConsoleException {
+		
+		// id Intemediario o Idapplicazione
+		String idOwnerId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 		String urlId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".url.id");
 		String tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
@@ -100,6 +107,11 @@ public class ConnettoreHandler {
 
 		Map<String, ParamField<?>> mappaCreazione = infoCreazioneMap.get(this.nomeServizio + "." + this.nomeConnettore);
 
+		List<RawParamValue> tipoAutenticazioneValues = new ArrayList<RawParamValue>();
+		tipoAutenticazioneValues.add(new RawParamValue(tipoAutenticazioneId, TIPO_AUTENTICAZIONE_VALUE_NONE));
+		// in creazione l'id oggetto e' null
+		tipoAutenticazioneValues.add(new RawParamValue(idOwnerId, null));
+		
 		if(mappaCreazione == null){
 			mappaCreazione = new HashMap<String, ParamField<?>>();
 
@@ -124,16 +136,13 @@ public class ConnettoreHandler {
 			SelectList<String> tipoAutenticazione = new SelectList<String>(tipoAutenticazioneId, tipoAutenticazioneLabel, TIPO_AUTENTICAZIONE_VALUE_NONE, true, false, true, tipiAutenticazione);
 			mappaCreazione.put(tipoAutenticazioneId, tipoAutenticazione);
 
-			List<RawParamValue> tipoAutenticazioneValues = new ArrayList<RawParamValue>();
-			tipoAutenticazioneValues.add(new RawParamValue(tipoAutenticazioneId, TIPO_AUTENTICAZIONE_VALUE_NONE));
-
 			// BASIC
 			// username
 			String usernameLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".username.label");
 			URI refreshUsernameUri = this.getUriField(uriInfo, bd, usernameId); 
 			Username username = new Username(this.nomeConnettore,this.nomeServizio,usernameId, usernameLabel, 1, 255, refreshUsernameUri , tipoAutenticazioneValues);
 			username.addDependencyField(tipoAutenticazione);
-			username.init(tipoAutenticazioneValues);
+			username.init(tipoAutenticazioneValues,bd);
 			username.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".username.errorMessage"));
 			mappaCreazione.put(usernameId, username);
 
@@ -142,7 +151,7 @@ public class ConnettoreHandler {
 			URI refreshPasswordUri = this.getUriField(uriInfo, bd, passwordId); 
 			Password password = new Password(this.nomeConnettore,this.nomeServizio,passwordId, passwordLabel, 1, 255, refreshPasswordUri , tipoAutenticazioneValues);
 			password.addDependencyField(tipoAutenticazione);
-			password.init(tipoAutenticazioneValues);
+			password.init(tipoAutenticazioneValues,bd);
 			password.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".password.errorMessage"));
 			mappaCreazione.put(passwordId, password);
 
@@ -154,7 +163,7 @@ public class ConnettoreHandler {
 			URI refreshTipoSslUri = this.getUriField(uriInfo, bd, tipoSslId);
 			TipoSsl tipoSsl = new TipoSsl(this.nomeConnettore,this.nomeServizio,tipoSslId, tipoSslLabel, refreshTipoSslUri, tipoAutenticazioneValues, bd);
 			tipoSsl.addDependencyField(tipoAutenticazione);
-			tipoSsl.init(tipoAutenticazioneValues);
+			tipoSsl.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(tipoSslId, tipoSsl);
 
 			// sslKsType
@@ -162,7 +171,7 @@ public class ConnettoreHandler {
 			URI refreshSslKsTypeUri = this.getUriField(uriInfo, bd, sslKsTypeId);
 			SslKsType sslKsType = new SslKsType(this.nomeConnettore,this.nomeServizio,sslKsTypeId, sslKsTypeLabel, 1,255, refreshSslKsTypeUri, tipoAutenticazioneValues);
 			sslKsType.addDependencyField(tipoAutenticazione);
-			sslKsType.init(tipoAutenticazioneValues);
+			sslKsType.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslKsTypeId, sslKsType);
 
 			// sslKsLocation
@@ -170,7 +179,7 @@ public class ConnettoreHandler {
 			URI refreshSslKsLocationUri = this.getUriField(uriInfo, bd, sslKsLocationId);
 			SslKsLocation sslKsLocation = new SslKsLocation(this.nomeConnettore,this.nomeServizio,sslKsLocationId, sslKsLocationLabel, 1,255, refreshSslKsLocationUri, tipoAutenticazioneValues);
 			sslKsLocation.addDependencyField(tipoAutenticazione);
-			sslKsLocation.init(tipoAutenticazioneValues);
+			sslKsLocation.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslKsLocationId, sslKsLocation);
 
 			// sslKsPasswd
@@ -178,7 +187,7 @@ public class ConnettoreHandler {
 			URI refreshSslKsPasswdUri = this.getUriField(uriInfo, bd, sslKsPasswdId);
 			SslKsPasswd sslKsPasswd = new SslKsPasswd(this.nomeConnettore,this.nomeServizio,sslKsPasswdId, sslKsPasswdLabel, 1,255, refreshSslKsPasswdUri, tipoAutenticazioneValues);
 			sslKsPasswd.addDependencyField(tipoAutenticazione);
-			sslKsPasswd.init(tipoAutenticazioneValues);
+			sslKsPasswd.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslKsPasswdId, sslKsPasswd);
 
 			// sslPKeyPasswd
@@ -186,7 +195,7 @@ public class ConnettoreHandler {
 			URI refreshSslPKeyPasswdUri = this.getUriField(uriInfo, bd, sslPKeyPasswdId);
 			SslPKeyPasswd sslPKeyPasswd = new SslPKeyPasswd(this.nomeConnettore,this.nomeServizio,sslPKeyPasswdId, sslPKeyPasswdLabel, 1,255, refreshSslPKeyPasswdUri, tipoAutenticazioneValues);
 			sslPKeyPasswd.addDependencyField(tipoAutenticazione);
-			sslPKeyPasswd.init(tipoAutenticazioneValues);
+			sslPKeyPasswd.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslPKeyPasswdId, sslPKeyPasswd);
 
 			// sslTsType
@@ -194,7 +203,7 @@ public class ConnettoreHandler {
 			URI refreshSslTsTypeUri = this.getUriField(uriInfo, bd, sslTsTypeId);
 			SslTsType sslTsType = new SslTsType(this.nomeConnettore,this.nomeServizio,sslTsTypeId, sslTsTypeLabel, 1,255, refreshSslTsTypeUri,  tipoAutenticazioneValues);
 			sslTsType.addDependencyField(tipoAutenticazione);
-			sslTsType.init(tipoAutenticazioneValues);
+			sslTsType.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslTsTypeId, sslTsType);
 
 			// sslTsLocation
@@ -202,7 +211,7 @@ public class ConnettoreHandler {
 			URI refreshSslTsLocationlUri = this.getUriField(uriInfo, bd, sslTsLocationId);
 			SslTsLocation sslTsLocation = new SslTsLocation(this.nomeConnettore,this.nomeServizio,sslTsLocationId, sslTsLocationLabel, 1,255, refreshSslTsLocationlUri, tipoAutenticazioneValues);
 			sslTsLocation.addDependencyField(tipoAutenticazione);
-			sslTsLocation.init(tipoAutenticazioneValues);
+			sslTsLocation.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslTsLocationId, sslTsLocation);
 
 			// sslTsPasswd
@@ -210,7 +219,7 @@ public class ConnettoreHandler {
 			URI refreshSslTsPasswdUri = this.getUriField(uriInfo, bd, sslTsPasswdId);
 			SslTsPasswd sslTsPasswd = new SslTsPasswd(this.nomeConnettore,this.nomeServizio,sslTsPasswdId, sslTsPasswdLabel, 1,255, refreshSslTsPasswdUri, tipoAutenticazioneValues);
 			sslTsPasswd.addDependencyField(tipoAutenticazione);
-			sslTsPasswd.init(tipoAutenticazioneValues);
+			sslTsPasswd.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslTsPasswdId, sslTsPasswd);
 
 			// sslType
@@ -218,7 +227,7 @@ public class ConnettoreHandler {
 			URI refreshSslTypeUri = this.getUriField(uriInfo, bd, sslTypeId);
 			SslType sslType = new SslType(this.nomeConnettore,this.nomeServizio,sslTypeId, sslTypeLabel, 1,255, refreshSslTypeUri,  tipoAutenticazioneValues);
 			sslType.addDependencyField(tipoAutenticazione);
-			sslType.init(tipoAutenticazioneValues);
+			sslType.init(tipoAutenticazioneValues,bd);
 			mappaCreazione.put(sslTypeId, sslType);
 
 			infoCreazioneMap.put(this.nomeServizio + "." + this.nomeConnettore, mappaCreazione);
@@ -249,47 +258,47 @@ public class ConnettoreHandler {
 		listaParametri.add(tipoAutenticazione);
 
 		Username username = (Username) mappaCreazione.get(usernameId);
-		username.setDefaultValue(null);
+		username.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(username);
 
 		Password password = (Password) mappaCreazione.get(passwordId);
-		password.setDefaultValue(null);
+		password.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(password);
 
 		TipoSsl tipoSsl = (TipoSsl) mappaCreazione.get(tipoSslId);
-		tipoSsl.setDefaultValue(TipoSsl.TIPO_SSL_VALUE_CLIENT);
+		tipoSsl.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(tipoSsl);
 
 		SslKsType sslKsType = (SslKsType) mappaCreazione.get(sslKsTypeId);
-		sslKsType.setDefaultValue(null);
+		sslKsType.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslKsType);
 
 		SslKsLocation sslKsLocation = (SslKsLocation) mappaCreazione.get(sslKsLocationId);
-		sslKsLocation.setDefaultValue(null);
+		sslKsLocation.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslKsLocation);
 
 		SslKsPasswd sslKsPasswd = (SslKsPasswd) mappaCreazione.get(sslKsPasswdId);
-		sslKsPasswd.setDefaultValue(null);
+		sslKsPasswd.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslKsPasswd);
 
 		SslPKeyPasswd sslPKeyPasswd = (SslPKeyPasswd) mappaCreazione.get(sslPKeyPasswdId);
-		sslPKeyPasswd.setDefaultValue(null);
+		sslPKeyPasswd.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslPKeyPasswd);
 
 		SslTsType sslTsType =  (SslTsType) mappaCreazione.get(sslTsTypeId);
-		sslTsType.setDefaultValue(null);
+		sslTsType.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslTsType);
 
 		SslTsLocation sslTsLocation = (SslTsLocation) mappaCreazione.get(sslTsLocationId);
-		sslTsLocation.setDefaultValue(null);
+		sslTsLocation.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslTsLocation);
 
 		SslTsPasswd sslTsPasswd = (SslTsPasswd) mappaCreazione.get(sslTsPasswdId);
-		sslTsPasswd.setDefaultValue(null);
+		sslTsPasswd.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslTsPasswd);
 
 		SslType sslType =  (SslType) mappaCreazione.get(sslTypeId);
-		sslType.setDefaultValue(null);
+		sslType.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslType);
 
 
@@ -297,9 +306,12 @@ public class ConnettoreHandler {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<ParamField<?>> getInfoModifica(UriInfo uriInfo, BasicBD bd, Connettore connettore,boolean isConnettoreApplicazione) throws ConsoleException {
+	public List<ParamField<?>> getInfoModifica(UriInfo uriInfo, BasicBD bd, Connettore connettore,Long ownerId, boolean isConnettoreApplicazione) throws ConsoleException {
 
 		List<ParamField<?>> listaParametri = new ArrayList<ParamField<?>>();
+		
+		// id Intemediario o Idapplicazione
+		String idOwnerId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 		String urlId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".url.id");
 		String tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
@@ -334,7 +346,7 @@ public class ConnettoreHandler {
 			url.setRequired(false);
 		}
 
-		listaParametri.add( url);
+		listaParametri.add(url);
 
 		if(!isConnettoreApplicazione){
 			CheckButton azioneInURL = (CheckButton) mappaCreazione.get(azioneInURLId);
@@ -350,59 +362,56 @@ public class ConnettoreHandler {
 		case NONE: default: tipoAutenticazione.setDefaultValue(TIPO_AUTENTICAZIONE_VALUE_NONE); break;
 		}
 		listaParametri.add(tipoAutenticazione);
+		
+		List<RawParamValue> tipoAutenticazioneValues = new ArrayList<RawParamValue>();
+		tipoAutenticazioneValues.add(new RawParamValue(tipoAutenticazioneId, tipoAutenticazione.getDefaultValue()));
+		// in creazione l'id oggetto e' null
+		tipoAutenticazioneValues.add(new RawParamValue(idOwnerId, ""+ownerId));
+		
 
 		Username username = (Username) mappaCreazione.get(usernameId);
-		username.setDefaultValue(connettore == null ? null : connettore.getHttpUser());
+		username.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(username);
 
 		Password password = (Password) mappaCreazione.get(passwordId);
-		password.setDefaultValue(connettore == null ? null : connettore.getHttpPassw());
+		password.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(password);
 
 		TipoSsl tipoSsl = (TipoSsl) mappaCreazione.get(tipoSslId);
-		EnumSslType tipoSsl2 = connettore == null ? EnumSslType.CLIENT : connettore.getTipoSsl() != null ? connettore.getTipoSsl() : EnumSslType.CLIENT;
-		switch (tipoSsl2) {
-		case SERVER:
-			tipoSsl.setDefaultValue(TipoSsl.TIPO_SSL_VALUE_SERVER);
-			break;
-		case CLIENT:
-		default:
-			tipoSsl.setDefaultValue(TipoSsl.TIPO_SSL_VALUE_CLIENT);
-			break;
-		}		
+		tipoSsl.init(tipoAutenticazioneValues,bd);
 
 		listaParametri.add(tipoSsl);
 
 		SslKsType sslKsType = (SslKsType) mappaCreazione.get(sslKsTypeId);
-		sslKsType.setDefaultValue(connettore == null ? null :connettore.getSslKsType());
+		sslKsType.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslKsType);
 
 		SslKsLocation sslKsLocation = (SslKsLocation) mappaCreazione.get(sslKsLocationId);
-		sslKsLocation.setDefaultValue(connettore == null ? null : connettore.getSslKsLocation());
+		sslKsLocation.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslKsLocation);
 
 		SslKsPasswd sslKsPasswd = (SslKsPasswd) mappaCreazione.get(sslKsPasswdId);
-		sslKsPasswd.setDefaultValue(connettore == null ? null : connettore.getSslKsPasswd());
+		sslKsPasswd.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslKsPasswd);
 
 		SslPKeyPasswd sslPKeyPasswd = (SslPKeyPasswd) mappaCreazione.get(sslPKeyPasswdId);
-		sslPKeyPasswd.setDefaultValue(connettore == null ? null : connettore.getSslPKeyPasswd());
+		sslPKeyPasswd.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslPKeyPasswd);
 
 		SslTsType sslTsType =  (SslTsType) mappaCreazione.get(sslTsTypeId);
-		sslTsType.setDefaultValue(connettore == null ? null :connettore.getSslTsType());
+		sslTsType.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslTsType);
 
 		SslTsLocation sslTsLocation = (SslTsLocation) mappaCreazione.get(sslTsLocationId);
-		sslTsLocation.setDefaultValue(connettore == null ? null : connettore.getSslTsLocation());
+		sslTsLocation.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslTsLocation);
 
 		SslTsPasswd sslTsPasswd = (SslTsPasswd) mappaCreazione.get(sslTsPasswdId);
-		sslTsPasswd.setDefaultValue(connettore == null ? null : connettore.getSslTsPasswd());
+		sslTsPasswd.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslTsPasswd);
 
 		SslType sslType =  (SslType) mappaCreazione.get(sslTypeId);
-		sslType.setDefaultValue( connettore == null ? null :connettore.getSslType());
+		sslType.init(tipoAutenticazioneValues,bd);
 		listaParametri.add(sslType);
 
 		return listaParametri;

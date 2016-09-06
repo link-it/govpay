@@ -50,6 +50,7 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.model.Acl.Servizio;
 import it.govpay.bd.model.Acl.Tipo;
+import it.govpay.bd.model.Connettore.EnumSslType;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Connettore;
@@ -92,8 +93,8 @@ import net.sf.json.JsonConfig;
 
 public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implements IDarsHandler<Applicazione>{
 
-	private static final String CONNETTORE_VERIFICA = "connettoreVerifica";
-	private static final String CONNETTORE_NOTIFICA = "connettoreNotifica"; 
+	public static final String CONNETTORE_VERIFICA = ConnettoreHandler.CONNETTORE_VERIFICA;
+	public static final String CONNETTORE_NOTIFICA = ConnettoreHandler.CONNETTORE_NOTIFICA; 
 	private static Map<String, ParamField<?>> infoCreazioneMap = null;
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
 
@@ -455,10 +456,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica(),true);
+		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica(),entry.getId(),true);
 
 		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica(),true);
+		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica(),entry.getId(),true);
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -841,6 +842,9 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
 		String versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 		
+		String tipoSslIdNot = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".tipoSsl.id");
+		String tipoSslIdVer = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".tipoSsl.id");
+		
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -950,6 +954,14 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				FirmaRichiesta enum1 = FirmaRichiesta.toEnum(codFirma);
 				entry.setFirmaRichiesta(enum1); 
 			}
+			
+			String tipoSslNot = jsonObjectApplicazione.containsKey(tipoSslIdNot) ? jsonObjectApplicazione.getString(tipoSslIdNot) : null;
+			if(tipoSslNot != null)
+				jsonObjectApplicazione.remove(tipoSslIdNot);
+			
+			String tipoSslVer = jsonObjectApplicazione.containsKey(tipoSslIdVer) ? jsonObjectApplicazione.getString(tipoSslIdVer) : null;
+			if(tipoSslVer != null)
+				jsonObjectApplicazione.remove(tipoSslIdVer);
 
 
 			String cvPrefix = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".idPrefix");
@@ -969,9 +981,19 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			jsonConfig.setRootClass(Connettore.class);
 			Connettore cv = (Connettore) JSONObject.toBean( jsonObjectCV, jsonConfig );
+			
+			if(StringUtils.isNotEmpty(tipoSslVer)){
+				cv.setTipoSsl(EnumSslType.valueOf(tipoSslVer)); 
+			}
+			
 			entry.setConnettoreVerifica(cv);
 
 			Connettore cn = (Connettore) JSONObject.toBean( jsonObjectCN, jsonConfig );
+			
+			if(StringUtils.isNotEmpty(tipoSslNot)){
+				cn.setTipoSsl(EnumSslType.valueOf(tipoSslNot)); 
+			}
+			
 			entry.setConnettoreNotifica(cn);
 
 			this.log.info("Esecuzione " + methodName + " completata.");

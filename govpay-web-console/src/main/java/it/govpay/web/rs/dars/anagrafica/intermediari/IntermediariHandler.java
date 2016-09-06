@@ -43,6 +43,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.bd.model.Connettore;
+import it.govpay.bd.model.Connettore.EnumSslType;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -69,7 +70,7 @@ import net.sf.json.JsonConfig;
 
 public class IntermediariHandler extends BaseDarsHandler<Intermediario> implements IDarsHandler<Intermediario>{
 
-	private static final String CONNETTORE_PDD = "connettorePdd";
+	public static final String CONNETTORE_PDD = ConnettoreHandler.CONNETTORE_PDD;
 	private static Map<String, ParamField<?>> infoCreazioneMap = null;
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
 
@@ -301,7 +302,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoModificaConnettore = connettoreHandler.getInfoModifica(uriInfo, bd, entry.getConnettorePdd(),false);
+		List<ParamField<?>> infoModificaConnettore = connettoreHandler.getInfoModifica(uriInfo, bd, entry.getConnettorePdd(),entry.getId(),false);
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -466,6 +467,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String methodName = "creaEntry " + this.titoloServizio;
 		Intermediario entry = null;
 		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+		String tipoSslId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_PDD + ".tipoSsl.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -485,10 +487,18 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			
 			jsonConfig.setRootClass(Intermediario.class);
 			entry = (Intermediario) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
+			
+			String tipoSsl = jsonObjectIntermediario.containsKey(tipoSslId) ? jsonObjectIntermediario.getString(tipoSslId) : null;
+			if(tipoSsl != null)
+				jsonObjectIntermediario.remove(tipoSslId);
 
 			//jsonObjectIntermediario = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Connettore.class);
 			Connettore c = (Connettore) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
+			
+			if(StringUtils.isNotEmpty(tipoSsl)){
+				c.setTipoSsl(EnumSslType.valueOf(tipoSsl)); 
+			}
 
 			c.setPrincipal(principal);
 			entry.setConnettorePdd(c); 

@@ -73,7 +73,7 @@ public class AclEngine {
 			}
 			
 			if(!isTributoAbilitato && acl.getServizio().equals(servizio) && acl.getTipo().equals(Tipo.TRIBUTO) && (acl.getCodTributo() == null || acl.getCodTributo().equals(codTributo))) {
-				isDominioAbilitato = true;
+				isTributoAbilitato = true;
 				break;
 			}
 		}

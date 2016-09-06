@@ -78,7 +78,7 @@ public class Gp21Utils {
 			t.setStato(StatoTransazione.RPT_ACCETTATA_NODO);
 		}
 		for(Pagamento pagamento : rpt.getPagamenti(bd)) {
-			t.getPagamento().add(toPagamento(pagamento));
+			t.getPagamento().add(toPagamento(pagamento, versione));
 		}
 		return t;
 	}
@@ -116,7 +116,7 @@ public class Gp21Utils {
 		return v;
 	}
 
-	public static it.govpay.servizi.commons.Pagamento toPagamento(Pagamento pagamento) {
+	public static it.govpay.servizi.commons.Pagamento toPagamento(Pagamento pagamento, Versionabile.Versione versione) {
 		it.govpay.servizi.commons.Pagamento p = new it.govpay.servizi.commons.Pagamento();
 		
 		if(pagamento.getAllegato() != null) {
@@ -135,8 +135,10 @@ public class Gp21Utils {
 		p.setDatiRevoca(pagamento.getDatiRevoca());
 		p.setEsitoRevoca(pagamento.getEsitoRevoca());
 		p.setImportoRevocato(pagamento.getImportoRevocato());
-		p.setDataAcquisizione(pagamento.getDataAcquisizione());
-		p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
+		if(versione.compareTo(Versione.GP_02_02_00) >= 0) {
+			p.setDataAcquisizione(pagamento.getDataAcquisizione());
+			p.setDataAcquisizioneRevoca(pagamento.getDataAcquisizioneRevoca());
+		}
 		return p;
 	}
 	
@@ -170,7 +172,7 @@ public class Gp21Utils {
 		return p;
 	}
 
-	public static Storno toStorno(Rr rr, BasicBD bd) throws ServiceException {
+	public static Storno toStorno(Rr rr, Versionabile.Versione versione, BasicBD bd) throws ServiceException {
 		Storno storno = new Storno();
 		storno.setCcp(rr.getCcp());
 		storno.setCodDominio(rr.getCodDominio());
@@ -180,7 +182,7 @@ public class Gp21Utils {
 		storno.setRr(rr.getXmlRr());
 		storno.setStato(StatoRevoca.fromValue(rr.getStato().toString()));
 		for(Pagamento p : rr.getPagamenti(bd)) {
-			storno.getPagamento().add(toPagamento(p));
+			storno.getPagamento().add(toPagamento(p, versione));
 		}
 		return storno;
 	}

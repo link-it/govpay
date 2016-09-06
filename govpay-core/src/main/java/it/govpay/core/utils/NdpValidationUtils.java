@@ -138,7 +138,7 @@ public class NdpValidationUtils {
 	public static boolean equals(String s1, String s2) {
 		if(s1==null && s2==null) return true;
 		if(s1==null) return false;
-		return s1.compareTo(s2)==0;
+		return s1.equals(s2);
 	}
 
 }
