@@ -42,10 +42,11 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
+import it.govpay.bd.model.Acl;
+import it.govpay.bd.model.Acl.Tipo;
 import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
@@ -116,6 +117,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			AclBD aclBD = new AclBD(bd);
+
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			List<Long> idDomini = new ArrayList<Long>();
+
 			VersamentoFilter filter = versamentiBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
@@ -143,18 +149,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					idDom = Long.parseLong(idDominio);
 				}catch(Exception e){ idDom = -1l;	}
 				if(idDom > 0){
-					UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
-					UnitaOperativaFilter filtro = uoBD.newFilter();
-					filtro.setDominioFilter(idDom);
-					List<Long> idUO = new ArrayList<Long>();
-					List<UnitaOperativa> findAll = uoBD.findAll(filtro);
-
-					if(findAll != null && findAll.size() > 0){
-						for (UnitaOperativa unitaOperativa : findAll) {
-							idUO.add(unitaOperativa.getId());
-						}
-						filter.setIdUo(idUO);	
-					}
+					idDomini.add(idDom);
+					filter.setIdDomini(idDomini);
 				}
 			}
 
@@ -175,11 +171,27 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 
 			boolean eseguiRicerca = true; // isAdmin;
-			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
-			if(!isAdmin){
-				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
-				//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				//				filter.setIdUo(operatore.getIdEnti()); 
+			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
+			if(!isAdmin && idDomini.isEmpty()){
+				boolean vediTuttiDomini = false;
+				
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
 			}
 
 			long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
@@ -241,35 +253,79 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		iuv.setDefaultValue(null);
 		sezioneRoot.addField(iuv);
 
-		// idDominio
-		List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+		try{
 
-		DominiBD dominiBD = new DominiBD(bd);
-		DominioFilter filter;
-		try {
-			filter = dominiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Dominio> findAll = dominiBD.findAll(filter );
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
-			Domini dominiDars = new Domini();
-			DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+			// idDominio
+			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 
-			domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-			if(findAll != null && findAll.size() > 0){
-				for (Dominio dominio : findAll) {
-					domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+			DominiBD dominiBD = new DominiBD(bd);
+			DominioFilter filter;
+			try {
+				filter = dominiBD.newFilter();
+				boolean eseguiRicerca = true;
+				if(isAdmin){
+
+				} else {
+					AclBD aclBD = new AclBD(bd);
+					List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+					boolean vediTuttiDomini = false;
+					List<Long> idDomini = new ArrayList<Long>();
+					for(Acl acl: aclOperatore) {
+						if(Tipo.DOMINIO.equals(acl.getTipo())) {
+							if(acl.getIdDominio() == null) {
+								vediTuttiDomini = true;
+								break;
+							} else {
+								idDomini.add(acl.getIdDominio());
+							}
+						}
+					}
+					if(!vediTuttiDomini) {
+						if(idDomini.isEmpty()) {
+							eseguiRicerca = false;
+						} else {
+							filter.setIdDomini(idDomini);
+						}
+					}
 				}
+
+				
+				
+				if(eseguiRicerca) {
+					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+					fsw.setSortOrder(SortOrder.ASC);
+					filter.getFilterSortList().add(fsw);
+					List<Dominio> findAll = dominiBD.findAll(filter );
+
+					Domini dominiDars = new Domini();
+					DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+					
+					if(findAll != null && findAll.size() > 0){
+						for (Dominio dominio : findAll) {
+							domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+						}
+					}
+				}else {
+					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+				}
+			} catch (ServiceException e) {
+				throw new ConsoleException(e);
 			}
-		} catch (ServiceException e) {
+			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+			idDominio.setDefaultValue(-1L);
+			idDominio.setValues(domini); 
+			sezioneRoot.addField(idDominio);
+
+		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
-		SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-		idDominio.setDefaultValue(-1L);
-		idDominio.setValues(domini); 
-		sezioneRoot.addField(idDominio);
 
 		return infoRicerca;
 	}

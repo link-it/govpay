@@ -341,7 +341,7 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "uo";
 		}
 		if(model.equals(Versamento.model().ID_UO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
 		}
 		if(model.equals(Versamento.model().ID_APPLICAZIONE)){
 			return "applicazioni";
