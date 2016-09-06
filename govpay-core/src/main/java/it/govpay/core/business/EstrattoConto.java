@@ -172,56 +172,72 @@ public class EstrattoConto extends BasicBD {
 
 					boolean creaEstrattoConto = true;
 
-					if(!dominioFile.exists()){
-						log.debug("creo il file CSV: "+dominioFile.getAbsolutePath());
-						dominioFile.createNewFile();
-					} else {
-						// se il file e' gia presente non lo creo;
-						creaEstrattoConto = false;
-					}
-					if(creaEstrattoConto){
+//					if(!dominioFile.exists()){
+//						log.debug("creo il file CSV: "+dominioFile.getAbsolutePath());
+//						dominioFile.createNewFile();
+//					} else {
+//						// se il file e' gia presente non lo creo;
+//						creaEstrattoConto = false;
+//					}
+//					if(creaEstrattoConto){
 						
 						int offset = 0;
 
 						try{
-							// per ogni mese fino al quello indicato  nelle properties calcolo l'estratto conto
-							fos = new FileOutputStream(dominioFile);
-							printer = new Printer(this.formatW , fos);
+							
+							if(!dominioFile.exists()){
+								log.debug("creo il file CSV: "+dominioFile.getAbsolutePath());
+								dominioFile.createNewFile();
+								// per ogni mese fino al quello indicato  nelle properties calcolo l'estratto conto
+								fos = new FileOutputStream(dominioFile);
+								printer = new Printer(this.formatW , fos);
+								printer.printRecord(getCsvHeader());
+							} else {
+								creaEstrattoConto = false;
+							}
 
-							printer.printRecord(getCsvHeader());
 							List<it.govpay.bd.model.EstrattoConto> estrattoConto = this.getEstrattoContoExt(dominio.getCodDominio(), dataInizio, dataFine, offset, LIMIT);
 							
 							while(estrattoConto != null && !estrattoConto.isEmpty()) {
 								List<FileOutputStream> fosList = new ArrayList<FileOutputStream>();
+								List<String> fileEsistentiList = new ArrayList<String>();
 
 								for (it.govpay.bd.model.EstrattoConto pagamentoExt : estrattoConto) {
 									List<String> csvRow = this.getCsvRow(pagamentoExt);
-									printer.printRecord(csvRow);
+									if(creaEstrattoConto)
+										printer.printRecord(csvRow);
 									
 									if(pagamentoExt.getIbanAccredito() != null) {
 										Printer printerIban;
 										if(ecPerIban.containsKey(pagamentoExt.getIbanAccredito())) {
 											printerIban = ecPerIban.get(pagamentoExt.getIbanAccredito());
+											printerIban.printRecord(csvRow);
 										} else {
 											String dominioPerIbanCsvFileName = dominio.getCodDominio() + "_" + pagamentoExt.getIbanAccredito() + "_" + f2.format(dataInizio) +".csv";
 											log.debug("Nome del file CSV destinazione: "+dominioPerIbanCsvFileName);
 
 											File dominioPerIbanFile = new File(basePath+File.separator + dominio.getCodDominio() + File.separator + dominioPerIbanCsvFileName );
 											
-											if(!dominioPerIbanFile.exists()){
-												log.debug("creo il file CSV: "+dominioPerIbanFile.getAbsolutePath());
-												dominioPerIbanFile.createNewFile();
+											if(!fileEsistentiList.contains(dominioPerIbanFile.getPath())) {
+												if(!dominioPerIbanFile.exists()){
+													sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+pagamentoExt.getIbanAccredito()+"] eseguita" + CSV_SEPARATOR);
+													log.debug("creo il file CSV: "+dominioPerIbanFile.getAbsolutePath());
+													dominioPerIbanFile.createNewFile();
+													FileOutputStream fosIban = new FileOutputStream(dominioPerIbanFile);
+													fosList.add(fosIban);
+	
+													printerIban = new Printer(this.formatW , fosIban);
+													printerIban.printRecord(getCsvHeader());
+	
+													ecPerIban.put(pagamentoExt.getIbanAccredito(), printerIban);
+													printerIban.printRecord(csvRow);
+												} else {
+													fileEsistentiList.add(dominioPerIbanFile.getPath());
+													sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+pagamentoExt.getIbanAccredito()+"] non eseguita in quanto il file ["+dominioPerIbanFile.getPath()+"] esiste gia."+CSV_SEPARATOR);
+												}
 											}
 
-											FileOutputStream fosIban = new FileOutputStream(dominioPerIbanFile);
-											fosList.add(fosIban);
-
-											printerIban = new Printer(this.formatW , fosIban);
-											printerIban.printRecord(getCsvHeader());
-
-											ecPerIban.put(pagamentoExt.getIbanAccredito(), printerIban);
 										}
-										printerIban.printRecord(csvRow);
 										
 									}
 								}
@@ -230,9 +246,15 @@ public class EstrattoConto extends BasicBD {
 								estrattoConto = this.getEstrattoContoExt(dominio.getCodDominio(), dataInizio, dataFine, offset, LIMIT);
 							}
 							
-							sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " eseguita correttamente")
-							.append("#serializzati "+offset+" pagamenti sul file "+dominioCsvFileName+".");
-							ctx.log("estrattoConto.fineDominioMeseOk", denominazioneDominio, f3.format(dataInizio), estrattoConto.size() +"" ,dominioCsvFileName);
+							if(creaEstrattoConto) {
+								sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " eseguita correttamente")
+								.append("#serializzati "+offset+" pagamenti sul file "+dominioCsvFileName+".");
+								ctx.log("estrattoConto.fineDominioMeseOk", denominazioneDominio, f3.format(dataInizio), estrattoConto.size() +"" ,dominioCsvFileName);
+							} else {
+								sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " non eseguita")
+								.append("#il file "+dominioCsvFileName+" e' gia' presente.");
+								ctx.log("estrattoConto.fineDominioMeseFileGiaPresente",denominazioneDominio, f3.format(dataInizio), dominioCsvFileName);
+							}
 						} finally{
 							try{
 								if(printer!=null){
@@ -250,12 +272,6 @@ public class EstrattoConto extends BasicBD {
 								throw new Exception("Errore durante la chiusura dello stream ",e);
 							}
 						}
-
-					} else {
-						sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " non eseguita")
-						.append("#il file "+dominioCsvFileName+" e' gia' presente.");
-						ctx.log("estrattoConto.fineDominioMeseFileGiaPresente",denominazioneDominio, f3.format(dataInizio), dominioCsvFileName);
-					}
 
 					log.debug("Estratto Conto per il Dominio ["+denominazioneDominio+"] completato con esito: "+sb.toString());
 					response.add(sb.toString());

@@ -2,8 +2,13 @@ package it.govpay.bd.model;
 
 import java.util.Date;
 
-public class EstrattoConto {
+public class EstrattoConto extends BasicModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private Date dataPagamento;
 	private Double importoPagato;
 	private String iur;
