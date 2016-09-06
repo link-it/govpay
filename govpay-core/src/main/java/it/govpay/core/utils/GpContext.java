@@ -1,5 +1,14 @@
 package it.govpay.core.utils;
 
+import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versionabile.Versione;
+import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.core.utils.client.handler.IntegrationContext;
+import it.govpay.servizi.PagamentiTelematiciPAService;
+import it.govpay.servizi.commons.GpResponse;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,18 +37,12 @@ import org.openspcoop2.utils.logger.beans.proxy.Transaction;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
 import org.openspcoop2.utils.logger.constants.proxy.Result;
 
-import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versionabile.Versione;
-import it.govpay.core.exceptions.NdpException.FaultPa;
-import it.govpay.core.utils.client.NodoClient.Azione;
-import it.govpay.servizi.PagamentiTelematiciPAService;
-import it.govpay.servizi.commons.GpResponse;
-
 public class GpContext {
 
 	private List<ILogger> loggers;
 	private List<Context> contexts;
+	
+	private IntegrationContext integrationCtx;
 	
 	public static String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
 	public static String GovPay = "GovPay";
@@ -349,6 +352,13 @@ public class GpContext {
 		}
 	}
 	
+	public IntegrationContext getIntegrationCtx() {
+		if(this.integrationCtx == null) 
+			this.integrationCtx=new IntegrationContext();
+		
+		return integrationCtx;
+	}
+
 	public class Context extends ProxyContext {
 		private static final long serialVersionUID = 1L;
 		
