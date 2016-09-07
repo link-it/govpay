@@ -41,6 +41,7 @@ import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 public class PagamentoFilter extends AbstractFilter {
 	
 	private List<Long> idDomini;
+	private Long idPagamento;
 
 	private Date dataInizio;
 	private Date dataFine;
@@ -104,7 +105,7 @@ public class PagamentoFilter extends AbstractFilter {
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		if(field.equals(SortFields.DATA)) 
-			filterSortWrapper.setField(Pagamento.model().DATA_ACQUISIZIONE); 
+			filterSortWrapper.setField(Pagamento.model().DATA_PAGAMENTO); 
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}
@@ -125,6 +126,20 @@ public class PagamentoFilter extends AbstractFilter {
 		this.dataFine = dataFine;
 	}
 
- 
+	public List<Long> getIdDomini() {
+		return idDomini;
+	}
+
+	public void setIdDomini(List<Long> idDomini) {
+		this.idDomini = idDomini;
+	}
+
+	public Long getIdPagamento() {
+		return idPagamento;
+	}
+
+	public void setIdPagamento(Long idPagamento) {
+		this.idPagamento = idPagamento;
+	}
 	
 }

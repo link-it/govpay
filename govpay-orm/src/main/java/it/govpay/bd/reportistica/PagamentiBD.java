@@ -3,12 +3,16 @@ package it.govpay.bd.reportistica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.reportistica.Pagamento;
 import it.govpay.bd.reportistica.filters.PagamentoFilter;
+import it.govpay.orm.dao.IPagamentoService;
 
 public class PagamentiBD extends BasicBD{
 
@@ -21,13 +25,25 @@ public class PagamentiBD extends BasicBD{
 	}
 
 	public List<Pagamento> findAll(PagamentoFilter filter) throws ServiceException {
-//		try {
+		try {
+			
+			IPagamentoService pagamentoService = this.getPagamentoService();
+			IPaginatedExpression pagExpr = filter.toPaginatedExpression();
+			
+			FunctionField maxData;
+			pagamentoService.groupBy(pagExpr, maxData);
+			
+			
+			
+			
 			return new ArrayList<Pagamento>();
 //			List<it.govpay.orm.Pagamento>pagamentoVOLst = this.getPagamentoService().findAll(filter.toPaginatedExpression()); 
 //			return PagamentoConverter.toDTO(pagamentoVOLst);
-//		} catch (NotImplementedException e) {
-//			throw new ServiceException(e);
-//		}
+		} catch (NotFoundException e) {
+			return new ArrayList<Pagamento>();
+		}catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 	public long count(PagamentoFilter filter) throws ServiceException {
 //		try {
@@ -37,5 +53,8 @@ public class PagamentiBD extends BasicBD{
 //		}
 	}
 	
+	public Pagamento getPagamento(long id) throws ServiceException {
+		return null;
+	}
 	
 }

@@ -57,6 +57,7 @@ import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.FrApplicazioni;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Rendicontazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
+import it.govpay.web.rs.dars.reportistica.pagamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
 
 @Path("/dars/")
@@ -151,6 +152,8 @@ public class Menu extends BaseRsService {
 				menu.setHome(voceMenuVersamenti);
 
 			}
+			
+			// Sezione Monitoraggio
 			SezioneMenu monitoraggio = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".monitoraggio"));
 
 			monitoraggio.getVociMenu().add(voceMenuVersamenti);
@@ -180,6 +183,17 @@ public class Menu extends BaseRsService {
 			}
 
 			menu.getSezioni().add(monitoraggio);
+			
+			// Sezione Reportistica
+			SezioneMenu reportistica = console.new SezioneMenu(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".reportistica"));
+			
+			Pagamenti reportisticaPagamentiDars = new Pagamenti();
+			URI reportisticaPagamentiURI = BaseRsService.checkDarsURI(uriInfo).path(reportisticaPagamentiDars.getPathServizio()).build();
+			VoceMenu voceMenuReportisticaPagamenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(reportisticaPagamentiDars.getNomeServizio() + ".titolo"), reportisticaPagamentiURI, false);
+
+			reportistica.getVociMenu().add(voceMenuReportisticaPagamenti);
+			
+			menu.getSezioni().add(reportistica);
 
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
 				// sezione manutenzione
@@ -191,7 +205,6 @@ public class Menu extends BaseRsService {
 				manutenzione.getVociMenu().add(voceMenuStrumenti);
 				menu.getSezioni().add(manutenzione);
 			}
-
 
 			console.setMenu(menu);
 
