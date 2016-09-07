@@ -3,7 +3,9 @@ package it.govpay.bd.reportistica;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.Function;
 import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -30,7 +32,7 @@ public class PagamentiBD extends BasicBD{
 			IPagamentoService pagamentoService = this.getPagamentoService();
 			IPaginatedExpression pagExpr = filter.toPaginatedExpression();
 			
-			FunctionField maxData;
+			FunctionField maxData = new FunctionField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO, Function.MAX, "dataPagamento");
 			pagamentoService.groupBy(pagExpr, maxData);
 			
 			
@@ -43,7 +45,9 @@ public class PagamentiBD extends BasicBD{
 			return new ArrayList<Pagamento>();
 		}catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		}
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+			}
 	}
 	public long count(PagamentoFilter filter) throws ServiceException {
 //		try {
