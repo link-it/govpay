@@ -275,21 +275,22 @@ public class BasicClient {
 				JaxbUtils.marshal(body, baos);
 			}
 
+			ctx.getIntegrationCtx().setMsg(baos.toByteArray());
+			invokeOutHandlers();
+			
 			if(log.getLevel().isMoreSpecificThan(Level.TRACE)) {
 				StringBuffer sb = new StringBuffer();
 				for(String key : connection.getRequestProperties().keySet()) {
 					sb.append("\n\t" + key + ": " + connection.getRequestProperties().get(key));
 				}
-				sb.append("\n" + baos.toString());
+				sb.append("\n" + new String(ctx.getIntegrationCtx().getMsg()));
 				log.trace(sb.toString());
 			}
 			
-			ctx.getIntegrationCtx().setMsg(baos.toByteArray());
-			invokeOutHandlers();
 			requestMsg.setContent(ctx.getIntegrationCtx().getMsg());
 			
 			ctx.getContext().getRequest().setOutDate(new Date());
-			ctx.getContext().getRequest().setOutSize(Long.valueOf(baos.size()));
+			ctx.getContext().getRequest().setOutSize(Long.valueOf(ctx.getIntegrationCtx().getMsg().length));
 			ctx.log(requestMsg);
 			
 			connection.getOutputStream().write(ctx.getIntegrationCtx().getMsg());

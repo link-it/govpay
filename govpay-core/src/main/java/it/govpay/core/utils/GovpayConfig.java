@@ -134,6 +134,7 @@ public class GovpayConfig {
 						props0 = new Properties();
 						props0.load(new FileInputStream(gpConfigFile));
 						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
+						props[0] = props0;
 					}
 				}
 			} catch (Exception e) {
