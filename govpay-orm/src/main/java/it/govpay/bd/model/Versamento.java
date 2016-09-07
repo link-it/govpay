@@ -187,11 +187,12 @@ public class Versamento extends BasicModel {
 	}
 	
 	public void setCausaleVersamento(String causaleVersamentoEncoded) throws UnsupportedEncodingException {
-		this.causaleVersamento = decode(causaleVersamentoEncoded);
+		this.causaleVersamento = Versamento.decode(causaleVersamentoEncoded);
 	}
 	
 	public interface Causale {
 		public String encode() throws UnsupportedEncodingException;
+		public String getSimple() throws UnsupportedEncodingException;
 	}
 	
 	public class CausaleSemplice implements Causale {
@@ -200,6 +201,11 @@ public class Versamento extends BasicModel {
 		@Override
 		public String encode() throws UnsupportedEncodingException {
 			return "01 " + Base64.encodeBase64String(causale.getBytes("UTF-8"));
+		}
+		
+		@Override
+		public String getSimple() throws UnsupportedEncodingException {
+			return this.getCausale();
 		}
 		
 		public void setCausale(String causale) {
@@ -229,6 +235,14 @@ public class Versamento extends BasicModel {
 			return encoded;
 		}
 		
+		@Override
+		public String getSimple() throws UnsupportedEncodingException {
+			if(this.spezzoni != null && !this.spezzoni.isEmpty())
+				return this.spezzoni.get(0);
+				
+			return "";
+		}
+		
 		public void setSpezzoni(List<String> spezzoni) {
 			this.spezzoni = spezzoni;
 		}
@@ -254,6 +268,17 @@ public class Versamento extends BasicModel {
 				encoded += " " + Base64.encodeBase64String(spezzoni.get(i).getBytes("UTF-8")) + " " + Base64.encodeBase64String(Double.toString(importi.get(i).doubleValue()).getBytes("UTF-8"));
 			}
 			return encoded;
+		}
+		
+		@Override
+		public String getSimple() throws UnsupportedEncodingException {
+			if(this.spezzoni != null && !this.spezzoni.isEmpty()){
+				StringBuffer sb = new StringBuffer();
+				sb.append(importi.get(0).doubleValue() + ": " + spezzoni.get(0) );
+				return sb.toString();
+			}
+				
+			return "";
 		}
 		
 		public CausaleSpezzoniStrutturati() {
@@ -292,10 +317,10 @@ public class Versamento extends BasicModel {
 		}
 	}
 	
-	private Causale decode(String encodedCausale) throws UnsupportedEncodingException {
+	public static Causale decode(String encodedCausale) throws UnsupportedEncodingException {
 		String[] causaleSplit = encodedCausale.split(" ");
 		if(causaleSplit[0].equals("01")) {
-			CausaleSemplice causale = new CausaleSemplice();
+			CausaleSemplice causale = new Versamento().new CausaleSemplice();
 			causale.setCausale(new String(Base64.decodeBase64(causaleSplit[1].getBytes()), "UTF-8"));
 			return causale;
 		}
@@ -305,7 +330,7 @@ public class Versamento extends BasicModel {
 			for(int i=1; i<causaleSplit.length; i++) {
 				spezzoni.add(new String(Base64.decodeBase64(causaleSplit[i].getBytes()), "UTF-8"));
 			}
-			CausaleSpezzoni causale = new CausaleSpezzoni();
+			CausaleSpezzoni causale = new Versamento().new CausaleSpezzoni();
 			causale.setSpezzoni(spezzoni);
 			return causale;
 		}
@@ -318,7 +343,7 @@ public class Versamento extends BasicModel {
 				spezzoni.add(new String(Base64.decodeBase64(causaleSplit[i].getBytes()), "UTF-8"));
 				importi.add(BigDecimal.valueOf(Double.parseDouble(new String(Base64.decodeBase64(causaleSplit[i+1].getBytes()), "UTF-8"))));
 			}
-			CausaleSpezzoniStrutturati causale = new CausaleSpezzoniStrutturati();
+			CausaleSpezzoniStrutturati causale = new Versamento().new CausaleSpezzoniStrutturati();
 			causale.setSpezzoni(spezzoni);
 			causale.setImporti(importi);
 			return causale;
