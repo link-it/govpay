@@ -284,6 +284,7 @@
 			<xsd:element name="debitoreAnagrafica" type="String70" minOccurs="0" />
 			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
+			<xsd:element name="importoTotale" type="xsd:double" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

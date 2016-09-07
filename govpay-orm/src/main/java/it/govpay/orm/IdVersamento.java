@@ -42,6 +42,7 @@ import java.io.Serializable;
  * 			&lt;element name="debitoreAnagrafica" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoTotale" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -61,7 +62,8 @@ import java.io.Serializable;
   	"debitoreIdentificativo",
   	"debitoreAnagrafica",
   	"codVersamentoLotto",
-  	"codAnnoTributario"
+  	"codAnnoTributario",
+  	"importoTotale"
   }
 )
 
@@ -133,6 +135,14 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
     this.codAnnoTributario = codAnnoTributario;
   }
 
+  public double getImportoTotale() {
+    return this.importoTotale;
+  }
+
+  public void setImportoTotale(double importoTotale) {
+    this.importoTotale = importoTotale;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -162,5 +172,9 @@ public class IdVersamento extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codAnnoTributario",required=false,nillable=false)
   protected java.lang.String codAnnoTributario;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="importoTotale",required=false,nillable=false)
+  protected double importoTotale;
 
 }

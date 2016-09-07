@@ -110,6 +110,13 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_anno_tributario";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -237,6 +244,9 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
 			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){

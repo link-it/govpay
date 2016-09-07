@@ -48,6 +48,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.DEBITORE_ANAGRAFICA = new Field("debitoreAnagrafica",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.COD_VERSAMENTO_LOTTO = new Field("codVersamentoLotto",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.IMPORTO_TOTALE = new Field("importoTotale",double.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -61,6 +62,7 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 		this.DEBITORE_ANAGRAFICA = new ComplexField(father,"debitoreAnagrafica",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.COD_VERSAMENTO_LOTTO = new ComplexField(father,"codVersamentoLotto",java.lang.String.class,"id-versamento",IdVersamento.class);
 		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"id-versamento",IdVersamento.class);
+		this.IMPORTO_TOTALE = new ComplexField(father,"importoTotale",double.class,"id-versamento",IdVersamento.class);
 	
 	}
 	
@@ -77,6 +79,8 @@ public class IdVersamentoModel extends AbstractModel<IdVersamento> {
 	public IField COD_VERSAMENTO_LOTTO = null;
 	 
 	public IField COD_ANNO_TRIBUTARIO = null;
+	 
+	public IField IMPORTO_TOTALE = null;
 	 
 
 	@Override

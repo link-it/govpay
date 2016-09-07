@@ -110,6 +110,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_anno_tributario";
 			}
 		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
 		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_psp";
@@ -328,6 +335,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RPT.model().ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RPT.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
 			return this.toTable(RPT.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RPT.model().ID_CANALE.ID_PSP.COD_PSP)){
