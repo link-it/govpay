@@ -156,7 +156,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione, true, intestazione ); 
+					count, esportazione, cancellazione); //, true, intestazione ); 
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
