@@ -833,6 +833,7 @@ CREATE TABLE pagamenti
 	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR(35) NOT NULL,
 	data_pagamento TIMESTAMP NOT NULL,
+	iban_accredito VARCHAR(255),
 	commissioni_psp BINARY_DOUBLE,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),

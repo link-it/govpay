@@ -21,7 +21,11 @@
 package it.govpay.bd;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
+
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class GovpayConfig {
 	
@@ -39,6 +43,7 @@ public class GovpayConfig {
 	private boolean databaseShowSql;
 	private String dataSourceJNDIName;
 	private String dataSourceAppName;
+	private Map<String, String> nativeQueries;
 	
 	public GovpayConfig() throws Exception {
 		InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
@@ -50,6 +55,21 @@ public class GovpayConfig {
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
 		this.dataSourceJNDIName = getProperty("it.govpay.orm.dataSourceJNDIName", props, true);
 		this.dataSourceAppName = getProperty("it.govpay.orm.dataSourceAppName", props, true);
+
+		String nativeQueriesList = getProperty("it.govpay.orm.nativeQuery.list", props, false);
+
+		this.nativeQueries = new HashMap<String,String>();
+
+		if(nativeQueriesList != null && !nativeQueriesList.isEmpty()) {
+			String[] nativeQueriesSplit = nativeQueriesList.split(",");
+			for(String nativeQueryProp: nativeQueriesSplit) {
+				String nativeQuery = getProperty("it.govpay.orm.nativeQuery." +nativeQueryProp +"." +this.databaseType, props, false); //INIT solo le native queries per il tipo database correntemente usato
+				if(nativeQuery != null && !nativeQuery.isEmpty()) {
+					this.nativeQueries.put(nativeQueryProp, nativeQuery);
+				}
+			}
+		}
+		
 	}
 
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {
@@ -61,6 +81,14 @@ public class GovpayConfig {
 		}
 		
 		return value.trim();
+	}
+	
+	public String getNativeQuery(String nativeQueryKey) throws ServiceException {
+		if(!this.nativeQueries.containsKey(nativeQueryKey)) {
+			throw new ServiceException("Query nativa ["+nativeQueryKey+"] non trovata");
+		}
+		
+		return this.nativeQueries.get(nativeQueryKey);
 	}
 	
 	public String getDatabaseType() {

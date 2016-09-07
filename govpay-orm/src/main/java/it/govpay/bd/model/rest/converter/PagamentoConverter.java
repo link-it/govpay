@@ -43,6 +43,7 @@ public class PagamentoConverter extends it.govpay.bd.model.converter.PagamentoCo
 		if(vo.getCommissioniPsp() != null)
 			dto.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
 		dto.setDataPagamento(vo.getDataPagamento());
+		dto.setIbanAccredito(vo.getIbanAccredito());
 		dto.setDataRendicontazione(vo.getRendicontazioneData());
 		dto.setDataRendicontazioneRevoca(vo.getRendicontazioneDataRevoca());
 		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());

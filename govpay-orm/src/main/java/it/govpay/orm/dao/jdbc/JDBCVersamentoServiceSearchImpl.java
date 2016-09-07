@@ -574,7 +574,7 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 		if(expression.inUseModel(Versamento.model().ID_UO,false)){
 			String tableName1 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model());
 			String tableName2 = this.getVersamentoFieldConverter().toAliasTable(Versamento.model().ID_UO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_ente="+tableName2+".id");
+			sqlQueryObject.addWhereCondition(tableName1+".id_uo="+tableName2+".id");
 		}
 
 		if(expression.inUseModel(Versamento.model().ID_APPLICAZIONE,false)){

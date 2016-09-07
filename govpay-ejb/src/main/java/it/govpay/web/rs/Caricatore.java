@@ -1,10 +1,28 @@
 package it.govpay.web.rs;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Applicazione;
+import it.govpay.bd.model.Iuv.TipoIUV;
+import it.govpay.bd.pagamento.IuvBD;
+import it.govpay.core.business.EstrattoConto;
+import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.IuvUtils;
+import it.govpay.servizi.commons.IuvGenerato;
+import it.govpay.web.rs.converter.VersamentoConverter;
+import it.govpay.web.rs.model.EstrattoContoRequest;
+import it.govpay.web.rs.model.Versamento;
+import it.govpay.web.rs.model.VersamentoResponse;
+import it.govpay.web.rs.utils.PagamentoUtils;
+import it.govpay.web.rs.utils.RestUtils;
+import it.govpay.web.rs.utils.ValidationUtils;
+import it.govpay.web.rs.utils.VersamentoUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -24,27 +42,6 @@ import javax.ws.rs.core.UriInfo;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.logger.beans.Property;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Iuv.TipoIUV;
-import it.govpay.bd.pagamento.IuvBD;
-import it.govpay.core.business.EstrattoConto;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.IuvUtils;
-import it.govpay.servizi.commons.IuvGenerato;
-import it.govpay.web.rs.converter.PagamentoConverter;
-import it.govpay.web.rs.converter.VersamentoConverter;
-import it.govpay.web.rs.model.EstrattoContoRequest;
-import it.govpay.web.rs.model.Pagamento;
-import it.govpay.web.rs.model.Versamento;
-import it.govpay.web.rs.model.VersamentoResponse;
-import it.govpay.web.rs.utils.PagamentoUtils;
-import it.govpay.web.rs.utils.RestUtils;
-import it.govpay.web.rs.utils.ValidationUtils;
-import it.govpay.web.rs.utils.VersamentoUtils;
 
 @Path("/caricatore")
 public class Caricatore extends BaseRsService{
@@ -173,7 +170,7 @@ public class Caricatore extends BaseRsService{
 		String methodName = "EstrattoConto"; 
 		BasicBD bd = null;
 		GpContext ctx = null; 
-		List<Pagamento> lst = new ArrayList<Pagamento>();
+//		List<Pagamento> lst = new ArrayList<Pagamento>();
 		try{
 			
 			EstrattoContoRequest request = PagamentoUtils.readEstrattoContoRequestFromRequest(this, log, is, uriInfo, httpHeaders, methodName);
@@ -211,15 +208,10 @@ public class Caricatore extends BaseRsService{
 
 			Integer offset = ( request.getPagina() != null ? (request.getPagina() - 1 ): 0 ) * LIMIT;
 
-			List<it.govpay.bd.model.rest.Pagamento> findAll = new EstrattoConto(bd).getEstrattoConto(request.getCodiceCreditore(), request.getDataInizio(), request.getDataFine(), offset, LIMIT); 
+			List<it.govpay.bd.model.EstrattoConto> findAll = new EstrattoConto(bd).getEstrattoContoExt(request.getCodiceCreditore(), request.getDataInizio(), request.getDataFine(), offset, LIMIT); 
 
-			for (it.govpay.bd.model.rest.Pagamento pagamento : findAll) {
-				Pagamento p = PagamentoConverter.toPagamento(pagamento, bd);
-				lst.add(p);
-			}
-
-			ByteArrayOutputStream baos = PagamentoUtils.writeEstrattoContoResponse(this, log, lst, uriInfo, httpHeaders, bd, methodName);
-			ctx.getContext().getRequest().addGenericProperty(new Property("numeroPagamenti", lst.size()+""));
+			ByteArrayOutputStream baos = PagamentoUtils.writeEstrattoContoResponse(this, log, findAll, uriInfo, httpHeaders, bd, methodName);
+			ctx.getContext().getRequest().addGenericProperty(new Property("numeroPagamenti", findAll.size()+""));
 			ctx.log("rest.estrattoContoOk");
 			return Response.ok(baos.toString()).build();
 		}catch (GovPayException e) {

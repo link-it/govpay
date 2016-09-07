@@ -235,7 +235,7 @@ public class RtUtils extends NdpValidationUtils {
 		
 		
 		CtRicevutaTelematica ctRt = null;
-		
+		CtRichiestaPagamentoTelematico ctRpt = null;
 		// Validazione RT
 		try {
 			// Validazione Firma
@@ -251,7 +251,8 @@ public class RtUtils extends NdpValidationUtils {
 			
 			// Validazione Semantica
 			try {
-				RtUtils.validaSemantica(JaxbUtils.toRPT(rpt.getXmlRpt()), ctRt);
+				ctRpt = JaxbUtils.toRPT(rpt.getXmlRpt());
+				RtUtils.validaSemantica(ctRpt, ctRt);
 			} catch (JAXBException e) {
 				throw new ServiceException(e);
 			} catch (SAXException e) {
@@ -298,7 +299,7 @@ public class RtUtils extends NdpValidationUtils {
 		boolean irregolare = false;
 		for(int indice = 0; indice < datiSingoliPagamenti.size(); indice++) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoliPagamenti.get(indice);
-			
+			CtDatiSingoloVersamentoRPT ctDatiSingoloVersamentoRPT = ctRpt.getDatiVersamento().getDatiSingoloVersamento().get(indice);
 			// Se non e' stato completato un pagamento, non faccio niente.
 			if(ctDatiSingoloPagamentoRT.getSingoloImportoPagato().compareTo(BigDecimal.ZERO) == 0)
 				continue;
@@ -312,7 +313,8 @@ public class RtUtils extends NdpValidationUtils {
 			pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato());
 			pagamento.setIur(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
 			pagamento.setCodSingoloVersamentoEnte(singoloVersamento.getCodSingoloVersamentoEnte());
-			
+			pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
+
 			if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {
 				pagamento.setTipoAllegato(Pagamento.TipoAllegato.valueOf(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTipoAllegatoRicevuta().toString()));
 				pagamento.setAllegato(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTestoAllegato());

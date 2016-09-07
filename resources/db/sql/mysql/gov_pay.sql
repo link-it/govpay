@@ -249,6 +249,7 @@ CREATE TABLE iban_accredito
 CREATE INDEX index_iban_accredito_1 ON iban_accredito (cod_iban,id_dominio);
 
 
+
 CREATE TABLE tipi_tributo
 (
 	cod_tributo VARCHAR(255) NOT NULL,
@@ -595,6 +596,7 @@ CREATE TABLE pagamenti
 	iur VARCHAR(35) NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
 	data_pagamento TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+	iban_accredito VARCHAR(255),
 	commissioni_psp DOUBLE,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),
