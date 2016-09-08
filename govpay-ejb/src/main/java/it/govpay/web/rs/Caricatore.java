@@ -2,26 +2,20 @@ package it.govpay.web.rs;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Iuv.TipoIUV;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.core.business.EstrattoConto;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.IuvUtils;
-import it.govpay.servizi.commons.IuvGenerato;
-import it.govpay.web.rs.converter.VersamentoConverter;
+import it.govpay.web.rs.caricatore.ICaricatore;
 import it.govpay.web.rs.model.EstrattoContoRequest;
-import it.govpay.web.rs.model.Versamento;
-import it.govpay.web.rs.model.VersamentoResponse;
 import it.govpay.web.rs.utils.PagamentoUtils;
 import it.govpay.web.rs.utils.RestUtils;
 import it.govpay.web.rs.utils.ValidationUtils;
-import it.govpay.web.rs.utils.VersamentoUtils;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -33,6 +27,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -40,7 +35,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.logger.beans.Property;
 
 @Path("/caricatore")
@@ -61,90 +55,54 @@ public class Caricatore extends BaseRsService{
 	@Path("/caricaVersamento")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response caricaVersamento(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders ){
+	public Response caricaVersamento(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("caricatoreImplClass") String caricatoreImplClass){
 		String methodName = "CaricaVersamento"; 
 		
+		Applicazione applicazioneAutenticata = null; 
+
 		BasicBD bd = null;
-		Applicazione applicazioneAutenticata = null;
-		it.govpay.core.business.Versamento versamentoBusiness = null;
-		it.govpay.servizi.commons.Versamento versamentoCommons = null;
-		it.govpay.bd.model.Versamento versamentoModel = null;
-		GpContext ctx = null; 
-		VersamentoResponse versamentoResponse = new VersamentoResponse();
+		GpContext ctx = null;
+		ByteArrayInputStream bais = null;
+		ByteArrayOutputStream baos = null;
+		ByteArrayOutputStream baosResponse = null;
 		try{
-			Versamento request = VersamentoUtils.readVersamentoFromRequest(this, log, is, uriInfo, httpHeaders, methodName);
-			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
+			applicazioneAutenticata = getApplicazioneAutenticata(bd);
 
-			log.info("Validazione della entry in corso...");
-			// validazione richiesta
-			ValidationUtils.validaRichiestaCaricaVersamento(request);
-			log.info("Validazione della entry completata.");
-			
-			applicazioneAutenticata = getApplicazioneAutenticata(bd); 
-			versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			
-			boolean generaIuv = true;
-			boolean aggiornaSeEsiste = true;
+			baos = new ByteArrayOutputStream();
+			BaseRsService.copy(is, baos);
+			this.logRequest(uriInfo, httpHeaders, methodName,baos);
 
-			this.log.info("Caricamento del Versamento ["+request.getIdentificativoVersamento()+"] in corso...");
-			
-			it.govpay.bd.model.Iuv iuv = null;
-			try{
-				ctx.getContext().getRequest().addGenericProperty(new Property("identificativoVersamento", request.getIdentificativoVersamento())); 
-				ctx.getContext().getRequest().addGenericProperty(new Property("codiceCreditore", request.getCodiceCreditore()));
-				ctx.log("rest.richiestaVersamento");
-				versamentoResponse.setIdOperazione(ctx.getTransactionId());
-				// porto il versamento alla versione definita nei servizi.
-				versamentoCommons = VersamentoConverter.toVersamentoCommons(request,applicazioneAutenticata, false, bd);
-				// porto il versamento alla versione model, utilizzando tutti i controlli previsti nella versione commons.
-				versamentoModel = it.govpay.core.utils.VersamentoUtils.toVersamentoModel(versamentoCommons, bd);
-				iuv = versamentoBusiness.caricaVersamento(applicazioneAutenticata, versamentoModel, generaIuv , aggiornaSeEsiste );
-
-				if(iuv != null) {
-					Double importoVersamento = request.getImporto();
-					BigDecimal importoVersamentoAsBigDecimal  = new BigDecimal(importoVersamento.doubleValue());
-					IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(versamentoModel.getApplicazione(bd), versamentoModel.getUo(bd).getDominio(bd), iuv, importoVersamentoAsBigDecimal);
-					versamentoResponse.setBarCode(new String(iuvGenerato.getBarCode()));
-					versamentoResponse.setQrCode(new String(iuvGenerato.getQrCode()));
-					versamentoResponse.setIuv(iuvGenerato.getIuv());
-				}
-
-				versamentoResponse.setIdOperazione(ctx.getTransactionId());
-				versamentoResponse.setEsito("OK");
-
-				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", versamentoResponse.getIuv()));
-				ctx.log("rest.versamentoOk");
-			} catch (GovPayException e) {
-				e.log(log);
-				versamentoResponse.setEsito(e.getCodEsito().name() + ": " + e.getMessage());
-				ctx.log("rest.versamentoKo",e.getMessage());
-			} catch (Exception e) {
-				GovPayException ge = new GovPayException(e);
-				ge.log(log);
-				versamentoResponse.setEsito(ge.getCodEsito().name() + ": " + ge.getMessage());
-				ctx.log("rest.versamentoKo",ge.getMessage());
+			if(caricatoreImplClass == null) {
+				caricatoreImplClass = "it.govpay.web.rs.caricatore.CaricatoreImpl";
 			}
-			// Se ho rilevato un eccezione provo a recuperare comunque lo iuv
-			if(iuv == null && versamentoModel != null) {
-				IuvBD iuvBD = new IuvBD(bd);
-				try {
-					iuv = iuvBD.getIuv(versamentoModel.getIdApplicazione(), versamentoModel.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-					versamentoResponse.setIuv(iuv.getIuv()); 
-				} catch (NotFoundException e) {
-					versamentoResponse.setIuv(null);
-				}
+			
+			Class<?> caricatoreImpl = Class.forName(caricatoreImplClass);
+			
+			Object caricatoreImplObjectInstance = caricatoreImpl.newInstance();
+			
+			if(!(caricatoreImplObjectInstance instanceof ICaricatore)) {
+				throw new Exception("La classe ["+caricatoreImplClass+"] deve implementare l'interfaccia " + ICaricatore.class);
 			}
+			
+			ICaricatore caricatore = (ICaricatore) caricatoreImplObjectInstance; 
+			
+			bais = new ByteArrayInputStream(baos.toByteArray());
+			String response = caricatore.caricaVersamento(bais, uriInfo, httpHeaders, bd, applicazioneAutenticata);
 
-			this.log.info("Caricamento del Versamento ["+request.getIdentificativoVersamento()+"] completato con esito ["+versamentoResponse.getEsito()+"].");
-			ByteArrayOutputStream baos = VersamentoUtils.writeVersamentoResponse(this, log, versamentoResponse, uriInfo, httpHeaders, bd, methodName);
-			return Response.ok(baos.toString()).build();
+
+			baosResponse = new ByteArrayOutputStream();
+
+			baosResponse.write(response.getBytes());
+			this.logResponse(uriInfo, httpHeaders, methodName, baosResponse);
+
+			return Response.ok(response).build();
 		} catch (GovPayException e) {
 			e.log(log);
-			ByteArrayOutputStream baos = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
+			ByteArrayOutputStream baosGovPayExc = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
 			if(ctx!=null) ctx.log("rest.versamentoKo",e.getMessage());
-			return Response.serverError().entity(baos.toString()).build();
+			return Response.serverError().entity(baosGovPayExc.toString()).build();
 		} catch (WebApplicationException e) {
 			GovPayException ge = new GovPayException(e);
 			ge.log(log);
@@ -153,12 +111,17 @@ public class Caricatore extends BaseRsService{
 		} catch (Exception e) {
 			GovPayException ge = new GovPayException(e);
 			ge.log(log);
-			ByteArrayOutputStream baos = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
+			ByteArrayOutputStream baosExc = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
 			if(ctx!=null) ctx.log("rest.versamentoKo",ge.getMessage());
-			return Response.serverError().entity(baos.toString()).build();
+			return Response.serverError().entity(baosExc.toString()).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
 			if(ctx != null)ctx.log();
+			if(bais != null) try { bais.close();} catch (IOException e) {}
+			if(baos != null) try { baos.flush();} catch (IOException e) {}
+			if(baos != null) try { baos.close();} catch (IOException e) {}
+			if(baosResponse != null) try { baosResponse.flush();} catch (IOException e) {}
+			if(baosResponse != null) try { baosResponse.close();} catch (IOException e) {}
 		}
 	}
 

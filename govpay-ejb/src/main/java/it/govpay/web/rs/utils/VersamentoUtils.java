@@ -1,27 +1,24 @@
 package it.govpay.web.rs.utils;
 
+import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.model.Versamento;
+import it.govpay.web.rs.model.VersamentoResponse;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.HttpHeaders;
-import javax.ws.rs.core.UriInfo;
+
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.Logger;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.Caricatore;
-import it.govpay.web.rs.model.Versamento;
-import it.govpay.web.rs.model.VersamentoResponse;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 public class VersamentoUtils {
 
-	public static Versamento readVersamentoFromRequest(Caricatore c, Logger log,InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders, String methodName) throws WebApplicationException,Exception{
+	public static Versamento readVersamentoFromRequest(Logger log,InputStream is) throws WebApplicationException,Exception{
 		String nomeMetodo = "readVersamentoFromRequest";
 		Versamento entry = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -33,8 +30,6 @@ public class VersamentoUtils {
 			BaseRsService.copy(is, baos);
 
 			baos.flush();
-
-			c.logRequest(uriInfo, httpHeaders, methodName,baos);
 
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Versamento.class);
@@ -59,7 +54,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static ByteArrayOutputStream writeVersamentoResponse(Caricatore c, Logger log, VersamentoResponse response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws Exception{
+	public static ByteArrayOutputStream writeVersamentoResponse(Logger log, VersamentoResponse response) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeVersamentoResponse";
 
@@ -77,8 +72,6 @@ public class VersamentoUtils {
 
 			baos.flush();
 
-			c.logResponse(uriInfo, httpHeaders, methodName, baos);
-			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 			return baos;
 
