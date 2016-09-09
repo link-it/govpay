@@ -117,6 +117,20 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "importo_totale";
 			}
 		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
+			}
+		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -247,6 +261,12 @@ public class SingoloVersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(SingoloVersamento.model().ID_VERSAMENTO.STATO_VERSAMENTO)){
 			return this.toTable(SingoloVersamento.model().ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(SingoloVersamento.model().ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){

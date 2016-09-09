@@ -285,6 +285,8 @@
 			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
 			<xsd:element name="importoTotale" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="causaleVersamento" type="String511" minOccurs="0"/>
+			<xsd:element name="statoVersamento" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
