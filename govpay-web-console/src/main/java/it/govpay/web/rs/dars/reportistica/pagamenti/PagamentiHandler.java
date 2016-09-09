@@ -110,7 +110,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
+			fsw.setField(filter.getDataPagamentoAliasField());
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
