@@ -46,6 +46,7 @@ public class VersamentoFilter extends AbstractFilter {
 	private String statoPagamento =  null;
 	private String codUnivocoDebitore;
 	private List<Long> idUo;
+	private List<Long> idDomini;
 	private List<Long> idApplicazioni;
 	private Date datainizio;
 	private Date dataFine;
@@ -117,6 +118,16 @@ public class VersamentoFilter extends AbstractFilter {
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Versamento.model()));
 				newExpression.in(cf, this.idVersamento);
+				addAnd = true;
+			}
+
+			if(this.idDomini != null && !this.idDomini.isEmpty()){
+				if(addAnd)
+					newExpression.and();
+				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
+				newExpression.in(cf, this.idDomini);
+				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
 				addAnd = true;
 			}
 			
@@ -195,6 +206,14 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setCodVersamento(String codVersamento) {
 		this.codVersamento = codVersamento;
+	}
+
+	public List<Long> getIdDomini() {
+		return idDomini;
+	}
+
+	public void setIdDomini(List<Long> idDomini) {
+		this.idDomini = idDomini;
 	}
 	
 
