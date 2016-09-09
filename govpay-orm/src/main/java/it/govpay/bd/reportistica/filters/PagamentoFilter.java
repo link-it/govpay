@@ -36,18 +36,22 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.model.Versamento.StatoVersamento;
+import it.govpay.bd.reportistica.PagamentiBD;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
 
-	private List<Long> idDomini;
+	private List<String> codDomini;
 	private Long idPagamento;
 
 	private Date dataInizio;
 	private Date dataFine;
 
 	public AliasField dataPagamentoAliasField ;
+	
+	public String statoVersamento ;
 
 	public enum SortFields {
 		DATA
@@ -62,38 +66,43 @@ public class PagamentoFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
-
-			//			PagamentoFieldConverter pagamentoFieldConverter = new PagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-
-			if(this.idDomini != null){
+			
+			if(this.idPagamento != null){
 				if(addAnd)
 					newExpression.and();
-
-				//				IExpression orExpr = this.newExpression();
-				//				IExpression revocaExpr = this.newExpression();
-				//				
-				//				orExpr.in(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca);
-				//				orExpr.or();
-				//				
-				//				// id fr applicazione revoca non null
-				//				revocaExpr.in(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca)
-				//				.and().isNotNull(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())));
-				//				
-				//				orExpr.or(revocaExpr);
-				//				
-				//				newExpression.and(orExpr);
-
+				PagamentoFieldConverter pagamentoFieldConverter = new PagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField idVersamentoField = new CustomField(PagamentiBD.ALIAS_ID, Long.class, PagamentiBD.ALIAS_ID,
+						pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+				newExpression.equals(idVersamentoField, this.idPagamento);
 				addAnd = true;
+			}
 
+			if(this.codDomini != null && !this.codDomini.isEmpty()){
+				if(addAnd)
+					newExpression.and();
+				newExpression.in(Pagamento.model().ID_RPT.COD_DOMINIO, this.codDomini);
+				addAnd = true;
 			}
 
 			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
 
-				newExpression.between(Pagamento.model().DATA_ACQUISIZIONE, this.dataInizio,this.dataFine);
+				newExpression.between(Pagamento.model().DATA_PAGAMENTO, this.dataInizio,this.dataFine);
 				addAnd = true;
 			}
+			
+			if(this.statoVersamento != null){
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO, this.statoVersamento);
+				addAnd = true;
+			}
+			
+			// stato del versamento 
+			if(addAnd)
+				newExpression.and();
+			newExpression.notEquals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO, StatoVersamento.NON_ESEGUITO.name());
 
 			return newExpression;
 		} catch (NotImplementedException e) {
@@ -129,12 +138,12 @@ public class PagamentoFilter extends AbstractFilter {
 		this.dataFine = dataFine;
 	}
 
-	public List<Long> getIdDomini() {
-		return idDomini;
+	public List<String> getCodDomini() {
+		return codDomini;
 	}
 
-	public void setIdDomini(List<Long> idDomini) {
-		this.idDomini = idDomini;
+	public void setIdDomini(List<String> idDomini) {
+		this.codDomini = idDomini;
 	}
 
 	public Long getIdPagamento() {
@@ -148,7 +157,7 @@ public class PagamentoFilter extends AbstractFilter {
 	public AliasField getDataPagamentoAliasField()  {
 		if(this.dataPagamentoAliasField == null){
 			try{
-				this.dataPagamentoAliasField = new AliasField(Pagamento.model().DATA_PAGAMENTO, "dataPagamento");
+				this.dataPagamentoAliasField = new AliasField(Pagamento.model().DATA_PAGAMENTO, PagamentiBD.ALIAS_DATA_PAGAMENTO);
 			}catch(Exception e){}
 		}
 
@@ -158,6 +167,14 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setDataPagamentoAliasField(AliasField dataPagamentoAliasField) {
 		this.dataPagamentoAliasField = dataPagamentoAliasField;
+	}
+
+	public String getStatoVersamento() {
+		return statoVersamento;
+	}
+
+	public void setStatoVersamento(String statoVersamento) {
+		this.statoVersamento = statoVersamento;
 	}
 
 

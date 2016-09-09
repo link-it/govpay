@@ -72,6 +72,7 @@ import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.utils.Utils;
 
 public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
@@ -103,29 +104,30 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			AclBD aclBD = new AclBD(bd);
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			List<Long> idDomini = new ArrayList<Long>();
+			List<String> idDomini = new ArrayList<String>();
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			PagamentoFilter filter = pagamentiBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(filter.getDataPagamentoAliasField());
-			fsw.setSortOrder(SortOrder.DESC);
-			filter.getFilterSortList().add(fsw);
+			//			FilterSortWrapper fsw = new FilterSortWrapper();
+			//			fsw.setField(filter.getDataPagamentoAliasField());
+			//			fsw.setSortOrder(SortOrder.DESC);
+			//			filter.getFilterSortList().add(fsw);
 
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
 			if(StringUtils.isNotEmpty(idDominio)){
-				long idDom = -1l;
-				try{
-					idDom = Long.parseLong(idDominio);
-				}catch(Exception e){ idDom = -1l;	}
-				if(idDom > 0){
-					idDomini.add(idDom);
-					filter.setIdDomini(idDomini);
-				}
+				idDomini.add(idDominio);
+				filter.setIdDomini(idDomini);
 			}
+			
+			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+			String statoVersamento = this.getParameter(uriInfo, statoVersamentoId, String.class);
+			if(StringUtils.isNotEmpty(statoVersamento)){
+				filter.setStatoVersamento(statoVersamento);
+			}
+			
 
 			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
@@ -138,7 +140,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getIdDominio());
+							idDomini.add(acl.getCodDominio());
 						}
 					}
 				}
@@ -168,13 +170,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			 * */
 
 			List<String> valori = new ArrayList<String>();
-			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codiceVersamento.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"));
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codiceFiscaleDebitore.label"));
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoDovuto.label"));
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"));
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"));
-			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causale.label"));
+//			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causale.label"));
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label"));
 
 			Elemento intestazione = new Elemento(-1, valori , null);
@@ -211,6 +213,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
 
 		if(infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
@@ -225,7 +228,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			// idDominio
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+			List<Voce<String>> domini = new ArrayList<Voce<String>>();
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter;
@@ -260,7 +263,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				}
 
 				if(eseguiRicerca) {
-					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+					domini.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
 					FilterSortWrapper fsw = new FilterSortWrapper();
 					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
 					fsw.setSortOrder(SortOrder.ASC);
@@ -272,19 +275,33 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio dominio : findAll) {
-							domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+							domini.add(new Voce<String>(dominiHandler.getTitolo(dominio,bd), dominio.getCodDominio()));  
 						}
 					}
 				}else {
-					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+					domini.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
 				}
 			} catch (ServiceException e) {
 				throw new ConsoleException(e);
 			}
-			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-			idDominio.setDefaultValue(-1L);
+			SelectList<String> idDominio = (SelectList<String>) infoRicercaMap.get(idDominioId);
+			idDominio.setDefaultValue("");
 			idDominio.setValues(domini); 
 			sezioneRoot.addField(idDominio);
+			
+			// idDominio
+			List<Voce<String>> stati = new ArrayList<Voce<String>>();
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO.name()), StatoVersamento.ESEGUITO.name()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.PARZIALMENTE_ESEGUITO.name()), StatoVersamento.PARZIALMENTE_ESEGUITO.name()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO_SENZA_RPT.name()), StatoVersamento.ESEGUITO_SENZA_RPT.name()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANOMALO.name()), StatoVersamento.ANOMALO.name()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANNULLATO.name()), StatoVersamento.ANNULLATO.name()));
+			
+			SelectList<String> statoVersamento = (SelectList<String>) infoRicercaMap.get(statoVersamentoId);
+			statoVersamento.setDefaultValue("");
+			statoVersamento.setValues(stati); 
+			sezioneRoot.addField(statoVersamento);
 
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -298,13 +315,18 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
 
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+			List<Voce<String>> domini = new ArrayList<Voce<String>>();
 			// idDominio
 			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
-			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
+			SelectList<String> idDominio = new SelectList<String>(idDominioId, idDominioLabel, null, false, false, true, domini);
 			infoRicercaMap.put(idDominioId, idDominio);
 
+			// idDominio
+			String statoVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label");
+			SelectList<String> statoVersamento = new SelectList<String>(statoVersamentoId, statoVersamentoLabel, null, false, false, true, domini);
+			infoRicercaMap.put(statoVersamentoId, statoVersamento);
 		}
 	}
 
@@ -336,14 +358,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
 				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
+				List<String> idDomini = new ArrayList<String>();
 				for(Acl acl: aclOperatore) {
 					if(Tipo.DOMINIO.equals(acl.getTipo())) {
 						if(acl.getIdDominio() == null) {
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getIdDominio());
+							idDomini.add(acl.getCodDominio());
 						}
 					}
 				}
@@ -362,7 +384,9 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				}
 			}
 			// recupero oggetto
-			Pagamento pagamento = eseguiRicerca ? pagamentiBD.getPagamento(id) : null;
+			filter.setIdPagamento(id);
+			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
+			Pagamento pagamento = findAll.size() > 0 ? findAll.get(0) : null;
 
 			InfoForm infoModifica = null;
 			URI cancellazione = null;
@@ -374,10 +398,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			if(pagamento != null){
-
 				// codVersamentoEnte
-				if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte())) 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), pagamento.getCodSingoloVersamentoEnte());
+				if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte())){
+					Versamenti versamentiDars = new Versamenti();
+					URI uriVersamento= BaseRsService.checkDarsURI(uriInfo).path(versamentiDars.getPathServizio()).path("{id}").build(id); 
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), pagamento.getCodSingoloVersamentoEnte(), uriVersamento);
+				}
 				// IUV
 				if(StringUtils.isNotEmpty(pagamento.getIuv())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"), pagamento.getIuv());
@@ -417,7 +443,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		StringBuilder sb = new StringBuilder();
 
 		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
-		
+
 		String cfDebitore = entry.getDebitoreIdentificativo();
 		String iuv = entry.getIuv() != null ? entry.getIuv() : "--";
 		String importoPagato = entry.getImportoPagato()  != null ? entry.getImportoPagato().toString()+ "€" : "";
@@ -433,7 +459,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		StringBuilder sb = new StringBuilder();
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
 		Date dataPagamento = entry.getDataPagamento();
-		
+
 		String causale = entry.getCausale();
 
 		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
@@ -464,7 +490,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		Date dataPagamento = entry.getDataPagamento();
 		String importoPagato = entry.getImportoPagato()  != null ? entry.getImportoPagato().toString()+ "€" : "";
 		String importoDovuto = entry.getImportoDovuto() != null ? entry.getImportoDovuto().toString()+ "€" : "";
-		String causale = entry.getCausale();
+//		String causale = entry.getCausale();
 
 		valori.add(codVersamentoEnte);
 		valori.add(iuv);
@@ -472,7 +498,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		valori.add(importoPagato);
 		valori.add(importoDovuto);
 		valori.add(this.sdf.format(dataPagamento));
-		valori.add(causale);
+//		valori.add(causale);
 		valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+ statoVersamento.name()));
 
 		return valori; 
