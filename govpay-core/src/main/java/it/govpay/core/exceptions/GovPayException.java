@@ -90,8 +90,8 @@ public class GovPayException extends Exception {
 		case AUT_002: return "Principal (" + params[0] + ") non associato ad alcun Portale";
 		case DOM_000: return "Dominio (" + params[0] + ") inesistente";	
 		case DOM_001: return "Dominio (" + params[0] + ") disabilitato";
-		case DOM_002: return "Dominio (" + params[0] + ") configurato per la generazione custom degli iuv";	
-		case DOM_003: return "Dominio (" + params[0] + ") configurato per la generazione centralizzata degli iuv";
+		case DOM_002: return "Dominio (" + params[0] + ") configurato per la generazione custom degli iuv. Nella richiesta deve essere indicato lo IUV da assegnare.";	
+		case DOM_003: return "Dominio (" + params[0] + ") configurato per la generazione centralizzata degli iuv. Nella richiesta non deve essere indicato lo IUV da assegnare.";
 		case NDP_000: return (params != null && params.length > 0) ? params[0] : null;
 		case NDP_001: return "Richiesta di Pagamento rifiutata dal Nodo dei Pagamenti" + ((params.length > 0) ? ": " + params[0] : "");
 		case PAG_000: return "I versamenti di una richiesta di pagamento devono afferire alla stessa stazione";	
