@@ -23,8 +23,10 @@ package it.govpay.ejb;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.ejb.AccessTimeout;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Timer;
@@ -59,6 +61,7 @@ public class Operazioni{
 	TimerService timerservice;
 
 	@Schedule(hour="4,8,16,20", persistent=false)
+	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
 	public static String acquisizioneRendicontazioni(){
 		BasicBD bd = null;
 		GpContext ctx = null;
@@ -87,6 +90,7 @@ public class Operazioni{
 	}
 
 	@Schedule(hour="0,12", persistent=false)
+	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
 	public static String aggiornamentoRegistroPsp(){
 		BasicBD bd = null;
 		GpContext ctx = null;
@@ -113,6 +117,7 @@ public class Operazioni{
 	}
 
 	@Schedule(hour="2,6,10,14,18,22", persistent=false)
+	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
 	public static String recuperoRptPendenti(){
 		BasicBD bd = null;
 		GpContext ctx = null;
@@ -138,7 +143,8 @@ public class Operazioni{
 		}
 	}
 
-	@Schedule(hour="*", minute="*/1", persistent=false)
+	@Schedule(hour="*", minute="*/30", persistent=false)
+	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
 	public static boolean spedizioneNotifiche(){
 		BasicBD bd = null;
 		List<InviaNotificaThread> threads = new ArrayList<InviaNotificaThread>();
@@ -212,12 +218,12 @@ public class Operazioni{
 	}
 	
 	@Schedule(hour="0,12", persistent=false)
+	@AccessTimeout(value=5, unit=TimeUnit.MINUTES)
 	public void generaEstrattoConto(Timer timer) {
 		estrattoConto();
 	}
 
 	public static String estrattoConto(){
-		
 		if(!GovpayConfig.getInstance().isBatchEstrattoConto())
 			return "Servizio estratto conto non configurato";
 		
