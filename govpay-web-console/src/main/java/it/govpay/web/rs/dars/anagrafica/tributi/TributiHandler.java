@@ -609,7 +609,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	public void checkEntry(Tributo entry, Tributo oldEntry) throws ValidationException {
 		if(entry == null || entry.getIdTipoTributo() == 0 ) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoObbligatorio"));
 		if(entry == null || entry.getIdDominio() == 0) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDominioObbligatorio"));
-		if(entry == null || entry.getIdIbanAccredito() == 0 ) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreIbanAccreditoObbligatorio"));
+		if(!entry.getCodTributo().equals(Tributo.BOLLOT) && entry.getIdIbanAccredito() == null ) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreIbanAccreditoObbligatorio"));
 		if(entry == null || entry.getTipoContabilita() == null) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
 		if(entry == null || entry.getCodContabilita() == null || entry.getCodContabilita().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
 
