@@ -302,6 +302,12 @@ public class Pagamento extends BasicBD {
 					ccp = IuvUtils.buildCCP();
 					ctx.log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
+					
+					// Gestione gentralizzata dello iuv. Verifico che il dominio lo consenta.
+					if(versamento.getUo(this).getDominio(this).isCustomIuv()) {
+						throw new GovPayException(EsitoOperazione.DOM_002, versamento.getUo(this).getDominio(this).getCodDominio());
+					}
+					
 					// Verifico se ha gia' uno IUV numerico assegnato. In tal caso lo riuso se il dominio e' configurato in tal senso. 
 					if(versamento.getUo(this).getDominio(this).isRiusoIuv()) {
 						try {
