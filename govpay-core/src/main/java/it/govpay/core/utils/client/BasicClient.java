@@ -195,7 +195,7 @@ public class BasicClient {
 		
 		try {
 			List<String> outHandlers = GovpayConfig.getInstance().getOutHandlers();
-			if(!outHandlers.isEmpty()) {
+			if(outHandlers!= null && !outHandlers.isEmpty()) {
 				IntegrationContext ic = GpThreadLocal.get().getIntegrationCtx();
 	
 				log.info("Applicazione al messaggio degli handlers configurati...");

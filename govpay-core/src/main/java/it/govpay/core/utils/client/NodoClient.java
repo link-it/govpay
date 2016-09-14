@@ -101,10 +101,10 @@ public class NodoClient extends BasicClient {
 			}
 			return r;
 		} catch (ClientException e) {
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo");
+			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", e.getMessage());
 			throw e;
 		} catch (Exception e) {
-			GpThreadLocal.get().log("ndp_client.invioRichiestaKo");
+			GpThreadLocal.get().log("ndp_client.invioRichiestaKo", "Errore interno");
 			throw new ClientException("Messaggio di risposta dal Nodo dei Pagamenti non valido", e);
 		}
 	}
