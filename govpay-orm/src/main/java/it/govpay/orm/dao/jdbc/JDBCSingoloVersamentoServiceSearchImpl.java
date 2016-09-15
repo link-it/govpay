@@ -233,7 +233,7 @@ public class JDBCSingoloVersamentoServiceSearchImpl implements IJDBCServiceSearc
 					}else{
 						id_singoloVersamento_ibanAccredito = new it.govpay.orm.IdIbanAccredito();
 					}
-					id_singoloVersamento_ibanAccredito.setId(idTributo);
+					id_singoloVersamento_ibanAccredito.setId(idIbanAccredito);
 					singoloVersamento.setIdIbanAccredito(id_singoloVersamento_ibanAccredito);
 				}
 

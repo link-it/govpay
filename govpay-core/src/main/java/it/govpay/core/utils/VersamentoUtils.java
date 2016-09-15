@@ -224,7 +224,7 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), Long.toString(nuovo.getIdTributo()));
 			}
 			
-			if(letto.getIdIbanAccredito() != nuovo.getIdIbanAccredito()) {
+			if(letto.getIbanAccredito(bd).getId() != nuovo.getIbanAccredito(bd).getId()) {
 				throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
 			}
 			
