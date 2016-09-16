@@ -20,6 +20,7 @@
  */
 package it.govpay.bd.reportistica.filters;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -44,7 +45,7 @@ import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 public class PagamentoFilter extends AbstractFilter {
 
 	private List<String> codDomini;
-	private Long idPagamento;
+	private List<Long> idPagamento;
 
 	private Date dataInizio;
 	private Date dataFine;
@@ -67,13 +68,13 @@ public class PagamentoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			
-			if(this.idPagamento != null){
+			if(this.idPagamento != null && this.idPagamento.size() >0){
 				if(addAnd)
 					newExpression.and();
 				PagamentoFieldConverter pagamentoFieldConverter = new PagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField idVersamentoField = new CustomField(PagamentiBD.ALIAS_ID, Long.class, PagamentiBD.ALIAS_ID,
 						pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
-				newExpression.equals(idVersamentoField, this.idPagamento);
+				newExpression.in(idVersamentoField, this.idPagamento);
 				addAnd = true;
 			}
 
@@ -87,9 +88,41 @@ public class PagamentoFilter extends AbstractFilter {
 			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
+				
+				//imposto le ore 23:59:59 nella data fine
+				Calendar c = Calendar.getInstance();
+				c.setTime(this.dataFine);
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				c.set(Calendar.MILLISECOND, 999);
 
-				newExpression.between(Pagamento.model().DATA_PAGAMENTO, this.dataInizio,this.dataFine);
+				newExpression.between(Pagamento.model().DATA_PAGAMENTO, this.dataInizio,c.getTime());
 				addAnd = true;
+			} else {
+				if(this.dataInizio != null) {
+					if(addAnd)
+						newExpression.and();
+
+					newExpression.greaterEquals(Pagamento.model().DATA_PAGAMENTO, this.dataInizio);
+					addAnd = true;
+				}
+				
+				if(this.dataFine != null) {
+					if(addAnd)
+						newExpression.and();
+					
+					//imposto le ore 23:59:59 nella data fine
+					Calendar c = Calendar.getInstance();
+					c.setTime(this.dataFine);
+					c.set(Calendar.HOUR_OF_DAY, 23);
+					c.set(Calendar.MINUTE, 59);
+					c.set(Calendar.SECOND, 59);
+					c.set(Calendar.MILLISECOND, 999);
+
+					newExpression.lessEquals(Pagamento.model().DATA_PAGAMENTO, c.getTime());
+					addAnd = true;
+				}
 			}
 			
 			if(this.statoVersamento != null){
@@ -146,11 +179,11 @@ public class PagamentoFilter extends AbstractFilter {
 		this.codDomini = idDomini;
 	}
 
-	public Long getIdPagamento() {
+	public List<Long> getIdPagamento() {
 		return idPagamento;
 	}
 
-	public void setIdPagamento(Long idPagamento) {
+	public void setIdPagamento(List<Long> idPagamento) {
 		this.idPagamento = idPagamento;
 	}
 

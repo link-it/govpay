@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
@@ -35,9 +36,12 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.csv.Format;
+import org.openspcoop2.utils.csv.FormatReader;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Versionabile.Versione;
+import it.govpay.core.utils.CSVSerializerProperties;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
@@ -62,6 +66,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	protected String titoloServizio = null;
 	protected BaseDarsService darsService = null;
 	private Integer limit = null;
+	private Format formatW= null;
 
 	public BaseDarsHandler(Logger log, BaseDarsService darsService){
 		this.log = log;
@@ -70,6 +75,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		this.pathServizio = this.darsService.getPathServizio();
 		this.titoloServizio = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".titolo");
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
+		
+		try{
+			// Setto le properties di scrittura
+			FormatReader formatWriter = new FormatReader(CSVSerializerProperties.getInstance(log).getProperties());
+			this.formatW = formatWriter.getFormat();
+		}catch(Exception e){
+			log.error("Errore durante l'inizializzazione di EstrattoConto: " + e.getMessage(),e);
+		}
 	}
 
 	@Override
@@ -272,5 +285,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			jsonObject.remove(versioneId);
 		
 		return Versione.toEnum(versioneJson);
+	}
+
+	public Date convertJsonStringToDate(String dateJson) throws Exception{
+		return BaseDarsService.convertJsonStringToDate(dateJson);
+	}
+	
+	@Override
+	public Format getFormat() {
+		return this.formatW;
 	}
 }

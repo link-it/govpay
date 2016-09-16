@@ -29,6 +29,7 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.utils.csv.Format;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -78,4 +79,6 @@ public interface IDarsHandler<T> {
 	
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
+
+	public Format getFormat();
 }
