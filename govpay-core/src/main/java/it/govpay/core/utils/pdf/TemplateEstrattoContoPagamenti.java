@@ -287,8 +287,8 @@ public class TemplateEstrattoContoPagamenti {
 							.setWidth(20).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
 		TextColumnBuilder<String> iuvColumn  = col.column(Costanti.LABEL_IUV, Costanti.IUV_COL, type.stringType()).setStyle(fontStyle9)
 							.setWidth(15).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
-		ComponentColumnBuilder componentColumnSx = col.componentColumn(Costanti.LABEL_ULTERIORI_INFORMAZIONI, getContenutoCellaSx()).setWidth(30);
-		ComponentColumnBuilder componentColumnDx = col.componentColumn(Costanti.LABEL_ULTERIORI_INFORMAZIONI ,getContenutoCellaDx()).setWidth(35); 
+		ComponentColumnBuilder componentColumnSx = col.componentColumn(Costanti.LABEL_ULTERIORI_INFORMAZIONI, getContenutoCellaSx()).setWidth(25);
+		ComponentColumnBuilder componentColumnDx = col.componentColumn(Costanti.LABEL_ULTERIORI_INFORMAZIONI ,getContenutoCellaDx()).setWidth(40); 
 
 		colonne.add(idFlussoColumn);
 		colonne.add(iuvColumn);
