@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.utils.TipiDatabase;
@@ -75,7 +76,8 @@ public class GovpayConfig {
 
 	private boolean batchEstrattoConto;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
-	private String pathEstrattoConto;
+	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi, pagoPALogo;
+	private boolean batchEstrattoContoPdf;
 
 
 	public GovpayConfig() {
@@ -96,6 +98,7 @@ public class GovpayConfig {
 		this.mLogDBType = null;
 		this.mLogDS = null;
 		this.batchEstrattoConto = false;
+		this.batchEstrattoContoPdf = false;
 		this.pddAuthEnable = true;
 
 		try {
@@ -256,6 +259,34 @@ public class GovpayConfig {
 					File logoDirFile = new File(this.pathEstrattoConto);
 					if(!logoDirFile.isDirectory())
 						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pathEsportazione\" (" + pathEstrattoConto + ") non esiste o non e' un folder.");
+				
+				}
+			}
+			
+			
+			String batchEstrattoContoPdfString = getProperty("it.govpay.batch.estrattoConto.pdf", props, false);
+			if(batchEstrattoContoPdfString != null && Boolean.valueOf(batchEstrattoContoPdfString))
+				this.batchEstrattoContoPdf = true;
+			
+			if(this.batchEstrattoContoPdf){
+				this.pathEstrattoContoPdf = getProperty("it.govpay.batch.estrattoConto.pdf.pathEsportazione", props, true);
+				if(this.pathEstrattoContoPdf != null) {
+					File logoDirFile = new File(this.pathEstrattoContoPdf);
+					if(!logoDirFile.isDirectory())
+						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathEsportazione\" (" + pathEstrattoContoPdf + ") non esiste o non e' un folder.");
+				
+				}
+				
+				this.pathEstrattoContoPdfLoghi = getProperty("it.govpay.batch.estrattoConto.pdf.pathLoghi", props, true);
+				if(this.pathEstrattoContoPdfLoghi != null) {
+					File loghiDirFile = new File(this.pathEstrattoContoPdfLoghi);
+					if(!loghiDirFile.isDirectory())
+						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathLoghi\" (" + this.pathEstrattoContoPdfLoghi + ") non esiste o non e' un folder.");
+				}
+				
+				this.pagoPALogo = getProperty("it.govpay.batch.estrattoConto.pdf.logoPagoPa", props, true);
+				if(StringUtils.isEmpty(this.pagoPALogo)) {
+						throw new Exception("Il valore indicato nella property \"it.govpay.batch.estrattoConto.pdf.logoPagoPa\" (" +this.pagoPALogo + ") non e' valido.");
 				}
 			}
 			
@@ -413,4 +444,20 @@ public class GovpayConfig {
 		return resourceDir;
 	}
 
+	public String getPathEstrattoContoPdf() {
+		return pathEstrattoContoPdf;
+	}
+
+	public String getPathEstrattoContoPdfLoghi() {
+		return pathEstrattoContoPdfLoghi;
+	}
+
+	public String getPagoPALogo() {
+		return pagoPALogo;
+	}
+
+	public boolean isBatchEstrattoContoPdf() {
+		return batchEstrattoContoPdf;
+	}
+ 
 }

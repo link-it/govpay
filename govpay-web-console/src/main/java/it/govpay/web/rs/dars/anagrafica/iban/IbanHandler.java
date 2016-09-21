@@ -520,7 +520,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		if(entry.getCodIban() == null)  throw new ValidationException("Codice Iban Accredito nullo");
 
 		if(entry.getCodIban().length() < 5 || entry.getCodIban().length() > 34)
-			throw new ValidationException("La lunghezza dell'Iban Accredito deve essere compressa tra 5 e 34 caratteri, trovati " + entry.getCodIban().length() + ".");
+			throw new ValidationException("La lunghezza dell'Iban Accredito deve essere compresa tra 5 e 34 caratteri, trovati " + entry.getCodIban().length() + ".");
 
 		Pattern ibanPattern= Pattern.compile(patternIBAN);
 		Matcher matcher = ibanPattern.matcher(entry.getCodIban());
@@ -530,7 +530,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 		if(StringUtils.isNotEmpty(entry.getCodIbanAppoggio())){
 			if(entry.getCodIbanAppoggio().length() < 5 || entry.getCodIbanAppoggio().length() > 34)
-				throw new ValidationException("La lunghezza dell'Iban Appoggio deve essere compressa tra 5 e 34 caratteri, trovati " + entry.getCodIbanAppoggio().length() + ".");
+				throw new ValidationException("La lunghezza dell'Iban Appoggio deve essere compresa tra 5 e 34 caratteri, trovati " + entry.getCodIbanAppoggio().length() + ".");
 
 			matcher = ibanPattern.matcher(entry.getCodIbanAppoggio());
 			if(!matcher.matches())
@@ -542,7 +542,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		
 		if(StringUtils.isNotEmpty(entry.getCodBicAccredito())){
 			if(entry.getCodBicAccredito().length() < 8 || entry.getCodBicAccredito().length() > 11)
-				throw new ValidationException("La lunghezza dell'Bic Accredito deve essere compressa tra 8 e 11 caratteri, trovati " + entry.getCodBicAccredito().length() + ".");
+				throw new ValidationException("La lunghezza dell'Bic Accredito deve essere compresa tra 8 e 11 caratteri, trovati " + entry.getCodBicAccredito().length() + ".");
 
 			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAccredito());
 			if(!bicMtcher.matches())
@@ -551,7 +551,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		
 		if(StringUtils.isNotEmpty(entry.getCodBicAppoggio())){
 			if(entry.getCodBicAppoggio().length() < 8 || entry.getCodBicAppoggio().length() > 11)
-				throw new ValidationException("La lunghezza dell'Bic Appoggio deve essere compressa tra 8 e 11 caratteri, trovati " + entry.getCodBicAppoggio().length() + ".");
+				throw new ValidationException("La lunghezza dell'Bic Appoggio deve essere compresa tra 8 e 11 caratteri, trovati " + entry.getCodBicAppoggio().length() + ".");
 
 			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAppoggio());
 			if(!bicMtcher.matches())
