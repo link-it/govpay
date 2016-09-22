@@ -498,68 +498,69 @@ public class AnagraficaHandler {
 		// prelevo i componenti e gli setto i valori correnti
 		//Ragione Sociale
 		InputText ragioneSociale = (InputText) mappaCreazione.get(ragioneSocialeId);
-		if(ragioneSocialeValue == null)
+		if(ragioneSocialeValue == null && anagrafica != null)
 			ragioneSociale.setDefaultValue(anagrafica.getRagioneSociale());
 		else 
 			ragioneSociale.setDefaultValue(ragioneSocialeValue);   
-		
+
 		listaParametri.add(ragioneSociale);
 
-		// Codunivoco
-		InputText codUnivoco = (InputText) mappaCreazione.get(codUnivocoId);
-		codUnivoco.setDefaultValue(anagrafica.getCodUnivoco());
-		listaParametri.add(codUnivoco);
+		if(anagrafica != null){
+			// Codunivoco
+			InputText codUnivoco = (InputText) mappaCreazione.get(codUnivocoId);
+			codUnivoco.setDefaultValue(anagrafica.getCodUnivoco());
+			listaParametri.add(codUnivoco);
 
-		//indirizzo
-		InputText indirizzo = (InputText) mappaCreazione.get(indirizzoId);
-		indirizzo.setDefaultValue(anagrafica.getIndirizzo());
-		listaParametri.add(indirizzo);
+			//indirizzo
+			InputText indirizzo = (InputText) mappaCreazione.get(indirizzoId);
+			indirizzo.setDefaultValue(anagrafica.getIndirizzo());
+			listaParametri.add(indirizzo);
 
-		//civico
-		InputText civico = (InputText) mappaCreazione.get(civicoId);
-		civico.setDefaultValue(anagrafica.getCivico());
-		listaParametri.add(civico);
+			//civico
+			InputText civico = (InputText) mappaCreazione.get(civicoId);
+			civico.setDefaultValue(anagrafica.getCivico());
+			listaParametri.add(civico);
 
-		// cap
-		InputText cap = (InputText) mappaCreazione.get(capId);
-		cap.setDefaultValue(anagrafica.getCap());
-		listaParametri.add(cap);
+			// cap
+			InputText cap = (InputText) mappaCreazione.get(capId);
+			cap.setDefaultValue(anagrafica.getCap());
+			listaParametri.add(cap);
 
-		// localita
-		InputText localita = (InputText) mappaCreazione.get(localitaId);
-		localita.setDefaultValue(anagrafica.getLocalita());
-		listaParametri.add(localita);
+			// localita
+			InputText localita = (InputText) mappaCreazione.get(localitaId);
+			localita.setDefaultValue(anagrafica.getLocalita());
+			listaParametri.add(localita);
 
-		// provincia
-		InputText provincia = (InputText) mappaCreazione.get(provinciaId);
-		provincia.setDefaultValue(anagrafica.getProvincia());
-		listaParametri.add(provincia);
+			// provincia
+			InputText provincia = (InputText) mappaCreazione.get(provinciaId);
+			provincia.setDefaultValue(anagrafica.getProvincia());
+			listaParametri.add(provincia);
 
-		// nazione 
-		InputText nazione = (InputText) mappaCreazione.get(nazioneId);
-		nazione.setDefaultValue(anagrafica.getNazione());
-		listaParametri.add(nazione);
+			// nazione 
+			InputText nazione = (InputText) mappaCreazione.get(nazioneId);
+			nazione.setDefaultValue(anagrafica.getNazione());
+			listaParametri.add(nazione);
 
-		// email
-		InputText email = (InputText) mappaCreazione.get(emailId);
-		email.setDefaultValue(anagrafica.getEmail());
-		listaParametri.add(email);
+			// email
+			InputText email = (InputText) mappaCreazione.get(emailId);
+			email.setDefaultValue(anagrafica.getEmail());
+			listaParametri.add(email);
 
-		// telefono
-		InputText telefono = (InputText) mappaCreazione.get(telefonoId);
-		telefono.setDefaultValue(anagrafica.getTelefono());
-		listaParametri.add(telefono);
+			// telefono
+			InputText telefono = (InputText) mappaCreazione.get(telefonoId);
+			telefono.setDefaultValue(anagrafica.getTelefono());
+			listaParametri.add(telefono);
 
-		// cellulare
-		InputText cellulare = (InputText) mappaCreazione.get(cellulareId);
-		cellulare.setDefaultValue(anagrafica.getCellulare());
-		listaParametri.add(cellulare);
+			// cellulare
+			InputText cellulare = (InputText) mappaCreazione.get(cellulareId);
+			cellulare.setDefaultValue(anagrafica.getCellulare());
+			listaParametri.add(cellulare);
 
-		// fax
-		InputText fax = (InputText) mappaCreazione.get(faxId);
-		fax.setDefaultValue(anagrafica.getFax());
-		listaParametri.add(fax);
-
+			// fax
+			InputText fax = (InputText) mappaCreazione.get(faxId);
+			fax.setDefaultValue(anagrafica.getFax());
+			listaParametri.add(fax);
+		}
 		return listaParametri;
 	}
 
@@ -602,17 +603,19 @@ public class AnagraficaHandler {
 	public void fillSezioneAnagraficaDominio(it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica, Anagrafica anagrafica, String ragioneSocialeValue) {
 		if(StringUtils.isNotEmpty(ragioneSocialeValue))
 			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".ragioneSociale.label"), ragioneSocialeValue);
-		if(StringUtils.isNotEmpty(anagrafica.getIndirizzo()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".indirizzo.label"), anagrafica.getIndirizzo());
-		if(StringUtils.isNotEmpty(anagrafica.getCivico()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".civico.label"), anagrafica.getCivico());
-		if(StringUtils.isNotEmpty(anagrafica.getCap()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".cap.label"), anagrafica.getCap());
-		if(StringUtils.isNotEmpty(anagrafica.getLocalita()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".localita.label"), anagrafica.getLocalita());
-		if(StringUtils.isNotEmpty(anagrafica.getProvincia()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.label"), anagrafica.getProvincia());
-		if(StringUtils.isNotEmpty(anagrafica.getNazione()))
-			sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.label"), anagrafica.getNazione());
+		if(anagrafica != null){
+			if(StringUtils.isNotEmpty(anagrafica.getIndirizzo()))
+				sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".indirizzo.label"), anagrafica.getIndirizzo());
+			if(StringUtils.isNotEmpty(anagrafica.getCivico()))
+				sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".civico.label"), anagrafica.getCivico());
+			if(StringUtils.isNotEmpty(anagrafica.getCap()))
+				sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".cap.label"), anagrafica.getCap());
+			if(StringUtils.isNotEmpty(anagrafica.getLocalita()))
+				sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".localita.label"), anagrafica.getLocalita());
+			if(StringUtils.isNotEmpty(anagrafica.getProvincia()))
+				sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".provincia.label"), anagrafica.getProvincia());
+			if(StringUtils.isNotEmpty(anagrafica.getNazione()))
+				sezioneAnagrafica.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeAnagrafica + ".nazione.label"), anagrafica.getNazione());
+		}
 	}
 }

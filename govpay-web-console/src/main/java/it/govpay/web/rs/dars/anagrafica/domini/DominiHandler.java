@@ -469,11 +469,13 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		try {
 			unitaOperativa = uoBD.getUnitaOperativa(entry.getId(), Dominio.EC);
 		} catch (Exception e) {
-			throw new ConsoleException(e);
+			//throw new ConsoleException(e);
+			return null;
 		}
 
 		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio);
-		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaDominio(uriInfo, bd,unitaOperativa.getAnagrafica(),entry.getRagioneSociale());
+		Anagrafica anagrafica = unitaOperativa != null ? unitaOperativa.getAnagrafica() : null;
+		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaDominio(uriInfo, bd,anagrafica,entry.getRagioneSociale());
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -488,9 +490,11 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		codDominio.setEditable(false); 
 		sezioneRoot.addField(codDominio);
 
-		InputNumber uoId = (InputNumber) infoCreazioneMap.get(uoIdId);
-		uoId.setDefaultValue(unitaOperativa.getId());
-		sezioneRoot.addField(uoId);
+		if(unitaOperativa != null){
+			InputNumber uoId = (InputNumber) infoCreazioneMap.get(uoIdId);
+			uoId.setDefaultValue(unitaOperativa.getId());
+			sezioneRoot.addField(uoId);
+		}
 
 		List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
 		try{
@@ -653,10 +657,11 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			try {
 				unitaOperativa = uoBD.getUnitaOperativa(dominio.getId(), Dominio.EC);
 			} catch (Exception e) {
-				throw new ConsoleException(e);
+				 unitaOperativa = null;
+//				throw new ConsoleException(e);
 			}
 
-			Anagrafica anagrafica = unitaOperativa.getAnagrafica(); 
+			Anagrafica anagrafica =  unitaOperativa != null ? unitaOperativa.getAnagrafica() : null; 
 			it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
 			AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio);
 			anagraficaHandler.fillSezioneAnagraficaDominio(sezioneAnagrafica, anagrafica,dominio.getRagioneSociale()); 

@@ -8,6 +8,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 import static net.sf.dynamicreports.report.builder.DynamicReports.tableOfContentsCustomizer;
 import static net.sf.dynamicreports.report.builder.DynamicReports.template;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
+import static net.sf.dynamicreports.report.builder.DynamicReports.grid;
 
 import java.awt.Color;
 import java.io.File;
@@ -23,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.iban4j.Iban;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EstrattoConto;
 import it.govpay.core.utils.GovpayConfig;
@@ -37,13 +39,16 @@ import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
 import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 import net.sf.dynamicreports.report.builder.datatype.BigDecimalType;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
 import net.sf.dynamicreports.report.builder.style.FontBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.tableofcontents.TableOfContentsCustomizerBuilder;
 import net.sf.dynamicreports.report.constant.ComponentPositionType;
 import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.constant.Markup;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
@@ -59,6 +64,7 @@ public class TemplateEstrattoContoPagamenti {
 	public static final StyleBuilder boldStyle;
 	public static final StyleBuilder boldStyle8;
 	public static final StyleBuilder boldStyle9;
+	public static final StyleBuilder boldStyle12;
 	public static final StyleBuilder boldStyle16;
 	public static final StyleBuilder italicStyle;
 	public static final StyleBuilder italicStyle18;
@@ -69,6 +75,7 @@ public class TemplateEstrattoContoPagamenti {
 	public static final StyleBuilder bold22CenteredStyle;
 	public static final StyleBuilder boldLeftStyle;
 	public static final StyleBuilder bold12LeftStyle;
+	public static final StyleBuilder bold16LeftStyle;
 	public static final StyleBuilder bold18LeftStyle;
 	public static final StyleBuilder bold22LeftStyle;
 	public static final StyleBuilder columnStyle;
@@ -87,7 +94,7 @@ public class TemplateEstrattoContoPagamenti {
 		rootFont = stl.font().setFontSize(10);
 		rootStyle = stl.style().setPadding(2).setFont(rootFont);
 		fontStyle8 = stl.style().setFont(rootFont).setFontSize(8);
-		fontStyle9 = stl.style().setFont(rootFont).setFontSize(9);
+		fontStyle9 = stl.style().setPadding(1).setFont(rootFont).setFontSize(9);
 		fontStyle12 = stl.style(rootStyle).setFontSize(12);
 		fontStyle16 = stl.style(rootStyle).setFontSize(16);
 		fontStyle18 = stl.style(rootStyle).setFontSize(18);
@@ -95,6 +102,7 @@ public class TemplateEstrattoContoPagamenti {
 		boldStyle           = stl.style(rootStyle).bold();
 		boldStyle8           = stl.style(fontStyle8).bold();
 		boldStyle9           = stl.style(fontStyle9).bold();
+		boldStyle12           = stl.style(fontStyle12).bold();
 		boldStyle16           = stl.style(fontStyle16).bold();
 		italicStyle         = stl.style(rootStyle).italic();
 		italicStyle18         = stl.style(fontStyle18).italic();
@@ -113,6 +121,8 @@ public class TemplateEstrattoContoPagamenti {
 				.setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE);
 		bold12LeftStyle = stl.style(boldLeftStyle)
 				.setFontSize(12);
+		bold16LeftStyle = stl.style(boldLeftStyle)
+				.setFontSize(16);
 		bold18LeftStyle = stl.style(boldLeftStyle)
 				.setFontSize(18);
 		bold22LeftStyle = stl.style(boldLeftStyle)
@@ -165,7 +175,7 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(String dataInizio, String dataFine,Logger log) {
+	public static ComponentBuilder<?, ?> createTitleComponent(BasicBD bd, Dominio dominio, String dataInizio, String dataFine,Logger log) {
 		try{
 
 			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
@@ -186,6 +196,16 @@ public class TemplateEstrattoContoPagamenti {
 					cmp.text(titoloReport).setStyle(bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
 					cmp.text(periodoOsservazione).setStyle(fontStyle16).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
 					));
+			
+			// caricamento del logo PagoPA
+//						String pathLoghi = GovpayConfig.getInstance().getPathEstrattoContoPdfLoghi();
+						String logoDominio = dominio.getCodDominio() + ".png";
+
+						File fLogoDominio = new File(pathLoghi+"/"+logoDominio);
+						if(fLogoDominio.exists()){
+							InputStream resourceLogoDominio = new FileInputStream(fLogoDominio);
+						 	lst.add(cmp.image(resourceLogoDominio).setFixedDimension(80, 80).setHorizontalImageAlignment(HorizontalImageAlignment.RIGHT));
+						}
 
 			return cmp.horizontalList(lst.toArray(new ComponentBuilder[lst.size()]))
 					.newRow()
@@ -206,11 +226,11 @@ public class TemplateEstrattoContoPagamenti {
 		try{
 			return cmp.horizontalList(
 					createRiepilogoGenerale(bd, dominio, ibanAccredito, estrattoContoList,totale,log),
-					createDatiDominio(bd, dominio, log) 
+					createDatiDominio(bd, dominio, log)
 					)
 					.newRow()
-					.add(cmp.verticalGap(30))
-					.newRow()
+//					.add(cmp.verticalGap(30))
+//					.newRow()
 					//					.add(cmp.verticalGap(20))
 					;
 		}catch(Exception e){
@@ -224,25 +244,32 @@ public class TemplateEstrattoContoPagamenti {
 	 */
 	public static ComponentBuilder<?, ?> createDatiDominio(BasicBD bd, Dominio dominio, Logger log) {
 		try{
-			HorizontalListBuilder listDominio = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle12).setLeftPadding(10));
-
-			// caricamento del logo PagoPA
-			String pathLoghi = GovpayConfig.getInstance().getPathEstrattoContoPdfLoghi();
-			String logoDominio = dominio.getCodDominio() + ".png";
-
-			File fLogoDominio = new File(pathLoghi+"/"+logoDominio);
-			if(fLogoDominio.exists()){
-				InputStream resourceLogoDominio = new FileInputStream(fLogoDominio);
-				listDominio.add(cmp.image(resourceLogoDominio).setFixedDimension(80, 80).setHorizontalImageAlignment(HorizontalImageAlignment.CENTER)).newRow();
-			}
+			VerticalListBuilder listDominio = cmp.verticalList().setStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle12).setLeftPadding(10)
+					.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setHorizontalImageAlignment(HorizontalImageAlignment.CENTER)); 
 
 			String denominazioneDominio = dominio.getRagioneSociale();
-			String periodoOsservazione = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
+			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
+			Anagrafica anagrafica = dominio.getAnagrafica(bd);
+			
+            String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
+            String civico = StringUtils.isNotEmpty(anagrafica.getCivico()) ? anagrafica.getCivico() : "";
+            String cap = StringUtils.isNotEmpty(anagrafica.getCap()) ? anagrafica.getCap() : "";
+            String localita = StringUtils.isNotEmpty(anagrafica.getLocalita()) ? anagrafica.getLocalita() : "";
+            String provincia = StringUtils.isNotEmpty(anagrafica.getProvincia()) ? (" (" +anagrafica.getProvincia() +")" ) : "";
 
-			listDominio.add(cmp.text(denominazioneDominio).setStyle(bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)).newRow();
-			listDominio.add(cmp.text(periodoOsservazione).setStyle(boldStyle16).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
 
-			listDominio.setFixedWidth(400);
+            String indirizzoCivico = indirizzo + " " + civico;
+            String capCitta = cap + " " + localita + provincia      ;
+
+
+			listDominio.add(cmp.text(denominazioneDominio).setStyle(bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));//.newRow();
+			listDominio.add(cmp.text(pIvaDominio).setStyle(boldStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+			if(StringUtils.isNotEmpty(indirizzoCivico))
+				listDominio.add(cmp.text(indirizzoCivico).setStyle(fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+			if(StringUtils.isNotEmpty(capCitta))
+				listDominio.add(cmp.text(capCitta).setStyle(fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+
+//			listDominio.setFixedWidth(400);
 //			listDominio.setWidth(400);
 			
 
@@ -260,17 +287,22 @@ public class TemplateEstrattoContoPagamenti {
 		try{
 			HorizontalListBuilder listRiepilogo = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle12).setLeftPadding(10).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)); 
 
-			listRiepilogo.add(cmp.text(Costanti.LABEL_IBAN_ACCREDITO).setStyle(boldLeftStyle));
-			listRiepilogo.add(splitIban( ibanAccredito)).newRow();
-			addElementoLista(listRiepilogo, Costanti.LABEL_NUMERO_PAGAMENTI , "" + estrattoContoList.size(), true, false, false);
-			addElementoLista(listRiepilogo, null, Costanti.LABEL_IMPORTO_TOTALE ,false,true,false);
-			String tot = Costanti.LABEL_EURO + " " + String.format("%.2f", (double)totale.doubleValue()); 
-			addElementoLista(listRiepilogo, null ,tot, true, false, false);
-
+//			listRiepilogo.add(cmp.text(Costanti.LABEL_IBAN_ACCREDITO).setStyle(boldLeftStyle));
+//			listRiepilogo.add(splitIban( ibanAccredito)).newRow();
+			
 			String titoloRiepilogo = Costanti.TITOLO_RIEPILOGO;
-			return cmp.verticalList(cmp.text(titoloRiepilogo).setStyle(italicStyle18.bold()).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
-					listRiepilogo)
+			listRiepilogo.add(cmp.text(titoloRiepilogo).setStyle(boldStyle16.italic()).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)).newRow();
+			addElementoLista2(listRiepilogo, Costanti.LABEL_IBAN_ACCREDITO , ibanAccredito, true, false, false);
+			addElementoLista2(listRiepilogo, Costanti.LABEL_NUMERO_PAGAMENTI , "" + estrattoContoList.size(), true, false, false);
+			String tot = Costanti.LABEL_EURO + " " + String.format("%.2f", (double)totale.doubleValue());
+			addElementoLista2(listRiepilogo, Costanti.LABEL_IMPORTO_TOTALE ,tot, true, false, false);
+
+		
+			return 
+//					cmp.verticalList(cmp.text(titoloRiepilogo).setStyle(boldStyle16.italic()).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT),
+//					listRiepilogo)
 					//					.add(cmp.verticalGap(30))
+					listRiepilogo
 					;
 		}catch(Exception e){
 			log.error(e.getMessage(),e);
@@ -287,8 +319,10 @@ public class TemplateEstrattoContoPagamenti {
 							.setWidth(20).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
 		TextColumnBuilder<String> iuvColumn  = col.column(Costanti.LABEL_IUV, Costanti.IUV_COL, type.stringType()).setStyle(fontStyle9)
 							.setWidth(15).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
-		ComponentColumnBuilder componentColumnSx = col.componentColumn(Costanti.LABEL_ULTERIORI_INFORMAZIONI, getContenutoCellaSx()).setWidth(25);
-		ComponentColumnBuilder componentColumnDx = col.componentColumn(Costanti.LABEL_ULTERIORI_INFORMAZIONI ,getContenutoCellaDx()).setWidth(40); 
+		ComponentColumnBuilder componentColumnSx = col.componentColumn( getContenutoCellaSx()).setWidth(30);
+		ComponentColumnBuilder componentColumnDx = col.componentColumn( getContenutoCellaDx()).setWidth(35);
+		
+		 ColumnTitleGroupBuilder titleGroup1 = grid.titleGroup(Costanti.LABEL_ULTERIORI_INFORMAZIONI, componentColumnSx,   componentColumnDx).setTitleWidth(65); 
 
 		colonne.add(idFlussoColumn);
 		colonne.add(iuvColumn);
@@ -311,16 +345,17 @@ public class TemplateEstrattoContoPagamenti {
 				report()
 				.setTemplate(TemplateEstrattoContoPagamenti.reportTemplate)
 				.fields(fields.toArray(new FieldBuilder[fields.size()])) 
-				.title(cmp.text(titoloTabella).setStyle(TemplateEstrattoContoPagamenti.bold18CenteredStyle),cmp.verticalGap(20))
+				.title(cmp.text(titoloTabella).setStyle(TemplateEstrattoContoPagamenti.bold18CenteredStyle.italic()),cmp.verticalGap(20))
+				.columnGrid(idFlussoColumn,iuvColumn,titleGroup1)
 				.columns(colonne.toArray(new ColumnBuilder[colonne.size()]))
 				.setDataSource(dataSource)
-				//.pageFooter(Templates.footerComponent)
+				.pageFooter(TemplateEstrattoContoPagamenti.footerComponent)
 				//.setTableOfContents(true)
 				);
 	}
 
 	private static HorizontalListBuilder splitIban(String ibanAccredito) {
-		HorizontalListBuilder listIban = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle12));//.setLeftPadding(10));
+		HorizontalListBuilder listIban = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT));//.setLeftPadding(10));
 
 		Iban iban = Iban.valueOf(ibanAccredito);
 
@@ -328,9 +363,9 @@ public class TemplateEstrattoContoPagamenti {
 		if(iban != null){
 			String paese = iban.getCountryCode().getAlpha2();
 
-			HorizontalListBuilder listPaese = 
-					cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)); 
-			listPaese.add(cmp.text(Costanti.LABEL_PAESE).setStyle(TemplateEstrattoContoPagamenti.boldStyle)).newRow();
+			VerticalListBuilder listPaese = 
+					cmp.verticalList().setStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)); 
+			listPaese.add(cmp.text(Costanti.LABEL_PAESE).setStyle(TemplateEstrattoContoPagamenti.boldStyle));//.newRow();
 			listPaese.add(cmp.text(paese));
 
 			String eur = iban.getCheckDigit();
@@ -394,12 +429,34 @@ public class TemplateEstrattoContoPagamenti {
 			}
 		}
 	}
+	
+	private static void addElementoLista2(HorizontalListBuilder list, String label, String value, boolean newRow, boolean bold, boolean dots) {
+		if (value != null) {
+			String v = value;
+			
+			if(label != null) { //.setFixedColumns(8)
+				String labelDots = (label.length() > 0 && dots) ? (label + Costanti.LABEL_DUE_PUNTI) : label;
+				v = "<b>" + labelDots + "</b> " + value;
+			} 
+			
+			TextFieldBuilder<String> text = cmp.text(v).setMarkup(Markup.STYLED).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
+			
+			if(bold)
+				text.setStyle(TemplateEstrattoContoPagamenti.boldStyle);
+			
+			if(newRow)
+				list.add(text).newRow();
+			else
+				list.add(text);
+			
+		}
+	}
 
 	private static void addElementoLista(HorizontalListBuilder list, String label, AbstractSimpleExpression<String> value, boolean newRow, boolean bold, boolean dots) {
 		if (value != null) {
 			TextFieldBuilder<String> text = cmp.text(value);
 			if(bold)
-				text.setStyle(TemplateEstrattoContoPagamenti.boldStyle9);
+				text.setStyle(TemplateEstrattoContoPagamenti.boldStyle9).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
 
 			if(label != null) { //.setFixedColumns(8)
 				String labelDots = (label.length() > 0 && dots) ? (label + Costanti.LABEL_DUE_PUNTI) : label;
@@ -416,29 +473,44 @@ public class TemplateEstrattoContoPagamenti {
 			}
 		}
 	}
+	
+	private static void addElementoLista2(HorizontalListBuilder list, String label, AbstractSimpleExpression<String> value, boolean newRow, boolean bold, boolean dots) {
+		if (value != null) {
+			
+			TextFieldBuilder<String> text = cmp.text(value).setMarkup(Markup.STYLED).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
+			
+			if(bold)
+				text.setStyle(TemplateEstrattoContoPagamenti.boldStyle);
+			
+			if(newRow)
+				list.add(text).newRow();
+			else
+				list.add(text);
+		}
+	}
 
-	private static HorizontalListBuilder getContenutoCellaDx() {
-		HorizontalListBuilder itemComponent = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle8)); //.setLeftPadding(10)); 
+	public static HorizontalListBuilder getContenutoCellaDx() {
+		HorizontalListBuilder itemComponent = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle9).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)); //.setLeftPadding(10));
 
 //		if(StringUtils.isNotEmpty(pag.getIur()))
-		addElementoLista(itemComponent, Costanti.LABEL_ID_RIVERSAMENTO,  new TemplateEstrattoContoPagamenti().new IdRiversamentoExpression(), true,false,true);
+		addElementoLista2(itemComponent, Costanti.LABEL_ID_RIVERSAMENTO,  new TemplateEstrattoContoPagamenti().new IdRiversamentoExpression(), true,false,true);
 		//		if(StringUtils.isNotEmpty(pag.getCodBicRiversamento()))
-		addElementoLista(itemComponent, Costanti.LABEL_BIC_RIVERSAMENTO,  new TemplateEstrattoContoPagamenti().new BicRiversamentoExpression(), true,false,true);
+		addElementoLista2(itemComponent, Costanti.LABEL_BIC_RIVERSAMENTO,  new TemplateEstrattoContoPagamenti().new BicRiversamentoExpression(), true,false,true);
 		//		if(StringUtils.isNotEmpty(pag.getIdRegolamento()))
-		addElementoLista(itemComponent, Costanti.LABEL_ID_REGOLAMENTO,  new TemplateEstrattoContoPagamenti().new IdRegolamentoExpression(), true,false,true);
+		addElementoLista2(itemComponent, Costanti.LABEL_ID_REGOLAMENTO,  new TemplateEstrattoContoPagamenti().new IdRegolamentoExpression(), true,false,true);
 
 		return itemComponent;
 	}
 
-	private static HorizontalListBuilder getContenutoCellaSx() {
-		HorizontalListBuilder itemComponent = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle8)); //.setLeftPadding(10)); 
+	public static HorizontalListBuilder getContenutoCellaSx() {
+		HorizontalListBuilder itemComponent = cmp.horizontalList().setBaseStyle(stl.style(TemplateEstrattoContoPagamenti.fontStyle9).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)); //.setLeftPadding(10)); 
 
 //		if(StringUtils.isNotEmpty(pag.getCodSingoloVersamentoEnte()))
-		addElementoLista(itemComponent, Costanti.LABEL_CODICE_VERSAMENTO_ENTE, new TemplateEstrattoContoPagamenti().new CodSingoloVersamentoEnteExpression(), true,false,true);
+		addElementoLista2(itemComponent, Costanti.LABEL_CODICE_VERSAMENTO_ENTE, new TemplateEstrattoContoPagamenti().new CodSingoloVersamentoEnteExpression(), true,false,true);
 		//		if(pag.getImportoPagato() != null)
-		addElementoLista(itemComponent, Costanti.LABEL_IMPORTO,  new TemplateEstrattoContoPagamenti().new ImportoPagatoExpression(), true,false,true);
+		addElementoLista2(itemComponent, Costanti.LABEL_IMPORTO,  new TemplateEstrattoContoPagamenti().new ImportoPagatoExpression(), true,false,true);
 		//		if(pag.getDataPagamento() != null)
-		addElementoLista(itemComponent, Costanti.LABEL_DATA_PAGAMENTO,  new TemplateEstrattoContoPagamenti().new DataPagamentoExpression(), true,false,true);
+		addElementoLista2(itemComponent, Costanti.LABEL_DATA_PAGAMENTO,  new TemplateEstrattoContoPagamenti().new DataPagamentoExpression(), true,false,true);
 
 		return itemComponent;
 	}
@@ -447,7 +519,7 @@ public class TemplateEstrattoContoPagamenti {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public String evaluate(ReportParameters reportParameters) {
-			return reportParameters.getValue(Costanti.IDENTIFICATIVO_VERSAMENTO_COL);
+			return "<b>" + Costanti.LABEL_CODICE_VERSAMENTO_ENTE + "</b>: " + reportParameters.getValue(Costanti.IDENTIFICATIVO_VERSAMENTO_COL);
 		}
 	}
 
@@ -455,7 +527,7 @@ public class TemplateEstrattoContoPagamenti {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public String evaluate(ReportParameters reportParameters) {
-			return reportParameters.getValue(Costanti.BIC_RIVERSAMENTO_COL);
+			return "<b>" + Costanti.LABEL_BIC_RIVERSAMENTO + "</b>: " + reportParameters.getValue(Costanti.BIC_RIVERSAMENTO_COL);
 		}
 	}
 
@@ -463,7 +535,7 @@ public class TemplateEstrattoContoPagamenti {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public String evaluate(ReportParameters reportParameters) {
-			return reportParameters.getValue(Costanti.ID_REGOLAMENTO_COL);
+			return "<b>" + Costanti.LABEL_ID_REGOLAMENTO + "</b>: " + reportParameters.getValue(Costanti.ID_REGOLAMENTO_COL);
 		}
 	}
 
@@ -471,7 +543,7 @@ public class TemplateEstrattoContoPagamenti {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public String evaluate(ReportParameters reportParameters) {
-			return reportParameters.getValue(Costanti.IMPORTO_PAGATO_COL);
+			return "<b>" + Costanti.LABEL_IMPORTO + "</b>: " + Costanti.LABEL_EURO +" "+reportParameters.getValue(Costanti.IMPORTO_PAGATO_COL);
 		}
 	}
 
@@ -479,7 +551,7 @@ public class TemplateEstrattoContoPagamenti {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public String evaluate(ReportParameters reportParameters) {
-			return reportParameters.getValue(Costanti.CODICE_RIVERSAMENTO_COL);
+			return "<b>" + Costanti.LABEL_ID_RIVERSAMENTO + "</b>: " + reportParameters.getValue(Costanti.CODICE_RIVERSAMENTO_COL);
 		}
 	}
 
@@ -487,11 +559,11 @@ public class TemplateEstrattoContoPagamenti {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public String evaluate(ReportParameters reportParameters) {
-			return reportParameters.getValue(Costanti.DATA_PAGAMENTO_COL);
+			return "<b>" + Costanti.LABEL_DATA_PAGAMENTO + "</b>: " + reportParameters.getValue(Costanti.DATA_PAGAMENTO_COL);
 		}
 	}
 
-	private static DRDataSource createDataSource(List<EstrattoConto> list,List<Double> totale ) {
+	public static DRDataSource createDataSource(List<EstrattoConto> list,List<Double> totale ) {
 		List<String> header = new ArrayList<String>();
 
 		header.add(Costanti.IDENTIFICATIVO_VERSAMENTO_COL);

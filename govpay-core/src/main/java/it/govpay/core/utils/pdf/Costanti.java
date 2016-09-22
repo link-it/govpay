@@ -5,7 +5,7 @@ public class Costanti {
 	public static final String TITOLO_REPORT = "Elenco dei Pagamenti PagoPA";
 	public static final String TITOLO_PERIODO = "{0} - {1}";
 	public static final String PATTERN_DATA_PERIODO_REPORT = "dd/MM/yyyy";
-	public static final String TITOLO_RIEPILOGO = "Riepilogo Generale";
+	public static final String TITOLO_RIEPILOGO = "Informazioni Generali";
 	public static final String LABEL_IBAN_ACCREDITO = "Iban di Accredito";
 	public static final String LABEL_PAESE = "Paese";
 	public static final String LABEL_EUR = "Eur";
@@ -23,7 +23,7 @@ public class Costanti {
 	public static final String LABEL_IMPORTO = "Importo";
 	public static final String LABEL_ID_RIVERSAMENTO = "Id Riversamento";
 	public static final String LABEL_DATA_PAGAMENTO = "Data Pagamento";
-	public static final String LABEL_CODICE_VERSAMENTO_ENTE = "Codice Versamento Ente";
+	public static final String LABEL_CODICE_VERSAMENTO_ENTE = "Cod Versamento Ente";
 	public static final String LABEL_BIC_RIVERSAMENTO = "Bic Riversamento";
 	public static final String LABEL_ID_REGOLAMENTO = "Id Regolamento";
 	public static final String LABEL_DUE_PUNTI = ":";
