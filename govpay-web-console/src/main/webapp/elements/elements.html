@@ -27141,17 +27141,26 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               }
 
               if(isOk){
+                var form = event.target.parentElement.parentElement.parentElement;
+                var formChildren = form.children;
                 var response = jsonResponse.response;
 
-                for (var i = 0 ; i < response.length; i ++) {
-                  var toUpdate = response[i];
-                  var idElemento = toUpdate.etichetta;
-                  var valoreElemento = toUpdate.valore;
-
-                  var elemento = document.querySelector('#'+idElemento);
-
-                  elemento.value = ''+valoreElemento;
-
+                for (var s = 0; s < formChildren.length; s ++) {
+                  var dd = formChildren[s];
+                  if(dd.tagName == 'DIV' && dd.className == 'sezioneForm') {
+                    var chSezione = dd.children;
+                    for (var g = 0; g < chSezione.length; g ++) {
+                      var elemento = chSezione[g];
+                      for (var i = 0 ; i < response.length; i ++) {
+                        var toUpdate = response[i];
+                        var idElemento = toUpdate.etichetta;
+                        var valoreElemento = toUpdate.valore;
+                        //   var elemento = document.querySelector('#'+idElemento);
+                        if(elemento.id == idElemento)
+                          elemento.value = ''+valoreElemento;
+                      }
+                    }
+                  }
                 }
               }
             }
