@@ -37,7 +37,8 @@ public class EstrattoContoPdf {
 	
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public static void getPdfEstrattoConto(BasicBD bd, Dominio dominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.bd.model.EstrattoConto> estrattoContoList, FileOutputStream fos ,Logger log) throws Exception {
+	public static String getPdfEstrattoConto(BasicBD bd, Dominio dominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.bd.model.EstrattoConto> estrattoContoList, FileOutputStream fos ,Logger log) throws Exception {
+		String msg = null;
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(fos);
 		JasperReportBuilder report = report();
 
@@ -46,8 +47,12 @@ public class EstrattoContoPdf {
 		String dataInizioS = sdf.format(dataInizio);
 		String dataFineS = sdf.format(dataFine);
  
-		ComponentBuilder<?, ?> titleComponent = TemplateEstrattoContoPagamenti.createTitleComponent(bd, dominio,dataInizioS,dataFineS,log);
+		List<String> errList = new ArrayList<String>();
+		ComponentBuilder<?, ?> titleComponent = TemplateEstrattoContoPagamenti.createTitleComponent(bd, dominio,dataInizioS,dataFineS,log,errList);
 		cl.add(titleComponent);
+		
+		if(errList.size() > 0)
+			msg = errList.get(0);
 		
 		List<Double> totale = new ArrayList<Double>();
 		
@@ -105,6 +110,8 @@ public class EstrattoContoPdf {
 		//.summary(cl.toArray(ca))
 		.pageFooter(TemplateEstrattoContoPagamenti.footerComponent)
 		.toPdf(pdfExporter); 
+		
+		return msg;
 
 	}
 

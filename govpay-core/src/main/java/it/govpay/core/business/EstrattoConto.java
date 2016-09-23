@@ -277,8 +277,9 @@ public class EstrattoConto extends BasicBD {
 						//creazione pdf
 						if(creaFilePdf){
 							boolean creaEstrattoContoPdf = true;
-
+							
 							for (String ibanAccredito : pagamentiPerIban.keySet()) {
+								String esitoGenerazione = null;
 								List<it.govpay.bd.model.EstrattoConto> estrattoContoPdf = pagamentiPerIban.get(ibanAccredito);
 
 								log.debug("Generazione Estratto Conto in formato PDF per il Dominio ["+dominio.getCodDominio()+"] mese " 
@@ -292,7 +293,8 @@ public class EstrattoConto extends BasicBD {
 									log.debug("creo il file PDf: "+dominioPdfFile.getAbsolutePath());
 									dominioPdfFile.createNewFile();
 									fosPdf  = new FileOutputStream(dominioPdfFile);
-									EstrattoContoPdf.getPdfEstrattoConto(this,dominio, dataInizio, dataFine, ibanAccredito, estrattoContoPdf, fosPdf,log); 
+									esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(this,dominio, dataInizio, dataFine, ibanAccredito, estrattoContoPdf, fosPdf,log); 
+									
 								} else {
 									creaEstrattoContoPdf = false;
 								}
@@ -300,6 +302,11 @@ public class EstrattoConto extends BasicBD {
 								if(creaEstrattoContoPdf) {
 									sb.append("Generazione estratto conto in formato PDF per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+ibanAccredito+"] eseguita correttamente")
 									.append("#generato file "+dominioPdfFileName+"." + CSV_SEPARATOR);
+									if(esitoGenerazione != null){
+										sb.append("Attenzione")
+										.append("# "+esitoGenerazione+"." + CSV_SEPARATOR);	
+									}
+									
 									ctx.log("estrattoConto.fineDominioMeseOk", denominazioneDominio, f3.format(dataInizio), estrattoContoPdf.size() +"" ,dominioPdfFileName);
 								} else {
 									sb.append("Generazione estratto conto in formato PDF per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+ibanAccredito+"] non eseguita")
