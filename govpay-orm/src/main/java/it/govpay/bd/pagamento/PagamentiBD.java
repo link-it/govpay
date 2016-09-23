@@ -371,7 +371,13 @@ public class PagamentiBD extends BasicBD {
 			listaParam.add(dataFine);
 			listaParam.add(codDominio);
 			listaParam.add(offset);
-			listaParam.add(limit);
+			
+			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
+				listaParam.add(offset+limit);
+			} else {
+				listaParam.add(limit);
+			}
+			
 			select = pagamentoService.nativeQuery(GovpayConfig.getInstance().getNativeQuery("estrattiConto"), listaFields, listaParam.toArray());
 			if(select != null && select.size() > 0){
 				for (List<Object> list : select) {
