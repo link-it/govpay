@@ -405,6 +405,7 @@ CREATE TABLE rpt
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato TEXT,
 	cod_sessione VARCHAR(255),
+	cod_sessione_portale VARCHAR(255),
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
 	psp_redirect_url VARCHAR(512),
 	xml_rpt BYTEA NOT NULL,

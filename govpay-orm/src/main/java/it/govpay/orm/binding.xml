@@ -523,6 +523,7 @@
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="codSessione" field="codSessione" usage="optional"/>
+    <value name="codSessionePortale" field="codSessionePortale" usage="optional"/>
     <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
     <value name="xmlRPT" field="xmlRPT" usage="required"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>

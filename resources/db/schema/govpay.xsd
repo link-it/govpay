@@ -1256,6 +1256,7 @@
 			</xsd:element>
 			
 			<xsd:element name="codSessione" type="xsd:string" minOccurs="0" />
+			<xsd:element name="codSessionePortale" type="xsd:string" minOccurs="0" />
 			<xsd:element name="pspRedirectURL" type="String512" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>

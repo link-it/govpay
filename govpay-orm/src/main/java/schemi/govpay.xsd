@@ -743,6 +743,7 @@
 			</xsd:element>
 			
 			<xsd:element minOccurs="0" name="codSessione" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="codSessionePortale" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="pspRedirectURL" type="String512">
 				
 			</xsd:element>

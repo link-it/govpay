@@ -1013,6 +1013,13 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 				return "cod_sessione";
 			}
 		}
+		if(field.equals(RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_sessione_portale";
+			}else{
+				return "cod_sessione_portale";
+			}
+		}
 		if(field.equals(RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".psp_redirect_url";
@@ -1527,6 +1534,9 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 			return this.toTable(RendicontazionePagamento.model().RPT, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamento.model().RPT.COD_SESSIONE)){
+			return this.toTable(RendicontazionePagamento.model().RPT, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE)){
 			return this.toTable(RendicontazionePagamento.model().RPT, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL)){

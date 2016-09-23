@@ -134,6 +134,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DESCRIZIONE_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_SESSIONE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().COD_SESSIONE_PORTALE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().PSP_REDIRECT_URL,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RPT,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getRPTFieldConverter().toColumn(RPT.model().DATA_AGGIORNAMENTO_STATO,false),"?");
@@ -164,6 +165,7 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getStato(),RPT.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDescrizioneStato(),RPT.model().DESCRIZIONE_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodSessione(),RPT.model().COD_SESSIONE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getCodSessionePortale(),RPT.model().COD_SESSIONE_PORTALE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getPspRedirectURL(),RPT.model().PSP_REDIRECT_URL.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getXmlRPT(),RPT.model().XML_RPT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(rpt.getDataAggiornamentoStato(),RPT.model().DATA_AGGIORNAMENTO_STATO.getFieldType()),
@@ -303,6 +305,8 @@ public class JDBCRPTServiceImpl extends JDBCRPTServiceSearchImpl
 		lstObjects_rpt.add(new JDBCObject(rpt.getDescrizioneStato(), RPT.model().DESCRIZIONE_STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_SESSIONE,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getCodSessione(), RPT.model().COD_SESSIONE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().COD_SESSIONE_PORTALE,false), "?");
+		lstObjects_rpt.add(new JDBCObject(rpt.getCodSessionePortale(), RPT.model().COD_SESSIONE_PORTALE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().PSP_REDIRECT_URL,false), "?");
 		lstObjects_rpt.add(new JDBCObject(rpt.getPspRedirectURL(), RPT.model().PSP_REDIRECT_URL.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getRPTFieldConverter().toColumn(RPT.model().XML_RPT,false), "?");

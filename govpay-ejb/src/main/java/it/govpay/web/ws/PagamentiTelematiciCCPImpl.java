@@ -535,7 +535,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 
 			datiPagamento.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, versamento.getUo(bd), bd));
-			IbanAccredito ibanAccredito = versamento.getSingoliVersamenti(bd).get(0).getTributo(bd).getIbanAccredito(bd);
+			IbanAccredito ibanAccredito = versamento.getSingoliVersamenti(bd).get(0).getIbanAccredito(bd);
 			if(ibanAccredito != null) {
 				datiPagamento.setBicAccredito(ibanAccredito.getCodBicAccredito());
 				datiPagamento.setIbanAccredito(ibanAccredito.getCodIban());

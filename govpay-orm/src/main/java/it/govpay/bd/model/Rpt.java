@@ -148,6 +148,7 @@ public class Rpt extends BasicModel{
 	private StatoRpt stato;
 	private String descrizioneStato;
 	private String codSessione;
+	private String codSessionePortale;
 	private String pspRedirectURL;
 	private byte[] xmlRpt;
 	private Date dataAggiornamento;
@@ -410,6 +411,12 @@ public class Rpt extends BasicModel{
 	
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
+	}
+	public String getCodSessionePortale() {
+		return codSessionePortale;
+	}
+	public void setCodSessionePortale(String codSessionePortale) {
+		this.codSessionePortale = codSessionePortale;
 	}
 
 }

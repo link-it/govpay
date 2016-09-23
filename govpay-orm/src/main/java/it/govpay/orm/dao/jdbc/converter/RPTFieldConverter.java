@@ -222,6 +222,13 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_sessione";
 			}
 		}
+		if(field.equals(RPT.model().COD_SESSIONE_PORTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_sessione_portale";
+			}else{
+				return "cod_sessione_portale";
+			}
+		}
 		if(field.equals(RPT.model().PSP_REDIRECT_URL)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".psp_redirect_url";
@@ -397,6 +404,9 @@ public class RPTFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().COD_SESSIONE)){
+			return this.toTable(RPT.model(), returnAlias);
+		}
+		if(field.equals(RPT.model().COD_SESSIONE_PORTALE)){
 			return this.toTable(RPT.model(), returnAlias);
 		}
 		if(field.equals(RPT.model().PSP_REDIRECT_URL)){

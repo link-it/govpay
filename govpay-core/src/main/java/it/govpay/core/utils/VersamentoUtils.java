@@ -224,10 +224,11 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), Long.toString(nuovo.getIdTributo()));
 			}
 			
-			if(letto.getIbanAccredito(bd).getId() != nuovo.getIbanAccredito(bd).getId()) {
-				throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+			if(!(letto.getIbanAccredito(bd) == null && nuovo.getIbanAccredito(bd) == null)) {
+				if(letto.getIbanAccredito(bd) == null || nuovo.getIbanAccredito(bd).getId() == null || letto.getIbanAccredito(bd).getId() != nuovo.getIbanAccredito(bd).getId()) {
+					throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+				}
 			}
-			
 			nuovo.setId(letto.getId());
 			nuovo.setIdVersamento(letto.getIdVersamento());
 		}
