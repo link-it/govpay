@@ -187,11 +187,14 @@ public class GovpayConfig {
 				this.dimensionePool = 10;
 			}
 
-			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", props, true);
-			try {
-				this.urlPddVerifica = new URL(urlPddVerificaProperty.trim());
-			} catch (Exception e) {
-				throw new Exception("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
+			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", props, false);
+			
+			if(urlPddVerificaProperty != null) {
+				try {
+					this.urlPddVerifica = new URL(urlPddVerificaProperty.trim());
+				} catch (Exception e) {
+					log.warn("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
+				}
 			}
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", props, false);

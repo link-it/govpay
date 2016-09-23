@@ -35,13 +35,21 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
+import it.govpay.bd.model.Acl;
+import it.govpay.bd.model.Acl.Tipo;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.FrApplicazione;
+import it.govpay.bd.model.Operatore;
+import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
+import it.govpay.bd.pagamento.filters.FrApplicazioneFilter.SortFields;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -72,9 +80,9 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
 			// Operazione consentita agli utenti registrati
-			//Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			//ProfiloOperatore profilo = operatore.getProfilo();
-			//boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 
 			Integer offset = this.getOffset(uriInfo);
@@ -85,24 +93,56 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			FrBD frBD = new FrBD(bd);
+			AclBD aclBD = new AclBD(bd);
 			FrApplicazioneFilter filter = frBD.newFrApplicazioneFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
-//			FilterSortWrapper fsw = new FilterSortWrapper();
-//			fsw.setField(it.govpay.orm.FrApplicazione.model().ID_FR.COD_FLUSSO);
-//			fsw.setSortOrder(SortOrder.ASC);
-//			filter.getFilterSortList().add(fsw);
+			filter.addSortField(SortFields.ID, false);
 
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			List<Long> idDomini = new ArrayList<Long>();
+			
 			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
 			if(StringUtils.isNotEmpty(codFlusso))
 				filter.setCodFlusso(codFlusso); 
+			
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDom);
+					filter.setIdDomini(idDomini);
+				}
+			}
 
-			boolean eseguiRicerca = true;// isAdmin;
-//			if(!isAdmin){
-//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni());
-//			}
+			boolean eseguiRicerca = true;
+			// SE l'operatore non e' admin vede solo le rendicontazioni associate ai domini definiti nelle ACL
+						if(!isAdmin && idDomini.isEmpty()){
+							boolean vediTuttiDomini = false;
+							
+							for(Acl acl: aclOperatore) {
+								if(Tipo.DOMINIO.equals(acl.getTipo())) {
+									if(acl.getIdDominio() == null) {
+										vediTuttiDomini = true;
+										break;
+									} else {
+										idDomini.add(acl.getIdDominio());
+									}
+								}
+							}
+							if(!vediTuttiDomini) {
+								if(idDomini.isEmpty()) {
+									eseguiRicerca = false;
+								} else {
+									filter.setIdDomini(idDomini);
+								}
+							}
+						}
 
 			long count = eseguiRicerca ? frBD.countFrApplicazione(filter) : 0;
 

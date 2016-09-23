@@ -118,10 +118,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			AclBD aclBD = new AclBD(bd);
-
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<Long> idDomini = new ArrayList<Long>();
-
 			VersamentoFilter filter = versamentiBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
