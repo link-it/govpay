@@ -1,5 +1,6 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
 -- DROP INDEX index_fr_1 ON fr  CASCADE;
+-- DROP INDEX index_iuv_2 ON iuv  CASCADE;
 -- DROP INDEX index_iuv_1 ON iuv  CASCADE;
 -- DROP INDEX index_rr_1 ON rr  CASCADE;
 -- DROP INDEX index_rpt_2 ON rpt  CASCADE;

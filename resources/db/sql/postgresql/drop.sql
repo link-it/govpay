@@ -1,4 +1,5 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
+-- DROP INDEX index_iuv_1 CASCADE;
 DROP TABLE ID_MESSAGGIO_RELATIVO CASCADE;
 DROP TABLE rendicontazioni_senza_rpt CASCADE;
 DROP TABLE eventi CASCADE;

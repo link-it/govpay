@@ -93,19 +93,19 @@
 			<AppenderRef ref="govpay" />
 		</Logger>
 		
-		<Logger name="transaction" level="all" additivity="false">
+		<Logger name="transaction" level="ERROR" additivity="false">
 			<AppenderRef ref="govpay_transaction" />
 		</Logger>
 	
-		<Logger name="diagnostic" level="all" additivity="false">
+		<Logger name="diagnostic" level="ERROR" additivity="false">
 			<AppenderRef ref="govpay_diagnostic" />
 		</Logger>
 	
-		<Logger name="dump" level="all" additivity="false">
+		<Logger name="dump" level="ERROR" additivity="false">
 			<AppenderRef ref="govpay_dump" />
 		</Logger>
 	
-		<Logger name="event" level="all" additivity="false">
+		<Logger name="event" level="ERROR" additivity="false">
 			<AppenderRef ref="govpay_event" />
 		</Logger>
 

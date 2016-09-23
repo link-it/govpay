@@ -934,6 +934,11 @@
 							<linkit:sql-table-unique-column name="id_dominio" />
 							<linkit:sql-table-unique-field name="iuv" />
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-field name="codVersamentoEnte" />
+							<linkit:sql-table-index-field name="tipoIuv" />
+							<linkit:sql-table-index-column name="id_applicazione" />
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
