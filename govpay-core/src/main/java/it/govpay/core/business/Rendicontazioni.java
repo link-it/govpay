@@ -433,7 +433,26 @@ public class Rendicontazioni extends BasicBD {
 		AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null);
 		
 		FrBD frBD = new FrBD(this);
-		return frBD.findAll(AnagraficaManager.getDominio(this, codDominio).getId(), AnagraficaManager.getApplicazione(this, codApplicazione).getId(), da, a);
+		
+		long idDominio = 0;
+		
+		try {
+			idDominio = AnagraficaManager.getDominio(this, codDominio).getId();
+		} catch (Exception e) {
+			throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
+		}
+		
+		long idApplicazione = 0;
+		if(codApplicazione != null) {
+			try {
+				idApplicazione = AnagraficaManager.getApplicazione(this, codApplicazione).getId();
+			} catch (Exception e) {
+				throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
+			}
+			return frBD.findAll(idDominio, idApplicazione, da, a);
+		} else { 
+			return frBD.findAll(idDominio, null, da, a);
+		}
 	}
 
 	public FrApplicazione chiediRendicontazione(Applicazione applicazione, int anno, String codFlusso) throws GovPayException, ServiceException {

@@ -40,6 +40,8 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
+import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.FrApplicazione;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
@@ -51,6 +53,7 @@ import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.model.Acl.Tipo;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -90,8 +93,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			ProfiloOperatore profilo = operatore.getProfilo();
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-			List<Long> idApplicazioniOperatore = null; //operatore.getIdApplicazioni();
-			List<Long> idUoOperatore = null;// operatore.getIdEnti();
 
 			URI esportazione = null; 
 			URI cancellazione = null;
@@ -107,13 +108,16 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String idFrId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFr.id");
 			String idFr= this.getParameter(uriInfo, idFrId, String.class);
 
-			boolean eseguiRicerca = isAdmin;
+			boolean eseguiRicerca = true;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = null;
 			// Utilizzo i singoli versamenti per avere i pagamenti
 			List<Long> idSingoliVersamenti = new ArrayList<Long>();
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			AclBD aclBD = new AclBD(bd);
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			List<Long> idDomini = new ArrayList<Long>();
 			PagamentoFilter filter = pagamentiBD.newFilter();
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
@@ -124,23 +128,37 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			// elemento correlato al versamento.
 			if(StringUtils.isNotEmpty(idVersamento)){
-				// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
-				// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
-				if(!isAdmin){
-					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore) || !Utils.isEmpty(idUoOperatore);
+				VersamentoFilter versamentoFilter = versamentiBD.newFilter();
+				// SE l'operatore non e' admin vede solo i versamenti associati ai suoi domini
+				if(!isAdmin && idDomini.isEmpty()){
+					boolean vediTuttiDomini = false;
 
-					VersamentoFilter versamentoFilter = versamentiBD.newFilter();
-					versamentoFilter.setIdApplicazioni(idApplicazioniOperatore);
-					versamentoFilter.setIdUo(idUoOperatore); 
-
-					List<Long> idVersamentoL = new ArrayList<Long>();
-					idVersamentoL.add(Long.parseLong(idVersamento));
-					versamentoFilter.setIdVersamento(idVersamentoL);
-
-					long countVersamento = eseguiRicerca ? versamentiBD.count(versamentoFilter) : 0;
-					eseguiRicerca = eseguiRicerca && countVersamento > 0;
-
+					for(Acl acl: aclOperatore) {
+						if(Tipo.DOMINIO.equals(acl.getTipo())) {
+							if(acl.getIdDominio() == null) {
+								vediTuttiDomini = true;
+								break;
+							} else {
+								idDomini.add(acl.getIdDominio());
+							}
+						}
+					}
+					if(!vediTuttiDomini) {
+						if(idDomini.isEmpty()) {
+							eseguiRicerca = false;
+						} else {
+							versamentoFilter.setIdDomini(idDomini);
+						}
+					}
 				}
+
+				List<Long> idVersamentoL = new ArrayList<Long>();
+				idVersamentoL.add(Long.parseLong(idVersamento));
+				versamentoFilter.setIdVersamento(idVersamentoL);
+
+				long countVersamento = eseguiRicerca ? versamentiBD.count(versamentoFilter) : 0;
+				eseguiRicerca = eseguiRicerca && countVersamento > 0;
+
 
 				versamento = eseguiRicerca ? versamentiBD.getVersamento(Long.parseLong(idVersamento)) : null;
 				if(versamento != null){
@@ -161,17 +179,36 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			long countRendicontazioniSenzaRpt = 0;
 			List<Long> idFrApplicazioni = new ArrayList<Long>();
 			if(StringUtils.isNotEmpty(idFrApplicazione)){
-				if(!isAdmin){
-					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore);
+				FrBD frBD = new FrBD(bd);
+				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
 
-					FrBD frBD = new FrBD(bd);
-					FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
-					frApplicazioneFilter.setIdApplicazioni(idApplicazioniOperatore);
-					frApplicazioneFilter.setIdFrApplicazione(Long.parseLong(idFrApplicazione));
+				if(!isAdmin && idDomini.isEmpty()){
+					boolean vediTuttiDomini = false;
 
-					long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
-					eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
+					for(Acl acl: aclOperatore) {
+						if(Tipo.DOMINIO.equals(acl.getTipo())) {
+							if(acl.getIdDominio() == null) {
+								vediTuttiDomini = true;
+								break;
+							} else {
+								idDomini.add(acl.getIdDominio());
+							}
+						}
+					}
+					if(!vediTuttiDomini) {
+						if(idDomini.isEmpty()) {
+							eseguiRicerca = false;
+						} else {
+							frApplicazioneFilter.setIdDomini(idDomini);
+						}
+					}
 				}
+
+				frApplicazioneFilter.setIdFrApplicazione(Long.parseLong(idFrApplicazione));
+
+				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
+				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
+
 
 				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
 				if(eseguiRicerca){

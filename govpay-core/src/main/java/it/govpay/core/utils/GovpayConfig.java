@@ -32,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.utils.TipiDatabase;
@@ -76,11 +75,11 @@ public class GovpayConfig {
 
 	private boolean batchEstrattoConto;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
-	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi, pagoPALogo;
+	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
 	private boolean batchEstrattoContoPdf;
 
 
-	public GovpayConfig() {
+	public GovpayConfig() throws Exception {
 		// Default values:
 		this.logoDir = null;
 		this.versioneAvviso = VersioneAvviso.v002;
@@ -137,6 +136,7 @@ public class GovpayConfig {
 						props0 = new Properties();
 						props0.load(new FileInputStream(gpConfigFile));
 						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
+						props[0] = props0;
 					}
 				}
 			} catch (Exception e) {
@@ -189,11 +189,14 @@ public class GovpayConfig {
 				this.dimensionePool = 10;
 			}
 
-			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", props, true);
-			try {
-				this.urlPddVerifica = new URL(urlPddVerificaProperty.trim());
-			} catch (Exception e) {
-				throw new Exception("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
+			String urlPddVerificaProperty = getProperty("it.govpay.check.urlVerificaPDD", props, false);
+			
+			if(urlPddVerificaProperty != null) {
+				try {
+					this.urlPddVerifica = new URL(urlPddVerificaProperty.trim());
+				} catch (Exception e) {
+					log.warn("Valore ["+urlPddVerificaProperty.trim()+"] non consentito per la property \"it.govpay.check.urlVerificaPDD\": " +e.getMessage());
+				}
 			}
 
 			String mLogClassString = getProperty("it.govpay.mlog.class", props, false);
@@ -229,15 +232,11 @@ public class GovpayConfig {
 					this.mLogOnLog4j = Boolean.valueOf(mLogSqlString);
 			}
 
-
-
-
 			String batchEstrattoContoString = getProperty("it.govpay.batch.estrattoConto", props, false);
 			if(batchEstrattoContoString != null && Boolean.valueOf(batchEstrattoContoString))
 				this.batchEstrattoConto = true;
 
 			if(this.batchEstrattoConto) {
-
 				String numeroMesiEstrattoContoProperty = getProperty("it.govpay.batch.estrattoConto.numeroMesi", props, true);
 				if(numeroMesiEstrattoContoProperty != null)
 					try {
@@ -284,39 +283,37 @@ public class GovpayConfig {
 						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathLoghi\" (" + this.pathEstrattoContoPdfLoghi + ") non esiste o non e' un folder.");
 				}
 				
-				this.pagoPALogo = getProperty("it.govpay.batch.estrattoConto.pdf.logoPagoPa", props, true);
-				if(StringUtils.isEmpty(this.pagoPALogo)) {
-						throw new Exception("Il valore indicato nella property \"it.govpay.batch.estrattoConto.pdf.logoPagoPa\" (" +this.pagoPALogo + ") non e' valido.");
-				}
 			}
-			
+
 			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", props, false);
 			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
 				this.pddAuthEnable = false;
 
-			
-			
 			String listaHandlers = getProperty("it.govpay.integration.client.out", props, false);
-			
+
 			this.outHandlers = new ArrayList<String>();
-			
+
 			if(listaHandlers != null && !listaHandlers.isEmpty()) {
 				String[] splitHandlers = listaHandlers.split(",");
 				for(String handler: splitHandlers) {
 					String handlerClass = getProperty("it.govpay.integration.client.out."+handler, props, true);
-					Class<?> c = this.getClass().getClassLoader().loadClass(handlerClass);
+					Class<?> c = null;
+					try {
+						c = this.getClass().getClassLoader().loadClass(handlerClass);
+					} catch (ClassNotFoundException e) {
+						throw new Exception("La classe ["+handlerClass+"] specificata per l'handler ["+handler+"] non e' presente nel classpath");
+					}
 					Object instance = c.newInstance();
 					if(!(instance instanceof IntegrationOutHandler)) {
 						throw new Exception("La classe ["+handlerClass+"] specificata per l'handler ["+handler+"] deve implementare l'interfaccia " + IntegrationOutHandler.class.getName());
 					}
-
-					
 					this.outHandlers.add(handlerClass);
 				}
 			}
 
 		} catch (Exception e) {
-			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
+			log.error("Errore di inizializzazione: " + e.getMessage());
+			throw e;
 		}
 	}
 
@@ -415,7 +412,7 @@ public class GovpayConfig {
 	public boolean ismLogSql() {
 		return mLogSql;
 	}
-	
+
 	public boolean isBatchEstrattoConto() {
 		return batchEstrattoConto;
 	}
@@ -450,10 +447,6 @@ public class GovpayConfig {
 
 	public String getPathEstrattoContoPdfLoghi() {
 		return pathEstrattoContoPdfLoghi;
-	}
-
-	public String getPagoPALogo() {
-		return pagoPALogo;
 	}
 
 	public boolean isBatchEstrattoContoPdf() {

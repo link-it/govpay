@@ -130,7 +130,7 @@ public class VersamentoFilter extends AbstractFilter {
 				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
 				addAnd = true;
 			}
-			
+
 			if(this.codVersamento != null){
 				if(addAnd)
 					newExpression.and();

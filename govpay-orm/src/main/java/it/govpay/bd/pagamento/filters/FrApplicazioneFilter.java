@@ -32,20 +32,29 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
 import it.govpay.orm.FrApplicazione;
+import it.govpay.orm.Versamento;
 import it.govpay.orm.dao.jdbc.converter.FrApplicazioneFieldConverter;
 
 public class FrApplicazioneFilter extends AbstractFilter {
-	
+
 	private String codFlusso;
 	private int annoRiferimento;
 	private List<Long> idApplicazioni;
 	private List<Long> idFlussi; 
 	private Long idFrApplicazione;
-	
+	private List<Long> idDomini;
+
+	public enum SortFields {
+		ID
+	}
+
 	public FrApplicazioneFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
@@ -54,45 +63,45 @@ public class FrApplicazioneFilter extends AbstractFilter {
 	public IExpression toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
-			
+
 			boolean addAnd = false;
-			
+
 			if(this.annoRiferimento > 0){
 				if(addAnd)
 					newExpression.and();
-				
+
 				newExpression.equals(FrApplicazione.model().ID_FR.ANNO_RIFERIMENTO, this.annoRiferimento);
 				addAnd = true;
 			}
-			
+
 			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
 				if(addAnd)
 					newExpression.and();
-				
+
 				newExpression.ilike(FrApplicazione.model().ID_FR.COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
-			
+
 			if(this.idApplicazioni!= null && !this.idApplicazioni.isEmpty()) {
 				if(addAnd)
 					newExpression.and();
-				
+
 				FrApplicazioneFieldConverter converter = new FrApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabaseType());
 				IField idDominioField = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(FrApplicazione.model()));
 				newExpression.in(idDominioField, this.idApplicazioni);
 				addAnd = true;
 			}
-			
+
 			if(this.idFlussi != null && !this.idFlussi.isEmpty()){
 				if(addAnd)
 					newExpression.and();
-				
+
 				FrApplicazioneFieldConverter converter = new FrApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabaseType());
 				IField idField = new CustomField("id_fr", Long.class, "id_fr", converter.toTable(FrApplicazione.model()));
 				newExpression.in(idField, this.idFlussi);
 				addAnd = true;
 			}
-			
+
 
 			if(this.idFrApplicazione != null){
 				if(addAnd)
@@ -102,7 +111,18 @@ public class FrApplicazioneFilter extends AbstractFilter {
 				newExpression.equals(cf, this.idFrApplicazione);
 				addAnd = true;
 			}
-			
+
+			if(this.idDomini != null && this.idDomini.size() > 0){
+				if(addAnd)
+					newExpression.and();
+
+				FrApplicazioneFieldConverter converter = new FrApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(FrApplicazione.model().ID_FR.COD_FLUSSO));
+				newExpression.isNotNull(FrApplicazione.model().ID_FR.COD_FLUSSO);
+				newExpression.in(cf, this.idDomini);
+				addAnd = true;
+			}
+
 			return newExpression;
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -112,7 +132,21 @@ public class FrApplicazioneFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
- 
+
+	public void addSortField(SortFields field, boolean asc) throws ServiceException {
+		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
+		if(field.equals(SortFields.ID)){
+			try{
+				FrApplicazioneFieldConverter converter = new FrApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				filterSortWrapper.setField(new CustomField("id", Long.class, "id", converter.toTable(FrApplicazione.model())));
+			} catch (ExpressionException e) {
+				throw new ServiceException(e);
+			}
+		}
+		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
+		this.filterSortList.add(filterSortWrapper);
+	}
+
 	public int getAnnoRiferimento() {
 		return annoRiferimento;
 	}
@@ -152,5 +186,13 @@ public class FrApplicazioneFilter extends AbstractFilter {
 	public void setIdFrApplicazione(Long idFrApplicazione) {
 		this.idFrApplicazione = idFrApplicazione;
 	}
-	
+
+	public List<Long> getIdDomini() {
+		return idDomini;
+	}
+
+	public void setIdDomini(List<Long> idDomini) {
+		this.idDomini = idDomini;
+	}
+
 }
