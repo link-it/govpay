@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public class VersamentoUtils {
 
-	public static Versamento readVersamentoFromRequest(Logger log,InputStream is) throws WebApplicationException,Exception{
+	public static Versamento readVersamentoFromRequest(Logger log,InputStream is, String methodName) throws WebApplicationException,Exception{
 		String nomeMetodo = "readVersamentoFromRequest";
 		Versamento entry = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -54,7 +54,7 @@ public class VersamentoUtils {
 	}
 
 
-	public static ByteArrayOutputStream writeVersamentoResponse(Logger log, VersamentoResponse response) throws Exception{
+	public static ByteArrayOutputStream writeVersamentoResponse(Logger log, VersamentoResponse response,String methodName) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeVersamentoResponse";
 

@@ -59,42 +59,42 @@ public class Caricatore extends BaseRsService{
 		String methodName = "CaricaVersamento"; 
 		
 		Applicazione applicazioneAutenticata = null; 
-
 		BasicBD bd = null;
-		GpContext ctx = null;
+		GpContext ctx = null; 
+		ByteArrayOutputStream baos = null, baosResponse = null;
 		ByteArrayInputStream bais = null;
-		ByteArrayOutputStream baos = null;
-		ByteArrayOutputStream baosResponse = null;
+		
 		try{
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			ctx =  GpThreadLocal.get();
-			applicazioneAutenticata = getApplicazioneAutenticata(bd);
-
 			baos = new ByteArrayOutputStream();
+			
 			BaseRsService.copy(is, baos);
+
 			this.logRequest(uriInfo, httpHeaders, methodName,baos);
 
 			if(caricatoreImplClass == null) {
 				caricatoreImplClass = "it.govpay.web.rs.caricatore.CaricatoreImpl";
 			}
 			
-			Class<?> caricatoreImpl = Class.forName(caricatoreImplClass);
+			Class<?> caricatoreClass = Class.forName(caricatoreImplClass);
 			
-			Object caricatoreImplObjectInstance = caricatoreImpl.newInstance();
+			Object caricatoreClassObjectImpl = caricatoreClass.newInstance();
 			
-			if(!(caricatoreImplObjectInstance instanceof ICaricatore)) {
-				throw new Exception("La classe ["+caricatoreImplClass+"] deve implementare l'interfaccia " + ICaricatore.class);
+			if(!(caricatoreClassObjectImpl instanceof ICaricatore)) {
+				throw new Exception("La classe ["+caricatoreImplClass+"] dovrebbe implementare l'interfaccia " + ICaricatore.class);
 			}
-			
-			ICaricatore caricatore = (ICaricatore) caricatoreImplObjectInstance; 
-			
+
+			ICaricatore caricatoreClassImpl = (ICaricatore) caricatoreClassObjectImpl;
+
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			ctx =  GpThreadLocal.get();
+			applicazioneAutenticata = getApplicazioneAutenticata(bd); 
+
 			bais = new ByteArrayInputStream(baos.toByteArray());
-			String response = caricatore.caricaVersamento(bais, uriInfo, httpHeaders, bd, applicazioneAutenticata);
-
-
+			String response = caricatoreClassImpl.caricaVersamento(bais, uriInfo, httpHeaders, bd, applicazioneAutenticata);
+			
 			baosResponse = new ByteArrayOutputStream();
-
 			baosResponse.write(response.getBytes());
+			
 			this.logResponse(uriInfo, httpHeaders, methodName, baosResponse);
 
 			return Response.ok(response).build();
@@ -118,10 +118,8 @@ public class Caricatore extends BaseRsService{
 			if(bd != null) bd.closeConnection();
 			if(ctx != null)ctx.log();
 			if(bais != null) try { bais.close();} catch (IOException e) {}
-			if(baos != null) try { baos.flush();} catch (IOException e) {}
-			if(baos != null) try { baos.close();} catch (IOException e) {}
-			if(baosResponse != null) try { baosResponse.flush();} catch (IOException e) {}
-			if(baosResponse != null) try { baosResponse.close();} catch (IOException e) {}
+			if(baos != null) try { baos.flush(); baos.close();} catch (IOException e) {}
+			if(baosResponse != null) try { baosResponse.flush(); baosResponse.close();} catch (IOException e) {}
 		}
 	}
 

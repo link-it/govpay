@@ -28,31 +28,34 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.logger.beans.Property;
 
 public class CaricatoreImpl implements ICaricatore {
-	protected Logger log = LogManager.getLogger();
+
+	private Logger log = LogManager.getLogger();
 
 	@Override
 	public String caricaVersamento(InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders, BasicBD bd, Applicazione applicazioneAutenticata) throws Exception {
-		
+		String methodName = "CaricaVersamento"; 
+
 		it.govpay.core.business.Versamento versamentoBusiness = null;
 		it.govpay.servizi.commons.Versamento versamentoCommons = null;
 		it.govpay.bd.model.Versamento versamentoModel = null;
 		GpContext ctx = null; 
 		VersamentoResponse versamentoResponse = new VersamentoResponse();
-		Versamento request = VersamentoUtils.readVersamentoFromRequest(log, is);
+
+		Versamento request = VersamentoUtils.readVersamentoFromRequest(log, is, methodName);
 		ctx =  GpThreadLocal.get();
 
 		log.info("Validazione della entry in corso...");
 		// validazione richiesta
 		ValidationUtils.validaRichiestaCaricaVersamento(request);
 		log.info("Validazione della entry completata.");
-		
+
 		versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-		
+
 		boolean generaIuv = true;
 		boolean aggiornaSeEsiste = true;
 
 		this.log.info("Caricamento del Versamento ["+request.getIdentificativoVersamento()+"] in corso...");
-		
+
 		it.govpay.bd.model.Iuv iuv = null;
 		try{
 			ctx.getContext().getRequest().addGenericProperty(new Property("identificativoVersamento", request.getIdentificativoVersamento())); 
@@ -101,9 +104,7 @@ public class CaricatoreImpl implements ICaricatore {
 		}
 
 		this.log.info("Caricamento del Versamento ["+request.getIdentificativoVersamento()+"] completato con esito ["+versamentoResponse.getEsito()+"].");
-		ByteArrayOutputStream baos = VersamentoUtils.writeVersamentoResponse(log, versamentoResponse);
+		ByteArrayOutputStream baos = VersamentoUtils.writeVersamentoResponse(log, versamentoResponse, methodName);
 		return baos.toString();
-
 	}
-
 }

@@ -10,5 +10,5 @@ import javax.ws.rs.core.UriInfo;
 
 public interface ICaricatore {
 
-	public String caricaVersamento(InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders, BasicBD bd, Applicazione applicazioneAutenticata) throws Exception;	
+	public String caricaVersamento(InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders, BasicBD bd, Applicazione applicazioneAutenticata) throws Exception;
 }
