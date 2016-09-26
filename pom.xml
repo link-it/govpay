@@ -20,7 +20,7 @@
 	<properties>
 		<javaVersion>1.6</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>2.3.4-SNAPSHOT</openspcoop2.version>
+		<openspcoop2.version>2.3.4</openspcoop2.version>
 	</properties>
 
 	<profiles>
