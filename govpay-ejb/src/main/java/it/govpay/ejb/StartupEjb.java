@@ -63,10 +63,16 @@ public class StartupEjb {
 	@PostConstruct
 	public void init() {
 		
+		try {
+			GovpayConfig.newInstance();
+		} catch (Exception e) {
+			throw new RuntimeException("Inizializzazione di GovPay fallita: " + e);
+		}
+		
 		// Gestione della configurazione di Log4J
 		URI log4j2Config = null;
 		try {
-			log4j2Config = GovpayConfig.newInstance().getLog4j2Config();
+			log4j2Config = GovpayConfig.getInstance().getLog4j2Config();
 			if(log4j2Config != null) {
 				LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
 				context.setConfigLocation(log4j2Config);

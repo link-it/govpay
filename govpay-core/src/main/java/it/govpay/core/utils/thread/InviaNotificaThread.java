@@ -99,23 +99,25 @@ public class InviaNotificaThread implements Runnable {
 					ctx.log("notifica.er");
 			}
 			GpThreadLocal.set(ctx);
-			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), "paNotifica", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getVersione());
 			
+			ctx.setupPaClient(notifica.getApplicazione(null).getCodApplicazione(), notifica.getIdRpt() != null ? "paNotificaTransazione" : "paNotificaStorno", notifica.getApplicazione(bd).getConnettoreNotifica() == null ? null : notifica.getApplicazione(bd).getConnettoreNotifica().getUrl(), notifica.getApplicazione(null).getVersione());
+					
 			ThreadContext.put("op", ctx.getTransactionId());
-			ctx.log("notifica.spedizione");
 			
 			log.info("Spedizione della notifica [idNotifica: " + notifica.getId() +"] all'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]");
-			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null) {
+			if(notifica.getApplicazione(bd).getConnettoreNotifica() == null || notifica.getApplicazione(bd).getConnettoreNotifica().getUrl() == null) {
 				ctx.log("notifica.annullata");
 				log.info("Connettore Notifica non configurato per l'applicazione [CodApplicazione: " + notifica.getApplicazione(null).getCodApplicazione() + "]. Spedizione inibita.");
 				if(bd == null)
 					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 				NotificheBD notificheBD = new NotificheBD(bd);
 				long tentativi = notifica.getTentativiSpedizione() + 1;
-				Date prossima = new GregorianCalendar(9999,12,31).getTime();
+				Date prossima = new GregorianCalendar(9999,1,1).getTime();
 				notificheBD.updateDaSpedire(notifica.getId(), "Connettore Notifica non configurato.", tentativi, prossima);
 				return;
 			}
+			
+			ctx.log("notifica.spedizione");
 			
 			NotificaClient client = new NotificaClient(notifica.getApplicazione(bd));
 			client.invoke(notifica);

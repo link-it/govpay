@@ -22,6 +22,7 @@ package it.govpay.web.rs;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSP;
 import it.govpay.bd.BasicBD;
@@ -42,6 +43,8 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
@@ -58,15 +61,18 @@ public class Check {
 	public Response verifica(
 			@QueryParam(value = "matchString") String matchString) {
 		BasicBD bd = null;
-
+		Logger log = LogManager.getLogger();
 		try {
 			DominiBD dominiBD = null;
 			try {
-				bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+				bd = BasicBD.newInstance(UUID.randomUUID().toString());
 				dominiBD = new DominiBD(bd);
 				dominiBD.count(dominiBD.newFilter());
 			} catch(Exception e) {
+				log.error("Errore di connessione al database", e);
 				throw new Exception("Errore di connessione al database");
+			} finally {
+				if(bd!= null) bd.closeConnection();
 			}
 
 			try {
@@ -104,15 +110,14 @@ public class Check {
 					throw new Exception(checkResult);
 
 			} catch(Exception e) {
+				log.error("Errore di connessione alla PDD", e);
 				throw new Exception("Errore di connessione alla PDD: " + e.getMessage());
 			}
 
 			return Response.ok().build();
 		} catch (Exception e) {
 			return Response.status(500).entity(e.getMessage()).build();
-		} finally {
-			if(bd!= null) bd.closeConnection();
-		}
+		} 
 	}
 	
 	
@@ -121,6 +126,7 @@ public class Check {
 	public Response verificaDominio(@PathParam(value = "codDominio") String codDominio) {
 		BasicBD bd = null;
 		GpContext ctx = null;
+		Logger log = LogManager.getLogger();
 		try {
 			ctx = new GpContext();
 			Service service = new Service();
@@ -158,6 +164,7 @@ public class Check {
 			
 			try {
 				d = dominiBD.getDominio(codDominio);
+				log.debug("Dominio ["+ codDominio +"] identificato");
 				Stazione s = d.getStazione(bd);
 				Intermediario i = s.getIntermediario(bd);
 				NodoClient c = new NodoClient(i);
@@ -166,13 +173,15 @@ public class Check {
 				richiesta.setIdentificativoIntermediarioPA(i.getCodIntermediario());
 				richiesta.setIdentificativoStazioneIntermediarioPA(s.getCodStazione());
 				richiesta.setPassword(s.getPassword());
+				log.debug("Richiesta alla stazione " + s.getCodStazione() + " in corso...");
 				c.nodoChiediInformativaPSP(richiesta, "");
 			} catch(NotFoundException e) {
 				throw new Exception("Dominio [" + codDominio + "] non censito in anagrafica.");
 			} catch(GovPayException e) {
 				throw new Exception(e.getCodEsito().toString() + ": " + e.getMessage());
 			} catch(Exception e) {
-				throw new Exception("Impossibile invocare il Nodo dei Pagamenti: " + e.getMessage());
+				log.error("Errore nel check del dominio", e);
+				throw new Exception("Impossibile invocare il Nodo dei Pagamenti: " + e.getMessage(), e);
 			}
 			return Response.ok().build();
 		} catch (Exception e) {
