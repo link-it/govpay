@@ -1,7 +1,7 @@
 --GP-341
-ALTER TABLE pagamenti ADD COLUMN iban_accredito VARCHAR(255);
+ALTER TABLE pagamenti ADD iban_accredito VARCHAR(255);
 --GP-351
-ALTER TABLE rpt ADD COLUMN cod_sessione_portale VARCHAR(255);
+ALTER TABLE rpt ADD cod_sessione_portale VARCHAR(255);
 --GP-169
 ALTER TABLE versamenti DROP CONSTRAINT fk_versamenti_1;
 ALTER TABLE versamenti DROP CONSTRAINT fk_versamenti_2;
