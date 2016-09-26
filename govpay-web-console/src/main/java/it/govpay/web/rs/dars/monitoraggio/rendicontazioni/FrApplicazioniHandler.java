@@ -38,7 +38,6 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.Acl.Tipo;
