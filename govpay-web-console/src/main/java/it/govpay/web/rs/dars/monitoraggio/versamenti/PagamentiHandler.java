@@ -110,9 +110,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			boolean eseguiRicerca = true;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			Versamento versamento = null;
-			// Utilizzo i singoli versamenti per avere i pagamenti
-			List<Long> idSingoliVersamenti = new ArrayList<Long>();
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			AclBD aclBD = new AclBD(bd);
@@ -159,19 +156,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				long countVersamento = eseguiRicerca ? versamentiBD.count(versamentoFilter) : 0;
 				eseguiRicerca = eseguiRicerca && countVersamento > 0;
 
-
-				versamento = eseguiRicerca ? versamentiBD.getVersamento(Long.parseLong(idVersamento)) : null;
-				if(versamento != null){
-					List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-					if(singoliVersamenti != null && singoliVersamenti.size() >0){
-						for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-							idSingoliVersamenti.add(singoloVersamento.getId());
-						}
-					}
-				}
-				eseguiRicerca = eseguiRicerca && idSingoliVersamenti.size() > 0;
-				filter.setIdSingoliVersamenti(idSingoliVersamenti);
+				// Ricerca pagamenti associati 
+				List<Long> idVersamenti = new ArrayList<Long>();
+				idVersamenti.add(Long.parseLong(idVersamento));
+				filter.setIdVersamenti(idVersamenti);
 				count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+				eseguiRicerca = eseguiRicerca && count > 0;
 
 
 			}

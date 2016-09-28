@@ -45,9 +45,7 @@ public class VersamentoFilter extends AbstractFilter {
 
 	private String statoPagamento =  null;
 	private String codUnivocoDebitore;
-	private List<Long> idUo;
 	private List<Long> idDomini;
-	private List<Long> idApplicazioni;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idVersamento= null;
@@ -77,31 +75,6 @@ public class VersamentoFilter extends AbstractFilter {
 					newExpression.and();
 
 				newExpression.between(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO, this.datainizio,this.dataFine);
-				addAnd = true;
-			}
-
-			if((this.idUo != null && !this.idUo.isEmpty()) || (this.idApplicazioni != null && !this.idApplicazioni.isEmpty())) {
-				if(addAnd)
-					newExpression.and();
-				
-				IExpression newExpressionEntiApplicazioni = this.newExpression();
-				VersamentoFieldConverter versamentoFieldConverter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-
-				CustomField idUoCustomField = new CustomField("id_uo",  Long.class, "id_uo",  versamentoFieldConverter.toTable(Versamento.model()));
-				CustomField idApplicazioneCustomField = new CustomField("id_applicazione",  Long.class, "id_applicazione",  versamentoFieldConverter.toTable(Versamento.model()));
-
-				if(this.idUo != null && !this.idUo.isEmpty()) {
-					for(Long id: this.idUo) {
-						newExpressionEntiApplicazioni.equals(idUoCustomField, id).or();
-					}
-				}
-
-				if(this.idApplicazioni != null && !this.idApplicazioni.isEmpty()) {
-					for(Long id: this.idApplicazioni) {
-						newExpressionEntiApplicazioni.equals(idApplicazioneCustomField, id).or();
-					}
-				}
-				newExpression.and(newExpressionEntiApplicazioni);
 				addAnd = true;
 			}
 
@@ -163,24 +136,6 @@ public class VersamentoFilter extends AbstractFilter {
 
 	public void setStatoPagamento(String statoPagamento) {
 		this.statoPagamento = statoPagamento;
-	}
-
-	public List<Long> getIdUo() {
-		if(idUo == null) idUo = new ArrayList<Long>();
-		return idUo;
-	}
-
-	public void setIdUo(List<Long> idUo) {
-		this.idUo = idUo;
-	}
-
-	public List<Long> getIdApplicazioni() {
-		if(idApplicazioni == null) idApplicazioni = new ArrayList<Long>();
-		return idApplicazioni;
-	}
-
-	public void setIdApplicazioni(List<Long> idApplicazioni) {
-		this.idApplicazioni = idApplicazioni;
 	}
 
 	public String getCodUnivocoDebitore() {

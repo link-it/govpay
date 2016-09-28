@@ -40,6 +40,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.csv.Printer;
 
 import it.govpay.bd.BasicBD;
@@ -339,7 +340,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 				sb.append(long1);
 			}
-		Printer printer  = null;
+//		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
 		String fileName = "Eventi.zip";
@@ -353,21 +354,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			filter.setIdEventi(idsToExport );
 			List<Evento> list = eventiBD.findAll(filter);
 
-			try{
-				printer = new Printer(this.getFormat() , baos);
-				printer.printRecord(getCsvHeader());
-				for (Evento evento: list) {
-					printer.printRecord(this.getEventoCsv(evento));
-				}
-			}finally {
-				try{
-					if(printer!=null){
-						printer.close();
-					}
-				}catch (Exception e) {
-					throw new Exception("Errore durante la chiusura dello stream ",e);
-				}
-			}
+			scriviCSVEventi(baos, list );
 
 			ZipEntry datiEvento = new ZipEntry("eventi.csv");
 			zout.putNextEntry(datiEvento);
@@ -384,6 +371,25 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			throw e;
 		}catch(Exception e){
 			throw new ConsoleException(e);
+		}
+	}
+
+	public void scriviCSVEventi(ByteArrayOutputStream baos, List<Evento> list) throws UtilsException, Exception {
+		Printer printer = null;
+		try{
+			printer = new Printer(this.getFormat() , baos);
+			printer.printRecord(getCsvHeader());
+			for (Evento evento: list) {
+				printer.printRecord(this.getEventoCsv(evento));
+			}
+		}finally {
+			try{
+				if(printer!=null){
+					printer.close();
+				}
+			}catch (Exception e) {
+				throw new Exception("Errore durante la chiusura dello stream ",e);
+			}
 		}
 	}
 	

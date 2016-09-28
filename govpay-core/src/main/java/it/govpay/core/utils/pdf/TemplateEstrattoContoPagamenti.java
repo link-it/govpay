@@ -188,12 +188,18 @@ public class TemplateEstrattoContoPagamenti {
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(logoPagoPa));
 					lst.add(cmp.image(resourceLogoPagoPa).setFixedDimension(90, 90));
 
+			List<ComponentBuilder<?, ?>> lstTitolo = new ArrayList<ComponentBuilder<?,?>>();
 			String titoloReport =Costanti.TITOLO_REPORT;
-			String periodoOsservazione = MessageFormat.format(Costanti.TITOLO_PERIODO, dataInizio,dataFine);
-			lst.add(cmp.verticalList(
-					cmp.text(titoloReport).setStyle(bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
-					cmp.text(periodoOsservazione).setStyle(fontStyle16).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
-					));
+			
+			lstTitolo.add(cmp.text(titoloReport).setStyle(bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+			
+			//Intervallo date Opzionale
+			if(StringUtils.isNotEmpty(dataInizio) && StringUtils.isNotEmpty(dataFine)) {
+				String periodoOsservazione = MessageFormat.format(Costanti.TITOLO_PERIODO, dataInizio,dataFine);
+				lstTitolo.add(cmp.text(periodoOsservazione).setStyle(fontStyle16).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+			}
+			
+			lst.add(cmp.verticalList(lstTitolo.toArray(new ComponentBuilder[lstTitolo.size()])));
 
 			// caricamento del logo Dominio
 			String logoDominio = dominio.getCodDominio() + ".png";

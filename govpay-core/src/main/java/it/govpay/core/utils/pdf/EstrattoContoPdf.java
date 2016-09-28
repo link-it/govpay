@@ -9,6 +9,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,15 +36,15 @@ public class EstrattoContoPdf {
 	
 	public static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public static String getPdfEstrattoConto(BasicBD bd, Dominio dominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.bd.model.EstrattoConto> estrattoContoList, FileOutputStream fos ,Logger log) throws Exception {
+	public static String getPdfEstrattoConto(BasicBD bd, Dominio dominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.bd.model.EstrattoConto> estrattoContoList, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
-		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(fos);
+		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();
 
 		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 		
-		String dataInizioS = sdf.format(dataInizio);
-		String dataFineS = sdf.format(dataFine);
+		String dataInizioS = dataInizio != null ? sdf.format(dataInizio) : null;
+		String dataFineS = dataFine != null ? sdf.format(dataFine) : null;
  
 		List<String> errList = new ArrayList<String>();
 		ComponentBuilder<?, ?> titleComponent = TemplateEstrattoContoPagamenti.createTitleComponent(bd, dominio,dataInizioS,dataFineS,log,errList);

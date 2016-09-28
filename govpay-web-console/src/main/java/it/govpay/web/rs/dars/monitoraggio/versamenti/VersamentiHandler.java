@@ -20,6 +20,7 @@
  */
 package it.govpay.web.rs.dars.monitoraggio.versamenti;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -51,23 +52,24 @@ import it.govpay.bd.model.Acl.Tipo;
 import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Evento;
 import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.Operatore.ProfiloOperatore;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.model.Versamento.StatoVersamento;
-import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.core.business.EstrattoConto;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -88,6 +90,8 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
+import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
+import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
 import it.govpay.web.utils.Utils;
 
 public class VersamentiHandler extends BaseDarsHandler<Versamento> implements IDarsHandler<Versamento>{
@@ -173,7 +177,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
 			if(!isAdmin && idDomini.isEmpty()){
 				boolean vediTuttiDomini = false;
-				
+
 				for(Acl acl: aclOperatore) {
 					if(Tipo.DOMINIO.equals(acl.getTipo())) {
 						if(acl.getIdDominio() == null) {
@@ -293,8 +297,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					}
 				}
 
-				
-				
+
+
 				if(eseguiRicerca) {
 					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 					FilterSortWrapper fsw = new FilterSortWrapper();
@@ -305,7 +309,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 					Domini dominiDars = new Domini();
 					DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-					
+
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio dominio : findAll) {
 							domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
@@ -574,7 +578,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		return sb.toString();
 	} 
-	
+
 	@Override
 	public List<String> getValori(Versamento entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -598,19 +602,42 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		if(idsToExport.size() == 1)
 			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
 
-		String fileName = "Versamenti.zip";
+		String fileName = "Export.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			this.darsService.getOperatoreByPrincipal(bd); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			RptBD rptBD = new RptBD(bd);
+			EventiBD eventiBd = new EventiBD(bd);
+			Eventi eventiDars = new Eventi();
+			EstrattoConto estrattoContoBD = new EstrattoConto(bd);
+			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler(); 
+
+			Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
+			Map<String, Dominio> mappaInputDomini = new HashMap<String, Dominio>();
 
 			for (Long idVersamento : idsToExport) {
 				Versamento versamento = versamentiBD.getVersamento(idVersamento);
 
-				String folderName = "Versamento_" + versamento.getCodVersamentoEnte();
+				// Prelevo il dominio
+				UnitaOperativa uo = versamento.getUo(bd);
+				Dominio dominio = uo.getDominio(bd);
+
+				String dirDominio = dominio.getCodDominio();
+				
+				// Aggrego i versamenti per dominio per generare gli estratti conto
+				List<Long> idVersamentiDominio = null;
+				if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio()))
+					idVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
+				else{
+					idVersamentiDominio = new ArrayList<Long>();
+					mappaInputEstrattoConto.put(dominio.getCodDominio(), idVersamentiDominio);
+					mappaInputDomini.put(dominio.getCodDominio(), dominio);
+				}
+				idVersamentiDominio.add(idVersamento);
+
+				String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
 
 				List<Long> idSingoliVersamenti = new ArrayList<Long>();
 				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
@@ -619,27 +646,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						idSingoliVersamenti.add(singoloVersamento.getId());
 					}
 				}
-
-				PagamentoFilter filter = pagamentiBD.newFilter();
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
-				fsw.setSortOrder(SortOrder.DESC);
-				filter.getFilterSortList().add(fsw);
-				filter.setIdSingoliVersamenti(idSingoliVersamenti);
-				// cerco i pagamenti solo se ho singoliversamenti
-				List<Pagamento> listaPagamenti = idSingoliVersamenti.size() > 0 ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>(); 
-				if(listaPagamenti != null && listaPagamenti.size()> 0)
-					for (Pagamento pagamento : listaPagamenti) {
-						SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-						String folderNamepagamento = "Pagamento_" + singoloVersamento.getCodSingoloVersamentoEnte();
-
-						if(pagamento.getAllegato()!= null){
-							ZipEntry rtXml = new ZipEntry(folderName + "/"+ folderNamepagamento + "/allegato.xml");
-							zout.putNextEntry(rtXml);
-							zout.write(pagamento.getAllegato());
-							zout.closeEntry();
-						}
-					}
 
 				RptFilter rptFilter = rptBD.newFilter();
 				FilterSortWrapper rptFsw = new FilterSortWrapper();
@@ -656,19 +662,50 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
 				if(listaRpt != null && listaRpt.size() >0 )
 					for (Rpt rpt : listaRpt) {
-						String folderNameRpt = "TransazionePagamento_"+rpt.getCodMsgRichiesta();
+						
+						String iuv = rpt.getIuv();
+						String ccp = rpt.getCcp();
 
-						ZipEntry rptXml = new ZipEntry(folderName + "/"+ folderNameRpt +"/rpt.xml");
+						String iuvCcpDir = dirVersamento + "/" + iuv + "_" + ccp;
+						String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
+						
+
+						ZipEntry rptXml = new ZipEntry(rptEntryName);
 						zout.putNextEntry(rptXml);
 						zout.write(rpt.getXmlRpt());
 						zout.closeEntry();
 
 						if(rpt.getXmlRt() != null){
-							ZipEntry rtXml = new ZipEntry(folderName + "/"+ folderNameRpt + "/rt.xml");
+							String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
+							ZipEntry rtXml = new ZipEntry(rtEntryName);
 							zout.putNextEntry(rtXml);
 							zout.write(rpt.getXmlRt());
 							zout.closeEntry();
+							
+							// RT in formato pdf
+							
 						}
+						
+						// Eventi
+						String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
+
+						EventiFilter eventiFilter = eventiBd.newFilter();
+						eventiFilter.setCodDominio(dominio.getCodDominio());
+						eventiFilter.setIuv(iuv);
+						eventiFilter.setCcp(ccp);
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.Evento.model().DATA_1);
+						fsw.setSortOrder(SortOrder.ASC);
+						eventiFilter.getFilterSortList().add(fsw);
+
+						List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+
+						ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
+						zout.putNextEntry(eventiCSV);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
 
 						RrFilter rrFilter = rrBD.newFilter();
 						rrFilter.getFilterSortList().add(rrFsw);
@@ -676,15 +713,16 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						List<Rr> findAll = rrBD.findAll(rrFilter);
 						if(findAll != null && findAll.size() > 0){
 							for (Rr rr : findAll) {
-								String folderNameRr = "TransazioneRevoca_"+ rr.getCodMsgRevoca();
+								String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
 
-								ZipEntry rrXml = new ZipEntry(folderName + "/"+ folderNameRr+"/rr.xml");
+								ZipEntry rrXml = new ZipEntry(rrEntryName);
 								zout.putNextEntry(rrXml);
 								zout.write(rr.getXmlRr());
 								zout.closeEntry();
 
 								if(rr.getXmlEr() != null){
-									ZipEntry rtXml = new ZipEntry(folderName + "/"+ folderNameRr+"/er.xml");
+									String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
+									ZipEntry rtXml = new ZipEntry(erEntryName);
 									zout.putNextEntry(rtXml);
 									zout.write(rr.getXmlEr());
 									zout.closeEntry();
@@ -693,6 +731,35 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						}
 					}
 			}
+
+			List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
+			for (String codDominio : mappaInputEstrattoConto.keySet()) {
+				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
+				listInputEstrattoConto.add(input);
+			}
+			
+			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto);
+
+			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
+				Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
+				for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+					ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
+					ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+					zout.putNextEntry(estrattoContoEntry);
+					zout.write(baos.toByteArray());
+					zout.closeEntry();
+				}
+				
+				// [TODO] cancellare dopo la fine dello sviluppo estrattoconto
+				String estrattoContoFileName = estrattoContoOutput.getDominio().getCodDominio() + "/estrattoconto.txt";
+				ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoFileName);
+				zout.putNextEntry(estrattoContoEntry);
+				zout.write("CIAO".getBytes());
+				zout.closeEntry();
+			}
+			
+			
+
 			zout.flush();
 			zout.close();
 
@@ -717,39 +784,49 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			this.darsService.getOperatoreByPrincipal(bd); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			RptBD rptBD = new RptBD(bd);
+			EventiBD eventiBd = new EventiBD(bd);
+			Eventi eventiDars = new Eventi();
+			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler(); 
 			Versamento versamento = versamentiBD.getVersamento(idToExport);
+			EstrattoConto estrattoContoBD = new EstrattoConto(bd);
 
-			String fileName = "Versamento_"+versamento.getCodVersamentoEnte()+".zip";
+			String fileName = "Export.zip";  
 
-			List<Long> idSingoliVersamenti = new ArrayList<Long>();
-			List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-			if(singoliVersamenti != null && singoliVersamenti.size() >0){
-				for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-					idSingoliVersamenti.add(singoloVersamento.getId());
+
+			// Prelevo il dominio
+			UnitaOperativa uo = versamento.getUo(bd);
+			Dominio dominio = uo.getDominio(bd);
+
+			String dirDominio = dominio.getCodDominio();
+
+			// Estratto conto per iban e codiceversamento.
+			List<Long> idVersamentiDominio = new ArrayList<Long>();
+			idVersamentiDominio.add(idToExport);
+			it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(dominio, idVersamentiDominio);
+			List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
+			listInputEstrattoConto.add(input);
+			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto);
+
+			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
+				Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
+				for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+					ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
+					ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+					zout.putNextEntry(estrattoContoEntry);
+					zout.write(baos.toByteArray());
+					zout.closeEntry();
 				}
 			}
 
-			PagamentoFilter filter = pagamentiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
-			fsw.setSortOrder(SortOrder.DESC);
-			filter.getFilterSortList().add(fsw);
-			filter.setIdSingoliVersamenti(idSingoliVersamenti);
-			List<Pagamento> listaPagamenti = idSingoliVersamenti.size() > 0 ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>(); 
-			if(listaPagamenti != null && listaPagamenti.size()> 0)
-				for (Pagamento pagamento : listaPagamenti) {
-					SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-					String folderNamepagamento = "Pagamento_" + singoloVersamento.getCodSingoloVersamentoEnte();
+			// [TODO] cancellare dopo la fine dello sviluppo
+			String estrattoContoFileName = dirDominio + "/estrattoconto.txt";
+			ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoFileName);
+			zout.putNextEntry(estrattoContoEntry);
+			zout.write("CIAO".getBytes());
+			zout.closeEntry();
 
-					if(pagamento.getAllegato()!= null){
-						ZipEntry rtXml = new ZipEntry(folderNamepagamento + "/allegato.xml");
-						zout.putNextEntry(rtXml);
-						zout.write(pagamento.getAllegato());
-						zout.closeEntry();
-					}
-				}
+			String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
 
 			RptFilter rptFilter = rptBD.newFilter();
 			FilterSortWrapper rptFsw = new FilterSortWrapper();
@@ -766,19 +843,48 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			List<Rpt> listaRpt = rptBD.findAll(rptFilter);
 			if(listaRpt != null && listaRpt.size() >0 )
 				for (Rpt rpt : listaRpt) {
-					String folderNameRpt = "TransazionePagamento_"+ rpt.getCodMsgRichiesta();
 
-					ZipEntry rptXml = new ZipEntry(  folderNameRpt +"/rpt.xml");
+					String iuv = rpt.getIuv();
+					String ccp = rpt.getCcp();
+					String iuvCcpDir = dirVersamento + "/" + iuv + "_" + ccp;
+					String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
+
+					ZipEntry rptXml = new ZipEntry( rptEntryName);
 					zout.putNextEntry(rptXml);
 					zout.write(rpt.getXmlRpt());
 					zout.closeEntry();
 
 					if(rpt.getXmlRt() != null){
-						ZipEntry rtXml = new ZipEntry(folderNameRpt + "/rt.xml");
+						String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
+						ZipEntry rtXml = new ZipEntry(rtEntryName);
 						zout.putNextEntry(rtXml);
 						zout.write(rpt.getXmlRt());
 						zout.closeEntry();
+
+						// RT in formato pdf
 					}
+
+					// Eventi
+					String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
+
+					EventiFilter eventiFilter = eventiBd.newFilter();
+					eventiFilter.setCodDominio(dominio.getCodDominio());
+					eventiFilter.setIuv(iuv);
+					eventiFilter.setCcp(ccp);
+					FilterSortWrapper fsw = new FilterSortWrapper();
+					fsw.setField(it.govpay.orm.Evento.model().DATA_1);
+					fsw.setSortOrder(SortOrder.ASC);
+					eventiFilter.getFilterSortList().add(fsw);
+
+					List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+
+					ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
+					zout.putNextEntry(eventiCSV);
+					zout.write(baos.toByteArray());
+					zout.closeEntry();
+
 
 					RrFilter rrFilter = rrBD.newFilter();
 					rrFilter.getFilterSortList().add(rrFsw);
@@ -786,15 +892,17 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					List<Rr> findAll = rrBD.findAll(rrFilter);
 					if(findAll != null && findAll.size() > 0){
 						for (Rr rr : findAll) {
-							String folderNameRr = "TransazioneRevoca_"+ rr.getCodMsgRevoca();
 
-							ZipEntry rrXml = new ZipEntry(folderNameRr+"/rr.xml");
+							String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
+
+							ZipEntry rrXml = new ZipEntry(rrEntryName);
 							zout.putNextEntry(rrXml);
 							zout.write(rr.getXmlRr());
 							zout.closeEntry();
 
 							if(rr.getXmlEr() != null){
-								ZipEntry rtXml = new ZipEntry(folderNameRr+"/er.xml");
+								String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
+								ZipEntry rtXml = new ZipEntry(erEntryName);
 								zout.putNextEntry(rtXml);
 								zout.write(rr.getXmlEr());
 								zout.closeEntry();
@@ -838,7 +946,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }
