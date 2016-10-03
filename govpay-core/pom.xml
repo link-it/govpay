@@ -30,6 +30,12 @@
 			<artifactId>govpay-orm</artifactId>
 			<type>jar</type>
 		</dependency>
+		
+		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-stampe</artifactId>
+			<type>jar</type>
+		</dependency>
 
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
