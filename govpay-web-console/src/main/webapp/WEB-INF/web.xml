@@ -38,7 +38,7 @@
             <url-pattern>/logout</url-pattern>
             <url-pattern>/public/error.html</url-pattern>
             <url-pattern>/public/nonAutorizzato.html</url-pattern>
-            <url-pattern>/rs/*</url-pattern>
+<!--             <url-pattern>/rs/*</url-pattern> -->
         </web-resource-collection>
         <user-data-constraint>
             <transport-guarantee>NONE</transport-guarantee>
