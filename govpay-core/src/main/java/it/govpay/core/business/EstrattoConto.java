@@ -566,10 +566,10 @@ public class EstrattoConto extends BasicBD {
 	}
 
 
-	public List<it.govpay.core.business.model.EstrattoConto> getEstrattoContoVersamenti(List<it.govpay.core.business.model.EstrattoConto> inputEstrattoConto) throws Exception{
+	public List<it.govpay.core.business.model.EstrattoConto> getEstrattoContoVersamenti(List<it.govpay.core.business.model.EstrattoConto> inputEstrattoConto,String pathLoghi) throws Exception{
 		log.debug("Generazione dei PDF estratto Conto in corso...");
 		try{
-			String pathLoghi = GovpayConfig.getInstance().getPathEstrattoContoPdfLoghi();
+//			String pathLoghi = GovpayConfig.getInstance().getPathEstrattoContoPdfLoghi();
 			for (it.govpay.core.business.model.EstrattoConto estrattoConto : inputEstrattoConto) {
 				log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] in corso...");
 				Map<String, List<it.govpay.bd.model.EstrattoConto>> pagamentiPerIban = new HashMap<String, List<it.govpay.bd.model.EstrattoConto>>();

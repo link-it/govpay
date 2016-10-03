@@ -92,6 +92,7 @@ import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 public class VersamentiHandler extends BaseDarsHandler<Versamento> implements IDarsHandler<Versamento>{
@@ -598,6 +599,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			}
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+		int numeroZipEntries = 0;
 
 		if(idsToExport.size() == 1)
 			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
@@ -639,14 +641,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 				String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
 
-				List<Long> idSingoliVersamenti = new ArrayList<Long>();
-				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-				if(singoliVersamenti != null && singoliVersamenti.size() >0){
-					for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-						idSingoliVersamenti.add(singoloVersamento.getId());
-					}
-				}
-
 				RptFilter rptFilter = rptBD.newFilter();
 				FilterSortWrapper rptFsw = new FilterSortWrapper();
 				rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
@@ -662,6 +656,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
 				if(listaRpt != null && listaRpt.size() >0 )
 					for (Rpt rpt : listaRpt) {
+						numeroZipEntries ++;
 						
 						String iuv = rpt.getIuv();
 						String ccp = rpt.getCcp();
@@ -676,6 +671,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						zout.closeEntry();
 
 						if(rpt.getXmlRt() != null){
+							numeroZipEntries ++;
 							String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
 							ZipEntry rtXml = new ZipEntry(rtEntryName);
 							zout.putNextEntry(rtXml);
@@ -713,6 +709,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						List<Rr> findAll = rrBD.findAll(rrFilter);
 						if(findAll != null && findAll.size() > 0){
 							for (Rr rr : findAll) {
+								numeroZipEntries ++;
 								String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
 
 								ZipEntry rrXml = new ZipEntry(rrEntryName);
@@ -721,6 +718,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 								zout.closeEntry();
 
 								if(rr.getXmlEr() != null){
+									numeroZipEntries ++;
 									String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
 									ZipEntry rtXml = new ZipEntry(erEntryName);
 									zout.putNextEntry(rtXml);
@@ -738,11 +736,13 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				listInputEstrattoConto.add(input);
 			}
 			
-			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto);
+			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
+			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
 
 			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
 				Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
 				for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+					numeroZipEntries ++;
 					ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
 					ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
 					zout.putNextEntry(estrattoContoEntry);
@@ -750,14 +750,18 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					zout.closeEntry();
 				}
 				
-				// [TODO] cancellare dopo la fine dello sviluppo estrattoconto
-				String estrattoContoFileName = estrattoContoOutput.getDominio().getCodDominio() + "/estrattoconto.txt";
-				ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoFileName);
-				zout.putNextEntry(estrattoContoEntry);
-				zout.write("CIAO".getBytes());
-				zout.closeEntry();
+
 			}
 			
+			
+			// se non ho inserito nessuna entry
+			if(numeroZipEntries == 0){
+				String noEntriesTxt = "/README";
+				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
+				zout.putNextEntry(entryTxt);
+				zout.write("Non sono state trovate informazioni sui versamenti selezionati.".getBytes());
+				zout.closeEntry();
+			}
 			
 
 			zout.flush();
@@ -780,6 +784,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 
 		try{
+			int numeroZipEntries = 0;
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			this.darsService.getOperatoreByPrincipal(bd); 
 
@@ -806,11 +811,13 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(dominio, idVersamentiDominio);
 			List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
 			listInputEstrattoConto.add(input);
-			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto);
+			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
+			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
 
 			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
 				Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
 				for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+					numeroZipEntries ++;
 					ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
 					ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
 					zout.putNextEntry(estrattoContoEntry);
@@ -818,13 +825,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					zout.closeEntry();
 				}
 			}
-
-			// [TODO] cancellare dopo la fine dello sviluppo
-			String estrattoContoFileName = dirDominio + "/estrattoconto.txt";
-			ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoFileName);
-			zout.putNextEntry(estrattoContoEntry);
-			zout.write("CIAO".getBytes());
-			zout.closeEntry();
 
 			String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
 
@@ -843,7 +843,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			List<Rpt> listaRpt = rptBD.findAll(rptFilter);
 			if(listaRpt != null && listaRpt.size() >0 )
 				for (Rpt rpt : listaRpt) {
-
+					numeroZipEntries ++;
 					String iuv = rpt.getIuv();
 					String ccp = rpt.getCcp();
 					String iuvCcpDir = dirVersamento + "/" + iuv + "_" + ccp;
@@ -855,6 +855,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					zout.closeEntry();
 
 					if(rpt.getXmlRt() != null){
+						numeroZipEntries ++;
 						String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
 						ZipEntry rtXml = new ZipEntry(rtEntryName);
 						zout.putNextEntry(rtXml);
@@ -892,7 +893,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					List<Rr> findAll = rrBD.findAll(rrFilter);
 					if(findAll != null && findAll.size() > 0){
 						for (Rr rr : findAll) {
-
+							numeroZipEntries ++;
 							String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
 
 							ZipEntry rrXml = new ZipEntry(rrEntryName);
@@ -901,6 +902,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							zout.closeEntry();
 
 							if(rr.getXmlEr() != null){
+								numeroZipEntries ++;
 								String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
 								ZipEntry rtXml = new ZipEntry(erEntryName);
 								zout.putNextEntry(rtXml);
@@ -910,6 +912,15 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						}
 					}
 				}
+			
+			// se non ho inserito nessuna entry
+			if(numeroZipEntries == 0){
+				String noEntriesTxt = "/README";
+				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
+				zout.putNextEntry(entryTxt);
+				zout.write("Non sono state trovate informazioni sui versamenti selezionati.".getBytes());
+				zout.closeEntry();
+			}
 
 			zout.flush();
 			zout.close();
