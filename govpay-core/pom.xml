@@ -94,30 +94,6 @@
 			<artifactId>commons-csv</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
-        <dependency>
-            <groupId>net.sourceforge.dynamicreports</groupId>
-            <artifactId>dynamicreports-core</artifactId>
-            <version>4.0.2</version>
-            <exclusions>
-                    <exclusion>
-                            <artifactId>core</artifactId>
-                            <groupId>com.google.zxing</groupId>
-                    </exclusion>
-            </exclusions>
-    	</dependency>
-
-	    <dependency>
-	        <groupId>com.google.zxing</groupId>
-	        <artifactId>javase</artifactId>
-	        <version>2.0</version>
-		</dependency>
-		
-		<dependency>
-		  <groupId>org.iban4j</groupId>
-		  <artifactId>iban4j</artifactId>
-		  <version>3.2.1</version>
-		</dependency>
 	</dependencies>
 
 	<build>

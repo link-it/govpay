@@ -1,14 +1,14 @@
-package it.govpay.core.utils.pdf;
+package it.govpay.stampe.pdf;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
 import static net.sf.dynamicreports.report.builder.DynamicReports.col;
 import static net.sf.dynamicreports.report.builder.DynamicReports.field;
+import static net.sf.dynamicreports.report.builder.DynamicReports.grid;
 import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 import static net.sf.dynamicreports.report.builder.DynamicReports.tableOfContentsCustomizer;
 import static net.sf.dynamicreports.report.builder.DynamicReports.template;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
-import static net.sf.dynamicreports.report.builder.DynamicReports.grid;
 
 import java.awt.Color;
 import java.io.ByteArrayInputStream;
@@ -28,7 +28,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.EstrattoConto;
-import it.govpay.core.utils.GovpayConfig;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter;
 import net.sf.dynamicreports.report.builder.FieldBuilder;
@@ -177,14 +176,12 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(BasicBD bd, Dominio dominio, String dataInizio, String dataFine,Logger log,List<String> errList) {
+	public static ComponentBuilder<?, ?> createTitleComponent(BasicBD bd, Dominio dominio, String dataInizio, String dataFine,Logger log,List<String> errList,String pathLoghi) {
 		try{
 
 			StringBuilder errMsg = new StringBuilder();
 			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
 			// caricamento del logo PagoPA
-			String pathLoghi = GovpayConfig.getInstance().getPathEstrattoContoPdfLoghi();
-
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(logoPagoPa));
 					lst.add(cmp.image(resourceLogoPagoPa).setFixedDimension(90, 90));
 

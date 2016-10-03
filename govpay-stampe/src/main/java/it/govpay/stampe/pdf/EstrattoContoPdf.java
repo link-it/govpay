@@ -1,4 +1,4 @@
-package it.govpay.core.utils.pdf;
+package it.govpay.stampe.pdf;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
 import static net.sf.dynamicreports.report.builder.DynamicReports.col;
@@ -8,7 +8,6 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.grid;
 import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
