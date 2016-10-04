@@ -1,4 +1,4 @@
-package it.govpay.stampe.pdf;
+package it.govpay.stampe.pdf.estrattoConto;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
 import static net.sf.dynamicreports.report.builder.DynamicReports.col;

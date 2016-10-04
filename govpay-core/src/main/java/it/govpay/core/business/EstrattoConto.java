@@ -36,7 +36,7 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.orm.Dominio;
-import it.govpay.stampe.pdf.EstrattoContoPdf;
+import it.govpay.stampe.pdf.estrattoConto.EstrattoContoPdf;
 
 public class EstrattoConto extends BasicBD {
 

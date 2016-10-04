@@ -1,4 +1,4 @@
-package it.govpay.stampe.pdf;
+package it.govpay.stampe.pdf.estrattoConto;
 
 public class Costanti {
 	
