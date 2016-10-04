@@ -11,6 +11,8 @@ import java.text.MessageFormat;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
@@ -24,23 +26,23 @@ public class TemplateRt {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(BasicBD bd, String pathLoghi, Dominio dominio) {
+	public static ComponentBuilder<?, ?> createTitleComponent(BasicBD bd, String pathLoghi, CtRicevutaTelematica rt) {
 		try{
-
-			String logoDominio = dominio.getCodDominio() + ".png";
+			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
+			CtEnteBeneficiario enteBeneficiario = rt.getEnteBeneficiario();
+			String denominazioneDominio = enteBeneficiario.getDenominazioneBeneficiario();
+			
+			String logoDominio = enteBeneficiario.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco() + ".png";
 			File fEnte = new File(pathLoghi+logoDominio);
 			InputStream resourceLogoEnte = new FileInputStream(fEnte);
-			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
 			
-			String denominazioneDominio = dominio.getRagioneSociale();
-			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
-			Anagrafica anagrafica = dominio.getAnagrafica(bd);
-
-			String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
-			String civico = StringUtils.isNotEmpty(anagrafica.getCivico()) ? anagrafica.getCivico() : "";
-			String cap = StringUtils.isNotEmpty(anagrafica.getCap()) ? anagrafica.getCap() : "";
-			String localita = StringUtils.isNotEmpty(anagrafica.getLocalita()) ? anagrafica.getLocalita() : "";
-			String provincia = StringUtils.isNotEmpty(anagrafica.getProvincia()) ? (" (" +anagrafica.getProvincia() +")" ) : "";
+			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, enteBeneficiario.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco());
+			
+			String indirizzo = StringUtils.isNotEmpty(enteBeneficiario.getIndirizzoBeneficiario()) ? enteBeneficiario.getIndirizzoBeneficiario() : "";
+			String civico = StringUtils.isNotEmpty(enteBeneficiario.getCivicoBeneficiario()) ? enteBeneficiario.getCivicoBeneficiario() : "";
+			String cap = StringUtils.isNotEmpty(enteBeneficiario.getCapBeneficiario()) ? enteBeneficiario.getCapBeneficiario() : "";
+			String localita = StringUtils.isNotEmpty(enteBeneficiario.getLocalitaBeneficiario()) ? enteBeneficiario.getLocalitaBeneficiario() : "";
+			String provincia = StringUtils.isNotEmpty(enteBeneficiario.getProvinciaBeneficiario()) ? (" (" +enteBeneficiario.getProvinciaBeneficiario() +")" ) : "";
 
 
 			String indirizzoCivico = indirizzo + " " + civico;

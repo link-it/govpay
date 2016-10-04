@@ -28,14 +28,14 @@ import net.sf.dynamicreports.report.constant.PageType;
 
 public class RtPdf {
 
-	public static byte[] getPdfRicevutaPagamento(BasicBD bd, String pathLoghi, Dominio dominio, String idPortale, CtRicevutaTelematica rt,String  causale) throws Exception { //, String idDominio, RefPagamento refPagamento , BigDecimal importoTotale, Anagrafica debitore, Anagrafica creditore) throws Exception{
+	public static byte[] getPdfRicevutaPagamento(BasicBD bd, String pathLoghi,  CtRicevutaTelematica rt,String  causale) throws Exception { //, String idDominio, RefPagamento refPagamento , BigDecimal importoTotale, Anagrafica debitore, Anagrafica creditore) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(baos);
 		JasperReportBuilder report = report();
 
 		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 
-		cl.add(TemplateRt.createTitleComponent(bd, pathLoghi,dominio));
+		cl.add(TemplateRt.createTitleComponent(bd, pathLoghi,rt));
 
 		cl.add(createRicevutaPagamentoList(Costanti.LABEL_RICEVUTA_PAGAMENTO, rt,causale)); 
 
