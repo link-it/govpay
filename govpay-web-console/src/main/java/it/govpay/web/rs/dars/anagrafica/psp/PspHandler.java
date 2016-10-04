@@ -36,7 +36,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.filters.PspFilter;
-import it.govpay.model.Psp;
+import it.govpay.bd.model.Psp;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -50,7 +50,7 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.utils.Utils;
 
-public class PspHandler extends BaseDarsHandler<it.govpay.model.Psp> implements IDarsHandler<it.govpay.model.Psp>{
+public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implements IDarsHandler<it.govpay.bd.model.Psp>{
 
 	public PspHandler(Logger log, BaseDarsService darsService) {
 		super(log,darsService);
@@ -87,10 +87,10 @@ public class PspHandler extends BaseDarsHandler<it.govpay.model.Psp> implements 
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
-			List<it.govpay.model.Psp> findAll = pspBD.findAll(filter);
+			List<it.govpay.bd.model.Psp> findAll = pspBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.model.Psp entry : findAll) {
+				for (it.govpay.bd.model.Psp entry : findAll) {
 					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
@@ -117,7 +117,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.model.Psp> implements 
 	}
 
 	@Override
-	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, it.govpay.model.Psp entry) throws ConsoleException {
+	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, it.govpay.bd.model.Psp entry) throws ConsoleException {
 		InfoForm infoModifica = null; 
 		return infoModifica;
 	}
@@ -137,7 +137,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.model.Psp> implements 
 
 			// recupero oggetto
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
-			it.govpay.model.Psp psp = pspBD.getPsp(id);
+			it.govpay.bd.model.Psp psp = pspBD.getPsp(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,psp);
 			URI cancellazione = null;
@@ -180,7 +180,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.model.Psp> implements 
 	}
 	
 	@Override
-	public it.govpay.model.Psp creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
+	public it.govpay.bd.model.Psp creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
 	
@@ -198,7 +198,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.model.Psp> implements 
 	}
 
 	@Override
-	public String getTitolo(it.govpay.model.Psp entry, BasicBD bd) {
+	public String getTitolo(it.govpay.bd.model.Psp entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(entry.getRagioneSociale());
@@ -207,7 +207,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.model.Psp> implements 
 	}
 
 	@Override
-	public String getSottotitolo(it.govpay.model.Psp entry, BasicBD bd) {
+	public String getSottotitolo(it.govpay.bd.model.Psp entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));

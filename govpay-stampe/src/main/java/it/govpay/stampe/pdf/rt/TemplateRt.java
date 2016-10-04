@@ -13,9 +13,6 @@ import org.apache.commons.lang.StringUtils;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.govpay.bd.BasicBD;
-import it.govpay.model.Anagrafica;
-import it.govpay.model.Dominio;
 import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.TemplateBase;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
@@ -26,7 +23,7 @@ public class TemplateRt {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(BasicBD bd, String pathLoghi, CtRicevutaTelematica rt) {
+	public static ComponentBuilder<?, ?> createTitleComponent(String pathLoghi, CtRicevutaTelematica rt) {
 		try{
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
 			CtEnteBeneficiario enteBeneficiario = rt.getEnteBeneficiario();

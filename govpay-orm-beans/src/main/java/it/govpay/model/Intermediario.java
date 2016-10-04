@@ -20,10 +20,6 @@
  */
 package it.govpay.model;
 
-import it.govpay.bd.model.BasicModel;
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Intermediario;
-
 public class Intermediario extends BasicModel{
 	private static final long serialVersionUID = 1L;
 	

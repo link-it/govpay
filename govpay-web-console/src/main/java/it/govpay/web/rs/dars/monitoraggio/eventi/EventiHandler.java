@@ -49,7 +49,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Evento;
 import it.govpay.model.Operatore;
 import it.govpay.model.Evento.TipoEvento;

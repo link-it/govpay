@@ -22,7 +22,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.filters.RrFilter;
-import it.govpay.model.Rr;
+import it.govpay.bd.model.Rr;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;

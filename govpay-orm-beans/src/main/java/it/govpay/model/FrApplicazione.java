@@ -22,8 +22,6 @@ package it.govpay.model;
 
 import java.math.BigDecimal;
 
-import it.govpay.bd.model.BasicModel;
-
 public class FrApplicazione extends BasicModel{
 	private static final long serialVersionUID = 1L;
 	
@@ -67,5 +65,13 @@ public class FrApplicazione extends BasicModel{
 	}
 	public void setImportoTotalePagamenti(BigDecimal importoTotalePagamenti) {
 		this.importoTotalePagamenti = importoTotalePagamenti;
+	}
+	
+	public void incrementaNumeroPagamenti(){
+		this.numeroPagamenti ++;
+	}
+	
+	public void addImporto(BigDecimal importoPagato){
+		this.importoTotalePagamenti = this.importoTotalePagamenti.add(importoPagato);
 	}
 }

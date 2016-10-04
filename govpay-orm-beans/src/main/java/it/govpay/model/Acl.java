@@ -23,8 +23,6 @@ package it.govpay.model;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.BasicModel;
-
 public class Acl extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	public enum Servizio {

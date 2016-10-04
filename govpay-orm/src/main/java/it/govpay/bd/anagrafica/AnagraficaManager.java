@@ -20,6 +20,13 @@
  */
 package it.govpay.bd.anagrafica;
 
+import org.apache.log4j.Logger;
+import org.openspcoop2.generic_project.exception.MultipleResultException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.cache.CacheJMXUtils;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheWrapper;
@@ -46,24 +53,17 @@ import it.govpay.bd.anagrafica.cache.TributiBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Canale;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Operatore;
 import it.govpay.model.Portale;
-import it.govpay.model.Psp;
-import it.govpay.model.Stazione;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.model.TipoTributo;
-import it.govpay.model.Tributo;
-import it.govpay.model.UnitaOperativa;
-
-import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.cache.CacheJMXUtils;
 
 public class AnagraficaManager {
 	private static final String jmxDomain = "it.govpay.cache.anagrafica";

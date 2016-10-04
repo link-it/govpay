@@ -33,7 +33,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.model.Canale;
+import it.govpay.bd.model.Canale;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -48,7 +48,7 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.utils.Utils;
 
-public class CanaliHandler extends BaseDarsHandler<it.govpay.model.Canale> implements IDarsHandler<it.govpay.model.Canale>{
+public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> implements IDarsHandler<it.govpay.bd.model.Canale>{
 
 	public CanaliHandler(Logger log,BaseDarsService darsService) {
 		super(log,darsService);
@@ -72,9 +72,9 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.model.Canale> imple
 
 
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
-			it.govpay.model.Psp psp = pspBD.getPsp(codPsp);
+			it.govpay.bd.model.Psp psp = pspBD.getPsp(codPsp);
 
-			long count = psp.getCanali().size();
+			long count = psp.getCanalis().size();
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
 					this.getInfoCreazione(uriInfo, bd),
@@ -82,10 +82,10 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.model.Canale> imple
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
-			List<it.govpay.model.Canale> findAll = psp.getCanali();
+			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
 
 			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.model.Canale entry : findAll) {
+				for (it.govpay.bd.model.Canale entry : findAll) {
 					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
@@ -112,7 +112,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.model.Canale> imple
 	}
 
 	@Override
-	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, it.govpay.model.Canale entry) throws ConsoleException {
+	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, it.govpay.bd.model.Canale entry) throws ConsoleException {
 		InfoForm infoModifica = null; 
 		return infoModifica;
 	}
@@ -211,7 +211,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.model.Canale> imple
 	}
 
 	@Override
-	public String getTitolo(it.govpay.model.Canale entry, BasicBD bd) {
+	public String getTitolo(it.govpay.bd.model.Canale entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Codice: ").
@@ -220,7 +220,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.model.Canale> imple
 	}
 
 	@Override
-	public String getSottotitolo(it.govpay.model.Canale entry, BasicBD bd) {
+	public String getSottotitolo(it.govpay.bd.model.Canale entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Tipo Versamento: ")

@@ -37,7 +37,7 @@ public class CaricatoreImpl implements ICaricatore {
 
 		it.govpay.core.business.Versamento versamentoBusiness = null;
 		it.govpay.servizi.commons.Versamento versamentoCommons = null;
-		it.govpay.model.Versamento versamentoModel = null;
+		it.govpay.bd.model.Versamento versamentoModel = null;
 		GpContext ctx = null; 
 		VersamentoResponse versamentoResponse = new VersamentoResponse();
 

@@ -1,12 +1,6 @@
 package it.govpay.bd.model;
 
 import it.govpay.model.BasicModel;
-import it.govpay.model.Fr;
-import it.govpay.model.FrApplicazione;
-import it.govpay.model.Pagamento;
-import it.govpay.model.Rpt;
-import it.govpay.model.SingoloVersamento;
-import it.govpay.model.Versamento;
 
 public class RendicontazionePagamento extends BasicModel {
 

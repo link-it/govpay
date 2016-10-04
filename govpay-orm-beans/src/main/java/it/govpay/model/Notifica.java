@@ -22,8 +22,6 @@ package it.govpay.model;
 
 import java.util.Date;
 
-import it.govpay.bd.model.BasicModel;
-
 public class Notifica extends BasicModel {
 	
 	public Notifica() {

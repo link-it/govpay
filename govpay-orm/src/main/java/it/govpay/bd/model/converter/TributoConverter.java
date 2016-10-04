@@ -20,7 +20,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.Tributo;
+import it.govpay.bd.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIbanAccredito;

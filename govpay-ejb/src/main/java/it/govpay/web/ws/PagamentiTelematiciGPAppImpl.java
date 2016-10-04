@@ -31,11 +31,11 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.model.FrApplicazione;
-import it.govpay.model.Pagamento;
-import it.govpay.model.RendicontazioneSenzaRpt;
-import it.govpay.model.Rpt;
-import it.govpay.model.Versamento;
+import it.govpay.bd.model.FrApplicazione;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Versamento;
 import it.govpay.servizi.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
@@ -170,7 +170,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getVersamento().getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			it.govpay.servizi.commons.Versamento versamento = bodyrichiesta.getVersamento();
-			it.govpay.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamento, bd);
+			it.govpay.bd.model.Versamento versamentoModel = VersamentoUtils.toVersamentoModel(versamento, bd);
 			boolean aggiornaSeEsiste = true;
 			if(bodyrichiesta.isAggiornaSeEsiste() != null) {
 				aggiornaSeEsiste = bodyrichiesta.isAggiornaSeEsiste();

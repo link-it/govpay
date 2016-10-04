@@ -9,14 +9,13 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.type;
 
 import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.logging.log4j.Logger;
 
-import it.govpay.bd.BasicBD;
+import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;
 import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.TemplateBase;
@@ -35,7 +34,7 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 
 public class EstrattoContoPdf {
 	
-	public static String getPdfEstrattoConto(BasicBD bd, String pathLoghi, Dominio dominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList, OutputStream os ,Logger log) throws Exception {
+	public static String getPdfEstrattoConto(String pathLoghi, Dominio dominio, Anagrafica anagraficaDominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();
@@ -46,7 +45,7 @@ public class EstrattoContoPdf {
 		String dataFineS = dataFine != null ? TemplateBase.sdf_ddMMyyyy.format(dataFine) : null;
  
 		List<String> errList = new ArrayList<String>();
-		ComponentBuilder<?, ?> titleComponent = TemplateEstrattoContoPagamenti.createTitleComponent(bd, dominio,dataInizioS,dataFineS,log,errList, pathLoghi);
+		ComponentBuilder<?, ?> titleComponent = TemplateEstrattoContoPagamenti.createTitleComponent(dominio,dataInizioS,dataFineS,log,errList, pathLoghi);
 		cl.add(titleComponent);
 		
 		if(errList.size() > 0)
@@ -84,7 +83,7 @@ public class EstrattoContoPdf {
 		
 	//	SubreportBuilder tabellaDettaglioPagamenti = TemplateEstrattoContoPagamenti.getTabellaDettaglioPagamenti(bd, estrattoContoList, totale, log);
 
-		cl.add(TemplateEstrattoContoPagamenti.createRiepilogoComponent(bd, dominio,ibanAccredito,estrattoContoList, totale.get(0),log));
+		cl.add(TemplateEstrattoContoPagamenti.createRiepilogoComponent(dominio,anagraficaDominio,ibanAccredito,estrattoContoList, totale.get(0),log));
 		cl.add(cmp.verticalGap(20));
 		String titoloTabella = Costanti.LABEL_DETTAGLIO_PAGAMENTI;
 		cl.add(cmp.text(titoloTabella).setStyle(TemplateBase.bold18CenteredStyle.italic()));

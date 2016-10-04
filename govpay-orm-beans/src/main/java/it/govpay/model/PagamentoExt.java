@@ -1,7 +1,5 @@
 package it.govpay.model;
 
-import it.govpay.bd.model.Pagamento;
-
 public class PagamentoExt extends Pagamento{
 
 	/**

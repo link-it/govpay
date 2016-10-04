@@ -71,16 +71,16 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Canale;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Notifica;
+import it.govpay.bd.model.Notifica;
 import it.govpay.model.Portale;
-import it.govpay.model.Rpt;
-import it.govpay.model.Rr;
-import it.govpay.model.SingoloVersamento;
-import it.govpay.model.Stazione;
-import it.govpay.model.Versamento;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Versamento;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Canale.TipoVersamento;
@@ -239,7 +239,7 @@ public class Pagamento extends BasicBD {
 				ctx.log("rpt.validazioneSemanticaOk", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 			}
 			
-			it.govpay.model.Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
+			it.govpay.bd.model.Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
 			
 			ctx.log("rpt.validazioneSemanticaPsp", psp.getCodPsp(), canale.getCodCanale());
 			
@@ -641,7 +641,7 @@ public class Pagamento extends BasicBD {
 	public GpAvviaRichiestaStornoResponse avviaStorno(Portale portale, GpAvviaRichiestaStorno gpAvviaRichiestaStorno) throws ServiceException, GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		
-		List<it.govpay.model.Pagamento> pagamentiDaStornare = new ArrayList<it.govpay.model.Pagamento>(); 
+		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<it.govpay.bd.model.Pagamento>(); 
 		Rpt rpt = null;
 		try {
 			RptBD rptBD = new RptBD(this);
@@ -651,7 +651,7 @@ public class Pagamento extends BasicBD {
 				throw new GovPayException(EsitoOperazione.PRT_004, gpAvviaRichiestaStorno.getCodPortale());
 			
 			if(gpAvviaRichiestaStorno.getPagamento() == null || gpAvviaRichiestaStorno.getPagamento().isEmpty()) {
-				for(it.govpay.model.Pagamento pagamento : rpt.getPagamenti(this)) {
+				for(it.govpay.bd.model.Pagamento pagamento : rpt.getPagamenti(this)) {
 					if(pagamento.getImportoRevocato() != null) continue;
 					pagamento.setCausaleRevoca(gpAvviaRichiestaStorno.getCausaleRevoca());
 					pagamento.setDatiRevoca(gpAvviaRichiestaStorno.getDatiAggiuntivi());
@@ -660,7 +660,7 @@ public class Pagamento extends BasicBD {
 				}
 			} else {
 				for(it.govpay.servizi.gpprt.GpAvviaRichiestaStorno.Pagamento p : gpAvviaRichiestaStorno.getPagamento()) {
-					it.govpay.model.Pagamento pagamento = rpt.getPagamento(p.getIur(), this);
+					it.govpay.bd.model.Pagamento pagamento = rpt.getPagamento(p.getIur(), this);
 					if(pagamento.getImportoRevocato() != null) 
 						throw new GovPayException(EsitoOperazione.PAG_009, p.getIur());
 					pagamento.setCausaleRevoca(p.getCausaleRevoca());
@@ -691,7 +691,7 @@ public class Pagamento extends BasicBD {
 		rrBD.insertRr(rr);
 		notifica.setIdRr(rr.getId());
 		notificheBD.insertNotifica(notifica);
-		for(it.govpay.model.Pagamento pagamento : pagamentiDaStornare) {
+		for(it.govpay.bd.model.Pagamento pagamento : pagamentiDaStornare) {
 			pagamento.setIdRr(rr.getId());
 			pagamentiBD.updatePagamento(pagamento);
 		}

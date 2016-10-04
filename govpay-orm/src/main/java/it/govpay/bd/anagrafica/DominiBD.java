@@ -25,7 +25,7 @@ import it.govpay.bd.IFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.converter.DominioConverter;
 import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.IbanAccredito;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;

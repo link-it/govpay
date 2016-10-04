@@ -39,12 +39,12 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RrUtils;
 import it.govpay.core.utils.RtUtils;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Evento;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Rpt;
-import it.govpay.model.Rr;
-import it.govpay.model.Stazione;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Stazione;
 import it.govpay.model.Evento.TipoEvento;
 
 import javax.annotation.Resource;

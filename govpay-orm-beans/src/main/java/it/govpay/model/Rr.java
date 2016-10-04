@@ -23,8 +23,6 @@ package it.govpay.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import it.govpay.bd.model.BasicModel;
-
 public class Rr extends BasicModel{
 	
 	private static final long serialVersionUID = 1L;

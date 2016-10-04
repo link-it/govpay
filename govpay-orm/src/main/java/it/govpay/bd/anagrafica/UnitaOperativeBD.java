@@ -23,7 +23,7 @@ package it.govpay.bd.anagrafica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.converter.UnitaOperativaConverter;
-import it.govpay.model.UnitaOperativa;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdUo;
 import it.govpay.orm.dao.jdbc.JDBCUoServiceSearch;

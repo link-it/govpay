@@ -25,8 +25,6 @@ import java.util.Date;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.BasicModel;
-
 public class Iuv extends BasicModel {
 	
 	public enum TipoIUV {

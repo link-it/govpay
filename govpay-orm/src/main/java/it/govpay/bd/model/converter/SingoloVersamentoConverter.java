@@ -20,7 +20,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.SingoloVersamento;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo.TipoContabilta;

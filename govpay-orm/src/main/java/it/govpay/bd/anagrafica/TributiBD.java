@@ -31,7 +31,7 @@ import org.openspcoop2.utils.UtilsException;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.converter.TributoConverter;
-import it.govpay.model.Tributo;
+import it.govpay.bd.model.Tributo;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdTributo;

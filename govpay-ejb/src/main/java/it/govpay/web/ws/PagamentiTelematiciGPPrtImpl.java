@@ -30,12 +30,12 @@ import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv;
 import it.govpay.model.Portale;
-import it.govpay.model.Rpt;
-import it.govpay.model.Rr;
-import it.govpay.model.Versamento;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Versamento;
 import it.govpay.servizi.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -142,7 +142,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("gpprt.autorizzazione");
 			
-			it.govpay.model.Canale canale = null;
+			it.govpay.bd.model.Canale canale = null;
 			
 			if(bodyrichiesta.getCanale() == null) {
 				it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);

@@ -20,7 +20,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 
-import it.govpay.bd.BasicBD;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;
 import it.govpay.model.EstrattoConto;
@@ -46,7 +45,7 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(BasicBD bd, Dominio dominio, String dataInizio, String dataFine,Logger log,List<String> errList,String pathLoghi) {
+	public static ComponentBuilder<?, ?> createTitleComponent(Dominio dominio, String dataInizio, String dataFine,Logger log,List<String> errList,String pathLoghi) {
 		try{
 
 			StringBuilder errMsg = new StringBuilder();
@@ -98,11 +97,11 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createRiepilogoComponent(BasicBD bd, Dominio dominio, String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
+	public static ComponentBuilder<?, ?> createRiepilogoComponent(Dominio dominio, Anagrafica anagrafica, String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
 		try{
 			return cmp.horizontalList(
-					createRiepilogoGenerale(bd, dominio, ibanAccredito, estrattoContoList,totale,log),
-					createDatiDominio(bd, dominio, log)
+					createRiepilogoGenerale(dominio, ibanAccredito, estrattoContoList,totale,log),
+					createDatiDominio(dominio,anagrafica, log)
 					).newRow();
 		}catch(Exception e){
 			log.error(e.getMessage(),e);
@@ -113,14 +112,13 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createDatiDominio(BasicBD bd, Dominio dominio, Logger log) {
+	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica, Logger log) {
 		try{
 			VerticalListBuilder listDominio = cmp.verticalList().setStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10)
 					.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setHorizontalImageAlignment(HorizontalImageAlignment.CENTER)); 
 
 			String denominazioneDominio = dominio.getRagioneSociale();
 			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
-			Anagrafica anagrafica = dominio.getAnagrafica(bd);
 
 			String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
 			String civico = StringUtils.isNotEmpty(anagrafica.getCivico()) ? anagrafica.getCivico() : "";
@@ -150,7 +148,7 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createRiepilogoGenerale(BasicBD bd, Dominio dominio,String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
+	public static ComponentBuilder<?, ?> createRiepilogoGenerale(Dominio dominio,String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
 		try{
 			HorizontalListBuilder listRiepilogo = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)); 
 
@@ -171,7 +169,7 @@ public class TemplateEstrattoContoPagamenti {
 		return null;
 	}
 
-	public static SubreportBuilder getTabellaDettaglioPagamenti(BasicBD bd,  List<it.govpay.model.EstrattoConto> estrattoContoList,List<Double> totale ,Logger log) throws Exception{
+	public static SubreportBuilder getTabellaDettaglioPagamenti(List<it.govpay.model.EstrattoConto> estrattoContoList,List<Double> totale ,Logger log) throws Exception{
 
 		// Scittura Intestazione
 		List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();

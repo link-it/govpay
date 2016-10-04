@@ -50,7 +50,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.model.Notifica;
+import it.govpay.bd.model.Notifica;
 
 @Singleton
 public class Operazioni{

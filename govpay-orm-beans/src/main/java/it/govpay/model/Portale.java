@@ -22,9 +22,6 @@ package it.govpay.model;
 
 import java.util.List;
 
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Versionabile;
-
 public class Portale extends Versionabile {
 	private static final long serialVersionUID = 1L;
 	

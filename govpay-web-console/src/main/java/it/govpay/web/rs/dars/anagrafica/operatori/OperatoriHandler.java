@@ -46,7 +46,7 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
 import it.govpay.model.Acl;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Operatore;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;

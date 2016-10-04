@@ -29,10 +29,6 @@ import java.util.List;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang.StringUtils;
 
-import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.BasicModel;
-import it.govpay.bd.model.Versamento;
-
 
 
 public class Versamento extends BasicModel {

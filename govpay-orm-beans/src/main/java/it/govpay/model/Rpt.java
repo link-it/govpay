@@ -26,7 +26,6 @@ import java.util.Date;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.BasicModel;
 import it.govpay.model.Canale.ModelloPagamento;
 
 public class Rpt extends BasicModel{

@@ -48,7 +48,7 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.PortaleFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.model.Acl;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Portale;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Acl.Servizio;

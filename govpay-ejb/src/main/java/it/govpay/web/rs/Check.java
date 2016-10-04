@@ -32,9 +32,9 @@ import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.NodoClient;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Stazione;
+import it.govpay.bd.model.Stazione;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

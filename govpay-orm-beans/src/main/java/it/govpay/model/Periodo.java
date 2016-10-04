@@ -20,9 +20,6 @@
  */
 package it.govpay.model;
 
-import it.govpay.bd.model.BasicModel;
-import it.govpay.bd.model.Periodo;
-
 public class Periodo extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	private String da;

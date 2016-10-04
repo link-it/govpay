@@ -20,8 +20,6 @@
  */
 package it.govpay.model;
 
-import it.govpay.bd.model.BasicModel;
-
 public class Connettore extends BasicModel {
 	private static final long serialVersionUID = 1L;
 	

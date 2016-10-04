@@ -34,6 +34,7 @@ import it.govpay.core.utils.CSVSerializerProperties;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Anagrafica;
 import it.govpay.model.rest.Pagamento;
 import it.govpay.orm.Dominio;
 import it.govpay.stampe.pdf.estrattoConto.EstrattoContoPdf;
@@ -128,7 +129,7 @@ public class EstrattoConto extends BasicBD {
 			fsw.setSortOrder(SortOrder.ASC);
 			filterSortList.add(fsw);
 			dominiFilter.setFilterSortList(filterSortList );
-			List<it.govpay.model.Dominio> domini =	dominiBD.findAll(dominiFilter);
+			List<it.govpay.bd.model.Dominio> domini = dominiBD.findAll(dominiFilter);
 
 			SimpleDateFormat f2 = new SimpleDateFormat("yyyy_MM");
 			SimpleDateFormat f3 = new SimpleDateFormat("yyyy/MM");
@@ -138,7 +139,7 @@ public class EstrattoConto extends BasicBD {
 			Calendar c = Calendar.getInstance();
 			boolean ignoraScorsoMese = c.get(Calendar.DAY_OF_MONTH) < giornoEsecuzione;
 
-			for (it.govpay.model.Dominio dominio : domini) {
+			for (it.govpay.bd.model.Dominio dominio : domini) {
 				String denominazioneDominio = dominio.getRagioneSociale()+" ("+dominio.getCodDominio()+")";
 
 				ctx.log("estrattoConto.inizioDominio", denominazioneDominio);
@@ -297,7 +298,8 @@ public class EstrattoConto extends BasicBD {
 									log.debug("creo il file PDf: "+dominioPdfFile.getAbsolutePath());
 									dominioPdfFile.createNewFile();
 									fosPdf  = new FileOutputStream(dominioPdfFile);
-									esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(this,pathLoghi,dominio, dataInizio, dataFine, ibanAccredito, estrattoContoPdf, fosPdf,log); 
+									Anagrafica anagraficaDominio = dominio.getAnagrafica(this);
+									esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi,dominio,anagraficaDominio, dataInizio, dataFine, ibanAccredito, estrattoContoPdf, fosPdf,log); 
 
 								} else {
 									creaEstrattoContoPdf = false;
@@ -611,7 +613,8 @@ public class EstrattoConto extends BasicBD {
 					// creo nome file csv nel formato codDominio_IbanAccredito.csv
 					String dominioPdfFileName = estrattoConto.getDominio().getCodDominio() +  "_"  + ibanAccredito + ".pdf";
 					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(this,pathLoghi, estrattoConto.getDominio(), null, null, ibanAccredito, estrattoContoPdf, baos,log);
+					Anagrafica anagraficaDominio = estrattoConto.getDominio().getAnagrafica(this);
+					esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi, estrattoConto.getDominio(),anagraficaDominio, null, null, ibanAccredito, estrattoContoPdf, baos,log);
 
 					// salvo il risultato nella base dati
 					estrattoConto.getOutput().put(dominioPdfFileName, baos);

@@ -21,105 +21,16 @@
 
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
-import it.govpay.model.BasicModel;
-import it.govpay.model.Stazione;
 
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
-public class Dominio extends BasicModel {
+public class Dominio extends it.govpay.model.Dominio {
 	private static final long serialVersionUID = 1L;
-	
-	public static final String EC = "EC"; 
-	
-	private Long id; 
-	private long idStazione; 
-	private Long idApplicazioneDefault; 
-	private String codDominio;
-	private String ragioneSociale;
-	private String gln;
-	private boolean riusoIuv;
-	private boolean customIuv;
-	private boolean abilitato;
-	private byte[] contiAccredito;
-	private byte[] tabellaControparti;
-	
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getCodDominio() {
-		return codDominio;
-	}
-
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
-	}
-
-	public String getGln() {
-		return gln;
-	}
-
-	public void setGln(String gln) {
-		this.gln = gln;
-	}
-
-	public String getRagioneSociale() {
-		return ragioneSociale;
-	}
-
-	public void setRagioneSociale(String ragioneSociale) {
-		this.ragioneSociale = ragioneSociale;
-	}
-
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-
-	public long getIdStazione() {
-		return idStazione;
-	}
-
-	public void setIdStazione(long idStazione) {
-		this.idStazione = idStazione;
-	}
-
-	public byte[] getContiAccredito() {
-		return contiAccredito;
-	}
-
-	public void setContiAccredito(byte[] contiAccredito) {
-		this.contiAccredito = contiAccredito;
-	}
-
-	public byte[] getTabellaControparti() {
-		return tabellaControparti;
-	}
-
-	public void setTabellaControparti(byte[] tabellaControparti) {
-		this.tabellaControparti = tabellaControparti;
-	}
-	
-	public Long getIdApplicazioneDefault() {
-		return idApplicazioneDefault;
-	}
-
-	public void setIdApplicazioneDefault(Long idApplicazioneDefault) {
-		this.idApplicazioneDefault = idApplicazioneDefault;
-	}
-
 	
 	// Business
 	
@@ -129,14 +40,14 @@ public class Dominio extends BasicModel {
 	
 	public Stazione getStazione(BasicBD bd) throws ServiceException {
 		if(stazione == null) {
-			stazione = AnagraficaManager.getStazione(bd, idStazione);
+			stazione = AnagraficaManager.getStazione(bd, this.getIdStazione());
 		} 
 		return stazione;
 	}
 
 	public Anagrafica getAnagrafica(BasicBD bd) throws ServiceException, NotFoundException {
 		if(anagrafica == null) {
-			anagrafica = AnagraficaManager.getUnitaOperativa(bd, id, EC).getAnagrafica();
+			anagrafica = AnagraficaManager.getUnitaOperativa(bd, this.getId(), EC).getAnagrafica();
 		}
 		return anagrafica;
 	}
@@ -145,32 +56,16 @@ public class Dominio extends BasicModel {
 		this.anagrafica = anagrafica;
 	}
 
-	public boolean isRiusoIuv() {
-		return riusoIuv;
-	}
-
-	public void setRiusoIuv(boolean riusoIuv) {
-		this.riusoIuv = riusoIuv;
-	}
-
-	public boolean isCustomIuv() {
-		return customIuv;
-	}
-
-	public void setCustomIuv(boolean customIuv) {
-		this.customIuv = customIuv;
-	}
-
 	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException, NotFoundException {
-		if(applicazioneDefault == null && idApplicazioneDefault != null) {
-			applicazioneDefault = AnagraficaManager.getApplicazione(bd, idApplicazioneDefault);
+		if(applicazioneDefault == null && this.getIdApplicazioneDefault() != null) {
+			applicazioneDefault = AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault());
 		} 
 		return applicazioneDefault;
 	}
 
 	public void setApplicazioneDefault(Applicazione applicazioneDefault) {
 		this.applicazioneDefault = applicazioneDefault;
-		this.idApplicazioneDefault = applicazioneDefault.getId();
+		this.setIdApplicazioneDefault(applicazioneDefault.getId());
 	}
 
 

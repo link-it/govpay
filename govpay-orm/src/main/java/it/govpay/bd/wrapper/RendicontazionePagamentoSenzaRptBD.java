@@ -1,13 +1,13 @@
 package it.govpay.bd.wrapper;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.RendicontazionePagamentoSenzaRpt;
 import it.govpay.bd.model.converter.FrApplicazioneConverter;
 import it.govpay.bd.model.converter.FrConverter;
 import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoSenzaRptFilter;
-import it.govpay.model.RendicontazionePagamentoSenzaRpt;
 
 import java.util.ArrayList;
 import java.util.List;

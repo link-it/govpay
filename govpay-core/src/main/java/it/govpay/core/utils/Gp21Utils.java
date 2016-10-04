@@ -24,12 +24,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Iuv;
-import it.govpay.model.Pagamento;
-import it.govpay.model.RendicontazionePagamento;
-import it.govpay.model.RendicontazioneSenzaRpt;
-import it.govpay.model.Rpt;
-import it.govpay.model.Rr;
-import it.govpay.model.Versamento;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.RendicontazionePagamento;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Versamento;
 import it.govpay.model.Versionabile;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Canale;

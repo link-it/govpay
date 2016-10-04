@@ -1,8 +1,7 @@
 package it.govpay.bd.model;
 
-import it.govpay.model.Pagamento;
 
-public class PagamentoExt extends Pagamento{
+public class PagamentoExt extends it.govpay.model.Pagamento{
 
 	/**
 	 * 

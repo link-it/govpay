@@ -21,57 +21,17 @@
 
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Anagrafica;
-import it.govpay.model.BasicModel;
-import it.govpay.model.Dominio;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 /**
  * Rapppresenta una Unita' Operativa
  */
 
-public class UnitaOperativa extends BasicModel {
+public class UnitaOperativa extends it.govpay.model.UnitaOperativa {
 	private static final long serialVersionUID = 1L;
-	
-	private Long id; 
-	private long idDominio;
-	private String codUo;
-	private boolean abilitato;
-	private Anagrafica anagrafica;
-
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public long getIdDominio() {
-		return idDominio;
-	}
-	public void setIdDominio(long idDominio) {
-		this.idDominio = idDominio;
-	}
-	public String getCodUo() {
-		return codUo;
-	}
-	public void setCodUo(String codUo) {
-		this.codUo = codUo;
-	}
-	public Anagrafica getAnagrafica() {
-		return anagrafica;
-	}
-	public void setAnagrafica(Anagrafica anagrafica) {
-		this.anagrafica = anagrafica;
-	}
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
 	
 	// Business
 	
@@ -79,7 +39,7 @@ public class UnitaOperativa extends BasicModel {
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(dominio == null) {
-			dominio = AnagraficaManager.getDominio(bd, idDominio);
+			dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
 		} 
 		return dominio;
 	}

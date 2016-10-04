@@ -22,7 +22,7 @@ package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.NotificaConverter;
-import it.govpay.model.Notifica;
+import it.govpay.bd.model.Notifica;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.orm.dao.jdbc.JDBCNotificaService;
 

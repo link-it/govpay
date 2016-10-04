@@ -21,9 +21,6 @@
 
 package it.govpay.model;
 
-import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.BasicModel;
-
 /**
  * Rapppresenta una Unita' Operativa
  */

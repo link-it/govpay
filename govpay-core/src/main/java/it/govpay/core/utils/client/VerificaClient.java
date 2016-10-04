@@ -39,7 +39,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Versamento;
+import it.govpay.bd.model.Versamento;
 import it.govpay.model.Connettore.Tipo;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.EsitoOperazione;

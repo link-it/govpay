@@ -6,7 +6,6 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 
 import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,8 +13,6 @@ import java.util.List;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
-import it.govpay.bd.BasicBD;
-import it.govpay.model.Dominio;
 import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.TemplateBase;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -28,14 +25,14 @@ import net.sf.dynamicreports.report.constant.PageType;
 
 public class RtPdf {
 
-	public static byte[] getPdfRicevutaPagamento(BasicBD bd, String pathLoghi,  CtRicevutaTelematica rt,String  causale) throws Exception { //, String idDominio, RefPagamento refPagamento , BigDecimal importoTotale, Anagrafica debitore, Anagrafica creditore) throws Exception{
+	public static byte[] getPdfRicevutaPagamento(String pathLoghi,  CtRicevutaTelematica rt,String  causale) throws Exception { //, String idDominio, RefPagamento refPagamento , BigDecimal importoTotale, Anagrafica debitore, Anagrafica creditore) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(baos);
 		JasperReportBuilder report = report();
 
 		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 
-		cl.add(TemplateRt.createTitleComponent(bd, pathLoghi,rt));
+		cl.add(TemplateRt.createTitleComponent(pathLoghi,rt));
 
 		cl.add(createRicevutaPagamentoList(Costanti.LABEL_RICEVUTA_PAGAMENTO, rt,causale)); 
 

@@ -49,7 +49,7 @@ import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
-import it.govpay.model.Tributo;
+import it.govpay.bd.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;

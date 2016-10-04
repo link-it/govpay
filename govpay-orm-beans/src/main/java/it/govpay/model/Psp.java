@@ -23,9 +23,6 @@ package it.govpay.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.govpay.bd.model.BasicModel;
-import it.govpay.bd.model.Canale;
-
 public class Psp extends BasicModel {	
 	
 	private static final long serialVersionUID = 1L;

@@ -31,55 +31,11 @@ import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.model.Applicazione;
-import it.govpay.model.BasicModel;
-import it.govpay.model.Fr;
-import it.govpay.model.Pagamento;
-import it.govpay.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.Pagamento;
 
-public class FrApplicazione extends BasicModel{
+public class FrApplicazione extends it.govpay.model.FrApplicazione{
 	private static final long serialVersionUID = 1L;
-	
-	private Long id;
-	private long idFr;
-	private long idApplicazione;
-	private long numeroPagamenti;
-	private BigDecimal importoTotalePagamenti;
-	
-	public FrApplicazione() {
-		this.importoTotalePagamenti = BigDecimal.ZERO;
-		this.numeroPagamenti = 0;
-	}
-	
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public long getIdFr() {
-		return idFr;
-	}
-	public void setIdFr(long idFr) {
-		this.idFr = idFr;
-	}
-	public long getIdApplicazione() {
-		return idApplicazione;
-	}
-	public void setIdApplicazione(long idApplicazione) {
-		this.idApplicazione = idApplicazione;
-	}
-	public long getNumeroPagamenti() {
-		return numeroPagamenti;
-	}
-	public void setNumeroPagamenti(long numeroPagamenti) {
-		this.numeroPagamenti = numeroPagamenti;
-	}
-	public BigDecimal getImportoTotalePagamenti() {
-		return importoTotalePagamenti;
-	}
-	public void setImportoTotalePagamenti(BigDecimal importoTotalePagamenti) {
-		this.importoTotalePagamenti = importoTotalePagamenti;
-	}
+ 
 	
 	// Business 
 	
@@ -90,7 +46,7 @@ public class FrApplicazione extends BasicModel{
 	
 	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
 		if(applicazione == null) {
-			applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
+			applicazione = AnagraficaManager.getApplicazione(bd, this.getIdApplicazione());
 		}
 		return applicazione;
 	}
@@ -101,7 +57,7 @@ public class FrApplicazione extends BasicModel{
 	public Fr getFr(BasicBD bd) throws ServiceException {
 		if(fr == null) {
 			FrBD frBD = new FrBD(bd);
-			fr = frBD.getFr(idFr);
+			fr = frBD.getFr(this.getIdFr());
 		}
 		return fr;
 	}
@@ -112,7 +68,7 @@ public class FrApplicazione extends BasicModel{
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
 		if(pagamenti == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamenti = pagamentiBD.getPagamentiByFrApplicazione(id);
+			pagamenti = pagamentiBD.getPagamentiByFrApplicazione(this.getId());
 		}
 		return pagamenti;
 	}
@@ -124,14 +80,15 @@ public class FrApplicazione extends BasicModel{
 	public void addPagamento(Pagamento pagamento) {
 		if(this.pagamenti == null) this.pagamenti = new ArrayList<Pagamento>();
 		this.pagamenti.add(pagamento);
-		this.importoTotalePagamenti = this.importoTotalePagamenti.add(pagamento.getImportoPagato());
-		this.numeroPagamenti++;
+		BigDecimal importoPagato = pagamento.getImportoPagato();
+		this.addImporto(importoPagato);
+		this.incrementaNumeroPagamenti();
 	}
 	
 	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(BasicBD bd) throws ServiceException {
 		if(rendicontazioniSenzaRpt == null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			rendicontazioniSenzaRpt = pagamentiBD.getRendicontazioniSenzaRpt(id);
+			rendicontazioniSenzaRpt = pagamentiBD.getRendicontazioniSenzaRpt(this.getId());
 		}
 		return rendicontazioniSenzaRpt;
 	}
@@ -143,8 +100,9 @@ public class FrApplicazione extends BasicModel{
 	public void addRendicontazioneSenzaRpt(RendicontazioneSenzaRpt rendincontazione) {
 		if(this.rendicontazioniSenzaRpt == null) this.rendicontazioniSenzaRpt = new ArrayList<RendicontazioneSenzaRpt>();
 		this.rendicontazioniSenzaRpt.add(rendincontazione);
-		this.importoTotalePagamenti = this.importoTotalePagamenti.add(rendincontazione.getImportoPagato());
-		this.numeroPagamenti++;
+		BigDecimal importoPagato = rendincontazione.getImportoPagato();
+		this.addImporto(importoPagato);
+		this.incrementaNumeroPagamenti();
 	}
 	
 }

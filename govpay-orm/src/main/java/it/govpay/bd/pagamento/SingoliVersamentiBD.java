@@ -25,7 +25,7 @@ import java.util.List;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
-import it.govpay.model.SingoloVersamento;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;

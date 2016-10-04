@@ -20,7 +20,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.Fr;
+import it.govpay.bd.model.Fr;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdPsp;

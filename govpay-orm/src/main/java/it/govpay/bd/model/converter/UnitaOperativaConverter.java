@@ -21,7 +21,7 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.model.Anagrafica;
-import it.govpay.model.UnitaOperativa;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.Uo;
 
