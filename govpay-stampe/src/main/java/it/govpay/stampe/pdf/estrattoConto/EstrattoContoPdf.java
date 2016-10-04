@@ -34,7 +34,8 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 
 public class EstrattoContoPdf {
 	
-	public static String getPdfEstrattoConto(String pathLoghi, Dominio dominio, Anagrafica anagraficaDominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList, OutputStream os ,Logger log) throws Exception {
+	public static String getPdfEstrattoConto(String pathLoghi, Dominio dominio, Anagrafica anagraficaDominio, Date dataInizio, Date dataFine, String ibanAccredito, 
+			List<it.govpay.model.EstrattoConto> estrattoContoList, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();

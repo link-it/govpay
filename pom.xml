@@ -11,6 +11,7 @@
 	<modules>
 		<module>govpay-orm-beans</module>
 		<module>govpay-orm</module>
+		<module>govpay-core-beans</module>
 		<module>govpay-stampe</module>
 		<module>govpay-core</module>
 		<module>govpay-ejb</module>

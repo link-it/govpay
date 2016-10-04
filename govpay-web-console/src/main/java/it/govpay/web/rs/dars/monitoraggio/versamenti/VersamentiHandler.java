@@ -42,6 +42,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
@@ -56,6 +57,8 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.business.EstrattoConto;
+import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
@@ -70,6 +73,7 @@ import it.govpay.bd.model.Versamento;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.stampe.pdf.rt.RtPdf;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -600,6 +604,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 		int numeroZipEntries = 0;
+		String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 
 		if(idsToExport.size() == 1)
 			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
@@ -679,7 +684,17 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							zout.closeEntry();
 							
 							// RT in formato pdf
+							CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
+							String causale = versamento.getCausaleVersamento().getSimple();
+							ByteArrayOutputStream baos = new ByteArrayOutputStream();
+							RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
 							
+							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
+							numeroZipEntries ++;
+							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+							zout.putNextEntry(rtPdf);
+							zout.write(baos.toByteArray());
+							zout.closeEntry();
 						}
 						
 						// Eventi
@@ -736,7 +751,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				listInputEstrattoConto.add(input);
 			}
 			
-			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
+			
 			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
 
 			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
@@ -863,6 +878,17 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						zout.closeEntry();
 
 						// RT in formato pdf
+						CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
+						String causale = versamento.getCausaleVersamento().getSimple();
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
+						
+						String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
+						numeroZipEntries ++;
+						ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+						zout.putNextEntry(rtPdf);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
 					}
 
 					// Eventi

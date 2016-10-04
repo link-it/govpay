@@ -5,10 +5,12 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.export;
 import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 
-import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.logging.log4j.Logger;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
@@ -25,14 +27,18 @@ import net.sf.dynamicreports.report.constant.PageType;
 
 public class RtPdf {
 
-	public static byte[] getPdfRicevutaPagamento(String pathLoghi,  CtRicevutaTelematica rt,String  causale) throws Exception { //, String idDominio, RefPagamento refPagamento , BigDecimal importoTotale, Anagrafica debitore, Anagrafica creditore) throws Exception{
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(baos);
+	public static String getPdfRicevutaPagamento(String pathLoghi,  CtRicevutaTelematica rt,String  causale,OutputStream os ,Logger log) throws Exception {
+		String msg = null;
+		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();
 
 		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 
-		cl.add(TemplateRt.createTitleComponent(pathLoghi,rt));
+		List<String> errList = new ArrayList<String>();
+		cl.add(TemplateRt.createTitleComponent(pathLoghi,rt,errList,log));
+		
+		if(errList.size() > 0)
+			msg = errList.get(0);
 
 		cl.add(createRicevutaPagamentoList(Costanti.LABEL_RICEVUTA_PAGAMENTO, rt,causale)); 
 
@@ -47,7 +53,7 @@ public class RtPdf {
 		.title(cl.toArray(ca))
 		.toPdf(pdfExporter); 
 
-		return baos.toByteArray();
+		return msg;
 	}
 
 	private static ComponentBuilder<?, ?> createRicevutaPagamentoList(String label , CtRicevutaTelematica rt, String causale) {
