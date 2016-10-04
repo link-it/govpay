@@ -64,6 +64,14 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.10</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-core-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
