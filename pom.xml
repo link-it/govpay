@@ -9,6 +9,7 @@
 	<name>GovPay</name>
 
 	<modules>
+		<module>govpay-orm-beans</module>
 		<module>govpay-orm</module>
 		<module>govpay-stampe</module>
 		<module>govpay-core</module>
@@ -97,6 +98,13 @@
 				<scope>compile</scope>
 			</dependency>
 			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-orm-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
