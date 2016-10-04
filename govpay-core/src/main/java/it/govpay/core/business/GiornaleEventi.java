@@ -24,8 +24,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Evento;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.model.Evento;
 
 public class GiornaleEventi extends BasicBD {
 	

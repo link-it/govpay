@@ -24,8 +24,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Rr.StatoRr;
+import it.govpay.model.Rr;
+import it.govpay.model.Rr.StatoRr;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RR;
 

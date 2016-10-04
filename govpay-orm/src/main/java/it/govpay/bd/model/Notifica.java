@@ -24,6 +24,10 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
+import it.govpay.model.Applicazione;
+import it.govpay.model.BasicModel;
+import it.govpay.model.Rpt;
+import it.govpay.model.Rr;
 
 import java.util.Date;
 

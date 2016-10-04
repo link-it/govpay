@@ -40,8 +40,8 @@ import org.openspcoop2.utils.csv.Format;
 import org.openspcoop2.utils.csv.FormatReader;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.core.utils.CSVSerializerProperties;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;

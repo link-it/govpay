@@ -21,9 +21,9 @@
 package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.converter.RptConverter;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.model.Rpt;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.JDBCRPTService;

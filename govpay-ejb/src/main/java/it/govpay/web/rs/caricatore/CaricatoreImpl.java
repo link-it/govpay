@@ -1,13 +1,13 @@
 package it.govpay.web.rs.caricatore;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.web.rs.converter.VersamentoConverter;
 import it.govpay.web.rs.model.Versamento;
@@ -37,7 +37,7 @@ public class CaricatoreImpl implements ICaricatore {
 
 		it.govpay.core.business.Versamento versamentoBusiness = null;
 		it.govpay.servizi.commons.Versamento versamentoCommons = null;
-		it.govpay.bd.model.Versamento versamentoModel = null;
+		it.govpay.model.Versamento versamentoModel = null;
 		GpContext ctx = null; 
 		VersamentoResponse versamentoResponse = new VersamentoResponse();
 
@@ -56,7 +56,7 @@ public class CaricatoreImpl implements ICaricatore {
 
 		this.log.info("Caricamento del Versamento ["+request.getIdentificativoVersamento()+"] in corso...");
 
-		it.govpay.bd.model.Iuv iuv = null;
+		it.govpay.model.Iuv iuv = null;
 		try{
 			ctx.getContext().getRequest().addGenericProperty(new Property("identificativoVersamento", request.getIdentificativoVersamento())); 
 			ctx.getContext().getRequest().addGenericProperty(new Property("codiceCreditore", request.getCodiceCreditore()));

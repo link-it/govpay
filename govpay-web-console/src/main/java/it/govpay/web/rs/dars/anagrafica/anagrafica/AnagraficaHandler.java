@@ -31,7 +31,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Anagrafica;
+import it.govpay.model.Anagrafica;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;

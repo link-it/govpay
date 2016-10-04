@@ -22,6 +22,9 @@ package it.govpay.bd.model;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.BasicModel;
+import it.govpay.model.Dominio;
+import it.govpay.model.Psp;
 
 import java.util.Date;
 

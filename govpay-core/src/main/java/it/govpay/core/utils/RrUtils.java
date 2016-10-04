@@ -49,19 +49,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivoc
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.StTipoIdentificativoUnivocoPersFG;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStorno;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.Evento.CategoriaEvento;
-import it.govpay.bd.model.Evento.TipoEvento;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Notifica.TipoNotifica;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Rr.StatoRr;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RrBD;
@@ -75,6 +62,19 @@ import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Evento;
+import it.govpay.model.Notifica;
+import it.govpay.model.Pagamento;
+import it.govpay.model.Rpt;
+import it.govpay.model.Rr;
+import it.govpay.model.SingoloVersamento;
+import it.govpay.model.Versamento;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.TipoEvento;
+import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rr.StatoRr;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.StatoVersamento;
 
 public class RrUtils extends NdpValidationUtils {
 

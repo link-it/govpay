@@ -33,9 +33,9 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Connettore.EnumAuthType;
-import it.govpay.bd.model.Connettore.EnumSslType;
+import it.govpay.model.Connettore;
+import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.Password;

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.model.RendicontazioneSenzaRpt;
 import it.govpay.orm.IdFrApplicazione;
 import it.govpay.orm.IdIuv;
 import it.govpay.orm.IdSingoloVersamento;

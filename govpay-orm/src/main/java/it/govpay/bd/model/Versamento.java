@@ -22,11 +22,19 @@ package it.govpay.bd.model;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Applicazione;
+import it.govpay.model.BasicModel;
+import it.govpay.model.Iuv;
+import it.govpay.model.Rpt;
+import it.govpay.model.SingoloVersamento;
+import it.govpay.model.UnitaOperativa;
+import it.govpay.model.Versamento;
+import it.govpay.model.Iuv.TipoIUV;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -400,7 +408,7 @@ public class Versamento extends BasicModel {
 	private boolean bolloTelematico;
 	private Iuv iuv;
 	
-	public void addSingoloVersamento(it.govpay.bd.model.SingoloVersamento singoloVersamento) throws ServiceException {
+	public void addSingoloVersamento(it.govpay.model.SingoloVersamento singoloVersamento) throws ServiceException {
 		if(this.singoliVersamenti == null) {
 			this.singoliVersamenti = new ArrayList<SingoloVersamento>();
 		}
@@ -412,7 +420,7 @@ public class Versamento extends BasicModel {
 		}
 	}
 	
-	public List<it.govpay.bd.model.SingoloVersamento> getSingoliVersamenti(BasicBD bd) throws ServiceException {
+	public List<it.govpay.model.SingoloVersamento> getSingoliVersamenti(BasicBD bd) throws ServiceException {
 		if(this.singoliVersamenti == null && getId() != null) {
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			this.singoliVersamenti = versamentiBD.getSingoliVersamenti(getId());

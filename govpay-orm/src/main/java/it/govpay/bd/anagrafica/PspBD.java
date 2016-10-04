@@ -22,11 +22,11 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.PspFilter;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Canale.TipoVersamento;
 import it.govpay.bd.model.converter.CanaleConverter;
 import it.govpay.bd.model.converter.PspConverter;
+import it.govpay.model.Canale;
+import it.govpay.model.Psp;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPsp;
 import it.govpay.orm.dao.IDBCanaleServiceSearch;

@@ -20,12 +20,12 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Psp;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.model.Psp;
 
 public class PspConverter {
 

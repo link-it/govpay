@@ -37,8 +37,8 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.reportistica.PagamentiBD;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 

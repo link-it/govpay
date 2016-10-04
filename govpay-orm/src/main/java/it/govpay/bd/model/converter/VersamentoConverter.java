@@ -20,9 +20,9 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Versamento.StatoVersamento;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Versamento;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdUo;
 

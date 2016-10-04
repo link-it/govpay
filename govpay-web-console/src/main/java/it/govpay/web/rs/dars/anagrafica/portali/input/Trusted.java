@@ -7,7 +7,7 @@ import org.apache.commons.lang.StringUtils;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.PortaliBD;
-import it.govpay.bd.model.Portale;
+import it.govpay.model.Portale;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.input.dinamic.CheckButton;
 import it.govpay.web.utils.Utils;

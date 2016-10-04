@@ -29,7 +29,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.PrefixFileFilter;
 
-import it.govpay.bd.model.Canale;
+import it.govpay.model.Canale;
 import it.govpay.servizi.commons.ModelloPagamento;
 import it.govpay.servizi.commons.TipoVersamento;
 

@@ -43,26 +43,6 @@ import it.gov.digitpa.schemas._2011.ws.paa.TipoRPTPendente;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Canale.ModelloPagamento;
-import it.govpay.bd.model.Canale.TipoVersamento;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Iuv.TipoIUV;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Notifica.TipoNotifica;
-import it.govpay.bd.model.Rpt.StatoRpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Rr.StatoRr;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -89,6 +69,26 @@ import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Canale;
+import it.govpay.model.Dominio;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Notifica;
+import it.govpay.model.Portale;
+import it.govpay.model.Rpt;
+import it.govpay.model.Rr;
+import it.govpay.model.SingoloVersamento;
+import it.govpay.model.Stazione;
+import it.govpay.model.Versamento;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Rr.StatoRr;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.VersamentoKey;
 import it.govpay.servizi.gpprt.GpAvviaRichiestaStorno;
@@ -239,7 +239,7 @@ public class Pagamento extends BasicBD {
 				ctx.log("rpt.validazioneSemanticaOk", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
 			}
 			
-			it.govpay.bd.model.Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
+			it.govpay.model.Psp psp = AnagraficaManager.getPsp(this, canale.getIdPsp());
 			
 			ctx.log("rpt.validazioneSemanticaPsp", psp.getCodPsp(), canale.getCodCanale());
 			
@@ -292,7 +292,7 @@ public class Pagamento extends BasicBD {
 				if(versamento.getId() == null) {
 					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
 				}
-				it.govpay.bd.model.Iuv iuv = null;
+				it.govpay.model.Iuv iuv = null;
 				String ccp = null;
 				
 				// Verifico se ha uno IUV suggerito ed in caso lo assegno
@@ -315,12 +315,12 @@ public class Pagamento extends BasicBD {
 							ccp = IuvUtils.buildCCP();
 							ctx.log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						} catch (NotFoundException e) {
-							iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.ISO11694);
+							iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.ISO11694);
 							ccp = Rpt.CCP_NA;
 							ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						}
 					} else {
-						iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.ISO11694);
+						iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.ISO11694);
 						ccp = Rpt.CCP_NA;
 						ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 					}
@@ -641,7 +641,7 @@ public class Pagamento extends BasicBD {
 	public GpAvviaRichiestaStornoResponse avviaStorno(Portale portale, GpAvviaRichiestaStorno gpAvviaRichiestaStorno) throws ServiceException, GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		
-		List<it.govpay.bd.model.Pagamento> pagamentiDaStornare = new ArrayList<it.govpay.bd.model.Pagamento>(); 
+		List<it.govpay.model.Pagamento> pagamentiDaStornare = new ArrayList<it.govpay.model.Pagamento>(); 
 		Rpt rpt = null;
 		try {
 			RptBD rptBD = new RptBD(this);
@@ -651,7 +651,7 @@ public class Pagamento extends BasicBD {
 				throw new GovPayException(EsitoOperazione.PRT_004, gpAvviaRichiestaStorno.getCodPortale());
 			
 			if(gpAvviaRichiestaStorno.getPagamento() == null || gpAvviaRichiestaStorno.getPagamento().isEmpty()) {
-				for(it.govpay.bd.model.Pagamento pagamento : rpt.getPagamenti(this)) {
+				for(it.govpay.model.Pagamento pagamento : rpt.getPagamenti(this)) {
 					if(pagamento.getImportoRevocato() != null) continue;
 					pagamento.setCausaleRevoca(gpAvviaRichiestaStorno.getCausaleRevoca());
 					pagamento.setDatiRevoca(gpAvviaRichiestaStorno.getDatiAggiuntivi());
@@ -660,7 +660,7 @@ public class Pagamento extends BasicBD {
 				}
 			} else {
 				for(it.govpay.servizi.gpprt.GpAvviaRichiestaStorno.Pagamento p : gpAvviaRichiestaStorno.getPagamento()) {
-					it.govpay.bd.model.Pagamento pagamento = rpt.getPagamento(p.getIur(), this);
+					it.govpay.model.Pagamento pagamento = rpt.getPagamento(p.getIur(), this);
 					if(pagamento.getImportoRevocato() != null) 
 						throw new GovPayException(EsitoOperazione.PAG_009, p.getIur());
 					pagamento.setCausaleRevoca(p.getCausaleRevoca());
@@ -691,7 +691,7 @@ public class Pagamento extends BasicBD {
 		rrBD.insertRr(rr);
 		notifica.setIdRr(rr.getId());
 		notificheBD.insertNotifica(notifica);
-		for(it.govpay.bd.model.Pagamento pagamento : pagamentiDaStornare) {
+		for(it.govpay.model.Pagamento pagamento : pagamentiDaStornare) {
 			pagamento.setIdRr(rr.getId());
 			pagamentiBD.updatePagamento(pagamento);
 		}

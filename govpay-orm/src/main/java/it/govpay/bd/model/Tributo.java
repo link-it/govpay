@@ -22,6 +22,8 @@ package it.govpay.bd.model;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.IbanAccredito;
+import it.govpay.model.TipoTributo;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;

@@ -25,6 +25,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.BasicModel;
+import it.govpay.model.Intermediario;
 
 public class Stazione extends BasicModel {
 	private static final long serialVersionUID = 1L;

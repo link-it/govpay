@@ -20,11 +20,11 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Canale.ModelloPagamento;
-import it.govpay.bd.model.Rpt.EsitoPagamento;
-import it.govpay.bd.model.Rpt.FirmaRichiesta;
-import it.govpay.bd.model.Rpt.StatoRpt;
+import it.govpay.model.Rpt;
+import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPortale;
 import it.govpay.orm.IdVersamento;

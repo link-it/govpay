@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Dominio;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Dominio;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.Versamento;
 import it.govpay.servizi.commons.Versamento.SingoloVersamento;

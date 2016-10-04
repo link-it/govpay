@@ -22,9 +22,16 @@ package it.govpay.bd.model;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Canale.ModelloPagamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.model.BasicModel;
+import it.govpay.model.Canale;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Pagamento;
+import it.govpay.model.Psp;
+import it.govpay.model.Stazione;
+import it.govpay.model.Versamento;
+import it.govpay.model.Canale.ModelloPagamento;
 
 import java.math.BigDecimal;
 import java.util.Date;

@@ -15,7 +15,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtDatiSingoloPagamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtDatiVersamentoRT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Dominio;
+import it.govpay.model.Dominio;
 import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.TemplateBase;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;

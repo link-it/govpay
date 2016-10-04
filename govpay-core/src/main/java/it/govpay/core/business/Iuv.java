@@ -29,14 +29,14 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Dominio;
+import it.govpay.model.Stazione;
+import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.servizi.gpapp.GpCaricaIuv;
@@ -81,9 +81,9 @@ public class Iuv extends BasicBD {
 			Exception e = null;
 			for(GpGeneraIuv.IuvRichiesto iuvRichiesto : gpGeneraIuv.getIuvRichiesto()) {
 				
-				it.govpay.bd.model.Iuv iuv = null;
+				it.govpay.model.Iuv iuv = null;
 				try {
-					iuv = iuvBD.generaIuv(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.NUMERICO);
+					iuv = iuvBD.generaIuv(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte(), it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.NUMERICO);
 				} catch (ServiceException se) {
 					GpThreadLocal.get().log("iuv.generazioneIUVKo", applicazione.getCodApplicazione(), iuvRichiesto.getCodVersamentoEnte(), dominio.getCodDominio(), e.getMessage());
 					e = se;
@@ -125,7 +125,7 @@ public class Iuv extends BasicBD {
 			GpCaricaIuvResponse response = new GpCaricaIuvResponse();
 			Exception e = null;
 			for(it.govpay.servizi.gpapp.GpCaricaIuv.IuvGenerato iuvProprietario : gpCaricaIuv.getIuvGenerato()) {
-				it.govpay.bd.model.Iuv iuv = null;
+				it.govpay.model.Iuv iuv = null;
 				try {
 					iuv = caricaIUV(applicazione, dominio, iuvProprietario.getIuv(), TipoIUV.NUMERICO, iuvProprietario.getCodVersamentoEnte());
 				} catch (ServiceException se) {
@@ -152,11 +152,11 @@ public class Iuv extends BasicBD {
 		}
 	}
 	
-	public it.govpay.bd.model.Iuv caricaIUV(Applicazione applicazione, Dominio dominio,String iuvProposto,  TipoIUV tipo, String codVersamentoEnte) throws GovPayException, ServiceException{
-		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, it.govpay.bd.model.Iuv.AUX_DIGIT, dominio.getStazione(this).getApplicationCode())) {
+	public it.govpay.model.Iuv caricaIUV(Applicazione applicazione, Dominio dominio,String iuvProposto,  TipoIUV tipo, String codVersamentoEnte) throws GovPayException, ServiceException{
+		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, it.govpay.model.Iuv.AUX_DIGIT, dominio.getStazione(this).getApplicationCode())) {
 			throw new GovPayException(EsitoOperazione.VER_017, iuvProposto);
 		}
-		it.govpay.bd.model.Iuv iuv = null;
+		it.govpay.model.Iuv iuv = null;
 		IuvBD iuvBD = new IuvBD(this);
 		// Controllo se esiste gia'
 		try {
@@ -167,7 +167,7 @@ public class Iuv extends BasicBD {
 			}
 		} catch (NotFoundException ne) {
 			// Non esiste, lo carico 
-			iuv = new it.govpay.bd.model.Iuv();
+			iuv = new it.govpay.model.Iuv();
 			iuv.setIdDominio(dominio.getId());
 			iuv.setPrg(0);
 			iuv.setIuv(iuvProposto);

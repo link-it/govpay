@@ -23,9 +23,9 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.model.reportistica.Pagamento;
 import it.govpay.bd.model.reportistica.converter.PagamentoConverter;
 import it.govpay.bd.reportistica.filters.PagamentoFilter;
+import it.govpay.model.reportistica.Pagamento;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 

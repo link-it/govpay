@@ -20,7 +20,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.FrApplicazione;
+import it.govpay.model.FrApplicazione;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdFr;
 

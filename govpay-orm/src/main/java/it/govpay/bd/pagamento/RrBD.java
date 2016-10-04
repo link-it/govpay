@@ -33,9 +33,9 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.converter.RrConverter;
 import it.govpay.bd.pagamento.filters.RrFilter;
+import it.govpay.model.Rr;
 import it.govpay.orm.IdRr;
 import it.govpay.orm.RR;
 import it.govpay.orm.dao.jdbc.JDBCRRServiceSearch;

@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.govpay.bd.model.Dominio;
+import it.govpay.model.Dominio;
 
 public class EstrattoConto {
 	

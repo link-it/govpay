@@ -23,6 +23,11 @@ package it.govpay.bd.model;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.model.BasicModel;
+import it.govpay.model.IbanAccredito;
+import it.govpay.model.SingoloVersamento;
+import it.govpay.model.Tributo;
+import it.govpay.model.Versamento;
 
 import java.math.BigDecimal;
 

@@ -44,11 +44,6 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSPRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Stazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.gpprt.GpChiediListaPspResponse;
 import it.govpay.core.exceptions.GovPayException;
@@ -56,6 +51,11 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.PspUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.model.Canale;
+import it.govpay.model.Dominio;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Portale;
+import it.govpay.model.Stazione;
 
 public class Psp extends BasicBD {
 	
@@ -68,10 +68,10 @@ public class Psp extends BasicBD {
 	public GpChiediListaPspResponse chiediListaPsp(Portale portaleAutenticato) throws ServiceException {
 
 		PspBD pspBD = new PspBD(this);
-		List<it.govpay.bd.model.Psp> psps = pspBD.getPsp(true);
+		List<it.govpay.model.Psp> psps = pspBD.getPsp(true);
 		
 		GpChiediListaPspResponse response = new GpChiediListaPspResponse();
-		for(it.govpay.bd.model.Psp pspModel : psps) {
+		for(it.govpay.model.Psp pspModel : psps) {
 			GpChiediListaPspResponse.Psp psp = new GpChiediListaPspResponse.Psp();
 			psp.setBollo(pspModel.isBolloGestito());
 			psp.setCodPsp(pspModel.getCodPsp());
@@ -79,7 +79,7 @@ public class Psp extends BasicBD {
 			psp.setRagioneSociale(pspModel.getRagioneSociale());
 			psp.setStorno(pspModel.isStornoGestito());
 			psp.setUrlInfo(pspModel.getUrlInfo());
-			for(it.govpay.bd.model.Canale canaleModel : pspModel.getCanali()) {
+			for(it.govpay.model.Canale canaleModel : pspModel.getCanali()) {
 				GpChiediListaPspResponse.Psp.Canale canale = new GpChiediListaPspResponse.Psp.Canale();
 				canale.setCodCanale(canaleModel.getCodCanale());
 				canale.setCondizioni(canaleModel.getCondizioni());
@@ -163,11 +163,11 @@ public class Psp extends BasicBD {
 					}
 					
 					log.info("Ricevuto catalogo dei dati Informativi con " + informativePsp.getInformativaPSPs().size() + " informative.");
-					List<it.govpay.bd.model.Psp> catalogoPsp = new ArrayList<it.govpay.bd.model.Psp>();
+					List<it.govpay.model.Psp> catalogoPsp = new ArrayList<it.govpay.model.Psp>();
 
 					// Converto ogni informativa un PSP
 					for(InformativaPSP informativaPsp : informativePsp.getInformativaPSPs()) {
-						it.govpay.bd.model.Psp psp = new it.govpay.bd.model.Psp();
+						it.govpay.model.Psp psp = new it.govpay.model.Psp();
 
 						CtInformativaMaster informativaMaster = informativaPsp.getInformativaMaster();
 
@@ -205,9 +205,9 @@ public class Psp extends BasicBD {
 					setAutoCommit(false);
 					
 					PspBD pspBD = new PspBD(this);
-					List<it.govpay.bd.model.Psp> oldPsps = pspBD.getPsp();
+					List<it.govpay.model.Psp> oldPsps = pspBD.getPsp();
 					while(!oldPsps.isEmpty()) {
-						it.govpay.bd.model.Psp psp = oldPsps.remove(0);
+						it.govpay.model.Psp psp = oldPsps.remove(0);
 						// Cerco il psp nel Catalogo appena ricevuto
 						boolean trovato = false;
 						for(int i = 0; i<catalogoPsp.size(); i++ ) {
@@ -237,7 +237,7 @@ public class Psp extends BasicBD {
 					}
 					
 					// I psp rimasti nel catalogo, sono nuovi e vanno aggiunti
-					for(it.govpay.bd.model.Psp psp : catalogoPsp) {
+					for(it.govpay.model.Psp psp : catalogoPsp) {
 						log.info("Inserimento [codPsp: " + psp.getCodPsp() + "]");
 						GpThreadLocal.get().log("psp.aggiornamentoPspInseritoPSP", psp.getCodPsp(), psp.getRagioneSociale());
 						response.add(psp.getRagioneSociale() + " (" + psp.getCodPsp() + ")#Aggiunto al registro.");

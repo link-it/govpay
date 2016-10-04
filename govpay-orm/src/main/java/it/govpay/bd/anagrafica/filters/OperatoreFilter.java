@@ -31,7 +31,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.orm.Operatore;
 
 public class OperatoreFilter extends AbstractFilter {

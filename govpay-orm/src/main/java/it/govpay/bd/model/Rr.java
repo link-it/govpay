@@ -23,6 +23,9 @@ package it.govpay.bd.model;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
+import it.govpay.model.BasicModel;
+import it.govpay.model.Pagamento;
+import it.govpay.model.Rpt;
 
 import java.math.BigDecimal;
 import java.util.Date;

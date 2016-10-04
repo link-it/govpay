@@ -24,18 +24,18 @@ import java.util.List;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Iuv;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Versamento;
 import it.govpay.core.business.model.SceltaWISP;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.model.Dominio;
+import it.govpay.model.Iuv;
+import it.govpay.model.Portale;
+import it.govpay.model.Rpt;
+import it.govpay.model.Rr;
+import it.govpay.model.Versamento;
 import it.govpay.servizi.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -142,7 +142,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("gpprt.autorizzazione");
 			
-			it.govpay.bd.model.Canale canale = null;
+			it.govpay.model.Canale canale = null;
 			
 			if(bodyrichiesta.getCanale() == null) {
 				it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
@@ -166,7 +166,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				}
 			} else {
 				try {
-					it.govpay.bd.model.Canale.TipoVersamento tipoVersamento = it.govpay.bd.model.Canale.TipoVersamento.toEnum(bodyrichiesta.getCanale().getTipoVersamento().toString());
+					it.govpay.model.Canale.TipoVersamento tipoVersamento = it.govpay.model.Canale.TipoVersamento.toEnum(bodyrichiesta.getCanale().getTipoVersamento().toString());
 					canale = AnagraficaManager.getCanale(bd, bodyrichiesta.getCanale().getCodPsp(), bodyrichiesta.getCanale().getCodCanale(), tipoVersamento);
 				} catch (NotFoundException e) {
 					throw new GovPayException(EsitoOperazione.PSP_000, bodyrichiesta.getCanale().getCodPsp(), bodyrichiesta.getCanale().getCodCanale(), bodyrichiesta.getCanale().getTipoVersamento().toString());

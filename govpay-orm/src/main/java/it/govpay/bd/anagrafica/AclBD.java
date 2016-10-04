@@ -21,8 +21,8 @@
 package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.converter.AclConverter;
+import it.govpay.model.Acl;
 import it.govpay.orm.ACL;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdOperatore;

@@ -24,6 +24,10 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.model.BasicModel;
+import it.govpay.model.Rpt;
+import it.govpay.model.Rr;
+import it.govpay.model.SingoloVersamento;
 
 import java.math.BigDecimal;
 import java.util.Date;

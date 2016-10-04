@@ -27,10 +27,10 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.PagamentoExt;
-import it.govpay.bd.model.Pagamento.EsitoRendicontazione;
-import it.govpay.bd.model.Pagamento.TipoAllegato;
+import it.govpay.model.Pagamento;
+import it.govpay.model.PagamentoExt;
+import it.govpay.model.Pagamento.EsitoRendicontazione;
+import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.orm.IdFrApplicazione;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdRr;

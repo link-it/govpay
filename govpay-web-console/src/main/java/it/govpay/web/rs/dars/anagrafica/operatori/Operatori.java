@@ -30,7 +30,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Operatore;
+import it.govpay.model.Operatore;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;

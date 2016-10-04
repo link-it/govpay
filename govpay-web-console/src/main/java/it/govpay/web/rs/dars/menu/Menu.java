@@ -35,8 +35,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Operatore;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;

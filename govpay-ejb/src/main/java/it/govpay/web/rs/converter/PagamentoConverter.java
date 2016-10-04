@@ -3,8 +3,8 @@ package it.govpay.web.rs.converter;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.rest.Pagamento;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.model.rest.Pagamento;
 
 public class PagamentoConverter {
 

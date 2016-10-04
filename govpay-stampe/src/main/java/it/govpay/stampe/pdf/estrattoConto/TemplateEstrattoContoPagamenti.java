@@ -21,9 +21,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.EstrattoConto;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Dominio;
+import it.govpay.model.EstrattoConto;
 import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.TemplateBase;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
@@ -98,7 +98,7 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createRiepilogoComponent(BasicBD bd, Dominio dominio, String ibanAccredito, List<it.govpay.bd.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
+	public static ComponentBuilder<?, ?> createRiepilogoComponent(BasicBD bd, Dominio dominio, String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
 		try{
 			return cmp.horizontalList(
 					createRiepilogoGenerale(bd, dominio, ibanAccredito, estrattoContoList,totale,log),
@@ -150,7 +150,7 @@ public class TemplateEstrattoContoPagamenti {
 	/**
 	 * Creates custom component which is possible to add to any report band component
 	 */
-	public static ComponentBuilder<?, ?> createRiepilogoGenerale(BasicBD bd, Dominio dominio,String ibanAccredito, List<it.govpay.bd.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
+	public static ComponentBuilder<?, ?> createRiepilogoGenerale(BasicBD bd, Dominio dominio,String ibanAccredito, List<it.govpay.model.EstrattoConto> estrattoContoList,Double totale,Logger log) {
 		try{
 			HorizontalListBuilder listRiepilogo = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)); 
 
@@ -171,7 +171,7 @@ public class TemplateEstrattoContoPagamenti {
 		return null;
 	}
 
-	public static SubreportBuilder getTabellaDettaglioPagamenti(BasicBD bd,  List<it.govpay.bd.model.EstrattoConto> estrattoContoList,List<Double> totale ,Logger log) throws Exception{
+	public static SubreportBuilder getTabellaDettaglioPagamenti(BasicBD bd,  List<it.govpay.model.EstrattoConto> estrattoContoList,List<Double> totale ,Logger log) throws Exception{
 
 		// Scittura Intestazione
 		List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();

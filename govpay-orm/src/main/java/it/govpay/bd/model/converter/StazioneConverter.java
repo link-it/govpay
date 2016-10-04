@@ -20,7 +20,7 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Stazione;
+import it.govpay.model.Stazione;
 import it.govpay.orm.IdIntermediario;
 
 import java.util.ArrayList;

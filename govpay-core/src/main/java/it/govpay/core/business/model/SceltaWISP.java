@@ -20,7 +20,7 @@
  */
 package it.govpay.core.business.model;
 
-import it.govpay.bd.model.Canale;
+import it.govpay.model.Canale;
 
 
 public class SceltaWISP {

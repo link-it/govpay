@@ -22,12 +22,12 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Connettore;
 import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.bd.model.converter.ApplicazioneConverter;
 import it.govpay.bd.model.converter.ConnettoreConverter;
+import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Connettore;
 import it.govpay.orm.ACL;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.dao.jdbc.JDBCApplicazioneServiceSearch;

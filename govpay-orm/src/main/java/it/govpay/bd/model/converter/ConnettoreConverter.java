@@ -20,11 +20,11 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Connettore.Tipo;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import it.govpay.model.Connettore;
+import it.govpay.model.Connettore.Tipo;
 
 public class ConnettoreConverter {
 

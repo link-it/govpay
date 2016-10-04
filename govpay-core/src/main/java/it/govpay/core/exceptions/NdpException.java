@@ -20,7 +20,7 @@
  */
 package it.govpay.core.exceptions;
 
-import it.govpay.bd.model.NdpFaultCode;
+import it.govpay.model.NdpFaultCode;
 
 public class NdpException extends Exception {
 

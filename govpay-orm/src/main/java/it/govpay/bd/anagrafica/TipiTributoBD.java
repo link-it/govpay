@@ -30,8 +30,8 @@ import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.bd.model.TipoTributo;
 import it.govpay.bd.model.converter.TipoTributoConverter;
+import it.govpay.model.TipoTributo;
 import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.dao.jdbc.JDBCTipoTributoServiceSearch;
 

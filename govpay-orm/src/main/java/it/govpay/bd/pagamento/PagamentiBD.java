@@ -23,12 +23,12 @@ package it.govpay.bd.pagamento;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
-import it.govpay.bd.model.EstrattoConto;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.model.EstrattoConto;
+import it.govpay.model.Pagamento;
+import it.govpay.model.RendicontazioneSenzaRpt;
 import it.govpay.orm.IdPagamento;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.jdbc.JDBCRendicontazioneSenzaRPTService;
@@ -311,9 +311,9 @@ public class PagamentiBD extends BasicBD {
 		}
 	}
 
-	public List<it.govpay.bd.model.rest.Pagamento> estrattoConto(
+	public List<it.govpay.model.rest.Pagamento> estrattoConto(
 			PagamentoFilter filter) throws ServiceException {
-		List<it.govpay.bd.model.rest.Pagamento> pagamenti = new ArrayList<it.govpay.bd.model.rest.Pagamento>();
+		List<it.govpay.model.rest.Pagamento> pagamenti = new ArrayList<it.govpay.model.rest.Pagamento>();
 		IPagamentoService pagamentoService = this.getPagamentoService();
 
 		IPaginatedExpression pagExpr = filter.toPaginatedExpression();
@@ -342,7 +342,7 @@ public class PagamentiBD extends BasicBD {
 					it.govpay.orm.Pagamento pagamento = (it.govpay.orm.Pagamento) pagFetch
 							.fetch(tipoDatabase,
 									it.govpay.orm.Pagamento.model(), map);
-					it.govpay.bd.model.rest.Pagamento dto = it.govpay.bd.model.rest.converter.PagamentoConverter
+					it.govpay.model.rest.Pagamento dto = it.govpay.bd.model.rest.converter.PagamentoConverter
 							.toRestDTO(pagamento, map);
 					pagamenti.add(dto);
 				}
@@ -355,7 +355,7 @@ public class PagamentiBD extends BasicBD {
 	}
 
 	public  List<EstrattoConto>  estrattoConto(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit)throws ServiceException {
-		List<it.govpay.bd.model.EstrattoConto> estrattiConto = new ArrayList<EstrattoConto>();
+		List<it.govpay.model.EstrattoConto> estrattiConto = new ArrayList<EstrattoConto>();
 		IPagamentoService pagamentoService = this.getPagamentoService();
 
 		List<Class<?>> listaFields = new ArrayList<Class<?>>();
@@ -410,7 +410,7 @@ public class PagamentiBD extends BasicBD {
 	}
 	
 	public  List<EstrattoConto>  estrattoConto(String codDominio, List<Long> idVersamenti, Integer offset, Integer limit)throws ServiceException {
-		List<it.govpay.bd.model.EstrattoConto> estrattiConto = new ArrayList<EstrattoConto>();
+		List<it.govpay.model.EstrattoConto> estrattiConto = new ArrayList<EstrattoConto>();
 		IPagamentoService pagamentoService = this.getPagamentoService();
 
 		List<Class<?>> listaFields = new ArrayList<Class<?>>();
