@@ -18,6 +18,8 @@ import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Dominio;
+import it.govpay.stampe.pdf.Costanti;
+import it.govpay.stampe.pdf.TemplateBase;
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.jasper.builder.export.JasperPdfExporterBuilder;
 import net.sf.dynamicreports.report.builder.FieldBuilder;
@@ -33,8 +35,6 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 
 public class EstrattoContoPdf {
 	
-	public static final SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-	
 	public static String getPdfEstrattoConto(BasicBD bd, String pathLoghi, Dominio dominio, Date dataInizio, Date dataFine, String ibanAccredito, List<it.govpay.bd.model.EstrattoConto> estrattoContoList, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
@@ -42,8 +42,8 @@ public class EstrattoContoPdf {
 
 		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 		
-		String dataInizioS = dataInizio != null ? sdf.format(dataInizio) : null;
-		String dataFineS = dataFine != null ? sdf.format(dataFine) : null;
+		String dataInizioS = dataInizio != null ? TemplateBase.sdf_ddMMyyyy.format(dataInizio) : null;
+		String dataFineS = dataFine != null ? TemplateBase.sdf_ddMMyyyy.format(dataFine) : null;
  
 		List<String> errList = new ArrayList<String>();
 		ComponentBuilder<?, ?> titleComponent = TemplateEstrattoContoPagamenti.createTitleComponent(bd, dominio,dataInizioS,dataFineS,log,errList, pathLoghi);
@@ -57,9 +57,9 @@ public class EstrattoContoPdf {
 		// Scittura Intestazione
 		List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();
 
-		TextColumnBuilder<String> idFlussoColumn = col.column(Costanti.LABEL_ID_FLUSSO_RENDICONTAZIONE, Costanti.CODICE_RENDICONTAZIONE_COL, type.stringType()).setStyle(TemplateEstrattoContoPagamenti.fontStyle9)
+		TextColumnBuilder<String> idFlussoColumn = col.column(Costanti.LABEL_ID_FLUSSO_RENDICONTAZIONE, Costanti.CODICE_RENDICONTAZIONE_COL, type.stringType()).setStyle(TemplateBase.fontStyle9)
 							.setWidth(20).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
-		TextColumnBuilder<String> iuvColumn  = col.column(Costanti.LABEL_IUV, Costanti.IUV_COL, type.stringType()).setStyle(TemplateEstrattoContoPagamenti.fontStyle9)
+		TextColumnBuilder<String> iuvColumn  = col.column(Costanti.LABEL_IUV, Costanti.IUV_COL, type.stringType()).setStyle(TemplateBase.fontStyle9)
 							.setWidth(15).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
 		ComponentColumnBuilder componentColumnSx = col.componentColumn( TemplateEstrattoContoPagamenti.getContenutoCellaSx()).setWidth(30);
 		ComponentColumnBuilder componentColumnDx = col.componentColumn( TemplateEstrattoContoPagamenti.getContenutoCellaDx()).setWidth(35);
@@ -87,7 +87,7 @@ public class EstrattoContoPdf {
 		cl.add(TemplateEstrattoContoPagamenti.createRiepilogoComponent(bd, dominio,ibanAccredito,estrattoContoList, totale.get(0),log));
 		cl.add(cmp.verticalGap(20));
 		String titoloTabella = Costanti.LABEL_DETTAGLIO_PAGAMENTI;
-		cl.add(cmp.text(titoloTabella).setStyle(TemplateEstrattoContoPagamenti.bold18CenteredStyle.italic()));
+		cl.add(cmp.text(titoloTabella).setStyle(TemplateBase.bold18CenteredStyle.italic()));
 		cl.add(cmp.verticalGap(20));
 		
 		
@@ -98,7 +98,7 @@ public class EstrattoContoPdf {
 
 		//configure report
 		report.setPageFormat(PageType.A4, PageOrientation.LANDSCAPE)
-		.setTemplate(TemplateEstrattoContoPagamenti.reportTemplate)
+		.setTemplate(TemplateBase.reportTemplate)
 		.title(cl.toArray(ca))
 		.fields(fields.toArray(new FieldBuilder[fields.size()])) 
 		//.title(cmp.text(titoloTabella).setStyle(TemplateEstrattoContoPagamenti.bold18CenteredStyle.italic()),cmp.verticalGap(20))
@@ -106,7 +106,7 @@ public class EstrattoContoPdf {
 		.columns(colonne.toArray(new ColumnBuilder[colonne.size()]))
 		.setDataSource(dataSource)
 		//.summary(cl.toArray(ca))
-		.pageFooter(TemplateEstrattoContoPagamenti.footerComponent)
+		.pageFooter(TemplateBase.footerComponent)
 		.toPdf(pdfExporter); 
 		
 		return msg;
