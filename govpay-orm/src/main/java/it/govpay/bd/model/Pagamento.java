@@ -73,13 +73,5 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		this.singoloVersamento = singoloVersamento;
 		this.setIdSingoloVersamento(singoloVersamento.getId());
 	}
-
-	public String getCodSingoloVersamentoEnte() {
-		return this.getCodSingoloVersamentoEnte();
-	}
-
-	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
-		this.setCodSingoloVersamentoEnte(codSingoloVersamentoEnte);
-	}
 }
 
