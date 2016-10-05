@@ -139,6 +139,7 @@ public class PagamentoFilter extends AbstractFilter {
 				newExpression.in(idVersamentoField, this.idVersamenti);
 				// forzo la join con singoliversamenti
 				newExpression.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE); 
+				newExpression.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
 				addAnd = true;
 			}
 			

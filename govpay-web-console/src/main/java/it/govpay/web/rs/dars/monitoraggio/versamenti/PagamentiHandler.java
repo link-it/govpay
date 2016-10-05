@@ -156,9 +156,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				eseguiRicerca = eseguiRicerca && countVersamento > 0;
 
 				// Ricerca pagamenti associati 
-				List<Long> idVersamenti = new ArrayList<Long>();
-				idVersamenti.add(Long.parseLong(idVersamento));
-				filter.setIdVersamenti(idVersamenti);
+				filter.setIdVersamenti(idVersamentoL);
 				count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
 				eseguiRicerca = eseguiRicerca && count > 0;
 
