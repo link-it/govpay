@@ -143,6 +143,8 @@
     <value name="codSingoloVersamentoEnte" field="codSingoloVersamentoEnte" usage="required"/>
     <structure name="idTributo" field="idTributo" usage="optional" map-as="_IdTributo_Type"/>
     <value name="note" field="note" usage="optional"/>
+    <value name="statoSingoloVersamento" field="statoSingoloVersamento" usage="optional"/>
+    <value name="importoSingoloVersamento" field="importoSingoloVersamento" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdSingoloVersamento_Type" class="it.govpay.orm.IdSingoloVersamento" abstract="true">
@@ -151,6 +153,8 @@
     <value name="codSingoloVersamentoEnte" field="codSingoloVersamentoEnte" usage="required"/>
     <structure name="idTributo" field="idTributo" usage="optional" map-as="_IdTributo_Type"/>
     <value name="note" field="note" usage="optional"/>
+    <value name="statoSingoloVersamento" field="statoSingoloVersamento" usage="optional"/>
+    <value name="importoSingoloVersamento" field="importoSingoloVersamento" usage="optional"/>
   </mapping>
   <mapping name="id-carrello" class="it.govpay.orm.IdCarrello">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

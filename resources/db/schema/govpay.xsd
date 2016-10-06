@@ -296,6 +296,8 @@
 			<xsd:element name="codSingoloVersamentoEnte" type="xsd:string" />
 			<xsd:element name="idTributo" type="id-tributo" minOccurs="0" />
 			<xsd:element name="note" type="String512" minOccurs="0" />
+			<xsd:element name="statoSingoloVersamento" type="String35" minOccurs="0" />
+			<xsd:element name="importoSingoloVersamento" type="xsd:double" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

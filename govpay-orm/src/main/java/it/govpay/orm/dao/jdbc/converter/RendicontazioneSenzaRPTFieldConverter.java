@@ -215,6 +215,20 @@ public class RendicontazioneSenzaRPTFieldConverter extends AbstractSQLFieldConve
 				return "note";
 			}
 		}
+		if(field.equals(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_singolo_versamento";
+			}else{
+				return "stato_singolo_versamento";
+			}
+		}
+		if(field.equals(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_singolo_versamento";
+			}else{
+				return "importo_singolo_versamento";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -289,6 +303,12 @@ public class RendicontazioneSenzaRPTFieldConverter extends AbstractSQLFieldConve
 			return this.toTable(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO, returnAlias);
 		}
 		if(field.equals(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO.NOTE)){
+			return this.toTable(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			return this.toTable(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(RendicontazioneSenzaRPT.model().ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
 

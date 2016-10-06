@@ -40,6 +40,8 @@ import java.io.Serializable;
  * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idTributo" type="{http://www.govpay.it/orm}id-tributo" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="note" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="statoSingoloVersamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="importoSingoloVersamento" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -57,7 +59,9 @@ import java.io.Serializable;
   	"idVersamento",
   	"codSingoloVersamentoEnte",
   	"idTributo",
-  	"note"
+  	"note",
+  	"statoSingoloVersamento",
+  	"importoSingoloVersamento"
   }
 )
 
@@ -113,6 +117,22 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
     this.note = note;
   }
 
+  public java.lang.String getStatoSingoloVersamento() {
+    return this.statoSingoloVersamento;
+  }
+
+  public void setStatoSingoloVersamento(java.lang.String statoSingoloVersamento) {
+    this.statoSingoloVersamento = statoSingoloVersamento;
+  }
+
+  public double getImportoSingoloVersamento() {
+    return this.importoSingoloVersamento;
+  }
+
+  public void setImportoSingoloVersamento(double importoSingoloVersamento) {
+    this.importoSingoloVersamento = importoSingoloVersamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -133,5 +153,13 @@ public class IdSingoloVersamento extends org.openspcoop2.utils.beans.BaseBean im
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="note",required=false,nillable=false)
   protected java.lang.String note;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="statoSingoloVersamento",required=false,nillable=false)
+  protected java.lang.String statoSingoloVersamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="double")
+  @XmlElement(name="importoSingoloVersamento",required=false,nillable=false)
+  protected double importoSingoloVersamento;
 
 }

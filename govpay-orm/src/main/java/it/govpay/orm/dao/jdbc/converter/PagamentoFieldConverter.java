@@ -180,6 +180,20 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "note";
 			}
 		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_singolo_versamento";
+			}else{
+				return "stato_singolo_versamento";
+			}
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_singolo_versamento";
+			}else{
+				return "importo_singolo_versamento";
+			}
+		}
 		if(field.equals(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_singolo_versamento_ente";
@@ -463,6 +477,12 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE)){
