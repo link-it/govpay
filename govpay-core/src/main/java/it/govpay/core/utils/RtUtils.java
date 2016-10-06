@@ -91,16 +91,16 @@ public class RtUtils extends NdpValidationUtils {
 	private static byte[] validaFirmaXades(byte[] rt, String idDominio) throws NdpException {
 		try {
 			return SignUtils.cleanXadesSignedFile(rt);
-		} catch (Exception e) {
-			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio);
+		} catch (Throwable e) {
+			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, e.getMessage());
 		}
 	}
 
 	private static byte[] validaFirmaCades(byte[] rt, String idDominio) throws NdpException {		
 		try {
 			return SignUtils.cleanCadesSignedFile(rt);
-		} catch (Exception e) {
-			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio);
+		} catch (Throwable e) {
+			throw new NdpException(FaultPa.PAA_FIRMA_ERRATA, idDominio, e.getMessage());
 		}
 	}
 

@@ -108,35 +108,35 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 	@Override
 	public PaaAttivaRPTRisposta paaAttivaRPT(PaaAttivaRPT bodyrichiesta, IntestazionePPT header) {
-		
+
 		String codIntermediario = header.getIdentificativoIntermediarioPA();
 		String codStazione = header.getIdentificativoStazioneIntermediarioPA();
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
-		
+
 		GpContext ctx = GpThreadLocal.get();
 		ctx.setCorrelationId(codDominio + iuv + ccp);
-		
+
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
 		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		ctx.getTransaction().setFrom(from);
-		
+
 		Actor to = new Actor();
 		to.setName(header.getIdentificativoStazioneIntermediarioPA());
 		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		ctx.getTransaction().setTo(to);
-		
+
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
 		ctx.log("ccp.ricezioneAttiva");
-		
+
 		BasicBD bd = null;
 		PaaAttivaRPTRisposta response = new PaaAttivaRPTRisposta();
 		log.info("Ricevuta richiesta di attiva RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
-		
+
 		Evento evento = new Evento();
 		evento.setCodStazione(codStazione);
 		evento.setCodDominio(codDominio);
@@ -154,18 +154,18 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				ctx.log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
-				
-			
+
+
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
-				
+
 				// Controllo autorizzazione
 				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
 					ctx.log("ccp.erroreAutorizzazione", principal);
 					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + codIntermediario);
 				}
-				
+
 				evento.setErogatore(intermediario.getDenominazione());
 			} catch (NotFoundException e) {
 				throw new NdpException(FaultPa.PAA_ID_INTERMEDIARIO_ERRATO, codDominio);
@@ -195,14 +195,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
 			}
-			
+
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = null;
 			try {
 				try {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
 					if(iuvModel == null) throw new NotFoundException();
-					
+
 					versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 
 					// Versamento trovato, gestisco un'eventuale scadenza
@@ -246,12 +246,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			// Verifico l'importo
 			if(bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento().compareTo(versamento.getImportoTotale()) != 0)
 				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, codDominio);
-			
+
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti(bd).size() != 1) {
 				throw new ServiceException("Errore nella attivazione del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + "). Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
 			}
-			
+
 			// Identificazione del Psp e del canale
 			Psp psp;
 			try {
@@ -259,7 +259,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (NotFoundException e) {
 				throw new ServiceException("Psp (" + bodyrichiesta.getIdentificativoPSP() + ") non censito in anagrafica.");
 			}
-			
+
 			Canale canale = null;
 			try {
 				canale = AnagraficaManager.getCanale(bd, bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), TipoVersamento.ATTIVATO_PRESSO_PSP);
@@ -267,21 +267,21 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}catch (NotFoundException e) {
 				throw new ServiceException("Psp (" + bodyrichiesta.getIdentificativoPSP() + ") non ha canali censiti per pagamenti ad iniziativa psp.");
 			}
-			
+
 			// Creazione dell'RPT
 			Anagrafica versante = toOrm(bodyrichiesta.getDatiPagamentoPSP().getSoggettoVersante());
 			Rpt rpt = RptUtils.buildRpt(intermediario, stazione, null, versamento, iuvModel, ccp, null, psp, canale, versante, StAutenticazioneSoggetto.N_A.value(), null, null, bd);
-			
+
 			ctx.log("ccp.attivazione", rpt.getCodMsgRichiesta());
-			
+
 			// Da specifica, le RPT ad iniziativa PSP non possono richiedere firma
 			rpt.setFirmaRichiesta(FirmaRichiesta.NESSUNA);
 
 			RptBD rptBD = new RptBD(bd);
-			
+
 			bd.setAutoCommit(false);
 			bd.enableSelectForUpdate();
-			
+
 			// Controllo se gia' non esiste la RPT (lo devo fare solo adesso per essere in transazione con l'inserimento)
 			try {
 				rptBD.getRpt(codDominio, iuv, ccp);
@@ -291,9 +291,9 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				rptBD.insertRpt(rpt);
 				RptUtils.inviaRPTAsync(rpt, bd);
 			}
-			
+
 			bd.commit();
-			
+
 			EsitoAttivaRPT esito = new EsitoAttivaRPT();
 			esito.setEsito("OK");
 			PaaTipoDatiPagamentoPA datiPagamento =  new PaaTipoDatiPagamentoPA();
@@ -302,12 +302,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
 					datiPagamento.setCausaleVersamento(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
 				}
-				
+
 				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
 					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(((CausaleSpezzoni) versamento.getCausaleVersamento()).getSpezzoni());
 				}
-				
+
 				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
 					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
@@ -340,24 +340,29 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			String faultDescription = response.getPaaAttivaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaAttivaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneAttivaKo", response.getPaaAttivaRPTRisposta().getFault().getFaultCode(), response.getPaaAttivaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
-			if(bd != null) {
-				GiornaleEventi ge = new GiornaleEventi(bd);
-				evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
-				evento.setDataRisposta(new Date());
-				ge.registraEvento(evento);
+			try{
+				if(bd != null) {
+
+					GiornaleEventi ge = new GiornaleEventi(bd);
+					evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
+					evento.setDataRisposta(new Date());
+					ge.registraEvento(evento);
+				}
+			}catch(Exception e){
+				log.error(e,e);
 			}
-			
+
 			if(ctx != null) {
 				ctx.setResult(response.getPaaAttivaRPTRisposta().getFault() == null ? null : response.getPaaAttivaRPTRisposta().getFault().getFaultCode());
 				ctx.log();
 			}
-			
+
 			if(bd != null) bd.closeConnection();
 		}
 		return response;
 	}
 
-	
+
 
 	@Override
 	public PaaVerificaRPTRisposta paaVerificaRPT(PaaVerificaRPT bodyrichiesta, IntestazionePPT header) {
@@ -366,31 +371,31 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
-		
-		
+
+
 		GpContext ctx = GpThreadLocal.get();
 		ctx.setCorrelationId(codDominio + iuv + ccp);
-		
+
 		Actor from = new Actor();
 		from.setName("NodoDeiPagamentiSPC");
 		from.setType(GpContext.TIPO_SOGGETTO_NDP);
 		ctx.getTransaction().setFrom(from);
-		
+
 		Actor to = new Actor();
 		to.setName(header.getIdentificativoStazioneIntermediarioPA());
 		from.setType(GpContext.TIPO_SOGGETTO_STAZIONE);
 		ctx.getTransaction().setTo(to);
-		
+
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
 		ctx.log("ccp.ricezioneVerifica");
-		
-		
+
+
 		log.info("Ricevuta richiesta di verifica RPT [" + codIntermediario + "][" + codStazione + "][" + codDominio + "][" + iuv + "][" + ccp + "]");
 		BasicBD bd = null;
 		PaaVerificaRPTRisposta response = new PaaVerificaRPTRisposta();
-		
+
 		Evento evento = new Evento();
 		evento.setCodStazione(codStazione);
 		evento.setCodDominio(codDominio);
@@ -408,11 +413,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				ctx.log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
-			
+
 			Intermediario intermediario = null;
 			try {
 				intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
-				
+
 				// Controllo autorizzazione
 				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
 					ctx.log("ccp.erroreAutorizzazione", principal);
@@ -450,7 +455,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				}
 				ctx.log("ccp.iuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione());
 			}
-			
+
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			Versamento versamento = null;
 			try {
@@ -501,12 +506,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				else
 					throw new ServiceException("Errore nella verifica del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione() + ").", e1);
 			}
-			
+
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti(bd).size() != 1) {
 				throw new ServiceException("Errore nella verifica del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + "). Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
 			}
-			
+
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();
 			esito.setEsito("OK");
 			PaaTipoDatiPagamentoPA datiPagamento =  new PaaTipoDatiPagamentoPA();
@@ -516,12 +521,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				if(versamento.getCausaleVersamento() instanceof CausaleSemplice) {
 					datiPagamento.setCausaleVersamento(((CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
 				}
-				
+
 				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoni) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
 					datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().addAll(((CausaleSpezzoni) versamento.getCausaleVersamento()).getSpezzoni());
 				}
-				
+
 				if(versamento.getCausaleVersamento() instanceof CausaleSpezzoniStrutturati) {
 					datiPagamento.setSpezzoniCausaleVersamento(new CtSpezzoniCausaleVersamento());
 					CausaleSpezzoniStrutturati causale = (CausaleSpezzoniStrutturati) versamento.getCausaleVersamento();
@@ -555,18 +560,24 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			String faultDescription = response.getPaaVerificaRPTRisposta().getFault().getDescription() == null ? "<Nessuna descrizione>" : response.getPaaVerificaRPTRisposta().getFault().getDescription(); 
 			ctx.log("ccp.ricezioneVerificaKo", response.getPaaVerificaRPTRisposta().getFault().getFaultCode(), response.getPaaVerificaRPTRisposta().getFault().getFaultString(), faultDescription);
 		} finally {
-			if(bd != null) {
-				GiornaleEventi ge = new GiornaleEventi(bd);
-				evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
-				evento.setDataRisposta(new Date());
-				ge.registraEvento(evento);
+			try{
+				if(bd != null) {
+					try{
+						GiornaleEventi ge = new GiornaleEventi(bd);
+						evento.setEsito(response.getPaaVerificaRPTRisposta().getEsito());
+						evento.setDataRisposta(new Date());
+						ge.registraEvento(evento);
+					}catch(Exception e){log.error(e,e);}
+				}
+
+				if(ctx != null) {
+					ctx.setResult(response.getPaaVerificaRPTRisposta().getFault() == null ? null : response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
+					ctx.log();
+				}
+			}catch(Exception e1){
+				log.error(e1,e1);
 			}
-			
-			if(ctx != null) {
-				ctx.setResult(response.getPaaVerificaRPTRisposta().getFault() == null ? null : response.getPaaVerificaRPTRisposta().getFault().getFaultCode());
-				ctx.log();
-			}
-			
+
 			if(bd != null) bd.closeConnection();
 		}
 		return response;
@@ -624,7 +635,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 
 		return risposta;
 	}
-	
+
 	private String getPrincipal() throws GovPayException {
 		if(wsCtxt.getUserPrincipal() == null) {
 			return null;

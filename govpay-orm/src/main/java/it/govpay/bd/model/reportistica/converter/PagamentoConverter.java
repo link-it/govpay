@@ -13,7 +13,7 @@ import it.govpay.model.Versamento.StatoVersamento;
 public class PagamentoConverter  extends it.govpay.bd.model.rest.converter.PagamentoConverter{
 
 
-	public static it.govpay.model.reportistica.Pagamento toRestDTO(Map<String, Object> map) throws ServiceException {
+	public static it.govpay.model.reportistica.Pagamento toReportisticaDTO(Map<String, Object> map) throws ServiceException {
 		it.govpay.model.reportistica.Pagamento dto = new it.govpay.model.reportistica.Pagamento();
 
 		try{
@@ -22,7 +22,7 @@ public class PagamentoConverter  extends it.govpay.bd.model.rest.converter.Pagam
 			dto.setId(id);
 
 			String codVersamentoEnte = (String) getObjectFromMap(map, PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE);
-			dto.setCodSingoloVersamentoEnte(codVersamentoEnte);
+			dto.setCodVersamentoEnte(codVersamentoEnte);
 
 			String iuv = (String) getObjectFromMap(map, PagamentiBD.ALIAS_IUV);
 			dto.setIuv(iuv);

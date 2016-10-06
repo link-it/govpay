@@ -19,7 +19,6 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.TemplateBase;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 
 public class TemplateRt {

@@ -2,6 +2,7 @@ package it.govpay.model.reportistica;
 
 import java.math.BigDecimal;
 
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class Pagamento extends it.govpay.model.rest.Pagamento{
@@ -15,6 +16,13 @@ public class Pagamento extends it.govpay.model.rest.Pagamento{
 	private BigDecimal importoDovuto;
 	private StatoVersamento statoVersamento;	
 	private String causale;
+	// Integrazione CSV
+	private String codVersamentoEnte;
+	private String codFlussoRendicontazione;
+	private StatoSingoloVersamento statoSingoloVersamento;
+	// dalla tabella FR.
+	private String codBicRiversamento;
+	private String idRegolamento;
 	
 	public BigDecimal getImportoPagato() {
 		return importoPagato;
@@ -39,6 +47,36 @@ public class Pagamento extends it.govpay.model.rest.Pagamento{
 	}
 	public void setStatoVersamento(StatoVersamento statoVersamento) {
 		this.statoVersamento = statoVersamento;
+	}
+	public String getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+	public void setCodVersamentoEnte(String codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+	public String getCodFlussoRendicontazione() {
+		return codFlussoRendicontazione;
+	}
+	public void setCodFlussoRendicontazione(String codFlussoRendicontazione) {
+		this.codFlussoRendicontazione = codFlussoRendicontazione;
+	}
+	public String getCodBicRiversamento() {
+		return codBicRiversamento;
+	}
+	public void setCodBicRiversamento(String codBicRiversamento) {
+		this.codBicRiversamento = codBicRiversamento;
+	}
+	public StatoSingoloVersamento getStatoSingoloVersamento() {
+		return statoSingoloVersamento;
+	}
+	public void setStatoSingoloVersamento(StatoSingoloVersamento statoSingoloVersamento) {
+		this.statoSingoloVersamento = statoSingoloVersamento;
+	}
+	public String getIdRegolamento() {
+		return idRegolamento;
+	}
+	public void setIdRegolamento(String idRegolamento) {
+		this.idRegolamento = idRegolamento;
 	}
 	
 }

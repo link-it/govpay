@@ -13,12 +13,12 @@ public class EstrattoConto extends BasicModel {
 	private Double importoPagato;
 	private String iur;
 	private String iuv;
-	private String codFlussoRendicontazione;
 	private String codSingoloVersamentoEnte;
 	private String note;
-	private String codBicRiversamento;
 	private String idRegolamento;
 	private String ibanAccredito;
+	private String codFlussoRendicontazione;
+	private String codBicRiversamento;
 	
 	public Date getDataPagamento() {
 		return dataPagamento;
@@ -80,5 +80,4 @@ public class EstrattoConto extends BasicModel {
 	public void setIbanAccredito(String ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
 	}
-
 }

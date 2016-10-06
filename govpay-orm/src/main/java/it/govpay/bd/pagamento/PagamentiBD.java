@@ -424,9 +424,13 @@ public class PagamentiBD extends BasicBD {
 		listaFields.add(it.govpay.orm.FR.model().COD_BIC_RIVERSAMENTO.getFieldType());
 		listaFields.add(it.govpay.orm.FR.model().IUR.getFieldType());
 		listaFields.add(it.govpay.orm.Pagamento.model().IBAN_ACCREDITO.getFieldType());
+		listaFields.add(Long.class);
 
 		List<List<Object>> select = new ArrayList<List<Object>>();
 		try {
+			
+			
+			
 			List<Object> listaParam = new ArrayList<Object>();
 			listaParam.addAll(idVersamenti);
 			listaParam.add(codDominio);

@@ -6,7 +6,6 @@ import org.apache.cxf.common.util.StringUtils;
 
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.model.EstrattoContoRequest;
-import it.govpay.web.rs.model.Pagamento;
 import it.govpay.web.rs.model.Versamento;
 
 public class ValidationUtils {
@@ -29,11 +28,6 @@ public class ValidationUtils {
 		
 		if(request.getImporto() == null)
 			throw new WebApplicationException(BaseRsService.getBadRequestResponse("Importo Obbligatorio"));
-	}
-
-	public static void validaRichiestaNotificaPagamento(Pagamento request) throws WebApplicationException {
-		if(StringUtils.isEmpty(request.getIdentificativoVersamento()))
-			throw new WebApplicationException(BaseRsService.getBadRequestResponse("Identificativo Versamento Obbligatorio"));
 	}
 	
 	public static void validaRichiestaEstrattoConto(EstrattoContoRequest request) throws WebApplicationException {
