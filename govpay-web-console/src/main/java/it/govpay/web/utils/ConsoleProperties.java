@@ -80,6 +80,7 @@ public class ConsoleProperties {
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
 						props0.load(new FileInputStream(gpConfigFile));
+						props[0] = props0;
 						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 					}
 				}
