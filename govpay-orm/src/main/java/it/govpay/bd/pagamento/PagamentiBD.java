@@ -60,6 +60,7 @@ public class PagamentiBD extends BasicBD {
 
 	public static final String NOME_QUERY_ESTRATTI_CONTO = "estrattiConto";
 	public static final String NOME_QUERY_ESTRATTI_CONTO_PER_VERSAMENTI = "estrattiContoVersamenti";
+	public static final String NOME_QUERY_CSV_VERSAMENTI = "csvVersamenti";
 	public static final String PLACE_HOLDER_QUERY_ESTRATTI_CONTO_PER_VERSAMENTI = "$ID_VERSAMENTI$";
 
 	public PagamentiBD(BasicBD basicBD) {
@@ -424,7 +425,6 @@ public class PagamentiBD extends BasicBD {
 		listaFields.add(it.govpay.orm.FR.model().COD_BIC_RIVERSAMENTO.getFieldType());
 		listaFields.add(it.govpay.orm.FR.model().IUR.getFieldType());
 		listaFields.add(it.govpay.orm.Pagamento.model().IBAN_ACCREDITO.getFieldType());
-		listaFields.add(Long.class);
 
 		List<List<Object>> select = new ArrayList<List<Object>>();
 		try {

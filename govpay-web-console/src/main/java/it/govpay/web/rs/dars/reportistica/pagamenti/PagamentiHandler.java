@@ -499,13 +499,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		StringBuilder sb = new StringBuilder();
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
 		Date dataPagamento = entry.getDataPagamento();
+		try{
+			String causale = entry.getCausale();
 
-		String causale = entry.getCausale();
-
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
-				Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),
-				this.sdf.format(dataPagamento), causale));
-
+			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
+					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),
+					this.sdf.format(dataPagamento), causale));
+		}catch(Exception e) {}
 		return sb.toString();
 	} 
 
@@ -667,7 +667,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		return header;
 	}
 
-	private List<String> getCsvRow(Pagamento pagamento){
+	private List<String> getCsvRow(Pagamento pagamento) throws Exception{
 		List<String> oneLine = new ArrayList<String>();
 		// CodVersamentoEnte
 		if(StringUtils.isNotEmpty(pagamento.getCodVersamentoEnte()))
@@ -691,12 +691,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			oneLine.add("");
 		//Importo Dovuto
 		if(pagamento.getImportoDovuto() != null)
-			oneLine.add(pagamento.getImportoDovuto().toString());
+			oneLine.add(pagamento.getImportoDovuto().doubleValue()+"");
 		else 
 			oneLine.add("");
 		// Importo Pagato
 		if(pagamento.getImportoPagato() != null)
-			oneLine.add(pagamento.getImportoPagato().toString());
+			oneLine.add(pagamento.getImportoPagato().doubleValue()+"");
 		else 
 			oneLine.add("");
 		// Data Pagamento 
@@ -756,6 +756,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		Printer printer  = null;
 
 		try{
+			String fileName = "Pagamenti.zip";
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			ProfiloOperatore profilo = operatore.getProfilo();
@@ -802,19 +803,17 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			// recupero oggetto
 			filter.setIdPagamento(ids);
 			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.creaCsvReportisticaPagamenti(filter) : new ArrayList<Pagamento>();
-			Pagamento pagamento = findAll.size() > 0 ? findAll.get(0) : null;
 
-			String fileName = "Pagamento_"+pagamento.getCodVersamentoEnte()+".zip";
-
-			if(pagamento != null){
+			if(findAll != null && findAll.size() > 0){
 				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-				ZipEntry pagamentoCsv = new ZipEntry("pagamento.csv");
-				zout.putNextEntry(pagamentoCsv);
-
 				try{
+					ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");
+					zout.putNextEntry(pagamentoCsv);
 					printer = new Printer(this.getFormat() , baos);
 					printer.printRecord(getCsvHeader());
-					printer.printRecord(this.getCsvRow(pagamento));
+					for (Pagamento pagamento : findAll) {
+						printer.printRecord(this.getCsvRow(pagamento));
+					}
 				}finally {
 					try{
 						if(printer!=null){
