@@ -39,6 +39,10 @@
                             <artifactId>core</artifactId>
                             <groupId>com.google.zxing</groupId>
                     </exclusion>
+                    <exclusion>
+                            <artifactId>bcprov-jdk14</artifactId>
+                            <groupId>bouncycastle</groupId>
+                    </exclusion>
             </exclusions>
     	</dependency>
 

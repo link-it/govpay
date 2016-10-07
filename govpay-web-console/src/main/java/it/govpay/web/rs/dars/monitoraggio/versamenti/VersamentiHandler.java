@@ -64,6 +64,7 @@ import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.core.business.EstrattoConto;
 import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Anagrafica;
@@ -683,7 +684,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							zout.closeEntry();
 							
 							// RT in formato pdf
-							CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
+							String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+							byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+							CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
 							String causale = versamento.getCausaleVersamento().getSimple();
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
 							RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
@@ -877,7 +880,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						zout.closeEntry();
 
 						// RT in formato pdf
-						CtRicevutaTelematica rt = JaxbUtils.toRT(rpt.getXmlRt());
+						String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+						byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+						CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
 						String causale = versamento.getCausaleVersamento().getSimple();
 						ByteArrayOutputStream baos = new ByteArrayOutputStream();
 						RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
