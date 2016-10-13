@@ -224,7 +224,6 @@ public class PspBD extends BasicBD {
 					IdCanale idCanale = this.getCanaleService().convertToId(canaleDaDisabilitare);
 					this.getCanaleService().update(idCanale, canaleDaDisabilitare);
 				}
-				
 			}
 			
 			for(Canale canale: psp.getCanali()) {

@@ -90,6 +90,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 
 public class RptUtils {
 
@@ -528,8 +529,14 @@ public class RptUtils {
 							rpt.setDescrizioneStato(null);
 							return true;
 						}
-	
+						
+						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
+						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
+						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("iuv", rpt.getIuv()));
+						GpThreadLocal.get().log("pagamento.recuperoRt");
 						rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, bd);
+						GpThreadLocal.get().getContext().getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
+						GpThreadLocal.get().log("pagamento.acquisizioneRtOk");
 						return true;
 					default:
 						log.info("Aggiorno lo stato della RPT [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "] in " + nuovoStato + ".");

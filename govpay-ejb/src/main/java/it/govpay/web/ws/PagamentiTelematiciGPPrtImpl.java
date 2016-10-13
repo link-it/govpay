@@ -20,6 +20,7 @@
  */
 package it.govpay.web.ws;
 
+import java.util.Iterator;
 import java.util.List;
 
 import it.govpay.bd.BasicBD;
@@ -36,6 +37,8 @@ import it.govpay.core.utils.Gp21Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
+import it.govpay.core.utils.RptUtils;
+import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.servizi.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -64,6 +67,7 @@ import it.govpay.servizi.gpprt.GpChiediStatoVersamentoResponse.SpezzoneCausaleSt
 import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.xml.bind.JAXBElement;
 import javax.xml.ws.WebServiceContext;
 
 import org.apache.logging.log4j.LogManager;
@@ -93,29 +97,29 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	
 	@Override
 	public GpChiediListaPspResponse gpChiediListaPsp(GpChiediListaPsp bodyrichiesta) {
-		log.info("Richiesta operazione gpChiediListaPsp");
+		log.debug("Richiesta operazione gpChiediListaPsp");
 		GpChiediListaPspResponse response = new GpChiediListaPspResponse();
 		GpContext ctx = GpThreadLocal.get();
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			it.govpay.core.business.Psp pspBusiness = new it.govpay.core.business.Psp(bd);
 			response = pspBusiness.chiediListaPsp(portaleAutenticato);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.log("gpprt.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -136,15 +140,116 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			log.info("Richiesta operazione gpAvviaTransazionePagamento");
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
+			// Aggiungo il codSessionePortale al PaymentContext
+			ctx.getPagamentoCtx().setCodSessionePortale(bodyrichiesta.getCodSessionePortale());
+			ctx.getContext().getRequest().addGenericProperty(new Property("codSessionePortale", bodyrichiesta.getCodSessionePortale() != null ? bodyrichiesta.getCodSessionePortale() : "--Non fornito--"));
+			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazione");
+			ctx.log("ws.autorizzazione");
+			
+			if(bodyrichiesta.getCanale() != null) {
+				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getCanale().getCodPsp()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getCanale().getCodCanale()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", bodyrichiesta.getCanale().getTipoVersamento().name()));
+			} else {
+				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", bodyrichiesta.getSceltaWisp().getCodDominio()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyPA", bodyrichiesta.getSceltaWisp().getCodKeyPA()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codKeyWISP", bodyrichiesta.getSceltaWisp().getCodKeyWISP()));
+			}
+			
+			if(bodyrichiesta.getVersamentoOrVersamentoRef().size() > 1) {
+				ctx.getPagamentoCtx().setCarrello(true);
+				String codCarrello = RptUtils.buildUUID35();
+				ctx.getPagamentoCtx().setCodCarrello(codCarrello);
+				ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", codCarrello));
+				ctx.setCorrelationId(codCarrello);
+				if(bodyrichiesta.getCanale() != null) {
+					ctx.log("pagamento.avviaTransazioneCarrello");
+				} else {
+					ctx.log("pagamento.avviaTransazioneCarrelloWISP");
+				}
+					
+			} else {
+				
+				Object v = bodyrichiesta.getVersamentoOrVersamentoRef().get(0);
+				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null;
+				
+				if(v instanceof it.govpay.servizi.commons.Versamento) {
+					it.govpay.servizi.commons.Versamento versamento = (it.govpay.servizi.commons.Versamento) v;
+					ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", versamento.getCodApplicazione()));
+					ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", versamento.getCodVersamentoEnte()));
+					ctx.setCorrelationId(versamento.getCodApplicazione() + versamento.getCodVersamentoEnte());
+					if(bodyrichiesta.getCanale() != null) {
+						ctx.log("pagamento.avviaTransazione");
+					} else {
+						ctx.log("pagamento.avviaTransazioneWISP");
+					}
+				} else {
+					it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
+					Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
+					while(iterator.hasNext()){
+						JAXBElement<String> element = iterator.next();
+						
+						if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
+							bundlekey = element.getValue();
+						}
+						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
+							codApplicazione = element.getValue();
+						}
+						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodDominio_QNAME)) {
+							codDominio = element.getValue();
+						}
+						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodVersamentoEnte_QNAME)) {
+							codVersamentoEnte = element.getValue();
+						}
+						if(element.getName().equals(VersamentoUtils._VersamentoKeyIuv_QNAME)) {
+							iuv = element.getValue();
+						}
+					}
+					
+					if(codApplicazione != null && codVersamentoEnte != null) {
+						ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", codApplicazione));
+						ctx.getContext().getRequest().addGenericProperty(new Property("codVersamentoEnte", codVersamentoEnte));
+						ctx.setCorrelationId(codApplicazione + codVersamentoEnte);
+						if(bodyrichiesta.getCanale() != null) {
+							ctx.log("pagamento.avviaTransazioneRef");
+						} else {
+							ctx.log("pagamento.avviaTransazioneRefWISP");
+						}
+					}
+					
+					if(codApplicazione != null && iuv != null) {
+						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
+						ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
+						ctx.setCorrelationId(codDominio + iuv);
+						if(bodyrichiesta.getCanale() != null) {
+							ctx.log("pagamento.avviaTransazioneRefIuv");
+						} else {
+							ctx.log("pagamento.avviaTransazioneRefIuvWISP");
+						}
+					}
+					
+					if(codApplicazione != null && bundlekey != null) {
+						ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", codApplicazione));
+						ctx.getContext().getRequest().addGenericProperty(new Property("bundleKey", bundlekey));
+						ctx.setCorrelationId(codApplicazione + bundlekey);
+						if(bodyrichiesta.getCanale() != null) {
+							ctx.log("pagamento.avviaTransazioneRefBundle");
+						} else {
+							ctx.log("pagamento.avviaTransazioneRefBundleWISP");
+						}
+					}
+				}
+			}
+			
 			
 			it.govpay.bd.model.Canale canale = null;
 			
 			if(bodyrichiesta.getCanale() == null) {
+				
 				it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
 				
 				Dominio dominio = null;
@@ -154,16 +259,32 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 					throw new GovPayException(EsitoOperazione.DOM_000, bodyrichiesta.getSceltaWisp().getCodDominio());
 				}
 				
-				SceltaWISP scelta = wisp.chiediScelta(portaleAutenticato, dominio, bodyrichiesta.getSceltaWisp().getCodKeyPA(), bodyrichiesta.getSceltaWisp().getCodKeyWISP());
+				SceltaWISP scelta = null;
+				
+				try {
+					scelta = wisp.chiediScelta(portaleAutenticato, dominio, bodyrichiesta.getSceltaWisp().getCodKeyPA(), bodyrichiesta.getSceltaWisp().getCodKeyWISP());
+				} catch (Exception e) {
+					ctx.log("pagamento.risoluzioneWispKo", e.getMessage());
+					throw e;
+				}
+				
 				if(scelta.isSceltaEffettuata() && !scelta.isPagaDopo()) {
 					canale = scelta.getCanale();
 				}
 				if(!scelta.isSceltaEffettuata()) {
+					ctx.log("pagamento.risoluzioneWispOkNoScelta");
 					throw new GovPayException(EsitoOperazione.WISP_003);
 				}
-				if(scelta.isPagaDopo()) { 
+				if(scelta.isPagaDopo()) {
+					ctx.log("pagamento.risoluzioneWispOkPagaDopo");
 					throw new GovPayException(EsitoOperazione.WISP_004);
 				}
+				
+				ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", canale.getPsp(bd).getCodPsp()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", canale.getCodCanale()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", canale.getTipoVersamento().getCodifica()));
+				
+				ctx.log("pagamento.risoluzioneWispOkCanale");
 			} else {
 				try {
 					it.govpay.bd.model.Canale.TipoVersamento tipoVersamento = it.govpay.bd.model.Canale.TipoVersamento.toEnum(bodyrichiesta.getCanale().getTipoVersamento().toString());
@@ -173,25 +294,41 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				}
 			}
 			
-			ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", canale.getPsp(bd).getCodPsp()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", canale.getCodCanale()));
-			ctx.getContext().getRequest().addGenericProperty(new Property("tipoVersamento", canale.getTipoVersamento().getCodifica()));
-			ctx.log("gpprt.identificazioneCanale");
-			
+			ctx.log("pagamento.identificazioneCanale");
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			response = pagamentoBusiness.avviaTransazione(portaleAutenticato, bodyrichiesta, canale);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.log("gpprt.ricevutaRichiestaOk");
+			
+			if(response.getPspSessionId() != null) {
+				ctx.getContext().getResponse().addGenericProperty(new Property("codPspSession", response.getPspSessionId()));
+			}
+			
+			if(ctx.getPagamentoCtx().isCarrello()) {
+				if(response.getPspSessionId() != null) {
+					ctx.log("pagamento.invioCarrelloRpt");
+				} else {
+					ctx.log("pagamento.invioCarrelloRptNoRedirect");
+				}
+			} else {
+				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", response.getRifTransazione().get(0).getCodDominio()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", response.getRifTransazione().get(0).getIuv()));
+				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", response.getRifTransazione().get(0).getCcp()));
+				if(response.getPspSessionId() != null) {
+					ctx.log("pagamento.invioRpt");
+				} else {
+					ctx.log("pagamento.invioRptNoRedirect");
+				}
+			}
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("pagamento.avviaTransazioneKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione(), e.getCausa() != null ? e.getCausa() : "[--Non specificata--]");
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("pagamento.avviaTransazioneFail", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -213,26 +350,26 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazione");
+			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			Rpt rpt = pagamentoBusiness.chiediTransazione(portaleAutenticato, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv(), bodyrichiesta.getCcp());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			response.setTransazione(Gp21Utils.toTransazione(portaleAutenticato.getVersione(), rpt, bd));
-			ctx.log("gpprt.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -254,10 +391,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazione");
+			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Wisp wisp = new it.govpay.core.business.Wisp(bd);
 			
@@ -283,18 +420,18 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 				response.setScelta(TipoSceltaWisp.NO);
 			}
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.log("gpprt.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 			log.info("SceltaWISP recuperata (" + response.getScelta() + ")");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -317,10 +454,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazione");
+			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			List<Versamento> versamenti = versamentoBusiness.chiediVersamenti(portaleAutenticato, bodyrichiesta.getCodPortale(), bodyrichiesta.getCodUnivocoDebitore());
@@ -328,17 +465,17 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			for(Versamento versamento : versamenti) {
 				response.getVersamento().add(Gp21Utils.toVersamento(portaleAutenticato.getVersione(), versamento, bd));
 			}
-			ctx.log("gpprt.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -364,25 +501,25 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", bodyrichiesta.getCcp()));
 			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiestaStorno");
+			ctx.log("ws.ricevutaRichiestaStorno");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazione");
+			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			response = pagamentoBusiness.avviaStorno(portaleAutenticato, bodyrichiesta);
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			ctx.log("gpprt.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -404,26 +541,26 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazione");
+			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Pagamento pagamentoBusiness = new it.govpay.core.business.Pagamento(bd);
 			Rr rr = pagamentoBusiness.chiediStorno(portaleAutenticato, bodyrichiesta.getCodRichiestaStorno());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			response.setStorno(Gp21Utils.toStorno(rr, portaleAutenticato.getVersione(), bd));
-			ctx.log("gpprt.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpprt.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -445,10 +582,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("gpprt.ricevutaRichiesta");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
-			ctx.log("gpprt.autorizzazione");
+			ctx.log("ws.autorizzazione");
 		
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			

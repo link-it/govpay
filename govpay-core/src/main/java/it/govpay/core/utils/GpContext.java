@@ -42,6 +42,7 @@ public class GpContext {
 	private List<ILogger> loggers;
 	private List<Context> contexts;
 	
+	private PagamentoContext pagamentoCtx;
 	private IntegrationContext integrationCtx;
 	
 	public static String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
@@ -358,6 +359,13 @@ public class GpContext {
 		
 		return integrationCtx;
 	}
+
+	public PagamentoContext getPagamentoCtx() {
+		if(this.pagamentoCtx == null) 
+			this.pagamentoCtx = new PagamentoContext();
+		return pagamentoCtx;
+	}
+
 
 	public class Context extends ProxyContext {
 		private static final long serialVersionUID = 1L;

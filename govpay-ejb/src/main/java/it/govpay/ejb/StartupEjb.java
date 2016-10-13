@@ -56,71 +56,79 @@ import org.openspcoop2.utils.logger.log4j.Log4jType;
 @Startup
 @Singleton
 public class StartupEjb {
-	
-	private static Logger log = LogManager.getLogger();	
+
+	private static Logger log = LogManager.getLogger("boot");	
 	private static org.apache.log4j.Logger logv1 = org.apache.log4j.LogManager.getLogger(StartupEjb.class);	
-	
+
 	@PostConstruct
 	public void init() {
-		
+		GovpayConfig gpConfig = null;
 		try {
-			GovpayConfig.newInstance();
+			gpConfig = GovpayConfig.newInstance();
+			it.govpay.bd.GovpayConfig.newInstance();
 		} catch (Exception e) {
-			throw new RuntimeException("Inizializzazione di GovPay fallita: " + e);
+			throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
 		}
-		
+
 		// Gestione della configurazione di Log4J
-		URI log4j2Config = null;
-		try {
-			log4j2Config = GovpayConfig.getInstance().getLog4j2Config();
-			if(log4j2Config != null) {
-				LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-				context.setConfigLocation(log4j2Config);
-			}
-		} catch (Exception e) {
-			log.warn("Errore durante la configurazione del Logger: " + e);
+		URI log4j2Config = gpConfig.getLog4j2Config();
+		if(log4j2Config != null) {
+			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+			context.setConfigLocation(log4j2Config);
+			log = LogManager.getLogger("boot");	
+			
+			log.info("Inizializzazione GovPay v2.2.1 in corso. ($Id$)");
+			log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
+		} else {
+			log.info("Inizializzazione GovPay v2.2.1 in corso. ($Id$)");
+			log.info("Configurazione logger da classpath.");
 		}
 		
+		try {
+			gpConfig.readProperties();
+		} catch (Exception e) {
+			throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
+		}
+
 		// Configurazione del logger Diagnostici/Tracce/Dump
 		try {
-
 			DiagnosticConfig diagnosticConfig = new DiagnosticConfig();
-	        diagnosticConfig.setDiagnosticPropertiesResourceURI("/msgDiagnostici.properties");
-	        diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
-			
-	        Log4jConfig log4jConfig = new Log4jConfig();
-	        log4jConfig.setLog4jType(Log4jType.LOG4Jv2);
+			diagnosticConfig.setDiagnosticPropertiesResourceURI("/msgDiagnostici.properties");
+			diagnosticConfig.setThrowExceptionPlaceholderFailedResolution(false);
+
+			Log4jConfig log4jConfig = new Log4jConfig();
+			log4jConfig.setLog4jType(Log4jType.LOG4Jv2);
 			if(log4j2Config != null) {
-		        log4jConfig.setLog4jPropertiesResource(new File(log4j2Config));
+				log4jConfig.setLog4jPropertiesResource(new File(log4j2Config));
 			} else {
-		        log4jConfig.setLog4jPropertiesResourceURI("/log4j2.xml");
+				log4jConfig.setLog4jPropertiesResourceURI("/log4j2.xml");
 			}
-			
+
 			MultiLoggerConfig mConfig = new MultiLoggerConfig();
-	        mConfig.setDiagnosticConfig(diagnosticConfig);
-	        mConfig.setDiagnosticSeverityFilter(GovpayConfig.getInstance().getmLogLevel());
-	        mConfig.setLog4jLoggerEnabled(GovpayConfig.getInstance().ismLogOnLog4j());
-	        mConfig.setLog4jConfig(log4jConfig);	
-	        mConfig.setDbLoggerEnabled(GovpayConfig.getInstance().ismLogOnDB());
-	        
-	        if(GovpayConfig.getInstance().ismLogOnDB()) {
-		        DatabaseConfig dbConfig = new DatabaseConfig();
-		        DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
-		        dbDSConfig.setJndiName(GovpayConfig.getInstance().getmLogDS());
-		        dbConfig.setConfigDatasource(dbDSConfig);
-		        dbConfig.setDatabaseType(GovpayConfig.getInstance().getmLogDBType());
-		        dbConfig.setLogSql(GovpayConfig.getInstance().ismLogSql());
-		        mConfig.setDatabaseConfig(dbConfig);
-	        }
-	        LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), logv1, mConfig);
-	        
+			mConfig.setDiagnosticConfig(diagnosticConfig);
+			mConfig.setDiagnosticSeverityFilter(GovpayConfig.getInstance().getmLogLevel());
+			mConfig.setLog4jLoggerEnabled(GovpayConfig.getInstance().ismLogOnLog4j());
+			mConfig.setLog4jConfig(log4jConfig);	
+			mConfig.setDbLoggerEnabled(GovpayConfig.getInstance().ismLogOnDB());
+
+			if(GovpayConfig.getInstance().ismLogOnDB()) {
+				DatabaseConfig dbConfig = new DatabaseConfig();
+				DatabaseConfigDatasource dbDSConfig = new DatabaseConfigDatasource();
+				dbDSConfig.setJndiName(GovpayConfig.getInstance().getmLogDS());
+				dbConfig.setConfigDatasource(dbDSConfig);
+				dbConfig.setDatabaseType(GovpayConfig.getInstance().getmLogDBType());
+				dbConfig.setLogSql(GovpayConfig.getInstance().ismLogSql());
+				mConfig.setDatabaseConfig(dbConfig);
+			}
+			LoggerFactory.initialize(GovpayConfig.getInstance().getmLogClass(), logv1, mConfig);
+
 		} catch (Exception e) {
 			log.error("Errore durante la configurazione dei diagnostici", e);
 			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
 		}
-		
+
 		GpContext ctx = null;
-		
+
 		try {
 			ctx = new GpContext();
 			ThreadContext.put("cmd", "Inizializzazione");
@@ -138,7 +146,7 @@ public class StartupEjb {
 			if(ctx != null) ctx.log();
 			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
 		}
-		
+
 		try {
 			AnagraficaManager.newInstance();
 			JaxbUtils.init();
@@ -151,7 +159,7 @@ public class StartupEjb {
 			ctx.log();
 			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
 		}
-		
+
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -161,32 +169,49 @@ public class StartupEjb {
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
-		
+
 		ctx.log();
+
+		log.info("Inizializzazione GovPay v2.2.1 completata con successo.  ($Id$)");
 	}
-	
+
 	@PreDestroy
 	public void shutdown() {
 		ThreadContext.put("cmd", "Shutdown");
 		ThreadContext.put("op", UUID.randomUUID().toString() );
-		log.info("Rimozione delle cache");
+		
+		log.info("Shutdown GovPay in corso...");
+		
+		log.info("De-registrazione delle cache ...");
 		AnagraficaManager.unregister();
-		log.info("Shutdown pool thread esiti");
+		log.info("De-registrazione delle cache completato");
+		
+		
+		log.info("Shutdown pool thread notifiche ...");
 		try {
-//			ThreadExecutorManager.shutdown();
+			ThreadExecutorManager.shutdown();
+			log.info("Shutdown pool thread notifiche completato.");
 		} catch (Exception e) {
-			log.warn("Shutdown pool thread esiti fallito:" + e);
+			log.warn("Shutdown pool thread notifiche fallito:" + e);
 		}
-		log.info("Deregistrazione risorse JMX");
+		
+		
+		log.info("De-registrazione risorse JMX ...");
 		try {
 			JmxOperazioni.unregister();
+			log.info("De-registrazione risorse JMX completato.");
 		} catch (Exception e) {
 			log.warn("Errore nella de-registrazione JMX: " + e);
 		}
+		
+		log.info("Shutdown del Connection Manager ...");
 		try {
 			ConnectionManager.shutdown();
+			log.info("Shutdown del Connection Manager completato.");
 		} catch (Exception e) {
-			log.warn("Errore nella de-registrazione JMX: " + e);
+			log.warn("Errore nello shutdown del Connection Manager: " + e);
 		}
+		
+		log.info("Shutdown di GovPay completato.");
 	}
 }

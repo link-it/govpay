@@ -21,6 +21,7 @@
 package it.govpay.bd.model;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.SingoliVersamentiBD;
 
@@ -103,5 +104,15 @@ public class RendicontazioneSenzaRpt extends BasicModel {
 			iuv = iuvBD.getIuv(this.idIuv);
 		}
 		return iuv;
+	}
+	
+	private FrApplicazione frApplicazione;
+	
+	public FrApplicazione getFrApplicazione(BasicBD bd) throws ServiceException {
+		if(singoloVersamento == null) {
+			FrBD frBD = new FrBD(bd);
+			frApplicazione = frBD.getFrApplicazione(idFrApplicazioni);
+		}
+		return frApplicazione;
 	}
 }

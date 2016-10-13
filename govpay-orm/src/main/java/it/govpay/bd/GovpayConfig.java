@@ -20,35 +20,83 @@
  */
 package it.govpay.bd;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.pagamento.util.CustomIuv;
+
 
 public class GovpayConfig {
 	
 	private static final String PROPERTIES_FILE = "/govpay-orm.properties";
 
 	private static GovpayConfig instance;
-	public static GovpayConfig getInstance() throws Exception {
-		if(instance == null) {
-			instance = new GovpayConfig();
-		}
+	
+	public static GovpayConfig getInstance() {
 		return instance;
 	}
-	
+
+	public static GovpayConfig newInstance() throws Exception {
+		instance = new GovpayConfig();
+		return instance;
+	}
+
 	private String databaseType;
 	private boolean databaseShowSql;
 	private String dataSourceJNDIName;
 	private String dataSourceAppName;
 	private Map<String, String> nativeQueries;
+	private CustomIuv defaultCustomIuvGenerator = null;
+	private Properties[] props;
+	private String resourceDir;
+	
+	
 	
 	public GovpayConfig() throws Exception {
+		
+		Logger log = LogManager.getLogger("boot");
+		
+		// Recupero il property all'interno dell'EAR
 		InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
-		Properties props = new Properties();
-		props.load(is);
+
+		props = new Properties[2];
+		Properties props1 = new Properties();
+		props1.load(is);
+		props[1] = props1;
+		
+		// Recupero la configurazione della working dir
+		// Se e' configurata, la uso come prioritaria
+
+		try {
+			this.resourceDir = getProperty("it.govpay.resource.path", props1, false);
+
+			if(this.resourceDir != null) {
+				File resourceDirFile = new File(this.resourceDir);
+				if(!resourceDirFile.isDirectory())
+					throw new Exception("Il path indicato nella property \"it.govpay.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
+			}
+		} catch (Exception e) {
+			LogManager.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
+		}
+		
+		Properties props0 = null;
+		props[0] = props0;
+
+		File gpConfigFile = new File(this.resourceDir + File.separatorChar + "govpay-orm.properties");
+		if(gpConfigFile.exists()) {
+			props0 = new Properties();
+			props0.load(new FileInputStream(gpConfigFile));
+			log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
+			props[0] = props0;
+		}
 		
 		this.databaseType = getProperty("it.govpay.orm.databaseType", props, true);
 		String databaseShowSqlString = getProperty("it.govpay.orm.showSql", props, true);
@@ -70,17 +118,70 @@ public class GovpayConfig {
 			}
 		}
 		
-	}
-
-	private static String getProperty(String name, Properties props, boolean required) throws Exception {
-		String value = props.getProperty(name);
-		if(value == null) {
-			if(required)
-				throw new Exception("Property ["+name+"] non trovata");
-			else return null;
+		String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", props, false);
+			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
+			Class<?> c = null;
+			try {
+				c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
+			} catch (ClassNotFoundException e) {
+				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata come default per la generazione di IUV custom non e' presente nel classpath");
+			}
+			Object instance = c.newInstance();
+			if(!(instance instanceof CustomIuv)) {
+				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] come default per la generazione di IUV custom deve implementare l'interfaccia " + CustomIuv.class.getName());
+			}
+			this.defaultCustomIuvGenerator = (CustomIuv) instance;
 		}
 		
+	}
+
+	private String getProperty(String name, Properties props, boolean required) throws Exception {
+		Logger log = LogManager.getLogger("boot");
+		
+		String value = System.getProperty(name);
+
+		if(value != null && value.trim().isEmpty()) {
+			value = null;
+		}
+
+		if(value == null) {
+			if(props != null) {
+				value = props.getProperty(name);
+				if(value != null && value.trim().isEmpty()) {
+					value = null;
+				}
+			}
+			if(value == null) {
+				if(required) 
+					throw new Exception("Proprieta ["+name+"] non trovata");
+				else return null;
+			} else {
+				log.info("Letta proprieta di configurazione " + name + ": " + value);
+			}
+		} else {
+			log.info("Letta proprieta di sistema " + name + ": " + value);
+		}
+
 		return value.trim();
+	}
+
+	private String getProperty(String name, Properties[] props, boolean required) throws Exception {
+		Logger log = LogManager.getLogger("boot");
+		
+		String value = null;
+		for(Properties p : props) {
+			try { value = getProperty(name, p, required); } catch (Exception e) { }
+			if(value != null && !value.trim().isEmpty()) {
+				return value;
+			}
+		}
+
+		if(log!= null) log.info("Proprieta " + name + " non trovata");
+
+		if(required) 
+			throw new Exception("Proprieta ["+name+"] non trovata");
+		else 
+			return null;
 	}
 	
 	public String getNativeQuery(String nativeQueryKey) throws ServiceException {
@@ -106,4 +207,9 @@ public class GovpayConfig {
 	public String getDataSourceAppName() {
 		return dataSourceAppName;
 	}
+	
+	public CustomIuv getDefaultCustomIuvGenerator() {
+		return defaultCustomIuvGenerator;
+	} 
+
 }

@@ -77,9 +77,14 @@ public class InviaNotificaThread implements Runnable {
 				} else {
 					ctx = new GpContext(notifica.getRpt(bd).getIdTransazioneRt());
 				}
+				
+				if(notifica.getRpt(bd).getCodCarrello() != null) {
+					ctx.getContext().getRequest().addGenericProperty(new Property("codCarrello", notifica.getRpt(bd).getCodCarrello()));
+				} 
 				ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", notifica.getRpt(null).getCodDominio()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("iuv", notifica.getRpt(null).getIuv()));
 				ctx.getContext().getRequest().addGenericProperty(new Property("ccp", notifica.getRpt(null).getCcp()));
+				
 				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) 
 					ctx.log("notifica.rpt");
 				else
@@ -127,7 +132,24 @@ public class InviaNotificaThread implements Runnable {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			NotificheBD notificheBD = new NotificheBD(bd);
 			notificheBD.updateSpedito(notifica.getId());
-			ctx.log("notifica.ok");
+			
+			if(notifica.getIdRpt() != null) {
+				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+					if(notifica.getRpt(bd).getCodCarrello() != null) {
+						ctx.log("notifica.carrellook");
+					} else {
+						ctx.log("notifica.rptok");
+					}
+				} else {
+					ctx.log("notifica.rtok");
+				}
+			} else {
+				if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+					ctx.log("notifica.rrok");
+				} else {
+					ctx.log("notifica.erok");
+				}
+			}
 			log.info("Notifica consegnata con successo");
 		} catch(Exception e) {
 			if(e instanceof GovPayException || e instanceof ClientException)
@@ -139,9 +161,51 @@ public class InviaNotificaThread implements Runnable {
 					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 				long tentativi = notifica.getTentativiSpedizione() + 1;
 				NotificheBD notificheBD = new NotificheBD(bd);
-				Date prossima = new Date(new Date().getTime() + (tentativi * tentativi * 60 * 1000));
 				
-				ctx.log("notifica.ko", e.getMessage(), prossima.toString());
+				Date today = new Date();
+				Date tomorrow = new Date(today.getTime() + (1000 * 60 * 60 * 24));
+				Date prossima = new Date(today.getTime() + (tentativi * tentativi * 60 * 1000));
+				
+				// Limito la rispedizione al giorno dopo.
+				if(prossima.after(tomorrow)) prossima = tomorrow;
+				
+				if(tentativi == 1 || !e.getMessage().equals(notifica.getDescrizioneStato())) {
+					if(notifica.getIdRpt() != null) {
+						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+							if(notifica.getRpt(bd).getCodCarrello() != null) {
+								ctx.log("notifica.carrelloko", e.getMessage());
+							} else {
+								ctx.log("notifica.rptko", e.getMessage());
+							}
+						} else {
+							ctx.log("notifica.rtko", e.getMessage());
+						}
+					} else {
+						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+							ctx.log("notifica.rrko", e.getMessage());
+						} else {
+							ctx.log("notifica.erko", e.getMessage());
+						}
+					}
+				} else {
+					if(notifica.getIdRpt() != null) {
+						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+							if(notifica.getRpt(bd).getCodCarrello() != null) {
+								ctx.log("notifica.carrelloRetryko", e.getMessage(), prossima.toString());
+							} else {
+								ctx.log("notifica.rptRetryko", e.getMessage(), prossima.toString());
+							}
+						} else {
+							ctx.log("notifica.rtRetryko", e.getMessage(), prossima.toString());
+						}
+					} else {
+						if(notifica.getTipo().equals(TipoNotifica.ATTIVAZIONE)) {
+							ctx.log("notifica.rrRetryko", e.getMessage(), prossima.toString());
+						} else {
+							ctx.log("notifica.erRetryko", e.getMessage(), prossima.toString());
+						}
+					}
+				}
 				
 				notificheBD.updateDaSpedire(notifica.getId(), e.getMessage(), tentativi, prossima);
 			} catch (Exception ee) {

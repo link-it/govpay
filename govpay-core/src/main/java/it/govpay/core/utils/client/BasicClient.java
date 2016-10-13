@@ -341,7 +341,14 @@ public class BasicClient {
 				} finally {
 					log.error("Errore nell'invocazione del Nodo dei Pagamenti: [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 				}
-				throw new ClientException("Errore nell'invocazione: HTTP " + responseCode);
+				
+				String txt = new String(msg);
+				
+				if(txt.length() > 300) {
+					throw new ClientException("Ricevuto [HTTP " + responseCode + "]\nRisposta: " + txt.substring(0, 300) + "[--omissis--]");
+				} else {
+					throw new ClientException("Ricevuto [HTTP " + responseCode + "]\nRisposta: " + txt);
+				}
 			}
 		} finally {
 			if(responseMsg != null)

@@ -126,6 +126,27 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException();
 		}
 	}
+	
+	public List<Pagamento> getPagamentiBySingoloVersamento(long idSingoloVersamento) throws ServiceException {
+		try {
+			IPaginatedExpression exp = this.getPagamentoService()
+					.newPaginatedExpression();
+			PagamentoFieldConverter fieldConverter = new PagamentoFieldConverter(
+					this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento",
+					fieldConverter.toTable(it.govpay.orm.Pagamento.model())),
+					idSingoloVersamento);
+			List<it.govpay.orm.Pagamento> singoliPagamenti = this
+					.getPagamentoService().findAll(exp);
+			return PagamentoConverter.toDTO(singoliPagamenti);
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
+	}
 
 	public Pagamento getPagamento(String codDominio, String iuv, String iur)
 			throws ServiceException, NotFoundException, MultipleResultException {
@@ -154,6 +175,34 @@ public class PagamentiBD extends BasicBD {
 		return findAll(filter);
 	}
 
+	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRptBySingoloVersamento(
+			Long idSingoloVersamento) throws ServiceException {
+		try {
+			IPaginatedExpression exp = this.getRendicontazioneSenzaRPTService()
+					.newPaginatedExpression();
+			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(
+					this.getJdbcProperties().getDatabaseType());
+			exp.equals(
+					new CustomField(
+							"id_singolo_versamento",
+							Long.class,
+							"id_singolo_versamento",
+							fieldConverter
+									.toTable(it.govpay.orm.RendicontazioneSenzaRPT
+											.model())), idSingoloVersamento);
+			List<it.govpay.orm.RendicontazioneSenzaRPT> rendicontazioniSenzaRpt = this
+					.getRendicontazioneSenzaRPTService().findAll(exp);
+			return RendicontazioneSenzaRptConverter
+					.toDTO(rendicontazioniSenzaRpt);
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
+	}
+	
 	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(
 			Long idFrApplicazione) throws ServiceException {
 		try {

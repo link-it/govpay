@@ -118,3 +118,4 @@ ALTER TABLE portali MODIFY (trusted NOT NULL);
 --GP-281
 ALTER TABLE applicazioni ADD versione VARCHAR(10) DEFAULT '2.1' NOT NULL;
 ALTER TABLE portali ADD versione VARCHAR(10) DEFAULT '2.1' NOT NULL;
+

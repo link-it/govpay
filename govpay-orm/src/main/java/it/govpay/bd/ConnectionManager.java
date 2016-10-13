@@ -23,8 +23,6 @@ package it.govpay.bd;
 import java.sql.Connection;
 import java.util.Properties;
 
-import javax.naming.NameNotFoundException;
-
 import org.openspcoop2.utils.datasource.DataSource;
 import org.openspcoop2.utils.datasource.DataSourceFactory;
 import org.openspcoop2.utils.datasource.DataSourceParams;
@@ -63,7 +61,7 @@ public class ConnectionManager {
 		
 		try{
 			ConnectionManager.ds = DataSourceFactory.newInstance(GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);
-		} catch(NameNotFoundException e) {
+		} catch(Exception e) {
 			ConnectionManager.ds = DataSourceFactory.newInstance("java:/"+GovpayConfig.getInstance().getDataSourceJNDIName(), new Properties(), dsParams);
 		}
 		ConnectionManager.log.info("Init ConnectionManager terminata");

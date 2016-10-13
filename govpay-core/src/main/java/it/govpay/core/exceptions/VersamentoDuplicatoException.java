@@ -23,5 +23,10 @@ package it.govpay.core.exceptions;
 public class VersamentoDuplicatoException extends Exception {
 
 	private static final long serialVersionUID = 1L;
+	
+	public VersamentoDuplicatoException(String message) {
+		super(message);
+	}
+
 
 }

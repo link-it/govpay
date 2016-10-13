@@ -20,7 +20,9 @@
  */
 package it.govpay.web.ws;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import gov.telematici.pagamenti.ws.ppthead.IntestazionePPT;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoVersante;
@@ -47,8 +49,10 @@ import it.govpay.bd.model.IbanAccredito;
 import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.Iuv;
 import it.govpay.bd.model.Iuv.TipoIUV;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
@@ -57,6 +61,7 @@ import it.govpay.bd.model.Versamento.CausaleSpezzoni;
 import it.govpay.bd.model.Versamento.CausaleSpezzoniStrutturati;
 import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
+import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.GiornaleEventi;
@@ -85,7 +90,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotAuthorizedException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.Property;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
 
@@ -105,6 +109,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	WebServiceContext wsCtxt;
 
 	private static Logger log = LogManager.getLogger();
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
 	@Override
 	public PaaAttivaRPTRisposta paaAttivaRPT(PaaAttivaRPT bodyrichiesta, IntestazionePPT header) {
@@ -131,6 +136,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", bodyrichiesta.getIdentificativoPSP()));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codCanale", bodyrichiesta.getIdentificativoCanalePSP()));
 		ctx.log("ccp.ricezioneAttiva");
 		
 		BasicBD bd = null;
@@ -211,45 +218,65 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
-					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
-						throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+						
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ANOMALO))
+							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.");
+						
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
+							PagamentiBD pagamentiBD = new PagamentiBD(bd);
+							List<RendicontazioneSenzaRpt> pagamenti = pagamentiBD.getRendicontazioniSenzaRptBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
+							if(pagamenti.isEmpty())
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+							else {
+								RendicontazioneSenzaRpt pagamento = pagamenti.get(0);
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataRendicontazione()) + " [Psp:" + pagamento.getFrApplicazione(bd).getFr(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
+							}
+						}
+						
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {
+							PagamentiBD pagamentiBD = new PagamentiBD(bd);
+							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
+							if(pagamenti.isEmpty())
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+							else {
+								Pagamento pagamento = pagamenti.get(0);
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
+							}
+								
+						}
+					}
 
 				} catch (NotFoundException e) {
 					// Versamento non trovato, devo interrogare l'applicazione.
 					if(iuvModel != null)
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), iuv, bd);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), codDominio, iuv, bd);
 					else {
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()), null, iuv, bd);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()), null, codDominio, iuv, bd);
 						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 					}
 				}
 			} catch (VersamentoScadutoException e1) {
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, codDominio, e1.getMessage());
 			} catch (VersamentoAnnullatoException e1) {
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio, e1.getMessage());
 			} catch (VersamentoDuplicatoException e1) {
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, e1.getMessage());
 			} catch (VersamentoSconosciutoException e1) {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 			} catch (ClientException e1) {
-				if(iuvModel != null)
-					throw new ServiceException("Errore nella attivazione del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + ").", e1);
-				else
-					throw new ServiceException("Errore nella attivazione del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione() + ").", e1);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1);
 			} catch (GovPayException e1) {
-				if(iuvModel != null)
-					throw new ServiceException("Errore nella attivazione del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + ").", e1);
-				else
-					throw new ServiceException("Errore nella attivazione del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione() + ").", e1);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante l'attivazione del versamento: " + e1);
 			}
-
+			
 			// Verifico l'importo
 			if(bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento().compareTo(versamento.getImportoTotale()) != 0)
-				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, codDominio);
+				throw new NdpException(FaultPa.PAA_ATTIVA_RPT_IMPORTO_NON_VALIDO, codDominio, "L'importo attivato [" + bodyrichiesta.getDatiPagamentoPSP().getImportoSingoloVersamento() + "] non corrisponde all'importo del versamento [" + versamento.getImportoTotale() + "]");
 			
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti(bd).size() != 1) {
-				throw new ServiceException("Errore nella attivazione del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + "). Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
+				throw new NdpException(FaultPa.PAA_SEMANTICA, codDominio, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
 			}
 			
 			// Identificazione del Psp e del canale
@@ -257,7 +284,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			try {
 				psp = AnagraficaManager.getPsp(bd, bodyrichiesta.getIdentificativoPSP());
 			} catch (NotFoundException e) {
-				throw new ServiceException("Psp (" + bodyrichiesta.getIdentificativoPSP() + ") non censito in anagrafica.");
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Psp [Psp:" + bodyrichiesta.getIdentificativoPSP() + "] non censito in anagrafica.");
 			}
 			
 			Canale canale = null;
@@ -265,7 +292,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				canale = AnagraficaManager.getCanale(bd, bodyrichiesta.getIdentificativoPSP(), bodyrichiesta.getIdentificativoCanalePSP(), TipoVersamento.ATTIVATO_PRESSO_PSP);
 				evento.setCodCanale(canale.getCodCanale());
 			}catch (NotFoundException e) {
-				throw new ServiceException("Psp (" + bodyrichiesta.getIdentificativoPSP() + ") non ha canali censiti per pagamenti ad iniziativa psp.");
+				throw new NdpException (FaultPa.PAA_SYSTEM_ERROR, codDominio, "Canale [Psp:" + bodyrichiesta.getIdentificativoPSP() + " Canale:"+bodyrichiesta.getIdentificativoCanalePSP()+"] non censito in anagrafica.");
 			}
 			
 			// Creazione dell'RPT
@@ -284,8 +311,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			
 			// Controllo se gia' non esiste la RPT (lo devo fare solo adesso per essere in transazione con l'inserimento)
 			try {
-				rptBD.getRpt(codDominio, iuv, ccp);
-				throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio);
+				Rpt oldrpt = rptBD.getRpt(codDominio, iuv, ccp);
+				throw new NdpException(FaultPa.PAA_PAGAMENTO_IN_CORSO, codDominio, "RTP attivata in data " + oldrpt.getDataMsgRichiesta() + " [idMsgRichiesta: " + oldrpt.getCodMsgRichiesta() + "]");
 			} catch (NotFoundException e2) {
 				// L'RPT non esiste, procedo
 				rptBD.insertRpt(rpt);
@@ -327,8 +354,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaAttivaRPTRisposta(esito);
-			ctx.log("ccp.attivazioneInfo", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
-			ctx.log("ccp.ricezioneAttivaOk");
+			ctx.log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
@@ -366,7 +392,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		String codDominio = header.getIdentificativoDominio();
 		String iuv = header.getIdentificativoUnivocoVersamento();
 		String ccp = header.getCodiceContestoPagamento();
-		
+		String psp = bodyrichiesta.getIdentificativoPSP();
 		
 		GpContext ctx = GpThreadLocal.get();
 		ctx.setCorrelationId(codDominio + iuv + ccp);
@@ -384,6 +410,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
+		ctx.getContext().getRequest().addGenericProperty(new Property("codPsp", psp));
 		ctx.log("ccp.ricezioneVerifica");
 		
 		
@@ -397,7 +424,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		evento.setIuv(iuv);
 		evento.setCcp(ccp);
 		evento.setTipoEvento(TipoEvento.paaAttivaRPT);
-		evento.setCodPsp(bodyrichiesta.getIdentificativoPSP());
+		evento.setCodPsp(psp);
 		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		evento.setFruitore("NodoDeiPagamentiSPC");
 		try {
@@ -456,10 +483,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			try {
 				try {
 					// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
-					if(iuvModel == null) {
-						// Se non ho lo iuv, vado direttamente a chiedere all'applicazione di default
-						throw new NotFoundException();
-					}
+					if(iuvModel == null) throw new NotFoundException();
+					
 					versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 
 					// Versamento trovato, gestisco un'eventuale scadenza
@@ -468,19 +493,48 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					if(versamento.getStatoVersamento().equals(StatoVersamento.ANNULLATO))
 						throw new NdpException(FaultPa.PAA_PAGAMENTO_ANNULLATO, codDominio);
 
-					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO))
-						throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+					if(!versamento.getStatoVersamento().equals(StatoVersamento.NON_ESEGUITO)) {
+						
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ANOMALO))
+							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.");
+						
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
+							PagamentiBD pagamentiBD = new PagamentiBD(bd);
+							List<RendicontazioneSenzaRpt> pagamenti = pagamentiBD.getRendicontazioniSenzaRptBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
+							if(pagamenti.isEmpty())
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+							else {
+								RendicontazioneSenzaRpt pagamento = pagamenti.get(0);
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataRendicontazione()) + " [Psp:" + pagamento.getFrApplicazione(bd).getFr(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
+							}
+						}
+						
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {
+							PagamentiBD pagamentiBD = new PagamentiBD(bd);
+							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
+							if(pagamenti.isEmpty())
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
+							else {
+								Pagamento pagamento = pagamenti.get(0);
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
+							}
+								
+						}
+					}
 
 				} catch (NotFoundException e) {
 					// Versamento non trovato, devo interrogare l'applicazione.
-					ctx.log("ccp.versamentoNonPresente");
+					
 					if(iuvModel != null) {
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), iuv, bd);
+						ctx.log("ccp.versamentoNonPresente", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), codDominio, iuv, bd);
+						ctx.log("ccp.versamentoNonPresenteOk", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
 					} else {
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()), null, iuv, bd);
+						ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()), null, codDominio, iuv, bd);
 						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
+						ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 					}
-					ctx.log("ccp.versamentoAcquisito");
 				}
 			} catch (VersamentoScadutoException e1) {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCADUTO, codDominio);
@@ -491,20 +545,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			} catch (VersamentoSconosciutoException e1) {
 				throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 			} catch (ClientException e1) {
-				if(iuvModel != null)
-					throw new ServiceException("Errore nella verifica del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + ").", e1);
-				else
-					throw new ServiceException("Errore nella verifica del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione() + ").", e1);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante l'acquisizione del versamento dall'applicazione gestore del debito: " + e1);
 			} catch (GovPayException e1) {
-				if(iuvModel != null)
-					throw new ServiceException("Errore nella verifica del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + ").", e1);
-				else
-					throw new ServiceException("Errore nella verifica del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione() + ").", e1);
+				throw new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, "Riscontrato errore durante la verifica del versamento: " + e1);
 			}
 			
 			// Verifico che abbia un solo singolo versamento
 			if(versamento.getSingoliVersamenti(bd).size() != 1) {
-				throw new ServiceException("Errore nella verifica del versamento dell'applicazione (" + AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione() + "). Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
+				throw new NdpException(FaultPa.PAA_SEMANTICA, codDominio, "Il versamento contiente piu' di un singolo versamento, non ammesso per pagamenti ad iniziativa psp.");
 			}
 			
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();
@@ -542,8 +590,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaVerificaRPTRisposta(esito);
-			ctx.log("ccp.verificaInfo", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
-			ctx.log("ccp.ricezioneVerificaOk");
+			ctx.log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);

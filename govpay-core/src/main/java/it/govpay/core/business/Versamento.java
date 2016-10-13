@@ -33,7 +33,6 @@ import it.govpay.bd.model.Acl.Servizio;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Iuv.TipoIUV;
 import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
@@ -87,9 +86,8 @@ public class Versamento extends BasicBD {
 				iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 			} catch (NotFoundException e) {
 				if(generaIuv) {
-					Stazione stazione = AnagraficaManager.getStazione(this, versamento.getUo(this).getDominio(this).getIdStazione());
-					iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.NUMERICO);
-					log.info("Generato IUV [CodDominio: " + versamento.getUo(this).getDominio(this).getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
+					Iuv iuvBusiness = new Iuv(this);
+					iuv = iuvBusiness.generaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), iuvBD);
 				}
 			}
 			
@@ -249,7 +247,7 @@ public class Versamento extends BasicBD {
 			v = chiediVersamento(applicazione.getCodApplicazione(), iuvModel.getCodVersamentoEnte());
 		} catch (GovPayException e) {
 			try {
-				v = VersamentoUtils.acquisisciVersamento(applicazione, iuvModel.getCodVersamentoEnte(), iuv, this);
+				v = VersamentoUtils.acquisisciVersamento(applicazione, iuvModel.getCodVersamentoEnte(), codDominio, iuv, this);
 			} catch (Exception e1) {
 				// TODO Gestire meglio i casi di errore.
 				throw new GovPayException(EsitoOperazione.VER_008);

@@ -29,6 +29,7 @@ public class GovPayException extends Exception {
 	private static final long serialVersionUID = 1L;
 	private String[] params;
 	private EsitoOperazione codEsito;
+	private String causa;
 	
 	public GovPayException(EsitoOperazione codEsito, String ... params) {
 		this.params = params;
@@ -72,6 +73,8 @@ public class GovPayException extends Exception {
 			break;
 		}
 	}
+	
+	
 	
 	@Override
 	public String getMessage() {
@@ -153,5 +156,13 @@ public class GovPayException extends Exception {
 		}
 		
 		return "";
+	}
+
+	public String getCausa() {
+		return causa;
+	}
+
+	public void setCausa(String causa) {
+		this.causa = causa;
 	}
 }

@@ -21,6 +21,7 @@
 package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Iuv;
@@ -68,7 +69,11 @@ public class IuvBD extends BasicBD {
 			iuv = "RF" + check + reference;
 			break;
 		case NUMERICO:
-			iuv = IuvUtils.buildIuvNumerico(prg, auxDigit, applicationCode);
+			if(dominio.isCustomIuv()) {
+				iuv = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildIuvNumerico(applicazione, dominio, prg, auxDigit, applicationCode);
+			} else {
+				iuv = IuvUtils.buildIuvNumerico(prg, auxDigit, applicationCode);
+			}
 			break;
 		}
 

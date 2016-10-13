@@ -222,7 +222,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		ctx.getContext().getRequest().addGenericProperty(new Property("ccp", ccp));
 		ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 		ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
-		ctx.log("rt.ricezione");
+		ctx.log("pagamento.ricezioneRt");
 		
 		log.info("Ricevuta richiesta di acquisizione RT [" + codDominio + "][" + iuv + "][" + ccp + "]");
 		PaaInviaRTRisposta response = new PaaInviaRTRisposta();
@@ -241,7 +241,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
 			String principal = getPrincipal();
-			if(GovpayConfig.getInstance().isPddAuthEnable() && principal == null) {
+			if(principal == null) {
 				ctx.log("rt.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -251,9 +251,9 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
 				
 				// Controllo autorizzazione
-				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
 					ctx.log("rt.erroreAutorizzazione", principal);
-					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA());
+					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA() + ". Atteso [" + intermediario.getConnettorePdd().getPrincipal() + "]");
 				}
 
 				evento.setErogatore(intermediario.getDenominazione());
@@ -284,6 +284,10 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			}
 			
 			Rpt rpt = RtUtils.acquisisciRT(codDominio, iuv, ccp, bodyrichiesta.getTipoFirma(), bodyrichiesta.getRt(), bd);
+			
+			ctx.getContext().getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
+			ctx.log("pagamento.acquisizioneRtOk");
+			
 			evento.setCodCanale(rpt.getCanale(bd).getCodCanale());
 			evento.setTipoVersamento(rpt.getCanale(bd).getTipoVersamento());
 			

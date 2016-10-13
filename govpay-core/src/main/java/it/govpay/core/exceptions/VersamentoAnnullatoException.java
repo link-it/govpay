@@ -23,5 +23,9 @@ package it.govpay.core.exceptions;
 public class VersamentoAnnullatoException extends Exception {
 
 	private static final long serialVersionUID = 1L;
+	
+	public VersamentoAnnullatoException(String message) {
+		super(message);
+	}
 
 }

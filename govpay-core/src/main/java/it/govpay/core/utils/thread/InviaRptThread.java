@@ -25,6 +25,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.bd.BasicBD;
@@ -66,6 +67,12 @@ public class InviaRptThread implements Runnable {
 			
 			log.info("Spedizione RPT al Nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]");
 			
+			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("iuv", rpt.getIuv()));
+			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
+			
+			ctx.log("pagamento.invioRptAttivata");
+				
 			Risposta risposta = RptUtils.inviaRPT(rpt, bd);
 
 			if(bd == null) {
@@ -82,6 +89,7 @@ public class InviaRptThread implements Runnable {
 					descrizione = fb.getFaultCode() + ": " + fb.getFaultString();
 				rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_RIFIUTATA_NODO, descrizione, null, null);
 				log.error("RPT rifiutata dal nodo con fault " + descrizione);
+				ctx.log("pagamento.invioRptAttivataKo", fb.getFaultCode(), fb.getFaultString(), fb.getDescription() != null ? fb.getDescription() : "[-- Nessuna descrizione --]");
 			} else {
 				// RPT accettata dal Nodo
 				// Invio la notifica e aggiorno lo stato
@@ -96,10 +104,12 @@ public class InviaRptThread implements Runnable {
 				
 				ThreadExecutorManager.getClientPoolExecutor().execute(new InviaNotificaThread(notifica, bd));
 				log.info("RPT inviata correttamente al nodo");
+				ctx.log("pagamento.invioRptAttivataOk");
 			}
 		} catch (Exception e) {
 			// ERRORE DI RETE. Non so se la RPT e' stata effettivamente consegnata.
 			log.error("Errore di rete nella spedizione della RPT: " + e);
+			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 			if(bd != null) bd.rollback();
 			return;
 		} finally {

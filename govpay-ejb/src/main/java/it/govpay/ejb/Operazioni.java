@@ -113,6 +113,7 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
 		}
 	}
 
@@ -140,6 +141,7 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
 		}
 	}
 

@@ -158,72 +158,80 @@
 			</xsd:complexType>
 			
 			<xsd:complexType name="versamentoKey">
+				<xsd:choice>
+					<xsd:sequence>
+						<xsd:element name="codApplicazione" type="com:cod35" />
+						<xsd:choice>
+							<xsd:element name="codVersamentoEnte" type="com:cod35" />
+							<xsd:element name="bundlekey" type="com:string256" />
+						</xsd:choice>
+						<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
+					</xsd:sequence>
+					<xsd:sequence>
+						<xsd:element name="codDominio" type="com:cod35" />
+						<xsd:element name="iuv" type="com:cod35" />
+					</xsd:sequence>
+				</xsd:choice>
+			</xsd:complexType>
+
+			<xsd:complexType name="versamento">
 				<xsd:sequence>
 					<xsd:element name="codApplicazione" type="com:cod35" />
-					<xsd:element name="codVersamentoEnte" type="com:cod35"/>
+					<xsd:element name="codVersamentoEnte" type="com:cod35" />
 					<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
+					<xsd:element name="codDominio" type="com:cod35" />
+					<xsd:element name="codUnitaOperativa" type="com:cod35" minOccurs="0" />
+					<xsd:element name="debitore" type="com:anagrafica" />
+					<xsd:element name="importoTotale" type="com:importo" />
+					<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0" />
+					<xsd:element name="aggiornabile" type="xsd:boolean" minOccurs="0" />
+					<xsd:element name="codDebito" type="com:cod35" minOccurs="0" />
+					<xsd:element name="annoTributario" type="xsd:int" minOccurs="0" />
+					<xsd:element name="bundlekey" type="com:string256" minOccurs="0" />
+					<xsd:choice>
+						<xsd:element name="causale" type="com:string140" minOccurs="0" />
+						<xsd:element name="spezzoneCausale" type="com:string35" minOccurs="0" maxOccurs="6" />
+						<xsd:element name="spezzoneCausaleStrutturata" minOccurs="0" maxOccurs="6">
+							<xsd:complexType>
+								<xsd:sequence>
+									<xsd:element name="causale" type="com:string20"></xsd:element>
+									<xsd:element name="importo" type="com:importo10"></xsd:element>
+								</xsd:sequence>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:choice>
+					<xsd:element name="singoloVersamento" maxOccurs="5">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
+								<xsd:element name="importo" type="com:importo" />
+								<xsd:element name="note" type="com:string512" minOccurs="0" />
+								<xsd:choice>
+									<xsd:element name="codTributo" type="com:cod35" />
+									<xsd:element name="bolloTelematico">
+										<xsd:complexType>
+											<xsd:sequence>
+												<xsd:element name="tipo" type="com:tipoBollo"></xsd:element>
+												<xsd:element name="hash" type="com:string70"></xsd:element>
+												<xsd:element name="provincia" type="com:string2"></xsd:element>
+											</xsd:sequence>
+										</xsd:complexType>
+									</xsd:element>
+									<xsd:element name="tributo">
+										<xsd:complexType>
+											<xsd:sequence>
+												<xsd:element name="ibanAccredito" type="com:cod35"></xsd:element>
+												<xsd:element name="tipoContabilita" type="com:tipoContabilita"></xsd:element>
+												<xsd:element name="codContabilita" type="com:string140"></xsd:element>
+											</xsd:sequence>
+										</xsd:complexType>
+									</xsd:element>
+								</xsd:choice>
+							</xsd:sequence>
+						</xsd:complexType>
+					</xsd:element>
 				</xsd:sequence>
 			</xsd:complexType>
-		
-			<xsd:complexType name="versamento">
-				<xsd:complexContent>
-					<xsd:extension base="com:versamentoKey">
-						<xsd:sequence>
-							<xsd:element name="codDominio" type="com:cod35" />
-							<xsd:element name="codUnitaOperativa" type="com:cod35" minOccurs="0"/>
-							<xsd:element name="debitore" type="com:anagrafica"/>
-							<xsd:element name="importoTotale" type="com:importo" />
-							<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0"/>
-							<xsd:element name="aggiornabile" type="xsd:boolean" minOccurs="0"/>
-							<xsd:element name="codDebito" type="com:cod35" minOccurs="0"/>
-							<xsd:element name="annoTributario" type="xsd:int" minOccurs="0"/>
-							<xsd:element name="bundlekey" type="com:string256" minOccurs="0"/>
-							<xsd:choice>
-								<xsd:element name="causale" type="com:string140" minOccurs="0"/>
-								<xsd:element name="spezzoneCausale" type="com:string35" minOccurs="0" maxOccurs="6"/>
-								<xsd:element name="spezzoneCausaleStrutturata" minOccurs="0" maxOccurs="6">
-									<xsd:complexType>
-										<xsd:sequence>
-											<xsd:element name="causale" type="com:string20"></xsd:element>
-											<xsd:element name="importo" type="com:importo10"></xsd:element>
-										</xsd:sequence>
-									</xsd:complexType>
-								</xsd:element>
-							</xsd:choice>
-							<xsd:element name="singoloVersamento" maxOccurs="5">
-								<xsd:complexType>
-									<xsd:sequence>
-										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35"/>
-										<xsd:element name="importo" type="com:importo"/>
-										<xsd:element name="note" type="com:string512" minOccurs="0"/> 
-										<xsd:choice>
-											<xsd:element name="codTributo" type="com:cod35"/>
-											<xsd:element name="bolloTelematico">
-												<xsd:complexType>
-													<xsd:sequence>
-														<xsd:element name="tipo" type="com:tipoBollo"></xsd:element>
-														<xsd:element name="hash" type="com:string70"></xsd:element>
-														<xsd:element name="provincia" type="com:string2"></xsd:element>
-													</xsd:sequence>
-												</xsd:complexType>
-											</xsd:element>
-											<xsd:element name="tributo">
-												<xsd:complexType>
-													<xsd:sequence>
-														<xsd:element name="ibanAccredito" type="com:cod35"></xsd:element>
-														<xsd:element name="tipoContabilita" type="com:tipoContabilita"></xsd:element>
-														<xsd:element name="codContabilita" type="com:string140"></xsd:element>
-													</xsd:sequence>
-												</xsd:complexType>
-											</xsd:element>
-										</xsd:choice>
-									</xsd:sequence>
-								</xsd:complexType>
-							</xsd:element>
-						</xsd:sequence>
-					</xsd:extension>
-				</xsd:complexContent>
-			</xsd:complexType>	
 			
 			<xsd:simpleType name="uuid">
 				<xsd:restriction base="xsd:string">

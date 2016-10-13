@@ -177,6 +177,7 @@ public class SingoloVersamento extends BasicModel implements Comparable<SingoloV
 	public void setNote(String note) {
 		this.note = note;
 	}
+	
 	@Override
 	public int compareTo(SingoloVersamento sv) {
 		return codSingoloVersamentoEnte.compareTo(sv.getCodSingoloVersamentoEnte());

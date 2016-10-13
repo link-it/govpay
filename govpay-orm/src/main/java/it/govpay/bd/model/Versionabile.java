@@ -14,8 +14,8 @@ public class Versionabile extends BasicModel {
 		// il metodo getUltimaVersione.
 		
 		GP_02_01_00("2.1"),
-		GP_02_02_00("2.2");
-		
+		GP_02_02_00("2.2"),
+		GP_02_02_01("2.2.1");
 		private String label;
 		
 		Versione(String label){
@@ -32,6 +32,8 @@ public class Versionabile extends BasicModel {
 				return 020100;
 			case GP_02_02_00:
 				return 020200;
+			case GP_02_02_01:
+				return 020201;
 			default:
 				break;
 			}
@@ -39,7 +41,7 @@ public class Versionabile extends BasicModel {
 		} 
 		
 		public static Versione getUltimaVersione(){
-			return GP_02_02_00;
+			return GP_02_02_01;
 		}
 		
 		public static Versione toEnum(String label) throws ServiceException {
