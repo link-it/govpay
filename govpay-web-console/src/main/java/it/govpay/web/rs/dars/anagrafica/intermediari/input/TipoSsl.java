@@ -28,8 +28,8 @@ import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Connettore.EnumSslType;
+import it.govpay.model.Connettore;
+import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;

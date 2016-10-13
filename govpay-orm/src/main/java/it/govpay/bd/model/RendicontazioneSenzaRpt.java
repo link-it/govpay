@@ -20,70 +20,18 @@
  */
 package it.govpay.bd.model;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.SingoliVersamentiBD;
+import it.govpay.model.Iuv;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-
-public class RendicontazioneSenzaRpt extends BasicModel {
+public class RendicontazioneSenzaRpt extends it.govpay.model.RendicontazioneSenzaRpt {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Long id;
-	private long idFrApplicazioni;
-	private long idIuv;
-	private Long idSingoloVersamento;
-	private Date dataRendicontazione;
-	private String iur;
-	private BigDecimal importoPagato;
-	public Long getId() {
-		return id;
-	}
-	public void setId(Long id) {
-		this.id = id;
-	}
-	public long getIdFrApplicazioni() {
-		return idFrApplicazioni;
-	}
-	public void setIdFrApplicazioni(long idFrApplicazioni) {
-		this.idFrApplicazioni = idFrApplicazioni;
-	}
-	public long getIdIuv() {
-		return idIuv;
-	}
-	public void setIdIuv(long idIuv) {
-		this.idIuv = idIuv;
-	}
-	public Date getDataRendicontazione() {
-		return dataRendicontazione;
-	}
-	public void setDataRendicontazione(Date dataRendicontazione) {
-		this.dataRendicontazione = dataRendicontazione;
-	}
-	public String getIur() {
-		return iur;
-	}
-	public void setIur(String iur) {
-		this.iur = iur;
-	}
-	public BigDecimal getImportoPagato() {
-		return importoPagato;
-	}
-	public void setImportoPagato(BigDecimal importoPagato) {
-		this.importoPagato = importoPagato;
-	}
-	public Long getIdSingoloVersamento() {
-		return idSingoloVersamento;
-	}
-	public void setIdSingoloVersamento(Long idSingoloVersamento) {
-		this.idSingoloVersamento = idSingoloVersamento;
-	}
-
 	// Business
 	
 	private SingoloVersamento singoloVersamento;
@@ -91,7 +39,7 @@ public class RendicontazioneSenzaRpt extends BasicModel {
 	public SingoloVersamento getSingoloVersamento(BasicBD bd) throws ServiceException {
 		if(singoloVersamento == null) {
 			SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
-			singoloVersamento = singoliVersamentiBD.getSingoloVersamento(idSingoloVersamento);
+			singoloVersamento = singoliVersamentiBD.getSingoloVersamento(this.getIdSingoloVersamento());
 		}
 		return singoloVersamento;
 	}
@@ -101,7 +49,7 @@ public class RendicontazioneSenzaRpt extends BasicModel {
 	public Iuv getIuv(BasicBD bd) throws ServiceException {
 		if(iuv == null) {
 			IuvBD iuvBD = new IuvBD(bd);
-			iuv = iuvBD.getIuv(this.idIuv);
+			iuv = iuvBD.getIuv(this.getIdIuv());
 		}
 		return iuv;
 	}
@@ -111,7 +59,7 @@ public class RendicontazioneSenzaRpt extends BasicModel {
 	public FrApplicazione getFrApplicazione(BasicBD bd) throws ServiceException {
 		if(singoloVersamento == null) {
 			FrBD frBD = new FrBD(bd);
-			frApplicazione = frBD.getFrApplicazione(idFrApplicazioni);
+			frApplicazione = frBD.getFrApplicazione(this.getIdFrApplicazioni());
 		}
 		return frApplicazione;
 	}

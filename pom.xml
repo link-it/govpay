@@ -9,7 +9,10 @@
 	<name>GovPay</name>
 
 	<modules>
+		<module>govpay-orm-beans</module>
 		<module>govpay-orm</module>
+		<module>govpay-core-beans</module>
+		<module>govpay-stampe</module>
 		<module>govpay-core</module>
 		<module>govpay-ejb</module>
 		<module>govpay-web</module>
@@ -62,6 +65,14 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.10</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-core-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
@@ -96,10 +107,25 @@
 				<scope>compile</scope>
 			</dependency>
 			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-orm-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-orm</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-stampe</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>

@@ -47,26 +47,6 @@ import it.gov.digitpa.schemas._2011.ws.paa.TipoRPTPendente;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Canale.ModelloPagamento;
-import it.govpay.bd.model.Canale.TipoVersamento;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Iuv.TipoIUV;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Notifica.TipoNotifica;
-import it.govpay.bd.model.Rpt.StatoRpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Rr.StatoRr;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -93,6 +73,26 @@ import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Dominio;
+import it.govpay.model.Intermediario;
+import it.govpay.bd.model.Notifica;
+import it.govpay.model.Portale;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Versamento;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.StatoRpt;
+import it.govpay.model.Rr.StatoRr;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.gpprt.GpAvviaRichiestaStorno;
 import it.govpay.servizi.gpprt.GpAvviaRichiestaStornoResponse;
@@ -180,7 +180,7 @@ public class Pagamento extends BasicBD {
 					}
 
 					IuvBD iuvBD = new IuvBD(this);
-					it.govpay.bd.model.Iuv iuvModel = null;
+					it.govpay.model.Iuv iuvModel = null;
 					try {
 						iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 					} catch (NotFoundException e) {
@@ -358,7 +358,7 @@ public class Pagamento extends BasicBD {
 				if(versamento.getId() == null) {
 					versamentiBusiness.caricaVersamento(versamento, false, aggiornaSeEsiste);
 				}
-				it.govpay.bd.model.Iuv iuv = null;
+				it.govpay.model.Iuv iuv = null;
 				String ccp = null;
 
 				// Verifico se ha uno IUV suggerito ed in caso lo assegno
@@ -381,12 +381,12 @@ public class Pagamento extends BasicBD {
 							ccp = IuvUtils.buildCCP();
 							ctx.log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						} catch (NotFoundException e) {
-							iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.ISO11694);
+							iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.ISO11694);
 							ccp = Rpt.CCP_NA;
 							ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						}
 					} else {
-						iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.bd.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.bd.model.Iuv.TipoIUV.ISO11694);
+						iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.ISO11694);
 						ccp = Rpt.CCP_NA;
 						ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 					}

@@ -21,7 +21,7 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Fr.StatoFr;
+import it.govpay.model.Fr.StatoFr;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdPsp;
 

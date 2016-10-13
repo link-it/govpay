@@ -44,11 +44,11 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStorno;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRichiestaStornoRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.ObjectFactory;
 import it.gov.digitpa.schemas._2011.ws.paa.Risposta;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Stazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Rpt;
+import it.govpay.model.Stazione;
 
 import javax.xml.bind.JAXBElement;
 

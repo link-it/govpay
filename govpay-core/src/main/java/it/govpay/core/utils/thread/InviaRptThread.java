@@ -29,10 +29,6 @@ import org.openspcoop2.utils.logger.beans.Property;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Notifica.TipoNotifica;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rpt.StatoRpt;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.business.model.Risposta;
@@ -40,6 +36,10 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Rpt;
+import it.govpay.model.Notifica.TipoNotifica;
+import it.govpay.model.Rpt.StatoRpt;
 
 public class InviaRptThread implements Runnable {
 	

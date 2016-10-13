@@ -12,8 +12,8 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.SingoloVersamento;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;

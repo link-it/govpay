@@ -24,9 +24,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
@@ -78,7 +78,7 @@ public class SingoliVersamentiBD extends BasicBD {
 		}
 	}
 
-	public it.govpay.bd.model.SingoloVersamento getSingoloVersamento(long id, String codSingoloVersamentoEnte) throws ServiceException, NotFoundException {
+	public it.govpay.model.SingoloVersamento getSingoloVersamento(long id, String codSingoloVersamentoEnte) throws ServiceException, NotFoundException {
 		try {
 			IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
 			idSingoloVersamento.setCodSingoloVersamentoEnte(codSingoloVersamentoEnte);

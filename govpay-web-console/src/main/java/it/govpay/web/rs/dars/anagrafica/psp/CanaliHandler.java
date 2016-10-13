@@ -34,7 +34,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -74,7 +74,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
 			it.govpay.bd.model.Psp psp = pspBD.getPsp(codPsp);
 
-			long count = psp.getCanali().size();
+			long count = psp.getCanalis().size();
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
 					this.getInfoCreazione(uriInfo, bd),
@@ -82,7 +82,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
-			List<it.govpay.bd.model.Canale> findAll = psp.getCanali();
+			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
 
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Canale entry : findAll) {

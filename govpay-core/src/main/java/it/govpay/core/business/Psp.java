@@ -44,11 +44,6 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSPRisposta;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Stazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.gpprt.GpChiediListaPspResponse;
 import it.govpay.core.exceptions.GovPayException;
@@ -57,6 +52,11 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.PspUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Dominio;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Portale;
+import it.govpay.bd.model.Stazione;
 
 public class Psp extends BasicBD {
 	
@@ -80,7 +80,7 @@ public class Psp extends BasicBD {
 			psp.setRagioneSociale(pspModel.getRagioneSociale());
 			psp.setStorno(pspModel.isStornoGestito());
 			psp.setUrlInfo(pspModel.getUrlInfo());
-			for(it.govpay.bd.model.Canale canaleModel : pspModel.getCanali()) {
+			for(it.govpay.bd.model.Canale canaleModel : pspModel.getCanalis()) {
 				GpChiediListaPspResponse.Psp.Canale canale = new GpChiediListaPspResponse.Psp.Canale();
 				canale.setCodCanale(canaleModel.getCodCanale());
 				canale.setCondizioni(canaleModel.getCondizioni());
@@ -195,7 +195,7 @@ public class Psp extends BasicBD {
 							canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
 							canale.setUrlInfo(informativaPspDetail.getUrlInformazioniCanale());
 							canale.setCodIntermediario(informativaPspDetail.getIdentificativoIntermediario());
-							psp.getCanali().add(canale);
+							psp.getCanalis().add(canale);
 						}
 						catalogoPsp.add(psp);
 						log.debug("Acquisita informativa [codPsp: " + psp.getCodPsp() + "]");
@@ -210,7 +210,7 @@ public class Psp extends BasicBD {
 					PspBD pspBD = new PspBD(this);
 					List<it.govpay.bd.model.Psp> oldPsps = pspBD.getPsp();
 					while(!oldPsps.isEmpty()) {
-						it.govpay.bd.model.Psp psp = oldPsps.remove(0);
+						it.govpay.model.Psp psp = oldPsps.remove(0);
 						// Cerco il psp nel Catalogo appena ricevuto
 						boolean trovato = false;
 						for(int i = 0; i<catalogoPsp.size(); i++ ) {

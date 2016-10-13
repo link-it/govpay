@@ -1,11 +1,11 @@
 package it.govpay.core.utils;
 
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Acl.Tipo;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Portale;
+import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Operatore;
+import it.govpay.model.Portale;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Acl.Tipo;
 
 public class AclEngine {
 

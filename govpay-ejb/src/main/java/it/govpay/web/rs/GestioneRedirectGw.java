@@ -22,9 +22,9 @@ package it.govpay.web.rs;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Rpt;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Rpt;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;

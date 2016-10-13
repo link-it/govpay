@@ -20,8 +20,8 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Iuv;
-import it.govpay.bd.model.Iuv.TipoIUV;
+import it.govpay.model.Iuv;
+import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdDominio;
 

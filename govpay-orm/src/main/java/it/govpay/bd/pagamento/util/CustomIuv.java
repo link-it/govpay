@@ -2,8 +2,8 @@ package it.govpay.bd.pagamento.util;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Dominio;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Dominio;
 
 public abstract class CustomIuv {
 	

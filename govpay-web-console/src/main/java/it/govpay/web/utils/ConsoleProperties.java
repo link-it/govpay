@@ -30,6 +30,7 @@ public class ConsoleProperties {
 	private String nomeRisorsaOperazioniJMX;
 	private String[] operazioniJMXDisponibili;
 	private URI log4j2Config;
+	private String pathEstrattoContoPdfLoghi;
 	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
@@ -79,6 +80,7 @@ public class ConsoleProperties {
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
 						props0.load(new FileInputStream(gpConfigFile));
+						props[0] = props0;
 						log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 					}
 				}
@@ -100,6 +102,8 @@ public class ConsoleProperties {
 			String operazioniAsString = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.operazioniDisponibili", props, false);
 			if(StringUtils.isNotEmpty(operazioniAsString))
 				this.operazioniJMXDisponibili = operazioniAsString.split(",");
+			
+			this.pathEstrattoContoPdfLoghi = ConsoleProperties.getProperty("it.govpay.console.pdf.pathLoghi", props, false);
 			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
@@ -172,6 +176,10 @@ public class ConsoleProperties {
 	
 	public URI getLog4j2Config() {
 		return log4j2Config;
+	}
+
+	public String getPathEstrattoContoPdfLoghi() {
+		return pathEstrattoContoPdfLoghi;
 	}
 	
 }

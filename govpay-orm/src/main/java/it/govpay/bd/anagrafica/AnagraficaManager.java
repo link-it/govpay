@@ -20,6 +20,13 @@
  */
 package it.govpay.bd.anagrafica;
 
+import org.apache.log4j.Logger;
+import org.openspcoop2.generic_project.exception.MultipleResultException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.cache.CacheJMXUtils;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.ApplicazioniBDCacheWrapper;
@@ -45,25 +52,18 @@ import it.govpay.bd.anagrafica.cache.TributiBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.TributiBDCacheWrapper;
 import it.govpay.bd.anagrafica.cache.UoBDCacheJmx;
 import it.govpay.bd.anagrafica.cache.UoBDCacheWrapper;
-import it.govpay.bd.model.Applicazione;
+import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.IbanAccredito;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Portale;
+import it.govpay.model.IbanAccredito;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Operatore;
+import it.govpay.model.Portale;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.TipoTributo;
-
-import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.cache.CacheJMXUtils;
+import it.govpay.model.TipoTributo;
 
 public class AnagraficaManager {
 	private static final String jmxDomain = "it.govpay.cache.anagrafica";
@@ -286,7 +286,7 @@ public class AnagraficaManager {
 		}
 	}
 	
-	public static Canale getCanale(BasicBD basicBD, String codPsp, String codCanale, it.govpay.bd.model.Canale.TipoVersamento tipoVersamento) throws ServiceException, NotFoundException {
+	public static Canale getCanale(BasicBD basicBD, String codPsp, String codCanale, it.govpay.model.Canale.TipoVersamento tipoVersamento) throws ServiceException, NotFoundException {
 		try {
 			String method = "getCanale";
 			Object canale = canaliBDCacheWrapper.getObjectCache(basicBD, DEBUG, codPsp + "@" + codCanale + "@" + tipoVersamento.getCodifica(), method, codPsp, codCanale, tipoVersamento);

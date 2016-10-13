@@ -22,10 +22,10 @@ package it.govpay.bd.model.converter;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.Canale.TipoVersamento;
-import it.govpay.bd.model.Evento.CategoriaEvento;
-import it.govpay.bd.model.Evento.TipoEvento;
+import it.govpay.model.Evento;
+import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.TipoEvento;
 
 public class EventoConverter {
 

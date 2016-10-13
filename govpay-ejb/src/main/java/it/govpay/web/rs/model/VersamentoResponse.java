@@ -1,6 +1,6 @@
 package it.govpay.web.rs.model;
 
-import it.govpay.bd.model.BasicModel;
+import it.govpay.model.BasicModel;
 
 public class VersamentoResponse extends BasicModel{ 
 	

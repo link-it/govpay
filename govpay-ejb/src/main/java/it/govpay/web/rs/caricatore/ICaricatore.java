@@ -1,7 +1,7 @@
 package it.govpay.web.rs.caricatore;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Applicazione;
+import it.govpay.model.Applicazione;
 
 import java.io.InputStream;
 

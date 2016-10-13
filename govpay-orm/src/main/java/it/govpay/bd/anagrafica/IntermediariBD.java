@@ -22,10 +22,10 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Intermediario;
 import it.govpay.bd.model.converter.ConnettoreConverter;
 import it.govpay.bd.model.converter.IntermediarioConverter;
+import it.govpay.model.Connettore;
+import it.govpay.model.Intermediario;
 import it.govpay.orm.IdIntermediario;
 import it.govpay.orm.dao.jdbc.JDBCIntermediarioServiceSearch;
 

@@ -1,5 +1,6 @@
 package it.govpay.bd.reportistica;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,9 +24,12 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.model.reportistica.Pagamento;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.reportistica.converter.PagamentoConverter;
 import it.govpay.bd.reportistica.filters.PagamentoFilter;
+import it.govpay.model.Versamento;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.reportistica.Pagamento;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
@@ -46,6 +50,8 @@ public class PagamentiBD extends BasicBD{
 	public static final Date DEFAULT_VALUE_DATE = new Date();
 	public static final Double DEFAULT_VALUE_DOUBLE = 0D;
 	public static final String DEFAULT_VALUE_STRING = "gbyFake";
+	
+	private static final int LIMIT = 50;
 
 	public PagamentiBD(BasicBD basicBD) {
 		super(basicBD);
@@ -155,7 +161,7 @@ public class PagamentiBD extends BasicBD{
 				for (Map<String, Object> map : list) {
 					// elimino la entry falsa
 					if(!PagamentiBD.DEFAULT_VALUE_STRING.equals(map.get(PagamentiBD.ALIAS_STATO_VERSAMENTO))){
-						lst.add(PagamentoConverter.toRestDTO(map));
+						lst.add(PagamentoConverter.toReportisticaDTO(map));
 					}
 				}
 			}
@@ -254,6 +260,110 @@ public class PagamentiBD extends BasicBD{
 			throw new ServiceException(e);
 		}
 	}
+	
+	public  List<Pagamento>  csvReportisticaPagamenti(List<Long> idVersamenti, Integer offset, Integer limit)throws ServiceException {
+		List<Pagamento> listaPagamenti = new ArrayList<Pagamento>();
+		IPagamentoService pagamentoService = this.getPagamentoService();
+
+		List<Class<?>> listaFields = new ArrayList<Class<?>>();
+		listaFields.add(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO.getFieldType());
+		listaFields.add(it.govpay.orm.Pagamento.model().IMPORTO_PAGATO.getFieldType());
+		listaFields.add(it.govpay.orm.Pagamento.model().IUR.getFieldType());
+		listaFields.add(it.govpay.orm.Pagamento.model().ID_RPT.IUV.getFieldType());
+		listaFields.add(it.govpay.orm.Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType());
+		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE.getFieldType());
+		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE.getFieldType());
+		listaFields.add(it.govpay.orm.FR.model().COD_BIC_RIVERSAMENTO.getFieldType());
+		listaFields.add(it.govpay.orm.FR.model().IUR.getFieldType());
+		listaFields.add(it.govpay.orm.Pagamento.model().IBAN_ACCREDITO.getFieldType());
+		listaFields.add(Long.class);
+		listaFields.add(it.govpay.orm.Versamento.model().COD_VERSAMENTO_ENTE.getFieldType());
+		listaFields.add(it.govpay.orm.Versamento.model().STATO_VERSAMENTO.getFieldType());
+		listaFields.add(it.govpay.orm.Versamento.model().CAUSALE_VERSAMENTO.getFieldType());
+		listaFields.add(it.govpay.orm.Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType());
+		listaFields.add(it.govpay.orm.SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType());
+		listaFields.add(it.govpay.orm.SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType());
+
+		List<List<Object>> select = new ArrayList<List<Object>>();
+		try {
+			List<Object> listaParam = new ArrayList<Object>();
+			listaParam.addAll(idVersamenti);
+			listaParam.add(offset);
+			
+			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
+				listaParam.add(offset+limit);
+			} else {
+				listaParam.add(limit);
+			}
+			
+			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(it.govpay.bd.pagamento.PagamentiBD.NOME_QUERY_CSV_VERSAMENTI);
+			
+			StringBuilder sb = new StringBuilder();
+			
+			for (int i=0; i < idVersamenti.size() ; i++) {
+				if(sb.length() > 0)
+					sb.append(",");
+				
+				sb.append("?");
+			}
+			
+			nativeQuery = nativeQuery.replace(it.govpay.bd.pagamento.PagamentiBD.PLACE_HOLDER_QUERY_ESTRATTI_CONTO_PER_VERSAMENTI, sb.toString());
+			
+			select = pagamentoService.nativeQuery(nativeQuery, listaFields, listaParam.toArray());
+			if(select != null && select.size() > 0){
+				for (List<Object> list : select) {
+					Pagamento pagamento = new Pagamento();
+					pagamento.setDataPagamento((Date) list.get(0));
+					pagamento.setImportoPagato(new BigDecimal((Double) list.get(1)));
+					pagamento.setIur((String) list.get(2));
+					pagamento.setIuv((String) list.get(3));
+					pagamento.setCodFlussoRendicontazione((String) list.get(4));
+					pagamento.setCodSingoloVersamentoEnte((String) list.get(5));
+					pagamento.setNote((String) list.get(6));
+					pagamento.setCodBicRiversamento((String) list.get(7));
+					pagamento.setIdRegolamento((String) list.get(8));
+					pagamento.setIbanAccredito((String) list.get(9));
+					pagamento.setId((Long) list.get(10));
+					pagamento.setCodVersamentoEnte((String) list.get(11));
+					pagamento.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf((String) list.get(12)));
+					pagamento.setCausale(Versamento.decode((String) list.get(13)).getSimple());
+					pagamento.setDebitoreIdentificativo((String) list.get(14));
+					pagamento.setImportoDovuto(new BigDecimal((Double) list.get(15)));
+					pagamento.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf((String) list.get(16)));
+					
+					listaPagamenti.add(pagamento); 
+				}
+			}
+		} catch (NotFoundException e) {
+		} catch (Exception e) {
+			throw new ServiceException(e);
+		}
+		return listaPagamenti;
+	}
+
+	public List<Pagamento> creaCsvReportisticaPagamenti(PagamentoFilter filter) throws ServiceException {
+		try {
+			int offset = 0;
+			List<Pagamento> lstRet = new ArrayList<Pagamento>();
+			
+			List<Pagamento> lst = this.csvReportisticaPagamenti(filter.getIdPagamento(), offset, LIMIT);
+			
+			
+			while(lst != null && !lst.isEmpty()) {
+				lstRet.addAll(lst);
+				
+				offset += lst.size();
+				lst = this.csvReportisticaPagamenti(filter.getIdPagamento(), offset, LIMIT);
+			}
+	 
+			return lstRet;
+		} catch (ServiceException e) {
+			throw e;
+		}catch (Exception e) {
+			throw new ServiceException(e);
+		}
+	}
+
 
 	public Pagamento getPagamento(long id) throws ServiceException {
 		return null;

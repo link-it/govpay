@@ -16,6 +16,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>it.govpay</groupId>
+			<artifactId>govpay-orm-beans</artifactId>
+			<type>jar</type>
+		</dependency>
+	
+		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-1.2-api</artifactId>
 		</dependency>
@@ -23,26 +29,6 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-		</dependency>
-		
-		<dependency>
-			<groupId>commons-codec</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openspcoop2</groupId>
-			<artifactId>openspcoop2_generic-project</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.openspcoop2</groupId>
-			<artifactId>openspcoop2_utils</artifactId>
 		</dependency>
 
 		<dependency>

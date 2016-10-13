@@ -50,8 +50,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Operatore;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.utils.ConsoleProperties;
 
 @Path("/")

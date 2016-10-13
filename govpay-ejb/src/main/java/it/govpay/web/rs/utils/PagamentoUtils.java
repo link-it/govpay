@@ -198,7 +198,7 @@ public class PagamentoUtils {
 
 	public static ByteArrayOutputStream writeEstrattoContoResponse(
 			Caricatore c, Logger log,
-			List<it.govpay.bd.model.EstrattoConto> response, UriInfo uriInfo,
+			List<it.govpay.model.EstrattoConto> response, UriInfo uriInfo,
 			HttpHeaders httpHeaders, BasicBD bd, String methodName) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeListaEstrattoContoResponse";

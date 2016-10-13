@@ -20,17 +20,17 @@
  */
 package it.govpay.core.utils.client;
 
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Connettore.EnumAuthType;
-import it.govpay.bd.model.Connettore.EnumSslType;
-import it.govpay.bd.model.Intermediario;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.client.handler.IntegrationContext;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Connettore;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Connettore.EnumAuthType;
+import it.govpay.model.Connettore.EnumSslType;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;

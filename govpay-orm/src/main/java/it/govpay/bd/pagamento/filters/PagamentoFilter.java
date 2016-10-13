@@ -35,12 +35,12 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.reportistica.PagamentiBD;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
 
-	private List<Long> idSingoliVersamenti;
 	private Long idRr;
 	private Long idFrApplicazione;
 	private Long idFrApplicazioneRevoca;
@@ -49,6 +49,8 @@ public class PagamentoFilter extends AbstractFilter {
 	private String codDominio;
 	private Date dataInizio;
 	private Date dataFine;
+	
+	private List<Long> idVersamenti;
 	
 	public enum SortFields {
 		DATA
@@ -65,12 +67,6 @@ public class PagamentoFilter extends AbstractFilter {
 			boolean addAnd = false;
 
 			PagamentoFieldConverter pagamentoFieldConverter = new PagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
-			
-			if(this.getIdSingoliVersamenti() != null && !getIdSingoliVersamenti().isEmpty()){
-				CustomField idSingoloVersamentoCustomField = new CustomField("id_singolo_versamento",  Long.class, "id_singolo_versamento",  pagamentoFieldConverter.toTable(Pagamento.model()));
-				newExpression.in(idSingoloVersamentoCustomField, getIdSingoliVersamenti());
-				addAnd = true;
-			}
 			
 			if(this.getIdRr() != null) {
 				if(addAnd)
@@ -135,6 +131,18 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.idVersamenti != null && this.idVersamenti.size() >0){
+				if(addAnd)
+					newExpression.and();
+				CustomField idVersamentoField = new CustomField(PagamentiBD.ALIAS_ID, Long.class, PagamentiBD.ALIAS_ID,
+						pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+				newExpression.in(idVersamentoField, this.idVersamenti);
+				// forzo la join con singoliversamenti
+				newExpression.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE); 
+				newExpression.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -151,14 +159,6 @@ public class PagamentoFilter extends AbstractFilter {
 			filterSortWrapper.setField(Pagamento.model().DATA_ACQUISIZIONE); 
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
-	}
-
-	public List<Long> getIdSingoliVersamenti() {
-		return idSingoliVersamenti;
-	}
-
-	public void setIdSingoliVersamenti(List<Long> idSingoliVersamenti) {
-		this.idSingoliVersamenti = idSingoliVersamenti;
 	}
 
 	public Long getIdRr() {
@@ -214,6 +214,14 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setDataFine(Date dataFine) {
 		this.dataFine = dataFine;
+	}
+
+	public List<Long> getIdVersamenti() {
+		return idVersamenti;
+	}
+
+	public void setIdVersamenti(List<Long> idVersamenti) {
+		this.idVersamenti = idVersamenti;
 	}
 
  

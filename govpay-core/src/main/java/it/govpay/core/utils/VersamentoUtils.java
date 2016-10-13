@@ -33,25 +33,25 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.TipoBollo;
-import it.govpay.bd.model.Tributo;
-import it.govpay.bd.model.Tributo.TipoContabilta;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Versamento.CausaleSemplice;
-import it.govpay.bd.model.Versamento.CausaleSpezzoni;
-import it.govpay.bd.model.Versamento.CausaleSpezzoniStrutturati;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Dominio;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.model.Tributo;
+import it.govpay.bd.model.Versamento;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Versamento.CausaleSemplice;
+import it.govpay.model.Versamento.CausaleSpezzoni;
+import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -243,9 +243,9 @@ public class VersamentoUtils {
 	}
 	
 	
-	public static it.govpay.bd.model.Anagrafica toAnagraficaModel(Anagrafica anagrafica) {
+	public static it.govpay.model.Anagrafica toAnagraficaModel(Anagrafica anagrafica) {
 		if(anagrafica == null) return null;
-		it.govpay.bd.model.Anagrafica anagraficaModel = new it.govpay.bd.model.Anagrafica();
+		it.govpay.model.Anagrafica anagraficaModel = new it.govpay.model.Anagrafica();
 		anagraficaModel.setCap(anagrafica.getCap());
 		anagraficaModel.setCellulare(anagrafica.getCellulare());
 		anagraficaModel.setCivico(anagrafica.getCivico());

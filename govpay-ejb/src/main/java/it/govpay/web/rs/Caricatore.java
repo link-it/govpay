@@ -1,11 +1,11 @@
 package it.govpay.web.rs;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Applicazione;
 import it.govpay.core.business.EstrattoConto;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Applicazione;
 import it.govpay.web.rs.caricatore.ICaricatore;
 import it.govpay.web.rs.model.EstrattoContoRequest;
 import it.govpay.web.rs.utils.PagamentoUtils;
@@ -169,7 +169,7 @@ public class Caricatore extends BaseRsService{
 
 			Integer offset = ( request.getPagina() != null ? (request.getPagina() - 1 ): 0 ) * LIMIT;
 
-			List<it.govpay.bd.model.EstrattoConto> findAll = new EstrattoConto(bd).getEstrattoContoExt(request.getCodiceCreditore(), request.getDataInizio(), request.getDataFine(), offset, LIMIT); 
+			List<it.govpay.model.EstrattoConto> findAll = new EstrattoConto(bd).getEstrattoContoExt(request.getCodiceCreditore(), request.getDataInizio(), request.getDataFine(), offset, LIMIT); 
 
 			ByteArrayOutputStream baos = PagamentoUtils.writeEstrattoContoResponse(this, log, findAll, uriInfo, httpHeaders, bd, methodName);
 			ctx.getContext().getRequest().addGenericProperty(new Property("numeroPagamenti", findAll.size()+""));

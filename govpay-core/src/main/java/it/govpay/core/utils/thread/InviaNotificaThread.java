@@ -22,11 +22,11 @@ package it.govpay.core.utils.thread;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Notifica.StatoSpedizione;
-import it.govpay.bd.model.Notifica.TipoNotifica;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.bd.model.Notifica;
+import it.govpay.model.Notifica.StatoSpedizione;
+import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.NotificaClient;

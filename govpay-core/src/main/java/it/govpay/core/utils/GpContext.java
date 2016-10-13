@@ -1,11 +1,11 @@
 package it.govpay.core.utils;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.handler.IntegrationContext;
+import it.govpay.model.Rpt;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.PagamentiTelematiciPAService;
 import it.govpay.servizi.commons.GpResponse;
 

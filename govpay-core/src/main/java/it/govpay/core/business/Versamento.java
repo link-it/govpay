@@ -29,11 +29,11 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Iuv.TipoIUV;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Versamento.StatoVersamento;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Portale;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
@@ -52,7 +52,7 @@ public class Versamento extends BasicBD {
 		super(basicBD);
 	}
 	
-	public it.govpay.bd.model.Iuv caricaVersamento(Applicazione applicazioneAutenticata, it.govpay.bd.model.Versamento versamentoModel, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException { 
+	public it.govpay.model.Iuv caricaVersamento(Applicazione applicazioneAutenticata, it.govpay.bd.model.Versamento versamentoModel, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException { 
 		try {
 			return caricaVersamento(versamentoModel, generaIuv, aggiornaSeEsiste);
 		} catch (Exception e) {
@@ -63,7 +63,7 @@ public class Versamento extends BasicBD {
 		}
 	}
 	
-	public it.govpay.bd.model.Iuv caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException {
+	public it.govpay.model.Iuv caricaVersamento(it.govpay.bd.model.Versamento versamento, boolean generaIuv, boolean aggiornaSeEsiste) throws GovPayException {
 		// Indica se devo gestire la transazione oppure se e' gestita dal chiamante
 		boolean doCommit = false;
 		GpContext ctx = GpThreadLocal.get();
@@ -81,7 +81,7 @@ public class Versamento extends BasicBD {
 
 			IuvBD iuvBD = new IuvBD(this);
 			
-			it.govpay.bd.model.Iuv iuv = null;
+			it.govpay.model.Iuv iuv = null;
 			try {
 				iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 			} catch (NotFoundException e) {
@@ -231,7 +231,7 @@ public class Versamento extends BasicBD {
 	
 	public it.govpay.bd.model.Versamento chiediVersamentoByIuv(Portale portale, String codDominio, String iuv) throws ServiceException, GovPayException {
 		IuvBD iuvBD = new IuvBD(this);
-		it.govpay.bd.model.Iuv iuvModel;
+		it.govpay.model.Iuv iuvModel;
 		try {
 			iuvModel = iuvBD.getIuv(AnagraficaManager.getDominio(this, codDominio).getId(), iuv);
 		} catch (NotFoundException e) {

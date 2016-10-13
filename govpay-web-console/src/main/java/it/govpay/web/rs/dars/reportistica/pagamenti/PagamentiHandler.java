@@ -48,15 +48,15 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Acl.Tipo;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
-import it.govpay.bd.model.Versamento.StatoVersamento;
-import it.govpay.bd.model.reportistica.Pagamento;
 import it.govpay.bd.reportistica.PagamentiBD;
 import it.govpay.bd.reportistica.filters.PagamentoFilter;
+import it.govpay.model.Acl;
+import it.govpay.bd.model.Dominio;
+import it.govpay.model.Operatore;
+import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.reportistica.Pagamento;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -439,10 +439,10 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			if(pagamento != null){
 				// codVersamentoEnte
-				if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte())){
+				if(StringUtils.isNotEmpty(pagamento.getCodVersamentoEnte())){
 					Versamenti versamentiDars = new Versamenti();
 					URI uriVersamento= BaseRsService.checkDarsURI(uriInfo).path(versamentiDars.getPathServizio()).path("{id}").build(id); 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), pagamento.getCodSingoloVersamentoEnte(), uriVersamento);
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), pagamento.getCodVersamentoEnte(), uriVersamento);
 				}
 				// IUV
 				if(StringUtils.isNotEmpty(pagamento.getIuv())) 
@@ -482,7 +482,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public String getTitolo(Pagamento entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
-		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
+		String codVersamentoEnte = entry.getCodVersamentoEnte();
 
 		String cfDebitore = entry.getDebitoreIdentificativo();
 		String iuv = entry.getIuv() != null ? entry.getIuv() : "--";
@@ -499,13 +499,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		StringBuilder sb = new StringBuilder();
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
 		Date dataPagamento = entry.getDataPagamento();
+		try{
+			String causale = entry.getCausale();
 
-		String causale = entry.getCausale();
-
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
-				Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),
-				this.sdf.format(dataPagamento), causale));
-
+			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
+					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),
+					this.sdf.format(dataPagamento), causale));
+		}catch(Exception e) {}
 		return sb.toString();
 	} 
 
@@ -522,7 +522,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			Data pagamento
 			Stato
 		 * */
-		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
+		String codVersamentoEnte = entry.getCodVersamentoEnte();
 		String iuv = entry.getIuv() != null ? entry.getIuv() : "--";
 		String cfDebitore = entry.getDebitoreIdentificativo();
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
@@ -607,7 +607,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			}
 			// recupero oggetto
 			filter.setIdPagamento(ids);
-			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
+			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.creaCsvReportisticaPagamenti(filter) : new ArrayList<Pagamento>();
 
 			if(findAll != null && findAll.size() > 0){
 				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
@@ -649,52 +649,99 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		List<String> header = new ArrayList<String>();
 
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codiceFiscaleDebitore.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoDovuto.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iur.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codiceRendicontazione.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".bicRiversamento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idRegolamento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causale.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".note.label"));
 
 		return header;
 	}
 
-	private List<String> getCsvRow(Pagamento pagamento){
+	private List<String> getCsvRow(Pagamento pagamento) throws Exception{
 		List<String> oneLine = new ArrayList<String>();
+		// CodVersamentoEnte
+		if(StringUtils.isNotEmpty(pagamento.getCodVersamentoEnte()))
+			oneLine.add(pagamento.getCodVersamentoEnte());
+		else 
+			oneLine.add("");
+		// CodSingoloVersamentoEnte
 		if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte()))
 			oneLine.add(pagamento.getCodSingoloVersamentoEnte());
 		else 
 			oneLine.add("");
+		// Iuv
 		if(StringUtils.isNotEmpty(pagamento.getIuv()))
 			oneLine.add(pagamento.getIuv());
 		else 
 			oneLine.add("");
+		// CF Debitore
 		if(StringUtils.isNotEmpty(pagamento.getDebitoreIdentificativo()))
 			oneLine.add(pagamento.getDebitoreIdentificativo());
 		else 
 			oneLine.add("");
-
+		//Importo Dovuto
 		if(pagamento.getImportoDovuto() != null)
-			oneLine.add(pagamento.getImportoDovuto().toString());
+			oneLine.add(pagamento.getImportoDovuto().doubleValue()+"");
 		else 
 			oneLine.add("");
-
+		// Importo Pagato
 		if(pagamento.getImportoPagato() != null)
-			oneLine.add(pagamento.getImportoPagato().toString());
+			oneLine.add(pagamento.getImportoPagato().doubleValue()+"");
 		else 
 			oneLine.add("");
+		// Data Pagamento 
 		if(pagamento.getDataPagamento() != null)
 			oneLine.add(this.sdf.format(pagamento.getDataPagamento()));
 		else 
 			oneLine.add("");
-
-		if(pagamento.getStatoVersamento() != null)
-			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+pagamento.getStatoVersamento()));
+		// Stato Singolo Versamento
+		if(pagamento.getStatoSingoloVersamento() != null)
+			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento."+pagamento.getStatoSingoloVersamento()));
 		else 
 			oneLine.add("");
+		// p.IUR
+		if(StringUtils.isNotEmpty(pagamento.getIur()))
+			oneLine.add(pagamento.getIur());
+		else 
+			oneLine.add("");
+		// Codice Rendicontazione
+		if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazione()))
+			oneLine.add(pagamento.getCodFlussoRendicontazione());
+		else 
+			oneLine.add("");
+		//BicRiversamento
+		if(StringUtils.isNotEmpty(pagamento.getCodBicRiversamento()))
+			oneLine.add(pagamento.getCodBicRiversamento());
+		else 
+			oneLine.add("");
+		// Id Regolamento
+		if(StringUtils.isNotEmpty(pagamento.getIdRegolamento()))
+			oneLine.add(pagamento.getIdRegolamento());
+		else 
+			oneLine.add("");
+		// IBAN
+		if(StringUtils.isNotEmpty(pagamento.getIbanAccredito()))
+			oneLine.add(pagamento.getIbanAccredito());
+		else 
+			oneLine.add("");		
+		// Causale
 		if(StringUtils.isNotEmpty(pagamento.getCausale()))
 			oneLine.add(pagamento.getCausale());
+		else 
+			oneLine.add("");
+		// Note
+		if(StringUtils.isNotEmpty(pagamento.getNote()))
+			oneLine.add(pagamento.getNote());
 		else 
 			oneLine.add("");
 
@@ -709,6 +756,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		Printer printer  = null;
 
 		try{
+			String fileName = "Pagamenti.zip";
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			ProfiloOperatore profilo = operatore.getProfilo();
@@ -754,20 +802,18 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			}
 			// recupero oggetto
 			filter.setIdPagamento(ids);
-			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
-			Pagamento pagamento = findAll.size() > 0 ? findAll.get(0) : null;
+			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.creaCsvReportisticaPagamenti(filter) : new ArrayList<Pagamento>();
 
-			String fileName = "Pagamento_"+pagamento.getCodSingoloVersamentoEnte()+".zip";
-
-			if(pagamento != null){
+			if(findAll != null && findAll.size() > 0){
 				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-				ZipEntry pagamentoCsv = new ZipEntry("pagamento.csv");
-				zout.putNextEntry(pagamentoCsv);
-
 				try{
+					ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");
+					zout.putNextEntry(pagamentoCsv);
 					printer = new Printer(this.getFormat() , baos);
 					printer.printRecord(getCsvHeader());
-					printer.printRecord(this.getCsvRow(pagamento));
+					for (Pagamento pagamento : findAll) {
+						printer.printRecord(this.getCsvRow(pagamento));
+					}
 				}finally {
 					try{
 						if(printer!=null){

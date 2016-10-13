@@ -31,18 +31,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Fr.StatoFr;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.FrApplicazione;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
-import it.govpay.bd.model.Pagamento.EsitoRendicontazione;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.PagamentiBD;
@@ -53,6 +41,18 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
+import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.FrApplicazione;
+import it.govpay.model.Intermediario;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Stazione;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Fr.StatoFr;
+import it.govpay.model.Pagamento.EsitoRendicontazione;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 import java.io.ByteArrayOutputStream;
@@ -313,7 +313,7 @@ public class Rendicontazioni extends BasicBD {
 													RendicontazioneSenzaRpt rendicontazioneSenzaRpt = new RendicontazioneSenzaRpt();
 													
 													IuvBD iuvBD = new IuvBD(this);
-													it.govpay.bd.model.Iuv iuvModel = null;
+													it.govpay.model.Iuv iuvModel = null;
 													try {
 														iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 													} catch (NotFoundException e) {

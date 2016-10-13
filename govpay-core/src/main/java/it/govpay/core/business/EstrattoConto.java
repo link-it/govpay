@@ -1,5 +1,6 @@
 package it.govpay.core.business;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,15 +28,16 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.rest.Pagamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.core.utils.CSVSerializerProperties;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.pdf.EstrattoContoPdf;
+import it.govpay.model.Anagrafica;
+import it.govpay.model.rest.Pagamento;
 import it.govpay.orm.Dominio;
+import it.govpay.stampe.pdf.estrattoConto.EstrattoContoPdf;
 
 public class EstrattoConto extends BasicBD {
 
@@ -101,6 +103,7 @@ public class EstrattoConto extends BasicBD {
 
 			// pdf
 			boolean creaFilePdf = GovpayConfig.getInstance().isBatchEstrattoContoPdf();
+			String pathLoghi = null;
 			if(creaFilePdf){
 				//controllo directory base
 				basePdfPath = GovpayConfig.getInstance().getPathEstrattoContoPdf();
@@ -113,6 +116,8 @@ public class EstrattoConto extends BasicBD {
 				if(!basePdfDir.exists()){
 					throw new Exception("Directory di export PDF (" + basePdfPath + ") non presente, impossibile eseguire la generazione degli Estratti Conto in formato PDF.");
 				}
+				
+				pathLoghi = GovpayConfig.getInstance().getPathEstrattoContoPdfLoghi();
 			}
 
 			// prelevo la lista dei domini registrati
@@ -124,7 +129,7 @@ public class EstrattoConto extends BasicBD {
 			fsw.setSortOrder(SortOrder.ASC);
 			filterSortList.add(fsw);
 			dominiFilter.setFilterSortList(filterSortList );
-			List<it.govpay.bd.model.Dominio> domini =	dominiBD.findAll(dominiFilter);
+			List<it.govpay.bd.model.Dominio> domini = dominiBD.findAll(dominiFilter);
 
 			SimpleDateFormat f2 = new SimpleDateFormat("yyyy_MM");
 			SimpleDateFormat f3 = new SimpleDateFormat("yyyy/MM");
@@ -181,7 +186,7 @@ public class EstrattoConto extends BasicBD {
 				for (int contatoreMese = 0; contatoreMese < numeroMesi; contatoreMese++) {
 
 					Map<String, Printer> ecPerIban = new HashMap<String, Printer>();
-					Map<String, List<it.govpay.bd.model.EstrattoConto>> pagamentiPerIban = new HashMap<String, List<it.govpay.bd.model.EstrattoConto>>();
+					Map<String, List<it.govpay.model.EstrattoConto>> pagamentiPerIban = new HashMap<String, List<it.govpay.model.EstrattoConto>>();
 					StringBuilder sb = new StringBuilder();
 					// ad ogni iterazione tolgo un mese
 					Date dataFine = cf.getTime();
@@ -212,24 +217,24 @@ public class EstrattoConto extends BasicBD {
 							creaEstrattoConto = false;
 						}
 
-						List<it.govpay.bd.model.EstrattoConto> estrattoConto = this.getEstrattoContoExt(dominio.getCodDominio(), dataInizio, dataFine, offset, LIMIT);
+						List<it.govpay.model.EstrattoConto> estrattoConto = this.getEstrattoContoExt(dominio.getCodDominio(), dataInizio, dataFine, offset, LIMIT);
 
 						while(estrattoConto != null && !estrattoConto.isEmpty()) {
 							List<FileOutputStream> fosList = new ArrayList<FileOutputStream>();
 							List<String> fileEsistentiList = new ArrayList<String>();
 
-							for (it.govpay.bd.model.EstrattoConto pagamentoExt : estrattoConto) {
+							for (it.govpay.model.EstrattoConto pagamentoExt : estrattoConto) {
 								List<String> csvRow = this.getCsvRow(pagamentoExt);
 								if(creaEstrattoConto)
 									printer.printRecord(csvRow);
 
 								if(pagamentoExt.getIbanAccredito() != null) {
 									if(creaFilePdf){
-										List<it.govpay.bd.model.EstrattoConto> estrattoContoPdf = null;
+										List<it.govpay.model.EstrattoConto> estrattoContoPdf = null;
 										if(pagamentiPerIban.containsKey(pagamentoExt.getIbanAccredito())) {
 											estrattoContoPdf = pagamentiPerIban.get(pagamentoExt.getIbanAccredito());
 										} else{
-											estrattoContoPdf = new ArrayList<it.govpay.bd.model.EstrattoConto>();
+											estrattoContoPdf = new ArrayList<it.govpay.model.EstrattoConto>();
 											pagamentiPerIban.put(pagamentoExt.getIbanAccredito(), estrattoContoPdf);
 										}
 										estrattoContoPdf.add(pagamentoExt);
@@ -277,10 +282,10 @@ public class EstrattoConto extends BasicBD {
 						//creazione pdf
 						if(creaFilePdf){
 							boolean creaEstrattoContoPdf = true;
-							
+
 							for (String ibanAccredito : pagamentiPerIban.keySet()) {
 								String esitoGenerazione = null;
-								List<it.govpay.bd.model.EstrattoConto> estrattoContoPdf = pagamentiPerIban.get(ibanAccredito);
+								List<it.govpay.model.EstrattoConto> estrattoContoPdf = pagamentiPerIban.get(ibanAccredito);
 
 								log.debug("Generazione Estratto Conto in formato PDF per il Dominio ["+dominio.getCodDominio()+"] mese " 
 										+ f3.format(dataInizio) + " e per l'iban accredito ["+ibanAccredito+"]  ...");
@@ -293,8 +298,9 @@ public class EstrattoConto extends BasicBD {
 									log.debug("creo il file PDf: "+dominioPdfFile.getAbsolutePath());
 									dominioPdfFile.createNewFile();
 									fosPdf  = new FileOutputStream(dominioPdfFile);
-									esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(this,dominio, dataInizio, dataFine, ibanAccredito, estrattoContoPdf, fosPdf,log); 
-									
+									Anagrafica anagraficaDominio = dominio.getAnagrafica(this);
+									esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi,dominio,anagraficaDominio, dataInizio, dataFine, ibanAccredito, estrattoContoPdf, fosPdf,log); 
+
 								} else {
 									creaEstrattoContoPdf = false;
 								}
@@ -306,7 +312,7 @@ public class EstrattoConto extends BasicBD {
 										sb.append("Attenzione")
 										.append("# "+esitoGenerazione+"." + CSV_SEPARATOR);	
 									}
-									
+
 									ctx.log("estrattoConto.fineDominioMeseOk", denominazioneDominio, f3.format(dataInizio), estrattoContoPdf.size() +"" ,dominioPdfFileName);
 								} else {
 									sb.append("Generazione estratto conto in formato PDF per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+ibanAccredito+"] non eseguita")
@@ -376,7 +382,9 @@ public class EstrattoConto extends BasicBD {
 		}
 	}
 
-	public List<it.govpay.bd.model.rest.Pagamento> getEstrattoConto(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit) throws Exception{
+
+
+	public List<it.govpay.model.rest.Pagamento> getEstrattoConto(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit) throws Exception{
 		PagamentiBD pagamentiBD = new PagamentiBD(this);
 		PagamentoFilter filter = pagamentiBD.newFilter();
 		filter.setOffset(offset );
@@ -389,14 +397,21 @@ public class EstrattoConto extends BasicBD {
 		filter.setDataInizio(dataInizio);
 		filter.setDataFine(dataFine);
 
+
 		List<Pagamento> findAll = pagamentiBD.estrattoConto(filter);
 
 		return findAll;
 	}
 
-	public List<it.govpay.bd.model.EstrattoConto> getEstrattoContoExt(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit) throws Exception{
+	public List<it.govpay.model.EstrattoConto> getEstrattoContoExt(String codDominio, Date dataInizio, Date dataFine,  Integer offset, Integer limit) throws Exception{
 		PagamentiBD pagamentiBD = new PagamentiBD(this);
-		List<it.govpay.bd.model.EstrattoConto> findAll = pagamentiBD.estrattoConto(codDominio, dataInizio, dataFine, offset, limit);
+		List<it.govpay.model.EstrattoConto> findAll = pagamentiBD.estrattoConto(codDominio, dataInizio, dataFine, offset, limit);
+		return findAll;
+	}
+
+	public List<it.govpay.model.EstrattoConto> getEstrattoContoExt(String codDominio, List<Long> idVersamenti, Integer offset, Integer limit) throws Exception{
+		PagamentiBD pagamentiBD = new PagamentiBD(this);
+		List<it.govpay.model.EstrattoConto> findAll = pagamentiBD.estrattoConto(codDominio, idVersamenti, offset, limit);
 		return findAll;
 	}
 
@@ -416,7 +431,7 @@ public class EstrattoConto extends BasicBD {
 		return header;
 	}
 
-	private List<String> getCsvRow(it.govpay.bd.model.EstrattoConto pagamento){
+	private List<String> getCsvRow(it.govpay.model.EstrattoConto pagamento){
 
 
 		List<String> oneLine = new ArrayList<String>();
@@ -460,7 +475,7 @@ public class EstrattoConto extends BasicBD {
 
 			// controllo esistenza dominio 
 			DominiBD dominiBD = new DominiBD(this);
-			it.govpay.bd.model.Dominio dominio  = dominiBD.getDominio(codDominio);
+			it.govpay.model.Dominio dominio  = dominiBD.getDominio(codDominio);
 
 			String denominazioneDominio = dominio.getRagioneSociale()+" ("+dominio.getCodDominio()+")";
 
@@ -517,7 +532,7 @@ public class EstrattoConto extends BasicBD {
 
 			// controllo esistenza dominio 
 			DominiBD dominiBD = new DominiBD(this);
-			it.govpay.bd.model.Dominio dominio  = dominiBD.getDominio(codDominio);
+			it.govpay.model.Dominio dominio  = dominiBD.getDominio(codDominio);
 
 			String denominazioneDominio = dominio.getRagioneSociale()+" ("+dominio.getCodDominio()+")";
 
@@ -549,6 +564,77 @@ public class EstrattoConto extends BasicBD {
 			log.error(e,e);
 			throw e;
 		} finally {
+		}
+	}
+
+
+	public List<it.govpay.core.business.model.EstrattoConto> getEstrattoContoVersamenti(List<it.govpay.core.business.model.EstrattoConto> inputEstrattoConto,String pathLoghi) throws Exception{
+		log.debug("Generazione dei PDF estratto Conto in corso...");
+		try{
+//			String pathLoghi = GovpayConfig.getInstance().getPathEstrattoContoPdfLoghi();
+			for (it.govpay.core.business.model.EstrattoConto estrattoConto : inputEstrattoConto) {
+				log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] in corso...");
+				Map<String, List<it.govpay.model.EstrattoConto>> pagamentiPerIban = new HashMap<String, List<it.govpay.model.EstrattoConto>>();
+				int offset = 0;
+				
+				log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] aggregazione dei dati in corso...");
+				List<it.govpay.model.EstrattoConto> lstEstrattoConto = this.getEstrattoContoExt(estrattoConto.getDominio().getCodDominio(), estrattoConto.getIdVersamenti(), offset, LIMIT);
+
+				while(lstEstrattoConto != null && !lstEstrattoConto.isEmpty()) {
+					for (it.govpay.model.EstrattoConto pagamentoExt : lstEstrattoConto) {
+						if(pagamentoExt.getIbanAccredito() != null) {
+							List<it.govpay.model.EstrattoConto> estrattoContoPdf = null;
+							if(pagamentiPerIban.containsKey(pagamentoExt.getIbanAccredito())) {
+								estrattoContoPdf = pagamentiPerIban.get(pagamentoExt.getIbanAccredito());
+							} else{
+								estrattoContoPdf = new ArrayList<it.govpay.model.EstrattoConto>();
+								pagamentiPerIban.put(pagamentoExt.getIbanAccredito(), estrattoContoPdf);
+							}
+							estrattoContoPdf.add(pagamentoExt);
+						}
+					}
+
+					offset += lstEstrattoConto.size();
+					lstEstrattoConto = this.getEstrattoContoExt(estrattoConto.getDominio().getCodDominio(), estrattoConto.getIdVersamenti(), offset, LIMIT);
+				}
+
+				log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()
+						+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] aggregazione dei dati completata.");
+				
+				
+				for (String ibanAccredito : pagamentiPerIban.keySet()) {
+					log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()
+							+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] IBAN ["+ibanAccredito+"] scrittura PDF in corso...");
+					String esitoGenerazione = null;
+					List<it.govpay.model.EstrattoConto> estrattoContoPdf = pagamentiPerIban.get(ibanAccredito);
+
+					log.debug("Generazione Estratto Conto in formato PDF per il Dominio ["+estrattoConto.getDominio().getCodDominio()+"] Versamenti ID [" 
+							+ estrattoConto.getIdVersamenti() + " e per l'iban accredito ["+ibanAccredito+"]  ...");
+					// creo nome file csv nel formato codDominio_IbanAccredito.csv
+					String dominioPdfFileName = estrattoConto.getDominio().getCodDominio() +  "_"  + ibanAccredito + ".pdf";
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					Anagrafica anagraficaDominio = estrattoConto.getDominio().getAnagrafica(this);
+					esitoGenerazione = EstrattoContoPdf.getPdfEstrattoConto(pathLoghi, estrattoConto.getDominio(),anagraficaDominio, null, null, ibanAccredito, estrattoContoPdf, baos,log);
+
+					// salvo il risultato nella base dati
+					estrattoConto.getOutput().put(dominioPdfFileName, baos);
+					if(esitoGenerazione != null){
+						log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()
+								+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] IBAN ["+ibanAccredito+"] scrittura PDF completata con Warning: "+esitoGenerazione+".");
+					} else {
+						log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()
+								+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] IBAN ["+ibanAccredito+"] scrittura PDF completata senza Warning.");
+					}
+				}
+				
+				log.debug("Generazione dei PDF estratto Conto per il dominio ["+estrattoConto.getDominio().getCodDominio()+"], Versamenti selezionati ["+ estrattoConto.getIdVersamenti() +"] completata.");
+			}
+
+			log.debug("Generazione dei PDF estratto Conto in completata.");
+			return inputEstrattoConto;
+		}catch(Exception e){
+			log.error(e,e);
+			throw e;
 		}
 	}
 

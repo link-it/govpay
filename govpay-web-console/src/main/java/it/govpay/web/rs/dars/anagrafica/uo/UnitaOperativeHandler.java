@@ -42,7 +42,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
-import it.govpay.bd.model.Anagrafica;
+import it.govpay.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.web.rs.BaseRsService;

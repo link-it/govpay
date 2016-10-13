@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Notifica.StatoSpedizione;
-import it.govpay.bd.model.Notifica.TipoNotifica;
+import it.govpay.model.Notifica.StatoSpedizione;
+import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdRr;

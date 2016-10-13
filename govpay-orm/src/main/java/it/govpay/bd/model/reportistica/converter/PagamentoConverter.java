@@ -6,15 +6,15 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.reportistica.PagamentiBD;
+import it.govpay.model.Versamento;
+import it.govpay.model.Versamento.StatoVersamento;
 
 public class PagamentoConverter  extends it.govpay.bd.model.rest.converter.PagamentoConverter{
 
 
-	public static it.govpay.bd.model.reportistica.Pagamento toRestDTO(Map<String, Object> map) throws ServiceException {
-		it.govpay.bd.model.reportistica.Pagamento dto = new it.govpay.bd.model.reportistica.Pagamento();
+	public static it.govpay.model.reportistica.Pagamento toReportisticaDTO(Map<String, Object> map) throws ServiceException {
+		it.govpay.model.reportistica.Pagamento dto = new it.govpay.model.reportistica.Pagamento();
 
 		try{
 
@@ -22,7 +22,7 @@ public class PagamentoConverter  extends it.govpay.bd.model.rest.converter.Pagam
 			dto.setId(id);
 
 			String codVersamentoEnte = (String) getObjectFromMap(map, PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE);
-			dto.setCodSingoloVersamentoEnte(codVersamentoEnte);
+			dto.setCodVersamentoEnte(codVersamentoEnte);
 
 			String iuv = (String) getObjectFromMap(map, PagamentiBD.ALIAS_IUV);
 			dto.setIuv(iuv);
