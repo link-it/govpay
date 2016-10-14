@@ -591,13 +591,18 @@ public class EstrattoConto extends BasicBD {
 
 				while(lstEstrattoConto != null && !lstEstrattoConto.isEmpty()) {
 					for (it.govpay.model.EstrattoConto pagamentoExt : lstEstrattoConto) {
-						if(pagamentoExt.getIbanAccredito() != null) {
+						String ibanAccredito = pagamentoExt.getIbanAccredito();
+						
+						if(StringUtils.isEmpty(ibanAccredito))
+							ibanAccredito = PAGAMENTI_SENZA_RPT;
+						
+						if(ibanAccredito != null) {
 							List<it.govpay.model.EstrattoConto> estrattoContoPdf = null;
-							if(pagamentiPerIban.containsKey(pagamentoExt.getIbanAccredito())) {
-								estrattoContoPdf = pagamentiPerIban.get(pagamentoExt.getIbanAccredito());
+							if(pagamentiPerIban.containsKey(ibanAccredito)) {
+								estrattoContoPdf = pagamentiPerIban.get(ibanAccredito);
 							} else{
 								estrattoContoPdf = new ArrayList<it.govpay.model.EstrattoConto>();
-								pagamentiPerIban.put(pagamentoExt.getIbanAccredito(), estrattoContoPdf);
+								pagamentiPerIban.put(ibanAccredito, estrattoContoPdf);
 							}
 							estrattoContoPdf.add(pagamentoExt);
 						}
