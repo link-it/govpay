@@ -157,7 +157,12 @@ public class TemplateEstrattoContoPagamenti {
 
 			String titoloRiepilogo = Costanti.TITOLO_RIEPILOGO;
 			listRiepilogo.add(cmp.text(titoloRiepilogo).setStyle(TemplateBase.boldStyle16.italic()).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)).newRow();
-			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IBAN_ACCREDITO , ibanAccredito, true, false, false);
+			
+			if(StringUtils.equals(ibanAccredito,Costanti.PAGAMENTI_SENZA_RPT_KEY))
+				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_PAGAMENTI_SENZA_RPT, "", true, false, false);
+			else 
+				TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IBAN_ACCREDITO , ibanAccredito, true, false, false);
+			
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_NUMERO_PAGAMENTI , "" + estrattoContoList.size(), true, false, false);
 			String tot = Costanti.LABEL_EURO + " " + String.format("%.2f", (double)totale.doubleValue());
 			TemplateBase.addElementoLista(listRiepilogo, Costanti.LABEL_IMPORTO_TOTALE ,tot, true, false, false);

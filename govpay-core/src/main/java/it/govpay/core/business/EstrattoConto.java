@@ -37,6 +37,7 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.rest.Pagamento;
 import it.govpay.orm.Dominio;
+import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.estrattoConto.EstrattoContoPdf;
 
 public class EstrattoConto extends BasicBD {
@@ -57,6 +58,8 @@ public class EstrattoConto extends BasicBD {
 	public static final String IUV_HEADER = "Iuv";
 
 	private static final int LIMIT = 50;
+	
+	public static final String PAGAMENTI_SENZA_RPT = Costanti.PAGAMENTI_SENZA_RPT_KEY;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -228,31 +231,37 @@ public class EstrattoConto extends BasicBD {
 								if(creaEstrattoConto)
 									printer.printRecord(csvRow);
 
-								if(pagamentoExt.getIbanAccredito() != null) {
+								String ibanAccredito = pagamentoExt.getIbanAccredito();
+								
+								if(StringUtils.isEmpty(ibanAccredito))
+									ibanAccredito = PAGAMENTI_SENZA_RPT;
+								
+								
+								if(ibanAccredito != null) {
 									if(creaFilePdf){
 										List<it.govpay.model.EstrattoConto> estrattoContoPdf = null;
-										if(pagamentiPerIban.containsKey(pagamentoExt.getIbanAccredito())) {
-											estrattoContoPdf = pagamentiPerIban.get(pagamentoExt.getIbanAccredito());
+										if(pagamentiPerIban.containsKey(ibanAccredito)) {
+											estrattoContoPdf = pagamentiPerIban.get(ibanAccredito);
 										} else{
 											estrattoContoPdf = new ArrayList<it.govpay.model.EstrattoConto>();
-											pagamentiPerIban.put(pagamentoExt.getIbanAccredito(), estrattoContoPdf);
+											pagamentiPerIban.put(ibanAccredito, estrattoContoPdf);
 										}
 										estrattoContoPdf.add(pagamentoExt);
 									}
 
 									Printer printerIban;
-									if(ecPerIban.containsKey(pagamentoExt.getIbanAccredito())) {
-										printerIban = ecPerIban.get(pagamentoExt.getIbanAccredito());
+									if(ecPerIban.containsKey(ibanAccredito)) {
+										printerIban = ecPerIban.get(ibanAccredito);
 										printerIban.printRecord(csvRow);
 									} else {
-										String dominioPerIbanCsvFileName = dominio.getCodDominio() + "_" + pagamentoExt.getIbanAccredito() + "_" + f2.format(dataInizio) +".csv";
+										String dominioPerIbanCsvFileName = dominio.getCodDominio() + "_" + ibanAccredito + "_" + f2.format(dataInizio) +".csv";
 										log.debug("Nome del file CSV destinazione: "+dominioPerIbanCsvFileName);
 
 										File dominioPerIbanFile = new File(basePath+File.separator + dominio.getCodDominio() + File.separator + dominioPerIbanCsvFileName );
 
 										if(!fileEsistentiList.contains(dominioPerIbanFile.getPath())) {
 											if(!dominioPerIbanFile.exists()){
-												sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+pagamentoExt.getIbanAccredito()+"] eseguita" + CSV_SEPARATOR);
+												sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+ibanAccredito+"] eseguita" + CSV_SEPARATOR);
 												log.debug("creo il file CSV: "+dominioPerIbanFile.getAbsolutePath());
 												dominioPerIbanFile.createNewFile();
 												FileOutputStream fosIban = new FileOutputStream(dominioPerIbanFile);
@@ -261,11 +270,11 @@ public class EstrattoConto extends BasicBD {
 												printerIban = new Printer(this.formatW , fosIban);
 												printerIban.printRecord(getCsvHeader());
 
-												ecPerIban.put(pagamentoExt.getIbanAccredito(), printerIban);
+												ecPerIban.put(ibanAccredito, printerIban);
 												printerIban.printRecord(csvRow);
 											} else {
 												fileEsistentiList.add(dominioPerIbanFile.getPath());
-												sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+pagamentoExt.getIbanAccredito()+"] non eseguita in quanto il file ["+dominioPerIbanFile.getPath()+"] esiste gia."+CSV_SEPARATOR);
+												sb.append("Generazione estratto conto per il mese " + f3.format(dataInizio) + " e per l'iban accredito ["+ibanAccredito+"] non eseguita in quanto il file ["+dominioPerIbanFile.getPath()+"] esiste gia."+CSV_SEPARATOR);
 											}
 										}
 

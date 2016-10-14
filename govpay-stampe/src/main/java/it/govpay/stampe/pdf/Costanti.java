@@ -49,6 +49,9 @@ public class Costanti {
 	public static final String IBAN_ACCREDITO_COL = "ibanAccredito";
 	public static final String IUV_COL = "iuv";
 	
+	public static final String PAGAMENTI_SENZA_RPT_KEY = "PagamentiSenzaRpt";
+	public static final String LABEL_PAGAMENTI_SENZA_RPT = "Pagamenti Senza Rpt";
+	
 	/** LABEL PDF RT */
 	
 	public static final String LABEL_CF_PIVA = "Codice Fiscale/P.IVA";
@@ -91,4 +94,9 @@ public class Costanti {
 	public static final String LABEL_TIPO_VERSAMENTO_AD = "Addebito diretto";
 	public static final String LABEL_TIPO_VERSAMENTO_OBEP = "On-line Banking e-payment";
 	public static final String LABEL_TIPO_VERSAMENTO_PO = "Pagamento attivato presso PSP";
+	
+	
+	public static final String LABEL_DATA_REVOCA = "Data Revoca";
+	public static final String LABEL_ESITO_REVOCA = "RICEVUTA DI REVOCA";
+	public static final String LABEL_IMPORTO_REVOCA = "Importo Revocato";
 }
