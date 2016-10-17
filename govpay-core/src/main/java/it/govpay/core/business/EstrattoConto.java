@@ -60,6 +60,7 @@ public class EstrattoConto extends BasicBD {
 	private static final int LIMIT = 50;
 	
 	public static final String PAGAMENTI_SENZA_RPT = Costanti.PAGAMENTI_SENZA_RPT_KEY;
+	public static final String MARCA_DA_BOLLO = Costanti.MARCA_DA_BOLLO_KEY;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
 
@@ -233,7 +234,12 @@ public class EstrattoConto extends BasicBD {
 
 								String ibanAccredito = pagamentoExt.getIbanAccredito();
 								
-								if(StringUtils.isEmpty(ibanAccredito))
+								// l'iban e' null solo se ho una marca da bollo;
+								if(ibanAccredito == null)
+									ibanAccredito = MARCA_DA_BOLLO;
+								
+								// iban e' vuoto se proviene dalla tabella rendicontazioni senza rpt;
+								if(ibanAccredito.isEmpty())
 									ibanAccredito = PAGAMENTI_SENZA_RPT;
 								
 								
@@ -593,7 +599,12 @@ public class EstrattoConto extends BasicBD {
 					for (it.govpay.model.EstrattoConto pagamentoExt : lstEstrattoConto) {
 						String ibanAccredito = pagamentoExt.getIbanAccredito();
 						
-						if(StringUtils.isEmpty(ibanAccredito))
+						// l'iban e' null solo se ho una marca da bollo;
+						if(ibanAccredito == null)
+							ibanAccredito = MARCA_DA_BOLLO;
+						
+						// iban e' vuoto se proviene dalla tabella rendicontazioni senza rpt;
+						if(ibanAccredito.isEmpty())
 							ibanAccredito = PAGAMENTI_SENZA_RPT;
 						
 						if(ibanAccredito != null) {

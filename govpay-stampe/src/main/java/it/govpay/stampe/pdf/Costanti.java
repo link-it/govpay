@@ -52,6 +52,9 @@ public class Costanti {
 	public static final String PAGAMENTI_SENZA_RPT_KEY = "PagamentiSenzaRpt";
 	public static final String LABEL_PAGAMENTI_SENZA_RPT = "Pagamenti Senza Rpt";
 	
+	public static final String MARCA_DA_BOLLO_KEY = "MarcaDaBolloTelematica";
+	public static final String LABEL_MARCA_DA_BOLLO_TELEMATICA = "Marca da Bollo Telematica";
+	
 	/** LABEL PDF RT */
 	
 	public static final String LABEL_CF_PIVA = "Codice Fiscale/P.IVA";
