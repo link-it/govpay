@@ -20,7 +20,6 @@
  */
 package it.govpay.bd.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Psp extends it.govpay.model.Psp {	
@@ -28,10 +27,6 @@ public class Psp extends it.govpay.model.Psp {
 	private static final long serialVersionUID = 1L;
 	 
 	private List<Canale> listaCanali;
-	
-	public Psp() {
-		listaCanali = new ArrayList<Canale>();
-	}
 	
 	public List<Canale> getCanalis() {
 		return listaCanali;

@@ -423,9 +423,18 @@ public class PagamentiBD extends BasicBD {
 		List<List<Object>> select = new ArrayList<List<Object>>();
 		try {
 			List<Object> listaParam = new ArrayList<Object>();
+			//date query 1
 			listaParam.add(dataInizio);
 			listaParam.add(dataFine);
+			// cod dominio
 			listaParam.add(codDominio);
+			// data query 2
+			listaParam.add(dataInizio);
+			listaParam.add(dataFine);
+			// cod dominio
+			listaParam.add(codDominio);
+			
+			// offset
 			listaParam.add(offset);
 			
 			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
@@ -481,8 +490,13 @@ public class PagamentiBD extends BasicBD {
 			
 			
 			List<Object> listaParam = new ArrayList<Object>();
+			// query 1
 			listaParam.addAll(idVersamenti);
 			listaParam.add(codDominio);
+			// query 2
+			listaParam.addAll(idVersamenti);
+			listaParam.add(codDominio);
+			
 			listaParam.add(offset);
 			
 			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {

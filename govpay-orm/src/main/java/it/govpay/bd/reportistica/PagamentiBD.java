@@ -288,6 +288,7 @@ public class PagamentiBD extends BasicBD{
 		try {
 			List<Object> listaParam = new ArrayList<Object>();
 			listaParam.addAll(idVersamenti);
+			listaParam.addAll(idVersamenti);
 			listaParam.add(offset);
 			
 			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {

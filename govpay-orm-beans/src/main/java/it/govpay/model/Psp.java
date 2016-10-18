@@ -20,6 +20,9 @@
  */
 package it.govpay.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Psp extends BasicModel {	
 	
 	private static final long serialVersionUID = 1L;
@@ -31,6 +34,11 @@ public class Psp extends BasicModel {
 	private boolean bolloGestito;
 	private boolean stornoGestito;
 	private boolean abilitato;
+	private List<Canale> canali = new ArrayList<Canale>();
+	
+	public Psp() {
+		canali = new ArrayList<Canale>();
+	}
 	
 	public Long getId() {
 		return id;
@@ -86,6 +94,14 @@ public class Psp extends BasicModel {
 
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
+	}
+	
+	public List<Canale> getCanali() {
+		return canali;
+	}
+
+	public void setCanali(List<Canale> canali) {
+		this.canali = canali;
 	}
 	
 	public String getCodFlusso() {
