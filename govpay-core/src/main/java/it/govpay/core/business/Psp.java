@@ -107,6 +107,8 @@ public class Psp extends BasicBD {
 
 		log.info("Aggiornamento del Registro PSP");
 		ctx.log("psp.aggiornamentoPsp");
+		boolean acquisizioneOk = false;
+		String lastError = "[-- No exception found --]";
 		String transactionId = null;
 		try {
 			JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
@@ -254,10 +256,12 @@ public class Psp extends BasicBD {
 
 					log.info("Aggiornamento Registro PSP completato.");
 					ctx.log("psp.aggiornamentoPspRichiestaOk");
+					acquisizioneOk = true;
 					break;
 				} catch (Exception e) {
 					log.warn("Errore di acquisizione del Catalogo dati Informativi [codIntermediario: " + intermediario.getCodIntermediario() + "][codStazione: " + stazione.getCodStazione() + "][codDominio:" + dominio.getCodDominio() + "]: " + e);
 					ctx.log("psp.aggiornamentoPspRichiestaKo", e.getMessage());
+					lastError = e.getMessage();
 					continue;
 				} finally {
 					ctx.closeTransaction(transactionId);
@@ -265,12 +269,16 @@ public class Psp extends BasicBD {
 			}
 
 
-			ctx.log("psp.aggiornamentoPspOk");
-
-			if(response.isEmpty()) {
-				return "Acquisizione completata#Nessun psp acquisito.";
+			if(acquisizioneOk) {
+				ctx.log("psp.aggiornamentoPspOk");
+				if(response.isEmpty()) {
+					return "Acquisizione completata#Nessun psp acquisito.";
+				} else {
+					return StringUtils.join(response,"|");
+				}
 			} else {
-				return StringUtils.join(response,"|");
+				ctx.log("psp.aggiornamentoPspKo", lastError);
+				return "Acquisizione fallita#Riscontrato errore:" + lastError;
 			}
 		} catch (Exception se) {
 			rollback();
