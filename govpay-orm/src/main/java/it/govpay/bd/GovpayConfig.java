@@ -172,33 +172,6 @@ public class GovpayConfig {
 	}
 
 	private String getProperty(String name, Properties[] props, boolean required) throws Exception {
-		Logger log = LogManager.getLogger("boot");
-		
-		String value = null;
-		for(Properties p : props) {
-			try { value = getProperty(name, p, required); } catch (Exception e) { }
-			if(value != null && !value.trim().isEmpty()) {
-				return value;
-			}
-		}
-
-		if(log!= null) log.info("Proprieta " + name + " non trovata");
-
-		if(required) 
-			throw new Exception("Proprieta ["+name+"] non trovata");
-		else 
-			return null;
-	}
-	
-	public String getNativeQuery(String nativeQueryKey) throws ServiceException {
-		if(!this.nativeQueries.containsKey(nativeQueryKey)) {
-			throw new ServiceException("Query nativa ["+nativeQueryKey+"] non trovata");
-		}
-		
-		return this.nativeQueries.get(nativeQueryKey);
-	}
-	
-	private String getProperty(String name, Properties[] props, boolean required) throws Exception {
 		return getProperty(name, props, required, false);
 	}
 

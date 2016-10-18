@@ -188,19 +188,22 @@ public class Psp extends BasicBD {
 						psp.setBolloGestito(informativaMaster.getMarcaBolloDigitale() == 1);
 						psp.setUrlInfo(informativaMaster.getUrlInformazioniPSP());
 
-						for(CtInformativaDetail informativaPspDetail : informativaPsp.getListaInformativaDetail().getInformativaDetails()) {
-							Canale canale = new Canale();
-							canale.setCondizioni(informativaPspDetail.getCondizioniEconomicheMassime());
-							canale.setCodCanale(informativaPspDetail.getIdentificativoCanale());
-							canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
-							canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
-							canale.setModelloPagamento(Canale.ModelloPagamento.toEnum(informativaPspDetail.getModelloPagamento()));
-							canale.setPsp(psp);
-							canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
-							canale.setUrlInfo(informativaPspDetail.getUrlInformazioniCanale());
-							canale.setCodIntermediario(informativaPspDetail.getIdentificativoIntermediario());
-							psp.getCanalis().add(canale);
+						if(psp.getCanalis() != null) {
+							for(CtInformativaDetail informativaPspDetail : informativaPsp.getListaInformativaDetail().getInformativaDetails()) {
+								Canale canale = new Canale();
+								canale.setCondizioni(informativaPspDetail.getCondizioniEconomicheMassime());
+								canale.setCodCanale(informativaPspDetail.getIdentificativoCanale());
+								canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
+								canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
+								canale.setModelloPagamento(Canale.ModelloPagamento.toEnum(informativaPspDetail.getModelloPagamento()));
+								canale.setPsp(psp);
+								canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
+								canale.setUrlInfo(informativaPspDetail.getUrlInformazioniCanale());
+								canale.setCodIntermediario(informativaPspDetail.getIdentificativoIntermediario());
+								psp.getCanalis().add(canale);
+							}
 						}
+						
 						catalogoPsp.add(psp);
 						log.debug("Acquisita informativa [codPsp: " + psp.getCodPsp() + "]");
 					}
@@ -259,7 +262,7 @@ public class Psp extends BasicBD {
 					acquisizioneOk = true;
 					break;
 				} catch (Exception e) {
-					log.warn("Errore di acquisizione del Catalogo dati Informativi [codIntermediario: " + intermediario.getCodIntermediario() + "][codStazione: " + stazione.getCodStazione() + "][codDominio:" + dominio.getCodDominio() + "]: " + e);
+					log.error("Errore di acquisizione del Catalogo dati Informativi [codIntermediario: " + intermediario.getCodIntermediario() + "][codStazione: " + stazione.getCodStazione() + "][codDominio:" + dominio.getCodDominio() + "]", e);
 					ctx.log("psp.aggiornamentoPspRichiestaKo", e.getMessage());
 					lastError = e.getMessage();
 					continue;
