@@ -76,7 +76,7 @@ public class GovpayConfig {
 		// Se e' configurata, la uso come prioritaria
 
 		try {
-			this.resourceDir = getProperty("it.govpay.resource.path", props1, false);
+			this.resourceDir = getProperty("it.govpay.resource.path", props1, false, false);
 
 			if(this.resourceDir != null) {
 				File resourceDirFile = new File(this.resourceDir);
@@ -111,7 +111,7 @@ public class GovpayConfig {
 		if(nativeQueriesList != null && !nativeQueriesList.isEmpty()) {
 			String[] nativeQueriesSplit = nativeQueriesList.split(",");
 			for(String nativeQueryProp: nativeQueriesSplit) {
-				String nativeQuery = getProperty("it.govpay.orm.nativeQuery." +nativeQueryProp +"." +this.databaseType, props, false); //INIT solo le native queries per il tipo database correntemente usato
+				String nativeQuery = getProperty("it.govpay.orm.nativeQuery." +nativeQueryProp +"." +this.databaseType, props, false, true); //INIT solo le native queries per il tipo database correntemente usato
 				if(nativeQuery != null && !nativeQuery.isEmpty()) {
 					this.nativeQueries.put(nativeQueryProp, nativeQuery);
 				}
@@ -135,7 +135,7 @@ public class GovpayConfig {
 		
 	}
 
-	private String getProperty(String name, Properties props, boolean required) throws Exception {
+	private String getProperty(String name, Properties props, boolean required, boolean logDebug) throws Exception {
 		Logger log = LogManager.getLogger("boot");
 		
 		String value = System.getProperty(name);
@@ -156,10 +156,16 @@ public class GovpayConfig {
 					throw new Exception("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
-				log.info("Letta proprieta di configurazione " + name + ": " + value);
+				if(logDebug)
+					log.debug("Letta proprieta di configurazione " + name + ": " + value);
+				else
+					log.info("Letta proprieta di configurazione " + name + ": " + value);
 			}
 		} else {
-			log.info("Letta proprieta di sistema " + name + ": " + value);
+			if(logDebug)
+				log.debug("Letta proprieta di configurazione " + name + ": " + value);
+			else
+				log.info("Letta proprieta di configurazione " + name + ": " + value);
 		}
 
 		return value.trim();
@@ -177,6 +183,38 @@ public class GovpayConfig {
 		}
 
 		if(log!= null) log.info("Proprieta " + name + " non trovata");
+
+		if(required) 
+			throw new Exception("Proprieta ["+name+"] non trovata");
+		else 
+			return null;
+	}
+	
+	public String getNativeQuery(String nativeQueryKey) throws ServiceException {
+		if(!this.nativeQueries.containsKey(nativeQueryKey)) {
+			throw new ServiceException("Query nativa ["+nativeQueryKey+"] non trovata");
+		}
+		
+		return this.nativeQueries.get(nativeQueryKey);
+	}
+	
+	private String getProperty(String name, Properties[] props, boolean required) throws Exception {
+		return getProperty(name, props, required, false);
+	}
+
+	private String getProperty(String name, Properties[] props, boolean required, boolean logDebug) throws Exception {
+		Logger log = LogManager.getLogger("boot");
+		
+		String value = null;
+		for(Properties p : props) {
+			try { value = getProperty(name, p, required, logDebug); } catch (Exception e) { }
+			if(value != null && !value.trim().isEmpty()) {
+				return value;
+			}
+		}
+
+		if(log != null && !logDebug) log.info("Proprieta " + name + " non trovata");
+		if(log != null && logDebug) log.debug("Proprieta " + name + " non trovata");
 
 		if(required) 
 			throw new Exception("Proprieta ["+name+"] non trovata");

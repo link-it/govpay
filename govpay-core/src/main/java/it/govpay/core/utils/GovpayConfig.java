@@ -211,10 +211,12 @@ public class GovpayConfig {
 			if(mLogOnLog4jString != null && !Boolean.valueOf(mLogOnLog4jString))
 				this.mLogOnLog4j = false;
 
+			
+			String mLogOnLevelString = getProperty("it.govpay.mlog.level", props, false, log);
 			try {
-				this.mLogLevel = Severity.valueOf(getProperty("it.govpay.mlog.level", props, false, log));
+				this.mLogLevel = Severity.valueOf(mLogOnLevelString);
 			} catch (Exception e) {
-				log.warn("Valore ["+getProperty("it.govpay.mlog.level", props, false, log)+"] non consentito per la property \"it.govpay.mlog.level\". Assunto valore di default \"INFO\".");
+				log.warn("Valore ["+mLogOnLevelString+"] non consentito per la property \"it.govpay.mlog.level\". Assunto valore di default \"INFO\".");
 			}
 
 			String mLogOnDBString = getProperty("it.govpay.mlog.db", props, false, log);
