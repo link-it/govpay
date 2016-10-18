@@ -80,19 +80,17 @@ public class Psp extends BasicBD {
 			psp.setRagioneSociale(pspModel.getRagioneSociale());
 			psp.setStorno(pspModel.isStornoGestito());
 			psp.setUrlInfo(pspModel.getUrlInfo());
-			if(pspModel.getCanalis() != null) {
-				for(it.govpay.bd.model.Canale canaleModel : pspModel.getCanalis()) {
-					GpChiediListaPspResponse.Psp.Canale canale = new GpChiediListaPspResponse.Psp.Canale();
-					canale.setCodCanale(canaleModel.getCodCanale());
-					canale.setCondizioni(canaleModel.getCondizioni());
-					canale.setDescrizione(canaleModel.getDescrizione());
-					canale.setDisponibilita(canaleModel.getDisponibilita());
-					canale.setLogoServizio(PspUtils.getLogo(canaleModel.getModelloPagamento()));
-					canale.setModelloPagamento(PspUtils.toWeb(canaleModel.getModelloPagamento()));
-					canale.setTipoVersamento(PspUtils.toWeb(canaleModel.getTipoVersamento()));
-					canale.setUrlInfo(canaleModel.getUrlInfo());
-					psp.getCanale().add(canale);
-				}
+			for(it.govpay.bd.model.Canale canaleModel : pspModel.getCanalis()) {
+				GpChiediListaPspResponse.Psp.Canale canale = new GpChiediListaPspResponse.Psp.Canale();
+				canale.setCodCanale(canaleModel.getCodCanale());
+				canale.setCondizioni(canaleModel.getCondizioni());
+				canale.setDescrizione(canaleModel.getDescrizione());
+				canale.setDisponibilita(canaleModel.getDisponibilita());
+				canale.setLogoServizio(PspUtils.getLogo(canaleModel.getModelloPagamento()));
+				canale.setModelloPagamento(PspUtils.toWeb(canaleModel.getModelloPagamento()));
+				canale.setTipoVersamento(PspUtils.toWeb(canaleModel.getTipoVersamento()));
+				canale.setUrlInfo(canaleModel.getUrlInfo());
+				psp.getCanale().add(canale);
 			}
 			response.getPsp().add(psp);
 		}
@@ -125,6 +123,8 @@ public class Psp extends BasicBD {
 			ListaInformativePSP informativePsp = null;
 
 			for(Dominio dominio : domini) {
+
+				log.info("Richiedo catalogo per il dominio " + dominio.getCodDominio());
 				Stazione stazione = dominio.getStazione(this);
 				Intermediario intermediario = stazione.getIntermediario(this);
 
@@ -188,22 +188,20 @@ public class Psp extends BasicBD {
 						psp.setBolloGestito(informativaMaster.getMarcaBolloDigitale() == 1);
 						psp.setUrlInfo(informativaMaster.getUrlInformazioniPSP());
 
-						if(psp.getCanalis() != null) {
-							for(CtInformativaDetail informativaPspDetail : informativaPsp.getListaInformativaDetail().getInformativaDetails()) {
-								Canale canale = new Canale();
-								canale.setCondizioni(informativaPspDetail.getCondizioniEconomicheMassime());
-								canale.setCodCanale(informativaPspDetail.getIdentificativoCanale());
-								canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
-								canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
-								canale.setModelloPagamento(Canale.ModelloPagamento.toEnum(informativaPspDetail.getModelloPagamento()));
-								canale.setPsp(psp);
-								canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
-								canale.setUrlInfo(informativaPspDetail.getUrlInformazioniCanale());
-								canale.setCodIntermediario(informativaPspDetail.getIdentificativoIntermediario());
-								psp.getCanalis().add(canale);
-							}
+						for(CtInformativaDetail informativaPspDetail : informativaPsp.getListaInformativaDetail().getInformativaDetails()) {
+							Canale canale = new Canale();
+							canale.setCondizioni(informativaPspDetail.getCondizioniEconomicheMassime());
+							canale.setCodCanale(informativaPspDetail.getIdentificativoCanale());
+							canale.setDescrizione(informativaPspDetail.getDescrizioneServizio());
+							canale.setDisponibilita(informativaPspDetail.getDisponibilitaServizio());
+							canale.setModelloPagamento(Canale.ModelloPagamento.toEnum(informativaPspDetail.getModelloPagamento()));
+							canale.setPsp(psp);
+							canale.setTipoVersamento(Canale.TipoVersamento.toEnum(informativaPspDetail.getTipoVersamento().name()));
+							canale.setUrlInfo(informativaPspDetail.getUrlInformazioniCanale());
+							canale.setCodIntermediario(informativaPspDetail.getIdentificativoIntermediario());
+							psp.getCanalis().add(canale);
 						}
-						
+
 						catalogoPsp.add(psp);
 						log.debug("Acquisita informativa [codPsp: " + psp.getCodPsp() + "]");
 					}

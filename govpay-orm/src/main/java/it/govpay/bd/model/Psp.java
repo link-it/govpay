@@ -20,6 +20,7 @@
  */
 package it.govpay.bd.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Psp extends it.govpay.model.Psp {	
@@ -29,6 +30,9 @@ public class Psp extends it.govpay.model.Psp {
 	private List<Canale> listaCanali;
 	
 	public List<Canale> getCanalis() {
+		if(listaCanali == null) 
+			listaCanali = new ArrayList<Canale>();
+		
 		return listaCanali;
 	}
 
