@@ -20,8 +20,20 @@
  */
 package it.govpay.core.exceptions;
 
-public class VersamentoScadutoException extends Exception {
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+public class VersamentoScadutoException extends Exception {
+	
 	private static final long serialVersionUID = 1L;
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+	
+	public VersamentoScadutoException(Date dataScadenza) {
+		super(dataScadenza != null ? "Versamento scaduto in data " + sdf.format(dataScadenza) : null);
+	}
+	
+	public VersamentoScadutoException(String message) {
+		super(message);
+	}
 
 }

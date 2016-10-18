@@ -36,6 +36,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -47,16 +48,16 @@ import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Acl.Tipo;
-import it.govpay.bd.model.Connettore.EnumSslType;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Connettore;
+import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Connettore;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.TipoTributo;
-import it.govpay.bd.model.Versionabile.Versione;
-import it.govpay.bd.model.Rpt.FirmaRichiesta;
+import it.govpay.model.TipoTributo;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Connettore.EnumSslType;
+import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -1077,6 +1078,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Applicazione entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -1089,4 +1095,6 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		return null;
 	}
 
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

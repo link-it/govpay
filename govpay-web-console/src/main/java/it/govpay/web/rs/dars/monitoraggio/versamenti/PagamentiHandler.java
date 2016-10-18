@@ -35,30 +35,30 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
-import it.govpay.bd.model.Acl;
 import it.govpay.bd.model.FrApplicazione;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.Pagamento.EsitoRendicontazione;
-import it.govpay.bd.model.Pagamento.TipoAllegato;
 import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Acl.Tipo;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.model.Acl;
+import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Operatore;
+import it.govpay.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Pagamento.EsitoRendicontazione;
+import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -109,9 +109,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			boolean eseguiRicerca = true;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			Versamento versamento = null;
-			// Utilizzo i singoli versamenti per avere i pagamenti
-			List<Long> idSingoliVersamenti = new ArrayList<Long>();
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
 			AclBD aclBD = new AclBD(bd);
@@ -158,19 +155,10 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				long countVersamento = eseguiRicerca ? versamentiBD.count(versamentoFilter) : 0;
 				eseguiRicerca = eseguiRicerca && countVersamento > 0;
 
-
-				versamento = eseguiRicerca ? versamentiBD.getVersamento(Long.parseLong(idVersamento)) : null;
-				if(versamento != null){
-					List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
-					if(singoliVersamenti != null && singoliVersamenti.size() >0){
-						for (SingoloVersamento singoloVersamento : singoliVersamenti) {
-							idSingoliVersamenti.add(singoloVersamento.getId());
-						}
-					}
-				}
-				eseguiRicerca = eseguiRicerca && idSingoliVersamenti.size() > 0;
-				filter.setIdSingoliVersamenti(idSingoliVersamenti);
+				// Ricerca pagamenti associati 
+				filter.setIdVersamenti(idVersamentoL);
 				count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+				eseguiRicerca = eseguiRicerca && count > 0;
 
 
 			}
@@ -450,6 +438,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Pagamento entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -487,4 +480,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException {		return null;	}
+	
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

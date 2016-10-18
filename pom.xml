@@ -4,12 +4,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>govpay</artifactId>
-	<version>2.2.0.6</version>
+	<version>2.2.1</version>
 	<packaging>pom</packaging>
 	<name>GovPay</name>
 
 	<modules>
+		<module>govpay-orm-beans</module>
 		<module>govpay-orm</module>
+		<module>govpay-core-beans</module>
+		<module>govpay-stampe</module>
 		<module>govpay-core</module>
 		<module>govpay-ejb</module>
 		<module>govpay-web</module>
@@ -20,7 +23,7 @@
 	<properties>
 		<javaVersion>1.6</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>2.3.3</openspcoop2.version>
+		<openspcoop2.version>2.3.5</openspcoop2.version>
 	</properties>
 
 	<profiles>
@@ -62,6 +65,14 @@
 				<artifactId>commons-codec</artifactId>
 				<version>1.10</version>
 			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-core-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
@@ -96,10 +107,25 @@
 				<scope>compile</scope>
 			</dependency>
 			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-orm-beans</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
 
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-orm</artifactId>
+				<version>${project.version}</version>
+				<type>jar</type>
+				<scope>compile</scope>
+			</dependency>
+			
+			<dependency>
+				<groupId>it.govpay</groupId>
+				<artifactId>govpay-stampe</artifactId>
 				<version>${project.version}</version>
 				<type>jar</type>
 				<scope>compile</scope>

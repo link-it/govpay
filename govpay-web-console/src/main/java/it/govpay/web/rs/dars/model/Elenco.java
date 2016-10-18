@@ -27,6 +27,8 @@ import java.util.List;
 public class Elenco {
 	
 	private List<Elemento> elenco;
+	private Elemento intestazione;
+	private boolean tabella;
 	private long totaleRisultati;
 	private String titolo;
 	private URI esportazione;
@@ -36,6 +38,10 @@ public class Elenco {
 	private boolean filtro;
 	
 	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione) {
+		this(titolo, infoRicerca, infoCreazione, totaleRisultati, esportazione, cancellazione, false, null);
+	}
+	
+	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione,boolean tabella, Elemento intestazione) {
 		this.totaleRisultati = totaleRisultati;
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
@@ -43,6 +49,8 @@ public class Elenco {
 		this.cancellazione = cancellazione;
 		this.esportazione = esportazione;
 		this.elenco = (new ArrayList<Elemento>());
+		this.intestazione = intestazione;
+		this.tabella = tabella;
 		this.setFiltro(false);
 	}
 	
@@ -81,5 +89,15 @@ public class Elenco {
 	public void setFiltro(boolean filtro) {
 		this.filtro = filtro;
 	}
+
+	public Elemento getIntestazione() {
+		return intestazione;
+	}
+
+	public boolean isTabella() {
+		return tabella;
+	}
+	
+	
 
 }

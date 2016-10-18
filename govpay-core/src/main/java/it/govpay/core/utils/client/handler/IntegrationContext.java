@@ -1,6 +1,6 @@
 package it.govpay.core.utils.client.handler;
 
-import it.govpay.bd.model.Applicazione;
+import it.govpay.model.Applicazione;
 
 
 public class IntegrationContext {

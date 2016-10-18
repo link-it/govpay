@@ -26,36 +26,44 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.xml.namespace.QName;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.TipoBollo;
-import it.govpay.bd.model.Tributo;
-import it.govpay.bd.model.Tributo.TipoContabilta;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.Versamento.CausaleSemplice;
-import it.govpay.bd.model.Versamento.CausaleSpezzoni;
-import it.govpay.bd.model.Versamento.CausaleSpezzoniStrutturati;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.VersamentoAnnullatoException;
 import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Dominio;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.model.Tributo;
+import it.govpay.bd.model.Versamento;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.Tributo.TipoContabilta;
+import it.govpay.model.Versamento.CausaleSemplice;
+import it.govpay.model.Versamento.CausaleSpezzoni;
+import it.govpay.model.Versamento.CausaleSpezzoniStrutturati;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.core.utils.client.VerificaClient;
 import it.govpay.servizi.commons.Anagrafica;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.Versamento.SpezzoneCausaleStrutturata;
 
 public class VersamentoUtils {
+	
+    public final static QName _VersamentoKeyCodApplicazione_QNAME = new QName("", "codApplicazione");
+    public final static QName _VersamentoKeyCodVersamentoEnte_QNAME = new QName("", "codVersamentoEnte");
+    public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
+    public final static QName _VersamentoKeyCodDominio_QNAME = new QName("", "codDominio");
+    public final static QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
 
 	public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
 		if(generaIuv && versamento.getSingoliVersamenti(bd).size() != 1) {
@@ -224,19 +232,20 @@ public class VersamentoUtils {
 				throw new GovPayException(EsitoOperazione.VER_007, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte(), Long.toString(letto.getIdTributo()), Long.toString(nuovo.getIdTributo()));
 			}
 			
-			if(letto.getIbanAccredito(bd).getId() != nuovo.getIbanAccredito(bd).getId()) {
-				throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+			if(!(letto.getIbanAccredito(bd) == null && nuovo.getIbanAccredito(bd) == null)) {
+				if(letto.getIbanAccredito(bd) == null || nuovo.getIbanAccredito(bd).getId() == null || letto.getIbanAccredito(bd).getId() != nuovo.getIbanAccredito(bd).getId()) {
+					throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
+				}
 			}
-			
 			nuovo.setId(letto.getId());
 			nuovo.setIdVersamento(letto.getIdVersamento());
 		}
 	}
 	
 	
-	public static it.govpay.bd.model.Anagrafica toAnagraficaModel(Anagrafica anagrafica) {
+	public static it.govpay.model.Anagrafica toAnagraficaModel(Anagrafica anagrafica) {
 		if(anagrafica == null) return null;
-		it.govpay.bd.model.Anagrafica anagraficaModel = new it.govpay.bd.model.Anagrafica();
+		it.govpay.model.Anagrafica anagraficaModel = new it.govpay.model.Anagrafica();
 		anagraficaModel.setCap(anagrafica.getCap());
 		anagraficaModel.setCellulare(anagrafica.getCellulare());
 		anagraficaModel.setCivico(anagrafica.getCivico());
@@ -261,22 +270,22 @@ public class VersamentoUtils {
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
 			if(versamento.isAggiornabile() && versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
-				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), null, bd);
+				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), null, null, bd);
 			} else {
-				throw new VersamentoScadutoException();
+				throw new VersamentoScadutoException(versamento.getDataScadenza());
 			}
 		}
 		return versamento;
 	}
 
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
 		GpContext ctx = GpThreadLocal.get();
 		if(applicazione.getConnettoreVerifica() == null) {
-			ctx.log("versamento.verificaNonConfigurata");
+			ctx.log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
 		VerificaClient verificaClient = new VerificaClient(applicazione);
-		Versamento versamento = verificaClient.invoke(codVersamentoEnte, iuv, bd);
+		Versamento versamento = verificaClient.invoke(codVersamentoEnte, dominio, iuv, bd);
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
 		return versamento;

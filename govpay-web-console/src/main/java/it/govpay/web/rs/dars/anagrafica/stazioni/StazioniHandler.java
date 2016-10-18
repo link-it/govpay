@@ -34,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -42,7 +43,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
-import it.govpay.bd.model.Intermediario;
+import it.govpay.model.Intermediario;
 import it.govpay.bd.model.Stazione;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -478,6 +479,11 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	public String getSottotitolo(Stazione entry, BasicBD bd) {
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
+	
+	@Override
+	public List<String> getValori(Stazione entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -490,4 +496,6 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		return null;
 	}
 
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

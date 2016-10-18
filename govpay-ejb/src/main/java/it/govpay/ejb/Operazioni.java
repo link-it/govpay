@@ -40,7 +40,6 @@ import org.openspcoop2.utils.logger.beans.proxy.Service;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.model.Notifica;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.business.EstrattoConto;
 import it.govpay.core.business.Pagamento;
@@ -51,6 +50,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.bd.model.Notifica;
 
 @Singleton
 public class Operazioni{
@@ -113,6 +113,7 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
 		}
 	}
 
@@ -140,6 +141,7 @@ public class Operazioni{
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
+			if(ctx != null) ctx.log();
 		}
 	}
 

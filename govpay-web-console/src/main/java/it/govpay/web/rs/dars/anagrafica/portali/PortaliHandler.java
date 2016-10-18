@@ -35,6 +35,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -46,13 +47,13 @@ import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.PortaleFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Acl.Tipo;
-import it.govpay.bd.model.Versionabile.Versione;
+import it.govpay.model.Acl;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.TipoTributo;
+import it.govpay.model.Portale;
+import it.govpay.model.TipoTributo;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -1023,6 +1024,11 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Portale entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -1035,4 +1041,6 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		return null;
 	}
 
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

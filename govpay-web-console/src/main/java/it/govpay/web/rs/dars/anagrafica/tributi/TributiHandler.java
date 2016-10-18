@@ -34,6 +34,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -46,10 +47,10 @@ import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
-import it.govpay.bd.model.IbanAccredito;
-import it.govpay.bd.model.TipoTributo;
+import it.govpay.model.IbanAccredito;
+import it.govpay.model.TipoTributo;
 import it.govpay.bd.model.Tributo;
-import it.govpay.bd.model.Tributo.TipoContabilta;
+import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -222,12 +223,12 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			fsw.setField(it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filterIban.getFilterSortList().add(fsw);
-			List<it.govpay.bd.model.TipoTributo> findAll = tipiTributoBD.findAll(filterIban);
+			List<it.govpay.model.TipoTributo> findAll = tipiTributoBD.findAll(filterIban);
 			it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tributiDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
 			TipiTributoHandler tributiHandler = (TipiTributoHandler) tributiDars.getDarsHandler();
 
 			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.bd.model.TipoTributo tipoTributo : findAll) {
+				for (it.govpay.model.TipoTributo tipoTributo : findAll) {
 					try{
 						tributiBD.getTributo(this.idDominio, tipoTributo.getCodTributo());
 					}catch(NotFoundException e){
@@ -261,10 +262,10 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			fsw.setSortOrder(SortOrder.ASC);
 			filterIban.getFilterSortList().add(fsw);
 			filterIban.setCodDominio(dominiBD.getDominio(this.idDominio).getCodDominio());   
-			List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+			List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.bd.model.IbanAccredito ib : findAll) {
+				for (it.govpay.model.IbanAccredito ib : findAll) {
 					listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
 				}
 			}
@@ -397,10 +398,10 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 				fsw.setSortOrder(SortOrder.ASC);
 				filterIban.getFilterSortList().add(fsw);
 				filterIban.setCodDominio(dominiBD.getDominio(entry.getIdDominio()).getCodDominio());   
-				List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+				List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 				if(findAll != null && findAll.size() > 0){
-					for (it.govpay.bd.model.IbanAccredito ib : findAll) {
+					for (it.govpay.model.IbanAccredito ib : findAll) {
 						listaIban.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
 					}
 				}
@@ -677,6 +678,11 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Tributo entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -688,4 +694,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

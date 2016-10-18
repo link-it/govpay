@@ -43,24 +43,6 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoInviaRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoElementoListaRPT;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoListaRPT;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Anagrafica;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.Evento.CategoriaEvento;
-import it.govpay.bd.model.Evento.TipoEvento;
-import it.govpay.bd.model.IbanAccredito;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Iuv;
-import it.govpay.bd.model.Portale;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.model.Rpt.FirmaRichiesta;
-import it.govpay.bd.model.Rpt.StatoRpt;
-import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.core.business.GiornaleEventi;
@@ -72,6 +54,24 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaRptThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.model.Anagrafica;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Dominio;
+import it.govpay.model.Evento;
+import it.govpay.model.IbanAccredito;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Iuv;
+import it.govpay.model.Portale;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Versamento;
+import it.govpay.model.Evento.CategoriaEvento;
+import it.govpay.model.Evento.TipoEvento;
+import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.servizi.commons.EsitoOperazione;
 
 import java.io.ByteArrayOutputStream;
@@ -90,6 +90,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.logger.beans.Property;
 
 public class RptUtils {
 
@@ -528,8 +529,14 @@ public class RptUtils {
 							rpt.setDescrizioneStato(null);
 							return true;
 						}
-	
+						
+						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("ccp", rpt.getCcp()));
+						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", rpt.getCodDominio()));
+						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("iuv", rpt.getIuv()));
+						GpThreadLocal.get().log("pagamento.recuperoRt");
 						rpt = RtUtils.acquisisciRT(rpt.getCodDominio(), rpt.getIuv(), rpt.getCcp(), nodoChiediCopiaRTRisposta.getTipoFirma(), rtByte, bd);
+						GpThreadLocal.get().getContext().getResponse().addGenericProperty(new Property("esitoPagamento", rpt.getEsitoPagamento().toString()));
+						GpThreadLocal.get().log("pagamento.acquisizioneRtOk");
 						return true;
 					default:
 						log.info("Aggiorno lo stato della RPT [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "] in " + nuovoStato + ".");

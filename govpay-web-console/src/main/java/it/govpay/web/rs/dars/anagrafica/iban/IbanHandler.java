@@ -37,6 +37,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -45,8 +46,8 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.IbanAccredito;
+import it.govpay.model.Dominio;
+import it.govpay.model.IbanAccredito;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -519,7 +520,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		if(entry.getCodIban() == null)  throw new ValidationException("Codice Iban Accredito nullo");
 
 		if(entry.getCodIban().length() < 5 || entry.getCodIban().length() > 34)
-			throw new ValidationException("La lunghezza dell'Iban Accredito deve essere compressa tra 5 e 34 caratteri, trovati " + entry.getCodIban().length() + ".");
+			throw new ValidationException("La lunghezza dell'Iban Accredito deve essere compresa tra 5 e 34 caratteri, trovati " + entry.getCodIban().length() + ".");
 
 		Pattern ibanPattern= Pattern.compile(patternIBAN);
 		Matcher matcher = ibanPattern.matcher(entry.getCodIban());
@@ -529,7 +530,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 		if(StringUtils.isNotEmpty(entry.getCodIbanAppoggio())){
 			if(entry.getCodIbanAppoggio().length() < 5 || entry.getCodIbanAppoggio().length() > 34)
-				throw new ValidationException("La lunghezza dell'Iban Appoggio deve essere compressa tra 5 e 34 caratteri, trovati " + entry.getCodIbanAppoggio().length() + ".");
+				throw new ValidationException("La lunghezza dell'Iban Appoggio deve essere compresa tra 5 e 34 caratteri, trovati " + entry.getCodIbanAppoggio().length() + ".");
 
 			matcher = ibanPattern.matcher(entry.getCodIbanAppoggio());
 			if(!matcher.matches())
@@ -541,7 +542,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		
 		if(StringUtils.isNotEmpty(entry.getCodBicAccredito())){
 			if(entry.getCodBicAccredito().length() < 8 || entry.getCodBicAccredito().length() > 11)
-				throw new ValidationException("La lunghezza dell'Bic Accredito deve essere compressa tra 8 e 11 caratteri, trovati " + entry.getCodBicAccredito().length() + ".");
+				throw new ValidationException("La lunghezza dell'Bic Accredito deve essere compresa tra 8 e 11 caratteri, trovati " + entry.getCodBicAccredito().length() + ".");
 
 			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAccredito());
 			if(!bicMtcher.matches())
@@ -550,7 +551,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		
 		if(StringUtils.isNotEmpty(entry.getCodBicAppoggio())){
 			if(entry.getCodBicAppoggio().length() < 8 || entry.getCodBicAppoggio().length() > 11)
-				throw new ValidationException("La lunghezza dell'Bic Appoggio deve essere compressa tra 8 e 11 caratteri, trovati " + entry.getCodBicAppoggio().length() + ".");
+				throw new ValidationException("La lunghezza dell'Bic Appoggio deve essere compresa tra 8 e 11 caratteri, trovati " + entry.getCodBicAppoggio().length() + ".");
 
 			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAppoggio());
 			if(!bicMtcher.matches())
@@ -613,6 +614,11 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
+	
+	@Override
+	public List<String> getValori(IbanAccredito entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -625,4 +631,6 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		return null;
 	}
 
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

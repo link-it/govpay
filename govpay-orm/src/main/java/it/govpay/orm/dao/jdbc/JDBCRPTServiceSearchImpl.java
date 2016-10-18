@@ -185,6 +185,7 @@ public class JDBCRPTServiceSearchImpl implements IJDBCServiceSearchWithId<RPT, I
 			fields.add(RPT.model().STATO);
 			fields.add(RPT.model().DESCRIZIONE_STATO);
 			fields.add(RPT.model().COD_SESSIONE);
+			fields.add(RPT.model().COD_SESSIONE_PORTALE);
 			fields.add(RPT.model().PSP_REDIRECT_URL);
 			fields.add(RPT.model().XML_RPT);
 			fields.add(RPT.model().DATA_AGGIORNAMENTO_STATO);

@@ -120,6 +120,9 @@
     <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
+    <value name="importoTotale" field="importoTotale" usage="optional"/>
+    <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
+    <value name="statoVersamento" field="statoVersamento" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdVersamento_Type" class="it.govpay.orm.IdVersamento" abstract="true">
@@ -130,6 +133,9 @@
     <value name="debitoreAnagrafica" field="debitoreAnagrafica" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
+    <value name="importoTotale" field="importoTotale" usage="optional"/>
+    <value name="causaleVersamento" field="causaleVersamento" usage="optional"/>
+    <value name="statoVersamento" field="statoVersamento" usage="optional"/>
   </mapping>
   <mapping name="idSingoloVersamento" class="it.govpay.orm.IdSingoloVersamento" abstract="false">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -137,6 +143,8 @@
     <value name="codSingoloVersamentoEnte" field="codSingoloVersamentoEnte" usage="required"/>
     <structure name="idTributo" field="idTributo" usage="optional" map-as="_IdTributo_Type"/>
     <value name="note" field="note" usage="optional"/>
+    <value name="statoSingoloVersamento" field="statoSingoloVersamento" usage="optional"/>
+    <value name="importoSingoloVersamento" field="importoSingoloVersamento" usage="optional"/>
   </mapping>
 
   <mapping type-name="_IdSingoloVersamento_Type" class="it.govpay.orm.IdSingoloVersamento" abstract="true">
@@ -145,6 +153,8 @@
     <value name="codSingoloVersamentoEnte" field="codSingoloVersamentoEnte" usage="required"/>
     <structure name="idTributo" field="idTributo" usage="optional" map-as="_IdTributo_Type"/>
     <value name="note" field="note" usage="optional"/>
+    <value name="statoSingoloVersamento" field="statoSingoloVersamento" usage="optional"/>
+    <value name="importoSingoloVersamento" field="importoSingoloVersamento" usage="optional"/>
   </mapping>
   <mapping name="id-carrello" class="it.govpay.orm.IdCarrello">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -503,7 +513,7 @@
     <value name="codiceContabilita" field="codiceContabilita" usage="optional"/>
     <value name="note" field="note" usage="optional"/>
   </mapping>
-  <mapping name="RPT" class="it.govpay.orm.RPT" abstract="false">
+  <mapping name="RPT" class="it.govpay.orm.RPT">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
     <structure field="idCanale" usage="required" map-as="it.govpay.orm.IdCanale"/>
@@ -517,36 +527,7 @@
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="codSessione" field="codSessione" usage="optional"/>
-    <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
-    <value name="xmlRPT" field="xmlRPT" usage="required"/>
-    <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
-    <value name="callbackURL" field="callbackURL" usage="optional"/>
-    <value name="modelloPagamento" field="modelloPagamento" usage="required"/>
-    <value name="codMsgRicevuta" field="codMsgRicevuta" usage="optional"/>
-    <value name="dataMsgRicevuta" field="dataMsgRicevuta" usage="optional"/>
-    <value name="firmaRicevuta" field="firmaRicevuta" usage="required"/>
-    <value name="codEsitoPagamento" field="codEsitoPagamento" usage="optional"/>
-    <value name="importoTotalePagato" field="importoTotalePagato" usage="optional"/>
-    <value name="xmlRT" field="xmlRT" usage="optional"/>
-    <value name="codStazione" field="codStazione" usage="required"/>
-    <value name="codTransazioneRPT" field="codTransazioneRPT" usage="optional"/>
-    <value name="codTransazioneRT" field="codTransazioneRT" usage="optional"/>
-  </mapping>
-
-  <mapping type-name="_RPT_Type" class="it.govpay.orm.RPT" abstract="true">
-    <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure name="idVersamento" field="idVersamento" usage="required" map-as="_IdVersamento_Type"/>
-    <structure field="idCanale" usage="required" map-as="it.govpay.orm.IdCanale"/>
-    <structure name="idPortale" field="idPortale" usage="optional" map-as="_IdPortale_Type"/>
-    <value name="codCarrello" field="codCarrello" usage="optional"/>
-    <value name="iuv" field="iuv" usage="required"/>
-    <value name="ccp" field="ccp" usage="required"/>
-    <value name="codDominio" field="codDominio" usage="required"/>
-    <value name="codMsgRichiesta" field="codMsgRichiesta" usage="required"/>
-    <value name="dataMsgRichiesta" field="dataMsgRichiesta" usage="required"/>
-    <value name="stato" field="stato" usage="required"/>
-    <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
-    <value name="codSessione" field="codSessione" usage="optional"/>
+    <value name="codSessionePortale" field="codSessionePortale" usage="optional"/>
     <value name="pspRedirectURL" field="pspRedirectURL" usage="optional"/>
     <value name="xmlRPT" field="xmlRPT" usage="required"/>
     <value name="dataAggiornamentoStato" field="dataAggiornamentoStato" usage="required"/>
@@ -590,6 +571,7 @@
     <value name="dataAcquisizione" field="dataAcquisizione" usage="required"/>
     <value name="iur" field="iur" usage="required"/>
     <value name="dataPagamento" field="dataPagamento" usage="required"/>
+    <value name="ibanAccredito" field="ibanAccredito" usage="optional"/>
     <value name="commissioniPsp" field="commissioniPsp" usage="optional"/>
     <value name="tipoAllegato" field="tipoAllegato" usage="optional"/>
     <value name="allegato" field="allegato" usage="optional"/>

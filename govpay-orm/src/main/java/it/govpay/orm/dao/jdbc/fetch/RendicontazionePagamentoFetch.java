@@ -251,6 +251,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", RendicontazionePagamento.model().RPT.DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setCodSessione", RendicontazionePagamento.model().RPT.COD_SESSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_sessione", RendicontazionePagamento.model().RPT.COD_SESSIONE.getFieldType()));
+				setParameter(object, "setCodSessionePortale", RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_sessione_portale", RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE.getFieldType()));
 				setParameter(object, "setPspRedirectURL", RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "psp_redirect_url", RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL.getFieldType()));
 				setParameter(object, "setXmlRPT", RendicontazionePagamento.model().RPT.XML_RPT.getFieldType(),
@@ -491,6 +493,8 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"RPT.descrizioneStato"));
 				setParameter(object, "setCodSessione", RendicontazionePagamento.model().RPT.COD_SESSIONE.getFieldType(),
 					this.getObjectFromMap(map,"RPT.codSessione"));
+				setParameter(object, "setCodSessionePortale", RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE.getFieldType(),
+					this.getObjectFromMap(map,"RPT.codSessionePortale"));
 				setParameter(object, "setPspRedirectURL", RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL.getFieldType(),
 					this.getObjectFromMap(map,"RPT.pspRedirectURL"));
 				setParameter(object, "setXmlRPT", RendicontazionePagamento.model().RPT.XML_RPT.getFieldType(),

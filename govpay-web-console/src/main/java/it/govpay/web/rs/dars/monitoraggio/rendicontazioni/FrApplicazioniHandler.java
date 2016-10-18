@@ -35,21 +35,20 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.expression.SortOrder;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Acl.Tipo;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.FrApplicazione;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.bd.pagamento.filters.FrApplicazioneFilter.SortFields;
+import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.FrApplicazione;
+import it.govpay.model.Operatore;
+import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -292,6 +291,11 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 
 		return sb.toString();
 	} 
+	
+	@Override
+	public List<String> getValori(FrApplicazione entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -327,4 +331,7 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
+	
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

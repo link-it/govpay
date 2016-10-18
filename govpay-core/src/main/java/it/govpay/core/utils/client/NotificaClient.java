@@ -29,14 +29,14 @@ import org.apache.logging.log4j.Logger;
 import it.govpay.servizi.pa.ObjectFactory;
 import it.govpay.servizi.pa.PaNotificaStorno;
 import it.govpay.servizi.pa.PaNotificaStorno.RichiestaStorno;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Connettore.Tipo;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Versionabile.Versione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.Gp21Utils;
+import it.govpay.model.Applicazione;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Rpt;
+import it.govpay.model.Rr;
+import it.govpay.model.Connettore.Tipo;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.StatoRevoca;
 import it.govpay.servizi.pa.PaNotificaTransazione;
 
@@ -85,6 +85,10 @@ public class NotificaClient extends BasicClient {
 				paNotificaTransazione.setCodApplicazione(notifica.getApplicazione(null).getCodApplicazione());
 				paNotificaTransazione.setCodVersamentoEnte(rpt.getVersamento(null).getCodVersamentoEnte());
 				paNotificaTransazione.setTransazione(Gp21Utils.toTransazione(versione, rpt, null));
+				
+				if(notifica.getApplicazione(null).getVersione().compareTo(Versione.GP_02_02_01) >= 0)
+					paNotificaTransazione.setCodSessionePortale(rpt.getCodSessionePortale());
+				
 				QName qname = new QName("http://www.govpay.it/servizi/pa/", "paNotificaTransazione");
 				sendSoap("paNotificaTransazione", new JAXBElement<PaNotificaTransazione>(qname, PaNotificaTransazione.class, paNotificaTransazione), null, false);
 				return;

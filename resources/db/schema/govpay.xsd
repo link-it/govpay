@@ -284,6 +284,9 @@
 			<xsd:element name="debitoreAnagrafica" type="String70" minOccurs="0" />
 			<xsd:element name="codVersamentoLotto" type="String35" minOccurs="0"/>
 			<xsd:element name="codAnnoTributario" type="String35" minOccurs="0"/>
+			<xsd:element name="importoTotale" type="xsd:double" minOccurs="0"/>
+			<xsd:element name="causaleVersamento" type="String511" minOccurs="0"/>
+			<xsd:element name="statoVersamento" type="String35" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -293,6 +296,8 @@
 			<xsd:element name="codSingoloVersamentoEnte" type="xsd:string" />
 			<xsd:element name="idTributo" type="id-tributo" minOccurs="0" />
 			<xsd:element name="note" type="String512" minOccurs="0" />
+			<xsd:element name="statoSingoloVersamento" type="String35" minOccurs="0" />
+			<xsd:element name="importoSingoloVersamento" type="xsd:double" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -931,6 +936,11 @@
 							<linkit:sql-table-unique-column name="id_dominio" />
 							<linkit:sql-table-unique-field name="iuv" />
 						</linkit:sql-table-unique>
+						<linkit:sql-table-index>
+							<linkit:sql-table-index-field name="codVersamentoEnte" />
+							<linkit:sql-table-index-field name="tipoIuv" />
+							<linkit:sql-table-index-column name="id_applicazione" />
+						</linkit:sql-table-index>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1253,6 +1263,7 @@
 			</xsd:element>
 			
 			<xsd:element name="codSessione" type="xsd:string" minOccurs="0" />
+			<xsd:element name="codSessionePortale" type="xsd:string" minOccurs="0" />
 			<xsd:element name="pspRedirectURL" type="String512" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1383,6 +1394,7 @@
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
 			<xsd:element name="iur" type="String35" />
 			<xsd:element name="dataPagamento" type="xsd:dateTime" />
+			<xsd:element name="ibanAccredito" type="IBANType" minOccurs="0"/>
 			<xsd:element name="commissioniPsp" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="tipoAllegato" type="String2"  minOccurs="0" >
 				<xsd:annotation>

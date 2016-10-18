@@ -21,10 +21,10 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Canale.ModelloPagamento;
-import it.govpay.bd.model.Rpt.EsitoPagamento;
-import it.govpay.bd.model.Rpt.FirmaRichiesta;
-import it.govpay.bd.model.Rpt.StatoRpt;
+import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Rpt.EsitoPagamento;
+import it.govpay.model.Rpt.FirmaRichiesta;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.IdCanale;
 import it.govpay.orm.IdPortale;
 import it.govpay.orm.IdVersamento;
@@ -56,6 +56,7 @@ public class RptConverter {
 		dto.setCodMsgRichiesta(vo.getCodMsgRichiesta());
 		dto.setCodMsgRicevuta(vo.getCodMsgRicevuta());
 		dto.setCodSessione(vo.getCodSessione());
+		dto.setCodSessionePortale(vo.getCodSessionePortale());
 		dto.setCodStazione(vo.getCodStazione());
 		dto.setDataAggiornamento(vo.getDataAggiornamentoStato());
 		dto.setDataMsgRichiesta(vo.getDataMsgRichiesta());
@@ -93,6 +94,7 @@ public class RptConverter {
 		vo.setCodMsgRichiesta(dto.getCodMsgRichiesta());
 		vo.setCodMsgRicevuta(dto.getCodMsgRicevuta());
 		vo.setCodSessione(dto.getCodSessione());
+		vo.setCodSessionePortale(dto.getCodSessionePortale());
 		vo.setCodStazione(dto.getCodStazione());
 		vo.setCodTransazioneRPT(dto.getIdTransazioneRpt());
 		vo.setCodTransazioneRT(dto.getIdTransazioneRt());

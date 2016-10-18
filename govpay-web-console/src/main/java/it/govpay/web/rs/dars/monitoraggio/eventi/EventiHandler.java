@@ -20,6 +20,7 @@
  */
 package it.govpay.web.rs.dars.monitoraggio.eventi;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -36,20 +37,23 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.UtilsException;
+import org.openspcoop2.utils.csv.Printer;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Evento;
-import it.govpay.bd.model.Evento.TipoEvento;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
+import it.govpay.bd.model.Dominio;
+import it.govpay.model.Evento;
+import it.govpay.model.Operatore;
+import it.govpay.model.Evento.TipoEvento;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -59,6 +63,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -142,9 +147,19 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
+			List<String> valori = new ArrayList<String>();
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esito.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
+			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"));
+
+			Elemento intestazione = new Elemento(-1, valori , null);
+
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, cancellazione); //, true, intestazione ); 
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
@@ -293,6 +308,27 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	} 
 
 	@Override
+	public List<String> getValori(Evento entry, BasicBD bd) throws ConsoleException { 
+		List<String> valori = new ArrayList<String>();
+
+		TipoEvento tipoEvento = entry.getTipoEvento();
+		Date dataRichiesta = entry.getDataRichiesta();
+		String esito = entry.getEsito();
+		String codDominio = entry.getCodDominio();
+		String iuv = entry.getIuv();
+		String ccp = entry.getCcp();
+
+		valori.add(this.sdf.format(dataRichiesta));
+		valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+ tipoEvento.name()));
+		valori.add(esito);
+		valori.add(codDominio);
+		valori.add(iuv);
+		valori.add(ccp);
+
+		return valori; 
+	}
+
+	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		StringBuffer sb = new StringBuffer();
@@ -304,11 +340,12 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 				sb.append(long1);
 			}
-
+//		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
 		String fileName = "Eventi.zip";
 		try{
+			ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			this.darsService.getOperatoreByPrincipal(bd); 
 
@@ -316,18 +353,12 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			EventiFilter filter = eventiBD.newFilter();
 			filter.setIdEventi(idsToExport );
 			List<Evento> list = eventiBD.findAll(filter);
-			StringBuilder sbCSV = new StringBuilder();
 
-			sbCSV.append(getCsvHeader());
-
-			for (Evento evento: list) {
-				sbCSV.append("\n");
-				sbCSV.append(getEventoCsv(evento));
-			}
+			scriviCSVEventi(baos, list );
 
 			ZipEntry datiEvento = new ZipEntry("eventi.csv");
 			zout.putNextEntry(datiEvento);
-			zout.write(sbCSV.toString().getBytes());
+			zout.write(baos.toByteArray());
 			zout.closeEntry();
 
 			zout.flush();
@@ -343,89 +374,127 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 		}
 	}
 
-	private String getCsvHeader(){
-		StringBuilder sb = new StringBuilder();
+	public void scriviCSVEventi(ByteArrayOutputStream baos, List<Evento> list) throws UtilsException, Exception {
+		Printer printer = null;
+		try{
+			printer = new Printer(this.getFormat() , baos);
+			printer.printRecord(getCsvHeader());
+			for (Evento evento: list) {
+				printer.printRecord(this.getEventoCsv(evento));
+			}
+		}finally {
+			try{
+				if(printer!=null){
+					printer.close();
+				}
+			}catch (Exception e) {
+				throw new Exception("Errore durante la chiusura dello stream ",e);
+			}
+		}
+	}
+	
+	private List<String> getCsvHeader(){
+		List<String> header = new ArrayList<String>();
+		
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sottotipoEvento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".componente.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erogatore.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fruitore.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esito.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRisposta.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRichiesta.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRisposta.label"));
 
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sottotipoEvento.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".componente.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erogatore.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fruitore.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esito.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRisposta.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRichiesta.label")).append(SEPARATORE_CSV);
-		sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRisposta.label"));
-
-		return sb.toString();
+		return header;
 	}
 
-	private String getEventoCsv(Evento evento){
-		StringBuilder sb = new StringBuilder();
+	private List<String> getEventoCsv(Evento evento){ 
+		List<String> oneLine = new ArrayList<String>();
 
 		if(StringUtils.isNotEmpty(evento.getCodDominio()))
-			sb.append(evento.getCodDominio());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getCodDominio());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getIuv()))
-			sb.append(evento.getIuv());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getIuv());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getCcp()))
-			sb.append(evento.getCcp());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getCcp());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getCodPsp()))
-			sb.append(evento.getCodPsp());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getCodPsp());
+		else 
+			oneLine.add("");
 		if(evento.getTipoEvento() != null)
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+evento.getTipoEvento().name()));
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+evento.getTipoEvento().name()));
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getSottotipoEvento()))
-			sb.append(evento.getSottotipoEvento());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getSottotipoEvento());
+		else 
+			oneLine.add("");
 		if(evento.getCategoriaEvento() != null)
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento." +evento.getCategoriaEvento().name()));
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento." +evento.getCategoriaEvento().name()));
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getComponente()))
-			sb.append(evento.getComponente());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getComponente());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getErogatore()))
-			sb.append(evento.getErogatore());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getErogatore());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getFruitore()))
-			sb.append(evento.getFruitore());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getFruitore());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getCodStazione()))
-			sb.append(evento.getCodStazione());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getCodStazione());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getCodCanale()))
-			sb.append(evento.getCodCanale());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getCodCanale());
+		else 
+			oneLine.add("");
 		if(evento.getTipoVersamento()!= null)
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento." +evento.getTipoVersamento().name()));
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento." +evento.getTipoVersamento().name()));
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getEsito()))
-			sb.append(evento.getEsito());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getEsito());
+		else 
+			oneLine.add("");
 		if(evento.getDataRichiesta()!= null)
-			sb.append( this.sdf.format(evento.getDataRichiesta()));
-		sb.append(SEPARATORE_CSV);
+			oneLine.add( this.sdf.format(evento.getDataRichiesta()));
+		else 
+			oneLine.add("");
 		if(evento.getDataRisposta()!= null)
-			sb.append(this.sdf.format(evento.getDataRisposta()));
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(this.sdf.format(evento.getDataRisposta()));
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getAltriParametriRichiesta()))
-			sb.append(evento.getAltriParametriRichiesta());
-		sb.append(SEPARATORE_CSV);
+			oneLine.add(evento.getAltriParametriRichiesta());
+		else 
+			oneLine.add("");
 		if(StringUtils.isNotEmpty(evento.getAltriParametriRisposta()))
-			sb.append(evento.getAltriParametriRisposta());
-
-		return sb.toString();
+			oneLine.add(evento.getAltriParametriRisposta());
+		else 
+			oneLine.add("");
+		
+		return oneLine;
 	}
 
 	@Override
@@ -456,4 +525,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
+
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

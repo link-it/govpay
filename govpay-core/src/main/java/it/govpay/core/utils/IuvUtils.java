@@ -34,8 +34,8 @@ import org.xml.sax.SAXException;
 
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.CtNumeroAvviso;
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Dominio;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Dominio;
 import it.govpay.servizi.commons.IuvGenerato;
 
 public class IuvUtils {
@@ -70,7 +70,7 @@ public class IuvUtils {
 		return payToLoc + gln + refNo + "0" + String.format("%02d", applicationCode) + iuv + amount + importo;
 	}
 	
-	public static IuvGenerato toIuvGenerato(Applicazione applicazione, Dominio dominio, it.govpay.bd.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
+	public static IuvGenerato toIuvGenerato(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
 		IuvGenerato iuvGenerato = new IuvGenerato();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
@@ -103,7 +103,7 @@ public class IuvUtils {
 	public static boolean checkIuvNumerico(String iuv, int auxDigit, int applicationCode) {
 		if(iuv.length() != 15) return false;
 		String reference = iuv.substring(0, 13);
-		long resto93 = (Long.parseLong(String.valueOf(it.govpay.bd.model.Iuv.AUX_DIGIT) + String.format("%02d", applicationCode) + reference)) % 93;
+		long resto93 = (Long.parseLong(String.valueOf(it.govpay.model.Iuv.AUX_DIGIT) + String.format("%02d", applicationCode) + reference)) % 93;
 		return iuv.equals(reference + String.format("%02d", resto93));
 	}
 }

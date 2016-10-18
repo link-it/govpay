@@ -20,18 +20,6 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.PspFilter;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Canale;
-import it.govpay.bd.model.Canale.TipoVersamento;
-import it.govpay.bd.model.converter.CanaleConverter;
-import it.govpay.bd.model.converter.PspConverter;
-import it.govpay.orm.IdCanale;
-import it.govpay.orm.IdPsp;
-import it.govpay.orm.dao.IDBCanaleServiceSearch;
-import it.govpay.orm.dao.jdbc.JDBCPspServiceSearch;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +32,18 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.UtilsException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.PspFilter;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.converter.CanaleConverter;
+import it.govpay.bd.model.converter.PspConverter;
+import it.govpay.model.Canale.TipoVersamento;
+import it.govpay.orm.IdCanale;
+import it.govpay.orm.IdPsp;
+import it.govpay.orm.dao.IDBCanaleServiceSearch;
+import it.govpay.orm.dao.jdbc.JDBCPspServiceSearch;
 
 public class PspBD extends BasicBD {
 
@@ -104,7 +104,7 @@ public class PspBD extends BasicBD {
 					Canale canale = CanaleConverter.toDTO(canaleVO, psp);
 					canaliLst.add(canale);
 				}
-				psp.setCanali(canaliLst);
+				psp.setCanalis(canaliLst);
 			}
 			return psp;
 		} catch (NotImplementedException e) {
@@ -224,10 +224,9 @@ public class PspBD extends BasicBD {
 					IdCanale idCanale = this.getCanaleService().convertToId(canaleDaDisabilitare);
 					this.getCanaleService().update(idCanale, canaleDaDisabilitare);
 				}
-				
 			}
 			
-			for(Canale canale: psp.getCanali()) {
+			for(Canale canale: psp.getCanalis()) {
 				canale.setIdPsp(psp.getId());
 				canale.setAbilitato(true);
 				it.govpay.orm.Canale canaleVO = CanaleConverter.toVO(canale);
@@ -284,7 +283,7 @@ public class PspBD extends BasicBD {
 			this.getPspService().create(vo);
 			psp.setId(vo.getId());
 			
-			for(Canale canale: psp.getCanali()) {
+			for(Canale canale: psp.getCanalis()) {
 				canale.setIdPsp(psp.getId());
 				it.govpay.orm.Canale canaleVO = CanaleConverter.toVO(canale);
 				this.getCanaleService().create(canaleVO);

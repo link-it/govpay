@@ -34,7 +34,7 @@ import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.TributiBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
-import it.govpay.bd.model.Tributo;
+import it.govpay.model.Tributo;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.dinamic.SelectList;
@@ -73,10 +73,10 @@ public class IbanAccredito extends SelectList<Long>{
 			fsw.setSortOrder(SortOrder.ASC);
 			filterIban.getFilterSortList().add(fsw);
 			filterIban.setCodDominio(dominiBD.getDominio(Long.parseLong(idDominioValue)).getCodDominio());   
-			List<it.govpay.bd.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
+			List<it.govpay.model.IbanAccredito> findAll = ibanAccreditoBD.findAll(filterIban);
 
 			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.bd.model.IbanAccredito ib : findAll) {
+				for (it.govpay.model.IbanAccredito ib : findAll) {
 					lst.add(new Voce<Long>(ib.getCodIban(), ib.getId()));  
 				}
 			}

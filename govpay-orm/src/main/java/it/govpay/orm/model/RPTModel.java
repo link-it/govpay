@@ -54,6 +54,7 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.STATO = new Field("stato",java.lang.String.class,"RPT",RPT.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"RPT",RPT.class);
 		this.COD_SESSIONE = new Field("codSessione",java.lang.String.class,"RPT",RPT.class);
+		this.COD_SESSIONE_PORTALE = new Field("codSessionePortale",java.lang.String.class,"RPT",RPT.class);
 		this.PSP_REDIRECT_URL = new Field("pspRedirectURL",java.lang.String.class,"RPT",RPT.class);
 		this.XML_RPT = new Field("xmlRPT",byte[].class,"RPT",RPT.class);
 		this.DATA_AGGIORNAMENTO_STATO = new Field("dataAggiornamentoStato",java.util.Date.class,"RPT",RPT.class);
@@ -87,6 +88,7 @@ public class RPTModel extends AbstractModel<RPT> {
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"RPT",RPT.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"RPT",RPT.class);
 		this.COD_SESSIONE = new ComplexField(father,"codSessione",java.lang.String.class,"RPT",RPT.class);
+		this.COD_SESSIONE_PORTALE = new ComplexField(father,"codSessionePortale",java.lang.String.class,"RPT",RPT.class);
 		this.PSP_REDIRECT_URL = new ComplexField(father,"pspRedirectURL",java.lang.String.class,"RPT",RPT.class);
 		this.XML_RPT = new ComplexField(father,"xmlRPT",byte[].class,"RPT",RPT.class);
 		this.DATA_AGGIORNAMENTO_STATO = new ComplexField(father,"dataAggiornamentoStato",java.util.Date.class,"RPT",RPT.class);
@@ -129,6 +131,8 @@ public class RPTModel extends AbstractModel<RPT> {
 	public IField DESCRIZIONE_STATO = null;
 	 
 	public IField COD_SESSIONE = null;
+	 
+	public IField COD_SESSIONE_PORTALE = null;
 	 
 	public IField PSP_REDIRECT_URL = null;
 	 

@@ -1,4 +1,5 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
+-- DROP INDEX index_iuv_1 CASCADE;
 DROP TRIGGER trg_rendicontazioni_senza_rpt CASCADE;
 DROP TRIGGER trg_eventi CASCADE;
 DROP TRIGGER trg_pagamenti CASCADE;

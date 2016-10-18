@@ -21,13 +21,22 @@
 package it.govpay.web.rs.dars.model;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Elemento {
 	
 	public Elemento(long id, String titolo, String sottotitolo, URI urlDettaglio) {
 		this.id = id;
+		this.valori = new ArrayList<String>();
 		this.sottotitolo = sottotitolo;
 		this.titolo = titolo;
+		this.uri = urlDettaglio;
+	}
+	
+	public Elemento(long id, List<String> valori, URI urlDettaglio) {
+		this.id = id;
+		this.valori = valori;
 		this.uri = urlDettaglio;
 	}
 	
@@ -35,6 +44,8 @@ public class Elemento {
 	private String titolo;
 	private String sottotitolo;
 	private URI uri;
+	
+	private List<String> valori;
 	
 	public long getId() {
 		return this.id;
@@ -47,6 +58,12 @@ public class Elemento {
 	}
 	public URI getUri() {
 		return this.uri;
+	}
+	public List<String> getValori() {
+		return valori;
+	}
+	public void setValori(List<String> valori) {
+		this.valori = valori;
 	}
 	
 }

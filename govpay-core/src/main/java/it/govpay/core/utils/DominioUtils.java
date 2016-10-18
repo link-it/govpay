@@ -36,8 +36,8 @@ import it.gov.digitpa.schemas._2011.psp.CtErogazioneServizio;
 import it.gov.digitpa.schemas._2011.psp.CtInfoContoDiAccreditoPair;
 import it.gov.digitpa.schemas._2011.psp.InformativaContoAccredito;
 import it.gov.digitpa.schemas._2011.psp.InformativaControparte;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.IbanAccredito;
+import it.govpay.model.Dominio;
+import it.govpay.model.IbanAccredito;
 
 public class DominioUtils {
 	

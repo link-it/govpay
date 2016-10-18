@@ -21,9 +21,9 @@
 package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.bd.model.SingoloVersamento.TipoBollo;
-import it.govpay.bd.model.Tributo.TipoContabilta;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.SingoloVersamento.TipoBollo;
+import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.orm.IdIbanAccredito;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.IdVersamento;

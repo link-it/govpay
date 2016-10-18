@@ -48,6 +48,7 @@ import java.io.Serializable;
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codSessione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codSessionePortale" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="pspRedirectURL" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="xmlRPT" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataAggiornamentoStato" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
@@ -88,6 +89,7 @@ import java.io.Serializable;
   	"stato",
   	"descrizioneStato",
   	"codSessione",
+  	"codSessionePortale",
   	"pspRedirectURL",
   	"xmlRPT",
   	"dataAggiornamentoStato",
@@ -219,6 +221,14 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
 
   public void setCodSessione(java.lang.String codSessione) {
     this.codSessione = codSessione;
+  }
+
+  public java.lang.String getCodSessionePortale() {
+    return this.codSessionePortale;
+  }
+
+  public void setCodSessionePortale(java.lang.String codSessionePortale) {
+    this.codSessionePortale = codSessionePortale;
   }
 
   public java.lang.String getPspRedirectURL() {
@@ -403,6 +413,10 @@ public class RPT extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codSessione",required=false,nillable=false)
   protected java.lang.String codSessione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codSessionePortale",required=false,nillable=false)
+  protected java.lang.String codSessionePortale;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="pspRedirectURL",required=false,nillable=false)

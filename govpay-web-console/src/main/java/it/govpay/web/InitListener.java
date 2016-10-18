@@ -21,6 +21,7 @@
 package it.govpay.web;
 
 import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.web.utils.ConsoleProperties;
 
@@ -55,10 +56,12 @@ public class InitListener implements ServletContextListener {
 				LogManager.getLogger().warn("Errore durante la configurazione del Logger: " + e);
 			}
 			
-			
+			GovpayConfig.newInstance();
 			AnagraficaManager.newInstance(false);
 			ConnectionManager.initialize();
-		} catch(Exception e){}
+		} catch(Exception e){
+			throw new RuntimeException("Inizializzazione di GovPay Console fallita: " + e, e);
+		}
 		initialized = true;
 	}
 

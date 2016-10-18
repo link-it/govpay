@@ -27,14 +27,14 @@ import java.util.UUID;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSP;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Intermediario;
-import it.govpay.bd.model.Stazione;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.client.NodoClient;
+import it.govpay.bd.model.Dominio;
+import it.govpay.model.Intermediario;
+import it.govpay.bd.model.Stazione;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

@@ -20,96 +20,25 @@
  */
 package it.govpay.bd.model;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-
-import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class Tributo extends TipoTributo {
-	private static final long serialVersionUID = 1L;
-	
-	public static final String BOLLOT = "BOLLOT";
-	
-	public enum TipoContabilta {
-	    CAPITOLO("0"),
-	    SPECIALE("1"),
-	    SIOPE("2"),
-	    ALTRO("9");
-	    
-		private String codifica;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.IbanAccredito;
 
-		TipoContabilta(String codifica) {
-			this.codifica = codifica;
-		}
-		public String getCodifica() {
-			return codifica;
-		}
-		
-		public static TipoContabilta toEnum(String codifica) throws ServiceException {
-			for(TipoContabilta p : TipoContabilta.values()){
-				if(p.getCodifica().equals(codifica))
-					return p;
-			}
-			throw new ServiceException("Codifica inesistente per TipoContabilta. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(TipoContabilta.values()));
-		}
-	}
-	
-	private long idTipoTributo;
-	private long idDominio;
-	private Long idIbanAccredito;
-	private boolean abilitato;
-	private TipoContabilta tipoContabilita;
-	private String codContabilita;
-	
-	public Long getIdIbanAccredito() {
-		return idIbanAccredito;
-	}
-	public void setIdIbanAccredito(Long idIbanAccredito) {
-		this.idIbanAccredito = idIbanAccredito;
-	}
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-	public TipoContabilta getTipoContabilita() {
-		return tipoContabilita;
-	}
-	public void setTipoContabilita(TipoContabilta tipoContabilita) {
-		this.tipoContabilita = tipoContabilita;
-	}
-	public String getCodContabilita() {
-		return codContabilita;
-	}
-	public void setCodContabilita(String codContabilita) {
-		this.codContabilita = codContabilita;
-	}
-	public long getIdDominio() {
-		return idDominio;
-	}
-	public void setIdDominio(long idDominio) {
-		this.idDominio = idDominio;
-	}
+public class Tributo extends it.govpay.model.Tributo {
+	private static final long serialVersionUID = 1L;
 	
 	// Business
 	
 	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
-		if(ibanAccredito == null && idIbanAccredito != null) {
-			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, idIbanAccredito);
+		if(ibanAccredito == null && this.getIdIbanAccredito() != null) {
+			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());
 		}
 		return ibanAccredito;
 	}
 	public void setIbanAccredito(IbanAccredito ibanAccredito) {
 		this.ibanAccredito = ibanAccredito;
-	}
-
-	public long getIdTipoTributo() {
-		return idTipoTributo;
-	}
-	public void setIdTipoTributo(long idTipoTributo) {
-		this.idTipoTributo = idTipoTributo;
 	}
 
 	private IbanAccredito ibanAccredito;

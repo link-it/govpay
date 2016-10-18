@@ -20,6 +20,7 @@
  */
 package it.govpay.web.rs.dars.model.input.base;
 
+import java.net.URI;
 import java.util.List;
 
 import it.govpay.web.rs.dars.model.input.FieldType;
@@ -28,20 +29,31 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 public class InputFile extends ParamField<byte[]> {
 	
 	private List<String> acceptedMimeTypes;
-	private long maxByteSize;
+	private long maxFileSize;
+	private int maxFiles;
+	private URI target;
 	
-	public InputFile(String id, String label, boolean required, boolean hidden, boolean editable, List<String> acceptedMimeTypes, long maxByteSize) {
+	public InputFile(String id, String label, boolean required, boolean hidden, boolean editable, List<String> acceptedMimeTypes, long maxByteSize, int maxFiles, URI target) {
 		super(id, label, null, required, hidden, editable, FieldType.INPUT_FILE);
 		this.acceptedMimeTypes = acceptedMimeTypes;
-		this.maxByteSize = maxByteSize;
+		this.maxFileSize = maxByteSize;
+		this.maxFiles = maxFiles;
+		this.target = target;
 	}
 
 	public List<String> getAcceptedMimeTypes() {
 		return this.acceptedMimeTypes;
 	}
 
-	public long getMaxByteSize() {
-		return this.maxByteSize;
+	public long getMaxFileSize() {
+		return this.maxFileSize;
 	}
 	
+	public int getMaxFiles (){
+		return this.maxFiles;
+	}
+
+	public URI getTarget() {
+		return target;
+	}
 }

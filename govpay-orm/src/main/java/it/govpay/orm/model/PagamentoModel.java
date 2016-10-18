@@ -49,6 +49,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new Field("iur",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATA_PAGAMENTO = new Field("dataPagamento",java.util.Date.class,"Pagamento",Pagamento.class);
+		this.IBAN_ACCREDITO = new Field("ibanAccredito",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.TIPO_ALLEGATO = new Field("tipoAllegato",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.ALLEGATO = new Field("allegato",byte[].class,"Pagamento",Pagamento.class);
@@ -85,6 +86,7 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATA_PAGAMENTO = new ComplexField(father,"dataPagamento",java.util.Date.class,"Pagamento",Pagamento.class);
+		this.IBAN_ACCREDITO = new ComplexField(father,"ibanAccredito",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.TIPO_ALLEGATO = new ComplexField(father,"tipoAllegato",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.ALLEGATO = new ComplexField(father,"allegato",byte[].class,"Pagamento",Pagamento.class);
@@ -125,6 +127,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	public IField IUR = null;
 	 
 	public IField DATA_PAGAMENTO = null;
+	 
+	public IField IBAN_ACCREDITO = null;
 	 
 	public IField COMMISSIONI_PSP = null;
 	 

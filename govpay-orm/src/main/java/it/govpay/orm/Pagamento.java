@@ -43,6 +43,7 @@ import java.io.Serializable;
  * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataPagamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="ibanAccredito" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="commissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoAllegato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="allegato" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
@@ -86,6 +87,7 @@ import java.io.Serializable;
   	"dataAcquisizione",
   	"iur",
   	"dataPagamento",
+  	"ibanAccredito",
   	"commissioniPsp",
   	"tipoAllegato",
   	"allegato",
@@ -185,6 +187,14 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
 
   public void setDataPagamento(java.util.Date dataPagamento) {
     this.dataPagamento = dataPagamento;
+  }
+
+  public java.lang.String getIbanAccredito() {
+    return this.ibanAccredito;
+  }
+
+  public void setIbanAccredito(java.lang.String ibanAccredito) {
+    this.ibanAccredito = ibanAccredito;
   }
 
   public java.lang.Double getCommissioniPsp() {
@@ -439,6 +449,10 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
   @XmlElement(name="dataPagamento",required=true,nillable=false,type=java.lang.String.class)
   protected java.util.Date dataPagamento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ibanAccredito",required=false,nillable=false)
+  protected java.lang.String ibanAccredito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="decimal")
   @XmlElement(name="commissioniPsp",required=false,nillable=false)

@@ -299,6 +299,27 @@ public class RendicontazionePagamentoSenzaRPTFieldConverter extends AbstractSQLF
 				return "cod_anno_tributario";
 			}
 		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
+			}
+		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_singolo_versamento_ente";
@@ -325,6 +346,20 @@ public class RendicontazionePagamentoSenzaRPTFieldConverter extends AbstractSQLF
 				return this.toAliasTable(field)+".note";
 			}else{
 				return "note";
+			}
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_singolo_versamento";
+			}else{
+				return "stato_singolo_versamento";
+			}
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_singolo_versamento";
+			}else{
+				return "importo_singolo_versamento";
 			}
 		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -367,6 +402,27 @@ public class RendicontazionePagamentoSenzaRPTFieldConverter extends AbstractSQLF
 				return this.toAliasTable(field)+".cod_anno_tributario";
 			}else{
 				return "cod_anno_tributario";
+			}
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
 			}
 		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){
@@ -747,6 +803,15 @@ public class RendicontazionePagamentoSenzaRPTFieldConverter extends AbstractSQLF
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
 			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
 			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
@@ -757,6 +822,12 @@ public class RendicontazionePagamentoSenzaRPTFieldConverter extends AbstractSQLF
 			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.NOTE)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(RendicontazionePagamentoSenzaRPT.model().RENDICONTAZIONE_SENZA_RPT.ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE)){
@@ -775,6 +846,15 @@ public class RendicontazionePagamentoSenzaRPTFieldConverter extends AbstractSQLF
 			return this.toTable(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
 			return this.toTable(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(RendicontazionePagamentoSenzaRPT.model().SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO.COD_DOMINIO)){

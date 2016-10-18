@@ -21,13 +21,13 @@
 package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Versamento;
-import it.govpay.bd.model.SingoloVersamento.StatoSingoloVersamento;
-import it.govpay.bd.model.Versamento.StatoVersamento;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Versamento;
+import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
+import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.orm.IdApplicazione;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
@@ -221,7 +221,7 @@ public class VersamentiBD extends BasicBD {
 		}
 	}
 
-	public it.govpay.bd.model.SingoloVersamento getSingoloVersamento(long id, String codSingoloVersamentoEnte) throws ServiceException, NotFoundException {
+	public it.govpay.model.SingoloVersamento getSingoloVersamento(long id, String codSingoloVersamentoEnte) throws ServiceException, NotFoundException {
 		try {
 			IdSingoloVersamento idSingoloVersamento = new IdSingoloVersamento();
 			idSingoloVersamento.setCodSingoloVersamentoEnte(codSingoloVersamentoEnte);

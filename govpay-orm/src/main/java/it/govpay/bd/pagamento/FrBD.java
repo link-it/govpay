@@ -36,14 +36,14 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.IFilter;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.FrApplicazione;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.converter.FrApplicazioneConverter;
 import it.govpay.bd.model.converter.FrConverter;
 import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
 import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.FrApplicazione;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.orm.FR;
 import it.govpay.orm.FrFiltroApp;
 import it.govpay.orm.IdFr;

@@ -2,7 +2,7 @@ package it.govpay.web.rs.model;
 
 import java.util.Date;
 
-import it.govpay.bd.model.BasicModel;
+import it.govpay.model.BasicModel;
 
 public class Versamento extends BasicModel {
 

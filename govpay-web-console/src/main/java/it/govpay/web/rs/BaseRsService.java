@@ -22,6 +22,9 @@ package it.govpay.web.rs;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,6 +39,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateFormatUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -44,23 +50,34 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
-import it.govpay.bd.model.Operatore;
-import it.govpay.bd.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Operatore;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.utils.ConsoleProperties;
 
 @Path("/")
 public abstract class BaseRsService {
-	
+
+	public static List<String> datePatterns = null;
+
+	static {
+
+		datePatterns = new ArrayList<String>();
+		datePatterns.add(DateFormatUtils.ISO_DATE_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_DATETIME_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_DATE_TIME_ZONE_FORMAT.getPattern());
+		datePatterns.add(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
+	}
+
 	public static final String ERRORE_INTERNO = "Errore Interno";
 
 	@Context protected HttpServletRequest request;
 	@Context protected HttpServletResponse response;
 	protected String codOperazione;
-	
+
 	public void setHttpServletRequest(HttpServletRequest request) {
 		this.request = request;
 	}
-		
+
 
 	protected void initLogger(String cmd) {
 		if(this.response != null){
@@ -81,21 +98,21 @@ public abstract class BaseRsService {
 				.header("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST")
 				.build();
 	}
-	
+
 	public void checkOperatoreAdmin(BasicBD bd) throws ServiceException,WebApplicationException{
 		Operatore operatore = this.getOperatoreByPrincipal(bd);
 		if(!ProfiloOperatore.ADMIN.equals(operatore.getProfilo())) {
-			   throw new WebApplicationException(this.getUnauthorizedResponse());
+			throw new WebApplicationException(this.getUnauthorizedResponse());
 		}
 	}
-	
+
 	protected String getPrincipal(){
 		if(this.request.getUserPrincipal()!=null){
 			return this.request.getUserPrincipal().getName();
 		}
 		return null;
 	}
-		
+
 	public Operatore getOperatoreByPrincipal(BasicBD bd) throws ServiceException,WebApplicationException {
 		Operatore operatore = getOperatoreByPrincipal(bd, getPrincipal());
 		return operatore;
@@ -106,18 +123,18 @@ public abstract class BaseRsService {
 			this.invalidateSession(null);
 			throw new WebApplicationException(this.getForbiddenResponse());
 		}
-		
+
 		Operatore operatore = null;
 		try {
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			operatore = operatoriBD.getOperatore(principal);
-			
+
 			// Se l'utente non dispone di un profilo allora non e' autorizzato
 			if(operatore.getProfilo() == null){
 				this.invalidateSession(null);
 				throw new WebApplicationException(this.getUnauthorizedResponse());
 			}
-			
+
 			return operatore;
 		} catch (ServiceException e) {
 			throw e;
@@ -129,40 +146,40 @@ public abstract class BaseRsService {
 			throw new WebApplicationException(this.getUnauthorizedResponse());
 		}	
 	}
-	
+
 	protected Response getUnauthorizedResponse(){
 		Response res =	Response.status(Response.Status.UNAUTHORIZED)
 				.header("Access-Control-Allow-Origin", "*")
 				.build();
-		
+
 		return res;
 	}
-	
+
 	protected Response getForbiddenResponse(){
 		Response res =	Response.status(Response.Status.FORBIDDEN)
 				.header("Access-Control-Allow-Origin", "*")
 				.build();
-		
+
 		return res;
 	}
 
 	public void invalidateSession(Logger log){
 		if(log!= null)
 			log.info("Invalidate Session in corso...");
-		
+
 		HttpSession session = this.request.getSession(false);
 		if(session != null){
 			session.invalidate();
 		}
-		
+
 		if(log!= null)
 			log.info("Invalidate Session completata.");
 	}
-	
+
 	public static UriBuilder checkDarsURI(UriInfo uriInfo) throws MalformedURLException{
-		 String urlDarsString = ConsoleProperties.getInstance().getUrlDARS();
-		 if(urlDarsString != null){
-			 try {
+		String urlDarsString = ConsoleProperties.getInstance().getUrlDARS();
+		if(urlDarsString != null){
+			try {
 				URL urlDARS = new URL(urlDarsString);
 				return uriInfo.getBaseUriBuilder()
 						.scheme(urlDARS.getProtocol())
@@ -171,8 +188,16 @@ public abstract class BaseRsService {
 			} catch (MalformedURLException e) {
 				throw e;
 			}
-		 }
-		 
-		 return uriInfo.getBaseUriBuilder();
+		}
+
+		return uriInfo.getBaseUriBuilder();
+	}
+
+	public static Date convertJsonStringToDate(String dateJson) throws Exception{
+		if(StringUtils.isNotEmpty(dateJson)){
+			String []datPat = datePatterns.toArray(new String[datePatterns.size()]);
+			return DateUtils.parseDate(dateJson, datPat);
+		}
+		return null;
 	}
 }

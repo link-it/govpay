@@ -27,6 +27,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 public class IuvUtils {
 	
 	public static boolean checkISO11640(String iuv){
+		if(iuv.length() <= 4) return false;
+		
 		String reference = iuv.substring(4);
 		String check;
 		try {

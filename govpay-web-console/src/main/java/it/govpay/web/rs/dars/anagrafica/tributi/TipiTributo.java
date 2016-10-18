@@ -34,9 +34,9 @@ public class TipiTributo extends BaseDarsService {
 	public TipiTributo() {
 		super();
 	}
-	
+
 	Logger log = LogManager.getLogger();
-	
+
 	@Override
 	public String getNomeServizio() {
 		return "tipiTributo";
@@ -46,7 +46,7 @@ public class TipiTributo extends BaseDarsService {
 	public IDarsHandler<?> getDarsHandler() {
 		return new TipiTributoHandler(this.log, this);
 	}
-	
+
 	@Override
 	public String getPathServizio() {
 		return "/dars/" + this.getNomeServizio();

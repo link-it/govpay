@@ -74,7 +74,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 			// esclude tutte le UO con codUo = EC
 			if(this.excludeEC){
 				if(addAnd) newExpression.and();
-				newExpression.notEquals(Uo.model().COD_UO, it.govpay.bd.model.Dominio.EC);
+				newExpression.notEquals(Uo.model().COD_UO, it.govpay.model.Dominio.EC);
 				addAnd = true;
 			}
 			

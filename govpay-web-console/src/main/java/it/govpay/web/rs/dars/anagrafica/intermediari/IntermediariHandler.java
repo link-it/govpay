@@ -34,6 +34,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -41,9 +42,9 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Connettore.EnumSslType;
-import it.govpay.bd.model.Intermediario;
+import it.govpay.model.Connettore;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -586,6 +587,11 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		return sb.toString();
 	}
+	
+	@Override
+	public List<String> getValori(Intermediario entry, BasicBD bd) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -597,4 +603,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

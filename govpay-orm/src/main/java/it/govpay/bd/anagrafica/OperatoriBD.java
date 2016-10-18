@@ -22,10 +22,10 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.OperatoreFilter;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Operatore;
 import it.govpay.bd.model.converter.AclConverter;
 import it.govpay.bd.model.converter.OperatoreConverter;
+import it.govpay.model.Acl;
+import it.govpay.model.Operatore;
 import it.govpay.orm.ACL;
 import it.govpay.orm.IdOperatore;
 import it.govpay.orm.dao.jdbc.JDBCOperatoreServiceSearch;

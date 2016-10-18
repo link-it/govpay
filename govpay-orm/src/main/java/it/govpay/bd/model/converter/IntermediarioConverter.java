@@ -20,10 +20,10 @@
  */
 package it.govpay.bd.model.converter;
 
-import it.govpay.bd.model.Intermediario;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import it.govpay.model.Intermediario;
 
 public class IntermediarioConverter {
 

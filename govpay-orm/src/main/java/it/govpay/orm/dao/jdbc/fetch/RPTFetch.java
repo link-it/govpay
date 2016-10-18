@@ -73,6 +73,8 @@ public class RPTFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", RPT.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setCodSessione", RPT.model().COD_SESSIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_sessione", RPT.model().COD_SESSIONE.getFieldType()));
+				setParameter(object, "setCodSessionePortale", RPT.model().COD_SESSIONE_PORTALE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_sessione_portale", RPT.model().COD_SESSIONE_PORTALE.getFieldType()));
 				setParameter(object, "setPspRedirectURL", RPT.model().PSP_REDIRECT_URL.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "psp_redirect_url", RPT.model().PSP_REDIRECT_URL.getFieldType()));
 				setParameter(object, "setXmlRPT", RPT.model().XML_RPT.getFieldType(),
@@ -141,6 +143,8 @@ public class RPTFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizioneStato"));
 				setParameter(object, "setCodSessione", RPT.model().COD_SESSIONE.getFieldType(),
 					this.getObjectFromMap(map,"codSessione"));
+				setParameter(object, "setCodSessionePortale", RPT.model().COD_SESSIONE_PORTALE.getFieldType(),
+					this.getObjectFromMap(map,"codSessionePortale"));
 				setParameter(object, "setPspRedirectURL", RPT.model().PSP_REDIRECT_URL.getFieldType(),
 					this.getObjectFromMap(map,"pspRedirectURL"));
 				setParameter(object, "setXmlRPT", RPT.model().XML_RPT.getFieldType(),

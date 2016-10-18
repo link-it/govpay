@@ -31,22 +31,20 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.apache.logging.log4j.LogManager;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Acl.Servizio;
-import it.govpay.bd.model.Acl.Tipo;
-import it.govpay.bd.model.Applicazione;
-import it.govpay.bd.model.Connettore;
-import it.govpay.bd.model.Intermediario;
+import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Connettore;
+import it.govpay.model.Intermediario;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Acl.Tipo;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
-import it.govpay.web.rs.dars.anagrafica.intermediari.IntermediariHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 
@@ -266,7 +264,22 @@ public class Utils {
 		}
 		return lst;
 	}
+	
+	public static String getFileName(MultivaluedMap<String, String> header) {
 
+		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
+		
+		for (String filename : contentDisposition) {
+			if ((filename.trim().startsWith("filename"))) {
+
+				String[] name = filename.split("=");
+				
+				String finalFileName = name[1].trim().replaceAll("\"", "");
+				return finalFileName;
+			}
+		}
+		return "unknown";
+	}
 
 	public static Connettore getConnettore(String ownerId, String nomeConnettore, BasicBD bd) {
 		Connettore c = null;

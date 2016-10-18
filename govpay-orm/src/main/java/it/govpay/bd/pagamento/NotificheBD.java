@@ -20,16 +20,15 @@
  */
 package it.govpay.bd.pagamento;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.converter.NotificaConverter;
+import it.govpay.bd.model.Notifica;
+import it.govpay.model.Notifica.StatoSpedizione;
+import it.govpay.orm.dao.jdbc.JDBCNotificaService;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Notifica;
-import it.govpay.bd.model.Notifica.StatoSpedizione;
-import it.govpay.bd.model.converter.NotificaConverter;
-import it.govpay.orm.IdNotifica;
-import it.govpay.orm.dao.jdbc.JDBCNotificaServiceSearch;
 
 import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -83,7 +82,7 @@ public class NotificheBD extends BasicBD {
 
 	private void update(long id, StatoSpedizione stato, String descrizione, Long tentativi, Date prossimaSpedizione) throws ServiceException {
 		try {
-			IdNotifica idVO = ((JDBCNotificaServiceSearch)this.getNotificaService()).findId(id, true);
+//			IdNotifica idVO = ((JDBCNotificaServiceSearch)this.getNotificaService()).findId(id, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
 			if(stato != null)
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().STATO, stato.toString()));
@@ -95,7 +94,7 @@ public class NotificheBD extends BasicBD {
 				lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DATA_PROSSIMA_SPEDIZIONE, prossimaSpedizione));
 			lstUpdateFields.add(new UpdateField(it.govpay.orm.Notifica.model().DATA_AGGIORNAMENTO_STATO, new Date()));
 
-			this.getNotificaService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+			((JDBCNotificaService)this.getNotificaService()).updateFields(id, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {

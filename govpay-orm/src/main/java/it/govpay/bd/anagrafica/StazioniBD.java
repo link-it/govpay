@@ -22,8 +22,8 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
-import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.converter.StazioneConverter;
+import it.govpay.bd.model.Stazione;
 import it.govpay.orm.IdStazione;
 import it.govpay.orm.dao.jdbc.JDBCStazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.StazioneFieldConverter;

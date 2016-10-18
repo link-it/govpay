@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
@@ -33,10 +34,14 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.utils.csv.Format;
+import org.openspcoop2.utils.csv.FormatReader;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Versionabile.Versione;
+import it.govpay.core.utils.CSVSerializerProperties;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
@@ -61,6 +66,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	protected String titoloServizio = null;
 	protected BaseDarsService darsService = null;
 	private Integer limit = null;
+	private Format formatW= null;
 
 	public BaseDarsHandler(Logger log, BaseDarsService darsService){
 		this.log = log;
@@ -69,6 +75,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		this.pathServizio = this.darsService.getPathServizio();
 		this.titoloServizio = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".titolo");
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
+		
+		try{
+			// Setto le properties di scrittura
+			FormatReader formatWriter = new FormatReader(CSVSerializerProperties.getInstance(log).getProperties());
+			this.formatW = formatWriter.getFormat();
+		}catch(Exception e){
+			log.error("Errore durante l'inizializzazione di EstrattoConto: " + e.getMessage(),e);
+		}
 	}
 
 	@Override
@@ -147,6 +161,16 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public URI getUriUpload(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		try{
+			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_UPLOAD).build(); 
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
 
 	@Override
 	public abstract Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException ;
@@ -172,6 +196,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public abstract void checkEntry(T entry, T oldEntry) throws ValidationException;
 	@Override
 	public abstract Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
+	
+	@Override
+	public abstract Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException;
 
 	@Override
 	public  abstract String getTitolo(T entry, BasicBD bd) throws ConsoleException;
@@ -189,9 +216,12 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		String sottotitolo = this.getSottotitolo(entry,bd);
 		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
 		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
+		elemento.setValori(this.getValori(entry, bd)); 
 		return elemento;
 	}
-
+	
+	public abstract List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
+		
 	public <P> P getParameter(UriInfo uriInfo, String parameterName, Class<P> type) throws ConsoleException{
 		P toReturn = null;
 		try{
@@ -255,5 +285,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			jsonObject.remove(versioneId);
 		
 		return Versione.toEnum(versioneJson);
+	}
+
+	public Date convertJsonStringToDate(String dateJson) throws Exception{
+		return BaseDarsService.convertJsonStringToDate(dateJson);
+	}
+	
+	@Override
+	public Format getFormat() {
+		return this.formatW;
 	}
 }

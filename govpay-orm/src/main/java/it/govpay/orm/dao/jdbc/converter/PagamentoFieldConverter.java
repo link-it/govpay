@@ -131,6 +131,27 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_anno_tributario";
 			}
 		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_totale";
+			}else{
+				return "importo_totale";
+			}
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".causale_versamento";
+			}else{
+				return "causale_versamento";
+			}
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_versamento";
+			}else{
+				return "stato_versamento";
+			}
+		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_singolo_versamento_ente";
@@ -157,6 +178,20 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".note";
 			}else{
 				return "note";
+			}
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato_singolo_versamento";
+			}else{
+				return "stato_singolo_versamento";
+			}
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".importo_singolo_versamento";
+			}else{
+				return "importo_singolo_versamento";
 			}
 		}
 		if(field.equals(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE)){
@@ -192,6 +227,13 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return this.toAliasTable(field)+".data_pagamento";
 			}else{
 				return "data_pagamento";
+			}
+		}
+		if(field.equals(Pagamento.model().IBAN_ACCREDITO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iban_accredito";
+			}else{
+				return "iban_accredito";
 			}
 		}
 		if(field.equals(Pagamento.model().COMMISSIONI_PSP)){
@@ -416,6 +458,15 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_ANNO_TRIBUTARIO)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
 		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO, returnAlias);
+		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
@@ -426,6 +477,12 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.STATO_SINGOLO_VERSAMENTO)){
+			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.IMPORTO_SINGOLO_VERSAMENTO)){
 			return this.toTable(Pagamento.model().ID_SINGOLO_VERSAMENTO, returnAlias);
 		}
 		if(field.equals(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE)){
@@ -441,6 +498,9 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
 		if(field.equals(Pagamento.model().DATA_PAGAMENTO)){
+			return this.toTable(Pagamento.model(), returnAlias);
+		}
+		if(field.equals(Pagamento.model().IBAN_ACCREDITO)){
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
 		if(field.equals(Pagamento.model().COMMISSIONI_PSP)){

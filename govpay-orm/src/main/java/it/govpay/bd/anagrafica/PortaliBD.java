@@ -21,9 +21,9 @@
 package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Acl;
-import it.govpay.bd.model.Portale;
 import it.govpay.bd.model.converter.PortaleConverter;
+import it.govpay.model.Acl;
+import it.govpay.model.Portale;
 import it.govpay.orm.IdPortale;
 import it.govpay.orm.dao.jdbc.JDBCPortaleServiceSearch;
 

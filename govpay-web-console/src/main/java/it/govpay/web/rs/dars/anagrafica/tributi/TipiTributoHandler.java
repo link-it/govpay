@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars.anagrafica.tributi;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -40,8 +42,8 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.bd.model.TipoTributo;
-import it.govpay.bd.model.Tributo;
+import it.govpay.model.TipoTributo;
+import it.govpay.model.Tributo;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -107,7 +109,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
 
-			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione);  
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
@@ -172,30 +174,35 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 		URI creazione = this.getUriCreazione(uriInfo, bd);
 		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-		String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+		try{
+			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 
-		if(infoCreazioneMap == null){
-			this.initInfoCreazione(uriInfo, bd);
+			if(infoCreazioneMap == null){
+				this.initInfoCreazione(uriInfo, bd);
 
+			}
+
+			Sezione sezioneRoot = infoCreazione.getSezioneRoot();
+
+			InputNumber idITributo = (InputNumber) infoCreazioneMap.get(tributoId);
+			idITributo.setDefaultValue(null);
+			sezioneRoot.addField(idITributo);
+
+			InputText codTributo = (InputText) infoCreazioneMap.get(codTributoId);
+			codTributo.setDefaultValue(null);
+			codTributo.setEditable(true);
+			sezioneRoot.addField(codTributo);
+
+			InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
+			descrizione.setDefaultValue(null);
+			descrizione.setEditable(true);
+			sezioneRoot.addField(descrizione);
+
+		}catch (Exception e) {
+			throw new ConsoleException(e);
 		}
-
-		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-
-		InputNumber idITributo = (InputNumber) infoCreazioneMap.get(tributoId);
-		idITributo.setDefaultValue(null);
-		sezioneRoot.addField(idITributo);
-
-		InputText codTributo = (InputText) infoCreazioneMap.get(codTributoId);
-		codTributo.setDefaultValue(null);
-		codTributo.setEditable(true);
-		sezioneRoot.addField(codTributo);
-
-		InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
-		descrizione.setDefaultValue(null);
-		descrizione.setEditable(true);
-		sezioneRoot.addField(descrizione);
 
 		return infoCreazione;
 	}
@@ -453,6 +460,16 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	}
 
 	@Override
+	public List<String> getValori(TipoTributo entry, BasicBD bd) throws ConsoleException {
+		List<String> valori = new ArrayList<String>();
+
+		valori.add(entry.getCodTributo());
+		valori.add(entry.getDescrizione());
+
+		return valori;
+	}
+
+	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		return null;
@@ -462,4 +479,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
+
+	@Override
+	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

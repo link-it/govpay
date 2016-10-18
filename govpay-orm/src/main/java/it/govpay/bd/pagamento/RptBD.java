@@ -21,11 +21,12 @@
 package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.converter.RptConverter;
 import it.govpay.bd.pagamento.filters.RptFilter;
+import it.govpay.bd.model.Rpt;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.RPT;
+import it.govpay.orm.dao.jdbc.JDBCRPTService;
 import it.govpay.orm.dao.jdbc.JDBCRPTServiceSearch;
 
 import java.util.ArrayList;
@@ -139,7 +140,6 @@ public class RptBD extends BasicBD {
 	 */
 	public void updateRpt(long idRpt, Rpt.StatoRpt stato, String descrizione, String codSessione, String pspRedirectUrl) throws NotFoundException, ServiceException{
 		try {
-			IdRpt idVO = ((JDBCRPTServiceSearch)this.getRptService()).findId(idRpt, true);
 			List<UpdateField> lstUpdateFields = new ArrayList<UpdateField>();
 			lstUpdateFields.add(new UpdateField(RPT.model().STATO, stato.toString()));
 			lstUpdateFields.add(new UpdateField(RPT.model().DESCRIZIONE_STATO, descrizione));
@@ -149,7 +149,7 @@ public class RptBD extends BasicBD {
 			if(pspRedirectUrl != null)
 				lstUpdateFields.add(new UpdateField(RPT.model().PSP_REDIRECT_URL, pspRedirectUrl));
 
-			this.getRptService().updateFields(idVO, lstUpdateFields.toArray(new UpdateField[]{}));
+			((JDBCRPTService)this.getRptService()).updateFields(idRpt, lstUpdateFields.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

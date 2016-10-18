@@ -25,14 +25,14 @@ import java.util.Map;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Pagamento.EsitoRendicontazione;
-import it.govpay.bd.model.Pagamento.TipoAllegato;
+import it.govpay.model.Pagamento.EsitoRendicontazione;
+import it.govpay.model.Pagamento.TipoAllegato;
 
 
 public class PagamentoConverter extends it.govpay.bd.model.converter.PagamentoConverter  {
 	
-	public static it.govpay.bd.model.rest.Pagamento toRestDTO(it.govpay.orm.Pagamento vo,Map<String, Object> map) throws ServiceException {
-		it.govpay.bd.model.rest.Pagamento dto = new it.govpay.bd.model.rest.Pagamento();
+	public static it.govpay.model.rest.Pagamento toRestDTO(it.govpay.orm.Pagamento vo,Map<String, Object> map) throws ServiceException {
+		it.govpay.model.rest.Pagamento dto = new it.govpay.model.rest.Pagamento();
 		dto.setAllegato(vo.getAllegato());
 		dto.setAnnoRiferimento(vo.getAnnoRiferimento());
 		dto.setAnnoRiferimentoRevoca(vo.getAnnoRiferimentoRevoca());
@@ -43,6 +43,7 @@ public class PagamentoConverter extends it.govpay.bd.model.converter.PagamentoCo
 		if(vo.getCommissioniPsp() != null)
 			dto.setCommissioniPsp(BigDecimal.valueOf(vo.getCommissioniPsp()));
 		dto.setDataPagamento(vo.getDataPagamento());
+		dto.setIbanAccredito(vo.getIbanAccredito());
 		dto.setDataRendicontazione(vo.getRendicontazioneData());
 		dto.setDataRendicontazioneRevoca(vo.getRendicontazioneDataRevoca());
 		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());

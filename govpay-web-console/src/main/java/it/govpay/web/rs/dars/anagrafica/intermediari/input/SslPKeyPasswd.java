@@ -26,7 +26,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Connettore;
+import it.govpay.model.Connettore;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.input.dinamic.InputSecret;

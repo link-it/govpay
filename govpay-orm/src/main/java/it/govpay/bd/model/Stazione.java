@@ -25,69 +25,10 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.Intermediario;
 
-public class Stazione extends BasicModel {
+public class Stazione extends it.govpay.model.Stazione {
 	private static final long serialVersionUID = 1L;
-
-	private Long id; 
-	private long idIntermediario;
-	private String codStazione;
-	private String password;
-	private boolean abilitato;
-	private int applicationCode;
-
-	public Stazione() {
-	}
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public long getIdIntermediario() {
-		return idIntermediario;
-	}
-
-	public void setIdIntermediario(long idIntermediario) {
-		this.idIntermediario = idIntermediario;
-	}
-
-	public String getCodStazione() {
-		return codStazione;
-	}
-
-	public void setCodStazione(String codStazione) {
-		this.codStazione = codStazione;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public boolean isAbilitato() {
-		return abilitato;
-	}
-
-	public void setAbilitato(boolean abilitato) {
-		this.abilitato = abilitato;
-	}
-
-
-	public int getApplicationCode() {
-		return applicationCode;
-	}
-
-	public void setApplicationCode(int applicationCode) {
-		this.applicationCode = applicationCode;
-	}
-
 
 	// Business
 	
@@ -95,7 +36,7 @@ public class Stazione extends BasicModel {
 	
 	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
 		if(intermediario == null) {
-			intermediario = AnagraficaManager.getIntermediario(bd, idIntermediario);
+			intermediario = AnagraficaManager.getIntermediario(bd, this.getIdIntermediario());
 		}
 		return intermediario;
 	}
