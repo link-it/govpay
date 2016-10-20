@@ -222,7 +222,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 						}
 					}
 					
-					if(codApplicazione != null && iuv != null) {
+					if(codDominio != null && iuv != null) {
 						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 						ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
 						ctx.setCorrelationId(codDominio + iuv);

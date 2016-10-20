@@ -31,15 +31,37 @@ public class GovPayException extends Exception {
 	private EsitoOperazione codEsito;
 	private String causa;
 	
+	public GovPayException(String causa, EsitoOperazione codEsito, String ... params) {
+		this.params = params;
+		this.setCodEsito(codEsito);
+		this.setCausa(causa);
+	}
+	
+	public GovPayException(String causa, EsitoOperazione codEsito, Throwable e, String ... params) {
+		super(e);
+		this.params = params;
+		this.setCodEsito(codEsito);
+		this.setCausa(causa);
+	}
+	
+	public GovPayException(Throwable e, String descrizione) {
+		super(e);
+		this.params = new String[1];
+		this.params[0] = descrizione;
+		this.setCodEsito(EsitoOperazione.INTERNAL);
+		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+	}
+	
 	public GovPayException(EsitoOperazione codEsito, String ... params) {
 		this.params = params;
 		this.setCodEsito(codEsito);
 	}
 	
-	public GovPayException(EsitoOperazione codEsito, Exception e, String ... params) {
+	public GovPayException(EsitoOperazione codEsito, Throwable e, String ... params) {
 		super(e);
 		this.params = params;
 		this.setCodEsito(codEsito);
+		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 	}
 	
 	public GovPayException(Exception e) {

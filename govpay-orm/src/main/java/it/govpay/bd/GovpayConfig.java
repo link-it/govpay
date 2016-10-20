@@ -35,11 +35,11 @@ import it.govpay.bd.pagamento.util.CustomIuv;
 
 
 public class GovpayConfig {
-	
+
 	private static final String PROPERTIES_FILE = "/govpay-orm.properties";
 
 	private static GovpayConfig instance;
-	
+
 	public static GovpayConfig getInstance() {
 		return instance;
 	}
@@ -57,13 +57,13 @@ public class GovpayConfig {
 	private CustomIuv defaultCustomIuvGenerator = null;
 	private Properties[] props;
 	private String resourceDir;
-	
-	
-	
+
+
+
 	public GovpayConfig() throws Exception {
-		
+
 		Logger log = LogManager.getLogger("boot");
-		
+
 		// Recupero il property all'interno dell'EAR
 		InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
 
@@ -71,7 +71,7 @@ public class GovpayConfig {
 		Properties props1 = new Properties();
 		props1.load(is);
 		props[1] = props1;
-		
+
 		// Recupero la configurazione della working dir
 		// Se e' configurata, la uso come prioritaria
 
@@ -86,7 +86,7 @@ public class GovpayConfig {
 		} catch (Exception e) {
 			LogManager.getLogger("boot").warn("Errore di inizializzazione: " + e.getMessage() + ". Property ignorata.");
 		}
-		
+
 		Properties props0 = null;
 		props[0] = props0;
 
@@ -97,7 +97,7 @@ public class GovpayConfig {
 			log.info("Individuata configurazione prioritaria: " + gpConfigFile.getAbsolutePath());
 			props[0] = props0;
 		}
-		
+
 		this.databaseType = getProperty("it.govpay.orm.databaseType", props, true);
 		String databaseShowSqlString = getProperty("it.govpay.orm.showSql", props, true);
 		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
@@ -117,27 +117,29 @@ public class GovpayConfig {
 				}
 			}
 		}
-		
+
 		String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", props, false);
-			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
+		if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
 			Class<?> c = null;
 			try {
 				c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
 			} catch (ClassNotFoundException e) {
-				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata come default per la generazione di IUV custom non e' presente nel classpath");
+				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV non e' presente nel classpath");
 			}
 			Object instance = c.newInstance();
 			if(!(instance instanceof CustomIuv)) {
-				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] come default per la generazione di IUV custom deve implementare l'interfaccia " + CustomIuv.class.getName());
+				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata per la gestione di IUV deve estendere la classe " + CustomIuv.class.getName());
 			}
 			this.defaultCustomIuvGenerator = (CustomIuv) instance;
+		} else {
+			this.defaultCustomIuvGenerator = new CustomIuv();
 		}
-		
+
 	}
 
 	private String getProperty(String name, Properties props, boolean required, boolean logDebug) throws Exception {
 		Logger log = LogManager.getLogger("boot");
-		
+
 		String value = System.getProperty(name);
 
 		if(value != null && value.trim().isEmpty()) {
@@ -177,7 +179,7 @@ public class GovpayConfig {
 
 	private String getProperty(String name, Properties[] props, boolean required, boolean logDebug) throws Exception {
 		Logger log = LogManager.getLogger("boot");
-		
+
 		String value = null;
 		for(Properties p : props) {
 			try { value = getProperty(name, p, required, logDebug); } catch (Exception e) { }
@@ -194,15 +196,15 @@ public class GovpayConfig {
 		else 
 			return null;
 	}
-	
+
 	public String getNativeQuery(String nativeQueryKey) throws ServiceException {
 		if(!this.nativeQueries.containsKey(nativeQueryKey)) {
 			throw new ServiceException("Query nativa ["+nativeQueryKey+"] non trovata");
 		}
-		
+
 		return this.nativeQueries.get(nativeQueryKey);
 	}
-	
+
 	public String getDatabaseType() {
 		return databaseType;
 	}
@@ -218,7 +220,7 @@ public class GovpayConfig {
 	public String getDataSourceAppName() {
 		return dataSourceAppName;
 	}
-	
+
 	public CustomIuv getDefaultCustomIuvGenerator() {
 		return defaultCustomIuvGenerator;
 	} 

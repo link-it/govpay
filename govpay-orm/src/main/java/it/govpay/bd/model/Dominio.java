@@ -56,7 +56,7 @@ public class Dominio extends it.govpay.model.Dominio {
 		this.anagrafica = anagrafica;
 	}
 
-	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException, NotFoundException {
+	public Applicazione getApplicazioneDefault(BasicBD bd) throws ServiceException {
 		if(applicazioneDefault == null && this.getIdApplicazioneDefault() != null) {
 			applicazioneDefault = AnagraficaManager.getApplicazione(bd, this.getIdApplicazioneDefault());
 		} 

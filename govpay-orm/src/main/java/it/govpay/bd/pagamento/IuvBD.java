@@ -69,11 +69,7 @@ public class IuvBD extends BasicBD {
 			iuv = "RF" + check + reference;
 			break;
 		case NUMERICO:
-			if(dominio.isCustomIuv()) {
-				iuv = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildIuvNumerico(applicazione, dominio, prg, auxDigit, applicationCode);
-			} else {
-				iuv = IuvUtils.buildIuvNumerico(prg, auxDigit, applicationCode);
-			}
+			iuv = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildIuvNumerico(applicazione, dominio, prg, auxDigit, applicationCode);
 			break;
 		}
 
