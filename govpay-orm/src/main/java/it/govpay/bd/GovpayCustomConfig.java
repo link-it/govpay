@@ -23,44 +23,40 @@ package it.govpay.bd;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class GovpayConfig {
+import it.govpay.bd.pagamento.util.CustomIuv;
+
+
+public class GovpayCustomConfig {
 	
 	private static final String PROPERTIES_FILE = "/govpay-orm.properties";
 
-	private static GovpayConfig instance;
+	private static GovpayCustomConfig instance;
 	
-	public static GovpayConfig getInstance() {
+	public static GovpayCustomConfig getInstance() {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance() throws Exception {
-		instance = new GovpayConfig();
+	public static GovpayCustomConfig newInstance() throws Exception {
+		instance = new GovpayCustomConfig();
 		return instance;
 	}
 
-	private String databaseType;
-	private boolean databaseShowSql;
-	private String dataSourceJNDIName;
-	private String dataSourceAppName;
-	private Map<String, String> nativeQueries;
 	private Properties[] props;
 	private String resourceDir;
+	private CustomIuv defaultCustomIuvGenerator = null;
 	
 	
-	public GovpayConfig() throws Exception {
+	public GovpayCustomConfig() throws Exception {
 		
 		Logger log = LogManager.getLogger("boot");
 		
 		// Recupero il property all'interno dell'EAR
-		InputStream is = GovpayConfig.class.getResourceAsStream(PROPERTIES_FILE);
+		InputStream is = GovpayCustomConfig.class.getResourceAsStream(PROPERTIES_FILE);
 
 		props = new Properties[2];
 		Properties props1 = new Properties();
@@ -93,25 +89,21 @@ public class GovpayConfig {
 			props[0] = props0;
 		}
 		
-		this.databaseType = getProperty("it.govpay.orm.databaseType", props, true);
-		String databaseShowSqlString = getProperty("it.govpay.orm.showSql", props, true);
-		this.databaseShowSql = Boolean.parseBoolean(databaseShowSqlString);
-		this.dataSourceJNDIName = getProperty("it.govpay.orm.dataSourceJNDIName", props, true);
-		this.dataSourceAppName = getProperty("it.govpay.orm.dataSourceAppName", props, true);
-
-		String nativeQueriesList = getProperty("it.govpay.orm.nativeQuery.list", props, false);
-
-		this.nativeQueries = new HashMap<String,String>();
-
-		if(nativeQueriesList != null && !nativeQueriesList.isEmpty()) {
-			String[] nativeQueriesSplit = nativeQueriesList.split(",");
-			for(String nativeQueryProp: nativeQueriesSplit) {
-				String nativeQuery = getProperty("it.govpay.orm.nativeQuery." +nativeQueryProp +"." +this.databaseType, props, false, true); //INIT solo le native queries per il tipo database correntemente usato
-				if(nativeQuery != null && !nativeQuery.isEmpty()) {
-					this.nativeQueries.put(nativeQueryProp, nativeQuery);
-				}
+		String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", props, false);
+			if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
+			Class<?> c = null;
+			try {
+				c = this.getClass().getClassLoader().loadClass(defaultCustomIuvGeneratorClass);
+			} catch (ClassNotFoundException e) {
+				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] specificata come default per la generazione di IUV custom non e' presente nel classpath");
 			}
+			Object instance = c.newInstance();
+			if(!(instance instanceof CustomIuv)) {
+				throw new Exception("La classe ["+defaultCustomIuvGeneratorClass+"] come default per la generazione di IUV custom deve implementare l'interfaccia " + CustomIuv.class.getName());
+			}
+			this.defaultCustomIuvGenerator = (CustomIuv) instance;
 		}
+		
 	}
 
 	private String getProperty(String name, Properties props, boolean required, boolean logDebug) throws Exception {
@@ -174,28 +166,8 @@ public class GovpayConfig {
 			return null;
 	}
 	
-	public String getNativeQuery(String nativeQueryKey) throws ServiceException {
-		if(!this.nativeQueries.containsKey(nativeQueryKey)) {
-			throw new ServiceException("Query nativa ["+nativeQueryKey+"] non trovata");
-		}
-		
-		return this.nativeQueries.get(nativeQueryKey);
-	}
-	
-	public String getDatabaseType() {
-		return databaseType;
-	}
-
-	public boolean isDatabaseShowSql() {
-		return databaseShowSql;
-	}
-
-	public String getDataSourceJNDIName() {
-		return dataSourceJNDIName;
-	}
-
-	public String getDataSourceAppName() {
-		return dataSourceAppName;
-	}
+	public CustomIuv getDefaultCustomIuvGenerator() {
+		return defaultCustomIuvGenerator;
+	} 
 
 }

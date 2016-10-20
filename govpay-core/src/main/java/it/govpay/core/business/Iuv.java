@@ -28,7 +28,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.GovpayCustomConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.core.exceptions.GovPayException;
@@ -106,7 +106,7 @@ public class Iuv extends BasicBD {
 		try {
 			
 			// Controllo se e' stata impostata la generazione degli IUV distribuita.
-			if(dominio.isCustomIuv() && GovpayConfig.getInstance().getDefaultCustomIuvGenerator() == null) {
+			if(dominio.isCustomIuv() && GovpayCustomConfig.getInstance().getDefaultCustomIuvGenerator() == null) {
 				throw new GovPayException(EsitoOperazione.DOM_002, dominio.getCodDominio());
 			}
 			
