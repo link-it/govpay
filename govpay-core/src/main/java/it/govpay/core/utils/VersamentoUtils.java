@@ -270,7 +270,7 @@ public class VersamentoUtils {
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
 			if(versamento.isAggiornabile() && versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
-				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), null, null, bd);
+				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd);
 			} else {
 				throw new VersamentoScadutoException(versamento.getDataScadenza());
 			}
@@ -278,14 +278,41 @@ public class VersamentoUtils {
 		return versamento;
 	}
 
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+		
+		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
+		String bundlekeyD = bundlekey != null ? bundlekey : "-";
+		String dominioD = dominio != null ? dominio : "-";
+		String iuvD = iuv != null ? iuv : "-";
+		
 		GpContext ctx = GpThreadLocal.get();
+		ctx.log("verifica.avvio", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, dominioD, iuvD);
 		if(applicazione.getConnettoreVerifica() == null) {
 			ctx.log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
 		VerificaClient verificaClient = new VerificaClient(applicazione);
-		Versamento versamento = verificaClient.invoke(codVersamentoEnte, dominio, iuv, bd);
+		Versamento versamento = null;
+		try {
+			versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, dominio, iuv, bd);
+			ctx.log("verifica.Ok", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, dominioD, iuvD);
+		} catch (ClientException e){
+			ctx.log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, dominioD, iuvD, e.getMessage());
+			throw e;
+		} catch (VersamentoScadutoException e) {
+			ctx.log("verifica.Scaduto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, dominioD, iuvD);
+			throw e;
+		} catch (VersamentoAnnullatoException e) {
+			ctx.log("verifica.Annullato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, dominioD, iuvD);
+			throw e;
+		} catch (VersamentoDuplicatoException e) {
+			ctx.log("verifica.Duplicato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, dominioD, iuvD);
+			throw e;
+		} catch (VersamentoSconosciutoException e) {
+			ctx.log("verifica.Sconosciuto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, dominioD, iuvD);
+			throw e;
+		} 
+		
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
 		return versamento;

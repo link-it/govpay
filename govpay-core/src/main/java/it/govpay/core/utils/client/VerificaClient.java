@@ -70,17 +70,21 @@ public class VerificaClient extends BasicClient {
 	 * Fornirla aperta con tutto gia' committato.
 	 * Viene restituita aperta.
 	 */
-	public Versamento invoke(String codVersamentoEnte, String codDominio, String iuv, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, GovPayException {
+	public Versamento invoke(String codVersamentoEnte, String bundlekey, String codDominio, String iuv, BasicBD bd) throws ClientException, ServiceException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoScadutoException, VersamentoSconosciutoException, GovPayException {
 		
-		log.debug("Richiedo la verifica per il versamento ("+codVersamentoEnte+") in versione (" + versione.toString() + ") alla URL ("+url+")");
+		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
+		String bundlekeyD = bundlekey != null ? bundlekey : "-";
+		String codDominioD = codDominio != null ? codDominio : "-";
+		String iuvD = iuv != null ? iuv : "-";
+		
+		log.debug("Richiedo la verifica per il versamento [Applicazione:" + codApplicazione + " Versamento:" + codVersamentoEnteD + " BundleKey:" + bundlekeyD + " Dominio:" + codDominioD + " Iuv:" + iuvD + "] in versione (" + versione.toString() + ") alla URL ("+url+")");
 		
 		GpContext ctx = GpThreadLocal.get();
 		String idTransaction = ctx.openTransaction();
 		
 		try {
 			ctx.setupPaClient(codApplicazione, "paVerificaVersamento", url.toExternalForm(), versione);
-			ctx.log("verifica.avvio", codApplicazione, codVersamentoEnte, codDominio, iuv);
-			
+			ctx.log("verifica.verifica", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD);
 			
 			//Chiudo la connessione al DB prima della comunicazione HTTP
 			bd.closeConnection();
@@ -95,12 +99,15 @@ public class VerificaClient extends BasicClient {
 					paVerificaVersamento.setIuv(iuv);
 					if(versione.compareTo(Versione.GP_02_02_00) >= 0)
 						paVerificaVersamento.setCodDominio(codDominio);
+					if(versione.compareTo(Versione.GP_02_02_02) >= 0)
+						paVerificaVersamento.setBundlekey(bundlekey);
+					
 					QName qname = new QName("http://www.govpay.it/servizi/pa/", "paVerificaVersamento");
 					byte[] response = sendSoap("paVerificaVersamento", new JAXBElement<PaVerificaVersamento>(qname, PaVerificaVersamento.class, paVerificaVersamento), null, false);
 					try {
 						paVerificaVersamentoResponse = (PaVerificaVersamentoResponse) SOAPUtils.unmarshal(response);
 					} catch(Exception e) {
-						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnte, codDominio, iuv, "Errore nella deserializzazione del messaggio di risposta (" + e.getMessage() + ")");
+						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD, "Errore nella deserializzazione del messaggio di risposta (" + e.getMessage() + ")");
 						throw new ClientException(e);
 					} 
 				} finally {
@@ -108,33 +115,32 @@ public class VerificaClient extends BasicClient {
 				}
 				switch (paVerificaVersamentoResponse.getCodEsito()) {
 				case OK:
-					ctx.log("verifica.avvio", codApplicazione, codVersamentoEnte, codDominio, iuv);
 					try {
 						return VersamentoUtils.toVersamentoModel(paVerificaVersamentoResponse.getVersamento(), bd);
 					} catch (GovPayException e) {
-						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnte, codDominio, iuv, "[" + e.getCodEsito() + "] " + e.getMessage());
+						ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, codDominioD, iuvD, "[" + e.getCodEsito() + "] " + e.getMessage());
 						throw e;
 					}
 				case PAGAMENTO_ANNULLATO:
-					ctx.log("verifica.verificaAnnullato", codApplicazione, codVersamentoEnte, codDominio, iuv);
+					ctx.log("verifica.verificaAnnullato", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD);
 					throw new VersamentoAnnullatoException(paVerificaVersamentoResponse.getDescrizioneEsito());
 				case PAGAMENTO_DUPLICATO:
-					ctx.log("verifica.verificaDuplicato", codApplicazione, codVersamentoEnte, codDominio, iuv);
+					ctx.log("verifica.verificaDuplicato", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD);
 					throw new VersamentoDuplicatoException(paVerificaVersamentoResponse.getDescrizioneEsito());
 				case PAGAMENTO_SCADUTO:
-					ctx.log("verifica.verificaScaduto", codApplicazione, codVersamentoEnte, codDominio, iuv);
+					ctx.log("verifica.verificaScaduto", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD);
 					throw new VersamentoScadutoException(paVerificaVersamentoResponse.getDescrizioneEsito());
 				case PAGAMENTO_SCONOSCIUTO:
-					ctx.log("verifica.verificaSconosciuto", codApplicazione, codVersamentoEnte, codDominio, iuv);
+					ctx.log("verifica.verificaSconosciuto", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD);
 					throw new VersamentoSconosciutoException();
 				}
 			default:
 				bd.setupConnection(GpThreadLocal.get().getTransactionId());
-				ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnte, codDominio, iuv, "Tipo del connettore (" + tipo + ") non supportato");
+				ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD, "Tipo del connettore (" + tipo + ") non supportato");
 				throw new GovPayException(EsitoOperazione.INTERNAL, "Tipo del connettore (" + tipo + ") non supportato");
 			}
 		} catch (ServiceException e) {
-			ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnte, codDominio, iuv, e.getMessage());
+			ctx.log("verifica.verificaKo", codApplicazione, codVersamentoEnteD, bundlekeyD, codDominioD, iuvD, e.getMessage());
 		} finally {
 			ctx.closeTransaction(idTransaction);
 		}

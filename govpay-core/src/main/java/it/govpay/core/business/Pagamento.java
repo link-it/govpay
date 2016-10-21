@@ -45,7 +45,6 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediListaPendentiRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediStatoRPTRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoRPTPendente;
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.pagamento.IuvBD;
@@ -53,7 +52,6 @@ import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
-import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -75,7 +73,6 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Intermediario;
@@ -113,7 +110,6 @@ public class Pagamento extends BasicBD {
 
 		GpContext ctx = GpThreadLocal.get();
 		List<Versamento> versamenti = new ArrayList<Versamento>();
-		VersamentiBD versamentiBD = new VersamentiBD(this);
 
 		for(Object v : gpAvviaTransazionePagamento.getVersamentoOrVersamentoRef()) {
 			Versamento versamentoModel = null;
@@ -149,95 +145,8 @@ public class Pagamento extends BasicBD {
 					}
 				}
 
-				// Versamento per riferimento codApplicazione/codVersamentoEnte
-
-				if(codApplicazione != null && codVersamentoEnte != null) {
-					ctx.log("rpt.acquisizioneVersamentoRef", codApplicazione, codVersamentoEnte);
-					Applicazione applicazione = null;
-					try {
-						applicazione = AnagraficaManager.getApplicazione(this, codApplicazione);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
-					}
-
-					try {
-						versamentoModel = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
-						versamentoModel.setIuvProposto(iuv);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
-					}
-				}
-
-
-				// Versamento per riferimento codDominio/iuv
-				if(codDominio != null && iuv != null) {
-					ctx.log("rpt.acquisizioneVersamentoRefIuv", codDominio, iuv);
-
-					Dominio dominio = null;
-					try {
-						dominio = AnagraficaManager.getDominio(this, codDominio);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.DOM_000, codDominio);
-					}
-
-					IuvBD iuvBD = new IuvBD(this);
-					
-					it.govpay.model.Iuv iuvModel = null;
-					try {
-						iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
-						codApplicazione = AnagraficaManager.getApplicazione(this, iuvModel.getIdApplicazione()).getCodApplicazione();
-						codVersamentoEnte = iuvModel.getCodVersamentoEnte();
-					} catch (NotFoundException e) {
-						// Iuv non registrato. Vedo se c'e' un'applicazione da interrogare, altrimenti non e' recuperabile.
-						codApplicazione = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(this));
-						
-						if(codApplicazione == null) {
-							throw new GovPayException("L'avviso di pagamento [Dominio:" + codDominio + " Iuv:" + iuv + "] non risulta registrato, ne associabile ad un'applicazione censita.", EsitoOperazione.VER_008);
-						}
-					}
-
-					// A questo punto ho sicuramente il codApplicazione. Se ho anche il codVersamentoEnte lo cerco localmente
-					if(codVersamentoEnte != null) {
-						try {
-							versamentoModel = versamentiBD.getVersamento(AnagraficaManager.getApplicazione(this, codApplicazione).getId(), iuvModel.getCodVersamentoEnte());
-						} catch (NotFoundException e) {
-							// Non e' nel repo interno. vado oltre e lo richiedo all'applicazione gestrice
-						}
-					}
-					
-					// Se ancora non ho trovato il versamento, lo chiedo all'applicazione
-					if(versamentoModel == null) {
-						try {
-							versamentoModel = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), codVersamentoEnte, dominio.getCodDominio(), iuv, this);
-						} catch (ClientException e){
-							ctx.log("verifica.verificaFailIuv", codApplicazione, codDominio, iuv);
-							throw new GovPayException("La richiesta di verifica dell'Avviso [Applicazione: " + codApplicazione + " Dominio:" + codDominio + " Iuv:" + iuv + "] e' fallita con errore: " + e.getMessage(), EsitoOperazione.VER_008);
-						} catch (VersamentoScadutoException e) {
-							ctx.log("verifica.verificaOkScaduto", codApplicazione, codDominio, iuv);
-							throw new GovPayException("La verifica dell'Avviso [Applicazione: " + codApplicazione + " Dominio:" + codDominio + " Iuv:" + iuv + "] ha dato esito PAGAMENTO_SCADUTO", EsitoOperazione.PAG_006);
-						} catch (VersamentoAnnullatoException e) {
-							ctx.log("verifica.verificaOkAnnullato", codApplicazione, codDominio, iuv);
-							throw new GovPayException("La verifica dell'Avviso [Applicazione: " + codApplicazione + " Dominio:" + codDominio + " Iuv:" + iuv + "] ha dato esito PAGAMENTO_ANNULLATO", EsitoOperazione.PAG_006);
-						} catch (VersamentoDuplicatoException e) {
-							ctx.log("verifica.verificaOkDuplicato", codApplicazione, codDominio, iuv);
-							throw new GovPayException("La verifica dell'Avviso [Applicazione: " + codApplicazione + " Dominio:" + codDominio + " Iuv:" + iuv + "] ha dato esito PAGAMENTO_DUPLICATO", EsitoOperazione.PAG_006);
-						} catch (VersamentoSconosciutoException e) {
-							ctx.log("verifica.verificaOkSconosciuto", codApplicazione, codDominio, iuv);
-							throw new GovPayException("La verifica dell'Avviso [Applicazione: " + codApplicazione + " Dominio:" + codDominio + " Iuv:" + iuv + "] ha dato esito PAGAMENTO_SCONOSCIUTO", EsitoOperazione.VER_008);
-						} catch (NotFoundException e) {
-							ctx.log("verifica.applicazioneSconosciuta", codApplicazione, codDominio, iuv);
-							throw new GovPayException(EsitoOperazione.INTERNAL, "L'avviso [Dominio:" + codDominio + " Iuv:" + iuv + "] e' gestito da un'applicazione non censita [Applicazione:" + codApplicazione + "]");
-						}
-					}
-					
-					
-				}
-
-				// Versamento per riferimento codDominio/iuv
-				if(codApplicazione != null && bundlekey != null) {
-					ctx.log("rpt.acquisizioneVersamentoRefBundle", codApplicazione, bundlekey);
-					throw new RuntimeException("Not supported yet");
-				}
+				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
+				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codDominio, iuv);
 			}
 			
 			if(!versamentoModel.getApplicazione(this).isAbilitato()) {

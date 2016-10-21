@@ -600,13 +600,13 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			
 			if(bodyrichiesta.getIuv() != null) {
 				log.info("Richiesta operazione gpChiediStatoVersamento per lo iuv (" + bodyrichiesta.getIuv() + ") del dominio (" +  bodyrichiesta.getCodDominio()+")");
-				versamento = versamentoBusiness.chiediVersamentoByIuv(portaleAutenticato, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv());
+				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, null, null, null, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv());
 			} else if(bodyrichiesta.getBundleKey() != null) {
 				log.info("Richiesta operazione gpChiediStatoVersamento per la bundleKey (" + bodyrichiesta.getBundleKey() + ")");
-				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getBundleKey());
+				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), null, bodyrichiesta.getBundleKey(), null, null);
 			} else {
 				log.info("Richiesta operazione gpChiediStatoVersamento per il versamento (" + bodyrichiesta.getCodVersamentoEnte() + ") dell'applicazione (" +  bodyrichiesta.getCodApplicazione()+")");
-				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
+				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), null, null, null);
 			}
 			
 			if(bodyrichiesta.getCodUnivocoDebitore() != null && !bodyrichiesta.getCodUnivocoDebitore().equalsIgnoreCase(versamento.getAnagraficaDebitore().getCodUnivoco())) {

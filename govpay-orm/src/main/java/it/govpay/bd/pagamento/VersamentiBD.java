@@ -33,6 +33,7 @@ import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.dao.IDBSingoloVersamentoServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.SingoloVersamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,7 @@ import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 public class VersamentiBD extends BasicBD {
@@ -84,6 +86,31 @@ public class VersamentiBD extends BasicBD {
 			it.govpay.orm.Versamento versamento = this.getVersamentoService().get(id);
 			return VersamentoConverter.toDTO(versamento);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	
+	/**
+	 * Recupera il versamento identificato dalla chiave logica
+	 */
+	public Versamento getVersamentoByBundlekey(long idApplicazione, String bundleKey) throws NotFoundException, ServiceException {
+		try {
+			IExpression exp = this.getVersamentoService().newExpression();
+			exp.equals(it.govpay.orm.Versamento.model().COD_BUNDLEKEY, bundleKey);
+			
+			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
+			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idApplicazione);
+			
+			it.govpay.orm.Versamento versamento =  this.getVersamentoService().find(exp);
+			return VersamentoConverter.toDTO(versamento);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
