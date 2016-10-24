@@ -1,6 +1,7 @@
 package it.govpay.web.rs.utils;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.core.business.EstrattoConto;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.Caricatore;
 import it.govpay.web.rs.model.EstrattoContoRequest;
@@ -170,7 +171,7 @@ public class PagamentoUtils {
 		}
 	}
 	
-	public static ByteArrayOutputStream writeScaricaEstrattoContoResponse(Caricatore c, Logger log, InputStream response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws Exception{
+	public static ByteArrayOutputStream writeScaricaEstrattoContoResponse(Caricatore c, Logger log, InputStream response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName,String formatoEstrattoConto) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeScaricaEstrattoContoResponse";
 
@@ -180,7 +181,10 @@ public class PagamentoUtils {
 			
 			baos.flush();
 
-			c.logResponse(uriInfo, httpHeaders, methodName, baos);
+			if(formatoEstrattoConto.equals(EstrattoConto.FORMATO_CSV))
+				c.logResponse(uriInfo, httpHeaders, methodName, baos);
+			else
+				c.logResponse(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 			return baos;

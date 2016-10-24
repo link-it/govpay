@@ -35,6 +35,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.io.FilenameUtils;
 import org.openspcoop2.utils.logger.beans.Property;
 
 @Path("/caricatore")
@@ -43,8 +44,6 @@ public class Caricatore extends BaseRsService{
 	public static final String NOME_SERVIZIO = "PagamentiTelematiciAPPjson";
 	public static final int LIMIT = 50;
 	
-	private static final String FORMATO_CSV = "CSV";
-
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"); 
 
 	public Caricatore() {
@@ -215,10 +214,10 @@ public class Caricatore extends BaseRsService{
 			ctx = GpThreadLocal.get();
 			
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
-			ctx.getContext().getRequest().addGenericProperty(new Property("formatoFile", FORMATO_CSV));
+			ctx.getContext().getRequest().addGenericProperty(new Property("formatoFile", EstrattoConto.FORMATO_STAR));
 			ctx.log("rest.listaEstrattoConto");
 			
-			List<String> lst = new EstrattoConto(bd).getListaEstrattoConto(codDominio,FORMATO_CSV);
+			List<String> lst = new EstrattoConto(bd).getListaEstrattoConto(codDominio,EstrattoConto.FORMATO_STAR);
 			
 			ByteArrayOutputStream baos = PagamentoUtils.writeListaEstrattoContoResponse(this, log, lst, uriInfo, httpHeaders, bd, methodName);
 			ctx.getContext().getRequest().addGenericProperty(new Property("numeroFile", lst.size()+""));
@@ -249,7 +248,7 @@ public class Caricatore extends BaseRsService{
 	
 	@GET
 	@Path("/estrattoConto/{codDominio}/{nomeFile}")
-	@Produces({MediaType.TEXT_PLAIN})
+	@Produces({MediaType.TEXT_PLAIN,MediaType.APPLICATION_OCTET_STREAM})
 	public Response scaricaEstrattoConto(
 			@PathParam("codDominio") String codDominio,
 			@PathParam("nomeFile") String nomeFile,
@@ -260,27 +259,35 @@ public class Caricatore extends BaseRsService{
 		BasicBD bd = null;
 		GpContext ctx = null;
 		
+		String applicationJson = MediaType.APPLICATION_JSON;
 		try{
 			PagamentoUtils.readGetRequest(this, log, uriInfo, httpHeaders, methodName);
 			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx = GpThreadLocal.get();
 			
+			String fileNameExt = FilenameUtils.getExtension(nomeFile);
+			String formato = fileNameExt.equals(EstrattoConto.FORMATO_CSV) ? EstrattoConto.FORMATO_CSV : EstrattoConto.FORMATO_PDF;
+			String contentType = fileNameExt.equals(EstrattoConto.FORMATO_CSV) ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_OCTET_STREAM;
+			
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			ctx.getContext().getRequest().addGenericProperty(new Property("nomeFile", nomeFile));
-			ctx.getContext().getRequest().addGenericProperty(new Property("formatoFile", FORMATO_CSV));
+			ctx.getContext().getRequest().addGenericProperty(new Property("formatoFile", formato));
 			ctx.log("rest.scaricaEstrattoConto");
 			
-			InputStream res = new EstrattoConto(bd).scaricaEstrattoConto(codDominio,nomeFile, FORMATO_CSV);
+			InputStream res = new EstrattoConto(bd).scaricaEstrattoConto(codDominio,nomeFile, formato);
 			
-			ByteArrayOutputStream baos = PagamentoUtils.writeScaricaEstrattoContoResponse(this, log, res, uriInfo, httpHeaders, bd, methodName);
+			ByteArrayOutputStream baos = PagamentoUtils.writeScaricaEstrattoContoResponse(this, log, res, uriInfo, httpHeaders, bd, methodName,formato);
 			ctx.log("rest.scaricaEstrattoContoOk");
-			return Response.ok(baos.toString()).build();
+			
+			Object contenutoResponse  = fileNameExt.equals(EstrattoConto.FORMATO_CSV) ? baos.toString() : baos.toByteArray();
+			
+			return Response.ok(contenutoResponse,contentType).header("Content-Type", contentType.toString()).build();
 		}catch (GovPayException e) {
 			e.log(log);
 			ByteArrayOutputStream baos = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
 			ctx.log("rest.scaricaEstrattoContoKo",e.getMessage());
-			return Response.serverError().entity(baos.toString()).header("Content-Type", MediaType.APPLICATION_JSON.toString()).build();
+			return Response.serverError().entity(baos.toString()).header("Content-Type", applicationJson.toString()).build();
 		} catch (WebApplicationException e) {
 			GovPayException ge = new GovPayException(e);
 			ge.log(log);
@@ -291,7 +298,7 @@ public class Caricatore extends BaseRsService{
 			ge.log(log);
 			ByteArrayOutputStream baos = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
 			ctx.log("rest.scaricaEstrattoContoKo",e.getMessage());
-			return Response.serverError().entity(baos.toString()).header("Content-Type", MediaType.APPLICATION_JSON.toString()).build(); 
+			return Response.serverError().entity(baos.toString()).header("Content-Type", applicationJson.toString()).build(); 
 		} finally {
 			if(bd != null) bd.closeConnection();
 			if(ctx != null)ctx.log();

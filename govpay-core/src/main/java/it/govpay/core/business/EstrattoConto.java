@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -42,6 +41,10 @@ import it.govpay.stampe.pdf.estrattoConto.EstrattoContoPdf;
 
 public class EstrattoConto extends BasicBD {
 
+	public static final String FORMATO_CSV = "csv";
+	public static final String FORMATO_PDF = "pdf";
+	public static final String FORMATO_STAR = "*";
+	
 	private static final String CSV_SEPARATOR = "|";
 
 	private static Logger log = LogManager.getLogger();
@@ -502,8 +505,9 @@ public class EstrattoConto extends BasicBD {
 			}
 
 			for (File file : dominioDir.listFiles()) {
-				String fileName = FilenameUtils.removeExtension(file.getName()); 
-				response.add(fileName);
+				// String fileName = FilenameUtils.removeExtension(file.getName()); 
+//				response.add(fileName);
+				response.add(file.getName());
 			}
 
 			if(response.isEmpty()) {
@@ -560,7 +564,12 @@ public class EstrattoConto extends BasicBD {
 			String fileToDownload = basePath+File.separator + dominio.getCodDominio()+ File.separator + nomeFile;
 
 			// per ora si gestisce solo il formato CSV
-			File estrattoConto = new File((fileToDownload + ".csv"));
+//			String extension = ".csv";
+			
+//			if(formatoFile != null && formatoFile.equals(FORMATO_PDF))
+//				extension = ".pdf";
+			//+ extension
+			File estrattoConto = new File((fileToDownload ));
 
 			if(!estrattoConto.exists() || estrattoConto.isDirectory()){
 				throw new Exception("Il file richiesto ["+nomeFile+"] per il Dominio ["+codDominio+"] non e' disponibile in formato ["+formatoFile+"].");
