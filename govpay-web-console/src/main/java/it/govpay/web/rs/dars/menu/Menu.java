@@ -57,6 +57,7 @@ import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.FrApplicazioni;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Rendicontazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
+import it.govpay.web.rs.dars.reportistica.pagamenti.EstrattiConto;
 import it.govpay.web.rs.dars.reportistica.pagamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
 
@@ -192,6 +193,12 @@ public class Menu extends BaseRsService {
 			VoceMenu voceMenuReportisticaPagamenti = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(reportisticaPagamentiDars.getNomeServizio() + ".titolo"), reportisticaPagamentiURI, false);
 
 			reportistica.getVociMenu().add(voceMenuReportisticaPagamenti);
+			
+			EstrattiConto estrattiContoDars = new EstrattiConto();
+			URI estrattiContoURI = BaseRsService.checkDarsURI(uriInfo).path(estrattiContoDars.getPathServizio()).build();
+			VoceMenu voceMenuReportisticaEstrattiConto = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(estrattiContoDars.getNomeServizio() + ".titolo"), estrattiContoURI, false);
+
+			reportistica.getVociMenu().add(voceMenuReportisticaEstrattiConto);
 			
 			menu.getSezioni().add(reportistica);
 
