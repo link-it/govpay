@@ -31,7 +31,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.model.reportistica.EstrattoConto;
+import it.govpay.model.reportistica.EstrattoContoMetadata;
 import it.govpay.web.business.reportistica.utils.EstrattoContoComparator;
 import it.govpay.web.utils.ConsoleProperties;
 import net.sf.json.JSONArray;
@@ -46,13 +46,13 @@ public class EstrattiConto extends BasicBD{
 	public static final String FORMATO_PDF = "pdf";
 	public static final String FORMATO_STAR = "*";
 
-	private static TreeMap<String, LinkedHashMap<Long, EstrattoConto>> mapEC = null;  
+	private static TreeMap<String, LinkedHashMap<Long, EstrattoContoMetadata>> mapEC = null;  
 
 	public EstrattiConto(BasicBD basicBD) {
 		super(basicBD);
 		this.httpClient = HttpClientBuilder.create().build();
 		if(mapEC == null)
-			mapEC = new TreeMap<String, LinkedHashMap<Long, EstrattoConto>>();
+			mapEC = new TreeMap<String, LinkedHashMap<Long, EstrattoContoMetadata>>();
 	}
 
 
@@ -61,10 +61,10 @@ public class EstrattiConto extends BasicBD{
 	}
 
 
-	public List<EstrattoConto> findAll(EstrattoContoFilter filter) throws ServiceException {
+	public List<EstrattoContoMetadata> findAll(EstrattoContoFilter filter) throws ServiceException {
 		try{
 			if(mapEC == null)
-				mapEC = new TreeMap<String, LinkedHashMap<Long, EstrattoConto>>();
+				mapEC = new TreeMap<String, LinkedHashMap<Long, EstrattoContoMetadata>>();
 
 			Operatore operatore = filter.getOperatore();
 			ProfiloOperatore ruolo = operatore.getProfilo() ;
@@ -82,7 +82,7 @@ public class EstrattiConto extends BasicBD{
 			if(!eseguiRicerca)
 				eseguiRicerca = !filter.getIdDomini().isEmpty();				
 
-			List<EstrattoConto> lst = new ArrayList<EstrattoConto>();
+			List<EstrattoContoMetadata> lst = new ArrayList<EstrattoContoMetadata>();
 
 			if(eseguiRicerca){
 				//filtro sui domini disponibili all'utente;
@@ -91,7 +91,7 @@ public class EstrattiConto extends BasicBD{
 				List<Dominio> findAll = dominiBd.findAll(dominioFilter );
 				long id = 1;
 
-				TreeMap<Long, EstrattoConto> mapUtente = new TreeMap<Long, EstrattoConto>();
+				TreeMap<Long, EstrattoContoMetadata> mapUtente = new TreeMap<Long, EstrattoContoMetadata>();
 
 				for (Dominio dominio : findAll) {
 
@@ -116,7 +116,7 @@ public class EstrattiConto extends BasicBD{
 						for (int i =0 ; i< listaJSON.size() ; i++) {
 							Object object = listaJSON.get(i);
 
-							EstrattoConto estrattoContoFromJson = this.getEstrattoContoFromJson(dominio.getCodDominio(), id, (String) object);
+							EstrattoContoMetadata estrattoContoFromJson = this.getEstrattoContoFromJson(dominio.getCodDominio(), id, (String) object);
 							mapUtente.put(id, estrattoContoFromJson);
 
 							id ++;
@@ -131,17 +131,17 @@ public class EstrattiConto extends BasicBD{
 					mapEC.remove(filter.getOperatore().getPrincipal());
 
 				
-				List<Entry<Long, EstrattoConto>> listOfEntries = new ArrayList<Entry<Long, EstrattoConto>>(mapUtente.entrySet());
+				List<Entry<Long, EstrattoContoMetadata>> listOfEntries = new ArrayList<Entry<Long, EstrattoContoMetadata>>(mapUtente.entrySet());
 				// sorting HashMap by values using comparator
 		        Collections.sort(listOfEntries, new EstrattoContoComparator());
 
-		        LinkedHashMap<Long, EstrattoConto> orderedMapUtente = new LinkedHashMap<Long, EstrattoConto>(listOfEntries.size());
+		        LinkedHashMap<Long, EstrattoContoMetadata> orderedMapUtente = new LinkedHashMap<Long, EstrattoContoMetadata>(listOfEntries.size());
 		        // copying entries from List to Map
-		        for(Entry<Long, EstrattoConto> entry : listOfEntries){
+		        for(Entry<Long, EstrattoContoMetadata> entry : listOfEntries){
 		        	orderedMapUtente.put(entry.getKey(), entry.getValue());
 		        }
 				
-		        lst = new ArrayList<EstrattoConto>(orderedMapUtente.values());
+		        lst = new ArrayList<EstrattoContoMetadata>(orderedMapUtente.values());
 				mapEC.put(filter.getOperatore().getPrincipal(), orderedMapUtente);
 			}
 
@@ -152,8 +152,8 @@ public class EstrattiConto extends BasicBD{
 		}
 	}
 
-	private EstrattoConto getEstrattoContoFromJson(String codDominio, long id, String fileName){
-		EstrattoConto estrattoConto = new EstrattoConto();
+	private EstrattoContoMetadata getEstrattoContoFromJson(String codDominio, long id, String fileName){
+		EstrattoContoMetadata estrattoConto = new EstrattoContoMetadata();
 		estrattoConto.setCodDominio(codDominio);
 		estrattoConto.setNomeFile(fileName);
 		estrattoConto.setId(id);
@@ -208,11 +208,11 @@ public class EstrattiConto extends BasicBD{
 	}
 
 
-	public  EstrattoConto getEstrattoConto(long id, String operatore) throws ServiceException, NotFoundException {
+	public  EstrattoContoMetadata getEstrattoConto(long id, String operatore) throws ServiceException, NotFoundException {
 		if(mapEC == null)
 			return null;
 
-		LinkedHashMap<Long, EstrattoConto> linkedMap = mapEC.get(operatore);
+		LinkedHashMap<Long, EstrattoContoMetadata> linkedMap = mapEC.get(operatore);
 		if(linkedMap == null)
 			return null;
 
@@ -220,7 +220,7 @@ public class EstrattiConto extends BasicBD{
 	}
 
 	public String getCSVEstrattoConto(long id, String operatore, ByteArrayOutputStream baos) throws ServiceException, NotFoundException {
-		EstrattoConto ec = this.getEstrattoConto(id, operatore);
+		EstrattoContoMetadata ec = this.getEstrattoConto(id, operatore);
 
 		try{
 

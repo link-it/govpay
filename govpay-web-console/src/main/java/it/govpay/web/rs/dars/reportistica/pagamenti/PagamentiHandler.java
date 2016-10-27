@@ -46,17 +46,23 @@ import org.openspcoop2.utils.csv.Printer;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
-import it.govpay.bd.reportistica.PagamentiBD;
-import it.govpay.bd.reportistica.filters.PagamentoFilter;
-import it.govpay.model.Acl;
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.Operatore;
+import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.SingoliVersamentiBD;
+import it.govpay.bd.reportistica.EstrattiContoBD;
+import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
+import it.govpay.core.utils.CSVUtils;
+import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
+import it.govpay.model.EstrattoConto;
+import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
-import it.govpay.model.reportistica.Pagamento;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -77,9 +83,10 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputDate;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
+public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements IDarsHandler<EstrattoConto>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
@@ -108,10 +115,10 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			AclBD aclBD = new AclBD(bd);
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			List<String> idDomini = new ArrayList<String>();
+			List<Long> idDomini = new ArrayList<Long>();
 
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			PagamentoFilter filter = pagamentiBD.newFilter();
+			EstrattiContoBD pagamentiBD = new EstrattiContoBD(bd);
+			EstrattoContoFilter filter = pagamentiBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			//			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -122,8 +129,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
 			if(StringUtils.isNotEmpty(idDominio)){
-				idDomini.add(idDominio);
-				filter.setIdDomini(idDomini);
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDom);
+					filter.setIdDomini(idDomini);
+				}
 			}
 
 			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
@@ -157,7 +170,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getCodDominio());
+							idDomini.add(acl.getIdDominio());
 						}
 					}
 				}
@@ -183,7 +196,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
     Data pagamento
     Stato
 
-			 * */
+			 * */ 
 
 			List<String> valori = new ArrayList<String>();
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"));
@@ -203,11 +216,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
-			List<Pagamento> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>(); 
+			List<EstrattoConto> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>(); 
 
 			if(findAll != null && findAll.size() > 0){
-				for (Pagamento entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+				for (EstrattoConto entry : findAll) {
+					elenco.getElenco().add(this.getElemento(entry, entry.getIdSingoloVersamento(), uriDettaglioBuilder,bd));
 				}
 			}
 
@@ -245,7 +258,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			// idDominio
-			List<Voce<String>> domini = new ArrayList<Voce<String>>();
+			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter;
@@ -280,7 +293,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				}
 
 				if(eseguiRicerca) {
-					domini.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 					FilterSortWrapper fsw = new FilterSortWrapper();
 					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
 					fsw.setSortOrder(SortOrder.ASC);
@@ -292,17 +305,17 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio dominio : findAll) {
-							domini.add(new Voce<String>(dominiHandler.getTitolo(dominio,bd), dominio.getCodDominio()));  
+							domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
 						}
 					}
 				}else {
-					domini.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 				}
 			} catch (ServiceException e) {
 				throw new ConsoleException(e);
 			}
-			SelectList<String> idDominio = (SelectList<String>) infoRicercaMap.get(idDominioId);
-			idDominio.setDefaultValue("");
+			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+			idDominio.setDefaultValue(-1L);
 			idDominio.setValues(domini); 
 			sezioneRoot.addField(idDominio);
 
@@ -345,15 +358,16 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String dataInizioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 			String dataFineId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 
-			List<Voce<String>> domini = new ArrayList<Voce<String>>();
+			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio
 			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
-			SelectList<String> idDominio = new SelectList<String>(idDominioId, idDominioLabel, null, false, false, true, domini);
+			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
 			infoRicercaMap.put(idDominioId, idDominio);
 
-			// idDominio
+			// statoVersamento
+			List<Voce<String>> stati = new ArrayList<Voce<String>>();
 			String statoVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label");
-			SelectList<String> statoVersamento = new SelectList<String>(statoVersamentoId, statoVersamentoLabel, null, false, false, true, domini);
+			SelectList<String> statoVersamento = new SelectList<String>(statoVersamentoId, statoVersamentoLabel, null, false, false, true, stati);
 			infoRicercaMap.put(statoVersamentoId, statoVersamento);
 
 			// dataInizio
@@ -386,8 +400,8 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			// idDominio
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			PagamentoFilter filter = pagamentiBD.newFilter();
+			EstrattiContoBD pagamentiBD = new EstrattiContoBD(bd);
+			EstrattoContoFilter filter = pagamentiBD.newFilter();
 			boolean eseguiRicerca = true;
 			List<Long> ids = new ArrayList<Long>();
 			ids.add(id);
@@ -398,14 +412,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
 				boolean vediTuttiDomini = false;
-				List<String> idDomini = new ArrayList<String>();
+				List<Long> idDomini = new ArrayList<Long>();
 				for(Acl acl: aclOperatore) {
 					if(Tipo.DOMINIO.equals(acl.getTipo())) {
 						if(acl.getIdDominio() == null) {
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getCodDominio());
+							idDomini.add(acl.getIdDominio());
 						}
 					}
 				}
@@ -425,8 +439,8 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			}
 			// recupero oggetto
 			filter.setIdPagamento(ids);
-			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
-			Pagamento pagamento = findAll.size() > 0 ? findAll.get(0) : null;
+			List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>();
+			EstrattoConto pagamento = findAll.size() > 0 ? findAll.get(0) : null;
 
 			InfoForm infoModifica = null;
 			URI cancellazione = null;
@@ -479,7 +493,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	}
 
 	@Override
-	public String getTitolo(Pagamento entry,BasicBD bd) {
+	public String getTitolo(EstrattoConto entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 
 		String codVersamentoEnte = entry.getCodVersamentoEnte();
@@ -495,7 +509,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	}
 
 	@Override
-	public String getSottotitolo(Pagamento entry,BasicBD bd) {
+	public String getSottotitolo(EstrattoConto entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
 		Date dataPagamento = entry.getDataPagamento();
@@ -510,19 +524,10 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	} 
 
 	@Override
-	public List<String> getValori(Pagamento entry, BasicBD bd) throws ConsoleException {
+	public List<String> getValori(EstrattoConto entry, BasicBD bd) throws ConsoleException {
 
 		List<String> valori = new ArrayList<String>();
-		/*
-			Cod versamento
-			IUV
-			C.F. Debitore
-			Importo dovuto
-			Importo pagato
-			Data pagamento
-			Stato
-		 * */
-		String codVersamentoEnte = entry.getCodVersamentoEnte();
+		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
 		String iuv = entry.getIuv() != null ? entry.getIuv() : "--";
 		String cfDebitore = entry.getDebitoreIdentificativo();
 		StatoVersamento statoVersamento = entry.getStatoVersamento();
@@ -533,8 +538,8 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		valori.add(codVersamentoEnte);
 		valori.add(iuv);
 		valori.add(cfDebitore);
-		valori.add(importoPagato);
 		valori.add(importoDovuto);
+		valori.add(importoPagato);
 		valori.add(this.sdf.format(dataPagamento));
 		valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+ statoVersamento.name()));
 
@@ -555,22 +560,23 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			}
 		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+		int numeroZipEntries = 0;
 
 		if(idsToExport.size() == 1)
 			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
 
 		String fileName = "Pagamenti.zip";
-		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
 
+
+		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			ProfiloOperatore profilo = operatore.getProfilo();
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
-			// idDominio
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			PagamentoFilter filter = pagamentiBD.newFilter();
+			SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
+			EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
+			EstrattoContoFilter filter = estrattiContoBD.newFilter(); 
 			boolean eseguiRicerca = true;
 			List<Long> ids = idsToExport;
 
@@ -580,14 +586,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
 				boolean vediTuttiDomini = false;
-				List<String> idDomini = new ArrayList<String>();
+				List<Long> idDomini = new ArrayList<Long>();
 				for(Acl acl: aclOperatore) {
 					if(Tipo.DOMINIO.equals(acl.getTipo())) {
 						if(acl.getIdDominio() == null) {
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getCodDominio());
+							idDomini.add(acl.getIdDominio());
 						}
 					}
 				}
@@ -602,33 +608,92 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
 				if(eseguiRicerca){
 					filter.setIdPagamento(ids);
-					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
+					eseguiRicerca = eseguiRicerca && estrattiContoBD.count(filter) > 0;
 				}
 			}
-			// recupero oggetto
-			filter.setIdPagamento(ids);
-			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.creaCsvReportisticaPagamenti(filter) : new ArrayList<Pagamento>();
 
-			if(findAll != null && findAll.size() > 0){
-				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-				try{
-					ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");
-					zout.putNextEntry(pagamentoCsv);
-					printer = new Printer(this.getFormat() , baos);
-					printer.printRecord(getCsvHeader());
-					for (Pagamento pagamento : findAll) {
-						printer.printRecord(this.getCsvRow(pagamento));
-					}
-				}finally {
+			if(eseguiRicerca){
+				Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
+				Map<String, Dominio> mappaInputDomini = new HashMap<String, Dominio>();
+				// recupero oggetto
+				filter.setIdPagamento(ids);
+				List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
+
+				if(findAll != null && findAll.size() > 0){
+					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 					try{
-						if(printer!=null){
-							printer.close();
+						ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");
+						zout.putNextEntry(pagamentoCsv);
+						printer = new Printer(this.getFormat() , baos);
+						printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
+						for (EstrattoConto pagamento : findAll) {
+							printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
 						}
-					}catch (Exception e) {
-						throw new Exception("Errore durante la chiusura dello stream ",e);
+					}finally {
+						try{
+							if(printer!=null){
+								printer.close();
+							}
+						}catch (Exception e) {
+							throw new Exception("Errore durante la chiusura dello stream ",e);
+						}
 					}
+					zout.write(baos.toByteArray());
+					zout.closeEntry();
 				}
-				zout.write(baos.toByteArray());
+				
+				for (Long idSingoloVersamento : idsToExport) {
+					SingoloVersamento singoloVersamento = singoliVersamentiBD.getSingoloVersamento(idSingoloVersamento);
+					Versamento versamento = singoloVersamento.getVersamento(bd);
+
+					// Prelevo il dominio
+					UnitaOperativa uo  = AnagraficaManager.getUnitaOperativa(bd, versamento.getIdUo());
+					Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
+
+					// Aggrego i versamenti per dominio per generare gli estratti conto
+					List<Long> idSingoliVersamentiDominio = null;
+					if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio()))
+						idSingoliVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
+					else{
+						idSingoliVersamentiDominio = new ArrayList<Long>();
+						mappaInputEstrattoConto.put(dominio.getCodDominio(), idSingoliVersamentiDominio);
+						mappaInputDomini.put(dominio.getCodDominio(), dominio);
+					}
+					idSingoliVersamentiDominio.add(idSingoloVersamento);
+				}
+				
+				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
+				for (String codDominio : mappaInputEstrattoConto.keySet()) {
+					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
+					listInputEstrattoConto.add(input);
+				}
+
+				String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
+				it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
+				List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
+
+				for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
+					Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
+					for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+						numeroZipEntries ++;
+						ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
+						ZipEntry estrattoContoEntry = new ZipEntry(nomeEntry);
+//						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+						zout.putNextEntry(estrattoContoEntry);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
+					}
+
+
+				}
+			}
+
+			// se non ho inserito nessuna entry
+			if(numeroZipEntries == 0){
+				String noEntriesTxt = "/README";
+				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
+				zout.putNextEntry(entryTxt);
+				zout.write("Non sono state trovate informazioni sui pagamenti selezionati.".getBytes());
 				zout.closeEntry();
 			}
 
@@ -645,116 +710,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		}
 	}
 
-	private List<String> getCsvHeader(){
-		List<String> header = new ArrayList<String>();
-
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codiceFiscaleDebitore.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoDovuto.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iur.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codiceRendicontazione.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".bicRiversamento.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idRegolamento.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causale.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".note.label"));
-
-		return header;
-	}
-
-	private List<String> getCsvRow(Pagamento pagamento) throws Exception{
-		List<String> oneLine = new ArrayList<String>();
-		// CodVersamentoEnte
-		if(StringUtils.isNotEmpty(pagamento.getCodVersamentoEnte()))
-			oneLine.add(pagamento.getCodVersamentoEnte());
-		else 
-			oneLine.add("");
-		// CodSingoloVersamentoEnte
-		if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte()))
-			oneLine.add(pagamento.getCodSingoloVersamentoEnte());
-		else 
-			oneLine.add("");
-		// Iuv
-		if(StringUtils.isNotEmpty(pagamento.getIuv()))
-			oneLine.add(pagamento.getIuv());
-		else 
-			oneLine.add("");
-		// CF Debitore
-		if(StringUtils.isNotEmpty(pagamento.getDebitoreIdentificativo()))
-			oneLine.add(pagamento.getDebitoreIdentificativo());
-		else 
-			oneLine.add("");
-		//Importo Dovuto
-		if(pagamento.getImportoDovuto() != null)
-			oneLine.add(pagamento.getImportoDovuto().doubleValue()+"");
-		else 
-			oneLine.add("");
-		// Importo Pagato
-		if(pagamento.getImportoPagato() != null)
-			oneLine.add(pagamento.getImportoPagato().doubleValue()+"");
-		else 
-			oneLine.add("");
-		// Data Pagamento 
-		if(pagamento.getDataPagamento() != null)
-			oneLine.add(this.sdf.format(pagamento.getDataPagamento()));
-		else 
-			oneLine.add("");
-		// Stato Singolo Versamento
-		if(pagamento.getStatoSingoloVersamento() != null)
-			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento."+pagamento.getStatoSingoloVersamento()));
-		else 
-			oneLine.add("");
-		// p.IUR
-		if(StringUtils.isNotEmpty(pagamento.getIur()))
-			oneLine.add(pagamento.getIur());
-		else 
-			oneLine.add("");
-		// Codice Rendicontazione
-		if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazione()))
-			oneLine.add(pagamento.getCodFlussoRendicontazione());
-		else 
-			oneLine.add("");
-		//BicRiversamento
-		if(StringUtils.isNotEmpty(pagamento.getCodBicRiversamento()))
-			oneLine.add(pagamento.getCodBicRiversamento());
-		else 
-			oneLine.add("");
-		// Id Regolamento
-		if(StringUtils.isNotEmpty(pagamento.getIdRegolamento()))
-			oneLine.add(pagamento.getIdRegolamento());
-		else 
-			oneLine.add("");
-		// IBAN
-		if(StringUtils.isNotEmpty(pagamento.getIbanAccredito()))
-			oneLine.add(pagamento.getIbanAccredito());
-		else 
-			oneLine.add("");		
-		// Causale
-		if(StringUtils.isNotEmpty(pagamento.getCausale()))
-			oneLine.add(pagamento.getCausale());
-		else 
-			oneLine.add("");
-		// Note
-		if(StringUtils.isNotEmpty(pagamento.getNote()))
-			oneLine.add(pagamento.getNote());
-		else 
-			oneLine.add("");
-
-		return oneLine;
-	}
-
-
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
-
+		int numeroZipEntries = 0;
 		try{
 			String fileName = "Pagamenti.zip";
 			this.log.info("Esecuzione " + methodName + " in corso...");
@@ -762,12 +723,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			ProfiloOperatore profilo = operatore.getProfilo();
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
-			// idDominio
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			PagamentoFilter filter = pagamentiBD.newFilter();
+			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
+			EstrattiContoBD pagamentiBD = new EstrattiContoBD(bd);
+			EstrattoContoFilter filter = pagamentiBD.newFilter();
 			boolean eseguiRicerca = true;
 			List<Long> ids = new ArrayList<Long>();
 			ids.add(idToExport);
+			SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
 
 			if(!isAdmin){
 
@@ -775,14 +737,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
 				boolean vediTuttiDomini = false;
-				List<String> idDomini = new ArrayList<String>();
+				List<Long> idDomini = new ArrayList<Long>();
 				for(Acl acl: aclOperatore) {
 					if(Tipo.DOMINIO.equals(acl.getTipo())) {
 						if(acl.getIdDominio() == null) {
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getCodDominio());
+							idDomini.add(acl.getIdDominio());
 						}
 					}
 				}
@@ -800,30 +762,69 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
 				}
 			}
-			// recupero oggetto
-			filter.setIdPagamento(ids);
-			List<Pagamento> findAll = eseguiRicerca ?  pagamentiBD.creaCsvReportisticaPagamenti(filter) : new ArrayList<Pagamento>();
 
-			if(findAll != null && findAll.size() > 0){
-				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-				try{
-					ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");
-					zout.putNextEntry(pagamentoCsv);
-					printer = new Printer(this.getFormat() , baos);
-					printer.printRecord(getCsvHeader());
-					for (Pagamento pagamento : findAll) {
-						printer.printRecord(this.getCsvRow(pagamento));
-					}
-				}finally {
+			if(eseguiRicerca ){
+				// recupero oggetto
+				filter.setIdPagamento(ids);
+				List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
+
+				if(findAll != null && findAll.size() > 0){
+					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 					try{
-						if(printer!=null){
-							printer.close();
+						ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");
+						zout.putNextEntry(pagamentoCsv);
+						printer = new Printer(this.getFormat() , baos);
+						printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
+						for (EstrattoConto pagamento : findAll) {
+							printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
 						}
-					}catch (Exception e) {
-						throw new Exception("Errore durante la chiusura dello stream ",e);
+					}finally {
+						try{
+							if(printer!=null){
+								printer.close();
+							}
+						}catch (Exception e) {
+							throw new Exception("Errore durante la chiusura dello stream ",e);
+						}
+					}
+					zout.write(baos.toByteArray());
+					zout.closeEntry();
+				}
+
+				SingoloVersamento singoloVersamento = singoliVersamentiBD.getSingoloVersamento(idToExport);
+				Versamento versamento = singoloVersamento.getVersamento(bd);
+				UnitaOperativa uo  = AnagraficaManager.getUnitaOperativa(bd, versamento.getIdUo());
+				Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
+				// Estratto conto per iban e codiceversamento.
+				List<Long> idSingoliVersamentiDominio = new ArrayList<Long>();
+				idSingoliVersamentiDominio.add(idToExport);
+				
+				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(dominio, idSingoliVersamentiDominio);
+				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
+				listInputEstrattoConto.add(input);
+				String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
+				List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
+
+				for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
+					Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
+					for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+						numeroZipEntries ++;
+						ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
+//						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+						ZipEntry estrattoContoEntry = new ZipEntry(nomeEntry);
+						zout.putNextEntry(estrattoContoEntry);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
 					}
 				}
-				zout.write(baos.toByteArray());
+
+			}
+			// se non ho inserito nessuna entry
+			if(numeroZipEntries == 0){
+				String noEntriesTxt = "/README";
+				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
+				zout.putNextEntry(entryTxt);
+				zout.write("Non sono state trovate informazioni sui pagamenti selezionati.".getBytes());
 				zout.closeEntry();
 			}
 
@@ -846,19 +847,19 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
-	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Pagamento entry) throws ConsoleException { return null; }
+	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, EstrattoConto entry) throws ConsoleException { return null; }
 
 	@Override
 	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
 
 	@Override
-	public Pagamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
+	public EstrattoConto creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
 
 	@Override
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException, DuplicatedEntryException { return null; }
 
 	@Override
-	public void checkEntry(Pagamento entry, Pagamento oldEntry) throws ValidationException { }
+	public void checkEntry(EstrattoConto entry, EstrattoConto oldEntry) throws ValidationException { }
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }

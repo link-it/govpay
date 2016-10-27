@@ -4,24 +4,24 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import it.govpay.model.reportistica.EstrattoConto;
+import it.govpay.model.reportistica.EstrattoContoMetadata;
 
 
-public class EstrattoContoComparator implements Comparator<Map.Entry<Long, EstrattoConto>> {
+public class EstrattoContoComparator implements Comparator<Map.Entry<Long, EstrattoContoMetadata>> {
 
 	
 
 	@Override
-	public int compare(Entry<Long, EstrattoConto> o1, Entry<Long, EstrattoConto> o2) {
+	public int compare(Entry<Long, EstrattoContoMetadata> o1, Entry<Long, EstrattoContoMetadata> o2) {
 		ECComparator ecComparator = new ECComparator();
 		return ecComparator.compare(o1.getValue(), o2.getValue()); 
 	}
 
 	
-	class ECComparator implements Comparator<EstrattoConto>{
+	class ECComparator implements Comparator<EstrattoContoMetadata>{
 
 		@Override
-		public int compare(EstrattoConto o1, EstrattoConto o2) {
+		public int compare(EstrattoContoMetadata o1, EstrattoContoMetadata o2) {
 			// ordinamento per Anno Desc, mese Desc, Iban ASC
 			
 			Integer anno1 = o1.getAnno();

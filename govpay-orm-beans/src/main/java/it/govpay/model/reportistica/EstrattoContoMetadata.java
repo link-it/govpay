@@ -2,7 +2,7 @@ package it.govpay.model.reportistica;
 
 import it.govpay.model.BasicModel;
 
-public class EstrattoConto  extends BasicModel {
+public class EstrattoContoMetadata  extends BasicModel {
 	
 	public enum TipoEstrattoConto {
 		CSV , PDF 
@@ -20,7 +20,7 @@ public class EstrattoConto  extends BasicModel {
 	private Integer anno;
 	private String ibanAccredito;
 	private String formato ;
-	private long id;
+	private Long id;
 	private TipoEstrattoConto tipoEstrattoConto;
 	
 	public String getCodDominio() {
@@ -41,10 +41,10 @@ public class EstrattoConto  extends BasicModel {
 	public void setMeseAnno(String meseAnno) {
 		this.meseAnno = meseAnno;
 	}
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public Integer getMese() {

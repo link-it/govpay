@@ -242,7 +242,7 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return new EstrattoConto(bd).estrattoConto();
+			return new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
 		} catch (Exception e) {
 			log.error("Estratto Conto fallito", e);
 			return "Estratto Conto#" + e.getMessage();

@@ -35,12 +35,12 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.reportistica.PagamentiBD;
+import it.govpay.bd.reportistica.EstrattoContoCostanti;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
-
+	
 	private Long idRr;
 	private Long idFrApplicazione;
 	private Long idFrApplicazioneRevoca;
@@ -131,10 +131,10 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.idVersamenti != null && this.idVersamenti.size() >0){
+			if(this.idVersamenti != null && this.idVersamenti.size() >0){ 
 				if(addAnd)
 					newExpression.and();
-				CustomField idVersamentoField = new CustomField(PagamentiBD.ALIAS_ID, Long.class, PagamentiBD.ALIAS_ID,
+				CustomField idVersamentoField = new CustomField(ALIAS_ID, Long.class, ALIAS_ID,
 						pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
 				newExpression.in(idVersamentoField, this.idVersamenti);
 				// forzo la join con singoliversamenti

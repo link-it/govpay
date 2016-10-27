@@ -20,29 +20,9 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.GovpayConfig;
-import it.govpay.bd.model.converter.PagamentoConverter;
-import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
-import it.govpay.bd.pagamento.filters.PagamentoFilter;
-import it.govpay.model.EstrattoConto;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
-import it.govpay.orm.IdPagamento;
-import it.govpay.orm.dao.IPagamentoService;
-import it.govpay.orm.dao.jdbc.JDBCRendicontazioneSenzaRPTService;
-import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.RendicontazioneSenzaRPTFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.PagamentoFetch;
-
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -52,17 +32,20 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
-import org.openspcoop2.utils.TipiDatabase;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Pagamento;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.converter.PagamentoConverter;
+import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
+import it.govpay.bd.pagamento.filters.PagamentoFilter;
+import it.govpay.orm.IdPagamento;
+import it.govpay.orm.dao.jdbc.JDBCRendicontazioneSenzaRPTService;
+import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.RendicontazioneSenzaRPTFieldConverter;
 
 public class PagamentiBD extends BasicBD {
 	
-	
-
-	public static final String NOME_QUERY_ESTRATTI_CONTO = "estrattiConto";
-	public static final String NOME_QUERY_ESTRATTI_CONTO_PER_VERSAMENTI = "estrattiContoVersamenti";
-	public static final String NOME_QUERY_CSV_VERSAMENTI = "csvVersamenti";
-	public static final String PLACE_HOLDER_QUERY_ESTRATTI_CONTO_PER_VERSAMENTI = "$ID_VERSAMENTI$";
-
 	public PagamentiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
@@ -310,187 +293,5 @@ public class PagamentiBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
-	}
-
-	public List<it.govpay.model.rest.Pagamento> estrattoConto(
-			PagamentoFilter filter) throws ServiceException {
-		List<it.govpay.model.rest.Pagamento> pagamenti = new ArrayList<it.govpay.model.rest.Pagamento>();
-		IPagamentoService pagamentoService = this.getPagamentoService();
-
-		IPaginatedExpression pagExpr = filter.toPaginatedExpression();
-
-		List<IField> listaFields = new ArrayList<IField>();
-		listaFields.add(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
-		listaFields.add(it.govpay.orm.Pagamento.model().IMPORTO_PAGATO);
-		listaFields.add(it.govpay.orm.Pagamento.model().IUR);
-		listaFields.add(it.govpay.orm.Pagamento.model().ID_RPT.IUV);
-		listaFields
-				.add(it.govpay.orm.Pagamento.model().CODFLUSSO_RENDICONTAZIONE);
-		listaFields
-				.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE);
-		listaFields
-				.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE);
-
-		IField[] fields = listaFields.toArray(new IField[listaFields.size()]);
-		List<Map<String, Object>> select = new ArrayList<Map<String, Object>>();
-		try {
-			select = pagamentoService.select(pagExpr, fields);
-			if (select != null && select.size() > 0) {
-				PagamentoFetch pagFetch = new PagamentoFetch();
-				TipiDatabase tipoDatabase = ConnectionManager
-						.getJDBCServiceManagerProperties().getDatabase();
-				for (Map<String, Object> map : select) {
-					it.govpay.orm.Pagamento pagamento = (it.govpay.orm.Pagamento) pagFetch
-							.fetch(tipoDatabase,
-									it.govpay.orm.Pagamento.model(), map);
-					it.govpay.model.rest.Pagamento dto = it.govpay.bd.model.rest.converter.PagamentoConverter
-							.toRestDTO(pagamento, map);
-					pagamenti.add(dto);
-				}
-			}
-		} catch (NotFoundException e) {
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-		return pagamenti;
-	}
-
-	public  List<EstrattoConto>  estrattoConto(String codDominio, Date dataInizio, Date dataFine, Integer offset, Integer limit)throws ServiceException {
-		List<it.govpay.model.EstrattoConto> estrattiConto = new ArrayList<EstrattoConto>();
-		IPagamentoService pagamentoService = this.getPagamentoService();
-
-		List<Class<?>> listaFields = new ArrayList<Class<?>>();
-		listaFields.add(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().IMPORTO_PAGATO.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().IUR.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().ID_RPT.IUV.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE.getFieldType());
-		listaFields.add(it.govpay.orm.FR.model().COD_BIC_RIVERSAMENTO.getFieldType());
-		listaFields.add(it.govpay.orm.FR.model().IUR.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().IBAN_ACCREDITO.getFieldType());
-
-		List<List<Object>> select = new ArrayList<List<Object>>();
-		try {
-			List<Object> listaParam = new ArrayList<Object>();
-			//date query 1
-			listaParam.add(dataInizio);
-			listaParam.add(dataFine);
-			// cod dominio
-			listaParam.add(codDominio);
-			// data query 2
-			listaParam.add(dataInizio);
-			listaParam.add(dataFine);
-			// cod dominio
-			listaParam.add(codDominio);
-			
-			// offset
-			listaParam.add(offset);
-			
-			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
-				listaParam.add(offset+limit);
-			} else {
-				listaParam.add(limit);
-			}
-			
-			select = pagamentoService.nativeQuery(GovpayConfig.getInstance().getNativeQuery(NOME_QUERY_ESTRATTI_CONTO), listaFields, listaParam.toArray());
-			if(select != null && select.size() > 0){
-				for (List<Object> list : select) {
-					EstrattoConto estrattoConto = new EstrattoConto();
-					estrattoConto.setDataPagamento((Date) list.get(0));
-					estrattoConto.setImportoPagato((Double) list.get(1));
-					estrattoConto.setIur((String) list.get(2));
-					estrattoConto.setIuv((String) list.get(3));
-					estrattoConto.setCodFlussoRendicontazione((String) list.get(4));
-					estrattoConto.setCodSingoloVersamentoEnte((String) list.get(5));
-					estrattoConto.setNote((String) list.get(6));
-					estrattoConto.setCodBicRiversamento((String) list.get(7));
-					estrattoConto.setIdRegolamento((String) list.get(8));
-					estrattoConto.setIbanAccredito((String) list.get(9));
-					
-					estrattiConto.add(estrattoConto); 
-				}
-			}
-		} catch (NotFoundException e) {
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-		return estrattiConto;
-	}
-	
-	public  List<EstrattoConto>  estrattoConto(String codDominio, List<Long> idVersamenti, Integer offset, Integer limit)throws ServiceException {
-		List<it.govpay.model.EstrattoConto> estrattiConto = new ArrayList<EstrattoConto>();
-		IPagamentoService pagamentoService = this.getPagamentoService();
-
-		List<Class<?>> listaFields = new ArrayList<Class<?>>();
-		listaFields.add(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().IMPORTO_PAGATO.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().IUR.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().ID_RPT.IUV.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.NOTE.getFieldType());
-		listaFields.add(it.govpay.orm.FR.model().COD_BIC_RIVERSAMENTO.getFieldType());
-		listaFields.add(it.govpay.orm.FR.model().IUR.getFieldType());
-		listaFields.add(it.govpay.orm.Pagamento.model().IBAN_ACCREDITO.getFieldType());
-
-		List<List<Object>> select = new ArrayList<List<Object>>();
-		try {
-			
-			
-			
-			List<Object> listaParam = new ArrayList<Object>();
-			// query 1
-			listaParam.addAll(idVersamenti);
-			listaParam.add(codDominio);
-			// query 2
-			listaParam.addAll(idVersamenti);
-			listaParam.add(codDominio);
-			
-			listaParam.add(offset);
-			
-			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
-				listaParam.add(offset+limit);
-			} else {
-				listaParam.add(limit);
-			}
-			
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(NOME_QUERY_ESTRATTI_CONTO_PER_VERSAMENTI);
-			
-			StringBuilder sb = new StringBuilder();
-			
-			for (int i=0; i < idVersamenti.size() ; i++) {
-				if(sb.length() > 0)
-					sb.append(",");
-				
-				sb.append("?");
-			}
-			
-			nativeQuery = nativeQuery.replace(PLACE_HOLDER_QUERY_ESTRATTI_CONTO_PER_VERSAMENTI, sb.toString());
-			
-			select = pagamentoService.nativeQuery(nativeQuery, listaFields, listaParam.toArray());
-			if(select != null && select.size() > 0){
-				for (List<Object> list : select) {
-					EstrattoConto estrattoConto = new EstrattoConto();
-					estrattoConto.setDataPagamento((Date) list.get(0));
-					estrattoConto.setImportoPagato((Double) list.get(1));
-					estrattoConto.setIur((String) list.get(2));
-					estrattoConto.setIuv((String) list.get(3));
-					estrattoConto.setCodFlussoRendicontazione((String) list.get(4));
-					estrattoConto.setCodSingoloVersamentoEnte((String) list.get(5));
-					estrattoConto.setNote((String) list.get(6));
-					estrattoConto.setCodBicRiversamento((String) list.get(7));
-					estrattoConto.setIdRegolamento((String) list.get(8));
-					estrattoConto.setIbanAccredito((String) list.get(9));
-					
-					estrattiConto.add(estrattoConto); 
-				}
-			}
-		} catch (NotFoundException e) {
-		} catch (Exception e) {
-			throw new ServiceException(e);
-		}
-		return estrattiConto;
 	}
 }

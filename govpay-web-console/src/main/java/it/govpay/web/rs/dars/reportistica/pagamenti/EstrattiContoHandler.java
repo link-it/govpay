@@ -52,7 +52,7 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
 
-public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.reportistica.EstrattoConto> implements IDarsHandler<it.govpay.model.reportistica.EstrattoConto>{
+public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata> implements IDarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata>{
 
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
 
@@ -124,7 +124,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 				}
 			}
 
-			List<it.govpay.model.reportistica.EstrattoConto> findAll = eseguiRicerca ? tracciatiBD.findAll(filter) : null;
+			List<it.govpay.model.reportistica.EstrattoContoMetadata> findAll = eseguiRicerca ? tracciatiBD.findAll(filter) : null;
 			long count = findAll != null ? findAll.size() : 0 ;
 
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -147,7 +147,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			if(findAll != null && findAll.size() > 0){
-				for (it.govpay.model.reportistica.EstrattoConto entry : findAll) {
+				for (it.govpay.model.reportistica.EstrattoContoMetadata entry : findAll) {
 					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
 				}
 			}
@@ -275,7 +275,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 
 	@Override
-	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, it.govpay.model.reportistica.EstrattoConto entry) throws ConsoleException {
+	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, it.govpay.model.reportistica.EstrattoContoMetadata entry) throws ConsoleException {
 		return null;
 	}
 
@@ -294,7 +294,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 			// recupero oggetto
 			EstrattiConto estrattiContoBD = new EstrattiConto(bd);
-			it.govpay.model.reportistica.EstrattoConto estrattoConto = estrattiContoBD.getEstrattoConto(id,operatore.getPrincipal()); 
+			it.govpay.model.reportistica.EstrattoContoMetadata estrattoConto = estrattiContoBD.getEstrattoConto(id,operatore.getPrincipal()); 
 
 			InfoForm infoModifica = null;
 			URI cancellazione = null;
@@ -348,12 +348,12 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 
 	@Override
-	public it.govpay.model.reportistica.EstrattoConto creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {
+	public it.govpay.model.reportistica.EstrattoContoMetadata creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
 
 	@Override
-	public void checkEntry(it.govpay.model.reportistica.EstrattoConto entry, it.govpay.model.reportistica.EstrattoConto oldEntry) throws ValidationException {
+	public void checkEntry(it.govpay.model.reportistica.EstrattoContoMetadata entry, it.govpay.model.reportistica.EstrattoContoMetadata oldEntry) throws ValidationException {
 	}
 
 	@Override
@@ -364,7 +364,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 
 	@Override
-	public String getTitolo(it.govpay.model.reportistica.EstrattoConto entry, BasicBD bd)  throws ConsoleException{
+	public String getTitolo(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd)  throws ConsoleException{
 		StringBuilder sb = new StringBuilder();
 
 		String dominioLabel = entry.getCodDominio();
@@ -385,13 +385,13 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 
 	@Override
-	public String getSottotitolo(it.govpay.model.reportistica.EstrattoConto entry, BasicBD bd)  throws ConsoleException {
+	public String getSottotitolo(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd)  throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 		return sb.toString();
 	}
 
 	@Override
-	public List<String> getValori(it.govpay.model.reportistica.EstrattoConto entry, BasicBD bd) throws ConsoleException {
+	public List<String> getValori(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd) throws ConsoleException {
 		List<String> valori = new ArrayList<String>();
 
 		String dominioLabel = entry.getCodDominio();

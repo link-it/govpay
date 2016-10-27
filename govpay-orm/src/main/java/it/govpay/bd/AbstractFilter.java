@@ -37,6 +37,8 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 
 public abstract class AbstractFilter implements IFilter {
+	
+	public static final String ALIAS_ID = "id";
 
 	public AbstractFilter(IExpressionConstructor expressionConstructor) {
 		this.expressionConstructor = expressionConstructor;

@@ -15,6 +15,7 @@ public class EstrattoConto {
 
 	private Dominio dominio;
 	private List<Long> idVersamenti;
+	private List<Long> idSingoliVersamenti;
 	private Map<String, ByteArrayOutputStream> output;
 	private TipoEstrattoConto tipoEstrattoConto;
 	
@@ -41,6 +42,12 @@ public class EstrattoConto {
 	}
 	public void setTipoEstrattoConto(TipoEstrattoConto tipoEstrattoConto) {
 		this.tipoEstrattoConto = tipoEstrattoConto;
+	}
+	public List<Long> getIdSingoliVersamenti() {
+		return idSingoliVersamenti;
+	}
+	public void setIdSingoliVersamenti(List<Long> idSingoliVersamenti) {
+		this.idSingoliVersamenti = idSingoliVersamenti;
 	}
 	public Map<String, ByteArrayOutputStream> getOutput() {
 		if(output == null)
