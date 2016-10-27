@@ -816,7 +816,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
 				for (String codDominio : mappaInputEstrattoConto.keySet()) {
-					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
+					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoVersamentiPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
 					listInputEstrattoConto.add(input);
 				}
 
@@ -963,7 +963,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				// Estratto conto per iban e codiceversamento.
 				List<Long> idVersamentiDominio = new ArrayList<Long>();
 				idVersamentiDominio.add(idToExport);
-				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(dominio, idVersamentiDominio);
+				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoVersamentiPDF(dominio, idVersamentiDominio);
 				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
 				listInputEstrattoConto.add(input);
 				String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();

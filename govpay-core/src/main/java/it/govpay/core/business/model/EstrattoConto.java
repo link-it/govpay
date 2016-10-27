@@ -61,7 +61,7 @@ public class EstrattoConto {
 		return ec;
 	}
 	
-	public static EstrattoConto creaEstrattoContoPDF(Dominio dominio,List<Long> idVersamenti){
+	public static EstrattoConto creaEstrattoContoVersamentiPDF(Dominio dominio,List<Long> idVersamenti){
 		EstrattoConto ec = new EstrattoConto();
 		ec.setDominio(dominio);
 		ec.setIdVersamenti(idVersamenti);
@@ -69,4 +69,11 @@ public class EstrattoConto {
 		return ec;
 	}
 	
+	public static EstrattoConto creaEstrattoContoPagamentiPDF(Dominio dominio,List<Long> idPagamenti){
+		EstrattoConto ec = new EstrattoConto();
+		ec.setDominio(dominio);
+		ec.setIdSingoliVersamenti(idPagamenti);
+		ec.setTipoEstrattoConto(TipoEstrattoConto.PDF);
+		return ec;
+	}
 }
