@@ -33,6 +33,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.logging.log4j.LogManager;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+
 @Path("/pub")
 public class GestioneRedirectGw {
 
@@ -55,16 +58,22 @@ public class GestioneRedirectGw {
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
+				LogManager.getLogger(GestioneRedirectGw.class).info("[Dominio:" + codDominio + " Sessione: " + codSessione + "] Custom Redirect > [Url: " + ub.build().toString() + "]");
 				return Response.seeOther(ub.build()).build();
 			} else {
 				UriBuilder ub = UriBuilder.fromUri(AnagraficaManager.getPortale(bd, rpt.getIdPortale()).getDefaultCallbackURL());
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
+				LogManager.getLogger(GestioneRedirectGw.class).info("[Dominio:" + codDominio + " Sessione: " + codSessione + "] Default Redirect > [Url: " + ub.build().toString() + "]");
 				return Response.seeOther(ub.build()).build();
 			}
-		} catch (Exception e) {
+		} catch (NotFoundException e) {
+			LogManager.getLogger(GestioneRedirectGw.class).warn("La BackUrl richiesta non riferisce alcuna transazione [Dominio:" + codDominio + " Sessione: " + codSessione + "]");
 			return Response.status(Response.Status.NOT_FOUND).build();
+		} catch (Exception e) {
+			LogManager.getLogger(GestioneRedirectGw.class).error("Riscontrato errore nella gestione della BackUrl", e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd!= null) bd.closeConnection();
 		}

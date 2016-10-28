@@ -264,9 +264,8 @@ public class BasicClient {
 				Base64 base = new Base64();
 				String encoding = new String(base.encode((httpBasicUser + ":" + httpBasicPassword).getBytes()));
 				connection.setRequestProperty("Authorization", "Basic " + encoding);
+				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
 			}
-			
-			
 			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			if(soap) {

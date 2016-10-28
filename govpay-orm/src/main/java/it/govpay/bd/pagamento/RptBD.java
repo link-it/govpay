@@ -214,7 +214,7 @@ public class RptBD extends BasicBD {
 		}
 	}
 
-	public Rpt getRptByCodSessione(String codDominio, String idSession) throws ServiceException, NotFoundException, MultipleResultException {
+	public Rpt getRptByCodSessione(String codDominio, String idSession) throws ServiceException, NotFoundException {
 		try {
 			IExpression exp = this.getRptService().newExpression();
 			
@@ -228,6 +228,8 @@ public class RptBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}

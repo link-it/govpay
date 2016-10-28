@@ -28,9 +28,10 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayCustomConfig;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.IuvBD;
+import it.govpay.bd.pagamento.util.CustomIuv;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
@@ -106,8 +107,13 @@ public class Iuv extends BasicBD {
 		try {
 			
 			// Controllo se e' stata impostata la generazione degli IUV distribuita.
-			if(dominio.isCustomIuv() && GovpayCustomConfig.getInstance().getDefaultCustomIuvGenerator() == null) {
-				throw new GovPayException(EsitoOperazione.DOM_002, dominio.getCodDominio());
+			if(dominio.isCustomIuv()) {
+				try {
+					if(GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getClass().getMethod("buildIuvNumerico", it.govpay.model.Applicazione.class, it.govpay.model.Dominio.class, long.class).getDeclaringClass().getName().equals(CustomIuv.class.getName()))
+						throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());
+				} catch (NoSuchMethodException e) {
+					throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());
+				}
 			}
 			
 			Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
@@ -131,7 +137,7 @@ public class Iuv extends BasicBD {
 			}
 			
 			if(!dominio.isCustomIuv()) {
-				throw new GovPayException(EsitoOperazione.DOM_003, gpCaricaIuv.getCodDominio());
+				throw new GovPayException("Il dominio [Dominio:" + gpCaricaIuv.getCodDominio() + "] risulta configurato per la gestione centralizzata degli IUV. Non e' quindi possibile caricare IUV generati esternamente.", EsitoOperazione.DOM_003, gpCaricaIuv.getCodDominio());
 			}
 			
 			GpCaricaIuvResponse response = new GpCaricaIuvResponse();
