@@ -31,7 +31,7 @@ import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.web.business.reportistica.EstrattiConto;
+import it.govpay.web.business.reportistica.EstrattiContoMetadata;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -77,8 +77,8 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			List<Long> idDomini = new ArrayList<Long>();
 			AclBD aclBD = new AclBD(bd);
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			EstrattiConto tracciatiBD = new EstrattiConto(bd);
-			EstrattoContoFilter filter = tracciatiBD.newFilter();
+			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
+			EstrattoContoFilter filter = estrattiContoBD.newFilter();
 
 			// Operatore per controllo domini che puo' vedere
 			filter.setOperatore(operatore);
@@ -124,7 +124,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 				}
 			}
 
-			List<it.govpay.model.reportistica.EstrattoContoMetadata> findAll = eseguiRicerca ? tracciatiBD.findAll(filter) : null;
+			List<it.govpay.model.reportistica.EstrattoContoMetadata> findAll = eseguiRicerca ? estrattiContoBD.findAll(filter) : null;
 			long count = findAll != null ? findAll.size() : 0 ;
 
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -293,7 +293,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
 			// recupero oggetto
-			EstrattiConto estrattiContoBD = new EstrattiConto(bd);
+			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
 			it.govpay.model.reportistica.EstrattoContoMetadata estrattoConto = estrattiContoBD.getEstrattoConto(id,operatore.getPrincipal()); 
 
 			InfoForm infoModifica = null;
@@ -442,7 +442,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
-			EstrattiConto estrattiContoBD = new EstrattiConto(bd);
+			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
  
 			for (Long idTracciato : idsToExport) {
 				
@@ -484,7 +484,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 			// recupero oggetto
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			EstrattiConto estrattiContoBD = new EstrattiConto(bd);
+			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
 			String fileName = estrattiContoBD.getCSVEstrattoConto(idToExport,operatore.getPrincipal(), baos); 
 
 			String fileZipName = fileName;
@@ -526,7 +526,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);  
 
 			// recupero oggetto
-			EstrattiConto  estrattiContoBD = new EstrattiConto(bd);
+			EstrattiContoMetadata  estrattiContoBD = new EstrattiContoMetadata(bd);
 			String fileName = estrattiContoBD.getCSVEstrattoConto(id,operatore.getPrincipal(), baos); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");

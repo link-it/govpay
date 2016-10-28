@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -63,6 +64,7 @@ import it.govpay.model.EstrattoConto;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -620,6 +622,9 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 				List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
 
 				if(findAll != null && findAll.size() > 0){
+					numeroZipEntries ++;
+					//ordinamento record
+					Collections.sort(findAll, new EstrattoContoComparator());
 					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 					try{
 						ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");
@@ -769,6 +774,9 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 				List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
 
 				if(findAll != null && findAll.size() > 0){
+					numeroZipEntries ++;
+					//ordinamento record
+					Collections.sort(findAll, new EstrattoContoComparator());
 					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 					try{
 						ZipEntry pagamentoCsv = new ZipEntry("pagamenti.csv");

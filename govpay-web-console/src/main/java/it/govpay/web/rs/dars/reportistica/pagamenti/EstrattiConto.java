@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.core.business.EstrattoConto;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -68,13 +67,13 @@ public class EstrattiConto extends BaseDarsService {
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			String fileName = ((EstrattiContoHandler)this.getDarsHandler()).getFile(id,uriInfo,bd,baos);
 			String fileNameExt = FilenameUtils.getExtension(fileName);
-			String contentType = fileNameExt.equals(EstrattoConto.FORMATO_CSV) ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_OCTET_STREAM;
+			String contentType = fileNameExt.equals(it.govpay.model.reportistica.EstrattoContoMetadata.FORMATO_CSV) ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_OCTET_STREAM;
 
 			darsResponse.setResponse(baos.toString());
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			
 			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
-			Object contenutoResponse  = fileNameExt.equals(EstrattoConto.FORMATO_CSV) ? baos.toString() : baos.toByteArray();
+			Object contenutoResponse  = fileNameExt.equals(it.govpay.model.reportistica.EstrattoContoMetadata.FORMATO_CSV) ? baos.toString() : baos.toByteArray();
 			
 			return Response.ok(contenutoResponse,contentType).header("Content-Type", contentType.toString()).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
 		} catch(WebApplicationException e){

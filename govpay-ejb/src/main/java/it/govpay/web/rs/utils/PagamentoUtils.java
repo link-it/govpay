@@ -1,11 +1,5 @@
 package it.govpay.web.rs.utils;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.core.business.EstrattoConto;
-import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.Caricatore;
-import it.govpay.web.rs.model.EstrattoContoRequest;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -17,13 +11,17 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.Logger;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.model.reportistica.EstrattoContoMetadata;
+import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.model.EstrattoContoRequest;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 public class PagamentoUtils {
 	
@@ -139,7 +137,7 @@ public class PagamentoUtils {
 		}
 	}
 	
-	public static ByteArrayOutputStream writeListaEstrattoContoResponse(BaseRsService servizioRest, Logger log, List<String> response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws Exception{
+	public static ByteArrayOutputStream writeListaEstrattoContoResponse(BaseRsService servizioRest, Logger log, List<EstrattoContoMetadata> response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeListaEstrattoContoResponse";
 
@@ -147,6 +145,7 @@ public class PagamentoUtils {
 			log.info("Esecuzione " + nomeMetodo + " in corso...");
 
 			JsonConfig jsonConfig = new JsonConfig();
+			jsonConfig.setRootClass(EstrattoContoMetadata.class); 
 //			jsonConfig.setRootClass(String.class);
 //			jsonConfig.setCollectionType(List.class);
 			JSONArray jsonArray = JSONArray.fromObject( response , jsonConfig);
@@ -181,7 +180,7 @@ public class PagamentoUtils {
 			
 			baos.flush();
 
-			if(formatoEstrattoConto.equals(EstrattoConto.FORMATO_CSV))
+			if(formatoEstrattoConto.equals(EstrattoContoMetadata.FORMATO_CSV))
 				servizioRest.logResponse(uriInfo, httpHeaders, methodName, baos);
 			else
 				servizioRest.logResponse(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());

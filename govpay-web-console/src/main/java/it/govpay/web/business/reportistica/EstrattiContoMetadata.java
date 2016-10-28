@@ -1,17 +1,14 @@
 package it.govpay.web.business.reportistica;
 
 import java.io.ByteArrayOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -32,23 +29,19 @@ import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.reportistica.EstrattoContoMetadata;
-import it.govpay.web.business.reportistica.utils.EstrattoContoComparator;
+import it.govpay.web.business.reportistica.comparator.EstrattoContoMetadataEntryComparator;
 import it.govpay.web.utils.ConsoleProperties;
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
-public class EstrattiConto extends BasicBD{
+public class EstrattiContoMetadata extends BasicBD{
 
 	private CloseableHttpClient httpClient;
-	private Logger log = Logger.getLogger(EstrattiConto.class);
-	private SimpleDateFormat f3 = new SimpleDateFormat("yyyy/MM");
-	
-	public static final String FORMATO_CSV = "csv";
-	public static final String FORMATO_PDF = "pdf";
-	public static final String FORMATO_STAR = "*";
-
+	private Logger log = Logger.getLogger(EstrattiContoMetadata.class);
 	private static TreeMap<String, LinkedHashMap<Long, EstrattoContoMetadata>> mapEC = null;  
 
-	public EstrattiConto(BasicBD basicBD) {
+	public EstrattiContoMetadata(BasicBD basicBD) {
 		super(basicBD);
 		this.httpClient = HttpClientBuilder.create().build();
 		if(mapEC == null)
@@ -111,12 +104,14 @@ public class EstrattiConto extends BasicBD{
 					IOUtils.copy(responseEntity.getContent(), baos);
 					
 					if(httpResponse.getStatusLine().getStatusCode() == 200) {
+						JsonConfig jsonConfig = new JsonConfig();
+						jsonConfig.setRootClass(EstrattoContoMetadata.class);
 						JSONArray listaJSON = JSONArray.fromObject( baos.toString());
 
 						for (int i =0 ; i< listaJSON.size() ; i++) {
-							Object object = listaJSON.get(i);
-
-							EstrattoContoMetadata estrattoContoFromJson = this.getEstrattoContoFromJson(dominio.getCodDominio(), id, (String) object);
+							JSONObject jsonObject = listaJSON.getJSONObject(i);
+							EstrattoContoMetadata estrattoContoFromJson = (EstrattoContoMetadata) JSONObject.toBean( jsonObject, jsonConfig );
+							estrattoContoFromJson.setId(id); 
 							mapUtente.put(id, estrattoContoFromJson);
 
 							id ++;
@@ -133,7 +128,7 @@ public class EstrattiConto extends BasicBD{
 				
 				List<Entry<Long, EstrattoContoMetadata>> listOfEntries = new ArrayList<Entry<Long, EstrattoContoMetadata>>(mapUtente.entrySet());
 				// sorting HashMap by values using comparator
-		        Collections.sort(listOfEntries, new EstrattoContoComparator());
+		        Collections.sort(listOfEntries, new EstrattoContoMetadataEntryComparator());
 
 		        LinkedHashMap<Long, EstrattoContoMetadata> orderedMapUtente = new LinkedHashMap<Long, EstrattoContoMetadata>(listOfEntries.size());
 		        // copying entries from List to Map
@@ -151,62 +146,6 @@ public class EstrattiConto extends BasicBD{
 			throw new ServiceException(e);
 		}
 	}
-
-	private EstrattoContoMetadata getEstrattoContoFromJson(String codDominio, long id, String fileName){
-		EstrattoContoMetadata estrattoConto = new EstrattoContoMetadata();
-		estrattoConto.setCodDominio(codDominio);
-		estrattoConto.setNomeFile(fileName);
-		estrattoConto.setId(id);
-
-		try{
-			// decodificare l'estensione del file
-			String extension = FilenameUtils.getExtension(fileName);
-			estrattoConto.setFormato(extension);
-			fileName = FilenameUtils.removeExtension(fileName);
-			
-			String[] split = fileName.split("_");
-
-			if(split != null && split.length > 0 ){
-				boolean formatoOk = false;
-				// formato Nome file codDominio_anno_mese				
-				if(split.length == 3){
-					estrattoConto.setAnno(Integer.parseInt(split[1]));
-					estrattoConto.setMese(Integer.parseInt(split[2]));
-					formatoOk = true;
-				}
-
-				// formato Nome file codDominio_iban_anno_mese
-				if(split.length == 4){
-					estrattoConto.setIbanAccredito(split[1]); 
-					estrattoConto.setAnno(Integer.parseInt(split[2]));
-					estrattoConto.setMese(Integer.parseInt(split[3]));
-					formatoOk = true;
-				}
-
-				if(formatoOk){
-					Calendar cal = Calendar.getInstance();
-					cal.set(Calendar.MILLISECOND, 0);
-					cal.set(Calendar.SECOND, 0);
-					cal.set(Calendar.MINUTE, 0);
-					cal.set(Calendar.HOUR_OF_DAY, 0);
-					cal.set(Calendar.DAY_OF_MONTH, 1);
-					cal.set(Calendar.MONTH, estrattoConto.getMese() -1);
-					cal.set(Calendar.YEAR, estrattoConto.getAnno());
-
-					estrattoConto.setMeseAnno(this.f3.format(cal.getTime()));
-					
-				}else{
-					this.log.debug("Formato nome del file ["+fileName+"] non valido, impossibile identificare mese/anno dell'estratto conto.");
-				}
-			}
-		} catch(Exception e){
-			this.log.error(e.getMessage(),e);
-		}
-
-
-		return estrattoConto;
-	}
-
 
 	public  EstrattoContoMetadata getEstrattoConto(long id, String operatore) throws ServiceException, NotFoundException {
 		if(mapEC == null)

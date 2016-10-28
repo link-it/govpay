@@ -4,6 +4,10 @@ import it.govpay.model.BasicModel;
 
 public class EstrattoContoMetadata  extends BasicModel {
 	
+	public static final String FORMATO_CSV = "csv";
+	public static final String FORMATO_PDF = "pdf";
+	public static final String FORMATO_STAR = "*";
+	
 	public enum TipoEstrattoConto {
 		CSV , PDF 
 	}

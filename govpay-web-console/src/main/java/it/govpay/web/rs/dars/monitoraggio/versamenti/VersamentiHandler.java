@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -79,6 +80,7 @@ import it.govpay.model.Evento;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
 import it.govpay.stampe.pdf.rt.RtPdf;
 import it.govpay.web.rs.BaseRsService;
@@ -844,6 +846,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				List<EstrattoConto> findAll =  estrattiContoBD.estrattoContoFromIdVersamenti(ecFilter);
 
 				if(findAll != null && findAll.size() > 0){
+					//ordinamento record
+					Collections.sort(findAll, new EstrattoContoComparator());
 					numeroZipEntries ++;
 					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 					try{
@@ -1106,6 +1110,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				List<EstrattoConto> findAll =  estrattiContoBD.estrattoContoFromIdVersamenti(ecFilter);
 
 				if(findAll != null && findAll.size() > 0){
+					//ordinamento record
+					Collections.sort(findAll, new EstrattoContoComparator());
 					numeroZipEntries ++;
 					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
 					try{

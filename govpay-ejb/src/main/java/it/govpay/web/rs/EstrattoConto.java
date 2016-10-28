@@ -13,6 +13,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
@@ -21,6 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.utils.logger.beans.Property;
 
 import it.govpay.bd.BasicBD;
@@ -28,6 +30,7 @@ import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.reportistica.EstrattoContoMetadata;
 import it.govpay.web.rs.model.EstrattoContoRequest;
 import it.govpay.web.rs.utils.PagamentoUtils;
 import it.govpay.web.rs.utils.RestUtils;
@@ -43,7 +46,7 @@ public class EstrattoConto extends BaseRsService{
 	
 
 	@POST
-	@Path("/estrattoConto")
+	@Path("/")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response estrattoConto(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
@@ -117,27 +120,30 @@ public class EstrattoConto extends BaseRsService{
 	}
 	
 	@GET
-	@Path("/estrattoConto/{codDominio}")
+	@Path("/{codDominio}")
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response listaEstrattoConto(
 			@PathParam("codDominio") String codDominio,
+			@QueryParam("formato") String formatoFile,
 			@Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
 		
 		String methodName = "ListaEstrattoConto"; 
 		BasicBD bd = null;
 		GpContext ctx = null;
-		
+
+		// formato dei file estratto conto
+		if(StringUtils.isEmpty(formatoFile))
+			formatoFile = EstrattoContoMetadata.FORMATO_STAR;
 		try{
 			PagamentoUtils.readGetRequest(this, log, uriInfo, httpHeaders, methodName);
-			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx = GpThreadLocal.get();
 			
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
-			ctx.getContext().getRequest().addGenericProperty(new Property("formatoFile",  it.govpay.core.business.EstrattoConto.FORMATO_STAR));
+			ctx.getContext().getRequest().addGenericProperty(new Property("formatoFile",  formatoFile));
 			ctx.log("rest.listaEstrattoConto");
 			
-			List<String> lst = new  it.govpay.core.business.EstrattoConto(bd).getListaEstrattoConto(codDominio, it.govpay.core.business.EstrattoConto.FORMATO_STAR);
+			List<EstrattoContoMetadata> lst = new it.govpay.core.business.EstrattoConto(bd).getListaEstrattoConto(codDominio, formatoFile);
 			
 			ByteArrayOutputStream baos = PagamentoUtils.writeListaEstrattoContoResponse(this, log, lst, uriInfo, httpHeaders, bd, methodName);
 			ctx.getContext().getRequest().addGenericProperty(new Property("numeroFile", lst.size()+""));
@@ -167,7 +173,7 @@ public class EstrattoConto extends BaseRsService{
 	
 	
 	@GET
-	@Path("/estrattoConto/{codDominio}/{nomeFile}")
+	@Path("/{codDominio}/{nomeFile}")
 	@Produces({MediaType.TEXT_PLAIN,MediaType.APPLICATION_OCTET_STREAM})
 	public Response scaricaEstrattoConto(
 			@PathParam("codDominio") String codDominio,
@@ -187,8 +193,8 @@ public class EstrattoConto extends BaseRsService{
 			ctx = GpThreadLocal.get();
 			
 			String fileNameExt = FilenameUtils.getExtension(nomeFile);
-			String formato = fileNameExt.equals( it.govpay.core.business.EstrattoConto.FORMATO_CSV) ?  it.govpay.core.business.EstrattoConto.FORMATO_CSV :  it.govpay.core.business.EstrattoConto.FORMATO_PDF;
-			String contentType = fileNameExt.equals( it.govpay.core.business.EstrattoConto.FORMATO_CSV) ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_OCTET_STREAM;
+			String formato = fileNameExt.equals( EstrattoContoMetadata.FORMATO_CSV) ?  EstrattoContoMetadata.FORMATO_CSV :  EstrattoContoMetadata.FORMATO_PDF;
+			String contentType = fileNameExt.equals( EstrattoContoMetadata.FORMATO_CSV) ? MediaType.TEXT_PLAIN : MediaType.APPLICATION_OCTET_STREAM;
 			
 			ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 			ctx.getContext().getRequest().addGenericProperty(new Property("nomeFile", nomeFile));
@@ -200,7 +206,7 @@ public class EstrattoConto extends BaseRsService{
 			ByteArrayOutputStream baos = PagamentoUtils.writeScaricaEstrattoContoResponse(this, log, res, uriInfo, httpHeaders, bd, methodName,formato);
 			ctx.log("rest.scaricaEstrattoContoOk");
 			
-			Object contenutoResponse  = fileNameExt.equals( it.govpay.core.business.EstrattoConto.FORMATO_CSV) ? baos.toString() : baos.toByteArray();
+			Object contenutoResponse  = fileNameExt.equals( EstrattoContoMetadata.FORMATO_CSV) ? baos.toString() : baos.toByteArray();
 			
 			return Response.ok(contenutoResponse,contentType).header("Content-Type", contentType.toString()).build();
 		}catch (GovPayException e) {

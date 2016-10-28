@@ -10,10 +10,10 @@ import it.govpay.bd.reportistica.EstrattoContoCostanti;
 import it.govpay.model.EstrattoConto;
 
 public class CSVUtils {
-	
+
 	public static List<String> getEstrattoContoCsvHeader(){
 		List<String> header = new ArrayList<String>();
-		
+
 		header.add(EstrattoContoCostanti.COD_VERSAMENTO_HEADER);
 		header.add(EstrattoContoCostanti.COD_SINGOLO_VERSAMENTO_HEADER);
 		header.add(EstrattoContoCostanti.IUV_HEADER);
@@ -21,6 +21,7 @@ public class CSVUtils {
 		header.add(EstrattoContoCostanti.IMPORTO_DOVUTO_HEADER);
 		header.add(EstrattoContoCostanti.IMPORTO_PAGATO_HEADER);
 		header.add(EstrattoContoCostanti.DATA_PAGAMENTO_HEADER);
+		header.add(EstrattoContoCostanti.STATO_VERSAMENTO_HEADER);
 		header.add(EstrattoContoCostanti.STATO_SINGOLO_VERSAMENTO_HEADER);
 		header.add(EstrattoContoCostanti.IUR_HEADER);
 		header.add(EstrattoContoCostanti.CODICE_RENDICONTAZIONE_HEADER);
@@ -32,7 +33,7 @@ public class CSVUtils {
 
 		return header;
 	}
-	 
+
 	public static List<String> getEstrattoContoAsCsvRow(EstrattoConto pagamento, SimpleDateFormat sdf) throws Exception{
 		List<String> oneLine = new ArrayList<String>();
 		// CodVersamentoEnte
@@ -68,6 +69,11 @@ public class CSVUtils {
 		// Data Pagamento 
 		if(pagamento.getDataPagamento() != null)
 			oneLine.add(sdf.format(pagamento.getDataPagamento()));
+		else 
+			oneLine.add("");
+		// Stato Versamento
+		if(pagamento.getStatoVersamento() != null)
+			oneLine.add(pagamento.getStatoVersamento().toString());
 		else 
 			oneLine.add("");
 		// Stato Singolo Versamento
