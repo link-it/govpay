@@ -145,7 +145,7 @@ public class Operazioni{
 		}
 	}
 
-	@Schedule(hour="*", minute="*/30", persistent=false)
+	@Schedule(hour="*", minute="*", persistent=false)
 	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
 	public static boolean spedizioneNotifiche(){
 		BasicBD bd = null;

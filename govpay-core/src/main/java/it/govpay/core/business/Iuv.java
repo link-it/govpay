@@ -107,11 +107,11 @@ public class Iuv extends BasicBD {
 		try {
 			
 			// Controllo se e' stata impostata la generazione degli IUV distribuita.
-			if(dominio.isCustomIuv() && GovpayConfig.getInstance().getDefaultCustomIuvGenerator() == null) {
+			if(dominio.isCustomIuv()) {
 				try {
-					if(!GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getClass().getMethod("buildIuvNumerico").getDeclaringClass().equals(CustomIuv.class))
+					if(GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getClass().getMethod("buildIuvNumerico", it.govpay.model.Applicazione.class, it.govpay.model.Dominio.class, long.class).getDeclaringClass().getName().equals(CustomIuv.class.getName()))
 						throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());
-				}catch (NoSuchMethodException e) {
+				} catch (NoSuchMethodException e) {
 					throw new GovPayException("Il dominio [Dominio:" + dominio.getCodDominio() + "] risulta configurato per una generazione decentralizzata degli IUV e non e' stato fornito un plugin per la generazione custom. Non e' quindi possibile avviare una transazione di pagamento se non viene fornito lo IUV da utilizzare.", EsitoOperazione.DOM_002, dominio.getCodDominio());
 				}
 			}

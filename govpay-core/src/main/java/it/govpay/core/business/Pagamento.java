@@ -149,8 +149,12 @@ public class Pagamento extends BasicBD {
 				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codDominio, iuv);
 			}
 			
-			if(!versamentoModel.getApplicazione(this).isAbilitato()) {
-				ctx.log("pagamento.applicazioneDisabilitata", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+			if(!versamentoModel.getUo(this).isAbilitato()) {
+				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+versamentoModel.getUo(this).getCodUo()+"].", EsitoOperazione.UOP_001, versamentoModel.getUo(this).getCodUo());
+			}
+			
+			if(!versamentoModel.getUo(this).getDominio(this).isAbilitato()) {
+				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+versamentoModel.getUo(this).getDominio(this).getCodDominio()+"].", EsitoOperazione.DOM_001, versamentoModel.getUo(this).getDominio(this).getCodDominio());
 			}
 			
 			versamenti.add(versamentoModel);
