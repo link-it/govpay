@@ -1,11 +1,10 @@
-package it.govpay.web.business.reportistica.comparator;
+package it.govpay.model.reportistica.comparator;
 
 import java.util.Comparator;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import it.govpay.model.reportistica.EstrattoContoMetadata;
-import it.govpay.model.reportistica.comparator.EstrattoContoMetadataComparator;
 
 
 public class EstrattoContoMetadataEntryComparator implements Comparator<Map.Entry<Long, EstrattoContoMetadata>> {

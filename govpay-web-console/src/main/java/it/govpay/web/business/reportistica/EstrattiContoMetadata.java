@@ -29,7 +29,7 @@ import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.reportistica.EstrattoContoMetadata;
-import it.govpay.web.business.reportistica.comparator.EstrattoContoMetadataEntryComparator;
+import it.govpay.model.reportistica.comparator.EstrattoContoMetadataEntryComparator;
 import it.govpay.web.utils.ConsoleProperties;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
