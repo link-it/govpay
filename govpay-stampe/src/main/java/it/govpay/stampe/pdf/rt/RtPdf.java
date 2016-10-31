@@ -60,7 +60,7 @@ public class RtPdf {
 		HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10));
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
 		addCustomerAttribute(list, Costanti.LABEL_CAUSALE, causale);
-		addCustomerAttribute(list, Costanti.LABEL_IMPORTO, (datiPagamento.getImportoTotalePagato().doubleValue()+ "‎€"));
+		addCustomerAttribute(list, Costanti.LABEL_IMPORTO_PAGATO, (datiPagamento.getImportoTotalePagato().doubleValue()+ "‎€"));
 		addCustomerAttribute(list, Costanti.LABEL_CF_PIVA_DEBITORE, rt.getSoggettoPagatore().getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
 		addCustomerAttribute(list, Costanti.LABEL_IUV, datiPagamento.getIdentificativoUnivocoVersamento());
 

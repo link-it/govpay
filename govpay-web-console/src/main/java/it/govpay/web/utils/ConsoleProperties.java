@@ -32,6 +32,8 @@ public class ConsoleProperties {
 	private URI log4j2Config;
 	private String pathEstrattoContoPdfLoghi;
 	
+	private String urlEstrattoConto, usernameEstrattoConto, passwordEstrattoConto;
+	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
 			init();
@@ -104,6 +106,11 @@ public class ConsoleProperties {
 				this.operazioniJMXDisponibili = operazioniAsString.split(",");
 			
 			this.pathEstrattoContoPdfLoghi = ConsoleProperties.getProperty("it.govpay.console.pdf.pathLoghi", props, false);
+			
+			
+			this.urlEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.url", props, false);
+			this.usernameEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.username", props, false);
+			this.passwordEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.password", props, false);
 			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
@@ -180,6 +187,18 @@ public class ConsoleProperties {
 
 	public String getPathEstrattoContoPdfLoghi() {
 		return pathEstrattoContoPdfLoghi;
+	}
+
+	public String getUrlEstrattoConto() {
+		return urlEstrattoConto;
+	}
+
+	public String getUsernameEstrattoConto() {
+		return usernameEstrattoConto;
+	}
+
+	public String getPasswordEstrattoConto() {
+		return passwordEstrattoConto;
 	}
 	
 }

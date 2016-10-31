@@ -12,12 +12,11 @@ import org.apache.logging.log4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.Caricatore;
 import net.sf.json.JSONObject;
 
 public class RestUtils {
 
-	public static ByteArrayOutputStream writeGovpayErrorResponse(Caricatore c, Logger log, GovPayException response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName){
+	public static ByteArrayOutputStream writeGovpayErrorResponse(BaseRsService servizioRest, Logger log, GovPayException response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeEstrattoContoResponse";
 
@@ -34,7 +33,7 @@ public class RestUtils {
 
 			baos.flush();
 
-			c.logResponse(uriInfo, httpHeaders, methodName, baos);
+			servizioRest.logResponse(uriInfo, httpHeaders, methodName, baos);
 			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 
@@ -51,7 +50,7 @@ public class RestUtils {
 		return baos;
 	}
 	
-	public static ByteArrayOutputStream writeGovpayErrorResponse(Caricatore c, Logger log, Exception response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName){
+	public static ByteArrayOutputStream writeGovpayErrorResponse(BaseRsService servizioRest, Logger log, Exception response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeEstrattoContoResponse";
 
@@ -68,7 +67,7 @@ public class RestUtils {
 
 			baos.flush();
 
-			c.logResponse(uriInfo, httpHeaders, methodName, baos);
+			servizioRest.logResponse(uriInfo, httpHeaders, methodName, baos);
 			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 

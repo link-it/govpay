@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -41,6 +42,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
+import org.openspcoop2.utils.csv.Printer;
 
 import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.revoche.CtEsitoRevoca;
@@ -64,17 +66,21 @@ import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.core.business.EstrattoConto;
+import it.govpay.bd.reportistica.EstrattiContoBD;
+import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
+import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
+import it.govpay.model.EstrattoConto;
 import it.govpay.model.Evento;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
 import it.govpay.stampe.pdf.rt.RtPdf;
 import it.govpay.web.rs.BaseRsService;
@@ -605,6 +611,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				sb.append(long1);
 			}
 
+		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 		int numeroZipEntries = 0;
 		String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
@@ -615,183 +622,255 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		String fileName = "Export.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			boolean eseguiRicerca = true;
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			RptBD rptBD = new RptBD(bd);
 			EventiBD eventiBd = new EventiBD(bd);
 			Eventi eventiDars = new Eventi();
-			EstrattoConto estrattoContoBD = new EstrattoConto(bd);
+			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
 			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler(); 
 
 			Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
 			Map<String, Dominio> mappaInputDomini = new HashMap<String, Dominio>();
 
-			for (Long idVersamento : idsToExport) {
-				Versamento versamento = versamentiBD.getVersamento(idVersamento);
+			VersamentoFilter filter = versamentiBD.newFilter();
+			List<Long> ids = new ArrayList<Long>();
+			ids = idsToExport;
 
-				// Prelevo il dominio
-				UnitaOperativa uo = versamento.getUo(bd);
-				Dominio dominio = uo.getDominio(bd);
+			if(!isAdmin){
 
-				String dirDominio = dominio.getCodDominio();
+				AclBD aclBD = new AclBD(bd);
+				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
-				// Aggrego i versamenti per dominio per generare gli estratti conto
-				List<Long> idVersamentiDominio = null;
-				if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio()))
-					idVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
-				else{
-					idVersamentiDominio = new ArrayList<Long>();
-					mappaInputEstrattoConto.put(dominio.getCodDominio(), idVersamentiDominio);
-					mappaInputDomini.put(dominio.getCodDominio(), dominio);
-				}
-				idVersamentiDominio.add(idVersamento);
-
-				String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
-
-				RptFilter rptFilter = rptBD.newFilter();
-				FilterSortWrapper rptFsw = new FilterSortWrapper();
-				rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
-				rptFsw.setSortOrder(SortOrder.DESC);
-				rptFilter.getFilterSortList().add(rptFsw);
-				rptFilter.setIdVersamento(idVersamento); 
-
-				RrBD rrBD = new RrBD(bd);
-				FilterSortWrapper rrFsw = new FilterSortWrapper();
-				rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
-				rrFsw.setSortOrder(SortOrder.DESC);
-
-				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
-				if(listaRpt != null && listaRpt.size() >0 )
-					for (Rpt rpt : listaRpt) {
-						numeroZipEntries ++;
-
-						String iuv = rpt.getIuv();
-						String ccp = rpt.getCcp();
-
-						String iuvCcpDir = dirVersamento + "/" + iuv;
-
-						// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
-						if(!StringUtils.equalsIgnoreCase(ccp, "n/a"))
-							iuvCcpDir = iuvCcpDir  + "_" + ccp;
-						
-						String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
-
-
-						ZipEntry rptXml = new ZipEntry(rptEntryName);
-						zout.putNextEntry(rptXml);
-						zout.write(rpt.getXmlRpt());
-						zout.closeEntry();
-
-						if(rpt.getXmlRt() != null){
-							numeroZipEntries ++;
-							String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
-							ZipEntry rtXml = new ZipEntry(rtEntryName);
-							zout.putNextEntry(rtXml);
-							zout.write(rpt.getXmlRt());
-							zout.closeEntry();
-
-							// RT in formato pdf
-							String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-							byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
-							CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-							String causale = versamento.getCausaleVersamento().getSimple();
-							ByteArrayOutputStream baos = new ByteArrayOutputStream();
-							RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
-
-							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
-							numeroZipEntries ++;
-							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
-							zout.putNextEntry(rtPdf);
-							zout.write(baos.toByteArray());
-							zout.closeEntry();
+				boolean vediTuttiDomini = false;
+				List<Long> idDomini = new ArrayList<Long>();
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
 						}
-						
-						// Eventi
-						String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
 
-						EventiFilter eventiFilter = eventiBd.newFilter();
-						eventiFilter.setCodDominio(dominio.getCodDominio());
-						eventiFilter.setIuv(iuv);
-						eventiFilter.setCcp(ccp);
-						FilterSortWrapper fsw = new FilterSortWrapper();
-						fsw.setField(it.govpay.orm.Evento.model().DATA_1);
-						fsw.setSortOrder(SortOrder.ASC);
-						eventiFilter.getFilterSortList().add(fsw);
+				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
+				if(eseguiRicerca){
+					filter.setIdVersamento(ids);
+					eseguiRicerca = eseguiRicerca && versamentiBD.count(filter) > 0;
+				}
+			}
 
-						List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
-						ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+			if(eseguiRicerca){
+				for (Long idVersamento : idsToExport) {
+					Versamento versamento = versamentiBD.getVersamento(idVersamento);
 
-						ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
-						zout.putNextEntry(eventiCSV);
-						zout.write(baos.toByteArray());
-						zout.closeEntry();
+					// Prelevo il dominio
+					UnitaOperativa uo  = AnagraficaManager.getUnitaOperativa(bd, versamento.getIdUo());
+					Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
 
-						RrFilter rrFilter = rrBD.newFilter();
-						rrFilter.getFilterSortList().add(rrFsw);
-						rrFilter.setIdRpt(rpt.getId()); 
-						List<Rr> findAll = rrBD.findAll(rrFilter);
-						if(findAll != null && findAll.size() > 0){
-							for (Rr rr : findAll) {
+					String dirDominio = dominio.getCodDominio();
+
+					// Aggrego i versamenti per dominio per generare gli estratti conto
+					List<Long> idVersamentiDominio = null;
+					if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio()))
+						idVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
+					else{
+						idVersamentiDominio = new ArrayList<Long>();
+						mappaInputEstrattoConto.put(dominio.getCodDominio(), idVersamentiDominio);
+						mappaInputDomini.put(dominio.getCodDominio(), dominio);
+					}
+					idVersamentiDominio.add(idVersamento);
+
+					String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
+
+					RptFilter rptFilter = rptBD.newFilter();
+					FilterSortWrapper rptFsw = new FilterSortWrapper();
+					rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
+					rptFsw.setSortOrder(SortOrder.DESC);
+					rptFilter.getFilterSortList().add(rptFsw);
+					rptFilter.setIdVersamento(idVersamento); 
+
+					RrBD rrBD = new RrBD(bd);
+					FilterSortWrapper rrFsw = new FilterSortWrapper();
+					rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+					rrFsw.setSortOrder(SortOrder.DESC);
+
+					List<Rpt> listaRpt = rptBD.findAll(rptFilter);
+					if(listaRpt != null && listaRpt.size() >0 )
+						for (Rpt rpt : listaRpt) {
+							numeroZipEntries ++;
+
+							String iuv = rpt.getIuv();
+							String ccp = rpt.getCcp();
+
+							String iuvCcpDir = dirVersamento + "/" + iuv;
+
+							// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
+							if(!StringUtils.equalsIgnoreCase(ccp, "n/a"))
+								iuvCcpDir = iuvCcpDir  + "_" + ccp;
+
+							String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
+
+
+							ZipEntry rptXml = new ZipEntry(rptEntryName);
+							zout.putNextEntry(rptXml);
+							zout.write(rpt.getXmlRpt());
+							zout.closeEntry();
+
+							if(rpt.getXmlRt() != null){
 								numeroZipEntries ++;
-								String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
-
-								ZipEntry rrXml = new ZipEntry(rrEntryName);
-								zout.putNextEntry(rrXml);
-								zout.write(rr.getXmlRr());
+								String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
+								ZipEntry rtXml = new ZipEntry(rtEntryName);
+								zout.putNextEntry(rtXml);
+								zout.write(rpt.getXmlRt());
 								zout.closeEntry();
 
-								if(rr.getXmlEr() != null){
-									numeroZipEntries ++;
-									String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
-									ZipEntry rtXml = new ZipEntry(erEntryName);
-									zout.putNextEntry(rtXml);
-									zout.write(rr.getXmlEr());
-									zout.closeEntry();
-									
-									// ER in formato pdf
-									CtEsitoRevoca er = JaxbUtils.toER(rr.getXmlEr());
-									String causale = versamento.getCausaleVersamento().getSimple();
-									baos = new ByteArrayOutputStream();
-									Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
-									ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,log);
+								// RT in formato pdf
+								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+								String causale = versamento.getCausaleVersamento().getSimple();
+								ByteArrayOutputStream baos = new ByteArrayOutputStream();
+								RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
 
-									String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
+								String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
+								numeroZipEntries ++;
+								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+								zout.putNextEntry(rtPdf);
+								zout.write(baos.toByteArray());
+								zout.closeEntry();
+							}
+
+							// Eventi
+							String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
+
+							EventiFilter eventiFilter = eventiBd.newFilter();
+							eventiFilter.setCodDominio(dominio.getCodDominio());
+							eventiFilter.setIuv(iuv);
+							eventiFilter.setCcp(ccp);
+							FilterSortWrapper fsw = new FilterSortWrapper();
+							fsw.setField(it.govpay.orm.Evento.model().DATA_1);
+							fsw.setSortOrder(SortOrder.ASC);
+							eventiFilter.getFilterSortList().add(fsw);
+
+							List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+							ByteArrayOutputStream baos = new ByteArrayOutputStream();
+							eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+
+							ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
+							zout.putNextEntry(eventiCSV);
+							zout.write(baos.toByteArray());
+							zout.closeEntry();
+
+							RrFilter rrFilter = rrBD.newFilter();
+							rrFilter.getFilterSortList().add(rrFsw);
+							rrFilter.setIdRpt(rpt.getId()); 
+							List<Rr> findAll = rrBD.findAll(rrFilter);
+							if(findAll != null && findAll.size() > 0){
+								for (Rr rr : findAll) {
 									numeroZipEntries ++;
-									ZipEntry erPdf = new ZipEntry(erPdfEntryName);
-									zout.putNextEntry(erPdf);
-									zout.write(baos.toByteArray());
+									String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
+
+									ZipEntry rrXml = new ZipEntry(rrEntryName);
+									zout.putNextEntry(rrXml);
+									zout.write(rr.getXmlRr());
 									zout.closeEntry();
+
+									if(rr.getXmlEr() != null){
+										numeroZipEntries ++;
+										String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
+										ZipEntry rtXml = new ZipEntry(erEntryName);
+										zout.putNextEntry(rtXml);
+										zout.write(rr.getXmlEr());
+										zout.closeEntry();
+
+										// ER in formato pdf
+										CtEsitoRevoca er = JaxbUtils.toER(rr.getXmlEr());
+										String causale = versamento.getCausaleVersamento().getSimple();
+										baos = new ByteArrayOutputStream();
+										Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
+										ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,log);
+
+										String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
+										numeroZipEntries ++;
+										ZipEntry erPdf = new ZipEntry(erPdfEntryName);
+										zout.putNextEntry(erPdf);
+										zout.write(baos.toByteArray());
+										zout.closeEntry();
+									}
 								}
 							}
 						}
-					}
-			}
+				}
 
-			List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
-			for (String codDominio : mappaInputEstrattoConto.keySet()) {
-				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
-				listInputEstrattoConto.add(input);
-			}
-
-
-			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
-
-			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
-				Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
-				for (String nomeEntry : estrattoContoVersamenti.keySet()) {
-					numeroZipEntries ++;
-					ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
-					ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
-					zout.putNextEntry(estrattoContoEntry);
-					zout.write(baos.toByteArray());
-					zout.closeEntry();
+				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
+				for (String codDominio : mappaInputEstrattoConto.keySet()) {
+					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoVersamentiPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
+					listInputEstrattoConto.add(input);
 				}
 
 
-			}
+				List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
 
+				for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
+					Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
+					for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+						numeroZipEntries ++;
+						ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
+						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+						zout.putNextEntry(estrattoContoEntry);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
+					}
+
+
+				}
+
+				// Estratto Conto in formato CSV
+				EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
+				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter();
+				ecFilter.setIdVersamento(idsToExport); 
+				List<EstrattoConto> findAll =  estrattiContoBD.estrattoContoFromIdVersamenti(ecFilter);
+
+				if(findAll != null && findAll.size() > 0){
+					//ordinamento record
+					Collections.sort(findAll, new EstrattoContoComparator());
+					numeroZipEntries ++;
+					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
+					try{
+						ZipEntry pagamentoCsv = new ZipEntry("estrattoConto.csv");
+						zout.putNextEntry(pagamentoCsv);
+						printer = new Printer(this.getFormat() , baos);
+						printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
+						for (EstrattoConto pagamento : findAll) {
+							printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
+						}
+					}finally {
+						try{
+							if(printer!=null){
+								printer.close();
+							}
+						}catch (Exception e) {
+							throw new Exception("Errore durante la chiusura dello stream ",e);
+						}
+					}
+					zout.write(baos.toByteArray());
+					zout.closeEntry();
+				}
+			}
 
 			// se non ho inserito nessuna entry
 			if(numeroZipEntries == 0){
@@ -820,177 +899,241 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
-
+		Printer printer  = null;
 
 		try{
 			int numeroZipEntries = 0;
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
+			boolean eseguiRicerca = true;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			RptBD rptBD = new RptBD(bd);
 			EventiBD eventiBd = new EventiBD(bd);
-			Eventi eventiDars = new Eventi();
-			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler(); 
-			Versamento versamento = versamentiBD.getVersamento(idToExport);
-			EstrattoConto estrattoContoBD = new EstrattoConto(bd);
-
-			String fileName = "Export.zip";  
+			EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
+			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
+			VersamentoFilter filter = versamentiBD.newFilter();
 
 
-			// Prelevo il dominio
-			UnitaOperativa uo = versamento.getUo(bd);
-			Dominio dominio = uo.getDominio(bd);
+			List<Long> ids = new ArrayList<Long>();
+			ids.add(idToExport);
 
-			String dirDominio = dominio.getCodDominio();
+			if(!isAdmin){
 
-			// Estratto conto per iban e codiceversamento.
-			List<Long> idVersamentiDominio = new ArrayList<Long>();
-			idVersamentiDominio.add(idToExport);
-			it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPDF(dominio, idVersamentiDominio);
-			List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
-			listInputEstrattoConto.add(input);
-			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
-			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
+				AclBD aclBD = new AclBD(bd);
+				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
-			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
-				Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
-				for (String nomeEntry : estrattoContoVersamenti.keySet()) {
-					numeroZipEntries ++;
-					ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
-					ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
-					zout.putNextEntry(estrattoContoEntry);
-					zout.write(baos.toByteArray());
-					zout.closeEntry();
-				}
-			}
-
-			String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
-
-			RptFilter rptFilter = rptBD.newFilter();
-			FilterSortWrapper rptFsw = new FilterSortWrapper();
-			rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
-			rptFsw.setSortOrder(SortOrder.DESC);
-			rptFilter.getFilterSortList().add(rptFsw);
-			rptFilter.setIdVersamento(idToExport); 
-
-			RrBD rrBD = new RrBD(bd);
-			FilterSortWrapper rrFsw = new FilterSortWrapper();
-			rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
-			rrFsw.setSortOrder(SortOrder.DESC);
-
-			List<Rpt> listaRpt = rptBD.findAll(rptFilter);
-			if(listaRpt != null && listaRpt.size() >0 )
-				for (Rpt rpt : listaRpt) {
-					numeroZipEntries ++;
-					String iuv = rpt.getIuv();
-					String ccp = rpt.getCcp();
-					String iuvCcpDir = dirVersamento + "/" + iuv;
-
-					// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
-					if(!StringUtils.equalsIgnoreCase(ccp, "n/a"))
-						iuvCcpDir = iuvCcpDir  + "_" + ccp;
-					
-					String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
-
-					ZipEntry rptXml = new ZipEntry( rptEntryName);
-					zout.putNextEntry(rptXml);
-					zout.write(rpt.getXmlRpt());
-					zout.closeEntry();
-
-					if(rpt.getXmlRt() != null){
-						numeroZipEntries ++;
-						String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
-						ZipEntry rtXml = new ZipEntry(rtEntryName);
-						zout.putNextEntry(rtXml);
-						zout.write(rpt.getXmlRt());
-						zout.closeEntry();
-
-						// RT in formato pdf
-						String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-						byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
-						CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-						String causale = versamento.getCausaleVersamento().getSimple();
-						ByteArrayOutputStream baos = new ByteArrayOutputStream();
-						RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
-
-						String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
-						numeroZipEntries ++;
-						ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
-						zout.putNextEntry(rtPdf);
-						zout.write(baos.toByteArray());
-						zout.closeEntry();
-					}
-
-					// Eventi
-					String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
-
-					EventiFilter eventiFilter = eventiBd.newFilter();
-					eventiFilter.setCodDominio(dominio.getCodDominio());
-					eventiFilter.setIuv(iuv);
-					eventiFilter.setCcp(ccp);
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Evento.model().DATA_1);
-					fsw.setSortOrder(SortOrder.ASC);
-					eventiFilter.getFilterSortList().add(fsw);
-
-					List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
-
-					ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
-					zout.putNextEntry(eventiCSV);
-					zout.write(baos.toByteArray());
-					zout.closeEntry();
-
-
-					RrFilter rrFilter = rrBD.newFilter();
-					rrFilter.getFilterSortList().add(rrFsw);
-					rrFilter.setIdRpt(rpt.getId()); 
-					List<Rr> findAll = rrBD.findAll(rrFilter);
-					if(findAll != null && findAll.size() > 0){
-						for (Rr rr : findAll) {
-							numeroZipEntries ++;
-							String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
-
-							ZipEntry rrXml = new ZipEntry(rrEntryName);
-							zout.putNextEntry(rrXml);
-							zout.write(rr.getXmlRr());
-							zout.closeEntry();
-
-							if(rr.getXmlEr() != null){
-								numeroZipEntries ++;
-								String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
-								ZipEntry rtXml = new ZipEntry(erEntryName);
-								zout.putNextEntry(rtXml);
-								zout.write(rr.getXmlEr());
-								zout.closeEntry();
-								
-								// ER in formato pdf
-								CtEsitoRevoca er = JaxbUtils.toER(rr.getXmlEr());
-								String causale = versamento.getCausaleVersamento().getSimple();
-								baos = new ByteArrayOutputStream();
-								Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
-								ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,log);
-
-								String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
-								numeroZipEntries ++;
-								ZipEntry erPdf = new ZipEntry(erPdfEntryName);
-								zout.putNextEntry(erPdf);
-								zout.write(baos.toByteArray());
-								zout.closeEntry();
-							}
+				boolean vediTuttiDomini = false;
+				List<Long> idDomini = new ArrayList<Long>();
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
 						}
 					}
 				}
-			
-			// se non ho inserito nessuna entry
-			if(numeroZipEntries == 0){
-				String noEntriesTxt = "/README";
-				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
-				zout.putNextEntry(entryTxt);
-				zout.write("Non sono state trovate informazioni sui versamenti selezionati.".getBytes());
-				zout.closeEntry();
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
+
+				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
+				if(eseguiRicerca){
+					filter.setIdVersamento(ids);
+					eseguiRicerca = eseguiRicerca && versamentiBD.count(filter) > 0;
+				}
+			}
+			Eventi eventiDars = new Eventi();
+			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler(); 
+			Versamento versamento = eseguiRicerca ? versamentiBD.getVersamento(idToExport) : null;
+			String fileName = "Export.zip";  
+
+			if(versamento != null){
+				// Prelevo il dominio
+
+				UnitaOperativa uo  = AnagraficaManager.getUnitaOperativa(bd, versamento.getIdUo());
+				Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
+
+				String dirDominio = dominio.getCodDominio();
+
+				// Estratto conto per iban e codiceversamento.
+				List<Long> idVersamentiDominio = new ArrayList<Long>();
+				idVersamentiDominio.add(idToExport);
+				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoVersamentiPDF(dominio, idVersamentiDominio);
+				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
+				listInputEstrattoConto.add(input);
+				String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
+				List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
+
+				for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
+					Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
+					for (String nomeEntry : estrattoContoVersamenti.keySet()) {
+						numeroZipEntries ++;
+						ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
+						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+						zout.putNextEntry(estrattoContoEntry);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
+					}
+				}
+
+				String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
+
+				RptFilter rptFilter = rptBD.newFilter();
+				FilterSortWrapper rptFsw = new FilterSortWrapper();
+				rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
+				rptFsw.setSortOrder(SortOrder.DESC);
+				rptFilter.getFilterSortList().add(rptFsw);
+				rptFilter.setIdVersamento(idToExport); 
+
+				RrBD rrBD = new RrBD(bd);
+				FilterSortWrapper rrFsw = new FilterSortWrapper();
+				rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+				rrFsw.setSortOrder(SortOrder.DESC);
+
+				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
+				if(listaRpt != null && listaRpt.size() >0 )
+					for (Rpt rpt : listaRpt) {
+						numeroZipEntries ++;
+						String iuv = rpt.getIuv();
+						String ccp = rpt.getCcp();
+						String iuvCcpDir = dirVersamento + "/" + iuv;
+
+						// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
+						if(!StringUtils.equalsIgnoreCase(ccp, "n/a"))
+							iuvCcpDir = iuvCcpDir  + "_" + ccp;
+
+						String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
+
+						ZipEntry rptXml = new ZipEntry( rptEntryName);
+						zout.putNextEntry(rptXml);
+						zout.write(rpt.getXmlRpt());
+						zout.closeEntry();
+
+						if(rpt.getXmlRt() != null){
+							numeroZipEntries ++;
+							String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
+							ZipEntry rtXml = new ZipEntry(rtEntryName);
+							zout.putNextEntry(rtXml);
+							zout.write(rpt.getXmlRt());
+							zout.closeEntry();
+
+							// RT in formato pdf
+							String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+							byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+							CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+							String causale = versamento.getCausaleVersamento().getSimple();
+							ByteArrayOutputStream baos = new ByteArrayOutputStream();
+							RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
+
+							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
+							numeroZipEntries ++;
+							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+							zout.putNextEntry(rtPdf);
+							zout.write(baos.toByteArray());
+							zout.closeEntry();
+						}
+
+						// Eventi
+						String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
+
+						EventiFilter eventiFilter = eventiBd.newFilter();
+						eventiFilter.setCodDominio(dominio.getCodDominio());
+						eventiFilter.setIuv(iuv);
+						eventiFilter.setCcp(ccp);
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.Evento.model().DATA_1);
+						fsw.setSortOrder(SortOrder.ASC);
+						eventiFilter.getFilterSortList().add(fsw);
+
+						List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+
+						ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
+						zout.putNextEntry(eventiCSV);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
+
+
+						RrFilter rrFilter = rrBD.newFilter();
+						rrFilter.getFilterSortList().add(rrFsw);
+						rrFilter.setIdRpt(rpt.getId()); 
+						List<Rr> findAll = rrBD.findAll(rrFilter);
+						if(findAll != null && findAll.size() > 0){
+							for (Rr rr : findAll) {
+								numeroZipEntries ++;
+								String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
+
+								ZipEntry rrXml = new ZipEntry(rrEntryName);
+								zout.putNextEntry(rrXml);
+								zout.write(rr.getXmlRr());
+								zout.closeEntry();
+
+								if(rr.getXmlEr() != null){
+									numeroZipEntries ++;
+									String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
+									ZipEntry rtXml = new ZipEntry(erEntryName);
+									zout.putNextEntry(rtXml);
+									zout.write(rr.getXmlEr());
+									zout.closeEntry();
+
+									// ER in formato pdf
+									CtEsitoRevoca er = JaxbUtils.toER(rr.getXmlEr());
+									String causale = versamento.getCausaleVersamento().getSimple();
+									baos = new ByteArrayOutputStream();
+									Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
+									ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,log);
+
+									String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
+									numeroZipEntries ++;
+									ZipEntry erPdf = new ZipEntry(erPdfEntryName);
+									zout.putNextEntry(erPdf);
+									zout.write(baos.toByteArray());
+									zout.closeEntry();
+								}
+							}
+						}
+					}
+
+				//Estratto conto in formato CSV
+				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(true); 
+				ecFilter.setIdVersamento(ids);
+				List<EstrattoConto> findAll =  estrattiContoBD.estrattoContoFromIdVersamenti(ecFilter);
+
+				if(findAll != null && findAll.size() > 0){
+					//ordinamento record
+					Collections.sort(findAll, new EstrattoContoComparator());
+					numeroZipEntries ++;
+					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
+					try{
+						ZipEntry pagamentoCsv = new ZipEntry("estrattoConto.csv");
+						zout.putNextEntry(pagamentoCsv);
+						printer = new Printer(this.getFormat() , baos);
+						printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
+						for (EstrattoConto pagamento : findAll) {
+							printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
+						}
+					}finally {
+						try{
+							if(printer!=null){
+								printer.close();
+							}
+						}catch (Exception e) {
+							throw new Exception("Errore durante la chiusura dello stream ",e);
+						}
+					}
+					zout.write(baos.toByteArray());
+					zout.closeEntry();
+				}
 			}
 
 			// se non ho inserito nessuna entry

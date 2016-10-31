@@ -32,7 +32,6 @@ public class Psp extends it.govpay.model.Psp {
 	public List<Canale> getCanalis() {
 		if(listaCanali == null) 
 			listaCanali = new ArrayList<Canale>();
-		
 		return listaCanali;
 	}
 
