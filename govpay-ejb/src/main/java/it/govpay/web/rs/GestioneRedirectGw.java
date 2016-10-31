@@ -23,7 +23,7 @@ package it.govpay.web.rs;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
-import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.GpContext;
 import it.govpay.model.Rpt;
 
 import javax.ws.rs.DefaultValue;
@@ -47,9 +47,12 @@ public class GestioneRedirectGw {
 			@QueryParam(value = "esito") @DefaultValue("ERROR") String esito) {
 		BasicBD bd = null;
 		Rpt rpt = null;
+		GpContext gpContext = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			gpContext = new GpContext();
+			gpContext.log("gw.redirect", codDominio, codSessione);
+			bd = BasicBD.newInstance(gpContext.getTransactionId());
 			RptBD rptBD = new RptBD(bd);
 			rpt = rptBD.getRptByCodSessione(codDominio, codSessione);
 
@@ -58,24 +61,26 @@ public class GestioneRedirectGw {
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
-				LogManager.getLogger(GestioneRedirectGw.class).info("[Dominio:" + codDominio + " Sessione: " + codSessione + "] Custom Redirect > [Url: " + ub.build().toString() + "]");
+				gpContext.log("gw.redirectCustom", codDominio, codSessione, ub.build().toString());
 				return Response.seeOther(ub.build()).build();
 			} else {
 				UriBuilder ub = UriBuilder.fromUri(AnagraficaManager.getPortale(bd, rpt.getIdPortale()).getDefaultCallbackURL());
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
-				LogManager.getLogger(GestioneRedirectGw.class).info("[Dominio:" + codDominio + " Sessione: " + codSessione + "] Default Redirect > [Url: " + ub.build().toString() + "]");
+				gpContext.log("gw.redirectDefault", codDominio, codSessione, ub.build().toString());
 				return Response.seeOther(ub.build()).build();
 			}
 		} catch (NotFoundException e) {
-			LogManager.getLogger(GestioneRedirectGw.class).warn("La BackUrl richiesta non riferisce alcuna transazione [Dominio:" + codDominio + " Sessione: " + codSessione + "]");
+			if(gpContext != null) gpContext.log("gw.redirectNotFound", codDominio, codSessione);
 			return Response.status(Response.Status.NOT_FOUND).build();
 		} catch (Exception e) {
-			LogManager.getLogger(GestioneRedirectGw.class).error("Riscontrato errore nella gestione della BackUrl", e);
+			if(gpContext != null) gpContext.log("gw.redirectFail", codDominio, codSessione, e.getMessage());
+			LogManager.getLogger(this.getClass()).error("Errore durante la redirezione [Dominio:"+codDominio+" Sessione:"+codSessione+"]", e);
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd!= null) bd.closeConnection();
+			if(gpContext != null) gpContext.log();
 		}
 	}
 }
