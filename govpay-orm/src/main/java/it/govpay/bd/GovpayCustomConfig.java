@@ -33,7 +33,7 @@ import it.govpay.bd.pagamento.util.CustomIuv;
 
 public class GovpayCustomConfig {
 	
-	private static final String PROPERTIES_FILE = "/govpay-orm.properties";
+	private static final String PROPERTIES_FILE = "/govpay.properties";
 
 	private static GovpayCustomConfig instance;
 	

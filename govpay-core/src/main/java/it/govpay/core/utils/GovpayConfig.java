@@ -112,7 +112,7 @@ public class GovpayConfig {
 			// Se e' configurata, la uso come prioritaria
 
 			try {
-				this.resourceDir = getProperty("it.govpay.resource.path", props1, false, null);
+				this.resourceDir = getProperty("it.govpay.resource.path", props1, false, true, null);
 
 				if(this.resourceDir != null) {
 					File resourceDirFile = new File(this.resourceDir);
@@ -327,13 +327,16 @@ public class GovpayConfig {
 		return urlPddVerifica;
 	}
 
-	private static String getProperty(String name, Properties props, boolean required, Logger log) throws Exception {
+	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws Exception {
 		String value = System.getProperty(name);
-
+		
 		if(value != null && value.trim().isEmpty()) {
 			value = null;
 		}
-
+		String logString = "";
+		if(fromInternalConfig) logString = "da file interno ";
+		else logString = "da file esterno ";
+		
 		if(value == null) {
 			if(props != null) {
 				value = props.getProperty(name);
@@ -346,7 +349,7 @@ public class GovpayConfig {
 					throw new Exception("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
-				if(log != null) log.info("Letta proprieta di configurazione " + name + ": " + value);
+				if(log != null) log.info("Letta proprieta di configurazione " + logString + name + ": " + value);
 			}
 		} else {
 			if(log != null) log.info("Letta proprieta di sistema " + name + ": " + value);
@@ -357,8 +360,8 @@ public class GovpayConfig {
 
 	private static String getProperty(String name, Properties[] props, boolean required, Logger log) throws Exception {
 		String value = null;
-		for(Properties p : props) {
-			try { value = getProperty(name, p, required, log); } catch (Exception e) { }
+		for(int i=0; i<props.length; i++) {
+			try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}

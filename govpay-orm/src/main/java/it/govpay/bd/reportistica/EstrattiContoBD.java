@@ -10,6 +10,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.GovpayConfig;
+import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.reportistica.converter.EstrattoContoConverter;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.model.EstrattoConto;
@@ -47,7 +48,7 @@ public class EstrattiContoBD extends BasicBD{
 		List<List<Object>> select = new ArrayList<List<Object>>();
 		try {
 			// prelevo la query
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoQuery();
 
 			StringBuilder sbPlaceHolder1 = new StringBuilder();
 
@@ -169,7 +170,7 @@ public class EstrattiContoBD extends BasicBD{
 		List<List<Object>> select = new ArrayList<List<Object>>();
 		try {
 			// prelevo la query
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO_COUNT);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoCountQuery();
 
 			StringBuilder sbPlaceHolder1 = new StringBuilder();
 			
@@ -288,7 +289,7 @@ public class EstrattiContoBD extends BasicBD{
 				listaParam.add(limit);
 			}
 
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoQuery();
 
 			StringBuilder sb = new StringBuilder();
 
@@ -339,7 +340,7 @@ public class EstrattiContoBD extends BasicBD{
 				listaParam.add(limit);
 			}
 
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoQuery();
 
 			StringBuilder sb = new StringBuilder();
 
@@ -452,7 +453,7 @@ public class EstrattiContoBD extends BasicBD{
 			listaParam.add(0);
 			listaParam.add(LIMIT);
 
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoQuery();
 
 			StringBuilder sb = new StringBuilder();
 			sb.append("where sv.id = ? ");
@@ -508,7 +509,7 @@ public class EstrattiContoBD extends BasicBD{
 				listaParam.add(limit);
 			}
 
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoQuery();
 
 			// Sostituzione del placeHolder 1 e 2 sv.id in () 
 			nativeQuery = nativeQuery.replace(EstrattoContoCostanti.PLACE_HOLDER1_QUERY_ESTRATTI_CONTO, EstrattoContoCostanti.PLACE_HOLDER_QUERY_CLAUSOLA_COD_DOMINIO_PAGAMENTI);
@@ -552,7 +553,7 @@ public class EstrattiContoBD extends BasicBD{
 				listaParam.add(limit);
 			}
 
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoQuery();
 			
 			StringBuilder sb = new StringBuilder();
 			for (int i=0; i < idVersamenti.size() ; i++) {
@@ -605,7 +606,7 @@ public class EstrattiContoBD extends BasicBD{
 				listaParam.add(limit);
 			}
 
-			String nativeQuery = GovpayConfig.getInstance().getNativeQuery(EstrattoContoCostanti.NOME_QUERY_ESTRATTI_CONTO);
+			String nativeQuery = NativeQueries.getInstance().getEstrattiContoQuery();
 			
 			StringBuilder sb = new StringBuilder();
 			for (int i=0; i < idSingoliVersamenti.size() ; i++) {
