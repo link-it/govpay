@@ -33,8 +33,15 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.MultipleResultException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+
 @Path("/pub")
 public class GestioneRedirectGw {
+	
+	Logger log = LogManager.getLogger(this.getClass());
 
 	@GET
 	@Path("/backUrl")
@@ -42,6 +49,9 @@ public class GestioneRedirectGw {
 			@QueryParam(value = "idDominio") String codDominio, 
 			@QueryParam(value = "idSession") String codSessione,
 			@QueryParam(value = "esito") @DefaultValue("ERROR") String esito) {
+		
+		log.debug("Ricevuta richiesta di gw [Dominio:"+codDominio+" Sessione:"+codSessione+"]");
+		
 		BasicBD bd = null;
 		Rpt rpt = null;
 
@@ -55,16 +65,25 @@ public class GestioneRedirectGw {
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
+				log.info("Gw custom [Dominio:"+codDominio+" Sessione:"+codSessione+"] > [Url:"+ub.build().toString()+"]");
 				return Response.seeOther(ub.build()).build();
 			} else {
 				UriBuilder ub = UriBuilder.fromUri(AnagraficaManager.getPortale(bd, rpt.getIdPortale()).getDefaultCallbackURL());
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
+				log.info("Gw standard [Dominio:"+codDominio+" Sessione:"+codSessione+"] > [Url:"+ub.build().toString()+"]");
 				return Response.seeOther(ub.build()).build();
 			}
-		} catch (Exception e) {
+		} catch (NotFoundException e) {
+			log.debug("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Not found");
 			return Response.status(Response.Status.NOT_FOUND).build();
+		} catch (MultipleResultException e) {
+			log.error("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Multiple Result");
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		} catch (Exception e) {
+			log.error("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Internal", e);
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd!= null) bd.closeConnection();
 		}
