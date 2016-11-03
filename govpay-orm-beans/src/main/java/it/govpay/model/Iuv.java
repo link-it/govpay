@@ -52,8 +52,6 @@ public class Iuv extends BasicModel {
 	}
 	private static final long serialVersionUID = 1L;
 	
-	public static final int AUX_DIGIT = 0;
-	
 	private Long id;
 	private long idApplicazione;
 	private long idDominio;
@@ -62,7 +60,9 @@ public class Iuv extends BasicModel {
 	private Date dataGenerazione;
 	private TipoIUV tipo;
 	private String codVersamentoEnte;
-	private int applicationCode;
+	private Integer applicationCode;
+	private Integer segregationCode;
+	private int auxDigit;
 	
 	public Long getId() {
 		return id;
@@ -117,6 +117,18 @@ public class Iuv extends BasicModel {
 	}
 	public void setApplicationCode(int applicationCode) {
 		this.applicationCode = applicationCode;
+	}
+	public int getAuxDigit() {
+		return auxDigit;
+	}
+	public void setAuxDigit(int auxDigit) {
+		this.auxDigit = auxDigit;
+	}
+	public Integer getSegregationCode() {
+		return segregationCode;
+	}
+	public void setSegregationCode(Integer segregationCode) {
+		this.segregationCode = segregationCode;
 	}
 	
 }

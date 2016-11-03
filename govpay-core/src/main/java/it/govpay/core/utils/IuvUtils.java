@@ -103,7 +103,7 @@ public class IuvUtils {
 	public static boolean checkIuvNumerico(String iuv, int auxDigit, int applicationCode) {
 		if(iuv.length() != 15) return false;
 		String reference = iuv.substring(0, 13);
-		long resto93 = (Long.parseLong(String.valueOf(it.govpay.model.Iuv.AUX_DIGIT) + String.format("%02d", applicationCode) + reference)) % 93;
+		long resto93 = (Long.parseLong(String.valueOf(auxDigit) + String.format("%02d", applicationCode) + reference)) % 93;
 		return iuv.equals(reference + String.format("%02d", resto93));
 	}
 }

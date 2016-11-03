@@ -489,6 +489,21 @@
 				</xsd:sequence>
 			</xsd:complexType>
 			
+			<xsd:element name="metaInfo">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="iuvProp" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:extension base="xsd:string">
+										<xsd:attribute name="nome" type="xsd:string" />
+									</xsd:extension>
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
 			
 			<xsd:simpleType name="esitoOperazione">
 				<xsd:restriction base="xsd:string">

@@ -37,7 +37,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Stazione;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.IuvGenerato;
@@ -105,7 +104,6 @@ public class Iuv extends BasicBD {
 	
 	public it.govpay.model.Iuv generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, IuvBD iuvBD) throws GovPayException, ServiceException {
 		try {
-			
 			// Controllo se e' stata impostata la generazione degli IUV distribuita.
 			if(dominio.isCustomIuv()) {
 				try {
@@ -116,8 +114,7 @@ public class Iuv extends BasicBD {
 				}
 			}
 			
-			Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
-			it.govpay.model.Iuv iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.NUMERICO);
+			it.govpay.model.Iuv iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, it.govpay.model.Iuv.TipoIUV.NUMERICO, GpThreadLocal.get().getPagamentoCtx().getIuvProps());
 			GpThreadLocal.get().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
 			log.debug("Generato IUV [CodDominio: " + dominio.getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
 			return iuv;
@@ -171,7 +168,7 @@ public class Iuv extends BasicBD {
 	}
 	
 	public it.govpay.model.Iuv caricaIUV(Applicazione applicazione, Dominio dominio, String iuvProposto, TipoIUV tipo, String codVersamentoEnte) throws GovPayException, ServiceException{
-		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, it.govpay.model.Iuv.AUX_DIGIT, dominio.getStazione(this).getApplicationCode())) {
+		if(tipo.equals(TipoIUV.NUMERICO) && !IuvUtils.checkIuvNumerico(iuvProposto, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode())) {
 			throw new GovPayException(EsitoOperazione.VER_017, iuvProposto);
 		}
 		it.govpay.model.Iuv iuv = null;

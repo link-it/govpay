@@ -37,6 +37,8 @@ public class Dominio extends BasicModel {
 	private boolean abilitato;
 	private byte[] contiAccredito;
 	private byte[] tabellaControparti;
+	private int auxDigit;
+	private String iuvPrefix;
 	
 	public Long getId() {
 		return id;
@@ -124,6 +126,22 @@ public class Dominio extends BasicModel {
 
 	public void setCustomIuv(boolean customIuv) {
 		this.customIuv = customIuv;
+	}
+
+	public int getAuxDigit() {
+		return auxDigit;
+	}
+
+	public void setAuxDigit(int auxDigit) {
+		this.auxDigit = auxDigit;
+	}
+
+	public String getIuvPrefix() {
+		return iuvPrefix;
+	}
+
+	public void setIuvPrefix(String iuvPrefix) {
+		this.iuvPrefix = iuvPrefix;
 	}
 }
 

@@ -1,28 +1,15 @@
 package it.govpay.bd.pagamento.util;
 
+import java.util.Map;
+
 import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Applicazione;
 import it.govpay.model.Dominio;
 
 public class CustomIuv {
-	
-	public final String buildIuvNumerico(Applicazione applicazione, Dominio dominio, long prg, int auxDigit, int applicationCode) throws ServiceException {
-		long newprg = 0;
-		
-		try {
-			newprg = buildIuvNumerico(applicazione, dominio, prg);
-		} catch (NotImplementedException e) {
-			newprg = prg;
-		}
-		
-		if(newprg > 9999999999999l) {
-			throw new ServiceException("Il generatore IUV custom ha prodotto uno IUV superiore alle 13 cifre consentite [" + newprg + "]"); 
-		}
-		
-		return IuvUtils.buildIuvNumerico(newprg, auxDigit, applicationCode);
-	}
 	
 	public final String getCodApplicazione(Dominio dominio, String iuv, Applicazione applicazioneDefault) throws ServiceException {
 		try {
@@ -36,8 +23,21 @@ public class CustomIuv {
 		throw new NotImplementedException();
 	}
 	
-	public long buildIuvNumerico(Applicazione applicazione, Dominio dominio, long prg) throws ServiceException, NotImplementedException {
-		throw new NotImplementedException();
+	public String buildPrefix(Applicazione applicazione, Dominio dominio, Map<String, String> values) throws ServiceException, NotImplementedException {
+		String prefix = dominio.getIuvPrefix();
+		
+		if(prefix == null) return "";
+		
+		StrSubstitutor sub = new StrSubstitutor(values, "%(", ")");
+		String result = sub.replace(prefix);
+	
+		// il prefix risultante deve essere numerico, altrimenti lancio eccezione
+		try {
+			Integer.parseInt(result);
+		} catch (NumberFormatException e) {
+			throw new ServiceException("La regola IUV [Dominio:"+dominio.getCodDominio()+" PrefixRule:"+dominio.getIuvPrefix()+"] non ha prodotto un prefisso numerico: " + result);
+		}
+		
+		return result;
 	}
-
 }

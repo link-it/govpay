@@ -489,6 +489,21 @@
 				</xsd:sequence>
 			</xsd:complexType>
 			
+			<xsd:element name="metaInfo">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="iuvProp" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:extension base="xsd:string">
+										<xsd:attribute name="nome" type="xsd:string" />
+									</xsd:extension>
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
 			
 			<xsd:simpleType name="esitoOperazione">
 				<xsd:restriction base="xsd:string">
@@ -744,6 +759,7 @@
 	
 	<wsdl:message name="gpGeneraIuv">
 		<wsdl:part name="bodyrichiesta" element="app:gpGeneraIuv" />
+		<wsdl:part name="metaInfo" element="com:metaInfo" />
 	</wsdl:message>
 	
 	<wsdl:message name="gpGeneraIuvResponse">
@@ -760,6 +776,7 @@
 	 
 	<wsdl:message name="gpCaricaVersamento">
 		<wsdl:part name="bodyrichiesta" element="app:gpCaricaVersamento" />
+		<wsdl:part name="metaInfo" element="com:metaInfo" />
 	</wsdl:message>
 
 	<wsdl:message name="gpCaricaVersamentoResponse">
@@ -857,7 +874,10 @@
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
 		<wsdl:operation name="gpGeneraIuv">
 			<soap:operation soapAction="gpGeneraIuv" />
-			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:input>
+				<soap:header message="tns:gpGeneraIuv" part="metaInfo" use="literal" />
+				<soap:body use="literal" />
+			</wsdl:input>
 			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
 		
@@ -869,7 +889,10 @@
 
 		<wsdl:operation name="gpCaricaVersamento">
 			<soap:operation soapAction="gpCaricaVersamento" />
-			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:input>
+				<soap:header message="tns:gpCaricaVersamento" part="metaInfo" use="literal" />
+				<soap:body use="literal" />
+			</wsdl:input>
 			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
 		

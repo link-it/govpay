@@ -25,7 +25,7 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.IuvConverter;
 import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.orm.IUV;
@@ -36,6 +36,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -59,18 +60,50 @@ public class IuvBD extends BasicBD {
 		super(basicBD);
 	}
 
-	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, int auxDigit, int applicationCode, TipoIUV type) throws ServiceException {
-		long prg = getNextPrgIuv(dominio.getCodDominio(), type);
+	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, Map<String, String> props) throws ServiceException {
+		
+		// Build prefix
+		String prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, props);
+		
+		long prg = getNextPrgIuv(dominio.getCodDominio() + prefix, type);
+		
 		String iuv = null;
+		
 		switch (type) {
 		case ISO11694:
-			String reference = String.format("%015d", prg);
-			String check = IuvUtils.getCheckDigit(reference);
-			iuv = "RF" + check + reference;
+			{
+				String reference = prefix + String.format("%0" + (15 - prefix.length()) + "d", prg);
+				if(reference.length() > 15) 
+					throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+				String check = IuvUtils.getCheckDigit(reference);
+				iuv = "RF" + check + reference;
+			}
 			break;
 		case NUMERICO:
-			iuv = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildIuvNumerico(applicazione, dominio, prg, auxDigit, applicationCode);
-			break;
+			{
+				String reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
+				
+				if(reference.length() > 15) 
+					throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+				
+				String check = "";
+				// Vedo se utilizzare l'application code o il segregation code
+				switch (dominio.getAuxDigit()) {
+					case 0: 
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode()); 
+					break;
+					case 3: 
+						if(dominio.getStazione(this).getIntermediario(this).getSegregationCode() == null)
+							throw new ServiceException("Dominio con IUV segregato associato ad Intermediario privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+" Intermediario:"+dominio.getStazione(this).getIntermediario(this).getCodIntermediario()+"]" ); 
+						
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getIntermediario(this).getSegregationCode()); 
+					break;
+					default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
+				}
+				
+				iuv = reference + check;
+				break;
+			}
 		}
 
 		Iuv iuvDTO = new Iuv();
@@ -81,7 +114,9 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setIdApplicazione(applicazione.getId());
 		iuvDTO.setTipo(type);
 		iuvDTO.setCodVersamentoEnte(codVersamentoEnte);
-		iuvDTO.setApplicationCode(applicationCode);
+		iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
+		iuvDTO.setAuxDigit(dominio.getAuxDigit());
+		iuvDTO.setSegregationCode(dominio.getStazione(this).getIntermediario(this).getSegregationCode());
 		return insertIuv(iuvDTO);
 	}
 

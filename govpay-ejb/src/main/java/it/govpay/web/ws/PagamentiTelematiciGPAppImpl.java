@@ -41,6 +41,7 @@ import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
 import it.govpay.servizi.commons.GpResponse;
 import it.govpay.servizi.commons.IuvGenerato;
+import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
 import it.govpay.servizi.gpapp.GpAnnullaVersamento;
 import it.govpay.servizi.gpapp.GpCaricaIuv;
@@ -87,10 +88,11 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	private static Logger log = LogManager.getLogger();
 
 	@Override
-	public GpGeneraIuvResponse gpGeneraIuv(GpGeneraIuv bodyrichiesta) {
+	public GpGeneraIuvResponse gpGeneraIuv(GpGeneraIuv bodyrichiesta, MetaInfo metaInfo) {
 		log.info("Richiesta operazione gpGeneraIuv di " + bodyrichiesta.getIuvRichiesto().size() + " Iuv per (" + bodyrichiesta.getCodApplicazione() + ")");
 		GpGeneraIuvResponse response = new GpGeneraIuvResponse();
 		GpContext ctx = GpThreadLocal.get();
+		Utils.loadMetaInfo(ctx, metaInfo);
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
@@ -159,10 +161,11 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 	}
 
 	@Override
-	public GpCaricaVersamentoResponse gpCaricaVersamento(GpCaricaVersamento bodyrichiesta) {
+	public GpCaricaVersamentoResponse gpCaricaVersamento(GpCaricaVersamento bodyrichiesta, MetaInfo metaInfo) {
 		log.info("Richiesta operazione gpCaricaVersamento per il versamento (" + bodyrichiesta.getVersamento().getCodVersamentoEnte() + ") dell'applicazione (" +  bodyrichiesta.getVersamento().getCodApplicazione()+") con generazione IUV (" + bodyrichiesta.isGeneraIuv() + ")");
 		GpCaricaVersamentoResponse response = new GpCaricaVersamentoResponse();
 		GpContext ctx = GpThreadLocal.get();
+		Utils.loadMetaInfo(ctx, metaInfo);
 		BasicBD bd = null;
 		try {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());

@@ -82,7 +82,7 @@ public class IuvUtils {
 			case 'Y': sb.append("34"); break;
 			case 'Z': sb.append("35"); break;
 			default:
-				throw new ServiceException("Carattere non amesso nell'IUV");
+				throw new ServiceException("Carattere [" + c +"] non amesso nell'IUV");
 			}
 		}
 
@@ -92,9 +92,8 @@ public class IuvUtils {
 		return String.format("%02d", diff98);
 	}
 	
-	public static String buildIuvNumerico(long prg, int auxDigit, int applicationCode) {
-		String reference = String.format("%013d", prg);
+	public static String getCheckDigit93(String reference, int auxDigit, int applicationCode) {
 		long resto93 = (Long.parseLong(String.valueOf(auxDigit) + String.format("%02d", applicationCode) + reference)) % 93;
-		return reference + String.format("%02d", resto93);
+		return String.format("%02d", resto93);
 	}
 }

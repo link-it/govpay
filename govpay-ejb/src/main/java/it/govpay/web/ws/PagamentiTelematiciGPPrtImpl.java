@@ -43,6 +43,7 @@ import it.govpay.servizi.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.IuvGenerato;
+import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
 import it.govpay.servizi.commons.TipoVersamento;
 import it.govpay.servizi.commons.TipoSceltaWisp;
@@ -133,9 +134,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	}
 	
 	@Override
-	public GpAvviaTransazionePagamentoResponse gpAvviaTransazionePagamento(GpAvviaTransazionePagamento bodyrichiesta) {
+	public GpAvviaTransazionePagamentoResponse gpAvviaTransazionePagamento(GpAvviaTransazionePagamento bodyrichiesta, MetaInfo metaInfo) {
 		GpAvviaTransazionePagamentoResponse response = new GpAvviaTransazionePagamentoResponse();
 		GpContext ctx = GpThreadLocal.get();
+		Utils.loadMetaInfo(ctx, metaInfo);
 		BasicBD bd = null;
 		try {
 			log.info("Richiesta operazione gpAvviaTransazionePagamento");

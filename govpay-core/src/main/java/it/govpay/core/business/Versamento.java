@@ -90,6 +90,7 @@ public class Versamento extends BasicBD {
 			
 			it.govpay.model.Iuv iuv = null;
 			try {
+				ctx.loadVersamentoContext(versamento, this);
 				iuv = iuvBD.getIuv(versamento.getIdApplicazione(), versamento.getCodVersamentoEnte(), TipoIUV.NUMERICO);
 			} catch (NotFoundException e) {
 				if(generaIuv) {

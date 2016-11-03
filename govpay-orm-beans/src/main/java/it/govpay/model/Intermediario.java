@@ -26,6 +26,7 @@ public class Intermediario extends BasicModel{
 	private Long id;
 	private String codIntermediario;
 	private String denominazione;
+	private Integer segregationCode;
     private Connettore connettorePdd;
     private boolean abilitato;
     
@@ -78,6 +79,14 @@ public class Intermediario extends BasicModel{
 				abilitato == intermediario.isAbilitato();
 		
 		return equal;
+	}
+
+	public Integer getSegregationCode() {
+		return segregationCode;
+	}
+
+	public void setSegregationCode(Integer segregationCode) {
+		this.segregationCode = segregationCode;
 	}
     
 }

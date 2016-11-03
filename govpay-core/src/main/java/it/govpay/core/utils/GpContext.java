@@ -1,6 +1,8 @@
 package it.govpay.core.utils;
 
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.handler.IntegrationContext;
@@ -42,6 +44,7 @@ public class GpContext {
 	private List<ILogger> loggers;
 	private List<Context> contexts;
 	
+	private VersamentoContext versamentoCtx;
 	private PagamentoContext pagamentoCtx;
 	private IntegrationContext integrationCtx;
 	
@@ -367,6 +370,15 @@ public class GpContext {
 	}
 
 
+	public VersamentoContext getVersamentoCtx() {
+		return versamentoCtx;
+	}
+
+	public void setVersamentoCtx(VersamentoContext versamentoCtx) {
+		this.versamentoCtx = versamentoCtx;
+	}
+
+
 	public class Context extends ProxyContext {
 		private static final long serialVersionUID = 1L;
 		
@@ -379,5 +391,16 @@ public class GpContext {
 		public void setActive(boolean isActive) {
 			this.isActive = isActive;
 		}
+	}
+
+
+	public void loadVersamentoContext(it.govpay.bd.model.Versamento versamento, BasicBD bd) {
+		VersamentoContext vctx = new VersamentoContext();
+		if(versamento.getSingoliVersamenti(bd).size() == 1){
+			SingoloVersamento sv = versamento.getSingoliVersamenti(bd).get(0);
+			vctx.setCodContabilita(sv.getCodContabilita());
+			vctx.setTipoContabilita(sv.getTipoContabilita());
+		}
+			
 	}
 }

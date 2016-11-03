@@ -512,6 +512,21 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:element name="metaInfo">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="iuvProp" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:extension base="xsd:string">
+										<xsd:attribute name="nome" type="xsd:string" />
+									</xsd:extension>
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
 
 			<xsd:simpleType name="esitoOperazione">
 				<xsd:restriction base="xsd:string">
@@ -1222,6 +1237,7 @@
 
 	<wsdl:message name="gpAvviaTransazionePagamento">
 		<wsdl:part name="bodyrichiesta" element="prt:gpAvviaTransazionePagamento" />
+		<wsdl:part name="metaInfo" element="com:metaInfo" />
 	</wsdl:message>
 
 	<wsdl:message name="gpAvviaTransazionePagamentoResponse">
@@ -1341,6 +1357,7 @@
 		<wsdl:operation name="gpAvviaTransazionePagamento">
 			<soap:operation soapAction="gpAvviaTransazionePagamento" />
 			<wsdl:input>
+				<soap:header message="tns:gpAvviaTransazionePagamento" part="metaInfo" use="literal" />
 				<soap:body use="literal" />
 			</wsdl:input>
 			<wsdl:output>

@@ -1,5 +1,7 @@
 package it.govpay.core.utils;
 
+import java.util.Map;
+
 public class PagamentoContext {
 	
 	private String codSessionePortale;
@@ -10,6 +12,7 @@ public class PagamentoContext {
 	private String ccp;
 	private boolean pspRedirect;
 	private String pspSessionId;
+	private Map<String,String> iuvProps;
 	
 	public String getCodDominio() {
 		return codDominio;
@@ -58,6 +61,12 @@ public class PagamentoContext {
 	}
 	public void setCodCarrello(String codCarrello) {
 		this.codCarrello = codCarrello;
+	}
+	public Map<String,String> getIuvProps() {
+		return iuvProps;
+	}
+	public void setIuvProps(Map<String,String> iuvProps) {
+		this.iuvProps = iuvProps;
 	}
 
 }
