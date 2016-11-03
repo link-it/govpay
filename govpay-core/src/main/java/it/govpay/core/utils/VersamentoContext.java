@@ -53,7 +53,4 @@ public class VersamentoContext {
 	public void setCodUnivocoDebitore(String codUnivocoDebitore) {
 		this.codUnivocoDebitore = codUnivocoDebitore;
 	}
-	
-	
-
 }

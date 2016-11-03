@@ -63,7 +63,15 @@ public class IuvBD extends BasicBD {
 	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, Map<String, String> props) throws ServiceException {
 		
 		// Build prefix
-		String prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, props);
+		String prefix = "";
+		try {
+			prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, props);
+		} catch (ServiceException e) {
+			if(dominio.isIuvPrefixStrict())
+				throw e;
+			else
+				log.warn("Generazione PrefissoIUV fallita: " + e + ". Viene associato uno IUV senza prefisso.");
+		}
 		
 		long prg = getNextPrgIuv(dominio.getCodDominio() + prefix, type);
 		
