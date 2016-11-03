@@ -23,7 +23,7 @@ package it.govpay.web.rs;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.RptBD;
-import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.GpContext;
 import it.govpay.model.Rpt;
 
 import javax.ws.rs.DefaultValue;
@@ -54,12 +54,14 @@ public class GestioneRedirectGw {
 		
 		BasicBD bd = null;
 		Rpt rpt = null;
+		GpContext gpContext = null;
 
 		try {
-			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+			gpContext = new GpContext();
+			bd = BasicBD.newInstance(gpContext.getTransactionId());
 			RptBD rptBD = new RptBD(bd);
 			rpt = rptBD.getRptByCodSessione(codDominio, codSessione);
-
+		
 			if(rpt.getCallbackURL() != null) {
 				UriBuilder ub = UriBuilder.fromUri(rpt.getCallbackURL());
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
@@ -86,6 +88,7 @@ public class GestioneRedirectGw {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd!= null) bd.closeConnection();
+			if(gpContext != null) gpContext.log();
 		}
 	}
 }
