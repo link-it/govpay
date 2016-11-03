@@ -39,6 +39,7 @@ public class Dominio extends BasicModel {
 	private byte[] tabellaControparti;
 	private int auxDigit;
 	private String iuvPrefix;
+	private boolean iuvPrefixStrict;
 	
 	public Long getId() {
 		return id;
@@ -143,5 +144,15 @@ public class Dominio extends BasicModel {
 	public void setIuvPrefix(String iuvPrefix) {
 		this.iuvPrefix = iuvPrefix;
 	}
+
+	public boolean isIuvPrefixStrict() {
+		return iuvPrefixStrict;
+	}
+
+	public void setIuvPrefixStrict(boolean iuvPrefixStrict) {
+		this.iuvPrefixStrict = iuvPrefixStrict;
+	}
+
+
 }
 

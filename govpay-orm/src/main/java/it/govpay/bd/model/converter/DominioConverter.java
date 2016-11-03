@@ -58,6 +58,7 @@ public class DominioConverter {
 		dto.setTabellaControparti(vo.getXmlTabellaControparti());
 		dto.setAuxDigit(vo.getAuxDigit());
 		dto.setIuvPrefix(vo.getIuvPrefix());
+		dto.setIuvPrefixStrict(vo.isIuvPrefixStrict());
 		return dto;
 	}
 
@@ -77,6 +78,9 @@ public class DominioConverter {
 		vo.setCustomIUV(dto.isCustomIuv());
 		vo.setXmlContiAccredito(dto.getContiAccredito());
 		vo.setXmlTabellaControparti(dto.getTabellaControparti());
+		vo.setAuxDigit(dto.getAuxDigit());
+		vo.setIuvPrefix(dto.getIuvPrefix());
+		vo.setIuvPrefixStrict(dto.isIuvPrefixStrict());
 		IdStazione idStazione = new IdStazione();
 		idStazione.setId(dto.getIdStazione());
 		vo.setIdStazione(idStazione);

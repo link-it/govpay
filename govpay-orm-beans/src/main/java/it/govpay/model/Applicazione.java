@@ -38,6 +38,7 @@ public class Applicazione extends Versionabile {
     private FirmaRichiesta firmaRichiesta;
     private boolean trusted;
     private List<Acl> acls;
+    private String codApplicazioneIuv;
     
     public Long getId() {
 		return id;
@@ -95,5 +96,11 @@ public class Applicazione extends Versionabile {
 	}
 	public void setAcls(List<Acl> acls) {
 		this.acls = acls;
+	}
+	public String getCodApplicazioneIuv() {
+		return codApplicazioneIuv;
+	}
+	public void setCodApplicazioneIuv(String codApplicazioneIuv) {
+		this.codApplicazioneIuv = codApplicazioneIuv;
 	}
 }
