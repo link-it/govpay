@@ -3,6 +3,7 @@ package it.govpay.core.utils;
 import it.gov.spcoop.nodopagamentispc.servizi.pagamentitelematicirpt.PagamentiTelematiciRPTservice;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Tributo;
 import it.govpay.core.exceptions.NdpException.FaultPa;
 import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.client.handler.IntegrationContext;
@@ -394,13 +395,24 @@ public class GpContext {
 	}
 
 
-	public void loadVersamentoContext(it.govpay.bd.model.Versamento versamento, BasicBD bd) {
+	public void loadVersamentoContext(it.govpay.bd.model.Versamento versamento, BasicBD bd) throws ServiceException {
 		VersamentoContext vctx = new VersamentoContext();
+		
+		vctx.setCodUoBeneficiaria(versamento.getUo(bd).getCodUo());
+		vctx.setCodUnivocoDebitore(versamento.getAnagraficaDebitore().getCodUnivoco());
+		
 		if(versamento.getSingoliVersamenti(bd).size() == 1){
 			SingoloVersamento sv = versamento.getSingoliVersamenti(bd).get(0);
-			vctx.setCodContabilita(sv.getCodContabilita());
-			vctx.setTipoContabilita(sv.getTipoContabilita());
-		}
 			
+			Tributo t = sv.getTributo(bd);
+			if(t != null) {
+				vctx.setCodContabilita(t.getCodContabilita());
+				vctx.setTipoContabilita(t.getTipoContabilita());
+				vctx.setCodTributoIuv(t.getCodTributoIuv());
+			} else {
+				vctx.setCodContabilita(sv.getCodContabilita());
+				vctx.setTipoContabilita(sv.getTipoContabilita());
+			}
+		}
 	}
 }

@@ -10,7 +10,7 @@ public class TipoTributo extends BasicModel {
 	private String descrizione;
 	private TipoContabilta tipoContabilitaDefault;
 	private String codContabilitaDefault;
-	private String codTributoIuv;
+	private String codTributoIuvDefault;
 	
 	public Long getId() {
 		return id;
@@ -42,11 +42,12 @@ public class TipoTributo extends BasicModel {
 	public void setCodContabilitaDefault(String codContabilitaDefault) {
 		this.codContabilitaDefault = codContabilitaDefault;
 	}
-	public String getCodTributoIuv() {
-		return codTributoIuv;
+	public String getCodTributoIuvDefault() {
+		return codTributoIuvDefault;
 	}
-	public void setCodTributoIuv(String codTributoIuv) {
-		this.codTributoIuv = codTributoIuv;
+	public void setCodTributoIuvDefault(String codTributoIuvDefault) {
+		this.codTributoIuvDefault = codTributoIuvDefault;
 	}
+
 
 }

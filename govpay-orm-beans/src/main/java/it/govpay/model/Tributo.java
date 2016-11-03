@@ -56,8 +56,9 @@ public class Tributo extends TipoTributo {
 	private long idDominio;
 	private Long idIbanAccredito;
 	private boolean abilitato;
-	private TipoContabilta tipoContabilita;
-	private String codContabilita;
+	private TipoContabilta tipoContabilitaCustom;
+	private String codContabilitaCustom;
+	private String codTributoIuvCustom;
 	
 	public Long getIdIbanAccredito() {
 		return idIbanAccredito;
@@ -70,18 +71,6 @@ public class Tributo extends TipoTributo {
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
-	}
-	public TipoContabilta getTipoContabilita() {
-		return tipoContabilita;
-	}
-	public void setTipoContabilita(TipoContabilta tipoContabilita) {
-		this.tipoContabilita = tipoContabilita;
-	}
-	public String getCodContabilita() {
-		return codContabilita;
-	}
-	public void setCodContabilita(String codContabilita) {
-		this.codContabilita = codContabilita;
 	}
 	public long getIdDominio() {
 		return idDominio;
@@ -96,6 +85,22 @@ public class Tributo extends TipoTributo {
 	public void setIdTipoTributo(long idTipoTributo) {
 		this.idTipoTributo = idTipoTributo;
 	}
-
-	
+	public TipoContabilta getTipoContabilitaCustom() {
+		return tipoContabilitaCustom;
+	}
+	public void setTipoContabilitaCustom(TipoContabilta tipoContabilitaCustom) {
+		this.tipoContabilitaCustom = tipoContabilitaCustom;
+	}
+	public String getCodContabilitaCustom() {
+		return codContabilitaCustom;
+	}
+	public void setCodContabilitaCustom(String codContabilitaCustom) {
+		this.codContabilitaCustom = codContabilitaCustom;
+	}
+	public String getCodTributoIuvCustom() {
+		return codTributoIuvCustom;
+	}
+	public void setCodTributoIuvCustom(String codTributoIuv) {
+		this.codTributoIuvCustom = codTributoIuv;
+	}
 }

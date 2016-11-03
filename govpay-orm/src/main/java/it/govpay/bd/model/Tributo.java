@@ -31,6 +31,27 @@ public class Tributo extends it.govpay.model.Tributo {
 	
 	// Business
 	
+	public TipoContabilta getTipoContabilita() {
+		if(getTipoContabilitaCustom() != null)
+			return getTipoContabilitaCustom();
+		else 
+			return getTipoContabilitaDefault();
+	}
+
+	public String getCodContabilita() {
+		if(getCodContabilitaCustom() != null)
+			return getCodContabilitaCustom();
+		else 
+			return getCodContabilitaDefault();
+	}
+	
+	public String getCodTributoIuv() {
+		if(getCodTributoIuvCustom() != null)
+			return getCodTributoIuvCustom();
+		else 
+			return getCodTributoIuvDefault();
+	}
+	
 	public IbanAccredito getIbanAccredito(BasicBD bd) throws ServiceException {
 		if(ibanAccredito == null && this.getIdIbanAccredito() != null) {
 			ibanAccredito = AnagraficaManager.getIbanAccredito(bd, this.getIdIbanAccredito());

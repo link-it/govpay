@@ -5,6 +5,7 @@ import it.govpay.model.Tributo.TipoContabilta;
 public class VersamentoContext {
 	
 	private String codUoBeneficiaria;
+	private String codUnivocoDebitore;
 	
 	//Valorizzati solo se il versamento ha un solo singolo pagamento
 	private TipoContabilta tipoContabilita;
@@ -43,6 +44,14 @@ public class VersamentoContext {
 
 	public void setCodTributoIuv(String codTributoIuv) {
 		this.codTributoIuv = codTributoIuv;
+	}
+
+	public String getCodUnivocoDebitore() {
+		return codUnivocoDebitore;
+	}
+
+	public void setCodUnivocoDebitore(String codUnivocoDebitore) {
+		this.codUnivocoDebitore = codUnivocoDebitore;
 	}
 	
 	
