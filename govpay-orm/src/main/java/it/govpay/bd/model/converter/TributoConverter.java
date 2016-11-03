@@ -53,10 +53,17 @@ public class TributoConverter {
 		dto.setIdTipoTributo(vo.getTipoTributo().getId()); 
 		if(vo.getIdIbanAccredito() != null)
 			dto.setIdIbanAccredito(vo.getIdIbanAccredito().getId());
+		
 		if(vo.getTipoContabilita() != null)
-			dto.setTipoContabilitaDefault(TipoContabilta.toEnum(vo.getTipoContabilita()));
-		dto.setCodContabilitaDefault(vo.getCodiceContabilita());
-		dto.setCodTributoIuvDefault(vo.getCodiceTributIuv());
+			dto.setTipoContabilitaCustom(TipoContabilta.toEnum(vo.getTipoContabilita()));
+		dto.setCodContabilitaCustom(vo.getCodiceContabilita());
+		dto.setCodTributoIuvCustom(vo.getCodiceTributIuv());
+		
+		if(vo.getTipoTributo().getTipoContabilita() != null) 
+			dto.setTipoContabilitaDefault(TipoContabilta.toEnum(vo.getTipoTributo().getTipoContabilita()));
+		dto.setCodContabilitaDefault(vo.getTipoTributo().getCodiceContabilita());
+		dto.setCodTributoIuvDefault(vo.getTipoTributo().getCodiceTributIuv());
+		
 		return dto;
 	}
 
@@ -65,16 +72,19 @@ public class TributoConverter {
 		vo.setId(dto.getId());
 		vo.setAbilitato(dto.isAbilitato());
 		
-		if(dto.getTipoContabilitaCustom() != null)
-			vo.setTipoContabilita(dto.getTipoContabilitaCustom().getCodifica());
-		vo.setCodiceContabilita(dto.getCodContabilitaCustom());
-		vo.setCodTributoIuv(dto.getCodTributoIuvCustom());
 		
 		TipoTributo tipoTributo = new TipoTributo();
 		tipoTributo.setId(dto.getIdTipoTributo());
 		tipoTributo.setCodTributo(dto.getCodTributo());
 		tipoTributo.setDescrizione(dto.getDescrizione());
-		tipoTributo.setTipoContabilita(dto.getTipoContabilitaDefault().getCodifica());
+		
+		if(dto.getTipoContabilitaCustom() != null)
+			vo.setTipoContabilita(dto.getTipoContabilitaCustom().getCodifica());
+		vo.setCodiceContabilita(dto.getCodContabilitaCustom());
+		vo.setCodTributoIuv(dto.getCodTributoIuvCustom());
+		
+		if(dto.getTipoContabilitaDefault() != null)
+			tipoTributo.setTipoContabilita(dto.getTipoContabilitaDefault().getCodifica());
 		tipoTributo.setCodiceContabilita(dto.getCodContabilitaDefault());
 		tipoTributo.setCodTributoIuv(dto.getCodTributoIuvDefault());
 		

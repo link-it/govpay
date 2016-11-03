@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.TipoTributo;
+import it.govpay.model.Tributo.TipoContabilta;
 
 public class TipoTributoConverter {
 
@@ -44,6 +45,10 @@ public class TipoTributoConverter {
 		dto.setId(vo.getId());
 		dto.setCodTributo(vo.getCodTributo());
 		dto.setDescrizione(vo.getDescrizione());
+		if(vo.getTipoContabilita() != null)
+			dto.setTipoContabilitaDefault(TipoContabilta.toEnum(vo.getTipoContabilita()));
+		dto.setCodiceContabilitaDefault(vo.getCodContabilita());
+		dto.setCodTributoIuvDefault(vo.getCodTributoIuv());
 		return dto;
 	}
 
@@ -52,6 +57,10 @@ public class TipoTributoConverter {
 		vo.setId(dto.getId());
 		vo.setCodTributo(dto.getCodTributo());
 		vo.setDescrizione(dto.getDescrizione());
+		if(dto.getTipoContabilitaDefault() != null)
+			vo.setTipoContabilita(dto.getTipoContabilitaDefault().getCodifica());
+		vo.setCodiceContabilita(dto.getCodContabilitaDefault());
+		vo.setCodTributoIuv(dto.getCodTributoIuvDefault());
 		return vo;
 	}
 

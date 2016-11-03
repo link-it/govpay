@@ -56,6 +56,8 @@ public class DominioConverter {
 		dto.setIdStazione(vo.getIdStazione().getId());
 		dto.setContiAccredito(vo.getXmlContiAccredito());
 		dto.setTabellaControparti(vo.getXmlTabellaControparti());
+		dto.setAuxDigit(vo.getAuxDigit());
+		dto.setIuvPrefix(vo.getIuvPrefix());
 		return dto;
 	}
 
