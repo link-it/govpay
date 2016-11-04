@@ -345,7 +345,10 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().add(spezzone);
 					}
 				}
+			} else {
+				datiPagamento.setCausaleVersamento(" ");
 			}
+			
 			datiPagamento.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, versamento.getUo(bd), bd));
 			IbanAccredito ibanAccredito = versamento.getSingoliVersamenti(bd).get(0).getIbanAccredito(bd);
 			if(ibanAccredito != null) {
@@ -354,7 +357,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaAttivaRPTRisposta(esito);
-			ctx.log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
+			ctx.log("ccp.ricezioneAttivaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);
@@ -585,6 +588,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						datiPagamento.getSpezzoniCausaleVersamento().getSpezzoneCausaleVersamentoOrSpezzoneStrutturatoCausaleVersamento().add(spezzone);
 					}
 				}
+			} else {
+				datiPagamento.setCausaleVersamento(" ");
 			}
 
 			datiPagamento.setEnteBeneficiario(RptUtils.buildEnteBeneficiario(dominio, versamento.getUo(bd), bd));
@@ -595,7 +600,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			}
 			esito.setDatiPagamentoPA(datiPagamento);
 			response.setPaaVerificaRPTRisposta(esito);
-			ctx.log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento().toString());
+			ctx.log("ccp.ricezioneVerificaOk", datiPagamento.getImportoSingoloVersamento().toString(), datiPagamento.getIbanAccredito(), versamento.getCausaleVersamento() != null ? versamento.getCausaleVersamento().toString() : "[-- Nessuna causale --]");
 		} catch (NdpException e) {
 			if(bd != null) bd.rollback();
 			response = buildRisposta(e, response);

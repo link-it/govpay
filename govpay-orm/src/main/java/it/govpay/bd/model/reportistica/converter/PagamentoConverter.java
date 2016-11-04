@@ -31,6 +31,7 @@ public class PagamentoConverter  extends it.govpay.bd.model.rest.converter.Pagam
 			dto.setDebitoreIdentificativo(codiceFiscaleDebitore);
 
 			String causale = (String) getObjectFromMap(map, PagamentiBD.ALIAS_CAUSALE);
+			if(Versamento.decode(causale) != null)
 			dto.setCausale(Versamento.decode(causale).getSimple()); 
 
 			String statoVersamento = (String) getObjectFromMap(map, PagamentiBD.ALIAS_STATO_VERSAMENTO);

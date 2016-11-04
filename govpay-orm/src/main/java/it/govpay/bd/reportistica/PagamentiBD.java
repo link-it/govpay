@@ -104,11 +104,14 @@ public class PagamentiBD extends BasicBD{
 			// Funzioni di aggragazione
 
 			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO, Function.MAX, PagamentiBD.ALIAS_DATA_PAGAMENTO));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_DATA_PAGAMENTO, PagamentiBD.DEFAULT_VALUE_DATE, it.govpay.orm.Pagamento.model().DATA_PAGAMENTO.getFieldType()),
-					Function.MAX, PagamentiBD.ALIAS_DATA_PAGAMENTO));
+			unionExprFake.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO, Function.MAX, PagamentiBD.ALIAS_DATA_PAGAMENTO));
+			
+//			unionExprFake.addSelectFunctionField(new FunctionField(
+//					new ConstantField( PagamentiBD.ALIAS_DATA_PAGAMENTO, PagamentiBD.DEFAULT_VALUE_DATE, it.govpay.orm.Pagamento.model().DATA_PAGAMENTO.getFieldType()),
+//					Function.MAX, PagamentiBD.ALIAS_DATA_PAGAMENTO));
 
 			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE, Function.MAX, PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE));
+			
 			unionExprFake.addSelectFunctionField(new FunctionField(
 					new ConstantField( PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE, PagamentiBD.DEFAULT_VALUE_STRING, it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType()),
 					Function.MAX, PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE));
@@ -207,47 +210,6 @@ public class PagamentiBD extends BasicBD{
 
 			// Funzioni di aggragazione
 
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO, Function.MAX, PagamentiBD.ALIAS_DATA_PAGAMENTO));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_DATA_PAGAMENTO, PagamentiBD.DEFAULT_VALUE_DATE, it.govpay.orm.Pagamento.model().DATA_PAGAMENTO.getFieldType()),
-					Function.MAX, PagamentiBD.ALIAS_DATA_PAGAMENTO));
-
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE, Function.MAX, PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE, PagamentiBD.DEFAULT_VALUE_STRING, it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE.getFieldType()),
-					Function.MAX, PagamentiBD.ALIAS_COD_VERSAMENTO_ENTE));
-
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO, Function.MAX, PagamentiBD.ALIAS_CODICE_FISCALE_DEBITORE));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_CODICE_FISCALE_DEBITORE, PagamentiBD.DEFAULT_VALUE_STRING, it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.DEBITORE_IDENTIFICATIVO.getFieldType()),
-					Function.MAX, PagamentiBD.ALIAS_CODICE_FISCALE_DEBITORE));
-
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO, Function.MAX, PagamentiBD.ALIAS_CAUSALE));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_CAUSALE, PagamentiBD.DEFAULT_VALUE_STRING, it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.CAUSALE_VERSAMENTO.getFieldType()),
-					Function.MAX, PagamentiBD.ALIAS_CAUSALE));
-
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO, Function.MAX, PagamentiBD.ALIAS_STATO_VERSAMENTO));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_STATO_VERSAMENTO, PagamentiBD.DEFAULT_VALUE_STRING, it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO.getFieldType()), 
-					Function.MAX, PagamentiBD.ALIAS_STATO_VERSAMENTO));
-
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE, Function.MAX, PagamentiBD.ALIAS_IMPORTO_DOVUTO));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_IMPORTO_DOVUTO, PagamentiBD.DEFAULT_VALUE_DOUBLE, it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.IMPORTO_TOTALE.getFieldType()), 
-					Function.MAX, PagamentiBD.ALIAS_IMPORTO_DOVUTO));
-
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().IMPORTO_PAGATO, Function.SUM, PagamentiBD.ALIAS_IMPORTO_PAGATO));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_IMPORTO_PAGATO, PagamentiBD.DEFAULT_VALUE_DOUBLE, it.govpay.orm.Pagamento.model().IMPORTO_PAGATO.getFieldType()),
-					Function.MAX, PagamentiBD.ALIAS_IMPORTO_PAGATO));
-
-			unionExpr.addSelectFunctionField(new FunctionField(it.govpay.orm.Pagamento.model().ID_RPT.IUV, Function.MAX, PagamentiBD.ALIAS_IUV));
-			unionExprFake.addSelectFunctionField(new FunctionField(
-					new ConstantField( PagamentiBD.ALIAS_IUV,  PagamentiBD.DEFAULT_VALUE_STRING, it.govpay.orm.Pagamento.model().ID_RPT.IUV.getFieldType()), 
-					Function.MAX, PagamentiBD.ALIAS_IUV));
-
-
 			NonNegativeNumber count  = this.getPagamentoService().unionCount(union, unionExpr, unionExprFake);
 			return count != null ? count.longValue() - 1: 0;
 		} catch (NotFoundException e) {
@@ -326,8 +288,11 @@ public class PagamentiBD extends BasicBD{
 					pagamento.setIbanAccredito((String) list.get(9));
 					pagamento.setId((Long) list.get(10));
 					pagamento.setCodVersamentoEnte((String) list.get(11));
-					pagamento.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf((String) list.get(12)));
-					pagamento.setCausale(Versamento.decode((String) list.get(13)).getSimple());
+					pagamento.setStatoVersamento(Versamento.StatoVersamento.valueOf((String) list.get(12)));
+					if(Versamento.decode((String) list.get(13)) != null)
+						pagamento.setCausale(Versamento.decode((String) list.get(13)).getSimple());
+					else
+						pagamento.setCausale("");
 					pagamento.setDebitoreIdentificativo((String) list.get(14));
 					pagamento.setImportoDovuto(new BigDecimal((Double) list.get(15)));
 					pagamento.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf((String) list.get(16)));

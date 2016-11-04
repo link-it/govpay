@@ -177,7 +177,10 @@ public class Versamento extends BasicModel {
 	}
 	
 	public void setCausaleVersamento(String causaleVersamentoEncoded) throws UnsupportedEncodingException {
-		this.causaleVersamento = Versamento.decode(causaleVersamentoEncoded);
+		if(causaleVersamentoEncoded == null) 
+			this.causaleVersamento = null;
+		else
+			this.causaleVersamento = Versamento.decode(causaleVersamentoEncoded);
 	}
 	
 	public interface Causale {
@@ -190,6 +193,7 @@ public class Versamento extends BasicModel {
 		
 		@Override
 		public String encode() throws UnsupportedEncodingException {
+			if(causale == null) return null;
 			return "01 " + Base64.encodeBase64String(causale.getBytes("UTF-8"));
 		}
 		
@@ -218,6 +222,7 @@ public class Versamento extends BasicModel {
 		
 		@Override
 		public String encode() throws UnsupportedEncodingException {
+			if(spezzoni == null) return null;
 			String encoded = "02";
 			for(String spezzone : spezzoni) {
 				encoded += " " + Base64.encodeBase64String(spezzone.getBytes("UTF-8"));
@@ -253,6 +258,7 @@ public class Versamento extends BasicModel {
 		
 		@Override
 		public String encode() throws UnsupportedEncodingException {
+			if(spezzoni == null) return null;
 			String encoded = "03";
 			for(int i=0; i<spezzoni.size(); i++) {
 				encoded += " " + Base64.encodeBase64String(spezzoni.get(i).getBytes("UTF-8")) + " " + Base64.encodeBase64String(Double.toString(importi.get(i).doubleValue()).getBytes("UTF-8"));
@@ -308,6 +314,9 @@ public class Versamento extends BasicModel {
 	}
 	
 	public static Causale decode(String encodedCausale) throws UnsupportedEncodingException {
+		if(encodedCausale == null || encodedCausale.trim().isEmpty())
+			return null;
+		
 		String[] causaleSplit = encodedCausale.split(" ");
 		if(causaleSplit[0].equals("01")) {
 			CausaleSemplice causale = new Versamento().new CausaleSemplice();
