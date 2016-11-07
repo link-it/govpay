@@ -58,6 +58,7 @@ import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.RtUtils.EsitoValidazione;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.thread.InviaNotificaThread;
@@ -315,20 +316,27 @@ public class RrUtils extends NdpValidationUtils {
 			throw new NdpException(FaultPa.PAA_ER_DUPLICATA, identificativoDominio);
 		}
 		
-		try {
-			// Validazione Semantica
+		RtUtils.EsitoValidazione esito = null;
 			try {
-				RrUtils.validaSemantica(rr, JaxbUtils.toRR(rr.getXmlRr()), ctEr, bd);
+				esito = RrUtils.validaSemantica(rr, JaxbUtils.toRR(rr.getXmlRr()), ctEr, bd);
 			} catch (JAXBException e) {
 				throw new ServiceException(e);
 			} catch (SAXException e) {
 				throw new ServiceException(e);
 			}
-		} catch (NdpException e) {
+			
+		
+		if(esito.validato && esito.errori.size() > 0) {
+			ctx.log("er.validazioneWarn", esito.getDiagnostico());
+		} 
+		
+		if (!esito.validato) {
+			ctx.log("er.validazioneFail", esito.getDiagnostico());
 			rr.setStato(StatoRr.ER_RIFIUTATA_PA);
+			rr.setDescrizioneStato(esito.getFatal());
 			rr.setXmlEr(er);
 			rrBD.updateRr(rr.getId(), rr);
-			throw e;
+			throw new NdpException(FaultPa.PAA_SEMANTICA, identificativoDominio, esito.getFatal());
 		}
 		
 		// Rileggo per avere la lettura dello stato rpt in transazione
@@ -383,21 +391,17 @@ public class RrUtils extends NdpValidationUtils {
 		return rr;
 	}
 
-	private static String validaSemantica(Rr rr, CtRichiestaRevoca ctRr, CtEsitoRevoca ctEr, BasicBD bd) throws NdpException, ServiceException {
-		String errore = null;
-		if((errore = validaSemantica(ctRr.getIstitutoAttestante(),ctEr.getIstitutoAttestante())) != null) 
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
-		if((errore = validaSemantica(ctRr.getSoggettoPagatore(),ctEr.getSoggettoPagatore())) != null) 
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
-		if((errore = validaSemantica(ctRr.getSoggettoVersante(),ctEr.getSoggettoVersante())) != null) 
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
-		if((errore = validaSemantica(ctRr.getDominio(),ctEr.getDominio())) != null) 
-			throw new NdpException(FaultPa.PAA_SEMANTICA, errore);
+	private static EsitoValidazione validaSemantica(Rr rr, CtRichiestaRevoca ctRr, CtEsitoRevoca ctEr, BasicBD bd) throws ServiceException {
+		EsitoValidazione esito = new RtUtils().new EsitoValidazione();
+		validaSemantica(ctRr.getIstitutoAttestante(),ctEr.getIstitutoAttestante(), esito); 
+		validaSemantica(ctRr.getSoggettoPagatore(),ctEr.getSoggettoPagatore(), esito);
+		validaSemantica(ctRr.getSoggettoVersante(),ctEr.getSoggettoVersante(), esito);
+		validaSemantica(ctRr.getDominio(),ctEr.getDominio(), esito);
 		
 		CtDatiRevoca datiRr = ctRr.getDatiRevoca();
 		CtDatiEsitoRevoca datiEr = ctEr.getDatiRevoca();
-		if(!equals(datiRr.getCodiceContestoPagamento(), datiEr.getCodiceContestoPagamento())) throw new NdpException(FaultPa.PAA_SEMANTICA, "CodiceContestoPagamento non corrisponde");
-		if(!equals(datiRr.getIdentificativoUnivocoVersamento(), datiEr.getIdentificativoUnivocoVersamento())) throw new NdpException(FaultPa.PAA_SEMANTICA, "IdentificativoUnivocoVersamento non corrisponde");
+		valida(datiRr.getCodiceContestoPagamento(), datiEr.getCodiceContestoPagamento(), esito, "CodiceContestoPagamento non corrisponde", true);
+		valida(datiRr.getIdentificativoUnivocoVersamento(), datiEr.getIdentificativoUnivocoVersamento(), esito, "IdentificativoUnivocoVersamento non corrisponde", true);
 		
 		for(CtDatiSingoloEsitoRevoca singolaRevoca : datiEr.getDatiSingolaRevoca()) {
 			
@@ -410,7 +414,7 @@ public class RrUtils extends NdpValidationUtils {
 			try {
 				pagamento = rr.getPagamento(singolaRevoca.getIdentificativoUnivocoRiscossione(), bd);
 			} catch (NotFoundException e) {
-				throw new NdpException(FaultPa.PAA_SEMANTICA, "Storno non richiesto");
+				esito.addErrore("Ricevuto esito di revoca non richiesta", true);
 			}
 			
 			pagamento.setDatiEsitoRevoca(singolaRevoca.getDatiAggiuntiviEsito());
@@ -418,6 +422,6 @@ public class RrUtils extends NdpValidationUtils {
 			pagamento.setImportoRevocato(singolaRevoca.getSingoloImportoRevocato());
 		}
 		
-		return null;
+		return esito;
 	}
 }
