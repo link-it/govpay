@@ -162,6 +162,9 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 			fields.add(new CustomField("id", Long.class, "id", this.getTipoTributoFieldConverter().toTable(TipoTributo.model())));
 			fields.add(TipoTributo.model().COD_TRIBUTO);
 			fields.add(TipoTributo.model().DESCRIZIONE);
+			fields.add(TipoTributo.model().TIPO_CONTABILITA);
+			fields.add(TipoTributo.model().COD_CONTABILITA);
+			fields.add(TipoTributo.model().COD_TRIBUTO_IUV);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -479,6 +482,9 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 		sqlQueryObjectGet_tipoTributo.addSelectField("id");
 		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO,true));
 		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().DESCRIZIONE,true));
+		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().TIPO_CONTABILITA,true));
+		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_CONTABILITA,true));
+		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO_IUV,true));
 		sqlQueryObjectGet_tipoTributo.addWhereCondition("id=?");
 
 		// Get tipoTributo

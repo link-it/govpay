@@ -96,6 +96,13 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 				return "abilitato";
 			}
 		}
+		if(field.equals(Intermediario.model().SEGREGATION_CODE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".segregation_code";
+			}else{
+				return "segregation_code";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -119,6 +126,9 @@ public class IntermediarioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 		if(field.equals(Intermediario.model().ABILITATO)){
+			return this.toTable(Intermediario.model(), returnAlias);
+		}
+		if(field.equals(Intermediario.model().SEGREGATION_CODE)){
 			return this.toTable(Intermediario.model(), returnAlias);
 		}
 

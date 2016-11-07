@@ -3,6 +3,18 @@
 	
 
 
+	<xsd:simpleType name="Int2">
+		<xsd:restriction base="xsd:int">
+			<xsd:totalDigits value="2"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Int1">
+		<xsd:restriction base="xsd:int">
+			<xsd:totalDigits value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 	<xsd:simpleType name="String511">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="511"/>
@@ -12,6 +24,12 @@
 	<xsd:simpleType name="String256">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="256"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="String255">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="255"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -42,6 +60,12 @@
 	<xsd:simpleType name="String1">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="1"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="String3">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="3"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -230,6 +254,9 @@
 			<xsd:element minOccurs="0" name="debitoreAnagrafica" type="String70"/>
 			<xsd:element minOccurs="0" name="codVersamentoLotto" type="String35"/>
 			<xsd:element minOccurs="0" name="codAnnoTributario" type="String35"/>
+			<xsd:element minOccurs="0" name="importoTotale" type="xsd:double"/>
+			<xsd:element minOccurs="0" name="causaleVersamento" type="String511"/>
+			<xsd:element minOccurs="0" name="statoVersamento" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -239,6 +266,8 @@
 			<xsd:element name="codSingoloVersamentoEnte" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="idTributo" type="id-tributo"/>
 			<xsd:element minOccurs="0" name="note" type="String512"/>
+			<xsd:element minOccurs="0" name="statoSingoloVersamento" type="String35"/>
+			<xsd:element minOccurs="0" name="importoSingoloVersamento" type="xsd:double"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -372,6 +401,10 @@
 			<xsd:element minOccurs="0" name="idApplicazioneDefault" type="id-applicazione">
 				
 			</xsd:element>
+			<xsd:element default="0" name="auxDigit" type="Int1"/>
+			<xsd:element minOccurs="0" name="iuvPrefix" type="String255"/>
+			<xsd:element default="false" name="iuvPrefixStrict" type="xsd:boolean"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -466,6 +499,7 @@
 			<xsd:element name="codConnettorePdd" type="String35"/>
 			<xsd:element name="denominazione" type="xsd:string"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
+			<xsd:element minOccurs="0" name="segregationCode" type="Int2"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -495,6 +529,7 @@
 			<xsd:element minOccurs="0" name="codConnettoreVerifica" type="xsd:string"/>
 			<xsd:element default="2.1" name="versione" type="String10"/>
 			<xsd:element name="trusted" type="xsd:boolean"/>
+			<xsd:element minOccurs="0" name="codApplicazioneIuv" type="String3"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -534,6 +569,7 @@
 			<xsd:element name="tipoTributo" type="TipoTributo">
 				
 			</xsd:element>
+			<xsd:element minOccurs="0" name="codTributoIuv" type="String255"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -543,6 +579,9 @@
 		<xsd:sequence>
 			<xsd:element name="codTributo" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="descrizione" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="tipoContabilita" type="String1"/>
+			<xsd:element minOccurs="0" name="codContabilita" type="String255"/>
+			<xsd:element minOccurs="0" name="codTributoIuv" type="String255"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	

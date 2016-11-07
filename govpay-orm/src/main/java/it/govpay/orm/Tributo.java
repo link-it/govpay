@@ -42,6 +42,7 @@ import java.io.Serializable;
  * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="tipoTributo" type="{http://www.govpay.it/orm}TipoTributo" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -61,7 +62,8 @@ import java.io.Serializable;
   	"idIbanAccredito",
   	"tipoContabilita",
   	"codiceContabilita",
-  	"tipoTributo"
+  	"tipoTributo",
+  	"codTributoIuv"
   }
 )
 
@@ -137,6 +139,14 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.tipoTributo = tipoTributo;
   }
 
+  public java.lang.String getCodTributoIuv() {
+    return this.codTributoIuv;
+  }
+
+  public void setCodTributoIuv(java.lang.String codTributoIuv) {
+    this.codTributoIuv = codTributoIuv;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -176,5 +186,9 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   @XmlElement(name="tipoTributo",required=true,nillable=false)
   protected TipoTributo tipoTributo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTributoIuv",required=false,nillable=false)
+  protected java.lang.String codTributoIuv;
 
 }

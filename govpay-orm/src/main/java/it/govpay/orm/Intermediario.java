@@ -40,6 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}int" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -57,7 +58,8 @@ import java.io.Serializable;
   	"codIntermediario",
   	"codConnettorePdd",
   	"denominazione",
-  	"abilitato"
+  	"abilitato",
+  	"_decimalWrapper_segregationCode"
   }
 )
 
@@ -117,6 +119,14 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
     this.abilitato = abilitato;
   }
 
+  public int getSegregationCode() {
+    return (java.lang.Integer) this._decimalWrapper_segregationCode.getObject(java.lang.Integer.class);
+  }
+
+  public void setSegregationCode(int segregationCode) {
+    this._decimalWrapper_segregationCode = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,2,segregationCode);
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -151,5 +161,13 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="abilitato",required=true,nillable=false)
   protected boolean abilitato;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @XmlElement(name="segregationCode",required=false,nillable=false)
+  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_segregationCode = null;
+
+  @XmlTransient
+  protected int segregationCode;
 
 }

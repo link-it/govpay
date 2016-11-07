@@ -124,6 +124,13 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "trusted";
 			}
 		}
+		if(field.equals(Applicazione.model().COD_APPLICAZIONE_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione_iuv";
+			}else{
+				return "cod_applicazione_iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -159,6 +166,9 @@ public class ApplicazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 		if(field.equals(Applicazione.model().TRUSTED)){
+			return this.toTable(Applicazione.model(), returnAlias);
+		}
+		if(field.equals(Applicazione.model().COD_APPLICAZIONE_IUV)){
 			return this.toTable(Applicazione.model(), returnAlias);
 		}
 

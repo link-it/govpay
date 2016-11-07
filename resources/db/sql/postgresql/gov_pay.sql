@@ -53,6 +53,7 @@ CREATE TABLE intermediari
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
 	denominazione VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
+	segregation_code INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_intermediari') NOT NULL,
 	-- unique constraints
@@ -97,6 +98,7 @@ CREATE TABLE applicazioni
 	cod_connettore_verifica VARCHAR(255),
 	versione VARCHAR(10) NOT NULL DEFAULT '2.1',
 	trusted BOOLEAN NOT NULL,
+	cod_applicazione_iuv VARCHAR(3),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_applicazioni') NOT NULL,
 	-- unique constraints
@@ -121,6 +123,9 @@ CREATE TABLE domini
 	xml_tabella_controparti BYTEA NOT NULL,
 	riuso_iuv BOOLEAN NOT NULL,
 	custom_iuv BOOLEAN NOT NULL,
+	aux_digit INT NOT NULL DEFAULT 0,
+	iuv_prefix VARCHAR(255),
+	iuv_prefix_strict BOOLEAN NOT NULL DEFAULT false,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,
@@ -254,6 +259,9 @@ CREATE TABLE tipi_tributo
 (
 	cod_tributo VARCHAR(255) NOT NULL,
 	descrizione VARCHAR(255),
+	tipo_contabilita VARCHAR(1),
+	cod_contabilita VARCHAR(255),
+	cod_tributo_iuv VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_tributo') NOT NULL,
 	-- unique constraints
@@ -272,6 +280,7 @@ CREATE TABLE tributi
 	abilitato BOOLEAN NOT NULL,
 	tipo_contabilita VARCHAR(1) NOT NULL,
 	codice_contabilita VARCHAR(255) NOT NULL,
+	cod_tributo_iuv VARCHAR(255),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,

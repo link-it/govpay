@@ -75,6 +75,7 @@ CREATE TABLE intermediari
 	cod_connettore_pdd VARCHAR2(35, CHAR) NOT NULL,
 	denominazione VARCHAR2(255, CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
+	segregation_code NUMBER,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -141,6 +142,7 @@ CREATE TABLE applicazioni
 	cod_connettore_verifica VARCHAR2(255, CHAR),
 	versione VARCHAR2(10, CHAR) NOT NULL,
 	trusted NUMBER NOT NULL,
+	cod_applicazione_iuv VARCHAR2(3, CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -179,6 +181,9 @@ CREATE TABLE domini
 	xml_tabella_controparti BLOB NOT NULL,
 	riuso_iuv NUMBER NOT NULL,
 	custom_iuv NUMBER NOT NULL,
+	aux_digit NUMBER NOT NULL,
+	iuv_prefix VARCHAR2(255, CHAR),
+	iuv_prefix_strict NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,
@@ -190,6 +195,10 @@ CREATE TABLE domini
 	CONSTRAINT fk_domini_2 FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_domini PRIMARY KEY (id)
 );
+
+
+ALTER TABLE domini MODIFY aux_digit DEFAULT 0;
+ALTER TABLE domini MODIFY iuv_prefix_strict DEFAULT 0;
 
 CREATE TRIGGER trg_domini
 BEFORE
@@ -384,6 +393,9 @@ CREATE TABLE tipi_tributo
 (
 	cod_tributo VARCHAR2(255, CHAR) NOT NULL,
 	descrizione VARCHAR2(255, CHAR),
+	tipo_contabilita VARCHAR2(1, CHAR),
+	cod_contabilita VARCHAR2(255, CHAR),
+	cod_tributo_iuv VARCHAR2(255, CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -413,6 +425,7 @@ CREATE TABLE tributi
 	abilitato NUMBER NOT NULL,
 	tipo_contabilita VARCHAR2(1, CHAR) NOT NULL,
 	codice_contabilita VARCHAR2(255, CHAR) NOT NULL,
+	cod_tributo_iuv VARCHAR2(255, CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

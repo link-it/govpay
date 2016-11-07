@@ -205,6 +205,10 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(tipoTributoId);
 			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fields.add(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
+			fields.add(Tributo.model().TIPO_CONTABILITA);
+			fields.add(Tributo.model().CODICE_CONTABILITA);
+			fields.add(Tributo.model().COD_TRIBUTO_IUV);
+
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getTributoFieldConverter().toTable(Tributo.model())));
 

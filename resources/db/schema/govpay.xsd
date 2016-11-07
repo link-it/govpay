@@ -57,6 +57,18 @@
 	</xsd:annotation>
 
 
+	<xsd:simpleType name="Int2">
+		<xsd:restriction base="xsd:int">
+			<xsd:totalDigits value="2" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="Int1">
+		<xsd:restriction base="xsd:int">
+			<xsd:totalDigits value="1" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 	<xsd:simpleType name="String511">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="511" />
@@ -66,6 +78,12 @@
 	<xsd:simpleType name="String256">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="256" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="String255">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="255" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -96,6 +114,12 @@
 	<xsd:simpleType name="String1">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="1" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="String3">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="3" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	
@@ -457,6 +481,10 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="auxDigit" type="Int1" default="0" />
+			<xsd:element name="iuvPrefix" type="String255" minOccurs="0"/>
+			<xsd:element name="iuvPrefixStrict" type="xsd:boolean" default="false" />
+			
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -656,6 +684,7 @@
 			<xsd:element name="codConnettorePdd" type="String35" />
 			<xsd:element name="denominazione" type="xsd:string" />
 			<xsd:element name="abilitato" type="xsd:boolean" />
+			<xsd:element name="segregationCode" type="Int2" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -717,6 +746,7 @@
 			<xsd:element name="codConnettoreVerifica" type="xsd:string" minOccurs="0" />
 			<xsd:element name="versione" type="String10" default="2.1"/>
 			<xsd:element name="trusted" type="xsd:boolean" />
+			<xsd:element name="codApplicazioneIuv" type="String3" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -808,6 +838,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
+			<xsd:element name="codTributoIuv" type="String255" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -829,6 +860,9 @@
 		<xsd:sequence>
 			<xsd:element name="codTributo" type="xsd:string" />
 			<xsd:element name="descrizione" type="xsd:string" minOccurs="0" />
+			<xsd:element name="tipoContabilita" type="String1" minOccurs="0" />
+			<xsd:element name="codContabilita" type="String255" minOccurs="0" />
+			<xsd:element name="codTributoIuv" type="String255" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

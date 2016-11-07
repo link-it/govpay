@@ -589,7 +589,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			entry = (Tributo) JSONObject.toBean( jsonObject, jsonConfig );
 
 			TipoContabilta tipoContabilita =  TipoContabilta.toEnum(tipocontabilitaS);
-			entry.setTipoContabilita(tipoContabilita); 
+			//TODO giuliano pintori GP-393
+//			entry.setTipoContabilita(tipoContabilita); 
 
 
 			TipiTributoBD tributiBD = new TipiTributoBD(bd);
