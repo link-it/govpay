@@ -70,7 +70,6 @@ import javax.activation.DataHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -95,8 +94,6 @@ public class Rendicontazioni extends BasicBD {
 			List<Psp> lstPsp = pspBD.getPsp();
 			closeConnection();
 			for(Dominio dominio : lstDomini) { 
-				
-				ThreadContext.put("dom", dominio.getCodDominio());
 				setupConnection(GpThreadLocal.get().getTransactionId());
 				Stazione stazione = dominio.getStazione(this);
 				Intermediario intermediario = stazione.getIntermediario(this);
@@ -137,12 +134,14 @@ public class Rendicontazioni extends BasicBD {
 						} catch (Exception e) {
 							// Errore nella richiesta. Loggo e continuo con il prossimo psp
 							log.error("Richiesta elenco flussi rendicontazione per il psp [" + psp.getCodPsp() + "] fallita", e);
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussiFail", dominio.getCodDominio(), psp.getCodPsp(), e.getMessage());
 							continue;
 						}
 
 						if(risposta.getFault() != null) {
 							// Errore nella richiesta. Loggo e continuo con il prossimo psp
 							log.error("Richiesta elenco flussi rendicontazione per il psp [" + psp.getCodPsp() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussiKo", dominio.getCodDominio(), psp.getCodPsp(), risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
 							continue;
 						} else {
 							
@@ -423,7 +422,7 @@ public class Rendicontazioni extends BasicBD {
 			throw new GovPayException(e);
 		}
 		
-		GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussiCompletata");
+		GpThreadLocal.get().log("rendicontazioni.acquisizioneOk");
 		
 		if(response.isEmpty()) {
 			return "Acquisizione completata#Nessun flusso acquisito.";

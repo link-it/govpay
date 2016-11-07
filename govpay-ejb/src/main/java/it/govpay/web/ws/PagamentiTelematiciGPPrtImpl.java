@@ -506,7 +506,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.getContext().getRequest().addGenericProperty(new Property("ccp", bodyrichiesta.getCcp()));
 			
 			Portale portaleAutenticato = getPortaleAutenticato(bd);
-			ctx.log("ws.ricevutaRichiestaStorno");
+			ctx.log("ws.ricevutaRichiesta");
 			
 			autorizzaPortale(bodyrichiesta.getCodPortale(), portaleAutenticato, bd);
 			ctx.log("ws.autorizzazione");

@@ -198,17 +198,17 @@ public class BasicClient {
 			if(outHandlers!= null && !outHandlers.isEmpty()) {
 				IntegrationContext ic = GpThreadLocal.get().getIntegrationCtx();
 	
-				log.info("Applicazione al messaggio degli handlers configurati...");
+				log.debug("Applicazione al messaggio degli handlers configurati...");
 				for(String handler: outHandlers) {
 					Class<?> c = Class.forName(handler);
 					IntegrationOutHandler instance = (IntegrationOutHandler) c.newInstance();
-					log.info("Applicazione al messaggio dell'handler ["+handler+"]...");
+					log.debug("Applicazione al messaggio dell'handler ["+handler+"]...");
 					instance.invoke(ic);
-					log.info("Applicazione al messaggio dell'handler ["+handler+"] completata con successo");
+					log.debug("Applicazione al messaggio dell'handler ["+handler+"] completata con successo");
 				}
-				log.info("Applicazione al messaggio degli handlers configurati completata con successo");
+				log.debug("Applicazione al messaggio degli handlers configurati completata con successo");
 			} else {
-				log.info("Nessun handler configurato");
+				log.debug("Nessun handler configurato");
 			}
 		} catch(Exception e) {
 			throw new ClientException("Errore durante l'applicazione al messaggio degli handlers configurati: " + e.getMessage(), e);
