@@ -107,7 +107,8 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return new Psp(bd).aggiornaRegistro();
+			String response = new Psp(bd).aggiornaRegistro();
+			return response;
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
 			return "Acquisizione fallita#" + e;
@@ -145,7 +146,7 @@ public class Operazioni{
 		}
 	}
 
-	@Schedule(hour="*", minute="*/30", persistent=false)
+	@Schedule(hour="*", minute="*", persistent=false)
 	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
 	public static boolean spedizioneNotifiche(){
 		BasicBD bd = null;

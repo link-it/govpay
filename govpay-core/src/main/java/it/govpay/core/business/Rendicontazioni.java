@@ -164,7 +164,7 @@ public class Rendicontazioni extends BasicBD {
 								closeConnection();
 								if(exists){
 									GpThreadLocal.get().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso(), annoFlusso + "");
-									response.add(idRendicontazione.getIdentificativoFlusso() + "#Flusso gia' acquisito");
+									//response.add(idRendicontazione.getIdentificativoFlusso() + "#Flusso gia' acquisito");
 									log.trace("Flusso rendicontazione dal psp [" + psp.getCodPsp() + "] per il dominio [" + dominio.getCodDominio() + "] gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
 								} else {
 									log.debug("Ricevuto flusso rendicontazione dal psp [" + psp.getCodPsp() + "] per il dominio [" + dominio.getCodDominio() + "] non presente negli archivi. Acquisizione in corso del flusso con identificativo: " + idRendicontazione.getIdentificativoFlusso() + "");
