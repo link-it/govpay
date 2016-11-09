@@ -320,8 +320,12 @@ public class Versamento extends BasicModel {
 		String[] causaleSplit = encodedCausale.split(" ");
 		if(causaleSplit[0].equals("01")) {
 			CausaleSemplice causale = new Versamento().new CausaleSemplice();
-			causale.setCausale(new String(Base64.decodeBase64(causaleSplit[1].getBytes()), "UTF-8"));
-			return causale;
+			if(causaleSplit.length > 1 && causaleSplit[1] != null) {
+				causale.setCausale(new String(Base64.decodeBase64(causaleSplit[1].getBytes()), "UTF-8"));
+				return causale;
+			} else {
+				return null;
+			}
 		}
 		
 		if(causaleSplit[0].equals("02")) {
