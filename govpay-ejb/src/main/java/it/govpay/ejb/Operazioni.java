@@ -107,7 +107,8 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return new Psp(bd).aggiornaRegistro();
+			String response = new Psp(bd).aggiornaRegistro();
+			return response;
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
 			return "Acquisizione fallita#" + e;

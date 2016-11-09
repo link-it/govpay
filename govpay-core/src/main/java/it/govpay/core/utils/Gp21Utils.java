@@ -20,6 +20,9 @@
  */
 package it.govpay.core.utils;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
@@ -32,6 +35,7 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
 import it.govpay.model.Versionabile;
 import it.govpay.model.Versionabile.Versione;
+import it.govpay.bd.pagamento.filters.VersamentoFilter.SortFields;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoTransazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
@@ -67,11 +71,11 @@ public class Gp21Utils {
 		t.setModello(ModelloPagamento.valueOf(rpt.getModelloPagamento().toString()));
 		t.setRpt(rpt.getXmlRpt());
 		t.setRt(rpt.getXmlRt());
-		
+
 		if(versione.compareTo(Versione.GP_02_02_00) >=0) {
 			t.setData(rpt.getDataMsgRichiesta());
 		}
-		
+
 		try {
 			t.setStato(StatoTransazione.valueOf(rpt.getStato().toString()));
 		} catch (Exception e) {
@@ -118,7 +122,7 @@ public class Gp21Utils {
 
 	public static it.govpay.servizi.commons.Pagamento toPagamento(Pagamento pagamento, Versionabile.Versione versione) {
 		it.govpay.servizi.commons.Pagamento p = new it.govpay.servizi.commons.Pagamento();
-		
+
 		if(pagamento.getAllegato() != null) {
 			Allegato allegato = new Allegato();
 			allegato.setTesto(pagamento.getAllegato());
@@ -141,7 +145,7 @@ public class Gp21Utils {
 		}
 		return p;
 	}
-	
+
 	public static FlussoRendicontazione.Pagamento toRendicontazionePagamento(Pagamento pagamento, Versionabile.Versione versione, BasicBD bd) throws ServiceException {
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
 		p.setCodApplicazione(pagamento.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd).getCodApplicazione());
@@ -200,6 +204,40 @@ public class Gp21Utils {
 			p.setCodDominio(rend.getRpt().getCodDominio());
 		}
 		return p;
+	}
+
+	public static List<it.govpay.bd.model.Versamento.StatoVersamento> toStatiVersamento(List<StatoVersamento> stati) {
+		if(stati == null || stati.size() == 0) return null;
+
+		List<it.govpay.bd.model.Versamento.StatoVersamento> statiVersamento = new ArrayList<it.govpay.bd.model.Versamento.StatoVersamento>();
+		for(StatoVersamento stato : stati) {
+			statiVersamento.add(it.govpay.bd.model.Versamento.StatoVersamento.valueOf(stato.toString()));
+		}
+		return statiVersamento;
+	}
+
+	public static SortFields toFilterSort(String ordinamento) {
+		if(ordinamento == null) return null;
+
+		if(ordinamento.equals("DATA_SCADENZA_ASC"))
+			return SortFields.SCADENZA_ASC;
+
+		if(ordinamento.equals("DATA_SCADENZA_DES"))
+			return SortFields.SCADENZA_DESC;
+
+		if(ordinamento.equals("DATA_CARICAMENTO_ASC"))
+			return SortFields.CARICAMENTO_ASC;
+
+		if(ordinamento.equals("DATA_CARICAMENTO_DES"))
+			return SortFields.CARICAMENTO_DESC;
+
+		if(ordinamento.equals("DATA_AGGIORNAMENTO_ASC"))
+			return SortFields.AGGIORNAMENTO_ASC;
+
+		if(ordinamento.equals("DATA_AGGIORNAMENTO_DES"))
+			return SortFields.AGGIORNAMENTO_DESC;
+
+		return null;
 	}
 
 }

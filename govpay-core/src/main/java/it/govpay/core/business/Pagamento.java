@@ -574,7 +574,7 @@ public class Pagamento extends BasicBD {
 				boolean done = false;
 				SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 				
-				while(done) {
+				while(!done) {
 
 					boolean acquisiti = false;
 
@@ -589,8 +589,8 @@ public class Pagamento extends BasicBD {
 						richiesta.setRangeA(a.getTime());
 						richiesta.setRangeDa(da.getTime());
 
-						log.debug("Richiedo la lista delle RPT pendenti (dal " + dateFormat.format(da) + " a " + dateFormat.format(a) + ")");
-						ctx.log("pendenti.listaPendenti", dominio.getCodDominio(), dateFormat.format(da), dateFormat.format(a));
+						log.debug("Richiedo la lista delle RPT pendenti (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
+						ctx.log("pendenti.listaPendenti", dominio.getCodDominio(), dateFormat.format(da.getTime()), dateFormat.format(a.getTime()));
 
 						NodoChiediListaPendentiRPTRisposta risposta = null;
 						String transactionId = null;
@@ -630,10 +630,10 @@ public class Pagamento extends BasicBD {
 							da = (Calendar) a.clone();
 							da.add(Calendar.DATE, -finestra);
 							
-							log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da) + " a " + dateFormat.format(a) + ")");
+							log.debug("Lista pendenti con troppi elementi. Ricalcolo la finestra: (dal " + dateFormat.format(da.getTime()) + " a " + dateFormat.format(a.getTime()) + ")");
 							continue;
 						} else {
-							ctx.log("pendenti.listaPendentiDailyPiena", dateFormat.format(a));
+							ctx.log("pendenti.listaPendentiDailyPiena", dateFormat.format(a.getTime()));
 							log.debug("Lista pendenti con troppi elementi, ma impossibile diminuire ulteriormente la finesta. Elenco accettato.");
 						}
 

@@ -326,7 +326,13 @@ public class Versamento extends BasicBD {
 		}	
 	}
 	
-	public List<it.govpay.bd.model.Versamento> chiediVersamenti(Portale portaleAutenticato, String codPortale, String codUnivocoDebitore) throws GovPayException, ServiceException {
+	public it.govpay.bd.model.Versamento chiediVersamento(Portale portale, String bundleKey) throws ServiceException, GovPayException {
+		// TODO
+		throw new GovPayException(EsitoOperazione.PRT_005);
+	}
+	
+	public List<it.govpay.bd.model.Versamento> chiediVersamenti(Portale portaleAutenticato, String codPortale, String codUnivocoDebitore, List<StatoVersamento> statiVersamento, VersamentoFilter.SortFields filterSortList) throws GovPayException, ServiceException {
+		
 		if(!portaleAutenticato.isAbilitato())
 			throw new GovPayException(EsitoOperazione.PRT_001, portaleAutenticato.getCodPortale());
 		
@@ -341,6 +347,8 @@ public class Versamento extends BasicBD {
 		VersamentiBD versamentiBD = new VersamentiBD(this);
 		VersamentoFilter filter = versamentiBD.newFilter();
 		filter.setCodUnivocoDebitore(codUnivocoDebitore);
+		filter.setStatiPagamento(statiVersamento);
+		filter.addSortField(filterSortList);
 		List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(filter);
 		for(it.govpay.bd.model.Versamento versamento : versamenti)
 			try {
