@@ -464,7 +464,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			ctx.log("ws.autorizzazione");
 			
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			List<Versamento> versamenti = versamentoBusiness.chiediVersamenti(portaleAutenticato, bodyrichiesta.getCodPortale(), bodyrichiesta.getCodUnivocoDebitore());
+			List<Versamento> versamenti = versamentoBusiness.chiediVersamenti(portaleAutenticato, bodyrichiesta.getCodPortale(), bodyrichiesta.getCodUnivocoDebitore(), Gp21Utils.toStatiVersamento(bodyrichiesta.getStato()), Gp21Utils.toFilterSort(bodyrichiesta.getOrdinamento()));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			for(Versamento versamento : versamenti) {
 				response.getVersamento().add(Gp21Utils.toVersamento(portaleAutenticato.getVersione(), versamento, bd));
