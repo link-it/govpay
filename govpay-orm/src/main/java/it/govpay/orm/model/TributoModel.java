@@ -48,6 +48,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.TIPO_TRIBUTO = new it.govpay.orm.model.TipoTributoModel(new Field("tipoTributo",it.govpay.orm.TipoTributo.class,"Tributo",Tributo.class));
+		this.COD_TRIBUTO_IUV = new Field("codTributoIuv",java.lang.String.class,"Tributo",Tributo.class);
 	
 	}
 	
@@ -61,6 +62,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.TIPO_TRIBUTO = new it.govpay.orm.model.TipoTributoModel(new ComplexField(father,"tipoTributo",it.govpay.orm.TipoTributo.class,"Tributo",Tributo.class));
+		this.COD_TRIBUTO_IUV = new ComplexField(father,"codTributoIuv",java.lang.String.class,"Tributo",Tributo.class);
 	
 	}
 	
@@ -77,6 +79,8 @@ public class TributoModel extends AbstractModel<Tributo> {
 	public IField CODICE_CONTABILITA = null;
 	 
 	public it.govpay.orm.model.TipoTributoModel TIPO_TRIBUTO = null;
+	 
+	public IField COD_TRIBUTO_IUV = null;
 	 
 
 	@Override

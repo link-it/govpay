@@ -749,8 +749,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			tributo.setCodTributo(Tributo.BOLLOT);
 			tributo.setAbilitato(false);
 			tributo.setDescrizione(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.descrizione"));
-			tributo.setCodContabilita(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.codContabilita")); 
-			tributo.setTipoContabilita(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
+			
+			//TODO giuliano pintori GP-393
+//			tributo.setCodContabilita(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.codContabilita")); 
+//			tributo.setTipoContabilita(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
 			tributo.setIdTipoTributo(bolloT.getId());
 			
 			// Inserimento di Dominio, UO e Tributo BolloTelematico in maniera transazionale.

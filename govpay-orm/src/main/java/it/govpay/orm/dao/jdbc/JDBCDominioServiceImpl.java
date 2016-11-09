@@ -116,6 +116,9 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().XML_TABELLA_CONTROPARTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().RIUSO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().AUX_DIGIT,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX_STRICT,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_stazione","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione_default","?");
 
@@ -130,6 +133,9 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getXmlTabellaControparti(),Dominio.model().XML_TABELLA_CONTROPARTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getRiusoIUV(),Dominio.model().RIUSO_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getCustomIUV(),Dominio.model().CUSTOM_IUV.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getAuxDigit(),Dominio.model().AUX_DIGIT.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIuvPrefix(),Dominio.model().IUV_PREFIX.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(dominio.getIuvPrefixStrict(),Dominio.model().IUV_PREFIX_STRICT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_stazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
 		);
@@ -235,6 +241,12 @@ public class JDBCDominioServiceImpl extends JDBCDominioServiceSearchImpl
 		lstObjects_dominio.add(new JDBCObject(dominio.getRiusoIUV(), Dominio.model().RIUSO_IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().CUSTOM_IUV,false), "?");
 		lstObjects_dominio.add(new JDBCObject(dominio.getCustomIUV(), Dominio.model().CUSTOM_IUV.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().AUX_DIGIT,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getAuxDigit(), Dominio.model().AUX_DIGIT.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getIuvPrefix(), Dominio.model().IUV_PREFIX.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getDominioFieldConverter().toColumn(Dominio.model().IUV_PREFIX_STRICT,false), "?");
+		lstObjects_dominio.add(new JDBCObject(dominio.getIuvPrefixStrict(), Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_stazione","?");
 		}

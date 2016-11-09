@@ -123,11 +123,13 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			}
 		}
 
+
 		// Object tributo
 		sqlQueryObjectInsert.addInsertTable(this.getTributoFieldConverter().toTable(Tributo.model()));
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().TIPO_CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
@@ -138,6 +140,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getAbilitato(),Tributo.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getTipoContabilita(),Tributo.model().TIPO_CONTABILITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodiceContabilita(),Tributo.model().CODICE_CONTABILITA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodTributoIuv(),Tributo.model().COD_TRIBUTO_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
@@ -264,6 +267,8 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		lstObjects_tributo.add(new JDBCObject(tributo.getTipoContabilita(), Tributo.model().TIPO_CONTABILITA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,false), "?");
 		lstObjects_tributo.add(new JDBCObject(tributo.getCodiceContabilita(), Tributo.model().CODICE_CONTABILITA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false), "?");
+		lstObjects_tributo.add(new JDBCObject(tributo.getCodTributoIuv(), Tributo.model().COD_TRIBUTO_IUV.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}

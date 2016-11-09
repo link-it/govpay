@@ -46,6 +46,9 @@ import java.io.Serializable;
  * 			&lt;element name="riusoIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="customIUV" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idApplicazioneDefault" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="auxDigit" type="{http://www.govpay.it/orm}int" minOccurs="1" maxOccurs="1" default="0"/>
+ * 			&lt;element name="iuvPrefix" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="iuvPrefixStrict" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -69,7 +72,10 @@ import java.io.Serializable;
   	"xmlTabellaControparti",
   	"riusoIUV",
   	"customIUV",
-  	"idApplicazioneDefault"
+  	"idApplicazioneDefault",
+  	"_decimalWrapper_auxDigit",
+  	"iuvPrefix",
+  	"iuvPrefixStrict"
   }
 )
 
@@ -185,6 +191,34 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.idApplicazioneDefault = idApplicazioneDefault;
   }
 
+  public int getAuxDigit() {
+    return (java.lang.Integer) this._decimalWrapper_auxDigit.getObject(java.lang.Integer.class);
+  }
+
+  public void setAuxDigit(int auxDigit) {
+    this._decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,auxDigit);
+  }
+
+  public java.lang.String getIuvPrefix() {
+    return this.iuvPrefix;
+  }
+
+  public void setIuvPrefix(java.lang.String iuvPrefix) {
+    this.iuvPrefix = iuvPrefix;
+  }
+
+  public boolean isIuvPrefixStrict() {
+    return this.iuvPrefixStrict;
+  }
+
+  public boolean getIuvPrefixStrict() {
+    return this.iuvPrefixStrict;
+  }
+
+  public void setIuvPrefixStrict(boolean iuvPrefixStrict) {
+    this.iuvPrefixStrict = iuvPrefixStrict;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -241,5 +275,21 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   @XmlElement(name="idApplicazioneDefault",required=false,nillable=false)
   protected IdApplicazione idApplicazioneDefault;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @XmlElement(name="auxDigit",required=true,nillable=false,defaultValue="0")
+  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,  0);
+
+  @XmlTransient
+  protected int auxDigit;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuvPrefix",required=false,nillable=false)
+  protected java.lang.String iuvPrefix;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
+  @XmlElement(name="iuvPrefixStrict",required=true,nillable=false,defaultValue="false")
+  protected boolean iuvPrefixStrict = false;
 
 }

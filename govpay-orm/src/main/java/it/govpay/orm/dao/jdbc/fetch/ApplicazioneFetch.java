@@ -71,6 +71,8 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "versione", Applicazione.model().VERSIONE.getFieldType()));
 				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "trusted", Applicazione.model().TRUSTED.getFieldType()));
+				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_applicazione_iuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType()));
 				return object;
 			}
 			
@@ -109,6 +111,8 @@ public class ApplicazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"versione"));
 				setParameter(object, "setTrusted", Applicazione.model().TRUSTED.getFieldType(),
 					this.getObjectFromMap(map,"trusted"));
+				setParameter(object, "setCodApplicazioneIuv", Applicazione.model().COD_APPLICAZIONE_IUV.getFieldType(),
+					this.getObjectFromMap(map,"codApplicazioneIuv"));
 				return object;
 			}
 			

@@ -168,6 +168,7 @@ public class JDBCIntermediarioServiceSearchImpl implements IJDBCServiceSearchWit
 			fields.add(Intermediario.model().COD_CONNETTORE_PDD);
 			fields.add(Intermediario.model().DENOMINAZIONE);
 			fields.add(Intermediario.model().ABILITATO);
+			fields.add(Intermediario.model().SEGREGATION_CODE);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -487,6 +488,7 @@ public class JDBCIntermediarioServiceSearchImpl implements IJDBCServiceSearchWit
 		sqlQueryObjectGet_intermediario.addSelectField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_PDD,true));
 		sqlQueryObjectGet_intermediario.addSelectField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,true));
 		sqlQueryObjectGet_intermediario.addSelectField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().ABILITATO,true));
+		sqlQueryObjectGet_intermediario.addSelectField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().SEGREGATION_CODE,true));
 		sqlQueryObjectGet_intermediario.addWhereCondition("id=?");
 
 		// Get intermediario

@@ -38,6 +38,9 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codTributo" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,7 +56,10 @@ import java.io.Serializable;
 @XmlType(name = "TipoTributo", 
   propOrder = {
   	"codTributo",
-  	"descrizione"
+  	"descrizione",
+  	"tipoContabilita",
+  	"codContabilita",
+  	"codTributoIuv"
   }
 )
 
@@ -93,6 +99,30 @@ public class TipoTributo extends org.openspcoop2.utils.beans.BaseBean implements
     this.descrizione = descrizione;
   }
 
+  public java.lang.String getTipoContabilita() {
+    return this.tipoContabilita;
+  }
+
+  public void setTipoContabilita(java.lang.String tipoContabilita) {
+    this.tipoContabilita = tipoContabilita;
+  }
+
+  public java.lang.String getCodContabilita() {
+    return this.codContabilita;
+  }
+
+  public void setCodContabilita(java.lang.String codContabilita) {
+    this.codContabilita = codContabilita;
+  }
+
+  public java.lang.String getCodTributoIuv() {
+    return this.codTributoIuv;
+  }
+
+  public void setCodTributoIuv(java.lang.String codTributoIuv) {
+    this.codTributoIuv = codTributoIuv;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -119,5 +149,17 @@ public class TipoTributo extends org.openspcoop2.utils.beans.BaseBean implements
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="descrizione",required=false,nillable=false)
   protected java.lang.String descrizione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipoContabilita",required=false,nillable=false)
+  protected java.lang.String tipoContabilita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codContabilita",required=false,nillable=false)
+  protected java.lang.String codContabilita;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTributoIuv",required=false,nillable=false)
+  protected java.lang.String codTributoIuv;
 
 }

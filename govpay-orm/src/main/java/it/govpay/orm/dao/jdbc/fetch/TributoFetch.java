@@ -62,6 +62,8 @@ public class TributoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", Tributo.model().TIPO_CONTABILITA.getFieldType()));
 				setParameter(object, "setCodiceContabilita", Tributo.model().CODICE_CONTABILITA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "codice_contabilita", Tributo.model().CODICE_CONTABILITA.getFieldType()));
+				setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType()));
 				return object;
 			} else if(model.equals(Tributo.model().TIPO_TRIBUTO)){
 				TipoTributo object = new TipoTributo();
@@ -100,6 +102,8 @@ public class TributoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoContabilita"));
 				setParameter(object, "setCodiceContabilita", Tributo.model().CODICE_CONTABILITA.getFieldType(),
 					this.getObjectFromMap(map,"codiceContabilita"));
+				setParameter(object, "setCodTributoIuv", Tributo.model().COD_TRIBUTO_IUV.getFieldType(),
+					this.getObjectFromMap(map,"codTributoIuv"));
 				return object;
 			} else if(model.equals(Tributo.model().TIPO_TRIBUTO)){
 				TipoTributo object = new TipoTributo();

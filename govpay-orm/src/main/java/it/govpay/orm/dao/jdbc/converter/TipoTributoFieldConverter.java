@@ -82,6 +82,27 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione";
 			}
 		}
+		if(field.equals(TipoTributo.model().TIPO_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_contabilita";
+			}else{
+				return "tipo_contabilita";
+			}
+		}
+		if(field.equals(TipoTributo.model().COD_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_contabilita";
+			}else{
+				return "cod_contabilita";
+			}
+		}
+		if(field.equals(TipoTributo.model().COD_TRIBUTO_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tributo_iuv";
+			}else{
+				return "cod_tributo_iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -99,6 +120,15 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
 		if(field.equals(TipoTributo.model().DESCRIZIONE)){
+			return this.toTable(TipoTributo.model(), returnAlias);
+		}
+		if(field.equals(TipoTributo.model().TIPO_CONTABILITA)){
+			return this.toTable(TipoTributo.model(), returnAlias);
+		}
+		if(field.equals(TipoTributo.model().COD_CONTABILITA)){
+			return this.toTable(TipoTributo.model(), returnAlias);
+		}
+		if(field.equals(TipoTributo.model().COD_TRIBUTO_IUV)){
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
 

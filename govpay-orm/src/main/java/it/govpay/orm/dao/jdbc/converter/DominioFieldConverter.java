@@ -138,6 +138,27 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Dominio.model().AUX_DIGIT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".aux_digit";
+			}else{
+				return "aux_digit";
+			}
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_prefix";
+			}else{
+				return "iuv_prefix";
+			}
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX_STRICT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_prefix_strict";
+			}else{
+				return "iuv_prefix_strict";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -180,6 +201,15 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Dominio.model().ID_APPLICAZIONE_DEFAULT.COD_APPLICAZIONE)){
 			return this.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT, returnAlias);
+		}
+		if(field.equals(Dominio.model().AUX_DIGIT)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX_STRICT)){
+			return this.toTable(Dominio.model(), returnAlias);
 		}
 
 

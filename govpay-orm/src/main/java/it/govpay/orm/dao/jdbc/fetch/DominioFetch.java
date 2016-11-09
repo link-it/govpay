@@ -71,6 +71,12 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "riuso_iuv", Dominio.model().RIUSO_IUV.getFieldType()));
 				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "custom_iuv", Dominio.model().CUSTOM_IUV.getFieldType()));
+				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "aux_digit", Dominio.model().AUX_DIGIT.getFieldType()));
+				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_prefix", Dominio.model().IUV_PREFIX.getFieldType()));
+				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_prefix_strict", Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
 				return object;
 			}
 			
@@ -109,6 +115,12 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"riusoIUV"));
 				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
 					this.getObjectFromMap(map,"customIUV"));
+				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+					this.getObjectFromMap(map,"auxDigit"));
+				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+					this.getObjectFromMap(map,"iuvPrefix"));
+				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
+					this.getObjectFromMap(map,"iuvPrefixStrict"));
 				return object;
 			}
 			

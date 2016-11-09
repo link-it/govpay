@@ -63,6 +63,8 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "denominazione", Intermediario.model().DENOMINAZIONE.getFieldType()));
 				setParameter(object, "setAbilitato", Intermediario.model().ABILITATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Intermediario.model().ABILITATO.getFieldType()));
+				setParameter(object, "setSegregationCode", Intermediario.model().SEGREGATION_CODE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "segregation_code", Intermediario.model().SEGREGATION_CODE.getFieldType()));
 				return object;
 			}
 			
@@ -93,6 +95,8 @@ public class IntermediarioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"denominazione"));
 				setParameter(object, "setAbilitato", Intermediario.model().ABILITATO.getFieldType(),
 					this.getObjectFromMap(map,"abilitato"));
+				setParameter(object, "setSegregationCode", Intermediario.model().SEGREGATION_CODE.getFieldType(),
+					this.getObjectFromMap(map,"segregationCode"));
 				return object;
 			}
 			

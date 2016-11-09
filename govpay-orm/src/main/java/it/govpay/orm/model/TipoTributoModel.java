@@ -44,6 +44,9 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 	
 		this.COD_TRIBUTO = new Field("codTributo",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_CONTABILITA = new Field("codContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_TRIBUTO_IUV = new Field("codTributoIuv",java.lang.String.class,"TipoTributo",TipoTributo.class);
 	
 	}
 	
@@ -53,6 +56,9 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 	
 		this.COD_TRIBUTO = new ComplexField(father,"codTributo",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_CONTABILITA = new ComplexField(father,"codContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_TRIBUTO_IUV = new ComplexField(father,"codTributoIuv",java.lang.String.class,"TipoTributo",TipoTributo.class);
 	
 	}
 	
@@ -61,6 +67,12 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 	public IField COD_TRIBUTO = null;
 	 
 	public IField DESCRIZIONE = null;
+	 
+	public IField TIPO_CONTABILITA = null;
+	 
+	public IField COD_CONTABILITA = null;
+	 
+	public IField COD_TRIBUTO_IUV = null;
 	 
 
 	@Override

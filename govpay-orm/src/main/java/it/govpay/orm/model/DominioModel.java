@@ -52,6 +52,9 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.RIUSO_IUV = new Field("riusoIUV",boolean.class,"Dominio",Dominio.class);
 		this.CUSTOM_IUV = new Field("customIUV",boolean.class,"Dominio",Dominio.class);
 		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
+		this.AUX_DIGIT = new Field("auxDigit",int.class,"Dominio",Dominio.class);
+		this.IUV_PREFIX = new Field("iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
+		this.IUV_PREFIX_STRICT = new Field("iuvPrefixStrict",boolean.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -69,6 +72,9 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.RIUSO_IUV = new ComplexField(father,"riusoIUV",boolean.class,"Dominio",Dominio.class);
 		this.CUSTOM_IUV = new ComplexField(father,"customIUV",boolean.class,"Dominio",Dominio.class);
 		this.ID_APPLICAZIONE_DEFAULT = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazioneDefault",it.govpay.orm.IdApplicazione.class,"Dominio",Dominio.class));
+		this.AUX_DIGIT = new ComplexField(father,"auxDigit",int.class,"Dominio",Dominio.class);
+		this.IUV_PREFIX = new ComplexField(father,"iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
+		this.IUV_PREFIX_STRICT = new ComplexField(father,"iuvPrefixStrict",boolean.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -93,6 +99,12 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField CUSTOM_IUV = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE_DEFAULT = null;
+	 
+	public IField AUX_DIGIT = null;
+	 
+	public IField IUV_PREFIX = null;
+	 
+	public IField IUV_PREFIX_STRICT = null;
 	 
 
 	@Override

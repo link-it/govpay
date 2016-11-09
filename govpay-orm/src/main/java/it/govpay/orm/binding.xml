@@ -273,6 +273,9 @@
     <value name="riusoIUV" field="riusoIUV" usage="required"/>
     <value name="customIUV" field="customIUV" usage="required"/>
     <structure name="idApplicazioneDefault" field="idApplicazioneDefault" usage="optional" map-as="_IdApplicazione_Type"/>
+    <value name="auxDigit" field="auxDigit" default="0" usage="required"/>
+    <value name="iuvPrefix" field="iuvPrefix" usage="optional"/>
+    <value name="iuvPrefixStrict" field="iuvPrefixStrict" default="false" usage="required"/>
   </mapping>
   <mapping name="Psp" class="it.govpay.orm.Psp">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -331,6 +334,7 @@
     <value name="codConnettorePdd" field="codConnettorePdd" usage="required"/>
     <value name="denominazione" field="denominazione" usage="required"/>
     <value name="abilitato" field="abilitato" usage="required"/>
+    <value name="segregationCode" field="segregationCode" usage="optional"/>
   </mapping>
   <mapping name="Stazione" class="it.govpay.orm.Stazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -350,6 +354,7 @@
     <value name="codConnettoreVerifica" field="codConnettoreVerifica" usage="optional"/>
     <value name="versione" field="versione" default="2.1" usage="required"/>
     <value name="trusted" field="trusted" usage="required"/>
+    <value name="codApplicazioneIuv" field="codApplicazioneIuv" usage="optional"/>
   </mapping>
   <mapping name="IbanAccredito" class="it.govpay.orm.IbanAccredito">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -372,11 +377,15 @@
     <value name="tipoContabilita" field="tipoContabilita" usage="required"/>
     <value name="codiceContabilita" field="codiceContabilita" usage="required"/>
     <structure field="tipoTributo" usage="required" map-as="it.govpay.orm.TipoTributo"/>
+    <value name="codTributoIuv" field="codTributoIuv" usage="optional"/>
   </mapping>
   <mapping name="tipoTributo" class="it.govpay.orm.TipoTributo">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codTributo" field="codTributo" usage="required"/>
     <value name="descrizione" field="descrizione" usage="optional"/>
+    <value name="tipoContabilita" field="tipoContabilita" usage="optional"/>
+    <value name="codContabilita" field="codContabilita" usage="optional"/>
+    <value name="codTributoIuv" field="codTributoIuv" usage="optional"/>
   </mapping>
   <mapping name="ACL" class="it.govpay.orm.ACL">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

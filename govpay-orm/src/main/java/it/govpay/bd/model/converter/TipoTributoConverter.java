@@ -47,7 +47,7 @@ public class TipoTributoConverter {
 		dto.setDescrizione(vo.getDescrizione());
 		if(vo.getTipoContabilita() != null)
 			dto.setTipoContabilitaDefault(TipoContabilta.toEnum(vo.getTipoContabilita()));
-		dto.setCodiceContabilitaDefault(vo.getCodContabilita());
+		dto.setCodContabilitaDefault(vo.getCodContabilita());
 		dto.setCodTributoIuvDefault(vo.getCodTributoIuv());
 		return dto;
 	}
@@ -59,7 +59,7 @@ public class TipoTributoConverter {
 		vo.setDescrizione(dto.getDescrizione());
 		if(dto.getTipoContabilitaDefault() != null)
 			vo.setTipoContabilita(dto.getTipoContabilitaDefault().getCodifica());
-		vo.setCodiceContabilita(dto.getCodContabilitaDefault());
+		vo.setCodContabilita(dto.getCodContabilitaDefault());
 		vo.setCodTributoIuv(dto.getCodTributoIuvDefault());
 		return vo;
 	}
