@@ -16,7 +16,6 @@ public class PagamentoContext {
 	public static final String codTributoIuvKey="t";
 	public static final String codApplicazioneIuvKey="a";
 	
-	private Applicazione applicazione;
 	private String codSessionePortale;
 	private boolean carrello;
 	private String codCarrello;
@@ -88,19 +87,48 @@ public class PagamentoContext {
 	public void setVersamentoCtx(VersamentoContext versamentoCtx) {
 		this.versamentoCtx = versamentoCtx;
 	}
-
-	public Map<String,String> getAllIuvProps() {
+	
+	private Map<String,String> getDefaultIuvProps(Applicazione applicazione) {
 		Map<String,String> props = new HashMap<String,String>();
 		
-		if(versamentoCtx != null) {
-			props.put(codUoBeneficiariaKey, versamentoCtx.getCodUoBeneficiaria());
-			props.put(codTributoIuvKey, versamentoCtx.getCodUoBeneficiaria());
+		if(applicazione != null && applicazione.getCodApplicazioneIuv() != null) {
 			props.put(codApplicazioneIuvKey, applicazione.getCodApplicazioneIuv());
 		}
 		
-		props.putAll(iuvProps);
+		if(versamentoCtx != null) {
+			if(versamentoCtx.getCodTributoIuv() != null)
+				props.put(codTributoIuvKey, versamentoCtx.getCodTributoIuv());
+		}
+		return props;
+	}
+
+	public Map<String,String> getAllIuvProps(Applicazione applicazione) {
+		Map<String,String> props = getDefaultIuvProps(applicazione);
+		
+		if(iuvProps != null)
+			props.putAll(iuvProps);
 		
 		return props;
+	}
+	
+	public String getAllIuvPropsString(Applicazione applicazione) {
+		StringBuffer sb = new StringBuffer();
+		sb.append("Custom Props { ");
+		if(iuvProps != null) {
+			for(String key : iuvProps.keySet()) {
+				sb.append("[" + key + "=" + iuvProps.get(key) + "] ");
+			}
+		}
+		sb.append("} Default Props { ");
+		
+		Map<String,String> props = getDefaultIuvProps(applicazione);
+		if(props != null) {
+			for(String key : props.keySet()) {
+				sb.append("[" + key + "=" + props.get(key) + "] ");
+			}
+		}
+		sb.append("}");
+		return sb.toString();
 	}
 	
 	public void loadVersamentoContext(it.govpay.bd.model.Versamento versamento, BasicBD bd) throws ServiceException {
@@ -123,4 +151,5 @@ public class PagamentoContext {
 			}
 		}
 	}
+	
 }

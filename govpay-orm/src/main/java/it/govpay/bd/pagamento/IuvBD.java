@@ -21,7 +21,6 @@
 package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.model.converter.IuvConverter;
 import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Applicazione;
@@ -36,7 +35,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -60,18 +58,7 @@ public class IuvBD extends BasicBD {
 		super(basicBD);
 	}
 
-	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, Map<String, String> props) throws ServiceException {
-		
-		// Build prefix
-		String prefix = "";
-		try {
-			prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, props);
-		} catch (ServiceException e) {
-			if(dominio.isIuvPrefixStrict())
-				throw e;
-			else
-				log.warn("Generazione PrefissoIUV fallita: " + e + ". Viene associato uno IUV senza prefisso.");
-		}
+	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, String prefix) throws ServiceException {
 		
 		long prg = getNextPrgIuv(dominio.getCodDominio() + prefix, type);
 		

@@ -72,17 +72,15 @@ public class Iuv extends BasicBD {
 			}
 			
 			GpGeneraIuvResponse response = new GpGeneraIuvResponse();
-			IuvBD iuvBD = new IuvBD(this);
 			Exception e = null;
 			for(GpGeneraIuv.IuvRichiesto iuvRichiesto : gpGeneraIuv.getIuvRichiesto()) {
 				
 				it.govpay.model.Iuv iuv = null;
 				try {
-					iuv = generaIUV(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte(), iuvBD);
+					iuv = generaIUV(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte());
 					IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale());
 					response.getIuvGenerato().add(iuvGenerato);
 				} catch (ServiceException se) {
-					GpThreadLocal.get().log("iuv.generazioneIUVKo", applicazione.getCodApplicazione(), iuvRichiesto.getCodVersamentoEnte(), dominio.getCodDominio(), e.getMessage());
 					e = se;
 					continue;
 				}
@@ -102,7 +100,7 @@ public class Iuv extends BasicBD {
 		}
 	}
 	
-	public it.govpay.model.Iuv generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, IuvBD iuvBD) throws GovPayException, ServiceException {
+	public it.govpay.model.Iuv generaIUV(Applicazione applicazione, Dominio dominio, String codVersamentoEnte) throws GovPayException, ServiceException {
 		try {
 			// Controllo se e' stata impostata la generazione degli IUV distribuita.
 			if(dominio.isCustomIuv()) {
@@ -114,8 +112,8 @@ public class Iuv extends BasicBD {
 				}
 			}
 			
-			it.govpay.model.Iuv iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, it.govpay.model.Iuv.TipoIUV.NUMERICO, GpThreadLocal.get().getPagamentoCtx().getIuvProps());
-			GpThreadLocal.get().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
+			it.govpay.model.Iuv iuv = generaIuv(applicazione, dominio, codVersamentoEnte, it.govpay.model.Iuv.TipoIUV.NUMERICO);
+			
 			log.debug("Generato IUV [CodDominio: " + dominio.getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
 			return iuv;
 		} catch (GovPayException e) {
@@ -123,6 +121,30 @@ public class Iuv extends BasicBD {
 			throw e;
 		}
 	}
+	
+	public it.govpay.model.Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type) throws ServiceException {
+		
+		// Build prefix
+		String prefix = "";
+		try {
+			prefix = GovpayConfig.getInstance().getDefaultCustomIuvGenerator().buildPrefix(applicazione, dominio, GpThreadLocal.get().getPagamentoCtx().getAllIuvProps(applicazione));
+		} catch (ServiceException e) {
+			if(dominio.isIuvPrefixStrict()) {
+				GpThreadLocal.get().log("iuv.generazioneIUVPrefixFail", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), e.getMessage(), GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
+				throw e;
+			} else {
+				GpThreadLocal.get().log("iuv.generazioneIUVPrefixWarn", dominio.getCodDominio(), applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getIuvPrefix(), e.getMessage(), GpThreadLocal.get().getPagamentoCtx().getAllIuvPropsString(applicazione));
+			}
+		}
+		
+		IuvBD iuvBD = new IuvBD(this);
+		it.govpay.model.Iuv iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, it.govpay.model.Iuv.TipoIUV.NUMERICO, prefix);
+		
+		GpThreadLocal.get().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
+		
+		return iuv;
+	}	
+	
 
 	public GpCaricaIuvResponse caricaIUV(Applicazione applicazione, GpCaricaIuv gpCaricaIuv) throws GovPayException {
 		try {
@@ -174,9 +196,7 @@ public class Iuv extends BasicBD {
 		} catch (NumberFormatException e) {
 			return TipoIUV.ISO11694;
 		}
-		if(iuvProposto.length() == 13)
-			return TipoIUV.NUMERICO;
-		return null;
+		return TipoIUV.NUMERICO;
 	}
 	
 	public void checkIUV(Dominio dominio, String iuvProposto, TipoIUV tipo) throws GovPayException, ServiceException {

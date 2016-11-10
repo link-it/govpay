@@ -34,10 +34,10 @@ public class CustomIuv {
 
 		// il prefix risultante deve essere numerico
 		try {
-			Integer.parseInt(result);
+			Long.parseLong(result);
 		} catch (NumberFormatException e) {
 			// Non e' un prefisso valido. Se la generazione e' strict, lancio una eccezione, altrimenti un warning.
-			throw new ServiceException("La regola IUV [Dominio:"+dominio.getCodDominio()+" PrefixRule:"+dominio.getIuvPrefix()+"] non ha prodotto un prefisso numerico: " + result);
+			throw new ServiceException("Il prefisso generato [" + result + "] non e' numerico.");
 		}
 
 		return result;
