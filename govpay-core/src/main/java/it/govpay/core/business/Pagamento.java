@@ -122,7 +122,7 @@ public class Pagamento extends BasicBD {
 			} else {
 				it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
 
-				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null;
+				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
 
 				Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
 				while(iterator.hasNext()){
@@ -130,6 +130,9 @@ public class Pagamento extends BasicBD {
 
 					if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
 						bundlekey = element.getValue();
+					}
+					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
+						codUnivocoDebitore = element.getValue();
 					}
 					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
 						codApplicazione = element.getValue();
@@ -146,7 +149,7 @@ public class Pagamento extends BasicBD {
 				}
 
 				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
-				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codDominio, iuv);
+				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
 			}
 			
 			if(!versamentoModel.getUo(this).isAbilitato()) {
@@ -314,7 +317,9 @@ public class Pagamento extends BasicBD {
 				// Verifico se ha uno IUV suggerito ed in caso lo assegno
 				if(versamento.getIuvProposto() != null) {
 					Iuv iuvBusiness = new Iuv(this);
-					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), TipoIUV.ISO11694, versamento.getCodVersamentoEnte());
+					TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
+					iuvBusiness.checkIUV(versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv);
+					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv, versamento.getCodVersamentoEnte());
 					ccp = IuvUtils.buildCCP();
 					ctx.log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {

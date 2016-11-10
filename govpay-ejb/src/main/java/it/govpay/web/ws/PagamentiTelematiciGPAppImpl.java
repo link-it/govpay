@@ -311,7 +311,7 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			ctx.log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
-			Versamento versamento = versamentoBusiness.chiediVersamento(bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), null, null, null);
+			Versamento versamento = versamentoBusiness.chiediVersamento(bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), null, null, null, null);
 			response.setCodApplicazione(versamento.getApplicazione(bd).getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			response.setCodVersamentoEnte(versamento.getCodVersamentoEnte());

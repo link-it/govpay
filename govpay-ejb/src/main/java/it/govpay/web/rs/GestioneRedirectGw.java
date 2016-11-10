@@ -35,7 +35,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 
 @Path("/pub")
@@ -84,10 +83,6 @@ public class GestioneRedirectGw {
 			log.debug("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Not found");
 			if(gpContext != null) gpContext.log("gw.redirectNotFound", codDominio, codSessione);
 			return Response.status(Response.Status.NOT_FOUND).build();
-		} catch (MultipleResultException e) {
-			log.error("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Multiple Result");
-			if(gpContext != null) gpContext.log("gw.redirectFail", codDominio, codSessione, "Individuati piu' processi di pagamento per l'identificativo sessione fornito.");
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} catch (Exception e) {
 			log.error("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Internal", e);
 			if(gpContext != null) gpContext.log("gw.redirectFail", codDominio, codSessione, e.getMessage());

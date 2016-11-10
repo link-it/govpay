@@ -252,12 +252,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					if(iuvModel != null) {
 						ctx.log("ccp.versamentoNonPresente", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), codDominio, null, iuv, bd);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), null, null, codDominio, iuv, bd);
 						ctx.log("ccp.versamentoNonPresenteOk", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
 					} else {
 						ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 						String codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd));
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, codDominio, iuv, bd);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
 						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 						ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 					}
@@ -541,12 +541,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					if(iuvModel != null) {
 						ctx.log("ccp.versamentoNonPresente", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), codDominio, null, iuv, bd);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), null, null, codDominio, iuv, bd);
 						ctx.log("ccp.versamentoNonPresenteOk", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
 					} else {
 						ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 						String codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd));
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, codDominio, iuv, bd);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
 						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 						ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 					}

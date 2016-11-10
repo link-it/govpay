@@ -45,20 +45,22 @@ public class GpContext {
 	private PagamentoContext pagamentoCtx;
 	private IntegrationContext integrationCtx;
 	
-	public static String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
-	public static String GovPay = "GovPay";
-	public static String TIPO_SOGGETTO_NDP = "NDP";
-	public static String TIPO_SERVIZIO_NDP = "NDP";
+	public static final String NOT_SET = "<Non valorizzato>";
 	
-	public static String TIPO_SOGGETTO_APP = "APP";
-	public static String TIPO_SOGGETTO_PRT = "PRT";
-	public static String TIPO_SOGGETTO_STAZIONE = "STZ";
-	public static String TIPO_SOGGETTO_GOVPAY = "GP";
-	public static String TIPO_SERVIZIO_GOVPAY = "GP";
-	public static String TIPO_SERVIZIO_GOVPAY_RS = "GPRS";
-	public static String TIPO_SERVIZIO_GOVPAY_JSON = "GPJSON";
-	public static String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
-	public static String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
+	public static final String NodoDeiPagamentiSPC = "NodoDeiPagamentiSPC";
+	public static final String GovPay = "GovPay";
+	public static final String TIPO_SOGGETTO_NDP = "NDP";
+	public static final String TIPO_SERVIZIO_NDP = "NDP";
+	
+	public static final String TIPO_SOGGETTO_APP = "APP";
+	public static final String TIPO_SOGGETTO_PRT = "PRT";
+	public static final String TIPO_SOGGETTO_STAZIONE = "STZ";
+	public static final String TIPO_SOGGETTO_GOVPAY = "GP";
+	public static final String TIPO_SERVIZIO_GOVPAY = "GP";
+	public static final String TIPO_SERVIZIO_GOVPAY_RS = "GPRS";
+	public static final String TIPO_SERVIZIO_GOVPAY_JSON = "GPJSON";
+	public static final String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
+	public static final String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
 	
 	
 	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {

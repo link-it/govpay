@@ -161,7 +161,11 @@
 						<xsd:element name="codApplicazione" type="com:cod35" />
 						<xsd:choice>
 							<xsd:element name="codVersamentoEnte" type="com:cod35" />
-							<xsd:element name="bundlekey" type="com:string256" />
+							<xsd:sequence>
+								<xsd:element name="codDominio" type="com:cod35" minOccurs="0"/>
+								<xsd:element name="codUnivocoDebitore" type="com:string35" minOccurs="0"/>
+								<xsd:element name="bundlekey" type="com:string256" />
+							</xsd:sequence>
 						</xsd:choice>
 						<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
 					</xsd:sequence>
@@ -487,7 +491,7 @@
 				</xsd:sequence>
 			</xsd:complexType>
 			
-			<xsd:element name="metaInfo">
+			<xsd:element name="metaInfo" nillable="true">
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="iuvProp" maxOccurs="unbounded">

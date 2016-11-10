@@ -178,7 +178,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			} else {
 				
 				Object v = bodyrichiesta.getVersamentoOrVersamentoRef().get(0);
-				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null;
+				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
 				
 				if(v instanceof it.govpay.servizi.commons.Versamento) {
 					it.govpay.servizi.commons.Versamento versamento = (it.govpay.servizi.commons.Versamento) v;
@@ -198,6 +198,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 						
 						if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
 							bundlekey = element.getValue();
+						}
+						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
+							codUnivocoDebitore = element.getValue();
 						}
 						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
 							codApplicazione = element.getValue();
@@ -238,7 +241,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 					if(codApplicazione != null && bundlekey != null) {
 						ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", codApplicazione));
 						ctx.getContext().getRequest().addGenericProperty(new Property("bundleKey", bundlekey));
-						ctx.setCorrelationId(codApplicazione + bundlekey);
+						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio != null ? codDominio : GpContext.NOT_SET));
+						ctx.getContext().getRequest().addGenericProperty(new Property("codUnivocoDebitore", codUnivocoDebitore != null ? codUnivocoDebitore : GpContext.NOT_SET));
+						
+						ctx.setCorrelationId(codApplicazione + bundlekey + (codUnivocoDebitore != null ? codUnivocoDebitore : "") + (codDominio != null ? codDominio : ""));
 						if(bodyrichiesta.getCanale() != null) {
 							ctx.log("pagamento.avviaTransazioneRefBundle");
 						} else {
@@ -598,18 +604,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			
-			Versamento versamento = null;
-			
-			if(bodyrichiesta.getIuv() != null) {
-				log.info("Richiesta operazione gpChiediStatoVersamento per lo iuv (" + bodyrichiesta.getIuv() + ") del dominio (" +  bodyrichiesta.getCodDominio()+")");
-				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, null, null, null, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv());
-			} else if(bodyrichiesta.getBundleKey() != null) {
-				log.info("Richiesta operazione gpChiediStatoVersamento per la bundleKey (" + bodyrichiesta.getBundleKey() + ")");
-				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), null, bodyrichiesta.getBundleKey(), null, null);
-			} else {
-				log.info("Richiesta operazione gpChiediStatoVersamento per il versamento (" + bodyrichiesta.getCodVersamentoEnte() + ") dell'applicazione (" +  bodyrichiesta.getCodApplicazione()+")");
-				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), null, null, null);
-			}
+			Versamento versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), bodyrichiesta.getBundleKey(), bodyrichiesta.getCodUnivocoDebitore(), bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv());
 			
 			if(bodyrichiesta.getCodUnivocoDebitore() != null && !bodyrichiesta.getCodUnivocoDebitore().equalsIgnoreCase(versamento.getAnagraficaDebitore().getCodUnivoco())) {
 				throw new GovPayException(EsitoOperazione.PRT_005);

@@ -96,10 +96,16 @@ public class VersamentiBD extends BasicBD {
 	/**
 	 * Recupera il versamento identificato dalla chiave logica
 	 */
-	public Versamento getVersamentoByBundlekey(long idApplicazione, String bundleKey) throws NotFoundException, ServiceException {
+	public Versamento getVersamentoByBundlekey(long idApplicazione, String bundleKey, String codDominio, String codUnivocoDebitore) throws NotFoundException, ServiceException {
 		try {
 			IExpression exp = this.getVersamentoService().newExpression();
 			exp.equals(it.govpay.orm.Versamento.model().COD_BUNDLEKEY, bundleKey);
+			
+			if(codUnivocoDebitore != null)
+				exp.equals(it.govpay.orm.Versamento.model().DEBITORE_IDENTIFICATIVO, codUnivocoDebitore);
+			
+			if(codDominio != null)
+				exp.equals(it.govpay.orm.Versamento.model().ID_UO.ID_DOMINIO.COD_DOMINIO, codDominio);
 			
 			VersamentoFieldConverter fieldConverter = new VersamentoFieldConverter(this.getJdbcProperties().getDatabaseType());
 			exp.equals(new CustomField("id_applicazione", Long.class, "id_applicazione", fieldConverter.toTable(it.govpay.orm.Versamento.model())), idApplicazione);
