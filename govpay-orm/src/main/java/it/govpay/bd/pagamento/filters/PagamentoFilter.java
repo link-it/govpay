@@ -39,6 +39,7 @@ import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
+	
 	private Long idRr;
 	private Long idFrApplicazione;
 	private Long idFrApplicazioneRevoca;
