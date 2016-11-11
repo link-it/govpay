@@ -109,9 +109,16 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setIdApplicazione(applicazione.getId());
 		iuvDTO.setTipo(type);
 		iuvDTO.setCodVersamentoEnte(codVersamentoEnte);
-		iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
 		iuvDTO.setAuxDigit(dominio.getAuxDigit());
-		iuvDTO.setSegregationCode(dominio.getStazione(this).getIntermediario(this).getSegregationCode());
+		iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
+		switch (dominio.getAuxDigit()) {
+			case 0: 
+				iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
+			break;
+			case 3: 
+				iuvDTO.setApplicationCode(dominio.getStazione(this).getIntermediario(this).getSegregationCode());
+			break;
+		}
 		return insertIuv(iuvDTO);
 	}
 

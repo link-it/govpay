@@ -36,6 +36,7 @@ import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.CtNumeroAvviso;
 import it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr.InformazioniVersamento;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Dominio;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.IuvGenerato;
 
 public class IuvUtils {
@@ -70,12 +71,15 @@ public class IuvUtils {
 		return payToLoc + gln + refNo + "0" + String.format("%02d", applicationCode) + iuv + amount + importo;
 	}
 	
-	public static IuvGenerato toIuvGenerato(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale) throws ServiceException {
+	public static IuvGenerato toIuvGenerato(Applicazione applicazione, Dominio dominio, it.govpay.model.Iuv iuv, BigDecimal importoTotale, Versione versione) throws ServiceException {
 		IuvGenerato iuvGenerato = new IuvGenerato();
 		iuvGenerato.setCodApplicazione(applicazione.getCodApplicazione());
 		iuvGenerato.setCodDominio(dominio.getCodDominio());
 		iuvGenerato.setCodVersamentoEnte(iuv.getCodVersamentoEnte());
 		iuvGenerato.setIuv(iuv.getIuv());
+		if(versione.compareTo(Versione.GP_02_02_02) >= 0) {
+			iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + String.format("%02d", iuv.getApplicationCode()) + iuv.getIuv());
+		}
 		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
 		try {
 		switch (GovpayConfig.getInstance().getVersioneAvviso()) {

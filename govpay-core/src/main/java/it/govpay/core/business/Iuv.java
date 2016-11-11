@@ -38,6 +38,7 @@ import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.servizi.gpapp.GpCaricaIuv;
@@ -62,7 +63,7 @@ public class Iuv extends BasicBD {
 	 * @throws ServiceException
 	 * @throws GovPayException
 	 */
-	public GpGeneraIuvResponse generaIUV(Applicazione applicazione, GpGeneraIuv gpGeneraIuv) throws GovPayException {
+	public GpGeneraIuvResponse generaIUV(Applicazione applicazione, GpGeneraIuv gpGeneraIuv, Versione versione) throws GovPayException {
 		try {
 			Dominio dominio = null;
 			try {
@@ -78,7 +79,7 @@ public class Iuv extends BasicBD {
 				it.govpay.model.Iuv iuv = null;
 				try {
 					iuv = generaIUV(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte());
-					IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale());
+					IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale(), versione);
 					response.getIuvGenerato().add(iuvGenerato);
 				} catch (ServiceException se) {
 					e = se;
@@ -146,7 +147,7 @@ public class Iuv extends BasicBD {
 	}	
 	
 
-	public GpCaricaIuvResponse caricaIUV(Applicazione applicazione, GpCaricaIuv gpCaricaIuv) throws GovPayException {
+	public GpCaricaIuvResponse caricaIUV(Applicazione applicazione, GpCaricaIuv gpCaricaIuv, Versione versione) throws GovPayException {
 		try {
 			Dominio dominio = null;
 			try {
@@ -172,7 +173,7 @@ public class Iuv extends BasicBD {
 				}
 				
 				log.info("Caricato IUV [CodDominio: " + dominio.getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
-				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvProprietario.getImportoTotale());
+				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvProprietario.getImportoTotale(), versione);
 				response.getIuvCaricato().add(iuvGenerato);
 			}
 			

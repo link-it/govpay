@@ -61,7 +61,11 @@
 							<xsd:element name="pagamento" maxOccurs="unbounded" minOccurs="0">
 								<xsd:complexType>
 									<xsd:sequence>
-										<xsd:element name="codApplicazione" type="com:cod35" />
+										<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>Presente dalla versione 2.2</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
 										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
 										<xsd:element name="codDominio" type="com:cod35" minOccurs="0">
 											<xsd:annotation>
@@ -91,6 +95,11 @@
 					<xsd:element name="codVersamentoEnte" type="com:cod35" />
 					<xsd:element name="codDominio" type="com:cod35" />
 					<xsd:element name="iuv" type="com:cod35" />
+					<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="qrCode" type="xsd:base64Binary" />
 					<xsd:element name="barCode" type="xsd:base64Binary" />
 				</xsd:sequence>

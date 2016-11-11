@@ -61,7 +61,6 @@ public class Iuv extends BasicModel {
 	private TipoIUV tipo;
 	private String codVersamentoEnte;
 	private Integer applicationCode;
-	private Integer segregationCode;
 	private int auxDigit;
 	
 	public Long getId() {
@@ -123,12 +122,6 @@ public class Iuv extends BasicModel {
 	}
 	public void setAuxDigit(int auxDigit) {
 		this.auxDigit = auxDigit;
-	}
-	public Integer getSegregationCode() {
-		return segregationCode;
-	}
-	public void setSegregationCode(Integer segregationCode) {
-		this.segregationCode = segregationCode;
 	}
 	
 }
