@@ -1,10 +1,5 @@
 package it.govpay.web.rs.utils;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.Caricatore;
-import it.govpay.web.rs.model.EstrattoContoRequest;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -16,13 +11,17 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
-
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.logging.log4j.Logger;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.model.reportistica.EstrattoContoMetadata;
+import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.model.EstrattoContoRequest;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
 
 public class PagamentoUtils {
 	
@@ -39,7 +38,7 @@ public class PagamentoUtils {
 		datePatterns.add(DateFormatUtils.ISO_DATETIME_TIME_ZONE_FORMAT.getPattern());
 	}
 
-	public static EstrattoContoRequest readEstrattoContoRequestFromRequest(Caricatore c, Logger log,InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders,String methodName) throws WebApplicationException,Exception{
+	public static EstrattoContoRequest readEstrattoContoRequestFromRequest(BaseRsService servizioRest, Logger log,InputStream is, UriInfo uriInfo, HttpHeaders httpHeaders,String methodName) throws WebApplicationException,Exception{
 		String nomeMetodo = "readEstrattoContoRequestFromRequest";
 		EstrattoContoRequest entry = null;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -52,7 +51,7 @@ public class PagamentoUtils {
 
 			baos.flush();
 			
-			c.logRequest(uriInfo, httpHeaders, methodName,baos);
+			servizioRest.logRequest(uriInfo, httpHeaders, methodName,baos);
 		
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(EstrattoContoRequest.class);
@@ -118,14 +117,14 @@ public class PagamentoUtils {
 //		}
 //	}
 	
-	public static void readGetRequest(Caricatore c, Logger log,UriInfo uriInfo, HttpHeaders httpHeaders,String methodName) throws WebApplicationException,Exception{
+	public static void readGetRequest(BaseRsService servizioRest, Logger log,UriInfo uriInfo, HttpHeaders httpHeaders,String methodName) throws WebApplicationException,Exception{
 		String nomeMetodo = "readGetRequest: " +  methodName;
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try{
 			log.info("Esecuzione " + nomeMetodo + " in corso...");
 		
 			
-			c.logRequest(uriInfo, httpHeaders, methodName,baos);
+			servizioRest.logRequest(uriInfo, httpHeaders, methodName,baos);
 
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 		}catch(WebApplicationException e){
@@ -138,7 +137,7 @@ public class PagamentoUtils {
 		}
 	}
 	
-	public static ByteArrayOutputStream writeListaEstrattoContoResponse(Caricatore c, Logger log, List<String> response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws Exception{
+	public static ByteArrayOutputStream writeListaEstrattoContoResponse(BaseRsService servizioRest, Logger log, List<EstrattoContoMetadata> response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeListaEstrattoContoResponse";
 
@@ -146,6 +145,7 @@ public class PagamentoUtils {
 			log.info("Esecuzione " + nomeMetodo + " in corso...");
 
 			JsonConfig jsonConfig = new JsonConfig();
+			jsonConfig.setRootClass(EstrattoContoMetadata.class); 
 //			jsonConfig.setRootClass(String.class);
 //			jsonConfig.setCollectionType(List.class);
 			JSONArray jsonArray = JSONArray.fromObject( response , jsonConfig);
@@ -157,7 +157,7 @@ public class PagamentoUtils {
 			baos.flush();
 			baos.close();
 
-			c.logResponse(uriInfo, httpHeaders, methodName, baos);
+			servizioRest.logResponse(uriInfo, httpHeaders, methodName, baos);
 			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 			return baos;
@@ -170,7 +170,7 @@ public class PagamentoUtils {
 		}
 	}
 	
-	public static ByteArrayOutputStream writeScaricaEstrattoContoResponse(Caricatore c, Logger log, InputStream response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName) throws Exception{
+	public static ByteArrayOutputStream writeScaricaEstrattoContoResponse(BaseRsService servizioRest, Logger log, InputStream response, UriInfo uriInfo, HttpHeaders httpHeaders,BasicBD bd,String methodName,String formatoEstrattoConto) throws Exception{
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		String nomeMetodo = "writeScaricaEstrattoContoResponse";
 
@@ -180,7 +180,10 @@ public class PagamentoUtils {
 			
 			baos.flush();
 
-			c.logResponse(uriInfo, httpHeaders, methodName, baos);
+			if(formatoEstrattoConto.equals(EstrattoContoMetadata.FORMATO_CSV))
+				servizioRest.logResponse(uriInfo, httpHeaders, methodName, baos);
+			else
+				servizioRest.logResponse(uriInfo, httpHeaders, methodName, new ByteArrayOutputStream());
 			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 			return baos;
@@ -197,7 +200,7 @@ public class PagamentoUtils {
 	}
 
 	public static ByteArrayOutputStream writeEstrattoContoResponse(
-			Caricatore c, Logger log,
+			BaseRsService servizioRest, Logger log,
 			List<it.govpay.model.EstrattoConto> response, UriInfo uriInfo,
 			HttpHeaders httpHeaders, BasicBD bd, String methodName) throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -216,7 +219,7 @@ public class PagamentoUtils {
 			baos.flush();
 			baos.close();
 
-			c.logResponse(uriInfo, httpHeaders, methodName, baos);
+			servizioRest.logResponse(uriInfo, httpHeaders, methodName, baos);
 			
 			log.info("Esecuzione " + nomeMetodo + " completata.");
 			return baos;

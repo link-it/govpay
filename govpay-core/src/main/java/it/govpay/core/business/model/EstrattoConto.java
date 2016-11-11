@@ -15,6 +15,7 @@ public class EstrattoConto {
 
 	private Dominio dominio;
 	private List<Long> idVersamenti;
+	private List<Long> idSingoliVersamenti;
 	private Map<String, ByteArrayOutputStream> output;
 	private TipoEstrattoConto tipoEstrattoConto;
 	
@@ -42,6 +43,12 @@ public class EstrattoConto {
 	public void setTipoEstrattoConto(TipoEstrattoConto tipoEstrattoConto) {
 		this.tipoEstrattoConto = tipoEstrattoConto;
 	}
+	public List<Long> getIdSingoliVersamenti() {
+		return idSingoliVersamenti;
+	}
+	public void setIdSingoliVersamenti(List<Long> idSingoliVersamenti) {
+		this.idSingoliVersamenti = idSingoliVersamenti;
+	}
 	public Map<String, ByteArrayOutputStream> getOutput() {
 		if(output == null)
 			output = new HashMap<String, ByteArrayOutputStream>();
@@ -54,7 +61,7 @@ public class EstrattoConto {
 		return ec;
 	}
 	
-	public static EstrattoConto creaEstrattoContoPDF(Dominio dominio,List<Long> idVersamenti){
+	public static EstrattoConto creaEstrattoContoVersamentiPDF(Dominio dominio,List<Long> idVersamenti){
 		EstrattoConto ec = new EstrattoConto();
 		ec.setDominio(dominio);
 		ec.setIdVersamenti(idVersamenti);
@@ -62,4 +69,11 @@ public class EstrattoConto {
 		return ec;
 	}
 	
+	public static EstrattoConto creaEstrattoContoPagamentiPDF(Dominio dominio,List<Long> idPagamenti){
+		EstrattoConto ec = new EstrattoConto();
+		ec.setDominio(dominio);
+		ec.setIdSingoliVersamenti(idPagamenti);
+		ec.setTipoEstrattoConto(TipoEstrattoConto.PDF);
+		return ec;
+	}
 }
