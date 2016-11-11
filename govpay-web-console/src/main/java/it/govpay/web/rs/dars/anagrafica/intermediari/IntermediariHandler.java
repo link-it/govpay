@@ -119,7 +119,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			elenco.setFiltro(true);
+			//elenco.setFiltro(true);
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}"); 
 

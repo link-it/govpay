@@ -59,41 +59,25 @@ public class RtPdf {
 	private static ComponentBuilder<?, ?> createRicevutaPagamentoList(String label , CtRicevutaTelematica rt, String causale) {
 		HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10));
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
-		addCustomerAttribute(list, Costanti.LABEL_CAUSALE, causale);
-		addCustomerAttribute(list, Costanti.LABEL_IMPORTO_PAGATO, (datiPagamento.getImportoTotalePagato().doubleValue()+ "‎€"));
-		addCustomerAttribute(list, Costanti.LABEL_CF_PIVA_DEBITORE, rt.getSoggettoPagatore().getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
-		addCustomerAttribute(list, Costanti.LABEL_IUV, datiPagamento.getIdentificativoUnivocoVersamento());
+		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CAUSALE, causale);
+		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IMPORTO_PAGATO, (datiPagamento.getImportoTotalePagato().doubleValue()+ "‎€"));
+		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_CF_PIVA_DEBITORE, rt.getSoggettoPagatore().getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
+		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IUV, datiPagamento.getIdentificativoUnivocoVersamento());
 
 		List<CtDatiSingoloPagamentoRT> datiSingoloPagamento = datiPagamento.getDatiSingoloPagamento();
 		if(datiSingoloPagamento != null && datiSingoloPagamento.size() > 0) {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoloPagamento.get(0);
 
 			Date dataEsitoSingoloPagamento = ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento();
-			addCustomerAttribute(list, Costanti.LABEL_DATA_PAGAMENTO, TemplateBase.sdf_ddMMyyyy.format(dataEsitoSingoloPagamento));
-			addCustomerAttribute(list, Costanti.LABEL_IUR, ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
+			TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_DATA_PAGAMENTO, TemplateBase.sdf_ddMMyyyy.format(dataEsitoSingoloPagamento));
+			TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_IUR, ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
 		}
 		String labelIstitutoAttestante = rt.getIstitutoAttestante().getDenominazioneAttestante() + " (C.F. " + rt.getIstitutoAttestante().getIdentificativoUnivocoAttestante().getCodiceIdentificativoUnivoco()+ ")";
-		addCustomerAttribute(list, Costanti.LABEL_ISTITUTO_ATTESTANTE, labelIstitutoAttestante );
+		TemplateBase.creaElementoListaNomeValore(list, Costanti.LABEL_ISTITUTO_ATTESTANTE, labelIstitutoAttestante );
 
 		return cmp.verticalList(
 				cmp.text(label).setStyle(TemplateBase.bold16CenteredStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
 				cmp.verticalGap(10),
 				list).setStyle(TemplateBase.centeredStyle);
 	}
-
-	private static void addCustomerAttribute(HorizontalListBuilder list, String label, String value) {
-		if (value != null) {
-			list.add(cmp.text(label + ":").setFixedColumns(20).setStyle(TemplateBase.boldStyle), cmp.text(value)).newRow();
-		}
-	}
-	
-//	public static void init() throws Exception{
-//		JasperReportBuilder report = report();
-//		List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
-//		cl.add(cmp.verticalGap(20));
-//		ComponentBuilder<?, ?>[] ca = new ComponentBuilder<?, ?>[cl.size()];
-//		report.setPageFormat(PageType.A4, PageOrientation.PORTRAIT)
-//		.setTemplate(TemplateRt.reportTemplate)
-//		.title(cl.toArray(ca));
-//	}
 }

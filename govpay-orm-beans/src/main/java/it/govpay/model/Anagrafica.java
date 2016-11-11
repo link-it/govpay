@@ -35,6 +35,7 @@ public class Anagrafica extends BasicModel {
 	private String telefono;
 	private String cellulare;
 	private String fax;
+	private String urlSitoWeb;
 	
 	public String getRagioneSociale() {
 		return ragioneSociale;
@@ -108,6 +109,12 @@ public class Anagrafica extends BasicModel {
 	public void setCellulare(String cellulare) {
 		this.cellulare = cellulare;
 	}
+	public String getUrlSitoWeb() {
+		return urlSitoWeb;
+	}
+	public void setUrlSitoWeb(String urlSitoWeb) {
+		this.urlSitoWeb = urlSitoWeb;
+	}
 	@Override
 	public boolean equals(Object obj) {
 		Anagrafica anagrafica = null;
@@ -129,7 +136,8 @@ public class Anagrafica extends BasicModel {
 				equals(nazione, anagrafica.getNazione()) &&
 				equals(provincia, anagrafica.getProvincia()) &&
 				equals(ragioneSociale, anagrafica.getRagioneSociale()) &&
-				equals(telefono, anagrafica.getTelefono());
+				equals(telefono, anagrafica.getTelefono()) &&
+				equals(urlSitoWeb, anagrafica.getUrlSitoWeb());
 		
 		return equal;
 	}

@@ -6,19 +6,27 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.tableOfContent
 import static net.sf.dynamicreports.report.builder.DynamicReports.template;
 
 import java.awt.Color;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Logger;
+
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Dominio;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter;
 import net.sf.dynamicreports.report.builder.ReportTemplateBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
 import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 import net.sf.dynamicreports.report.builder.datatype.BigDecimalType;
 import net.sf.dynamicreports.report.builder.style.FontBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.tableofcontents.TableOfContentsCustomizerBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.Markup;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
@@ -214,4 +222,74 @@ public class TemplateBase {
 		}
 	}
 
+	public static void creaElementoListaNomeValore(HorizontalListBuilder list, String label, String value) {
+		if (value != null) {
+			list.add(cmp.text(label + ":").setFixedColumns(20).setStyle(TemplateBase.boldStyle), cmp.text(value)).newRow();
+		}
+	}
+
+	public static void addElementoContenutoStaticoLista(HorizontalListBuilder list, String value, boolean newRow, boolean bold,HorizontalTextAlignment align) {
+		if (value != null) {
+			String v = value;
+
+			TextFieldBuilder<String> text = cmp.text(v).setMarkup(Markup.HTML).setHorizontalTextAlignment(align);
+
+			if(bold)
+				text.setStyle(TemplateBase.boldStyle);
+
+			if(newRow)
+				list.add(text).newRow();
+			else
+				list.add(text);
+
+		}
+	}
+
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica, Logger log) {
+		try{
+			VerticalListBuilder listDominio = cmp.verticalList().setStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10)
+					.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setHorizontalImageAlignment(HorizontalImageAlignment.CENTER)); 
+
+			String denominazioneDominio = dominio.getRagioneSociale();
+			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
+
+			String indirizzoCivico = null,capCitta =null;
+
+			if(anagrafica != null) {
+				String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
+				String civico = StringUtils.isNotEmpty(anagrafica.getCivico()) ? anagrafica.getCivico() : "";
+				String cap = StringUtils.isNotEmpty(anagrafica.getCap()) ? anagrafica.getCap() : "";
+				String localita = StringUtils.isNotEmpty(anagrafica.getLocalita()) ? anagrafica.getLocalita() : "";
+				String provincia = StringUtils.isNotEmpty(anagrafica.getProvincia()) ? (" (" +anagrafica.getProvincia() +")" ) : "";
+				indirizzoCivico = indirizzo + " " + civico;
+				capCitta = cap + " " + localita + provincia      ;
+			}
+
+			listDominio.add(cmp.text(denominazioneDominio).setStyle(TemplateBase.bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));//.newRow();
+			listDominio.add(cmp.text(pIvaDominio).setStyle(TemplateBase.boldStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+			if(StringUtils.isNotEmpty(indirizzoCivico))
+				listDominio.add(cmp.text(indirizzoCivico).setStyle(TemplateBase.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+			if(StringUtils.isNotEmpty(capCitta))
+				listDominio.add(cmp.text(capCitta).setStyle(TemplateBase.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+
+			return listDominio;
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+
+
+	//	public static void init() throws Exception{
+	//	JasperReportBuilder report = report();
+	//	List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
+	//	cl.add(cmp.verticalGap(20));
+	//	ComponentBuilder<?, ?>[] ca = new ComponentBuilder<?, ?>[cl.size()];
+	//	report.setPageFormat(PageType.A4, PageOrientation.PORTRAIT)
+	//	.setTemplate(TemplateRt.reportTemplate)
+	//	.title(cl.toArray(ca));
+	//}
 }

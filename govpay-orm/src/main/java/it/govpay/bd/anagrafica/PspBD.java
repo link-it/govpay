@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
@@ -95,6 +96,7 @@ public class PspBD extends BasicBD {
 
 			IPaginatedExpression exp = this.getCanaleService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Canale.model().ID_PSP.COD_PSP, psp.getCodPsp());
+			exp.addOrder(it.govpay.orm.Canale.model().COD_CANALE, SortOrder.ASC);
 			
 			List<it.govpay.orm.Canale> canali = this.getCanaleService().findAll(exp);
 			

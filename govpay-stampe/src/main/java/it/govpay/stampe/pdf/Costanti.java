@@ -102,4 +102,12 @@ public class Costanti {
 	public static final String LABEL_DATA_REVOCA = "Data Revoca";
 	public static final String LABEL_ESITO_REVOCA = "RICEVUTA DI REVOCA";
 	public static final String LABEL_IMPORTO_REVOCA = "Importo Revocato";
+	
+	
+	/** LABEL AVVISO PAGAMENTO **/
+	public static final String LABEL_DATA_SCADENZA = "Data Scadenza";
+	public static final String LABEL_IMPORTO = "Importo";
+	public static final String LABEL_CODICE_FISCALE_CREDITORE = "Codice Fiscale/P.IVA Ente Creditore";
+	public static final String LABEL_CODICE_AVVISO_PAGAMENTO = "Avviso di Pagamento N°";
+	
 }

@@ -308,6 +308,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			// dati dell'intermediario
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"), stazione.getCodStazione());
+			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".password.label"), stazione.getPassword());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(stazione.isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");

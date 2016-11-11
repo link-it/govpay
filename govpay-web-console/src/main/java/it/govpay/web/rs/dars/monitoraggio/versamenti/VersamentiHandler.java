@@ -185,7 +185,13 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 				filter.setIdVersamento(idVersamentoL);  
 			}
-
+			
+			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+			String statoVersamento = this.getParameter(uriInfo, statoVersamentoId, String.class);
+			
+			if(StringUtils.isNotEmpty(statoVersamento)){
+				filter.setStatoVersamento(StatoVersamento.valueOf(statoVersamento));
+			}
 
 			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
@@ -251,12 +257,16 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
 		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+		String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
 
 		if(infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+		SelectList<String> statoVersamento = (SelectList<String>) infoRicercaMap.get(statoVersamentoId);
+		statoVersamento.setDefaultValue("");
+		sezioneRoot.addField(statoVersamento);
 
 		InputText cfDebitore = (InputText) infoRicercaMap.get(cfDebitoreId);
 		cfDebitore.setDefaultValue(null);
@@ -355,7 +365,22 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
 
+			// statoVersamento
+			List<Voce<String>> stati = new ArrayList<Voce<String>>();
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO), StatoVersamento.ESEGUITO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.NON_ESEGUITO), StatoVersamento.NON_ESEGUITO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.PARZIALMENTE_ESEGUITO), StatoVersamento.PARZIALMENTE_ESEGUITO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO_SENZA_RPT), StatoVersamento.ESEGUITO_SENZA_RPT.toString()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANOMALO), StatoVersamento.ANOMALO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANNULLATO), StatoVersamento.ANNULLATO.toString()));
+			
+			String statoVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label");
+			SelectList<String> statoVersamento = new SelectList<String>(statoVersamentoId, statoVersamentoLabel, null, false, false, true, stati);
+			infoRicercaMap.put(statoVersamentoId, statoVersamento);
+			
 			// cfDebitore
 			String cfDebitoreLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.label");
 			InputText cfDebitore = new InputText(cfDebitoreId, cfDebitoreLabel, null, false, false, true, 1, 35);

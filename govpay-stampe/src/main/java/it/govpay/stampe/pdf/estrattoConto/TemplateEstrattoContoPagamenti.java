@@ -101,7 +101,7 @@ public class TemplateEstrattoContoPagamenti {
 		try{
 			return cmp.horizontalList(
 					createRiepilogoGenerale(dominio, ibanAccredito, estrattoContoList,totale,log),
-					createDatiDominio(dominio,anagrafica, log)
+					TemplateBase.createDatiDominio(dominio,anagrafica, log)
 					).newRow();
 		}catch(Exception e){
 			log.error(e.getMessage(),e);
@@ -109,41 +109,7 @@ public class TemplateEstrattoContoPagamenti {
 		return null;
 	}
 
-	/**
-	 * Creates custom component which is possible to add to any report band component
-	 */
-	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica, Logger log) {
-		try{
-			VerticalListBuilder listDominio = cmp.verticalList().setStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10)
-					.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setHorizontalImageAlignment(HorizontalImageAlignment.CENTER)); 
 
-			String denominazioneDominio = dominio.getRagioneSociale();
-			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
-
-			String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
-			String civico = StringUtils.isNotEmpty(anagrafica.getCivico()) ? anagrafica.getCivico() : "";
-			String cap = StringUtils.isNotEmpty(anagrafica.getCap()) ? anagrafica.getCap() : "";
-			String localita = StringUtils.isNotEmpty(anagrafica.getLocalita()) ? anagrafica.getLocalita() : "";
-			String provincia = StringUtils.isNotEmpty(anagrafica.getProvincia()) ? (" (" +anagrafica.getProvincia() +")" ) : "";
-
-
-			String indirizzoCivico = indirizzo + " " + civico;
-			String capCitta = cap + " " + localita + provincia      ;
-
-
-			listDominio.add(cmp.text(denominazioneDominio).setStyle(TemplateBase.bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));//.newRow();
-			listDominio.add(cmp.text(pIvaDominio).setStyle(TemplateBase.boldStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
-			if(StringUtils.isNotEmpty(indirizzoCivico))
-				listDominio.add(cmp.text(indirizzoCivico).setStyle(TemplateBase.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
-			if(StringUtils.isNotEmpty(capCitta))
-				listDominio.add(cmp.text(capCitta).setStyle(TemplateBase.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
-
-			return listDominio;
-		}catch(Exception e){
-			log.error(e.getMessage(),e);
-		}
-		return null;
-	}
 
 	/**
 	 * Creates custom component which is possible to add to any report band component

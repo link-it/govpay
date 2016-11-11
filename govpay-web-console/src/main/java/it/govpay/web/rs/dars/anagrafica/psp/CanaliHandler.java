@@ -83,7 +83,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
-
+			
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Canale entry : findAll) {
 					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
