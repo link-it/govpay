@@ -56,7 +56,7 @@ public class EstrattiContoBD extends BasicBD{
 				sbPlaceHolder1.append(EstrattoContoCostanti.PLACE_HOLDER_QUERY_CLAUSOLA_FROM_DOMINI);
 			}
 			if(!filter.isIgnoraStatoVersamento())
-				sbPlaceHolder1.append(" where v.stato_versamento != 'NON_ESEGUITO' ");
+				sbPlaceHolder1.append(" where v.stato_versamento != 'NON_ESEGUITO' and v.stato_versamento != 'ANNULLATO' ");
 			else 
 				sbPlaceHolder1.append(" where v.stato_versamento is not null ");
 			List<Object> listaParam = new ArrayList<Object>();
@@ -102,7 +102,7 @@ public class EstrattiContoBD extends BasicBD{
 			}
 			
 			if(!filter.isIgnoraStatoVersamento())
-				sbPlaceHolder2.append(" where v.stato_versamento != 'NON_ESEGUITO' ");
+				sbPlaceHolder2.append(" where v.stato_versamento != 'NON_ESEGUITO' and v.stato_versamento != 'ANNULLATO' ");
 			else 
 				sbPlaceHolder2.append(" where v.stato_versamento is not null ");
 			// placeholder 2 : parametri statoVersamento, dataInizio, dataFine
@@ -179,7 +179,7 @@ public class EstrattiContoBD extends BasicBD{
 			}
 
 			if(!filter.isIgnoraStatoVersamento())
-				sbPlaceHolder1.append(" where v.stato_versamento != 'NON_ESEGUITO' ");
+				sbPlaceHolder1.append(" where v.stato_versamento != 'NON_ESEGUITO' and v.stato_versamento != 'ANNULLATO' ");
 			else 
 				sbPlaceHolder1.append(" where v.stato_versamento is not null ");
 			List<Object> listaParam = new ArrayList<Object>();
@@ -225,7 +225,7 @@ public class EstrattiContoBD extends BasicBD{
 			}
 
 			if(!filter.isIgnoraStatoVersamento())
-				sbPlaceHolder2.append(" where v.stato_versamento != 'NON_ESEGUITO' ");
+				sbPlaceHolder2.append(" where v.stato_versamento != 'NON_ESEGUITO' and v.stato_versamento != 'ANNULLATO' ");
 			else 
 				sbPlaceHolder2.append(" where v.stato_versamento is not null ");
 			// placeholder 2 : parametri statoVersamento, dataInizio, dataFine
