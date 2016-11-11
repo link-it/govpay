@@ -138,7 +138,7 @@ public class Iuv extends BasicBD {
 		}
 		
 		IuvBD iuvBD = new IuvBD(this);
-		it.govpay.model.Iuv iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, it.govpay.model.Iuv.TipoIUV.NUMERICO, prefix);
+		it.govpay.model.Iuv iuv = iuvBD.generaIuv(applicazione, dominio, codVersamentoEnte, type, prefix);
 		
 		GpThreadLocal.get().log("iuv.generazioneIUVOk", applicazione.getCodApplicazione(), codVersamentoEnte, dominio.getCodDominio(), iuv.getIuv());
 		

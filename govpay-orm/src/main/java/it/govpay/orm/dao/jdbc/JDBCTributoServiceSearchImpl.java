@@ -205,6 +205,9 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(tipoTributoId);
 			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fields.add(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
+			fields.add(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA);
+			fields.add(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA);
+			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV);
 			fields.add(Tributo.model().TIPO_CONTABILITA);
 			fields.add(Tributo.model().CODICE_CONTABILITA);
 			fields.add(Tributo.model().COD_TRIBUTO_IUV);
