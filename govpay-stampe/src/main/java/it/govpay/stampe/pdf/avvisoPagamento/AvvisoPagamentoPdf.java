@@ -29,28 +29,36 @@ public class AvvisoPagamentoPdf implements IAvvisoPagamento{
 		String msg = null;
 		List<String> errList = new ArrayList<String>();
 		try{
-
 			JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 			JasperReportBuilder report = report();
 
 			List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
 
-
 			ComponentBuilder<?, ?> createTitleComponent = TemplateAvvisoPagamento.createTitleComponent(pathLoghi,avviso,errList,log);
 			if(createTitleComponent != null) {
 				cl.add(createTitleComponent);
-				ComponentBuilder<?, ?> createSezioneDovuto = TemplateAvvisoPagamento.createSezioneDovuto(avviso,errList,log);
-				if(createSezioneDovuto != null){
-					cl.add(createSezioneDovuto);
-					ComponentBuilder<?, ?> createSezioneDisponibilita = TemplateAvvisoPagamento.createSezioneDisponibilita(avviso,errList,log);
-					if(createSezioneDisponibilita!= null){
-						cl.add(createSezioneDisponibilita);
-					}
-				}
+
+
+				ComponentBuilder<?,?> createSezioneDebitore = TemplateAvvisoPagamento.createSezioneDebitore(avviso, errList, log);
+				cl.add(createSezioneDebitore);
+
+				ComponentBuilder<?,?> createSezioneTitoloAvviso = TemplateAvvisoPagamento.createSezioneTitoloAvviso(avviso, errList, log);
+				cl.add(createSezioneTitoloAvviso);
+
+				ComponentBuilder<?,?> createSezionePagamento = TemplateAvvisoPagamento.createSezionePagamento(avviso, errList, log); 
+
+				if(createSezionePagamento != null)
+					cl.add(createSezionePagamento);
+				
+//				ComponentBuilder<?, ?> createSezioneComunicazioni = TemplateAvvisoPagamento.createSezioneComunicazioni(avviso,errList,log);
+//				if(createSezioneComunicazioni!= null){
+//					cl.add(createSezioneComunicazioni);
+//				}
+
 			}
 
-			// se e solo se ho generato correttamente tutte le sezioni dell'estratto conto allor ascirvo il pdf.
-			if(cl.size() == 3){
+			// se ho generato almeno il titolo allora produco il pdf.
+			if(cl.size() > 0){
 
 				ComponentBuilder<?, ?>[] ca = new ComponentBuilder<?, ?>[cl.size()];
 
@@ -61,7 +69,7 @@ public class AvvisoPagamentoPdf implements IAvvisoPagamento{
 					.setTemplate(TemplateBase.reportTemplate)
 					.title(cl.toArray(ca))
 					.pageFooter(createSezioneCodici)
-					.toPdf(pdfExporter); 
+					.toPdf(pdfExporter);  
 				}
 			}
 

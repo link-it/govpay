@@ -61,7 +61,9 @@ public class TemplateBase {
 	public static final StyleBuilder bold18LeftStyle;
 	public static final StyleBuilder bold22LeftStyle;
 	public static final StyleBuilder columnStyle;
+	public static final StyleBuilder columnBorderStyle;
 	public static final StyleBuilder columnTitleStyle;
+	public static final StyleBuilder tableColumnTitleStyle;
 	public static final StyleBuilder groupStyle;
 	public static final StyleBuilder subtotalStyle;
 	public static final StyleBuilder centeredStyle;
@@ -69,6 +71,7 @@ public class TemplateBase {
 	public static final FontBuilder rootFont;
 
 	public static final ReportTemplateBuilder reportTemplate;
+	public static final ReportTemplateBuilder tableTemplate;
 	public static final CurrencyType currencyType;
 	public static final ComponentBuilder<?, ?> footerComponent;
 
@@ -113,6 +116,7 @@ public class TemplateBase {
 		bold22LeftStyle = stl.style(boldLeftStyle)
 				.setFontSize(20);
 		columnStyle = stl.style(fontStyle9).setVerticalTextAlignment(VerticalTextAlignment.MIDDLE);
+		columnBorderStyle = stl.style(fontStyle9).setVerticalTextAlignment(VerticalTextAlignment.MIDDLE).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT).setBorder(stl.pen1Point());
 		columnTitleStyle = stl.style(rootStyle)
 				.setBorder(stl.pen1Point())
 				.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
@@ -122,6 +126,12 @@ public class TemplateBase {
 				.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
 		subtotalStyle       = stl.style(boldStyle)
 				.setTopBorder(stl.pen1Point());
+
+		tableColumnTitleStyle= stl.style(rootStyle)
+				.setBorder(stl.pen1Point()).setLeftPadding(2)
+				.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
+				.setBackgroundColor(Color.LIGHT_GRAY)
+				.bold();
 
 		StyleBuilder crosstabGroupStyle      = stl.style(columnTitleStyle);
 		StyleBuilder crosstabGroupTotalStyle = stl.style(columnTitleStyle)
@@ -148,6 +158,13 @@ public class TemplateBase {
 				.setCrosstabGrandTotalStyle(crosstabGrandTotalStyle)
 				.setCrosstabCellStyle(crosstabCellStyle)
 				.setTableOfContentsCustomizer(tableOfContentsCustomizer);
+
+		tableTemplate = template()
+				.setLocale(Locale.ITALIAN)
+				.setColumnStyle(columnStyle)
+				.setColumnTitleStyle(tableColumnTitleStyle)
+				.setHighlightDetailEvenRows(false)
+				.setCrosstabHighlightEvenRows(false);
 
 		currencyType = new CurrencyType();
 
@@ -250,8 +267,45 @@ public class TemplateBase {
 	 */
 	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica, Logger log) {
 		try{
-			VerticalListBuilder listDominio = cmp.verticalList().setStyle(stl.style(TemplateBase.fontStyle12).setLeftPadding(10)
-					.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setHorizontalImageAlignment(HorizontalImageAlignment.CENTER)); 
+			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.CENTER;
+			HorizontalImageAlignment horizontalImageAlignment = HorizontalImageAlignment.CENTER;
+			StyleBuilder style = stl.style(TemplateBase.fontStyle12); 
+			StyleBuilder headerStyle = stl.style(TemplateBase.bold18LeftStyle); 
+			
+			VerticalListBuilder listDominio = cmp.verticalList().setStyle(style.setLeftPadding(10)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setHorizontalImageAlignment(horizontalImageAlignment)); 
+			
+			return createDatiDominio(dominio, anagrafica, listDominio,horizontalTextAlignment,headerStyle, style, log);
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+	
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 * @param verticalTextAlignment 
+	 */
+	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica, HorizontalTextAlignment horizontalTextAlignment,VerticalTextAlignment verticalTextAlignment,
+			StyleBuilder headerStyle, StyleBuilder style, Logger log ) {
+		try{
+			VerticalListBuilder listDominio = cmp.verticalList().setStyle(style.setLeftPadding(10)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(verticalTextAlignment));  
+			
+			return createDatiDominio(dominio, anagrafica, listDominio,horizontalTextAlignment,headerStyle, style, log);
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+	
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica,VerticalListBuilder listDominio,
+			HorizontalTextAlignment horizontalTextAlignment, StyleBuilder headerStyle, StyleBuilder style, Logger log) {
+		try{
+			
 
 			String denominazioneDominio = dominio.getRagioneSociale();
 			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
@@ -268,18 +322,62 @@ public class TemplateBase {
 				capCitta = cap + " " + localita + provincia      ;
 			}
 
-			listDominio.add(cmp.text(denominazioneDominio).setStyle(TemplateBase.bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));//.newRow();
-			listDominio.add(cmp.text(pIvaDominio).setStyle(TemplateBase.boldStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+			listDominio.add(cmp.text(denominazioneDominio).setStyle(headerStyle).setHorizontalTextAlignment(horizontalTextAlignment));//.newRow();
+			listDominio.add(cmp.text(pIvaDominio).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
 			if(StringUtils.isNotEmpty(indirizzoCivico))
-				listDominio.add(cmp.text(indirizzoCivico).setStyle(TemplateBase.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+				listDominio.add(cmp.text(indirizzoCivico).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
 			if(StringUtils.isNotEmpty(capCitta))
-				listDominio.add(cmp.text(capCitta).setStyle(TemplateBase.fontStyle12).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER));
+				listDominio.add(cmp.text(capCitta).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
 
 			return listDominio;
 		}catch(Exception e){
 			log.error(e.getMessage(),e);
 		}
 		return null;
+	}
+
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static ComponentBuilder<?, ?> createDatiDebitore(Anagrafica anagrafica, boolean includeCF, boolean bold, StyleBuilder fontstyleBase , HorizontalTextAlignment horizontalTextAlignment, Logger log) {
+		try{
+			VerticalListBuilder listDebitore = cmp.verticalList().setStyle(stl.style(fontstyleBase).setLeftPadding(10)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(VerticalTextAlignment.TOP)); 
+
+			createDatiDebitore(listDebitore, anagrafica, includeCF, bold, fontstyleBase, horizontalTextAlignment, log); 
+
+			return listDebitore;
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static void createDatiDebitore(VerticalListBuilder listDebitore, Anagrafica anagrafica, boolean includeCF, boolean bold, StyleBuilder fontstyleBase , HorizontalTextAlignment horizontalTextAlignment, Logger log) {
+		try{
+			String denominazioneDebitore = anagrafica.getRagioneSociale();
+			String cfDebitore = anagrafica.getCodUnivoco() ; //MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, anagrafica.getCodUnivoco());
+
+			StyleBuilder headerStyle = bold ? TemplateBase.boldStyle12 : fontstyleBase;
+			listDebitore.add(cmp.text(denominazioneDebitore.toUpperCase()).setStyle(headerStyle).setHorizontalTextAlignment(horizontalTextAlignment));//.newRow();
+			if(includeCF)
+				listDebitore.add(cmp.text(cfDebitore.toUpperCase()).setStyle(headerStyle).setHorizontalTextAlignment(horizontalTextAlignment));
+
+			String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
+			String[] indirizzoSplit = indirizzo.split("\\|");
+			if(indirizzoSplit != null && indirizzoSplit.length > 0){
+				for (int i = 0; i < indirizzoSplit.length; i++) {
+					String indirizzoI = indirizzoSplit[i];
+					if(StringUtils.isNotEmpty(indirizzoI))
+						listDebitore.add(cmp.text(indirizzoI.toUpperCase()).setStyle(fontstyleBase).setHorizontalTextAlignment(horizontalTextAlignment));
+				}
+			}
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
 	}
 
 

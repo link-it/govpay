@@ -48,6 +48,7 @@ public class Costanti {
 	public static final String ID_REGOLAMENTO_COL = "idRegolamento";
 	public static final String IBAN_ACCREDITO_COL = "ibanAccredito";
 	public static final String IUV_COL = "iuv";
+	public static final String COL_UNO = "colUno";
 	
 	public static final String PAGAMENTI_SENZA_RPT_KEY = "PagamentiSenzaRpt";
 	public static final String LABEL_PAGAMENTI_SENZA_RPT = "Pagamenti Senza Rpt";
@@ -105,9 +106,17 @@ public class Costanti {
 	
 	
 	/** LABEL AVVISO PAGAMENTO **/
+	public static final String LABEL_RIFERIMENTI = "Riferimenti";
+	public static final String LABEL_COMUNICAZIONI = "Comunicazioni";
 	public static final String LABEL_DATA_SCADENZA = "Data Scadenza";
 	public static final String LABEL_IMPORTO = "Importo";
+	public static final String LABEL_IMPORTO_DA_PAGARE = "Importo da Pagare";
+	public static final String LABEL_SCADENZA_DEL_PAGAMENTO = "Scadenze di Pagamento";
 	public static final String LABEL_CODICE_FISCALE_CREDITORE = "Codice Fiscale/P.IVA Ente Creditore";
 	public static final String LABEL_CODICE_AVVISO_PAGAMENTO = "Avviso di Pagamento N°";
+	public static final String LABEL_CODICE_AVVISO = "Codice Avviso";
+	public static final String LABEL_CODICE_VERSAMENTO = "Codice Versamento";
+	public static final String LABEL_CODICE_AVVISO_PAGAMENTO_UPPER_CASE = "AVVISO DI PAGAMENTO N°";
+	public static final String LABEL_INTESTATO_A = "Intestato a:";
 	
 }

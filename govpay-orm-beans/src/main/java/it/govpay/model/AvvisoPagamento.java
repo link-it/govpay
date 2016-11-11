@@ -22,6 +22,9 @@ public class AvvisoPagamento extends BasicModel {
 	private Date dataScadenza;
 	private String iuv;
 	private BigDecimal importo;
+	private Anagrafica anagraficaDebitore;
+	private String causale;
+	private String codVersamento;
 	
 	private Map<String, TreeMap<String, String>> contenutoStatico;
 	
@@ -82,4 +85,23 @@ public class AvvisoPagamento extends BasicModel {
 	public void setContenutoStatico(Map<String, TreeMap<String, String>> contenutoStatico) {
 		this.contenutoStatico = contenutoStatico;
 	}
+	public Anagrafica getAnagraficaDebitore() {
+		return anagraficaDebitore;
+	}
+	public void setAnagraficaDebitore(Anagrafica anagraficaDebitore) {
+		this.anagraficaDebitore = anagraficaDebitore;
+	}
+	public String getCausale() {
+		return causale;
+	}
+	public void setCausale(String causale) {
+		this.causale = causale;
+	}
+	public String getCodVersamento() {
+		return codVersamento;
+	}
+	public void setCodVersamento(String codVersamento) {
+		this.codVersamento = codVersamento;
+	}
+	
 }
