@@ -20,6 +20,7 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,16 +43,16 @@ import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 
 public class VersamentoFilter extends AbstractFilter {
 
+	private List<StatoVersamento> statiVersamento =  null;
 	private String codUnivocoDebitore;
 	private List<Long> idDomini;
 	private Date datainizio;
 	private Date dataFine;
 	private List<Long> idVersamento= null;
 	private String codVersamento = null;
-	private StatoVersamento statoVersamento= null;
 
 	public enum SortFields {
-		STATO
+		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
 	}
 
 	public VersamentoFilter(IExpressionConstructor expressionConstructor) {
@@ -64,8 +65,8 @@ public class VersamentoFilter extends AbstractFilter {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
 			// Filtro sullo stato pagamenti
-			if(this.statoVersamento != null){
-				newExpression.equals(Versamento.model().STATO_VERSAMENTO, this.statoVersamento.toString());
+			if(this.statiVersamento != null){
+				newExpression.in(Versamento.model().STATO_VERSAMENTO, toString(this.statiVersamento));
 				addAnd = true;
 			}
 
@@ -121,12 +122,67 @@ public class VersamentoFilter extends AbstractFilter {
 		}
 	}
 
-	public void addSortField(SortFields field, boolean asc) {
+	private List<String> toString(List<StatoVersamento> statiVersamento) {
+		List<String> stati = new ArrayList<String>();
+		for(StatoVersamento stato : statiVersamento)
+			stati.add(stato.toString());
+		return stati;
+	}	
+
+	public void addSortField(SortFields field) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
-		if(field.equals(SortFields.STATO)) 
+		
+		switch (field) {
+		case AGGIORNAMENTO_ASC:
+			filterSortWrapper.setField(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO); 
+			filterSortWrapper.setSortOrder(SortOrder.ASC);
+			break;
+			
+		case AGGIORNAMENTO_DESC:
+			filterSortWrapper.setField(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO); 
+			filterSortWrapper.setSortOrder(SortOrder.DESC);
+			break;
+					
+		case CARICAMENTO_ASC:
+			filterSortWrapper.setField(Versamento.model().DATA_CREAZIONE); 
+			filterSortWrapper.setSortOrder(SortOrder.ASC);
+			break;
+			
+		case CARICAMENTO_DESC:
+			filterSortWrapper.setField(Versamento.model().DATA_CREAZIONE); 
+			filterSortWrapper.setSortOrder(SortOrder.DESC);
+			break;
+			
+		case SCADENZA_ASC:
+			filterSortWrapper.setField(Versamento.model().DATA_SCADENZA); 
+			filterSortWrapper.setSortOrder(SortOrder.ASC);
+			break;
+			
+		case SCADENZA_DESC:
+			filterSortWrapper.setField(Versamento.model().DATA_SCADENZA); 
+			filterSortWrapper.setSortOrder(SortOrder.DESC);
+			break;
+			
+		case STATO_ASC:
 			filterSortWrapper.setField(Versamento.model().STATO_VERSAMENTO); 
-		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
+			filterSortWrapper.setSortOrder(SortOrder.ASC);
+			break;
+			
+		case STATO_DESC:
+			filterSortWrapper.setField(Versamento.model().STATO_VERSAMENTO); 
+			filterSortWrapper.setSortOrder(SortOrder.DESC);
+			break;
+		}
+		
 		this.filterSortList.add(filterSortWrapper);
+	}
+
+	public List<StatoVersamento> getStatiVersamento() {
+		return statiVersamento;
+	}
+
+	public void setStatiPagamento(List<StatoVersamento> statiVersamento) {
+		this.statiVersamento = statiVersamento;
 	}
 
 	public String getCodUnivocoDebitore() {
@@ -161,13 +217,9 @@ public class VersamentoFilter extends AbstractFilter {
 		this.idDomini = idDomini;
 	}
 
-	public StatoVersamento getStatoVersamento() {
-		return statoVersamento;
+	public void setStatoVersamento(StatoVersamento stato) {
+		this.statiVersamento = new ArrayList<StatoVersamento>();
+		this.statiVersamento.add(stato);
 	}
-
-	public void setStatoVersamento(StatoVersamento statoVersamento) {
-		this.statoVersamento = statoVersamento;
-	}
-	
 
 }
