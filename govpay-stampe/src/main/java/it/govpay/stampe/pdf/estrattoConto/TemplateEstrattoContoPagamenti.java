@@ -239,7 +239,7 @@ public class TemplateEstrattoContoPagamenti {
 		//		if(StringUtils.isNotEmpty(pag.getCodSingoloVersamentoEnte()))
 		TemplateBase.addElementoLista(itemComponent, Costanti.LABEL_CODICE_VERSAMENTO_ENTE, new TemplateEstrattoContoPagamenti().new CodSingoloVersamentoEnteExpression(), true,false,true);
 		//		if(pag.getImportoPagato() != null)
-		TemplateBase.addElementoLista(itemComponent, Costanti.LABEL_IMPORTO,  new TemplateEstrattoContoPagamenti().new ImportoPagatoExpression(), true,false,true);
+		TemplateBase.addElementoLista(itemComponent, Costanti.LABEL_IMPORTO_PAGATO,  new TemplateEstrattoContoPagamenti().new ImportoPagatoExpression(), true,false,true);
 		//		if(pag.getDataPagamento() != null)
 		TemplateBase.addElementoLista(itemComponent, Costanti.LABEL_DATA_PAGAMENTO,  new TemplateEstrattoContoPagamenti().new DataPagamentoExpression(), true,false,true);
 
@@ -274,7 +274,7 @@ public class TemplateEstrattoContoPagamenti {
 		private static final long serialVersionUID = 1L;
 		@Override
 		public String evaluate(ReportParameters reportParameters) {
-			return "<b>" + Costanti.LABEL_IMPORTO + "</b>: " + Costanti.LABEL_EURO +" "+reportParameters.getValue(Costanti.IMPORTO_PAGATO_COL);
+			return "<b>" + Costanti.LABEL_IMPORTO_PAGATO + "</b>: " + Costanti.LABEL_EURO +" "+reportParameters.getValue(Costanti.IMPORTO_PAGATO_COL);
 		}
 	}
 

@@ -24,7 +24,7 @@ public class Costanti {
 	public static final String LABEL_DETTAGLIO_PAGAMENTI = "Dettaglio Pagamenti";
 	public static final String LABEL_IUV = "Iuv";
 	public static final String LABEL_ULTERIORI_INFORMAZIONI = "Ulteriori Informazioni";
-	public static final String LABEL_IMPORTO = "Importo";
+	public static final String LABEL_IMPORTO_PAGATO = "Importo Pagato";
 	public static final String LABEL_ID_RIVERSAMENTO = "Id Riversamento";
 	public static final String LABEL_DATA_PAGAMENTO = "Data Pagamento";
 	public static final String LABEL_CODICE_VERSAMENTO_ENTE = "Cod Versamento Ente";
