@@ -569,7 +569,7 @@
 			<xsd:element name="tipoTributo" type="TipoTributo">
 				
 			</xsd:element>
-			<xsd:element minOccurs="0" name="codTributoIuv" type="String255"/>
+			<xsd:element minOccurs="0" name="codTributoIuv" type="String4"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -581,7 +581,7 @@
 			<xsd:element minOccurs="0" name="descrizione" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="tipoContabilita" type="String1"/>
 			<xsd:element minOccurs="0" name="codContabilita" type="String255"/>
-			<xsd:element minOccurs="0" name="codTributoIuv" type="String255"/>
+			<xsd:element minOccurs="0" name="codTributoIuv" type="String4"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
