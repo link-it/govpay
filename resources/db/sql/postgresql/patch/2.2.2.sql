@@ -8,3 +8,5 @@ ALTER TABLE tipi_tributo ADD COLUMN tipo_contabilita VARCHAR(1);
 ALTER TABLE tipi_tributo ADD COLUMN cod_contabilita VARCHAR(255);
 ALTER TABLE tipi_tributo ADD COLUMN cod_tributo_iuv VARCHAR(255);
 ALTER TABLE tributi ADD COLUMN cod_tributo_iuv VARCHAR(255);
+ALTER TABLE tributi ALTER COLUMN tipo_contabilita DROP NOT NULL;
+ALTER TABLE tributi ALTER COLUMN cod_contabilita DROP NOT NULL;

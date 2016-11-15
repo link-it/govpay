@@ -564,8 +564,8 @@
 			<xsd:element minOccurs="0" name="idIbanAccredito" type="id-iban-accredito">
 				
 			</xsd:element>
-			<xsd:element name="tipoContabilita" type="String1"/>
-			<xsd:element name="codiceContabilita" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="tipoContabilita" type="String1"/>
+			<xsd:element minOccurs="0" name="codiceContabilita" type="xsd:string"/>
 			<xsd:element name="tipoTributo" type="TipoTributo">
 				
 			</xsd:element>
