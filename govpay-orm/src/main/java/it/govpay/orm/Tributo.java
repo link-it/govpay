@@ -39,8 +39,8 @@ import java.io.Serializable;
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoTributo" type="{http://www.govpay.it/orm}TipoTributo" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -177,11 +177,11 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   protected IdIbanAccredito idIbanAccredito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="tipoContabilita",required=true,nillable=false)
+  @XmlElement(name="tipoContabilita",required=false,nillable=false)
   protected java.lang.String tipoContabilita;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codiceContabilita",required=true,nillable=false)
+  @XmlElement(name="codiceContabilita",required=false,nillable=false)
   protected java.lang.String codiceContabilita;
 
   @XmlElement(name="tipoTributo",required=true,nillable=false)

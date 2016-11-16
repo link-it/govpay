@@ -395,7 +395,7 @@ CREATE TABLE tipi_tributo
 	descrizione VARCHAR2(255, CHAR),
 	tipo_contabilita VARCHAR2(1, CHAR),
 	cod_contabilita VARCHAR2(255, CHAR),
-	cod_tributo_iuv VARCHAR2(255, CHAR),
+	cod_tributo_iuv VARCHAR2(4, CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -423,9 +423,9 @@ CREATE SEQUENCE seq_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1
 CREATE TABLE tributi
 (
 	abilitato NUMBER NOT NULL,
-	tipo_contabilita VARCHAR2(1, CHAR) NOT NULL,
-	codice_contabilita VARCHAR2(255, CHAR) NOT NULL,
-	cod_tributo_iuv VARCHAR2(255, CHAR),
+	tipo_contabilita VARCHAR2(1, CHAR),
+	codice_contabilita VARCHAR2(255, CHAR),
+	cod_tributo_iuv VARCHAR2(4, CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,

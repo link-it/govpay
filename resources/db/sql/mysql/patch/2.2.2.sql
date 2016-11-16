@@ -6,6 +6,8 @@ ALTER TABLE domini ADD COLUMN iuv_prefix VARCHAR(255);
 ALTER TABLE domini ADD COLUMN iuv_prefix_strict BOOLEAN NOT NULL DEFAULT false;
 ALTER TABLE tipi_tributo ADD COLUMN tipo_contabilita VARCHAR(1);
 ALTER TABLE tipi_tributo ADD COLUMN cod_contabilita VARCHAR(255);
-ALTER TABLE tipi_tributo ADD COLUMN cod_tributo_iuv VARCHAR(255);
-ALTER TABLE tributi ADD COLUMN cod_tributo_iuv VARCHAR(255);
+ALTER TABLE tipi_tributo ADD COLUMN cod_tributo_iuv VARCHAR(4);
+ALTER TABLE tributi ADD COLUMN cod_tributo_iuv VARCHAR(4);
 
+ALTER TABLE tributi MODIFY COLUMN tipo_contabilita VARCHAR(1) NULL;
+ALTER TABLE tributi MODIFY COLUMN cod_contabilita VARCHAR(255) NULL;

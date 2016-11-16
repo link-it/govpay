@@ -826,8 +826,8 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="tipoContabilita" type="String1" />
-			<xsd:element name="codiceContabilita" type="xsd:string" />
+			<xsd:element name="tipoContabilita" type="String1" minOccurs="0" />
+			<xsd:element name="codiceContabilita" type="xsd:string" minOccurs="0" />
 			<xsd:element name="tipoTributo" type="TipoTributo">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -838,7 +838,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codTributoIuv" type="String255" minOccurs="0" />
+			<xsd:element name="codTributoIuv" type="String4" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -862,7 +862,7 @@
 			<xsd:element name="descrizione" type="xsd:string" minOccurs="0" />
 			<xsd:element name="tipoContabilita" type="String1" minOccurs="0" />
 			<xsd:element name="codContabilita" type="String255" minOccurs="0" />
-			<xsd:element name="codTributoIuv" type="String255" minOccurs="0" />
+			<xsd:element name="codTributoIuv" type="String4" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

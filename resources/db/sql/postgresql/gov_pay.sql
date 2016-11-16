@@ -261,7 +261,7 @@ CREATE TABLE tipi_tributo
 	descrizione VARCHAR(255),
 	tipo_contabilita VARCHAR(1),
 	cod_contabilita VARCHAR(255),
-	cod_tributo_iuv VARCHAR(255),
+	cod_tributo_iuv VARCHAR(4),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tipi_tributo') NOT NULL,
 	-- unique constraints
@@ -278,9 +278,9 @@ CREATE SEQUENCE seq_tributi start 1 increment 1 maxvalue 9223372036854775807 min
 CREATE TABLE tributi
 (
 	abilitato BOOLEAN NOT NULL,
-	tipo_contabilita VARCHAR(1) NOT NULL,
-	codice_contabilita VARCHAR(255) NOT NULL,
-	cod_tributo_iuv VARCHAR(255),
+	tipo_contabilita VARCHAR(1),
+	codice_contabilita VARCHAR(255),
+	cod_tributo_iuv VARCHAR(4),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_tributi') NOT NULL,
 	id_dominio BIGINT NOT NULL,

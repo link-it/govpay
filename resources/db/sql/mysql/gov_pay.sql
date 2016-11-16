@@ -261,7 +261,7 @@ CREATE TABLE tipi_tributo
 	descrizione VARCHAR(255),
 	tipo_contabilita VARCHAR(1),
 	cod_contabilita VARCHAR(255),
-	cod_tributo_iuv VARCHAR(255),
+	cod_tributo_iuv VARCHAR(4),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- unique constraints
@@ -278,9 +278,9 @@ CREATE INDEX index_tipi_tributo_1 ON tipi_tributo (cod_tributo);
 CREATE TABLE tributi
 (
 	abilitato BOOLEAN NOT NULL,
-	tipo_contabilita VARCHAR(1) NOT NULL,
-	codice_contabilita VARCHAR(255) NOT NULL,
-	cod_tributo_iuv VARCHAR(255),
+	tipo_contabilita VARCHAR(1),
+	codice_contabilita VARCHAR(255),
+	cod_tributo_iuv VARCHAR(4),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_dominio BIGINT NOT NULL,
