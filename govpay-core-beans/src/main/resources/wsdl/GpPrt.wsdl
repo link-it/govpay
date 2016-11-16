@@ -528,7 +528,7 @@
 			<xsd:element name="metaInfo" nillable="true">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="iuvProp" maxOccurs="unbounded">
+						<xsd:element name="iuvProp" minOccurs="0" maxOccurs="unbounded">
 							<xsd:complexType>
 								<xsd:simpleContent>
 									<xsd:extension base="xsd:string">
