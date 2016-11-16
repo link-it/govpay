@@ -86,7 +86,7 @@
 					<xsd:element name="iuv" type="com:cod35" />
 					<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
+							<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="qrCode" type="xsd:base64Binary" />
@@ -1119,6 +1119,8 @@
 						<xsd:element name="codPortale" type="com:cod35" />
 						<xsd:element name="codUnivocoDebitore" type="com:cod35" />
 						<xsd:element name="stato" type="com:statoVersamento" minOccurs="0" maxOccurs="4" />
+						<xsd:element name="dataInizio" type="xsd:date" minOccurs="0" />
+						<xsd:element name="dataFine" type="xsd:date" minOccurs="0" />
 						<xsd:element name="ordinamento">
 							<xsd:simpleType>
 								<xsd:restriction base="xsd:string">
@@ -1128,6 +1130,14 @@
 									<xsd:enumeration value="DATA_CARICAMENTO_DES"></xsd:enumeration>
 									<xsd:enumeration value="DATA_AGGIORNAMENTO_ASC"></xsd:enumeration>
 									<xsd:enumeration value="DATA_AGGIORNAMENTO_DES"></xsd:enumeration>
+								</xsd:restriction>
+							</xsd:simpleType>
+						</xsd:element>
+						<xsd:element name="offset" type="xsd:long" default="0"/>
+						<xsd:element name="limit">
+							<xsd:simpleType>
+								<xsd:restriction base="xsd:int" default="25">
+									<xsd:maxInclusive value="50" />
 								</xsd:restriction>
 							</xsd:simpleType>
 						</xsd:element>
@@ -1149,7 +1159,7 @@
 											<xsd:element name="iuv" type="com:cod35" minOccurs="0" />
 											<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
 												<xsd:annotation>
-													<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
+													<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
 												</xsd:annotation>
 											</xsd:element>
 											<xsd:element name="qrCode" type="xsd:base64Binary" minOccurs="0" />
@@ -1211,7 +1221,7 @@
 								<xsd:element name="iuv" type="com:cod35" minOccurs="0" />
 								<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
 									<xsd:annotation>
-										<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
+										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
 									</xsd:annotation>
 								</xsd:element>
 								<xsd:element name="qrCode" type="xsd:base64Binary" minOccurs="0" />
