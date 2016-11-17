@@ -327,7 +327,7 @@ CREATE TABLE versamenti
 	data_creazione TIMESTAMP NOT NULL,
 	data_scadenza TIMESTAMP,
 	data_ora_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	causale_versamento VARCHAR(511),
+	causale_versamento VARCHAR(1024),
 	debitore_identificativo VARCHAR(35) NOT NULL,
 	debitore_anagrafica VARCHAR(70) NOT NULL,
 	debitore_indirizzo VARCHAR(70),
