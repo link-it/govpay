@@ -222,7 +222,13 @@
 											<xsd:sequence>
 												<xsd:element name="ibanAccredito" type="com:cod35"></xsd:element>
 												<xsd:element name="tipoContabilita" type="com:tipoContabilita"></xsd:element>
-												<xsd:element name="codContabilita" type="com:string140"></xsd:element>
+												<xsd:element name="codContabilita">
+													<xsd:simpleType>
+														<xsd:restriction base="xsd:string">
+															<xsd:pattern value="\S{3,138}"></xsd:pattern>
+														</xsd:restriction>
+													</xsd:simpleType>
+												</xsd:element>
 											</xsd:sequence>
 										</xsd:complexType>
 									</xsd:element>
@@ -250,8 +256,7 @@
 			
 			<xsd:simpleType name="string2">
 				<xsd:restriction base="xsd:string">
-					<xsd:minLength value="1" />
-					<xsd:maxLength value="2" />
+					<xsd:pattern value="[A-Z]{2,2}"></xsd:pattern>
 				</xsd:restriction>
 			</xsd:simpleType>
 			
@@ -311,6 +316,13 @@
 				</xsd:restriction>
 			</xsd:simpleType>
 			
+			<xsd:simpleType name="email256">
+				<xsd:restriction base="xsd:string">
+		            <xsd:pattern value="[A-Za-z0-9_]+([\-\+\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\-\.][A-Za-z0-9_]+)*\.[A-Za-z0-9_]+([\-\.][A-Za-z0-9_]+)*"/>
+		            <xsd:maxLength value="256"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+			
 			<xsd:simpleType name="string512">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
@@ -320,25 +332,28 @@
 		
 			<xsd:simpleType name="importo10">
 				<xsd:restriction base="xsd:decimal">
-					<xsd:maxInclusive value="9999999"/>
-					<xsd:minExclusive value="0"/>
+					<xsd:minInclusive value="0.00" />
+					<xsd:maxInclusive value="9999999.99" />
 					<xsd:fractionDigits value="2" />
+					<xsd:totalDigits value="10" />
 				</xsd:restriction>
 			</xsd:simpleType>
-			
+
 			<xsd:simpleType name="importo">
 				<xsd:restriction base="xsd:decimal">
-					<xsd:maxInclusive value="999999999"/>
-					<xsd:minExclusive value="0"/>
-					<xsd:fractionDigits value="2" />
+				    <xsd:minInclusive value="0.00"/>
+					<xsd:maxInclusive value="99999999.99"/>
+					<xsd:fractionDigits value="2"/>
+					<xsd:totalDigits value="12"/>
 				</xsd:restriction>
 			</xsd:simpleType>
-			
+
 			<xsd:simpleType name="importo18">
 				<xsd:restriction base="xsd:decimal">
-					<xsd:maxInclusive value="999999999999999"/>
-					<xsd:minExclusive value="0"/>
+					<xsd:minInclusive value="0.00" />
+					<xsd:maxInclusive value="999999999999999.99" />
 					<xsd:fractionDigits value="2" />
+					<xsd:totalDigits value="18" />
 				</xsd:restriction>
 			</xsd:simpleType>
 			
@@ -482,7 +497,7 @@
 					<xsd:element name="localita" type="com:string35" minOccurs="0" />
 					<xsd:element name="provincia" type="com:string35" minOccurs="0" />
 					<xsd:element name="nazione" type="com:string2" minOccurs="0" />
-					<xsd:element name="email" type="com:string256" minOccurs="0" />
+					<xsd:element name="email" type="com:email256" minOccurs="0" />
 					<xsd:element name="telefono" type="xsd:string" minOccurs="0" />
 					<xsd:element name="cellulare" type="xsd:string" minOccurs="0" />
 					<xsd:element name="fax" type="xsd:string" minOccurs="0" />
