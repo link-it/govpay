@@ -21,6 +21,12 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 	
+	<xsd:simpleType name="String1024">
+		<xsd:restriction base="xsd:string">
+			<xsd:maxLength value="1024"/>
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 	<xsd:simpleType name="String256">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="256"/>
@@ -664,7 +670,7 @@
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
 			<xsd:element minOccurs="0" name="dataScadenza" type="xsd:dateTime"/>
 			<xsd:element name="dataOraUltimoAggiornamento" type="xsd:dateTime"/>
-			<xsd:element minOccurs="0" name="causaleVersamento" type="String511"/>
+			<xsd:element minOccurs="0" name="causaleVersamento" type="String1024"/>
 			<xsd:element name="debitoreIdentificativo" type="String35"/>
 			<xsd:element name="debitoreAnagrafica" type="String70"/>
 			<xsd:element minOccurs="0" name="debitoreIndirizzo" type="String70"/>
