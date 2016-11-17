@@ -2,9 +2,9 @@ CREATE SEQUENCE seq_psp MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INC
 
 CREATE TABLE psp
 (
-	cod_psp VARCHAR2(35, CHAR) NOT NULL,
-	ragione_sociale VARCHAR2(70, CHAR) NOT NULL,
-	url_info VARCHAR2(255, CHAR),
+	cod_psp VARCHAR2(35 CHAR) NOT NULL,
+	ragione_sociale VARCHAR2(70 CHAR) NOT NULL,
+	url_info VARCHAR2(255 CHAR),
 	abilitato NUMBER NOT NULL,
 	storno NUMBER NOT NULL,
 	marca_bollo NUMBER NOT NULL,
@@ -34,14 +34,14 @@ CREATE SEQUENCE seq_canali MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE canali
 (
-	cod_canale VARCHAR2(35, CHAR) NOT NULL,
-	cod_intermediario VARCHAR2(35, CHAR) NOT NULL,
-	tipo_versamento VARCHAR2(4, CHAR) NOT NULL,
+	cod_canale VARCHAR2(35 CHAR) NOT NULL,
+	cod_intermediario VARCHAR2(35 CHAR) NOT NULL,
+	tipo_versamento VARCHAR2(4 CHAR) NOT NULL,
 	modello_pagamento NUMBER NOT NULL,
 	disponibilita CLOB,
 	descrizione CLOB,
-	condizioni VARCHAR2(35, CHAR),
-	url_info VARCHAR2(255, CHAR),
+	condizioni VARCHAR2(35 CHAR),
+	url_info VARCHAR2(255 CHAR),
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -71,9 +71,9 @@ CREATE SEQUENCE seq_intermediari MINVALUE 1 MAXVALUE 9223372036854775807 START W
 
 CREATE TABLE intermediari
 (
-	cod_intermediario VARCHAR2(35, CHAR) NOT NULL,
-	cod_connettore_pdd VARCHAR2(35, CHAR) NOT NULL,
-	denominazione VARCHAR2(255, CHAR) NOT NULL,
+	cod_intermediario VARCHAR2(35 CHAR) NOT NULL,
+	cod_connettore_pdd VARCHAR2(35 CHAR) NOT NULL,
+	denominazione VARCHAR2(255 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -101,8 +101,8 @@ CREATE SEQUENCE seq_stazioni MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 
 
 CREATE TABLE stazioni
 (
-	cod_stazione VARCHAR2(35, CHAR) NOT NULL,
-	password VARCHAR2(35, CHAR) NOT NULL,
+	cod_stazione VARCHAR2(35 CHAR) NOT NULL,
+	password VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	application_code NUMBER NOT NULL,
 	-- fk/pk columns
@@ -133,13 +133,13 @@ CREATE SEQUENCE seq_applicazioni MINVALUE 1 MAXVALUE 9223372036854775807 START W
 
 CREATE TABLE applicazioni
 (
-	cod_applicazione VARCHAR2(35, CHAR) NOT NULL,
+	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
-	principal VARCHAR2(255, CHAR) NOT NULL,
-	firma_ricevuta VARCHAR2(1, CHAR) NOT NULL,
-	cod_connettore_esito VARCHAR2(255, CHAR),
-	cod_connettore_verifica VARCHAR2(255, CHAR),
-	versione VARCHAR2(10, CHAR) NOT NULL,
+	principal VARCHAR2(255 CHAR) NOT NULL,
+	firma_ricevuta VARCHAR2(1 CHAR) NOT NULL,
+	cod_connettore_esito VARCHAR2(255 CHAR),
+	cod_connettore_verifica VARCHAR2(255 CHAR),
+	versione VARCHAR2(10 CHAR) NOT NULL,
 	trusted NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -171,10 +171,10 @@ CREATE SEQUENCE seq_domini MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE domini
 (
-	cod_dominio VARCHAR2(35, CHAR) NOT NULL,
-	gln VARCHAR2(35, CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	gln VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
-	ragione_sociale VARCHAR2(70, CHAR) NOT NULL,
+	ragione_sociale VARCHAR2(70 CHAR) NOT NULL,
 	xml_conti_accredito BLOB NOT NULL,
 	xml_tabella_controparti BLOB NOT NULL,
 	riuso_iuv NUMBER NOT NULL,
@@ -209,16 +209,16 @@ CREATE SEQUENCE seq_uo MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCR
 
 CREATE TABLE uo
 (
-	cod_uo VARCHAR2(35, CHAR) NOT NULL,
+	cod_uo VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
-	uo_codice_identificativo VARCHAR2(35, CHAR),
-	uo_denominazione VARCHAR2(70, CHAR),
-	uo_indirizzo VARCHAR2(70, CHAR),
-	uo_civico VARCHAR2(16, CHAR),
-	uo_cap VARCHAR2(16, CHAR),
-	uo_localita VARCHAR2(35, CHAR),
-	uo_provincia VARCHAR2(35, CHAR),
-	uo_nazione VARCHAR2(2, CHAR),
+	uo_codice_identificativo VARCHAR2(35 CHAR),
+	uo_denominazione VARCHAR2(70 CHAR),
+	uo_indirizzo VARCHAR2(70 CHAR),
+	uo_civico VARCHAR2(16 CHAR),
+	uo_cap VARCHAR2(16 CHAR),
+	uo_localita VARCHAR2(35 CHAR),
+	uo_provincia VARCHAR2(35 CHAR),
+	uo_nazione VARCHAR2(2 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -247,9 +247,9 @@ CREATE SEQUENCE seq_operatori MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE operatori
 (
-	principal VARCHAR2(255, CHAR) NOT NULL,
-	nome VARCHAR2(35, CHAR) NOT NULL,
-	profilo VARCHAR2(16, CHAR) NOT NULL,
+	principal VARCHAR2(255 CHAR) NOT NULL,
+	nome VARCHAR2(35 CHAR) NOT NULL,
+	profilo VARCHAR2(16 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -280,9 +280,9 @@ CREATE SEQUENCE seq_connettori MINVALUE 1 MAXVALUE 9223372036854775807 START WIT
 
 CREATE TABLE connettori
 (
-	cod_connettore VARCHAR2(255, CHAR) NOT NULL,
-	cod_proprieta VARCHAR2(255, CHAR) NOT NULL,
-	valore VARCHAR2(255, CHAR) NOT NULL,
+	cod_connettore VARCHAR2(255 CHAR) NOT NULL,
+	cod_proprieta VARCHAR2(255 CHAR) NOT NULL,
+	valore VARCHAR2(255 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -309,10 +309,10 @@ CREATE SEQUENCE seq_portali MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1
 
 CREATE TABLE portali
 (
-	cod_portale VARCHAR2(35, CHAR) NOT NULL,
-	default_callback_url VARCHAR2(512, CHAR) NOT NULL,
-	principal VARCHAR2(255, CHAR) NOT NULL,
-	versione VARCHAR2(10, CHAR) NOT NULL,
+	cod_portale VARCHAR2(35 CHAR) NOT NULL,
+	default_callback_url VARCHAR2(512 CHAR) NOT NULL,
+	principal VARCHAR2(255 CHAR) NOT NULL,
+	versione VARCHAR2(10 CHAR) NOT NULL,
 	trusted NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
 	-- fk/pk columns
@@ -345,12 +345,12 @@ CREATE SEQUENCE seq_iban_accredito MINVALUE 1 MAXVALUE 9223372036854775807 START
 
 CREATE TABLE iban_accredito
 (
-	cod_iban VARCHAR2(255, CHAR) NOT NULL,
-	id_seller_bank VARCHAR2(255, CHAR),
-	id_negozio VARCHAR2(255, CHAR),
-	bic_accredito VARCHAR2(255, CHAR),
-	iban_appoggio VARCHAR2(255, CHAR),
-	bic_appoggio VARCHAR2(255, CHAR),
+	cod_iban VARCHAR2(255 CHAR) NOT NULL,
+	id_seller_bank VARCHAR2(255 CHAR),
+	id_negozio VARCHAR2(255 CHAR),
+	bic_accredito VARCHAR2(255 CHAR),
+	iban_appoggio VARCHAR2(255 CHAR),
+	bic_appoggio VARCHAR2(255 CHAR),
 	postale NUMBER NOT NULL,
 	attivato NUMBER NOT NULL,
 	abilitato NUMBER NOT NULL,
@@ -382,8 +382,8 @@ CREATE SEQUENCE seq_tipi_tributo MINVALUE 1 MAXVALUE 9223372036854775807 START W
 
 CREATE TABLE tipi_tributo
 (
-	cod_tributo VARCHAR2(255, CHAR) NOT NULL,
-	descrizione VARCHAR2(255, CHAR),
+	cod_tributo VARCHAR2(255 CHAR) NOT NULL,
+	descrizione VARCHAR2(255 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -411,8 +411,8 @@ CREATE SEQUENCE seq_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1
 CREATE TABLE tributi
 (
 	abilitato NUMBER NOT NULL,
-	tipo_contabilita VARCHAR2(1, CHAR) NOT NULL,
-	codice_contabilita VARCHAR2(255, CHAR) NOT NULL,
+	tipo_contabilita VARCHAR2(1 CHAR) NOT NULL,
+	codice_contabilita VARCHAR2(255 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -445,8 +445,8 @@ CREATE SEQUENCE seq_acl MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INC
 
 CREATE TABLE acl
 (
-	cod_tipo VARCHAR2(1, CHAR) NOT NULL,
-	cod_servizio VARCHAR2(1, CHAR) NOT NULL,
+	cod_tipo VARCHAR2(1 CHAR) NOT NULL,
+	cod_servizio VARCHAR2(1 CHAR) NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER,
@@ -481,28 +481,28 @@ CREATE SEQUENCE seq_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WIT
 
 CREATE TABLE versamenti
 (
-	cod_versamento_ente VARCHAR2(35, CHAR) NOT NULL,
+	cod_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
 	importo_totale BINARY_DOUBLE NOT NULL,
-	stato_versamento VARCHAR2(35, CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(255, CHAR),
+	stato_versamento VARCHAR2(35 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
 	-- Indica se, decorsa la dataScadenza, deve essere aggiornato da remoto o essere considerato scaduto
 	aggiornabile NUMBER NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
 	data_scadenza TIMESTAMP,
 	data_ora_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	causale_versamento VARCHAR2(511, CHAR),
-	debitore_identificativo VARCHAR2(35, CHAR) NOT NULL,
-	debitore_anagrafica VARCHAR2(70, CHAR) NOT NULL,
-	debitore_indirizzo VARCHAR2(70, CHAR),
-	debitore_civico VARCHAR2(16, CHAR),
-	debitore_cap VARCHAR2(16, CHAR),
-	debitore_localita VARCHAR2(35, CHAR),
-	debitore_provincia VARCHAR2(35, CHAR),
-	debitore_nazione VARCHAR2(2, CHAR),
-	cod_lotto VARCHAR2(35, CHAR),
-	cod_versamento_lotto VARCHAR2(35, CHAR),
-	cod_anno_tributario VARCHAR2(35, CHAR),
-	cod_bundlekey VARCHAR2(256, CHAR),
+	causale_versamento VARCHAR2(1024 CHAR),
+	debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
+	debitore_anagrafica VARCHAR2(70 CHAR) NOT NULL,
+	debitore_indirizzo VARCHAR2(70 CHAR),
+	debitore_civico VARCHAR2(16 CHAR),
+	debitore_cap VARCHAR2(16 CHAR),
+	debitore_localita VARCHAR2(35 CHAR),
+	debitore_provincia VARCHAR2(35 CHAR),
+	debitore_nazione VARCHAR2(2 CHAR),
+	cod_lotto VARCHAR2(35 CHAR),
+	cod_versamento_lotto VARCHAR2(35 CHAR),
+	cod_anno_tributario VARCHAR2(35 CHAR),
+	cod_bundlekey VARCHAR2(256 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_uo NUMBER NOT NULL,
@@ -533,19 +533,19 @@ CREATE SEQUENCE seq_singoli_versamenti MINVALUE 1 MAXVALUE 9223372036854775807 S
 
 CREATE TABLE singoli_versamenti
 (
-	cod_singolo_versamento_ente VARCHAR2(70, CHAR) NOT NULL,
-	stato_singolo_versamento VARCHAR2(35, CHAR) NOT NULL,
+	cod_singolo_versamento_ente VARCHAR2(70 CHAR) NOT NULL,
+	stato_singolo_versamento VARCHAR2(35 CHAR) NOT NULL,
 	importo_singolo_versamento BINARY_DOUBLE NOT NULL,
 	anno_riferimento NUMBER,
 	-- MARCA BOLLO Valori possibili:\n01: Imposta di bollo
-	tipo_bollo VARCHAR2(2, CHAR),
+	tipo_bollo VARCHAR2(2 CHAR),
 	-- MARCA BOLLO: Digest in Base64 del documento da bollare
-	hash_documento VARCHAR2(70, CHAR),
+	hash_documento VARCHAR2(70 CHAR),
 	-- MARCA BOLLO: Sigla automobilistica della provincia di residenza
-	provincia_residenza VARCHAR2(2, CHAR),
-	tipo_contabilita VARCHAR2(1, CHAR),
-	codice_contabilita VARCHAR2(255, CHAR),
-	note VARCHAR2(512, CHAR),
+	provincia_residenza VARCHAR2(2 CHAR),
+	tipo_contabilita VARCHAR2(1 CHAR),
+	codice_contabilita VARCHAR2(255 CHAR),
+	note VARCHAR2(512 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -578,36 +578,36 @@ CREATE SEQUENCE seq_rpt MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INC
 
 CREATE TABLE rpt
 (
-	cod_carrello VARCHAR2(35, CHAR),
-	iuv VARCHAR2(35, CHAR) NOT NULL,
-	ccp VARCHAR2(35, CHAR) NOT NULL,
-	cod_dominio VARCHAR2(35, CHAR) NOT NULL,
+	cod_carrello VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR) NOT NULL,
+	ccp VARCHAR2(35 CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
 	-- Identificativo dell'RPT utilizzato come riferimento nell'RT
-	cod_msg_richiesta VARCHAR2(35, CHAR) NOT NULL,
+	cod_msg_richiesta VARCHAR2(35 CHAR) NOT NULL,
 	-- Data di creazione dell'RPT
 	data_msg_richiesta TIMESTAMP NOT NULL,
 	-- Stato RPT secondo la codifica AgID
-	stato VARCHAR2(35, CHAR) NOT NULL,
+	stato VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato CLOB,
-	cod_sessione VARCHAR2(255, CHAR),
-	cod_sessione_portale VARCHAR2(255, CHAR),
+	cod_sessione VARCHAR2(255 CHAR),
+	cod_sessione_portale VARCHAR2(255 CHAR),
 	-- Indirizzo del portale psp a cui redirigere il cittadino per eseguire il pagamento
-	psp_redirect_url VARCHAR2(512, CHAR),
+	psp_redirect_url VARCHAR2(512 CHAR),
 	xml_rpt BLOB NOT NULL,
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	-- Indirizzo di ritorno al portale dell'ente al termine del pagamento
 	callback_url CLOB,
-	modello_pagamento VARCHAR2(16, CHAR) NOT NULL,
-	cod_msg_ricevuta VARCHAR2(35, CHAR),
+	modello_pagamento VARCHAR2(16 CHAR) NOT NULL,
+	cod_msg_ricevuta VARCHAR2(35 CHAR),
 	data_msg_ricevuta TIMESTAMP,
-	firma_ricevuta VARCHAR2(1, CHAR) NOT NULL,
+	firma_ricevuta VARCHAR2(1 CHAR) NOT NULL,
 	-- Esito del pagamento:\n0: Eseguito\n1: Non eseguito\n2: Parzialmente eseguito\n3: Decorrenza\n4: Decorrenza Parziale
 	cod_esito_pagamento NUMBER,
 	importo_totale_pagato BINARY_DOUBLE,
 	xml_rt BLOB,
-	cod_stazione VARCHAR2(35, CHAR) NOT NULL,
-	cod_transazione_rpt VARCHAR2(36, CHAR),
-	cod_transazione_rt VARCHAR2(36, CHAR),
+	cod_stazione VARCHAR2(35 CHAR) NOT NULL,
+	cod_transazione_rpt VARCHAR2(36 CHAR),
+	cod_transazione_rt VARCHAR2(36 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_versamento NUMBER NOT NULL,
@@ -641,21 +641,21 @@ CREATE SEQUENCE seq_rr MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCR
 
 CREATE TABLE rr
 (
-	cod_dominio VARCHAR2(35, CHAR) NOT NULL,
-	iuv VARCHAR2(35, CHAR) NOT NULL,
-	ccp VARCHAR2(35, CHAR) NOT NULL,
-	cod_msg_revoca VARCHAR2(35, CHAR) NOT NULL,
+	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
+	iuv VARCHAR2(35 CHAR) NOT NULL,
+	ccp VARCHAR2(35 CHAR) NOT NULL,
+	cod_msg_revoca VARCHAR2(35 CHAR) NOT NULL,
 	data_msg_revoca TIMESTAMP NOT NULL,
 	data_msg_esito TIMESTAMP,
-	stato VARCHAR2(35, CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(512, CHAR),
+	stato VARCHAR2(35 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(512 CHAR),
 	importo_totale_richiesto BINARY_DOUBLE NOT NULL,
-	cod_msg_esito VARCHAR2(35, CHAR),
+	cod_msg_esito VARCHAR2(35 CHAR),
 	importo_totale_revocato BINARY_DOUBLE,
 	xml_rr BLOB NOT NULL,
 	xml_er BLOB,
-	cod_transazione_rr VARCHAR2(36, CHAR),
-	cod_transazione_er VARCHAR2(36, CHAR),
+	cod_transazione_rr VARCHAR2(36 CHAR),
+	cod_transazione_er VARCHAR2(36 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_rpt NUMBER NOT NULL,
@@ -684,10 +684,10 @@ CREATE SEQUENCE seq_notifiche MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE notifiche
 (
-	tipo_esito VARCHAR2(16, CHAR) NOT NULL,
+	tipo_esito VARCHAR2(16 CHAR) NOT NULL,
 	data_creazione TIMESTAMP NOT NULL,
-	stato VARCHAR2(16, CHAR) NOT NULL,
-	descrizione_stato VARCHAR2(255, CHAR),
+	stato VARCHAR2(16 CHAR) NOT NULL,
+	descrizione_stato VARCHAR2(255 CHAR),
 	data_aggiornamento_stato TIMESTAMP NOT NULL,
 	data_prossima_spedizione TIMESTAMP NOT NULL,
 	tentativi_spedizione NUMBER,
@@ -722,11 +722,11 @@ CREATE SEQUENCE seq_iuv MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INC
 CREATE TABLE iuv
 (
 	prg NUMBER NOT NULL,
-	iuv VARCHAR2(35, CHAR) NOT NULL,
+	iuv VARCHAR2(35 CHAR) NOT NULL,
 	application_code NUMBER NOT NULL,
 	data_generazione DATE NOT NULL,
-	tipo_iuv VARCHAR2(1, CHAR) NOT NULL,
-	cod_versamento_ente VARCHAR2(35, CHAR),
+	tipo_iuv VARCHAR2(1 CHAR) NOT NULL,
+	cod_versamento_ente VARCHAR2(35 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER NOT NULL,
@@ -759,17 +759,17 @@ CREATE SEQUENCE seq_fr MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCR
 
 CREATE TABLE fr
 (
-	cod_flusso VARCHAR2(35, CHAR) NOT NULL,
-	stato VARCHAR2(35, CHAR) NOT NULL,
+	cod_flusso VARCHAR2(35 CHAR) NOT NULL,
+	stato VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato CLOB,
-	iur VARCHAR2(35, CHAR) NOT NULL,
+	iur VARCHAR2(35 CHAR) NOT NULL,
 	anno_riferimento NUMBER NOT NULL,
 	data_ora_flusso TIMESTAMP,
 	data_regolamento TIMESTAMP,
 	data_acquisizione TIMESTAMP NOT NULL,
 	numero_pagamenti NUMBER,
 	importo_totale_pagamenti BINARY_DOUBLE,
-	cod_bic_riversamento VARCHAR2(35, CHAR),
+	cod_bic_riversamento VARCHAR2(35 CHAR),
 	xml BLOB NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -831,30 +831,30 @@ CREATE SEQUENCE seq_pagamenti MINVALUE 1 MAXVALUE 9223372036854775807 START WITH
 
 CREATE TABLE pagamenti
 (
-	cod_singolo_versamento_ente VARCHAR2(35, CHAR) NOT NULL,
+	cod_singolo_versamento_ente VARCHAR2(35 CHAR) NOT NULL,
 	importo_pagato BINARY_DOUBLE NOT NULL,
 	data_acquisizione TIMESTAMP NOT NULL,
-	iur VARCHAR2(35, CHAR) NOT NULL,
+	iur VARCHAR2(35 CHAR) NOT NULL,
 	data_pagamento TIMESTAMP NOT NULL,
-	iban_accredito VARCHAR2(255, CHAR),
+	iban_accredito VARCHAR2(255 CHAR),
 	commissioni_psp BINARY_DOUBLE,
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
-	tipo_allegato VARCHAR2(2, CHAR),
+	tipo_allegato VARCHAR2(2 CHAR),
 	allegato BLOB,
 	rendicontazione_esito NUMBER,
 	rendicontazione_data TIMESTAMP,
-	codflusso_rendicontazione VARCHAR2(35, CHAR),
+	codflusso_rendicontazione VARCHAR2(35 CHAR),
 	anno_riferimento NUMBER,
 	indice_singolo_pagamento NUMBER,
 	data_acquisizione_revoca TIMESTAMP,
-	causale_revoca VARCHAR2(140, CHAR),
-	dati_revoca VARCHAR2(140, CHAR),
+	causale_revoca VARCHAR2(140 CHAR),
+	dati_revoca VARCHAR2(140 CHAR),
 	importo_revocato BINARY_DOUBLE,
-	esito_revoca VARCHAR2(140, CHAR),
-	dati_esito_revoca VARCHAR2(140, CHAR),
+	esito_revoca VARCHAR2(140 CHAR),
+	dati_esito_revoca VARCHAR2(140 CHAR),
 	rendicontazione_esito_revoca NUMBER,
 	rendicontazione_data_revoca TIMESTAMP,
-	cod_flusso_rendicontaz_revoca VARCHAR2(35, CHAR),
+	cod_flusso_rendicontaz_revoca VARCHAR2(35 CHAR),
 	anno_riferimento_revoca NUMBER,
 	ind_singolo_pagamento_revoca NUMBER,
 	-- fk/pk columns
@@ -891,22 +891,22 @@ CREATE SEQUENCE seq_eventi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 
 
 CREATE TABLE eventi
 (
-	cod_dominio VARCHAR2(35, CHAR),
-	iuv VARCHAR2(35, CHAR),
-	ccp VARCHAR2(35, CHAR),
-	cod_psp VARCHAR2(35, CHAR),
-	tipo_versamento VARCHAR2(10, CHAR),
-	componente VARCHAR2(4, CHAR),
-	categoria_evento VARCHAR2(1, CHAR),
-	tipo_evento VARCHAR2(35, CHAR),
-	sottotipo_evento VARCHAR2(35, CHAR),
-	erogatore VARCHAR2(35, CHAR),
-	fruitore VARCHAR2(35, CHAR),
-	cod_stazione VARCHAR2(35, CHAR),
-	cod_canale VARCHAR2(35, CHAR),
-	parametri_1 VARCHAR2(512, CHAR),
-	parametri_2 VARCHAR2(512, CHAR),
-	esito VARCHAR2(35, CHAR),
+	cod_dominio VARCHAR2(35 CHAR),
+	iuv VARCHAR2(35 CHAR),
+	ccp VARCHAR2(35 CHAR),
+	cod_psp VARCHAR2(35 CHAR),
+	tipo_versamento VARCHAR2(10 CHAR),
+	componente VARCHAR2(4 CHAR),
+	categoria_evento VARCHAR2(1 CHAR),
+	tipo_evento VARCHAR2(35 CHAR),
+	sottotipo_evento VARCHAR2(35 CHAR),
+	erogatore VARCHAR2(35 CHAR),
+	fruitore VARCHAR2(35 CHAR),
+	cod_stazione VARCHAR2(35 CHAR),
+	cod_canale VARCHAR2(35 CHAR),
+	parametri_1 VARCHAR2(512 CHAR),
+	parametri_2 VARCHAR2(512 CHAR),
+	esito VARCHAR2(35 CHAR),
 	data_1 TIMESTAMP,
 	data_2 TIMESTAMP,
 	-- fk/pk columns
@@ -934,7 +934,7 @@ CREATE SEQUENCE seq_rendicontazioni_senza_rpt MINVALUE 1 MAXVALUE 92233720368547
 CREATE TABLE rendicontazioni_senza_rpt
 (
 	importo_pagato BINARY_DOUBLE NOT NULL,
-	iur VARCHAR2(35, CHAR) NOT NULL,
+	iur VARCHAR2(35 CHAR) NOT NULL,
 	rendicontazione_data DATE NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -965,8 +965,8 @@ end;
 CREATE TABLE ID_MESSAGGIO_RELATIVO
 (
 	COUNTER NUMBER NOT NULL,
-	PROTOCOLLO VARCHAR2(255, CHAR) NOT NULL,
-	INFO_ASSOCIATA VARCHAR2(255, CHAR) NOT NULL,
+	PROTOCOLLO VARCHAR2(255 CHAR) NOT NULL,
+	INFO_ASSOCIATA VARCHAR2(255 CHAR) NOT NULL,
 	ora_registrazione TIMESTAMP,
 	-- fk/pk columns
 	-- fk/pk keys constraints

@@ -104,7 +104,7 @@ public class VersamentoConverter {
 			Anagrafica anagraficaDebitore = dto.getAnagraficaDebitore();
 			vo.setDebitoreAnagrafica(anagraficaDebitore.getRagioneSociale());
 			vo.setDebitoreCap(anagraficaDebitore.getCap());
-			vo.setDebitoreCivico(anagraficaDebitore.getCellulare());
+			vo.setDebitoreCivico(anagraficaDebitore.getCivico());
 			vo.setDebitoreIdentificativo(anagraficaDebitore.getCodUnivoco());
 			vo.setDebitoreIndirizzo(anagraficaDebitore.getIndirizzo());
 			vo.setDebitoreLocalita(anagraficaDebitore.getLocalita());
