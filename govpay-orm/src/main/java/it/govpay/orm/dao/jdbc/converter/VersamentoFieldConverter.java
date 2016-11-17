@@ -208,6 +208,34 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "debitore_nazione";
 			}
 		}
+		if(field.equals(Versamento.model().DEBITORE_EMAIL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_email";
+			}else{
+				return "debitore_email";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_TELEFONO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_telefono";
+			}else{
+				return "debitore_telefono";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_CELLULARE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_cellulare";
+			}else{
+				return "debitore_cellulare";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_FAX)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_fax";
+			}else{
+				return "debitore_fax";
+			}
+		}
 		if(field.equals(Versamento.model().COD_LOTTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_lotto";
@@ -307,6 +335,18 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DEBITORE_NAZIONE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_EMAIL)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_TELEFONO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_CELLULARE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_FAX)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().COD_LOTTO)){

@@ -89,6 +89,14 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "debitore_provincia", Versamento.model().DEBITORE_PROVINCIA.getFieldType()));
 				setParameter(object, "setDebitoreNazione", Versamento.model().DEBITORE_NAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "debitore_nazione", Versamento.model().DEBITORE_NAZIONE.getFieldType()));
+				setParameter(object, "setDebitoreEmail", Versamento.model().DEBITORE_EMAIL.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_email", Versamento.model().DEBITORE_EMAIL.getFieldType()));
+				setParameter(object, "setDebitoreTelefono", Versamento.model().DEBITORE_TELEFONO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_telefono", Versamento.model().DEBITORE_TELEFONO.getFieldType()));
+				setParameter(object, "setDebitoreCellulare", Versamento.model().DEBITORE_CELLULARE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_cellulare", Versamento.model().DEBITORE_CELLULARE.getFieldType()));
+				setParameter(object, "setDebitoreFax", Versamento.model().DEBITORE_FAX.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "debitore_fax", Versamento.model().DEBITORE_FAX.getFieldType()));
 				setParameter(object, "setCodLotto", Versamento.model().COD_LOTTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_lotto", Versamento.model().COD_LOTTO.getFieldType()));
 				setParameter(object, "setCodVersamentoLotto", Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType(),
@@ -153,6 +161,14 @@ public class VersamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"debitoreProvincia"));
 				setParameter(object, "setDebitoreNazione", Versamento.model().DEBITORE_NAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"debitoreNazione"));
+				setParameter(object, "setDebitoreEmail", Versamento.model().DEBITORE_EMAIL.getFieldType(),
+					this.getObjectFromMap(map,"debitoreEmail"));
+				setParameter(object, "setDebitoreTelefono", Versamento.model().DEBITORE_TELEFONO.getFieldType(),
+					this.getObjectFromMap(map,"debitoreTelefono"));
+				setParameter(object, "setDebitoreCellulare", Versamento.model().DEBITORE_CELLULARE.getFieldType(),
+					this.getObjectFromMap(map,"debitoreCellulare"));
+				setParameter(object, "setDebitoreFax", Versamento.model().DEBITORE_FAX.getFieldType(),
+					this.getObjectFromMap(map,"debitoreFax"));
 				setParameter(object, "setCodLotto", Versamento.model().COD_LOTTO.getFieldType(),
 					this.getObjectFromMap(map,"codLotto"));
 				setParameter(object, "setCodVersamentoLotto", Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType(),

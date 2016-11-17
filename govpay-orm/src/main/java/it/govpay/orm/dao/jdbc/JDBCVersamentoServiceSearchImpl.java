@@ -181,6 +181,10 @@ public class JDBCVersamentoServiceSearchImpl implements IJDBCServiceSearchWithId
 			fields.add(Versamento.model().DEBITORE_LOCALITA);
 			fields.add(Versamento.model().DEBITORE_PROVINCIA);
 			fields.add(Versamento.model().DEBITORE_NAZIONE);
+			fields.add(Versamento.model().DEBITORE_EMAIL);
+			fields.add(Versamento.model().DEBITORE_TELEFONO);
+			fields.add(Versamento.model().DEBITORE_CELLULARE);
+			fields.add(Versamento.model().DEBITORE_FAX);
 			fields.add(Versamento.model().COD_LOTTO);
 			fields.add(Versamento.model().COD_VERSAMENTO_LOTTO);
 			fields.add(Versamento.model().COD_ANNO_TRIBUTARIO);

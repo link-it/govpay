@@ -142,7 +142,7 @@ CREATE TABLE applicazioni
 	cod_connettore_verifica VARCHAR2(255 CHAR),
 	versione VARCHAR2(10 CHAR) NOT NULL,
 	trusted NUMBER NOT NULL,
-	cod_applicazione_iuv VARCHAR2(3, CHAR),
+	cod_applicazione_iuv VARCHAR2(3 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -182,7 +182,7 @@ CREATE TABLE domini
 	riuso_iuv NUMBER NOT NULL,
 	custom_iuv NUMBER NOT NULL,
 	aux_digit NUMBER NOT NULL,
-	iuv_prefix VARCHAR2(255, CHAR),
+	iuv_prefix VARCHAR2(255 CHAR),
 	iuv_prefix_strict NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
@@ -391,11 +391,11 @@ CREATE SEQUENCE seq_tipi_tributo MINVALUE 1 MAXVALUE 9223372036854775807 START W
 
 CREATE TABLE tipi_tributo
 (
-	cod_tributo VARCHAR2(255, CHAR) NOT NULL,
-	descrizione VARCHAR2(255, CHAR),
-	tipo_contabilita VARCHAR2(1, CHAR),
-	cod_contabilita VARCHAR2(255, CHAR),
-	cod_tributo_iuv VARCHAR2(4, CHAR),
+	cod_tributo VARCHAR2(255 CHAR) NOT NULL,
+	descrizione VARCHAR2(255 CHAR),
+	tipo_contabilita VARCHAR2(1 CHAR),
+	cod_contabilita VARCHAR2(255 CHAR),
+	cod_tributo_iuv VARCHAR2(4 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
@@ -423,9 +423,9 @@ CREATE SEQUENCE seq_tributi MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1
 CREATE TABLE tributi
 (
 	abilitato NUMBER NOT NULL,
-	tipo_contabilita VARCHAR2(1, CHAR),
-	codice_contabilita VARCHAR2(255, CHAR),
-	cod_tributo_iuv VARCHAR2(4, CHAR),
+	tipo_contabilita VARCHAR2(1 CHAR),
+	codice_contabilita VARCHAR2(255 CHAR),
+	cod_tributo_iuv VARCHAR2(4 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_dominio NUMBER NOT NULL,
@@ -503,7 +503,7 @@ CREATE TABLE versamenti
 	data_creazione TIMESTAMP NOT NULL,
 	data_scadenza TIMESTAMP,
 	data_ora_ultimo_aggiornamento TIMESTAMP NOT NULL,
-	causale_versamento VARCHAR2(1024 CHAR),
+	causale_versamento VARCHAR2(511 CHAR),
 	debitore_identificativo VARCHAR2(35 CHAR) NOT NULL,
 	debitore_anagrafica VARCHAR2(70 CHAR) NOT NULL,
 	debitore_indirizzo VARCHAR2(70 CHAR),
@@ -512,6 +512,10 @@ CREATE TABLE versamenti
 	debitore_localita VARCHAR2(35 CHAR),
 	debitore_provincia VARCHAR2(35 CHAR),
 	debitore_nazione VARCHAR2(2 CHAR),
+	debitore_email VARCHAR2(255 CHAR),
+	debitore_telefono VARCHAR2(35 CHAR),
+	debitore_cellulare VARCHAR2(35 CHAR),
+	debitore_fax VARCHAR2(35 CHAR),
 	cod_lotto VARCHAR2(35 CHAR),
 	cod_versamento_lotto VARCHAR2(35 CHAR),
 	cod_anno_tributario VARCHAR2(35 CHAR),

@@ -679,6 +679,10 @@
 			<xsd:element minOccurs="0" name="debitoreLocalita" type="String35"/>
 			<xsd:element minOccurs="0" name="debitoreProvincia" type="String35"/>
 			<xsd:element minOccurs="0" name="debitoreNazione" type="String2"/>
+			<xsd:element minOccurs="0" name="debitoreEmail" type="String255"/>
+			<xsd:element minOccurs="0" name="debitoreTelefono" type="String35"/>
+			<xsd:element minOccurs="0" name="debitoreCellulare" type="String35"/>
+			<xsd:element minOccurs="0" name="debitoreFax" type="String35"/>
 			<xsd:element minOccurs="0" name="codLotto" type="String35"/>
 			<xsd:element minOccurs="0" name="codVersamentoLotto" type="String35"/>
 			<xsd:element minOccurs="0" name="codAnnoTributario" type="String35"/>

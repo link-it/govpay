@@ -436,6 +436,10 @@
     <value name="debitoreLocalita" field="debitoreLocalita" usage="optional"/>
     <value name="debitoreProvincia" field="debitoreProvincia" usage="optional"/>
     <value name="debitoreNazione" field="debitoreNazione" usage="optional"/>
+    <value name="debitoreEmail" field="debitoreEmail" usage="optional"/>
+    <value name="debitoreTelefono" field="debitoreTelefono" usage="optional"/>
+    <value name="debitoreCellulare" field="debitoreCellulare" usage="optional"/>
+    <value name="debitoreFax" field="debitoreFax" usage="optional"/>
     <value name="codLotto" field="codLotto" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
@@ -463,6 +467,10 @@
     <value name="debitoreLocalita" field="debitoreLocalita" usage="optional"/>
     <value name="debitoreProvincia" field="debitoreProvincia" usage="optional"/>
     <value name="debitoreNazione" field="debitoreNazione" usage="optional"/>
+    <value name="debitoreEmail" field="debitoreEmail" usage="optional"/>
+    <value name="debitoreTelefono" field="debitoreTelefono" usage="optional"/>
+    <value name="debitoreCellulare" field="debitoreCellulare" usage="optional"/>
+    <value name="debitoreFax" field="debitoreFax" usage="optional"/>
     <value name="codLotto" field="codLotto" usage="optional"/>
     <value name="codVersamentoLotto" field="codVersamentoLotto" usage="optional"/>
     <value name="codAnnoTributario" field="codAnnoTributario" usage="optional"/>
