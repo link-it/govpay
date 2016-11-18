@@ -650,17 +650,17 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			for(Rpt rpt : rpts) {
 				response.getTransazione().add(Gp21Utils.toTransazione(portaleAutenticato.getVersione(), rpt, bd));
 			}
-			ctx.log("gpapp.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
