@@ -4,7 +4,7 @@
 
 
 	<xsd:simpleType name="Int2">
-		<xsd:restriction base="xsd:int">
+		<xsd:restriction base="xsd:integer">
 			<xsd:totalDigits value="2"/>
 		</xsd:restriction>
 	</xsd:simpleType>

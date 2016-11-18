@@ -11,7 +11,7 @@ ALTER TABLE tipi_tributo ADD cod_contabilita VARCHAR2(255 CHAR);
 ALTER TABLE tipi_tributo ADD cod_tributo_iuv VARCHAR2(4 CHAR);
 ALTER TABLE tributi ADD cod_tributo_iuv VARCHAR2(4 CHAR);
 ALTER TABLE tributi MODIFY (tipo_contabilita NULL);
-ALTER TABLE tributi MODIFY (cod_contabilita NULL);
+ALTER TABLE tributi MODIFY (codice_contabilita NULL);
 
 --GP-406
 ALTER TABLE versamenti ADD debitore_email VARCHAR2(255 CHAR);

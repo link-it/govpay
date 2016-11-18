@@ -62,6 +62,10 @@ public abstract class ParamField<T> {
 		return this.label;
 	}
 	
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
 	public void setRequired(boolean required) {
 		this.required = required;
 	}

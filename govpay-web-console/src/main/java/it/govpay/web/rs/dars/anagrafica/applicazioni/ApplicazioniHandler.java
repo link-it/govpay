@@ -213,6 +213,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
 		String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
 		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		String codificaApplicazioneInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd,true);
@@ -242,6 +243,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		firmaRichiesta.setDefaultValue(FirmaRichiesta.NESSUNA.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
 
+		InputText codificaApplicazioneInIuv = (InputText) infoCreazioneMap.get(codificaApplicazioneInIuvId);
+		codificaApplicazioneInIuv.setDefaultValue(null);
+		sezioneRoot.addField(codificaApplicazioneInIuv);
+		
 		// versione
 		SelectList<String> versione = (SelectList<String>) infoCreazioneMap.get(versioneId);
 		versione.setDefaultValue(Versione.getUltimaVersione().getLabel());
@@ -328,7 +333,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
 			String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
 			String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
-
+			String codificaApplicazioneInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
+			
 			// id 
 			InputNumber id = new InputNumber(applicazioneId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(applicazioneId, id);
@@ -418,6 +424,13 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			dominiVersamenti.addDependencyField(trusted);
 			dominiVersamenti.init(versamentiValues, bd); 
 			infoCreazioneMap.put(dominiVersamentiId, dominiVersamenti);
+			
+			// codificaApplicazioneInIuv
+			String codificaApplicazioneInIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label");
+			InputText codificaApplicazioneInIuv = new InputText(codificaApplicazioneInIuvId, codificaApplicazioneInIuvLabel, null, false, false, true, 1,3);
+			codificaApplicazioneInIuv.setValidation("[0-9]{3}", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.errorMessage"));
+			codificaApplicazioneInIuv.setAvanzata(true); 
+			infoCreazioneMap.put(codificaApplicazioneInIuvId, codificaApplicazioneInIuv);
 
 			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 			List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd,true);
@@ -454,6 +467,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
 		String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
 		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		String codificaApplicazioneInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
 
 		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica(),entry.getId(),true);
@@ -483,6 +497,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(firmaRichiestaValue.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
+		
+		InputText codificaApplicazioneInIuv = (InputText) infoCreazioneMap.get(codificaApplicazioneInIuvId);
+		codificaApplicazioneInIuv.setDefaultValue(entry.getCodApplicazioneIuv());
+		sezioneRoot.addField(codificaApplicazioneInIuv);
 
 		// versione
 		SelectList<String> versione = (SelectList<String>) infoCreazioneMap.get(versioneId);
@@ -631,6 +649,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			}
 
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"), firmaRichiestaAsString);
+			if(StringUtils.isNotEmpty(applicazione.getCodApplicazioneIuv()))
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label"), applicazione.getCodApplicazioneIuv(),true);
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), applicazione.getVersione().getLabel(), true);
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(applicazione.isAbilitato()));
 

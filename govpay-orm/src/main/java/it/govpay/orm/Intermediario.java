@@ -40,7 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettorePdd" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="denominazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}int" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -119,12 +119,18 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
     this.abilitato = abilitato;
   }
 
-  public int getSegregationCode() {
-    return (java.lang.Integer) this._decimalWrapper_segregationCode.getObject(java.lang.Integer.class);
+  public java.lang.Integer getSegregationCode() {
+    if(this._decimalWrapper_segregationCode!=null){
+		return (java.lang.Integer) this._decimalWrapper_segregationCode.getObject(java.lang.Integer.class);
+	}else{
+		return this.segregationCode;
+	}
   }
 
-  public void setSegregationCode(int segregationCode) {
-    this._decimalWrapper_segregationCode = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,2,segregationCode);
+  public void setSegregationCode(java.lang.Integer segregationCode) {
+    if(segregationCode!=null){
+		this._decimalWrapper_segregationCode = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,2,segregationCode);
+	}
   }
 
   private static final long serialVersionUID = 1L;
@@ -163,11 +169,11 @@ public class Intermediario extends org.openspcoop2.utils.beans.BaseBean implemen
   protected boolean abilitato;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
   @XmlElement(name="segregationCode",required=false,nillable=false)
   org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_segregationCode = null;
 
   @XmlTransient
-  protected int segregationCode;
+  protected java.lang.Integer segregationCode;
 
 }

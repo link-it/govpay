@@ -53,21 +53,21 @@ import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Dominio;
 import it.govpay.model.IbanAccredito;
-import it.govpay.bd.model.Stazione;
 import it.govpay.model.TipoTributo;
-import it.govpay.bd.model.Tributo;
-import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
+import it.govpay.web.rs.dars.anagrafica.domini.input.ModalitaIntermediazione;
 import it.govpay.web.rs.dars.anagrafica.iban.Iban;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
@@ -263,6 +263,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String idApplicazioneDefaultId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
 		String riusoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
 		String customIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
+		String modalitaIntermediazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
+		String prefissoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
+		String prefissoIuvRigorosoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 
 		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DOMINI,this.nomeServizio,this.pathServizio);
 		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaDominio(uriInfo, bd);
@@ -347,19 +350,42 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		idApplicazioneDefault.setValues(applicazioni);
 		sezioneRoot.addField(idApplicazioneDefault); 
 
+		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		abilitato.setDefaultValue(true); 
+		sezioneRoot.addField(abilitato);
+		
+		// sezione Gestione IUV
+		
+		Sezione sezioneGestioneIuv = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
 
 		CheckButton riusoIuv = (CheckButton) infoCreazioneMap.get(riusoIuvId);
 		riusoIuv.setDefaultValue(true); 
-		sezioneRoot.addField(riusoIuv);
+		sezioneGestioneIuv.addField(riusoIuv);
 
 		CheckButton customIuv = (CheckButton) infoCreazioneMap.get(customIuvId);
 		customIuv.setDefaultValue(false);
 		customIuv.setEditable(true);
-		sezioneRoot.addField(customIuv);
+		sezioneGestioneIuv.addField(customIuv);
+		
+		List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
+		modalitaIntermediazioneValues.add(new RawParamValue(dominioId, null));
+		modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, null));
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(true); 
-		sezioneRoot.addField(abilitato);
+		ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) infoCreazioneMap.get(modalitaIntermediazioneId);
+		modalitaIntermediazione.init(modalitaIntermediazioneValues, bd); 
+		sezioneGestioneIuv.addField(modalitaIntermediazione); 
+		
+		// prefissoIuv
+		InputText prefissoIuv = (InputText) infoCreazioneMap.get(prefissoIuvId);
+		prefissoIuv.setDefaultValue(null);
+		sezioneGestioneIuv.addField(prefissoIuv);
+		
+		// prefissoIuvRigoroso
+		CheckButton prefissoIuvRigoroso = (CheckButton) infoCreazioneMap.get(prefissoIuvRigorosoId);
+		prefissoIuvRigoroso.setDefaultValue(false);
+		sezioneGestioneIuv.addField(prefissoIuvRigoroso);
+		
+		// sezione anagrafica
 
 		Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
 
@@ -392,6 +418,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String idApplicazioneDefaultId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
 			String riusoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
 			String customIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
+			String modalitaIntermediazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
+			String prefissoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
+			String prefissoIuvRigorosoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
+
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
@@ -443,6 +473,30 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			customIuv.setAvanzata(true); 
 			infoCreazioneMap.put(customIuvId,customIuv);
 
+			// modalitaIntermediazione
+			String modalitaIntermediazionelabel =Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.label");
+			List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
+			modalitaIntermediazioneValues.add(new RawParamValue(dominioId, null));
+			modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, null));
+			URI modalitaIntermediazioneRefreshUri = this.getUriField(uriInfo, bd, modalitaIntermediazioneId); 
+			ModalitaIntermediazione modalitaIntermediazione = new ModalitaIntermediazione(this.nomeServizio, modalitaIntermediazioneId, modalitaIntermediazionelabel, modalitaIntermediazioneRefreshUri, modalitaIntermediazioneValues, bd);
+			modalitaIntermediazione.setAvanzata(true); 
+			modalitaIntermediazione.addDependencyField(idStazione);
+			modalitaIntermediazione.init(modalitaIntermediazioneValues, bd); 
+			infoCreazioneMap.put(modalitaIntermediazioneId, modalitaIntermediazione);
+
+			// prefissoIuv
+			String prefissoIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.label");
+			InputText prefissoIuv = new InputText(prefissoIuvId, prefissoIuvLabel, null, false, false, true, 1, 255);
+			prefissoIuv.setAvanzata(true); 
+			infoCreazioneMap.put(prefissoIuvId, prefissoIuv);
+
+			// prefissoIuvRigoroso
+			String prefissoIuvRigorosoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.label");
+			CheckButton prefissoIuvRigoroso = new CheckButton(prefissoIuvRigorosoId, prefissoIuvRigorosoLabel, false, false, false, true);
+			prefissoIuvRigoroso.setAvanzata(true); 
+			infoCreazioneMap.put(prefissoIuvRigorosoId,prefissoIuvRigoroso);
+
 		}
 	}
 
@@ -462,6 +516,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String idApplicazioneDefaultId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.id");
 		String riusoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.id");
 		String customIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.id");
+		String modalitaIntermediazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.id");
+		String prefissoIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.id");
+		String prefissoIuvRigorosoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.id");
 
 
 		UnitaOperativeBD uoBD = new UnitaOperativeBD(bd);
@@ -557,21 +614,43 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		idApplicazioneDefault.setValues(applicazioni);
 		sezioneRoot.addField(idApplicazioneDefault); 
 
+		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		abilitato.setDefaultValue(entry.isAbilitato()); 
+		sezioneRoot.addField(abilitato);
+		
+		
+		// sezione Gestione IUV
+		
+		Sezione sezioneGestioneIuv = infoModifica.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
+
 		CheckButton riusoIuv = (CheckButton) infoCreazioneMap.get(riusoIuvId);
 		riusoIuv.setDefaultValue(entry.isRiusoIuv()); 
-		sezioneRoot.addField(riusoIuv);
+		sezioneGestioneIuv.addField(riusoIuv);
 
 		CheckButton customIuv = (CheckButton) infoCreazioneMap.get(customIuvId);
 		customIuv.setDefaultValue(entry.isCustomIuv());
 		// Se in modifica e' settato il customIuv allora non si puo' modificare
 		if(entry.isCustomIuv())
 			customIuv.setEditable(false);
-
-		sezioneRoot.addField(customIuv);
-
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
-		abilitato.setDefaultValue(entry.isAbilitato()); 
-		sezioneRoot.addField(abilitato);
+		sezioneGestioneIuv.addField(customIuv);
+		
+		List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
+		modalitaIntermediazioneValues.add(new RawParamValue(dominioId, ""+entry.getId()));
+		modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, ""+entry.getIdStazione()));
+		
+		ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) infoCreazioneMap.get(modalitaIntermediazioneId);
+		modalitaIntermediazione.init(modalitaIntermediazioneValues, bd); 
+		sezioneGestioneIuv.addField(modalitaIntermediazione); 
+		
+		// prefissoIuv
+		InputText prefissoIuv = (InputText) infoCreazioneMap.get(prefissoIuvId);
+		prefissoIuv.setDefaultValue(entry.getIuvPrefix());
+		sezioneGestioneIuv.addField(prefissoIuv);
+		
+		// prefissoIuvRigoroso
+		CheckButton prefissoIuvRigoroso = (CheckButton) infoCreazioneMap.get(prefissoIuvRigorosoId);
+		prefissoIuvRigoroso.setDefaultValue(entry.isIuvPrefixStrict());
+		sezioneGestioneIuv.addField(prefissoIuvRigoroso);
 
 		Sezione sezioneAnagrafica = infoModifica.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
 
@@ -588,7 +667,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		try{
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
-			
+
 			if(infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
@@ -646,9 +725,28 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), Utils.getInstance().getMessageFromResourceBundle("commons.label.nessuna"),true);
 			}
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label"), Utils.getSiNoAsLabel(dominio.isRiusoIuv()),true);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.label"), Utils.getSiNoAsLabel(dominio.isCustomIuv()),true);
+
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(dominio.isAbilitato()));
+
+			// Sezione iuv
+			it.govpay.web.rs.dars.model.Sezione sezioneIuv = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
+			sezioneIuv.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riusoIuv.label"), Utils.getSiNoAsLabel(dominio.isRiusoIuv()),true);
+			sezioneIuv.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".customIuv.label"), Utils.getSiNoAsLabel(dominio.isCustomIuv()),true);
+			int auxDigit = dominio.getAuxDigit();
+			String auxDigitS= null;
+			switch (auxDigit) {
+			case 3:
+				auxDigitS = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.3");
+				break;
+			case 0:
+			default:
+				auxDigitS = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.0");
+				break;
+			}
+			sezioneIuv.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.label"), auxDigitS,true);
+			if(StringUtils.isNotEmpty(dominio.getIuvPrefix()))
+				sezioneIuv.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.label"), dominio.getIuvPrefix(),true);
+			sezioneIuv.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.label"), Utils.getSiNoAsLabel(dominio.isIuvPrefixStrict()),true);
 
 			// Sezione Anagrafica
 
@@ -657,8 +755,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			try {
 				unitaOperativa = uoBD.getUnitaOperativa(dominio.getId(), Dominio.EC);
 			} catch (Exception e) {
-				 unitaOperativa = null;
-//				throw new ConsoleException(e);
+				unitaOperativa = null;
+				//				throw new ConsoleException(e);
 			}
 
 			Anagrafica anagrafica =  unitaOperativa != null ? unitaOperativa.getAnagrafica() : null; 
@@ -737,24 +835,26 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			}catch(NotFoundException e){}
 
 			UnitaOperativeBD uoBd = new UnitaOperativeBD(bd);
-			
+
 			Tributi tributiDars = new Tributi();
-			
+
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
 			TipoTributo bolloT = tipiTributoBD.getTipoTributo(Tributo.BOLLOT);
-			
+
 			TributiBD tributiBD = new TributiBD(bd);
-			
+
 			Tributo tributo = new Tributo();
 			tributo.setCodTributo(Tributo.BOLLOT);
 			tributo.setAbilitato(false);
 			tributo.setDescrizione(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.descrizione"));
-			
-			//TODO giuliano pintori GP-393
-//			tributo.setCodContabilita(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.codContabilita")); 
-//			tributo.setTipoContabilita(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
+
+			//TODO controllare il salvataggio
+
+			//			tributo.setCodContabilitaDefault(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.codContabilita")); 
+			//			tributo.setTipoContabilitaDefault(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
+			//			tributo.setCodTributoIuvDefault(TipoContabilta.toEnum(Utils.getInstance().getMessageFromResourceBundle(tributiDars.getNomeServizio()+ ".bolloTelematico.tipoContabilita")));
 			tributo.setIdTipoTributo(bolloT.getId());
-			
+
 			// Inserimento di Dominio, UO e Tributo BolloTelematico in maniera transazionale.
 			bd.setAutoCommit(false); 
 			dominiBD.insertDominio(entry);
@@ -840,7 +940,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			Dominio  entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
 			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
-			
+
 			// azzero l'id applicazione default se ho selezionato nessuna.
 			if(entry.getIdApplicazioneDefault() != null && entry.getIdApplicazioneDefault().longValue() == -1l)
 				entry.setIdApplicazioneDefault(null); 
@@ -961,15 +1061,15 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		StringBuilder sb = new StringBuilder();
 		try{
 
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
-		sb.append(", Stazione: ").append(entry.getStazione(bd).getCodStazione());
+			sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+			sb.append(", Stazione: ").append(entry.getStazione(bd).getCodStazione());
 
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Dominio entry, BasicBD bd) throws ConsoleException {
 		return null;
