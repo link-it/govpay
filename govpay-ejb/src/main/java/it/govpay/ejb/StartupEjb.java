@@ -136,7 +136,7 @@ public class StartupEjb {
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Inizializzazione");
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
 			ctx.getTransaction().setService(service);
 			Operation opt = new Operation();
 			opt.setName("Init");

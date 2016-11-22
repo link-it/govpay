@@ -97,26 +97,27 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 			throw new IllegalArgumentException("Nessuna operazione definita");
 
 		if(actionName.equals(ACQUISIZIONE_RENDICONTAZIONI)){
-			 return Operazioni.acquisizioneRendicontazioni();
+			 return it.govpay.core.business.Operazioni.acquisizioneRendicontazioni("JmxCall");
 		}
 
 		if(actionName.equals(AGGIORNAMENTO_REGISTRO_PSP)){
-			return Operazioni.aggiornamentoRegistroPsp();
+			return it.govpay.core.business.Operazioni.aggiornamentoRegistroPsp("JmxCall");
 		}
 
 		if(actionName.equals(RECUPERO_RPT_PENDENTI)){
-			return Operazioni.recuperoRptPendenti();
+			return it.govpay.core.business.Operazioni.recuperoRptPendenti("JmxCall");
 		}
 
 		if(actionName.equals(RESET_CACHE_ANAGRAFICA)){
-			if(Operazioni.resetCacheAnagrafica())
-				return "Reset Cache Anagrafica#eseguita con successo.";
-			else
-				return "Reset Cache Anagrafica#fallita.";
+			return it.govpay.core.business.Operazioni.resetCacheAnagrafica();
 		}
 		
 		if(actionName.equals(ESTRATTO_CONTO)){
-			return Operazioni.estrattoConto();
+			return it.govpay.core.business.Operazioni.estrattoConto("JmxCall");
+		}
+		
+		if(actionName.equals(SPEDIZIONE_NOTIFICHE)){
+			return it.govpay.core.business.Operazioni.spedizioneNotifiche("JmxCall");
 		}
 
 		throw new UnsupportedOperationException("Operazione "+actionName+" sconosciuta");
@@ -165,7 +166,7 @@ public class JmxOperazioni extends NotificationBroadcasterSupport implements Dyn
 					null,
 					String.class.getName(),
 					MBeanOperationInfo.ACTION);
-
+			
 			// Mbean costruttore
 			MBeanConstructorInfo defaultConstructor = new MBeanConstructorInfo("Default Constructor","Crea e inizializza una nuova istanza del MBean",null);
 

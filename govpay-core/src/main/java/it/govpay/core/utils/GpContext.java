@@ -56,11 +56,12 @@ public class GpContext {
 	public static final String TIPO_SOGGETTO_PRT = "PRT";
 	public static final String TIPO_SOGGETTO_STAZIONE = "STZ";
 	public static final String TIPO_SOGGETTO_GOVPAY = "GP";
+	
 	public static final String TIPO_SERVIZIO_GOVPAY = "GP";
 	public static final String TIPO_SERVIZIO_GOVPAY_RS = "GPRS";
 	public static final String TIPO_SERVIZIO_GOVPAY_JSON = "GPJSON";
 	public static final String TIPO_SERVIZIO_GOVPAY_WS = "GPWS";
-	public static final String TIPO_SERVIZIO_GOVPAY_BATCH = "GPB";
+	public static final String TIPO_SERVIZIO_GOVPAY_OPT = "GPO";
 	
 	
 	public GpContext(MessageContext msgCtx, String tipoServizio, int versioneServizio) throws ServiceException {

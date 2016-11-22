@@ -115,7 +115,7 @@ public class Gp21Utils {
 				v.setIuv(iuv.getIuv());
 				v.setBarCode(iuvGenerato.getBarCode());
 				v.setQrCode(iuvGenerato.getQrCode());
-				if(versione.compareTo(Versione.GP_02_02_02) >=0) {
+				if(versione.compareTo(Versione.GP_02_03_00) >=0) {
 					v.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
 				}
 			}

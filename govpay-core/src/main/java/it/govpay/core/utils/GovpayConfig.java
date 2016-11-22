@@ -69,12 +69,13 @@ public class GovpayConfig {
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
 	private TipiDatabase mLogDBType;
-	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
-
-	private boolean batchEstrattoConto;
+	private boolean mLogOnLog4j, mLogOnDB, mLogSql;
+	private boolean batchOn;
+	
+	private boolean batchEstrattoConto, batchEstrattoContoPdf;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
-	private boolean batchEstrattoContoPdf;
+	
 	private Properties[] props;
 
 	public GovpayConfig() throws Exception {
@@ -96,7 +97,7 @@ public class GovpayConfig {
 		this.mLogDS = null;
 		this.batchEstrattoConto = false;
 		this.batchEstrattoContoPdf = false;
-		this.pddAuthEnable = true;
+		this.batchOn=true;
 
 		try {
 
@@ -291,10 +292,6 @@ public class GovpayConfig {
 
 			}
 
-			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", props, false, log);
-			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
-				this.pddAuthEnable = false;
-
 			String listaHandlers = getProperty("it.govpay.integration.client.out", props, false, log);
 
 			this.outHandlers = new ArrayList<String>();
@@ -316,6 +313,10 @@ public class GovpayConfig {
 					this.outHandlers.add(handlerClass);
 				}
 			}
+			
+			String batchOnString = getProperty("it.govpay.batchOn", props, false, log);
+			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
+				this.batchOn = false;
 			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -447,10 +448,6 @@ public class GovpayConfig {
 		return pathEstrattoConto;
 	}
 
-	public boolean isPddAuthEnable() {
-		return pddAuthEnable;
-	}
-
 	public List<String> getOutHandlers() {
 		return outHandlers;
 	}
@@ -469,5 +466,9 @@ public class GovpayConfig {
 
 	public boolean isBatchEstrattoContoPdf() {
 		return batchEstrattoContoPdf;
+	}
+
+	public boolean isBatchOn() {
+		return batchOn;
 	}
 }

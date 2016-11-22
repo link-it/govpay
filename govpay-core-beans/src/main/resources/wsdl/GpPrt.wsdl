@@ -1256,6 +1256,21 @@
 									</xsd:element>
 								</xsd:choice>
 								<xsd:element name="ibanAccredito" type="com:cod35" minOccurs="0" />
+								<xsd:element name="codTributo" type="com:cod35" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="tipoContabilita" type="com:tipoContabilita" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
+								<xsd:element name="codContabilita" type="xsd:string" minOccurs="0">
+									<xsd:annotation>
+										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
+									</xsd:annotation>
+								</xsd:element>
 								<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0" />
 								<xsd:element name="transazione" type="com:transazione" minOccurs="0" maxOccurs="unbounded" />
 							</xsd:sequence>
