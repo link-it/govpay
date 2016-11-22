@@ -82,7 +82,10 @@ import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
-import it.govpay.stampe.pdf.rt.RtPdf;
+import it.govpay.stampe.pdf.rt.IRicevutaPagamento;
+import it.govpay.stampe.pdf.rt.RicevutaPagamentoPdf;
+import it.govpay.stampe.pdf.rt.factory.RicevutaPagamentoFactory;
+import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -769,8 +772,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
 								String causale = versamento.getCausaleVersamento().getSimple();
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
-								RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
-
+								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, causale, baos, log);
 								String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
 								numeroZipEntries ++;
 								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
@@ -1057,7 +1059,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
 							String causale = versamento.getCausaleVersamento().getSimple();
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
-							RtPdf.getPdfRicevutaPagamento(pathLoghi, rt, causale,baos,log);
+							RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, causale, baos, log);
 
 							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
 							numeroZipEntries ++;

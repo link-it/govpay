@@ -118,5 +118,6 @@ public class Costanti {
 	public static final String LABEL_CODICE_VERSAMENTO = "Codice Versamento";
 	public static final String LABEL_CODICE_AVVISO_PAGAMENTO_UPPER_CASE = "AVVISO DI PAGAMENTO N°";
 	public static final String LABEL_INTESTATO_A = "Intestato a:";
+	public static final String LABEL_ESTREMI_DI_PAGAMENTO = "Estremi di Pagamento";
 	
 }

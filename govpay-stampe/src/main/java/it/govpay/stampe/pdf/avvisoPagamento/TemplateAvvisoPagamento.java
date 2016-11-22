@@ -82,12 +82,12 @@ public class TemplateAvvisoPagamento {
 			}
 
 			List<ComponentBuilder<?, ?>> lstTitolo = new ArrayList<ComponentBuilder<?,?>>();
-			
+
 			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.CENTER;
 			VerticalTextAlignment verticalTextAlignment = VerticalTextAlignment.TOP;
 			StyleBuilder style = stl.style(TemplateBase.fontStyle12).setVerticalTextAlignment(verticalTextAlignment);  
 			StyleBuilder headerStyle = stl.style(TemplateBase.bold16LeftStyle); 
-			
+
 			ComponentBuilder<?, ?> createDatiDominio = TemplateBase.createDatiDominio(avviso.getDominioCreditore(), avviso.getAnagraficaCreditore(), horizontalTextAlignment,
 					verticalTextAlignment, headerStyle, style, log);
 			lstTitolo.add(createDatiDominio);
@@ -121,19 +121,19 @@ public class TemplateAvvisoPagamento {
 			StyleBuilder style = stl.style(TemplateBase.rootFont).setVerticalTextAlignment(verticalTextAlignment);;  
 			ComponentBuilder<?, ?> createSezioneComunicazioni = TemplateAvvisoPagamento.createSezioneComunicazioni(avviso,errList,log);
 			if(createSezioneComunicazioni!= null){
-				
+
 				return cmp.verticalList().add(
 						cmp.horizontalList().add(
-						cmp.hListCell(createSezioneCausale(avviso, errList, log)
-								).heightFixedOnTop(),
-						cmp.hListCell(createSezioneImporti(avviso, errList, log)).heightFixedOnTop()				
-				)).add(
-						createSezioneComunicazioni).setStyle(style);//.setStyle(style);
+								cmp.hListCell(createSezioneCausale(avviso, errList, log)
+										).heightFixedOnTop(),
+								cmp.hListCell(createSezioneImporti(avviso, errList, log)).heightFixedOnTop()				
+								)).add(cmp.verticalGap(20))
+								.add(			createSezioneComunicazioni).setStyle(style);//.setStyle(style);
 			} else 
 				return cmp.horizontalList().add(
 						cmp.hListCell(createSezioneCausale(avviso, errList, log)).heightFixedOnTop(),
 						cmp.hListCell(createSezioneImporti(avviso, errList, log)).heightFixedOnTop()				
-				);//.setStyle(style);
+						);//.setStyle(style);
 		}catch(Exception e){
 			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
 			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
@@ -163,7 +163,7 @@ public class TemplateAvvisoPagamento {
 			verticalList.add(cmp.text(avviso.getCausale()).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
 			verticalList.add(cmp.text(Costanti.LABEL_INTESTATO_A).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
 			TemplateBase.createDatiDebitore(verticalList,avviso.getAnagraficaDebitore(), true, false, style, horizontalTextAlignment ,log);
-		//	verticalList.add(cmp.verticalGap(20));
+			verticalList.add(cmp.verticalGap(20));
 
 			return verticalList; 
 
@@ -192,7 +192,50 @@ public class TemplateAvvisoPagamento {
 			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.LEFT;
 			VerticalListBuilder verticalList = cmp.verticalList().setStyle(stl.style(style)
 					.setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(VerticalTextAlignment.TOP)); 
-			
+
+			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(5).setRightPadding(0).setTopPadding(5).setBottomPadding(5);
+
+			List<String> values = new ArrayList<String>();
+			String importoAsString = "‎€"+ avviso.getImporto().doubleValue(); 
+			StringBuilder sb = new StringBuilder();
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_DA_PAGARE, importoAsString));
+			if(avviso.getDataScadenza() != null){
+				sb.append("<br/>");
+				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_DATA_SCADENZA, TemplateBase.sdf_ddMMyyyy.format(avviso.getDataScadenza())));
+			}
+			sb.append("<br/>");
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IUV, avviso.getIuv()));
+			values.add(sb.toString());
+			verticalList.add(getTabella(Costanti.LABEL_ESTREMI_DI_PAGAMENTO,values, errList,150, columnStyle,horizontalTextAlignment,log));
+
+			return verticalList.setFixedWidth(200);//.setFixedHeight(90)	; 
+
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * linea 1: tabella importo
+	 * linea 2: tabella scadenza
+	 * linea 3: tabella riferimenti
+	 * 
+	 * @param avviso
+	 * @param errList
+	 * @param log
+	 * @return
+	 */
+	public static ComponentBuilder<?, ?> createSezioneImportiOld(AvvisoPagamento avviso,  List<String> errList, Logger log){
+		String sezione = "Sezione Importi";
+		try{
+			StyleBuilder style = stl.style(TemplateBase.rootStyle).setPadding(0);
+			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.LEFT;
+			VerticalListBuilder verticalList = cmp.verticalList().setStyle(stl.style(style)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(VerticalTextAlignment.TOP)); 
+
 			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(5).setRightPadding(0).setTopPadding(5).setBottomPadding(5);
 
 			List<String> values = new ArrayList<String>();
@@ -226,11 +269,12 @@ public class TemplateAvvisoPagamento {
 	public static SubreportBuilder getTabella(String title, List<String> values, List<String> errList,Integer width,StyleBuilder columnStyle, HorizontalTextAlignment horizontalTextAlignment, Logger log) throws Exception{
 		String sezione = "Tabella titolo["+title+"]";
 		try{
+			boolean showColumnTitle = StringUtils.isNotEmpty(title);
 			// Scittura Intestazione
 			List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();
 
 			TextFieldBuilder<String> componentText = cmp.text(new TemplateAvvisoPagamento().new ColonnaUnoExpression())
-						.setMarkup(Markup.HTML).setStyle(columnStyle).setHorizontalTextAlignment(horizontalTextAlignment); 
+					.setMarkup(Markup.HTML).setStyle(columnStyle).setHorizontalTextAlignment(horizontalTextAlignment); 
 
 			ComponentColumnBuilder columnOne = col.componentColumn(title, componentText).setWidth(width);
 
@@ -251,7 +295,7 @@ public class TemplateAvvisoPagamento {
 			}
 
 			return cmp.subreport(
-					report()
+					report().setShowColumnTitle(showColumnTitle)
 					.setTemplate(TemplateBase.tableTemplate)
 					.fields(fields.toArray(new FieldBuilder[fields.size()])) 
 					.columns(colonne.toArray(new ColumnBuilder[colonne.size()]))
@@ -315,9 +359,9 @@ public class TemplateAvvisoPagamento {
 			HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle16)
 					.setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE));
 			String label = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_CODICE_AVVISO_PAGAMENTO_UPPER_CASE, avviso.getCodiceAvviso());
-			list.add(cmp.verticalGap(60));
+			list.add(cmp.verticalGap(70));
 			list.add(cmp.text(label ).setStyle(TemplateBase.bold16CenteredStyle));
-			list.add(cmp.verticalGap(40));
+			list.add(cmp.verticalGap(50));
 			list.newRow();
 
 			return list;
@@ -333,7 +377,7 @@ public class TemplateAvvisoPagamento {
 		String sezione = "Sezione Comunicazioni";
 		try{
 			HorizontalListBuilder list =  cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.rootFont).setVerticalTextAlignment(VerticalTextAlignment.TOP));
-			
+
 			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(10).setRightPadding(10).setTopPadding(10).setBottomPadding(1).setVerticalTextAlignment(VerticalTextAlignment.TOP); 
 			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.JUSTIFIED;
 
@@ -346,7 +390,7 @@ public class TemplateAvvisoPagamento {
 				for (String contenutoKey : contenutoStaticoDisponibilita.keySet()) {
 					if(sb.length() > 0)
 						sb.append("<br/>");
-					
+
 					String value = contenutoStaticoDisponibilita.get(contenutoKey);
 					value = value.replace(AvvisoPagamentoCostanti.ENTE_CREDITORE_KEY, dominio.getRagioneSociale());
 
@@ -359,17 +403,31 @@ public class TemplateAvvisoPagamento {
 					value = value.replace(AvvisoPagamentoCostanti.URL_ENTE_CREDITORE_KEY, urlSitoWeb);
 
 					sb.append(value);
-					
+
 				}
 				values.add(sb.toString());
-//				return getTabella(Costanti.LABEL_COMUNICAZIONI, values, errList,300,columnStyle,horizontalTextAlignment, log);
 				list.add(getTabella(Costanti.LABEL_COMUNICAZIONI, values, errList,300,columnStyle,horizontalTextAlignment, log));
 			}
 
-			//			list.add(cmp.verticalGap(20));
-//			list.newRow();
+			// informazioni su pago pa
+			TreeMap<String, String> contenutoStaticoPagoPa = avviso.getContenutoStatico().get(AvvisoPagamentoCostanti.SEZIONE_PAGOPA_KEY);
+			if(contenutoStaticoPagoPa != null && !contenutoStaticoPagoPa.isEmpty()){
+				List<String> values = new ArrayList<String>();
+				StringBuilder sb = new StringBuilder();
+				for (String contenutoKey : contenutoStaticoPagoPa.keySet()) {
+					if(sb.length() > 0)
+						sb.append("<br/>");
 
-			return list; //cmp.verticalList(list).setStyle(TemplateBase.centeredStyle);
+					String value = contenutoStaticoPagoPa.get(contenutoKey);
+					sb.append(value);
+
+				}
+				values.add(sb.toString());
+				list.newRow(20);
+				list.add(getTabella(null, values, errList,300,columnStyle,horizontalTextAlignment, log));
+			}
+
+			return list; 
 		}catch(Exception e){
 			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
 			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());

@@ -49,12 +49,6 @@ public class AvvisoPagamentoPdf implements IAvvisoPagamento{
 
 				if(createSezionePagamento != null)
 					cl.add(createSezionePagamento);
-				
-//				ComponentBuilder<?, ?> createSezioneComunicazioni = TemplateAvvisoPagamento.createSezioneComunicazioni(avviso,errList,log);
-//				if(createSezioneComunicazioni!= null){
-//					cl.add(createSezioneComunicazioni);
-//				}
-
 			}
 
 			// se ho generato almeno il titolo allora produco il pdf.

@@ -9,6 +9,7 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 
@@ -25,9 +26,9 @@ import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.PageOrientation;
 import net.sf.dynamicreports.report.constant.PageType;
 
-public class RtPdf {
+public class RicevutaPagamentoPdf implements IRicevutaPagamento{
 
-	public static String getPdfRicevutaPagamento(String pathLoghi,  CtRicevutaTelematica rt,String  causale,OutputStream os ,Logger log) throws Exception {
+	public String getPdfRicevutaPagamento(String pathLoghi,  CtRicevutaTelematica rt,String  causale, Properties prop, OutputStream os ,Logger log) throws Exception {
 		String msg = null;
 		JasperPdfExporterBuilder pdfExporter = export.pdfExporter(os);
 		JasperReportBuilder report = report();
