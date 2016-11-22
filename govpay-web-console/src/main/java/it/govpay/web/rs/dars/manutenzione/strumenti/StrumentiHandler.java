@@ -31,15 +31,8 @@ import it.govpay.web.utils.Utils;
 
 public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHandler<Object> {
 
-	private static GestoreRisorseJMX gestoreJMX;
-
 	public StrumentiHandler(Logger log, BaseDarsService darsService) {
 		super(log, darsService);
-		try {
-			gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
-		} catch (Exception e) {
-			log.error("Errore nella inizializzazione del gestore JMX", e);
-		}
 	}
 
 	@Override
@@ -103,38 +96,60 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
 			String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
 			String nomeRisorsa = ConsoleProperties.getInstance().getNomeRisorsaOperazioniJMX();
+			String as = ConsoleProperties.getInstance().getAsJMX();
+			String factory = ConsoleProperties.getInstance().getFactoryJMX();
+			String username = ConsoleProperties.getInstance().getUsernameJMX();
+			String password = ConsoleProperties.getInstance().getPasswordJMX();
 
 			Dettaglio dettaglio = new Dettaglio(titoloOperazione, esportazione, cancellazione, infoModifica);
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			Object invoke = null;
+			log.debug("Invocazione operazione ["+nomeMetodo +"] in corso..."); 
 
-			try{
-				log.debug("Invocazione operazione ["+nomeMetodo +"] in corso..."); 
-				invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
-				log.debug("Invocazione operazione ["+nomeMetodo +"] completata, ricevuta risposta ["+invoke+"]"); 
-				
-				if(invoke != null && invoke instanceof String){
-					String esito = (String) invoke;
-					String[] voci = esito.split("\\|");
+			/*
+			 * Se l'operazione e' un reset cache lo eseguo su tutti i nodi
+			 * Altrimenti mi fermo al primo che ha successo
+			 */
+
+			for(String url : ConsoleProperties.getInstance().getUrlJMX()) {
+
+				try{
+					GestoreRisorseJMX gestoreJMX = null;
 					
-					for (String string : voci) {
-						String[] voce = string.split("#");
-						if(voce.length == 2)
-							root.addVoce(voce[0],voce[1]);
-						else
-							if(voce.length == 1)
-								root.addVoce(voce[0],null);
-					}
+					if(url.equals("locale"))
+						gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
+					else
+						gestoreJMX = new GestoreRisorseJMX(as, factory, url, username, password, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
 
+					invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
+
+					if(invoke != null && invoke instanceof String){
+						String esito = (String) invoke;
+						String[] voci = esito.split("\\|");
+
+						for (String string : voci) {
+							String[] voce = string.split("#");
+							if(voce.length == 2)
+								root.addVoce(voce[0],voce[1]);
+							else
+								if(voce.length == 1)
+									root.addVoce(voce[0],null);
+						}
+					}
+					
+					if(id!=3) {
+						break;
+					}
+				} catch(Exception e) {
+					log.error("si e' verificato un errore durante l'esecuzione dell'operazione ["+nomeMetodo+"]: " + e.getMessage(),e); 
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito"),
+							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.ko"));
+					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.dettaglio"),
+							e.getMessage());
 				}
-			}catch(Exception e){
-				log.error("si e' verificato un errore durante l'esecuzione dell'operazione ["+nomeMetodo+"]: " + e.getMessage(),e); 
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito"),
-						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.ko"));
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.dettaglio"),
-						e.getMessage());
 			}
+
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -180,7 +195,7 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 
 	@Override
 	public String getSottotitolo(Object entry,BasicBD bd) { return null; }
-	
+
 	@Override
 	public List<String> getValori(Object entry, BasicBD bd) throws ConsoleException { return null; }
 

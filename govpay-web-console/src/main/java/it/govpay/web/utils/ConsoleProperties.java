@@ -25,10 +25,9 @@ public class ConsoleProperties {
 	
 	private String urlDARS;
 	
-	private String dominioOperazioniJMX;
-	private String tipoOperazioniJMX;
-	private String nomeRisorsaOperazioniJMX;
-	private String[] operazioniJMXDisponibili;
+	private String dominioOperazioniJMX, tipoOperazioniJMX, nomeRisorsaOperazioniJMX, asJMX, usernameJMX, passwordJMX, factoryJMX;
+	private String[] urlJMX, operazioniJMXDisponibili;
+	
 	private URI log4j2Config;
 	private String pathEstrattoContoPdfLoghi;
 	
@@ -105,6 +104,16 @@ public class ConsoleProperties {
 			if(StringUtils.isNotEmpty(operazioniAsString))
 				this.operazioniJMXDisponibili = operazioniAsString.split(",");
 			
+			String urlJMXAsString = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.url", props, true);
+			if(StringUtils.isNotEmpty(urlJMXAsString)) {
+				this.urlJMX = urlJMXAsString.split(" ");
+			}
+			
+			this.usernameJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.username", props, false);
+			this.passwordJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.password", props, false);
+			this.asJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.as", props, true);
+			this.factoryJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.factory", props, true);
+			
 			this.pathEstrattoContoPdfLoghi = ConsoleProperties.getProperty("it.govpay.console.pdf.pathLoghi", props, false);
 			
 			
@@ -117,6 +126,26 @@ public class ConsoleProperties {
 		}
 	}
 	
+	public String getAsJMX() {
+		return asJMX;
+	}
+
+	public String getUsernameJMX() {
+		return usernameJMX;
+	}
+
+	public String getPasswordJMX() {
+		return passwordJMX;
+	}
+
+	public String getFactoryJMX() {
+		return factoryJMX;
+	}
+
+	public String[] getUrlJMX() {
+		return urlJMX;
+	}
+
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {
 		String value = System.getProperty(name);
 
