@@ -46,6 +46,7 @@ import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
+import it.govpay.servizi.commons.TipoContabilita;
 import it.govpay.servizi.commons.TipoVersamento;
 import it.govpay.servizi.commons.TipoSceltaWisp;
 import it.govpay.servizi.gpprt.GpAvviaRichiestaStorno;
@@ -618,9 +619,16 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			response.setDataScadenza(versamento.getDataScadenza());
 			if(versamento.getSingoliVersamenti(bd).size() == 1) {
 				response.setIbanAccredito(versamento.getSingoliVersamenti(bd).get(0).getIbanAccredito(bd).getCodIban());
+				if(portaleAutenticato.getVersione().compareTo(Versione.GP_02_03_00) >= 0) {
+					if(versamento.getSingoliVersamenti(bd).get(0).getTributo(bd) != null)
+						response.setCodTributo(versamento.getSingoliVersamenti(bd).get(0).getTributo(bd).getCodTributo());
+					response.setCodContabilita(versamento.getSingoliVersamenti(bd).get(0).getCodContabilita(bd));
+					response.setTipoContabilita(TipoContabilita.valueOf(versamento.getSingoliVersamenti(bd).get(0).getTipoContabilita(bd).name()));
+				}
 			}
 			response.setImportoTotale(versamento.getImportoTotale());
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
+			
 			
 			if(versamento.getCausaleVersamento() instanceof Versamento.CausaleSemplice)
 				response.setCausale(((Versamento.CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
@@ -640,7 +648,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			if(iuv != null) {
 				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(versamento.getApplicazione(bd), versamento.getUo(bd).getDominio(bd), iuv, versamento.getImportoTotale(), portaleAutenticato.getVersione());
 				response.setIuv(iuv.getIuv());
-				if(portaleAutenticato.getVersione().compareTo(Versione.GP_02_02_02) >= 0)
+				if(portaleAutenticato.getVersione().compareTo(Versione.GP_02_03_00) >= 0)
 					response.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
 				response.setBarCode(iuvGenerato.getBarCode());
 				response.setQrCode(iuvGenerato.getQrCode());

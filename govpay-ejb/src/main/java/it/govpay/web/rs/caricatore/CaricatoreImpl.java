@@ -72,7 +72,7 @@ public class CaricatoreImpl implements ICaricatore {
 			if(iuv != null) {
 				Double importoVersamento = request.getImporto();
 				BigDecimal importoVersamentoAsBigDecimal  = new BigDecimal(importoVersamento.doubleValue());
-				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(versamentoModel.getApplicazione(bd), versamentoModel.getUo(bd).getDominio(bd), iuv, importoVersamentoAsBigDecimal, Versione.GP_02_02_02);
+				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(versamentoModel.getApplicazione(bd), versamentoModel.getUo(bd).getDominio(bd), iuv, importoVersamentoAsBigDecimal, Versione.GP_02_03_00);
 				versamentoResponse.setBarCode(new String(iuvGenerato.getBarCode()));
 				versamentoResponse.setQrCode(new String(iuvGenerato.getQrCode()));
 				versamentoResponse.setIuv(iuvGenerato.getIuv());
