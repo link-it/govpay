@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -26,7 +28,8 @@ public class ConsoleProperties {
 	private String urlDARS;
 	
 	private String dominioOperazioniJMX, tipoOperazioniJMX, nomeRisorsaOperazioniJMX, asJMX, usernameJMX, passwordJMX, factoryJMX;
-	private String[] urlJMX, operazioniJMXDisponibili;
+	private String[] operazioniJMXDisponibili;
+	private Map<String, String> urlJMX;
 	
 	private URI log4j2Config;
 	private String pathEstrattoContoPdfLoghi;
@@ -104,9 +107,13 @@ public class ConsoleProperties {
 			if(StringUtils.isNotEmpty(operazioniAsString))
 				this.operazioniJMXDisponibili = operazioniAsString.split(",");
 			
-			String urlJMXAsString = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.url", props, true);
-			if(StringUtils.isNotEmpty(urlJMXAsString)) {
-				this.urlJMX = urlJMXAsString.split(" ");
+			urlJMX = new HashMap<String, String>();
+			String nodiJMXAsString = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.nodi", props, true);
+			if(StringUtils.isNotEmpty(nodiJMXAsString)) {
+				String[] nodi = nodiJMXAsString.split(",");
+				for(String nodo : nodi) {
+					urlJMX.put(nodo, ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.url."+nodo, props, true));
+				}
 			}
 			
 			this.usernameJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.username", props, false);
@@ -142,7 +149,7 @@ public class ConsoleProperties {
 		return factoryJMX;
 	}
 
-	public String[] getUrlJMX() {
+	public Map<String, String> getUrlJMX() {
 		return urlJMX;
 	}
 
@@ -156,10 +163,10 @@ public class ConsoleProperties {
 					throw new Exception("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
-				log.debug("Letta proprieta di configurazione " + name + ": " + value);
+				log.info("Letta proprieta di configurazione " + name + ": " + value);
 			}
 		} else {
-			log.debug("Letta proprieta di sistema " + name + ": " + value);
+			log.info("Letta proprieta di sistema " + name + ": " + value);
 		}
 
 		return value.trim();
@@ -174,7 +181,7 @@ public class ConsoleProperties {
 			}
 		}
 		
-		log.debug("Proprieta " + name + " non trovata");
+		log.info("Proprieta " + name + " non trovata");
 		
 		if(required) 
 			throw new Exception("Proprieta ["+name+"] non trovata");

@@ -3,6 +3,7 @@ package it.govpay.web.rs.dars.manutenzione.strumenti;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -111,9 +112,11 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			 * Se l'operazione e' un reset cache lo eseguo su tutti i nodi
 			 * Altrimenti mi fermo al primo che ha successo
 			 */
+			Map<String, String> urlJMX = ConsoleProperties.getInstance().getUrlJMX();
+			for(String nodo : urlJMX.keySet()) {
 
-			for(String url : ConsoleProperties.getInstance().getUrlJMX()) {
-
+				String url = urlJMX.get(nodo);
+				
 				try{
 					GestoreRisorseJMX gestoreJMX = null;
 					
@@ -123,18 +126,24 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 						gestoreJMX = new GestoreRisorseJMX(as, factory, url, username, password, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
 
 					invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
+					
+					if(id==3) {
+						root.addVoce("Esito operazione sul nodo " + nodo,"Reset cache completata con successo.");
+					} else {
+						root.addVoce("Operazione completata sul nodo",nodo);
+						
+						if(invoke != null && invoke instanceof String){
+							String esito = (String) invoke;
+							String[] voci = esito.split("\\|");
 
-					if(invoke != null && invoke instanceof String){
-						String esito = (String) invoke;
-						String[] voci = esito.split("\\|");
-
-						for (String string : voci) {
-							String[] voce = string.split("#");
-							if(voce.length == 2)
-								root.addVoce(voce[0],voce[1]);
-							else
-								if(voce.length == 1)
-									root.addVoce(voce[0],null);
+							for (String string : voci) {
+								String[] voce = string.split("#");
+								if(voce.length == 2)
+									root.addVoce(voce[0],voce[1]);
+								else
+									if(voce.length == 1)
+										root.addVoce(voce[0],null);
+							}
 						}
 					}
 					
@@ -143,10 +152,11 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 					}
 				} catch(Exception e) {
 					log.error("si e' verificato un errore durante l'esecuzione dell'operazione ["+nomeMetodo+"]: " + e.getMessage(),e); 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.ko"));
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.dettaglio"),
-							e.getMessage());
+					Throwable t = e;
+					while(t.getCause() != null) {
+						t = t.getCause();
+					}
+					root.addVoce("Esito operazione sul nodo " + nodo, t.getMessage());
 				}
 			}
 
