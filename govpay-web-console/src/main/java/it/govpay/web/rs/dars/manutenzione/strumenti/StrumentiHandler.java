@@ -156,7 +156,7 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 					while(t.getCause() != null) {
 						t = t.getCause();
 					}
-					root.addVoce("Esito operazione sul nodo " + nodo, t.getMessage());
+					root.addVoce("Esito operazione sul nodo " + nodo, "Errore: " + t.getMessage());
 				}
 			}
 
