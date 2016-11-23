@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
@@ -25,10 +27,10 @@ public class ConsoleProperties {
 	
 	private String urlDARS;
 	
-	private String dominioOperazioniJMX;
-	private String tipoOperazioniJMX;
-	private String nomeRisorsaOperazioniJMX;
+	private String dominioOperazioniJMX, tipoOperazioniJMX, nomeRisorsaOperazioniJMX, asJMX, usernameJMX, passwordJMX, factoryJMX;
 	private String[] operazioniJMXDisponibili;
+	private Map<String, String> urlJMX;
+	
 	private URI log4j2Config;
 	private String pathEstrattoContoPdfLoghi;
 	private String resourceDir;
@@ -106,6 +108,20 @@ public class ConsoleProperties {
 			if(StringUtils.isNotEmpty(operazioniAsString))
 				this.operazioniJMXDisponibili = operazioniAsString.split(",");
 			
+			urlJMX = new HashMap<String, String>();
+			String nodiJMXAsString = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.nodi", props, true);
+			if(StringUtils.isNotEmpty(nodiJMXAsString)) {
+				String[] nodi = nodiJMXAsString.split(",");
+				for(String nodo : nodi) {
+					urlJMX.put(nodo, ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.url."+nodo, props, true));
+				}
+			}
+			
+			this.usernameJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.username", props, false);
+			this.passwordJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.password", props, false);
+			this.asJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.as", props, true);
+			this.factoryJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.factory", props, true);
+			
 			this.pathEstrattoContoPdfLoghi = ConsoleProperties.getProperty("it.govpay.console.pdf.pathLoghi", props, false);
 			
 			
@@ -118,6 +134,26 @@ public class ConsoleProperties {
 		}
 	}
 	
+	public String getAsJMX() {
+		return asJMX;
+	}
+
+	public String getUsernameJMX() {
+		return usernameJMX;
+	}
+
+	public String getPasswordJMX() {
+		return passwordJMX;
+	}
+
+	public String getFactoryJMX() {
+		return factoryJMX;
+	}
+
+	public Map<String, String> getUrlJMX() {
+		return urlJMX;
+	}
+
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {
 		String value = System.getProperty(name);
 
@@ -128,10 +164,10 @@ public class ConsoleProperties {
 					throw new Exception("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
-				log.debug("Letta proprieta di configurazione " + name + ": " + value);
+				log.info("Letta proprieta di configurazione " + name + ": " + value);
 			}
 		} else {
-			log.debug("Letta proprieta di sistema " + name + ": " + value);
+			log.info("Letta proprieta di sistema " + name + ": " + value);
 		}
 
 		return value.trim();
@@ -146,7 +182,7 @@ public class ConsoleProperties {
 			}
 		}
 		
-		log.debug("Proprieta " + name + " non trovata");
+		log.info("Proprieta " + name + " non trovata");
 		
 		if(required) 
 			throw new Exception("Proprieta ["+name+"] non trovata");
