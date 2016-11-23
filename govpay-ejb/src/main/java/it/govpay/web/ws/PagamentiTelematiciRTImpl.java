@@ -183,6 +183,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		} finally {
 			try{
 				if(bd != null) {
+					bd.setAutoCommit(true);
 					GiornaleEventi ge = new GiornaleEventi(bd);
 					evento.setEsito(response.getEsito());
 					evento.setDataRisposta(new Date());
@@ -312,6 +313,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 		} finally {
 			try{
 				if(bd != null) {
+					bd.setAutoCommit(true);
 					GiornaleEventi ge = new GiornaleEventi(bd);
 					evento.setEsito(response.getPaaInviaRTRisposta().getEsito());
 					evento.setDataRisposta(new Date());
