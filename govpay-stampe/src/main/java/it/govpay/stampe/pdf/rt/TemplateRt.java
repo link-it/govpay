@@ -1,6 +1,7 @@
 package it.govpay.stampe.pdf.rt;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
+import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -11,77 +12,251 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtEnteBeneficiario;
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.govpay.model.Dominio;
+import it.govpay.model.RicevutaPagamento;
 import it.govpay.stampe.pdf.Costanti;
 import it.govpay.stampe.pdf.TemplateBase;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
+import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
+import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
 
 public class TemplateRt {
 
 	/**
-	 * Creates custom component which is possible to add to any report band component
+	 * 
+	 * TITOLO
+	 * 
+	 * IMG ENTE sx  Dati Ente Centro IMG PAGAPA dx
+	 * 
+	 * @param pathLoghi
+	 * @param avviso
+	 * @param errList
+	 * @param log
+	 * @return
 	 */
-	public static ComponentBuilder<?, ?> createTitleComponent(String pathLoghi, CtRicevutaTelematica rt,List<String> errList,Logger log) {
+	public static ComponentBuilder<?, ?> createTitleComponent(String pathLoghi, RicevutaPagamento ricevuta,  List<String> errList, Logger log){
+		String sezione = "Sezione Titolo";
 		try{
 			StringBuilder errMsg = new StringBuilder();
 			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
 			InputStream resourceLogoPagoPa = new ByteArrayInputStream(Base64.decodeBase64(Costanti.logoPagoPa));
-			CtEnteBeneficiario enteBeneficiario = rt.getEnteBeneficiario();
-			String denominazioneDominio = enteBeneficiario.getDenominazioneBeneficiario();
-			
-			String logoDominio = enteBeneficiario.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco() + ".png";
+			Dominio dominio = ricevuta.getDominioCreditore();
+			String logoDominio = dominio.getCodDominio() + ".png";
 			File fEnte = new File(pathLoghi+"/"+logoDominio);
-			
-			
+
+
 			if(fEnte.exists()){
 				InputStream resourceLogoEnte = new FileInputStream(fEnte);
-				lst.add(cmp.image(resourceLogoEnte).setFixedDimension(90, 90));
+				lst.add(cmp.image(resourceLogoEnte).setFixedDimension(90, 90).setHorizontalImageAlignment(HorizontalImageAlignment.LEFT));
 			}else {
 				if(errMsg.length() >0)
 					errMsg.append(", ");
 
-				errMsg.append(" l'estratto conto non contiene il logo del dominio poiche' il file ["+logoDominio+"] non e' stato trovato nella directory dei loghi");
+				errMsg.append("Il PDF non contiene il logo del dominio poiche' il file ["+logoDominio+"] non e' stato trovato nella directory dei loghi");
 			}
 
 			if(errMsg.length() >0){
 				errList.add(errMsg.toString());
 			}
-			
-			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, enteBeneficiario.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco());
-			
-			String indirizzo = StringUtils.isNotEmpty(enteBeneficiario.getIndirizzoBeneficiario()) ? enteBeneficiario.getIndirizzoBeneficiario() : "";
-			String civico = StringUtils.isNotEmpty(enteBeneficiario.getCivicoBeneficiario()) ? enteBeneficiario.getCivicoBeneficiario() : "";
-			String cap = StringUtils.isNotEmpty(enteBeneficiario.getCapBeneficiario()) ? enteBeneficiario.getCapBeneficiario() : "";
-			String localita = StringUtils.isNotEmpty(enteBeneficiario.getLocalitaBeneficiario()) ? enteBeneficiario.getLocalitaBeneficiario() : "";
-			String provincia = StringUtils.isNotEmpty(enteBeneficiario.getProvinciaBeneficiario()) ? (" (" +enteBeneficiario.getProvinciaBeneficiario() +")" ) : "";
 
+			List<ComponentBuilder<?, ?>> lstTitolo = new ArrayList<ComponentBuilder<?,?>>();
 
-			String indirizzoCivico = indirizzo + " " + civico;
-			String capCitta = cap + " " + localita + provincia;
-			
-			lst.add(cmp.verticalList(
-					cmp.text(denominazioneDominio).setStyle(TemplateBase.bold18LeftStyle).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
-					cmp.text(pIvaDominio).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
-					cmp.text(indirizzoCivico).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
-					cmp.text(capCitta).setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
-					));
-			
-			return cmp.horizontalList()
-					.add(cmp.horizontalList(lst.toArray(new ComponentBuilder[lst.size()])),
-							cmp.image(resourceLogoPagoPa).setFixedDimension(90, 90),
-								cmp.verticalGap(20))
-					.newRow()
-					.add(cmp.line())
-					.newRow()
-							;
+			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.CENTER;
+			VerticalTextAlignment verticalTextAlignment = VerticalTextAlignment.TOP;
+			StyleBuilder style = stl.style(TemplateBase.fontStyle12).setVerticalTextAlignment(verticalTextAlignment);  
+			StyleBuilder headerStyle = stl.style(TemplateBase.bold16LeftStyle); 
+
+			ComponentBuilder<?, ?> createDatiDominio = TemplateBase.createDatiDominio(ricevuta.getDominioCreditore(), ricevuta.getAnagraficaCreditore(), horizontalTextAlignment,
+					verticalTextAlignment, headerStyle, style, log);
+			lstTitolo.add(createDatiDominio);
+			lst.add(cmp.verticalList(lstTitolo.toArray(new ComponentBuilder[lstTitolo.size()])));
+			lst.add(cmp.image(resourceLogoPagoPa).setFixedDimension(90, 90).setHorizontalImageAlignment(HorizontalImageAlignment.RIGHT));
+
+			return cmp.horizontalList(lst.toArray(new ComponentBuilder[lst.size()])).newRow().add(cmp.verticalGap(20)).newRow()
+					//					.add(cmp.line()).newRow()
+					;
+
 		}catch(Exception e){
-			log.error(e,e);
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+
+	/**
+	 * 
+	 * sx vuoto, dx dati debitore
+	 * 
+	 * @param avviso
+	 * @param errList
+	 * @param log
+	 * @return
+	 */
+	public static ComponentBuilder<?, ?> createSezioneDebitore(RicevutaPagamento ricevuta,  List<String> errList, Logger log){
+		String sezione = "Sezione Debitore";
+		try{
+			List<ComponentBuilder<?, ?>> lst = new ArrayList<ComponentBuilder<?,?>>();
+			lst.add(cmp.text(" "));
+			lst.add(TemplateBase.createDatiDebitore(ricevuta.getAnagraficaDebitore(), false, false, stl.style(TemplateBase.rootStyle).setPadding(0), HorizontalTextAlignment.LEFT ,log));
+
+			return cmp.horizontalList(lst.toArray(new ComponentBuilder[lst.size()])).newRow().add(cmp.verticalGap(20)).newRow()
+					;
+
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+
+	/***
+	 * Elenco delle informazioni sul titolo avviso:
+	 * 
+	 * 1 Avviso di pagamento N ...
+	 * 
+	 * @param avviso
+	 * @param errList
+	 * @param log
+	 * @return
+	 */
+	public static ComponentBuilder<?, ?> createSezioneTitoloRicevuta(RicevutaPagamento ricevuta,  List<String> errList, Logger log){
+		String sezione = "Sezione Titolo Ricevuta";
+		try{
+			HorizontalListBuilder list = cmp.horizontalList().setBaseStyle(stl.style(TemplateBase.fontStyle16)
+					.setTextAlignment(HorizontalTextAlignment.CENTER, VerticalTextAlignment.MIDDLE));
+			String label = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_RICEVUTA_PAGAMENTO_UPPER_CASE, ricevuta.getCodAvviso());
+			list.add(cmp.verticalGap(70));
+			list.add(cmp.text(label ).setStyle(TemplateBase.bold16CenteredStyle));
+			list.add(cmp.verticalGap(50));
+			list.newRow();
+
+			return list;
+
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * sx causale, dx importi
+	 * 
+	 * @param avviso
+	 * @param errList
+	 * @param log
+	 * @return
+	 */
+	public static ComponentBuilder<?, ?> createSezionePagamento(RicevutaPagamento ricevuta,  List<String> errList, Logger log){
+		String sezione = "Sezione Pagamento";
+		try{
+//			VerticalTextAlignment verticalTextAlignment = VerticalTextAlignment.TOP;
+//			StyleBuilder style = stl.style(TemplateBase.rootFont).setVerticalTextAlignment(verticalTextAlignment);;  
+				return cmp.horizontalList().add(
+						cmp.hListCell(createSezioneCausale(ricevuta, errList, log)).heightFixedOnTop(),
+						cmp.hListCell(createSezioneImporti(ricevuta, errList, log)).heightFixedOnTop()				
+						);//.setStyle(style);
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+	
+	/**
+	 * 
+	 * linea 1: causale
+	 * linea 2: debitore
+	 * 
+	 * @param avviso
+	 * @param errList
+	 * @param log
+	 * @return
+	 */
+	public static ComponentBuilder<?, ?> createSezioneCausale(RicevutaPagamento ricevuta, List<String> errList, Logger log){
+		String sezione = "Sezione Causale";
+		try{
+			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.LEFT;
+			StyleBuilder style = stl.style(TemplateBase.rootStyle).setPadding(0).setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(VerticalTextAlignment.TOP);
+			VerticalListBuilder verticalList = cmp.verticalList().setStyle(style);
+
+			verticalList.add(cmp.verticalGap(20));
+			verticalList.add(cmp.text(ricevuta.getCausale()).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
+			verticalList.add(cmp.text(Costanti.LABEL_INTESTATO_A).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
+			TemplateBase.createDatiDebitore(verticalList,ricevuta.getAnagraficaDebitore(), true, false, style, horizontalTextAlignment ,log);
+			verticalList.add(cmp.verticalGap(20));
+
+			return verticalList; 
+
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+	
+	
+	
+	/**
+	 * 
+	 * linea 1: tabella importo
+	 * linea 2: tabella scadenza
+	 * linea 3: tabella riferimenti
+	 * 
+	 * @param avviso
+	 * @param errList
+	 * @param log
+	 * @return
+	 */
+	public static ComponentBuilder<?, ?> createSezioneImporti(RicevutaPagamento ricevuta,  List<String> errList, Logger log){
+		String sezione = "Sezione Importi";
+		try{
+			StyleBuilder style = stl.style(TemplateBase.rootStyle).setPadding(0);
+			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.LEFT;
+			VerticalListBuilder verticalList = cmp.verticalList().setStyle(stl.style(style)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(VerticalTextAlignment.TOP)); 
+
+			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(5).setRightPadding(0).setTopPadding(5).setBottomPadding(5);
+
+			List<String> values = new ArrayList<String>();
+			String importoDovutoAsString = "‎€"+ ricevuta.getImportoDovuto().doubleValue(); 
+			StringBuilder sb = new StringBuilder();
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_DOVUTO, importoDovutoAsString));
+			if(ricevuta.getDataScadenza() != null){
+				sb.append("<br/>");
+				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_DATA_SCADENZA, TemplateBase.sdf_ddMMyyyy.format(ricevuta.getDataScadenza())));
+			}
+			String importoPagatoAsString = "‎€"+ ricevuta.getImportoPagato().doubleValue(); 
+			sb.append("<br/>");
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_PAGATO, importoPagatoAsString));
+			if(ricevuta.getDataPagamento() != null){
+				sb.append("<br/>");
+				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_DATA_PAGAMENTO, TemplateBase.sdf_ddMMyyyy.format(ricevuta.getDataPagamento())));
+			}
+			sb.append("<br/>");
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IUV, ricevuta.getIuv()));
+			sb.append("<br/>");
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_CCP, ricevuta.getCcp()));
+			sb.append("<br/>");
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_ID_RISCOSSIONE, ricevuta.getIdRiscossione()));
+			sb.append("<br/>");
+			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_PSP, ricevuta.getPsp()));
 			
+			values.add(sb.toString());
+			verticalList.add(TemplateBase.getTabella(Costanti.LABEL_ESTREMI_DI_PAGAMENTO,values, errList,150, columnStyle,horizontalTextAlignment,log));
+
+			return verticalList.setFixedWidth(200);//.setFixedHeight(90)	; 
+
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
 		}
 		return null;
 	}

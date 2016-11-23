@@ -82,7 +82,7 @@ public static final String RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY = "ricevutaPaga
 			if(this.govpayResourceDir != null) {
 				File resourceDirFile = new File(this.govpayResourceDir);
 				for(File f : resourceDirFile.listFiles()) {
-					if(!f.getName().startsWith("ricevutaPagamento") && !f.getName().endsWith("properties")) {
+					if(!(f.getName().startsWith("ricevutaPagamento") && f.getName().endsWith("properties"))) {
 						// Non e' un file di properties. lo salto
 						continue;
 					}

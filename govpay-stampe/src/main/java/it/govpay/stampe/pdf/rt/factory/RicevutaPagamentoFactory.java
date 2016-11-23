@@ -2,8 +2,6 @@ package it.govpay.stampe.pdf.rt.factory;
 
 import org.apache.logging.log4j.Logger;
 
-import it.govpay.stampe.pdf.avvisoPagamento.IAvvisoPagamento;
-import it.govpay.stampe.pdf.avvisoPagamento.utils.AvvisoPagamentoProperties;
 import it.govpay.stampe.pdf.rt.IRicevutaPagamento;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 

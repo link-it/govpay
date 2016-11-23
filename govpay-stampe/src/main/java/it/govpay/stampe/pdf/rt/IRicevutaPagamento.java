@@ -5,7 +5,7 @@ import java.util.Properties;
 
 import org.apache.logging.log4j.Logger;
 
-import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
+import it.govpay.model.RicevutaPagamento;
 
 public interface IRicevutaPagamento {
 
@@ -22,6 +22,6 @@ public interface IRicevutaPagamento {
 	 * 
 	 * @throws Exception
 	 */
-	public String getPdfRicevutaPagamento(String pathLoghi, CtRicevutaTelematica rt,String  causale, Properties properties, OutputStream os, Logger log) throws Exception;
+	public String getPdfRicevutaPagamento(String pathLoghi, RicevutaPagamento ricevuta, Properties properties, OutputStream os, Logger log) throws Exception;
 		
 }

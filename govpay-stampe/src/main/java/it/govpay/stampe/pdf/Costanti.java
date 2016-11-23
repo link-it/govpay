@@ -58,13 +58,15 @@ public class Costanti {
 	
 	/** LABEL PDF RT */
 	
+	public static final String LABEL_RICEVUTA_PAGAMENTO_UPPER_CASE = "RICEVUTA DI PAGAMENTO N°";
+	
 	public static final String LABEL_CF_PIVA = "Codice Fiscale/P.IVA";
 	public static final String LABEL_RICEVUTA_PAGAMENTO = "RICEVUTA DI PAGAMENTO";
 	public static final String LABEL_DETTAGLIO_PAGAMENTO = "DETTAGLIO DEL PAGAMENTO";
 	public static final String LABEL_CF_PIVA_DEBITORE = "Codice Fiscale/P.IVA del debitore";
 //	public static final String LABEL_DATA_PAGAMENTO = "Data di pagamento";
 //	public static final String LABEL_IUV = "IUV";
-//	public static final String LABEL_IMPORTO = "Importo";
+	public static final String LABEL_IMPORTO_DOVUTO = "Importo Dovuto";
 	public static final String LABEL_IUR = "Identificativo della riscossione";
 	public static final String LABEL_ISTITUTO_ATTESTANTE = "Istituto attestante";
 	
@@ -103,6 +105,10 @@ public class Costanti {
 	public static final String LABEL_DATA_REVOCA = "Data Revoca";
 	public static final String LABEL_ESITO_REVOCA = "RICEVUTA DI REVOCA";
 	public static final String LABEL_IMPORTO_REVOCA = "Importo Revocato";
+	
+	public static final String LABEL_CCP = "Ccp";
+	public static final String LABEL_ID_RISCOSSIONE = "Id Riscossione";
+	public static final String LABEL_PSP = "Psp";
 	
 	
 	/** LABEL AVVISO PAGAMENTO **/
