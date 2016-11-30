@@ -33,6 +33,7 @@ public class ConsoleProperties {
 	
 	private URI log4j2Config;
 	private String pathEstrattoContoPdfLoghi;
+	private String resourceDir;
 	
 	private String urlEstrattoConto, usernameEstrattoConto, passwordEstrattoConto;
 	
@@ -66,21 +67,21 @@ public class ConsoleProperties {
 			// Se e' configurata, la uso come prioritaria
 			
 			try {
-				String resourceDir = getProperty("it.govpay.console.resource.path", props1, false);
+				this.resourceDir = getProperty("it.govpay.console.resource.path", props1, false);
 				
-				if(resourceDir != null) {
-					File resourceDirFile = new File(resourceDir);
+				if(this.resourceDir != null) {
+					File resourceDirFile = new File(this.resourceDir);
 					if(!resourceDirFile.isDirectory())
 						throw new Exception("Il path indicato nella property \"it.govpay.console.resource.path\" (" + resourceDir + ") non esiste o non e' un folder.");
 
-					File log4j2ConfigFile = new File(resourceDir + File.separatorChar + "log4j2.xml");
+					File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + "log4j2.xml");
 
 					if(log4j2ConfigFile.exists()) {
 						log.info("Caricata configurazione logger: " + log4j2ConfigFile.getAbsolutePath());
 						this.log4j2Config = log4j2ConfigFile.toURI();
 					}
 					
-					File gpConfigFile = new File(resourceDir + File.separatorChar + "govpayConsole.properties");
+					File gpConfigFile = new File(this.resourceDir + File.separatorChar + "govpayConsole.properties");
 					if(gpConfigFile.exists()) {
 						props0 = new Properties();
 						props0.load(new FileInputStream(gpConfigFile));
@@ -236,5 +237,7 @@ public class ConsoleProperties {
 	public String getPasswordEstrattoConto() {
 		return passwordEstrattoConto;
 	}
-	
+	public String getResourceDir() {
+		return resourceDir;
+	}
 }

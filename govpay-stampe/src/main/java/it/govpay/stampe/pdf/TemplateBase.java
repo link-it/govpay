@@ -1,6 +1,9 @@
 package it.govpay.stampe.pdf;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
+import static net.sf.dynamicreports.report.builder.DynamicReports.col;
+import static net.sf.dynamicreports.report.builder.DynamicReports.field;
+import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 import static net.sf.dynamicreports.report.builder.DynamicReports.tableOfContentsCustomizer;
 import static net.sf.dynamicreports.report.builder.DynamicReports.template;
@@ -8,6 +11,8 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.template;
 import java.awt.Color;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
@@ -17,9 +22,13 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter;
+import net.sf.dynamicreports.report.builder.FieldBuilder;
 import net.sf.dynamicreports.report.builder.ReportTemplateBuilder;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
+import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
 import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
 import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 import net.sf.dynamicreports.report.builder.datatype.BigDecimalType;
@@ -30,6 +39,7 @@ import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.Markup;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 
 public class TemplateBase {
@@ -380,14 +390,53 @@ public class TemplateBase {
 		}
 	}
 
+	public static SubreportBuilder getTabella(String title, List<String> values, List<String> errList,Integer width,StyleBuilder columnStyle, HorizontalTextAlignment horizontalTextAlignment, Logger log) throws Exception{
+		String sezione = "Tabella titolo["+title+"]";
+		try{
+			boolean showColumnTitle = StringUtils.isNotEmpty(title);
+			// Scittura Intestazione
+			List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();
 
-	//	public static void init() throws Exception{
-	//	JasperReportBuilder report = report();
-	//	List<ComponentBuilder<?, ?>> cl = new ArrayList<ComponentBuilder<?,?>>();
-	//	cl.add(cmp.verticalGap(20));
-	//	ComponentBuilder<?, ?>[] ca = new ComponentBuilder<?, ?>[cl.size()];
-	//	report.setPageFormat(PageType.A4, PageOrientation.PORTRAIT)
-	//	.setTemplate(TemplateRt.reportTemplate)
-	//	.title(cl.toArray(ca));
-	//}
+			TextFieldBuilder<String> componentText = cmp.text(new TemplateBase().new ColonnaUnoExpression())
+					.setMarkup(Markup.HTML).setStyle(columnStyle).setHorizontalTextAlignment(horizontalTextAlignment); 
+
+			ComponentColumnBuilder columnOne = col.componentColumn(title, componentText).setWidth(width);
+
+			colonne.add(columnOne);
+
+			List<FieldBuilder<String>> fields = new ArrayList<FieldBuilder<String>>();
+
+			fields.add(field(Costanti.COL_UNO, String.class));
+
+			List<String> header = new ArrayList<String>();
+			header.add(Costanti.COL_UNO);
+
+			DRDataSource dataSource = new DRDataSource(header.toArray(new String[header.size()]));
+			for (String value : values) {
+				List<String> oneLine = new ArrayList<String>();
+				oneLine.add(value);
+				dataSource.add(oneLine.toArray(new Object[oneLine.size()]));	
+			}
+
+			return cmp.subreport(
+					report().setShowColumnTitle(showColumnTitle)
+					.setTemplate(TemplateBase.tableTemplate)
+					.fields(fields.toArray(new FieldBuilder[fields.size()])) 
+					.columns(colonne.toArray(new ColumnBuilder[colonne.size()]))
+					.setDataSource(dataSource));
+
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+
+	public class ColonnaUnoExpression extends AbstractSimpleExpression<String> {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public String evaluate(ReportParameters reportParameters) {
+			return reportParameters.getValue(Costanti.COL_UNO);
+		}
+	}
 }

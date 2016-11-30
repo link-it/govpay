@@ -41,9 +41,15 @@ if(StringUtils.isNotEmpty(msg)){
 }
     		
 %>
-
+<script type="text/javascript">
+function attivaReload(){
+setInterval(function(){
+    location.reload(true); //reload each 5 minutes
+},5*60*1000);
+}
+</script>
 </head>
-<body>
+<body onload="attivaReload()">
 
 <div class="container">
 

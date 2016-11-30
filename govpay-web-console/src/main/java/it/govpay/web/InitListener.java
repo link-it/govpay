@@ -23,6 +23,7 @@ package it.govpay.web;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 import it.govpay.web.utils.ConsoleProperties;
 
 import java.net.URI;
@@ -57,6 +58,7 @@ public class InitListener implements ServletContextListener {
 			}
 			
 			GovpayConfig.newInstance("/govpayConsole.properties");
+			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
 			AnagraficaManager.newInstance(false);
 			ConnectionManager.initialize();
 		} catch(Exception e){
