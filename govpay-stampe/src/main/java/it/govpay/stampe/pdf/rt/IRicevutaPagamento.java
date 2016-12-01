@@ -11,8 +11,6 @@ public interface IRicevutaPagamento {
 
 	/****
 	 * 
-	 * 
-	 * 
 	 * @param pathLoghi // directory dove si trova il logo dell'ente creditore;
 	 * @param rt dati della ricevuta di pagamento da inserire nel pdf
 	 * @param causale causale del pagamento
