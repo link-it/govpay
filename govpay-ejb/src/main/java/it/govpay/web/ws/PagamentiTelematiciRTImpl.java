@@ -246,7 +246,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			String principal = getPrincipal();
-			if(principal == null) {
+			if(GovpayConfig.getInstance().isPddAuthEnable() && principal == null) {
 				ctx.log("rt.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -256,7 +256,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 				intermediario = AnagraficaManager.getIntermediario(bd, header.getIdentificativoIntermediarioPA());
 
 				// Controllo autorizzazione
-				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
 					ctx.log("rt.erroreAutorizzazione", principal);
 					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito (" + principal + ") non corrisponde all'intermediario " + header.getIdentificativoIntermediarioPA() + ". Atteso [" + intermediario.getConnettorePdd().getPrincipal() + "]");
 				}
