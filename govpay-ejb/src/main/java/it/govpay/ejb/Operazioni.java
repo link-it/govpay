@@ -60,8 +60,8 @@ public class Operazioni{
 	@Resource
 	TimerService timerservice;
 
-	@Schedule(hour="4,8,16,20", persistent=false)
-	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
+	@Schedule(hour="4,12,18", persistent=false)
+	@AccessTimeout(value=30, unit=TimeUnit.MINUTES)
 	public static String acquisizioneRendicontazioni(){
 		BasicBD bd = null;
 		GpContext ctx = null;
@@ -78,7 +78,7 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			String response = new Rendicontazioni(bd).downloadRendicontazioni();
+			String response = new Rendicontazioni(bd).downloadRendicontazioni(false);
 			return response;
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
@@ -89,7 +89,7 @@ public class Operazioni{
 		}
 	}
 
-	@Schedule(hour="0,12", persistent=false)
+	@Schedule(hour="2", persistent=false)
 	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
 	public static String aggiornamentoRegistroPsp(){
 		BasicBD bd = null;
@@ -118,8 +118,8 @@ public class Operazioni{
 		}
 	}
 
-	@Schedule(hour="2,6,10,14,18,22", persistent=false)
-	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
+	@Schedule(hour="*", persistent=false)
+	@AccessTimeout(value=15, unit=TimeUnit.MINUTES)
 	public static String recuperoRptPendenti(){
 		BasicBD bd = null;
 		GpContext ctx = null;
@@ -220,7 +220,7 @@ public class Operazioni{
 		} 
 	}
 	
-	@Schedule(hour="0,12", persistent=false)
+	@Schedule(hour="0", persistent=false)
 	@AccessTimeout(value=5, unit=TimeUnit.MINUTES)
 	public void generaEstrattoConto(Timer timer) {
 		estrattoConto();
