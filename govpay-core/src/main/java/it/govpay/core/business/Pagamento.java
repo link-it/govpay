@@ -620,7 +620,7 @@ public class Pagamento extends BasicBD {
 				Calendar inizioFinestra = (Calendar) fineFinestra.clone();
 				inizioFinestra.add(Calendar.DATE, -finestra);
 
-				Map<String, String> statiRptPendenti = acquisisciPendenti(client,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 10);
+				Map<String, String> statiRptPendenti = acquisisciPendenti(client,intermediario, stazione, lstDomini, false, inizioFinestra, fineFinestra, 500);
 				
 				log.info("Identificate sul NodoSPC " + statiRptPendenti.size() + " RPT pendenti");
 				ctx.log("pendenti.listaPendentiOk", stazione.getCodStazione(), statiRptPendenti.size() + "");
