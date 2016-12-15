@@ -512,7 +512,7 @@ CREATE TABLE versamenti
 	debitore_localita VARCHAR2(35 CHAR),
 	debitore_provincia VARCHAR2(35 CHAR),
 	debitore_nazione VARCHAR2(2 CHAR),
-	debitore_email VARCHAR2(255 CHAR),
+	debitore_email VARCHAR2(256 CHAR),
 	debitore_telefono VARCHAR2(35 CHAR),
 	debitore_cellulare VARCHAR2(35 CHAR),
 	debitore_fax VARCHAR2(35 CHAR),

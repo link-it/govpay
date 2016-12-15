@@ -72,6 +72,7 @@ import it.govpay.core.exceptions.VersamentoDuplicatoException;
 import it.govpay.core.exceptions.VersamentoScadutoException;
 import it.govpay.core.exceptions.VersamentoSconosciutoException;
 import it.govpay.core.exceptions.NdpException.FaultPa;
+import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.RptUtils;
@@ -156,7 +157,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			String principal = getPrincipal();
-			if(principal == null) {
+			if(GovpayConfig.getInstance().isPddAuthEnable() && principal == null) {
 				ctx.log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -167,7 +168,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
 
 				// Controllo autorizzazione
-				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
 					ctx.log("ccp.erroreAutorizzazione", principal);
 					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + codIntermediario);
 				}
@@ -444,7 +445,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			String principal = getPrincipal();
-			if(principal == null) {
+			if(GovpayConfig.getInstance().isPddAuthEnable() && principal == null) {
 				ctx.log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -454,7 +455,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				intermediario = AnagraficaManager.getIntermediario(bd, codIntermediario);
 
 				// Controllo autorizzazione
-				if(!principal.equals(intermediario.getConnettorePdd().getPrincipal())){
+				if(GovpayConfig.getInstance().isPddAuthEnable() && !principal.equals(intermediario.getConnettorePdd().getPrincipal())){
 					ctx.log("ccp.erroreAutorizzazione", principal);
 					throw new NotAuthorizedException("Autorizzazione fallita: principal fornito non corrisponde all'intermediario " + codIntermediario);
 				}

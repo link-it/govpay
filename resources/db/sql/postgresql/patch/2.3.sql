@@ -12,7 +12,7 @@ ALTER TABLE tributi ALTER COLUMN tipo_contabilita DROP NOT NULL;
 ALTER TABLE tributi ALTER COLUMN codice_contabilita DROP NOT NULL;
 
 --GP-406
-ALTER TABLE versamenti ADD COLUMN debitore_email VARCHAR(255);
+ALTER TABLE versamenti ADD COLUMN debitore_email VARCHAR(256);
 ALTER TABLE versamenti ADD COLUMN debitore_telefono VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN debitore_cellulare VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN debitore_fax VARCHAR(35);

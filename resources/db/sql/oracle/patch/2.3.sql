@@ -14,7 +14,7 @@ ALTER TABLE tributi MODIFY (tipo_contabilita NULL);
 ALTER TABLE tributi MODIFY (codice_contabilita NULL);
 
 --GP-406
-ALTER TABLE versamenti ADD debitore_email VARCHAR2(255 CHAR);
+ALTER TABLE versamenti ADD debitore_email VARCHAR2(256 CHAR);
 ALTER TABLE versamenti ADD debitore_telefono VARCHAR2(35 CHAR);
 ALTER TABLE versamenti ADD debitore_cellulare VARCHAR2(35 CHAR);
 ALTER TABLE versamenti ADD debitore_fax VARCHAR2(35 CHAR);

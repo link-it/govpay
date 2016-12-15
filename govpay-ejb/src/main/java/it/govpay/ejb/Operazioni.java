@@ -38,8 +38,8 @@ public class Operazioni{
 	@Resource
 	TimerService timerservice;
 
-	@Schedule(hour="4,8,16,20", persistent=false)
-	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
+	@Schedule(hour="4,12,18", persistent=false)
+	@AccessTimeout(value=30, unit=TimeUnit.MINUTES)
 	public static String acquisizioneRendicontazioni(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
@@ -47,7 +47,7 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.acquisizioneRendicontazioni("Batch");
 	}
 
-	@Schedule(hour="0,12", persistent=false)
+	@Schedule(hour="2", persistent=false)
 	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
 	public static String aggiornamentoRegistroPsp(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
@@ -56,8 +56,8 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.aggiornamentoRegistroPsp("Batch");
 	}
 
-	@Schedule(hour="2,6,10,14,18,22", persistent=false)
-	@AccessTimeout(value=10, unit=TimeUnit.MINUTES)
+	@Schedule(hour="*", persistent=false)
+	@AccessTimeout(value=15, unit=TimeUnit.MINUTES)
 	public static String recuperoRptPendenti(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
@@ -81,9 +81,12 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.resetCacheAnagrafica();
 	}
 	
-	@Schedule(hour="0,12", persistent=false)
+	@Schedule(hour="0", persistent=false)
 	@AccessTimeout(value=5, unit=TimeUnit.MINUTES)
 	public void generaEstrattoConto(Timer timer) {
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return ;
+		}
 		it.govpay.core.business.Operazioni.estrattoConto("Batch");
 	}
 

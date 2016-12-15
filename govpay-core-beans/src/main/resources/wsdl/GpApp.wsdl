@@ -329,10 +329,10 @@
 				</xsd:restriction>
 			</xsd:simpleType>
 			
-			<xsd:simpleType name="email">
+			<xsd:simpleType name="email256">
 				<xsd:restriction base="xsd:string">
 		            <xsd:pattern value="[A-Za-z0-9_]+([\-\+\.'][A-Za-z0-9_]+)*@[A-Za-z0-9_]+([\-\.][A-Za-z0-9_]+)*\.[A-Za-z0-9_]+([\-\.][A-Za-z0-9_]+)*"/>
-		            <xsd:maxLength value="255"/>
+		            <xsd:maxLength value="256"/>
 				</xsd:restriction>
 			</xsd:simpleType>
 			
@@ -510,7 +510,7 @@
 					<xsd:element name="localita" type="com:string35" minOccurs="0" />
 					<xsd:element name="provincia" type="com:string35" minOccurs="0" />
 					<xsd:element name="nazione" type="com:string2" minOccurs="0" />
-					<xsd:element name="email" type="com:email" minOccurs="0" />
+					<xsd:element name="email" type="com:email256" minOccurs="0" />
 					<xsd:element name="telefono" type="xsd:string" minOccurs="0" />
 					<xsd:element name="cellulare" type="xsd:string" minOccurs="0" />
 					<xsd:element name="fax" type="xsd:string" minOccurs="0" />

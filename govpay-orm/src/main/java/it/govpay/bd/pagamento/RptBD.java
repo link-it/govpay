@@ -167,11 +167,10 @@ public class RptBD extends BasicBD {
 		}
 	}
 
-	public List<Rpt> getRptPendenti(String codDominio) throws ServiceException {
+	public List<Rpt> getRptPendenti(List<String> codDomini) throws ServiceException {
 		try {
 			IPaginatedExpression exp = this.getRptService().newPaginatedExpression();
-			
-			exp.equals(RPT.model().COD_DOMINIO, codDominio);
+			exp.in(RPT.model().COD_DOMINIO, codDomini);
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_ERRORE_INVIO_A_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_NODO.toString());
 			exp.notEquals(RPT.model().STATO, Rpt.StatoRpt.RPT_RIFIUTATA_PSP.toString());

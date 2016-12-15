@@ -65,7 +65,7 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			String response = new Rendicontazioni(bd).downloadRendicontazioni();
+			String response = new Rendicontazioni(bd).downloadRendicontazioni(false);
 			return response;
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);

@@ -69,7 +69,7 @@ public class GovpayConfig {
 	private String mLogClass, mLogDS;
 	private Severity mLogLevel;
 	private TipiDatabase mLogDBType;
-	private boolean mLogOnLog4j, mLogOnDB, mLogSql;
+	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
 	private boolean batchOn;
 	
 	private boolean batchEstrattoConto, batchEstrattoContoPdf;
@@ -98,7 +98,8 @@ public class GovpayConfig {
 		this.batchEstrattoConto = false;
 		this.batchEstrattoContoPdf = false;
 		this.batchOn=true;
-
+		this.pddAuthEnable = true;
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -291,7 +292,11 @@ public class GovpayConfig {
 				}
 
 			}
-
+			
+			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", props, false, log);
+			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
+				this.pddAuthEnable = false;
+			
 			String listaHandlers = getProperty("it.govpay.integration.client.out", props, false, log);
 
 			this.outHandlers = new ArrayList<String>();
@@ -446,6 +451,10 @@ public class GovpayConfig {
 
 	public String getPathEstrattoConto() {
 		return pathEstrattoConto;
+	}
+	
+	public boolean isPddAuthEnable() {
+		return pddAuthEnable;
 	}
 
 	public List<String> getOutHandlers() {

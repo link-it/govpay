@@ -1076,7 +1076,7 @@
 			<xsd:element name="debitoreLocalita" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreProvincia" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreNazione" type="String2" minOccurs="0"/>
-			<xsd:element name="debitoreEmail" type="String255" minOccurs="0"/>
+			<xsd:element name="debitoreEmail" type="String256" minOccurs="0"/>
 			<xsd:element name="debitoreTelefono" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreCellulare" type="String35" minOccurs="0"/>
 			<xsd:element name="debitoreFax" type="String35" minOccurs="0"/>
