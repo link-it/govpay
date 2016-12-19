@@ -380,7 +380,9 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			printer = new Printer(this.getFormat() , baos);
 			printer.printRecord(getCsvHeader());
 			for (Evento evento: list) {
-				printer.printRecord(this.getEventoCsv(evento));
+				printer.printRecord(this.getEventoCsv(evento, true));
+				if("OK".equals(evento.getEsito()) || "KO".equals(evento.getEsito()))
+					printer.printRecord(this.getEventoCsv(evento, false));
 			}
 		}finally {
 			try{
@@ -396,6 +398,8 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	private List<String> getCsvHeader(){
 		List<String> header = new ArrayList<String>();
 		
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".data.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"));
@@ -409,88 +413,97 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametri.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esito.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRisposta.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRichiesta.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".altriParametriRisposta.label"));
-
 		return header;
 	}
 
-	private List<String> getEventoCsv(Evento evento){ 
+	private List<String> getEventoCsv(Evento evento, boolean request){ 
 		List<String> oneLine = new ArrayList<String>();
-
-		if(StringUtils.isNotEmpty(evento.getCodDominio()))
-			oneLine.add(evento.getCodDominio());
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getIuv()))
-			oneLine.add(evento.getIuv());
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getCcp()))
-			oneLine.add(evento.getCcp());
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getCodPsp()))
-			oneLine.add(evento.getCodPsp());
-		else 
-			oneLine.add("");
-		if(evento.getTipoEvento() != null)
-			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+evento.getTipoEvento().name()));
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getSottotipoEvento()))
-			oneLine.add(evento.getSottotipoEvento());
-		else 
-			oneLine.add("");
-		if(evento.getCategoriaEvento() != null)
-			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento." +evento.getCategoriaEvento().name()));
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getComponente()))
-			oneLine.add(evento.getComponente());
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getErogatore()))
-			oneLine.add(evento.getErogatore());
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getFruitore()))
-			oneLine.add(evento.getFruitore());
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getCodStazione()))
-			oneLine.add(evento.getCodStazione());
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getCodCanale()))
-			oneLine.add(evento.getCodCanale());
-		else 
-			oneLine.add("");
-		if(evento.getTipoVersamento()!= null)
-			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento." +evento.getTipoVersamento().name()));
-		else 
-			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getEsito()))
-			oneLine.add(evento.getEsito());
-		else 
-			oneLine.add("");
+		
+		oneLine.add(evento.getId() + (request ? "_REQ" : "_RSP"));
+		
 		if(evento.getDataRichiesta()!= null)
 			oneLine.add( this.sdf.format(evento.getDataRichiesta()));
 		else 
 			oneLine.add("");
-		if(evento.getDataRisposta()!= null)
-			oneLine.add(this.sdf.format(evento.getDataRisposta()));
+		
+		if(StringUtils.isNotEmpty(evento.getCodDominio()))
+			oneLine.add(evento.getCodDominio());
 		else 
 			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getAltriParametriRichiesta()))
-			oneLine.add(evento.getAltriParametriRichiesta());
+		
+		if(StringUtils.isNotEmpty(evento.getIuv()))
+			oneLine.add(evento.getIuv());
 		else 
 			oneLine.add("");
-		if(StringUtils.isNotEmpty(evento.getAltriParametriRisposta()))
-			oneLine.add(evento.getAltriParametriRisposta());
+		
+		if(StringUtils.isNotEmpty(evento.getCcp()))
+			oneLine.add(evento.getCcp());
+		else 
+			oneLine.add("");
+		
+		if(StringUtils.isNotEmpty(evento.getCodPsp()))
+			oneLine.add(evento.getCodPsp());
+		else 
+			oneLine.add("");
+		
+		if(evento.getTipoEvento() != null)
+			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+evento.getTipoEvento().name()));
+		else 
+			oneLine.add("");
+		
+		oneLine.add(request ? "req" : "rsp");
+		
+		if(evento.getCategoriaEvento() != null)
+			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento." +evento.getCategoriaEvento().name()));
+		else 
+			oneLine.add("");
+		
+		if(StringUtils.isNotEmpty(evento.getComponente()))
+			oneLine.add(evento.getComponente());
+		else 
+			oneLine.add("");
+		
+		if(StringUtils.isNotEmpty(evento.getFruitore()))
+			oneLine.add(evento.getFruitore());
+		else 
+			oneLine.add("");
+		
+		if(StringUtils.isNotEmpty(evento.getErogatore()))
+			oneLine.add(evento.getErogatore());
+		else 
+			oneLine.add("");
+		
+		if(StringUtils.isNotEmpty(evento.getCodStazione()))
+			oneLine.add(evento.getCodStazione());
+		else 
+			oneLine.add("");
+		
+		if(StringUtils.isNotEmpty(evento.getCodCanale()))
+			oneLine.add(evento.getCodCanale());
+		else 
+			oneLine.add("");
+		
+		if(evento.getTipoVersamento()!= null)
+			oneLine.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento." +evento.getTipoVersamento().name()));
+		else 
+			oneLine.add("");
+		
+		if(request) {
+			if(StringUtils.isNotEmpty(evento.getAltriParametriRichiesta()))
+				oneLine.add(evento.getAltriParametriRichiesta());
+			else 
+				oneLine.add("");
+		} else {
+			if(StringUtils.isNotEmpty(evento.getAltriParametriRisposta()))
+				oneLine.add(evento.getAltriParametriRisposta());
+			else 
+				oneLine.add("");
+		}
+		
+		if(StringUtils.isNotEmpty(evento.getEsito()))
+			oneLine.add(evento.getEsito());
 		else 
 			oneLine.add("");
 		
