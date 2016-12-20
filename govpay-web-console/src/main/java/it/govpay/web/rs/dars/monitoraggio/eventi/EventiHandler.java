@@ -408,8 +408,8 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sottotipoEvento.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".componente.label"));
-		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erogatore.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fruitore.label"));
+		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erogatore.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"));
