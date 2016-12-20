@@ -12,6 +12,10 @@
 	<artifactId>govpay-stampe</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay Stampe</name>
+	
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<dependencies>
 		<dependency>

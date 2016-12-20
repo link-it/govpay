@@ -12,6 +12,10 @@
 	<artifactId>govpay-ear</artifactId>
 	<packaging>ear</packaging>
 	<name>GovPay EAR module</name>
+	
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<dependencies>
 		<dependency>

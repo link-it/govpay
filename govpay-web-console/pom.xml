@@ -11,6 +11,7 @@
 	<name>GovPay Cruscotto di Gestione</name>
 	<properties>
 		<frontend-maven-plugin-version>0.0.26</frontend-maven-plugin-version>
+		<rel-to-parent>..</rel-to-parent>
 	</properties>
 
 	<dependencies>
