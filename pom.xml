@@ -19,13 +19,7 @@
 		<module>govpay-ear</module>
 		<module>govpay-web-console</module>
 	</modules>
-
-	<properties>
-		<javaVersion>1.6</javaVersion>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<openspcoop2.version>2.3.5</openspcoop2.version>
-	</properties>
-
+	
 	<profiles>
 		<profile>
 			<activation>
@@ -39,6 +33,13 @@
 			</properties>
 		</profile>
 	</profiles>
+
+	<properties>
+		<javaVersion>1.6</javaVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<openspcoop2.version>2.3.5</openspcoop2.version>
+		<rel-to-parent>.</rel-to-parent>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
@@ -198,6 +199,14 @@
 	</dependencyManagement>
 
 	<build>
+		<filters>
+			<filter>${rel-to-parent}/resources/filters/${env}.filter.properties</filter>
+		</filters>
+		<resources>
+			<resource>
+				<directory>resources/setup/</directory>
+			</resource>
+		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

@@ -78,10 +78,10 @@ public class StartupEjb {
 			context.setConfigLocation(log4j2Config);
 			log = LogManager.getLogger("boot");	
 			
-			log.info("Inizializzazione GovPay v2.2.3 in corso. ($Id$)");
+			log.info("Inizializzazione GovPay ${project.version} in corso. ($Id: 9858decec7866ceb7164e19dd096ea9d5a24eacf $)");
 			log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
 		} else {
-			log.info("Inizializzazione GovPay v2.2.3 in corso. ($Id$)");
+			log.info("Inizializzazione GovPay ${project.version} in corso. ($Id: 9858decec7866ceb7164e19dd096ea9d5a24eacf $)");
 			log.info("Configurazione logger da classpath.");
 		}
 		
@@ -173,7 +173,7 @@ public class StartupEjb {
 
 		ctx.log();
 
-		log.info("Inizializzazione GovPay v2.2.3 completata con successo.  ($Id$)");
+		log.info("Inizializzazione GovPay ${project.version} completata con successo. ($Id: 9858decec7866ceb7164e19dd096ea9d5a24eacf $)");
 	}
 
 	@PreDestroy

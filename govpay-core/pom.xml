@@ -22,6 +22,9 @@
 	<packaging>jar</packaging>
 	<name>GovPay CORE</name>
 
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<dependencies>
 	
@@ -109,9 +112,6 @@
 	</dependencies>
 
 	<build>
-		<filters>
-			<filter>../resources/filters/${env}.filter.properties</filter>
-		</filters>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -125,9 +125,6 @@
 					<target>1.6</target>
 				</configuration>
 			</plugin>
-			
-			
-			
 		</plugins>
 	</build>
 </project>

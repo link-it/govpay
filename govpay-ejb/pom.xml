@@ -11,6 +11,10 @@
 	<artifactId>govpay-ejb</artifactId>
 	<packaging>jar</packaging>
 	<name>GovPay EJB module</name>
+	
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -60,14 +64,25 @@
 	</dependencies>
 
 	<build>
-		<filters>
-			<filter>../resources/filters/${env}.filter.properties</filter>
-		</filters>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<version>1.0.0</version>
+				<executions>
+					<execution>
+						<id>filter-src</id>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 	</build>
-
 </project>

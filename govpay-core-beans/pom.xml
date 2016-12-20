@@ -20,6 +20,10 @@
 			<artifactId>cxf-xjc-runtime</artifactId>
 		</dependency>
 	</dependencies>
+	
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<build>
 		<filters>

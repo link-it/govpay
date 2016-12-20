@@ -13,6 +13,10 @@
 	<packaging>jar</packaging>
 
 	<name>GovPay ORM</name>
+	
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<dependencies>
 		<dependency>
