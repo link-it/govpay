@@ -62,6 +62,11 @@ public class StartupEjb {
 
 	@PostConstruct
 	public void init() {
+		
+		// Commit id
+		String commit = "${git.commit.id}";
+		if(commit.length() > 7) commit = commit.substring(0, 7);
+		
 		GovpayConfig gpConfig = null;
 		try {
 			gpConfig = GovpayConfig.newInstance();
@@ -78,10 +83,10 @@ public class StartupEjb {
 			context.setConfigLocation(log4j2Config);
 			log = LogManager.getLogger("boot");	
 			
-			log.info("Inizializzazione GovPay ${project.version} in corso. ($Id: 9858decec7866ceb7164e19dd096ea9d5a24eacf $)");
+			log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso");
 			log.info("Caricata configurazione logger: " + gpConfig.getLog4j2Config().getPath());
 		} else {
-			log.info("Inizializzazione GovPay ${project.version} in corso. ($Id: 9858decec7866ceb7164e19dd096ea9d5a24eacf $)");
+			log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") in corso.");
 			log.info("Configurazione logger da classpath.");
 		}
 		
@@ -125,7 +130,7 @@ public class StartupEjb {
 
 		} catch (Exception e) {
 			log.error("Errore durante la configurazione dei diagnostici", e);
-			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
+			throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
 		}
 
 		GpContext ctx = null;
@@ -145,7 +150,7 @@ public class StartupEjb {
 		} catch (Exception e) {
 			log.error("Errore durante predisposizione del contesto: " + e);
 			if(ctx != null) ctx.log();
-			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
+			throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
 		}
 
 		try {
@@ -158,7 +163,7 @@ public class StartupEjb {
 			log.error("Inizializzazione fallita", e);
 			shutdown();
 			ctx.log();
-			throw new RuntimeException("Inizializzazione GovPay fallita.", e);
+			throw new RuntimeException("Inizializzazione GovPay ${project.version} (build " + commit + ") fallita.", e);
 		}
 
 		BasicBD bd = null;
@@ -173,7 +178,7 @@ public class StartupEjb {
 
 		ctx.log();
 
-		log.info("Inizializzazione GovPay ${project.version} completata con successo. ($Id: 9858decec7866ceb7164e19dd096ea9d5a24eacf $)");
+		log.info("Inizializzazione GovPay ${project.version} (build " + commit + ") completata con successo.");
 	}
 
 	@PreDestroy

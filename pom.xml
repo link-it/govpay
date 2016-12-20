@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>it.govpay</groupId>
 	<artifactId>govpay</artifactId>
@@ -19,7 +18,7 @@
 		<module>govpay-ear</module>
 		<module>govpay-web-console</module>
 	</modules>
-	
+
 	<profiles>
 		<profile>
 			<activation>
@@ -54,19 +53,19 @@
 				<artifactId>log4j-core</artifactId>
 				<version>2.3</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.apache.logging.log4j</groupId>
 				<artifactId>log4j-1.2-api</artifactId>
 				<version>2.3</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>commons-codec</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>1.10</version>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-core-beans</artifactId>
@@ -82,7 +81,7 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-ear</artifactId>
@@ -90,7 +89,7 @@
 				<type>ear</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-web</artifactId>
@@ -98,8 +97,8 @@
 				<type>war</type>
 				<scope>compile</scope>
 			</dependency>
-			
-			
+
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-ejb</artifactId>
@@ -107,7 +106,7 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-orm-beans</artifactId>
@@ -123,7 +122,7 @@
 				<type>jar</type>
 				<scope>compile</scope>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>it.govpay</groupId>
 				<artifactId>govpay-stampe</artifactId>
@@ -224,6 +223,19 @@
 				<configuration>
 					<skip>true</skip>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>get-the-git-infos</id>
+						<goals>
+							<goal>revision</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
