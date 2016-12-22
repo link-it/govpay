@@ -27840,6 +27840,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 <script>
   LinkFormBehavior = {
 
+    ready: function(){
+      this.listen(document, 'change-mode', '_changeMode');
+    },
+
     properties: {
       modified: {
         type: Boolean,
@@ -27849,7 +27853,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         type: Boolean,
         value: function(){
           return app.ADVANCED_MODE;
-        }
+        },
+        notify: true
       },
       /*ptoggleb: {
         type: Object,
@@ -27859,6 +27864,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         type: Object,
         value: null
       }
+    },
+
+    _changeMode: function(){
+      this.avanzata = app.ADVANCED_MODE;
     },
 
     created: function() {
@@ -27881,7 +27890,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         var sezioneDiv = document.createElement('div');
         Polymer.dom(sezioneDiv).innerHTML='';
         sezioneDiv.className = 'sezioneForm';
-        target.appendChild(sezioneDiv);
 
         if (sezione.etichetta){
           var lb = document.createElement('div');
@@ -27889,6 +27897,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           lb.className = 'titoloSezione';
           sezioneDiv.appendChild(lb);
         }
+        var advancedOnly = true;
         for (var i = 0; i < sezione.fields.length; i++) {
           var obj = sezione.fields[i];
           switch (obj.paramType) {
@@ -27974,7 +27983,14 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               prg.disabled = !obj.editable;
               break;
           }
+          advancedOnly=advancedOnly && obj.avanzata;
         }
+        if (advancedOnly){
+          sezioneDiv.hidden = !this.avanzata;
+        } else {
+          sezioneDiv.hidden = false;
+        }
+        target.appendChild(sezioneDiv);
       }
     },
 
@@ -29623,8 +29639,12 @@ It will also ensure that focus remains in the dialog.
           display: block;
         }
 
-        #searchBox {
+        #searchbox {
           width: 300px;
+        }
+
+        #resultsBox {
+          min-width: 300px;
         }
 
         .mainContent {
@@ -29642,7 +29662,7 @@ It will also ensure that focus remains in the dialog.
 
         }
 
-        #searchBox {
+        #searchbox {
           width: 100%;
         }
 
@@ -29683,7 +29703,7 @@ It will also ensure that focus remains in the dialog.
 
       .allSpace {
         width: 100%;
-        @apply(--layout-flex);
+        /*@apply(--layout-flex);*/
       }
 
       .gap {
@@ -29699,7 +29719,7 @@ It will also ensure that focus remains in the dialog.
         <div class="app-name">[[title]]</div>
         <div class="space"></div>
         
-        <link-user-action user="[[user]]"></link-user-action>
+        <link-user-action id="userAction" user="[[user]]"></link-user-action>
       </paper-toolbar>
       
       <iron-scroll-threshold id="scrollThreshold" lower-threshold="500" on-lower-threshold="loadMoreData">
@@ -29932,7 +29952,7 @@ It will also ensure that focus remains in the dialog.
           if(grid){
             var selection = grid.selection.selected();
             for (var i = 0; i < selection.length; i++) {
-              var obj = this.results[selection[i]]; 
+              var obj = this.results[selection[i]];
               listaId.push(obj.id);
             }
           }
@@ -31473,7 +31493,7 @@ It will also ensure that focus remains in the dialog.
         <div class="app-name">[[obj.titolo]]</div>
         <div class="space"></div>
         
-        <link-user-action user="[[user]]"></link-user-action>
+        <link-user-action id="userAction" user="[[user]]"></link-user-action>
         <paper-tabs selected="{{selectedTab}}" class="bottom self-end" on-iron-select="cambiaTab">
           <paper-tab class="tabTitle">Dettaglio</paper-tab>
           <template is="dom-repeat" items="[[obj.elementiCorrelati]]">
@@ -31486,10 +31506,10 @@ It will also ensure that focus remains in the dialog.
         <iron-pages selected="[[selectedTab]]">
           <div class="detail">
             <template is="dom-repeat" items="[[obj.sezioni]]">
-              <paper-card class="sezione" heading="[[item.etichetta]]" elevation="0">
+              <paper-card class="sezione" heading="[[item.etichetta]]" elevation="0" hidden$="[[_checkSessioni(item, avanzata)]]">
                 <div class="card-content">
                   <template is="dom-repeat" items="[[item.voci]]" as="voce">
-                    <div class="voce">
+                    <div class="voce" hidden$="[[_checkVoci(voce, avanzata)]]">
                       <span class$="[[classeEtichetta(voce)]]">[[getEtichetta(voce)]]</span>
                       <span class$="[[classeValore(voce)]]" on-tap="getReference">[[voce.valore]]</span>
                       
@@ -31524,9 +31544,9 @@ It will also ensure that focus remains in the dialog.
         'setUri(obj)'
       ],
 
-      attached: function(){
-        console.debug("READY");
-      },
+//      ready: function(){
+//        this.listen(document, 'change-mode', '_changeMode');
+//      },
 
       properties: {
         obj: {
@@ -31730,6 +31750,21 @@ It will also ensure that focus remains in the dialog.
               obj.refresh();
           }
         }
+      },
+
+      _checkVoci: function (voce, avanzata){
+        if (voce.avanzata){
+          return !avanzata;
+        }
+        return false;
+      },
+
+      _checkSessioni: function(sessione, avanzata){
+        for (var i = 0; i < sessione.voci.length; i++) {
+          var voce = sessione.voci[i];
+          if (!voce.avanzata) return false;
+        }
+        return !avanzata;
       }
     });
   })();
@@ -32279,6 +32314,10 @@ event and do your own custom submission:
       is: 'link-searchbox',
       behaviors: [LinkFormBehavior],
 
+      observers: [
+        '_changeMode(avanzata)'
+      ],
+
       properties: {
         searchUrl: {
           type: String,
@@ -32291,14 +32330,25 @@ event and do your own custom submission:
         offset: {
           type: Number,
           value: 0
+        },
+        data: {
+          type: Object,
+          value: null
         }
       },
 
+      _changeMode: function(avanzata){
+        this.build(this.data);
+      },
+
       build: function(data){
-        this.searchUrl = data.uri;
-        this.buildForm(data, this.$.searchForm);
-        if (this.auto){
-          this.search();
+        if (data){
+          this.data = data;
+          this.searchUrl = data.uri;
+          this.buildForm(data, this.$.searchForm);
+          if (this.auto){
+            this.search();
+          }
         }
       },
 
@@ -32346,6 +32396,10 @@ event and do your own custom submission:
       searchResource_responseHandler: function(event){
         app.hideSpinner();
         if (event.detail.response){
+          for (var i = 0; i < event.detail.response.response.elenco.length; i++) {
+            var obj = event.detail.response.response.elenco[i];
+            obj.checked=false;
+          }
           if (this.offset!=0){
             //APPEND
             this.fire('append-response', event.detail.response.response);
@@ -32363,7 +32417,132 @@ event and do your own custom submission:
   })();
   </script>
 </dom-module>
-<dom-module id="link-listbox" assetpath="link-listbox/">
+<script>
+    (function(scope) {
+        var JuicyHTMLPrototype = Object.create((HTMLTemplateElement || HTMLElement).prototype);
+        var isSafari = navigator.vendor && navigator.vendor.indexOf("Apple") > -1 && navigator.userAgent && !navigator.userAgent.match("CriOS");
+
+        JuicyHTMLPrototype.createdCallback = function() {
+            var model = null;
+            Object.defineProperty(this, "model", {
+                set: function(newValue) {
+                    model = newValue;
+                    this.attachModel(newValue);
+                },
+                get: function() {
+                    return model;
+                }
+            });
+        };
+        JuicyHTMLPrototype.stampedNodes = null;
+        JuicyHTMLPrototype.loadTemplate_ = function() {
+            var val = this.getAttribute('content');
+            if (val && (val.indexOf('/') === 0 || val.indexOf('./') === 0 || val.indexOf('../') === 0)) {
+                //val is a URL, load the partial from external file
+                this._loadExternalFile(val);
+            } else if (val === null) {
+                this.clear();
+            } else {
+                //val is HTML code, insert the partial from the string
+                this.reattachTemplate_(val);
+            }
+        };
+        /**
+         * Load the partial from the HTTP server/cache, via XHR.
+         * @param  {String} url relative/absolute string to load the resource
+         * @return {HTMLElement}     itself
+         */
+        JuicyHTMLPrototype._loadExternalFile = function(url){
+            var oReq = new XMLHttpRequest();
+            var that = this;
+            oReq.onload = function(event) {
+                that.reattachTemplate_(event.target.responseText);
+            };
+            oReq.open("GET", url, true);
+            oReq.send();
+        };
+
+        JuicyHTMLPrototype.reattachTemplate_ = function(html) {
+            this.clear();
+            // fragmentFromString(strHTML) from http://stackoverflow.com/a/25214113/868184
+            var range = document.createRange();
+
+            // Safari does not support `createContextualFragment` without selecting a node.
+            if (isSafari) {
+                range.selectNode(this);
+            }
+
+            var fragment = range.createContextualFragment(html);
+            // convert dynamic NodeList to regullar array
+            this.stampedNodes = Array.prototype.slice.call(fragment.childNodes);
+            // attach models
+            this.attributeChangedCallback("model", undefined, this.model || this.getAttribute("model"));
+            this.parentNode.insertBefore(fragment, this.nextSibling);
+            this.dispatchEvent(new CustomEvent("stamped", {
+                detail: this.stampedNodes
+            }));
+
+        };
+
+        /**
+         * Remove stamped content.
+         */
+        JuicyHTMLPrototype.clear = function() {
+            var parent = this.parentNode;
+            var childNo = this.stampedNodes && this.stampedNodes.length || 0;
+            var child;
+            while (childNo--) {
+                // this.stampedNodes[childNo].remove();
+                child = this.stampedNodes[childNo];
+                if (child.parentNode) {
+                    child.parentNode.removeChild(child);
+                }
+            }
+            // forget the removed nodes
+            this.stampedNodes = null;
+        };
+
+        JuicyHTMLPrototype.isAttached = false;
+        JuicyHTMLPrototype.attachedCallback = function() {
+            this.isAttached = true;
+            this.loadTemplate_();
+        };
+        JuicyHTMLPrototype.detachedCallback = function() {
+            this.isAttached = false;
+            this.clear();
+        };
+        JuicyHTMLPrototype.attributeChangedCallback = function(name, oldVal, newVal) {
+            if (this.isAttached) {
+                switch (name) {
+                    case "model":
+                        if (typeof newVal === "string") {
+                            newVal = newVal ? JSON.parse(newVal) : null;
+                        }
+                        this.model = newVal;
+                        break;
+                    case "content":
+                        this.loadTemplate_();
+                        break;
+                }
+            }
+        };
+
+        JuicyHTMLPrototype.attachModel = function(model, arrayOfElements) {
+            arrayOfElements || (arrayOfElements = this.stampedNodes);
+            if (model === null || !arrayOfElements) {
+                return;
+            }
+            for (var childNo = 0; childNo < arrayOfElements.length; childNo++) {
+                arrayOfElements[childNo].model = model;
+            }
+        };
+
+        scope.JuicyHTMLElement = document.registerElement('juicy-html', {
+            prototype: JuicyHTMLPrototype,
+            extends: "template"
+        });
+    })(window);
+</script><dom-module id="link-listbox" assetpath="link-listbox/">
   <template>
     <style include="shared-styles">
       :host {
@@ -32415,12 +32594,11 @@ event and do your own custom submission:
           <div>seleziona tutti</div>
         </paper-item-body>
       </paper-item>
-      <template is="dom-repeat" items="[[dataProvider]]" filter="isVisible">
+      <template id="listTemplate" is="dom-repeat" items="[[dataProvider]]" filter="isVisible">
         <paper-item class$="[[classFromIndex(index)]]" on-tap="nextLevel">
           <paper-checkbox checked="{{item.checked}}" on-tap="singleCheck" hidden$="[[notSelectable(selectable)]]"></paper-checkbox>
           <paper-item-body two-line="" class$="[[classForItem(selectable)]]">
-            <div>[[item.titolo]]</div>
-            <div secondary="">[[item.sottotitolo]]</div>
+            <template is="juicy-html" content$="[[_render(item)]]"></template>
           </paper-item-body>
         </paper-item>
       </template>
@@ -32446,6 +32624,14 @@ event and do your own custom submission:
           type: Boolean,
           value: false
         }
+      },
+
+      observers: [
+        '_uncheckAll(dataProvider.length)'
+      ],
+
+      _uncheckAll: function(numItems){
+        this.$.sa.checked=false;
       },
 
       classFromIndex: function(index){
@@ -32507,6 +32693,13 @@ event and do your own custom submission:
 
       singleCheck: function(event){
         event.stopImmediatePropagation();
+      },
+
+      _render: function(item){
+        var funzione = (item.formatter || 'defaultFormatter');
+        if (funzione){
+          return window[funzione](item);
+        }
       }
     });
   })();
@@ -35079,7 +35272,7 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
       <div id="menu" class="dropdown-content">
         <div class="userName">[[user.nome]]</div>
         <paper-item>
-          <paper-checkbox on-change="setAdvanced" checked$="[[advanced]]">Advanced</paper-checkbox>
+          <paper-checkbox on-change="setAdvanced" id="cbAdvanced" checked$="[[advanced]]">Advanced</paper-checkbox>
         </paper-item>
         <paper-item on-tap="showAbout">About</paper-item>
         <paper-item on-tap="logout">Logout</paper-item>
@@ -35125,6 +35318,7 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
 
       setAdvanced: function(event){
         app.ADVANCED_MODE=event.target.checked;
+        document.dispatchEvent(new CustomEvent('change-mode'))
         this.$.pmb.close();
       },
 

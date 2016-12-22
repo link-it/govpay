@@ -43,6 +43,7 @@ import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
 import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.anagrafica.portali.Portali;
+import it.govpay.web.rs.dars.anagrafica.provaInput.ProvaInput;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo;
 import it.govpay.web.rs.dars.exception.ConsoleException;
@@ -147,6 +148,11 @@ public class Menu extends BaseRsService {
 				Operatori operatoriDars = new Operatori();
 				URI operatoriURI = BaseRsService.checkDarsURI(uriInfo).path(operatoriDars.getPathServizio()).build();
 				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"), operatoriURI, false));
+				
+				ProvaInput provaInputDars = new ProvaInput();
+				URI provaInputURI = BaseRsService.checkDarsURI(uriInfo).path(provaInputDars.getPathServizio()).build();
+				anagrafica.getVociMenu().add(console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(provaInputDars.getNomeServizio() + ".titolo"), provaInputURI, false));
+				
 				menu.getSezioni().add(anagrafica);
 
 			} else {
@@ -194,11 +200,11 @@ public class Menu extends BaseRsService {
 
 			reportistica.getVociMenu().add(voceMenuReportisticaPagamenti);
 			
-			EstrattiConto estrattiContoDars = new EstrattiConto();
-			URI estrattiContoURI = BaseRsService.checkDarsURI(uriInfo).path(estrattiContoDars.getPathServizio()).build();
-			VoceMenu voceMenuReportisticaEstrattiConto = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(estrattiContoDars.getNomeServizio() + ".titolo"), estrattiContoURI, false);
+//			EstrattiConto estrattiContoDars = new EstrattiConto();
+//			URI estrattiContoURI = BaseRsService.checkDarsURI(uriInfo).path(estrattiContoDars.getPathServizio()).build();
+//			VoceMenu voceMenuReportisticaEstrattiConto = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(estrattiContoDars.getNomeServizio() + ".titolo"), estrattiContoURI, false);
 
-			reportistica.getVociMenu().add(voceMenuReportisticaEstrattiConto);
+//			reportistica.getVociMenu().add(voceMenuReportisticaEstrattiConto);
 			
 			menu.getSezioni().add(reportistica);
 

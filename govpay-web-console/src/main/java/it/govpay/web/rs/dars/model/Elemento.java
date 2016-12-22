@@ -44,6 +44,7 @@ public class Elemento {
 	private String titolo;
 	private String sottotitolo;
 	private URI uri;
+	private String formatter;
 	
 	private List<String> valori;
 	
@@ -65,5 +66,10 @@ public class Elemento {
 	public void setValori(List<String> valori) {
 		this.valori = valori;
 	}
-	
+	public String getFormatter() {
+		return formatter;
+	}
+	public void setFormatter(String formatter) {
+		this.formatter = formatter;
+	}
 }

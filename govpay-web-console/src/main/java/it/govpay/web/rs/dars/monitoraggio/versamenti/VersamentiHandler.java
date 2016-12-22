@@ -222,7 +222,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
-
+			
+			// Indico la visualizzazione custom
+			String formatter = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
@@ -233,7 +235,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			if(findAll != null && findAll.size() > 0){
 				for (Versamento entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					Elemento elemento = this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd);
+					elemento.setFormatter(formatter); 
+					elenco.getElenco().add(elemento);
 				}
 			}
 
@@ -268,17 +272,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		statoVersamento.setDefaultValue("");
 		sezioneRoot.addField(statoVersamento);
 
-		InputText cfDebitore = (InputText) infoRicercaMap.get(cfDebitoreId);
-		cfDebitore.setDefaultValue(null);
-		sezioneRoot.addField(cfDebitore);
 
-		InputText codVersamento = (InputText) infoRicercaMap.get(codVersamentoId);
-		codVersamento.setDefaultValue(null);
-		sezioneRoot.addField(codVersamento);
-
-		InputText iuv = (InputText) infoRicercaMap.get(iuvId);
-		iuv.setDefaultValue(null);
-		sezioneRoot.addField(iuv);
 
 		try{
 
@@ -354,6 +348,21 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			throw new ConsoleException(e);
 		}
 
+		// [TODO] SPOSTATI PER SIMULARE BUG DUE SELECT CONSECUTIVE
+		
+		InputText cfDebitore = (InputText) infoRicercaMap.get(cfDebitoreId);
+		cfDebitore.setDefaultValue(null);
+		sezioneRoot.addField(cfDebitore);
+
+		InputText codVersamento = (InputText) infoRicercaMap.get(codVersamentoId);
+		codVersamento.setDefaultValue(null);
+		sezioneRoot.addField(codVersamento);
+
+		InputText iuv = (InputText) infoRicercaMap.get(iuvId);
+		iuv.setDefaultValue(null);
+		sezioneRoot.addField(iuv);
+		
+		
 		return infoRicerca;
 	}
 

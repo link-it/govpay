@@ -38,6 +38,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -82,7 +83,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		try{
 			bd = BasicBD.newInstance(this.codOperazione);
 			Elenco elenco = this.getDarsHandler().getElenco(uriInfo,bd);
-
+			
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(elenco);
 		}catch(WebApplicationException e){
@@ -425,9 +426,10 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
-
-			this.getDarsHandler().uplaod(input, uriInfo, bd);
-
+			
+			Object res = this.getDarsHandler().uplaod(input, uriInfo, bd);
+			
+			darsResponse.setResponse(res); 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".upload.ok")); 
 		} catch(WebApplicationException e){

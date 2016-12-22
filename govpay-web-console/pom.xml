@@ -115,7 +115,7 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>govpayConsole</finalName>
+		<finalName>govpayConsoleDev</finalName>
 	</build>
 </project>
 
