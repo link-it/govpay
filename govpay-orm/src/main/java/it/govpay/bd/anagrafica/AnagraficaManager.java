@@ -612,9 +612,28 @@ public class AnagraficaManager {
 			throw new ServiceException(t);
 		}
 	}
-
-
-
+	
+	
+	public static Psp getPspByCodUnivoco(BasicBD basicBD, String codUnivoco) throws ServiceException, NotFoundException {
+		try {
+			String method = "getPspByCodUnivoco";
+			Object psp = pspBDCacheWrapper.getObjectCache(basicBD, DEBUG, codUnivoco, method, codUnivoco);
+			return (Psp) psp;
+		} catch (Throwable t) {
+			if(t instanceof NotFoundException) {
+				throw (NotFoundException) t;
+			}
+			if(t instanceof MultipleResultException) {
+				throw new ServiceException(t);
+			}
+			if(t instanceof ServiceException) {
+				throw (ServiceException) t;
+			}
+			throw new ServiceException(t);
+		}
+	}
+	
+	
 	public static Stazione getStazione(BasicBD basicBD, long id) throws ServiceException {
 		try {
 			String method = "getStazione";

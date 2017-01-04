@@ -202,7 +202,7 @@ public class Rendicontazioni extends BasicBD {
 							String identificativoUnivocoMittente = null, identificativoUnivocoRicevente = null;
 							try {
 								identificativoUnivocoMittente = flussoRendicontazione.getIstitutoMittente().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco();
-								psp = AnagraficaManager.getPsp(this, identificativoUnivocoMittente);
+								psp = AnagraficaManager.getPspByCodUnivoco(this, identificativoUnivocoMittente);
 								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));
 							} catch (Exception e) {
 								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Impossibile individuare il PSP riferito dal Flusso [IdentificativoUnivocoMittente: " + identificativoUnivocoMittente + "]");

@@ -137,6 +137,27 @@ public class PspBD extends BasicBD {
 		}
 	}
 	
+	
+	public Psp getPspByCodUnivoco(String codUnivoco) throws NotFoundException, ServiceException, MultipleResultException{
+		try {
+
+			IPaginatedExpression exp = this.getCanaleService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Canale.model().COD_INTERMEDIARIO, codUnivoco);
+			List<it.govpay.orm.Canale> canaliVO = this.getCanaleService().findAll(exp);
+			if(canaliVO.size() == 0)
+				throw new NotFoundException();
+			
+			return getPsp(canaliVO.get(0).getIdPsp().getId());
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		}
+		
+	}
+	
 	/**
 	 * Ritorna il psp identificato dal codice fornito.
 	 * 
