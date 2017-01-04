@@ -1,0 +1,63 @@
+<xsd:schema targetNamespace="http://www.govpay.it/servizi/pa/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:com="http://www.govpay.it/servizi/commons/">
+			<xsd:import namespace="http://www.govpay.it/servizi/commons/" schemaLocation="govpay_commons.xsd" />
+		
+			<xsd:element name="paNotificaTransazione">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="codSessionePortale" type="com:uuid" minOccurs="0" />
+						<xsd:element name="codApplicazione" type="com:cod35" />
+						<xsd:element name="codVersamentoEnte" type="com:cod35" />
+						<xsd:element name="transazione" type="com:transazione" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="paNotificaStorno">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="codSessionePortale" type="com:uuid" minOccurs="0" />
+						<xsd:element name="codApplicazione" type="com:cod35" />
+						<xsd:element name="codVersamentoEnte" type="com:cod35" />
+						<xsd:element name="richiestaStorno">
+							<xsd:complexType>
+								<xsd:complexContent>
+									<xsd:extension base="com:richiestaStorno">
+										<xsd:sequence>
+											<xsd:element name="codDominio" type="com:cod35" />
+											<xsd:element name="iuv" type="com:cod35" />
+											<xsd:element name="ccp" type="com:cod35" />
+										</xsd:sequence>				
+									</xsd:extension>
+								</xsd:complexContent>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="paVerificaVersamento">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="codApplicazione" type="com:cod35" />
+						<xsd:choice>
+							<xsd:element name="codVersamentoEnte" type="com:cod35" />
+							<xsd:sequence>
+								<xsd:element name="codDominio" type="com:cod35" minOccurs="0"/>
+								<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:element name="bundlekey" type="com:string256" minOccurs="0" />
+						</xsd:choice>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+			
+			<xsd:element name="paVerificaVersamentoResponse">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="codEsito" type="com:esitoVerificaVersamento" />
+						<xsd:element name="descrizioneEsito" type="xsd:string" minOccurs="0" />
+						<xsd:element name="versamento" type="com:versamento" minOccurs="0" />
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
+		</xsd:schema>

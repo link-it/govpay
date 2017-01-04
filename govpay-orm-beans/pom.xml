@@ -6,13 +6,17 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>2.2.3</version>
+		<version>2.2.4</version>
 	</parent>
 
 	<artifactId>govpay-orm-beans</artifactId>
 	<packaging>jar</packaging>
 
 	<name>GovPay ORM Beans</name>
+	
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<dependencies>
 		<dependency>

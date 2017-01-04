@@ -145,8 +145,8 @@ public class Rendicontazioni extends BasicBD {
 					try {
 						idTransaction2 = GpThreadLocal.get().openTransaction();
 						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codStazione", stazione.getCodStazione()));
+						GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("idFlusso", idRendicontazione.getIdentificativoFlusso()));
 						GpThreadLocal.get().setupNodoClient(stazione.getCodStazione(), null, Azione.nodoChiediFlussoRendicontazione);
-						GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso", idRendicontazione.getIdentificativoFlusso());
 						NodoChiediFlussoRendicontazione richiestaFlusso = new NodoChiediFlussoRendicontazione();
 						richiestaFlusso.setIdentificativoIntermediarioPA(stazione.getIntermediario(this).getCodIntermediario());
 						richiestaFlusso.setIdentificativoStazioneIntermediarioPA(stazione.getCodStazione());
@@ -160,7 +160,7 @@ public class Rendicontazioni extends BasicBD {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + e + ".");
 							log.error("Richiesta flusso  rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + e);
-							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", idRendicontazione.getIdentificativoFlusso(), e.getMessage());
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", e.getMessage());
 							continue;
 						} 
 	
@@ -168,7 +168,7 @@ public class Rendicontazioni extends BasicBD {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
 							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
-							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
 						} else {
 							byte[] tracciato = null;
 							try {
@@ -179,7 +179,7 @@ public class Rendicontazioni extends BasicBD {
 							} catch (IOException e) {
 								response.add(idRendicontazione.getIdentificativoFlusso() + "#Lettura del flusso fallita: " + e + ".");
 								log.error("Errore durante la lettura del flusso di rendicontazione: " + e);
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", idRendicontazione.getIdentificativoFlusso(), "Lettura del flusso fallita: " + e);
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
 								continue;
 							}
 							
@@ -189,7 +189,7 @@ public class Rendicontazioni extends BasicBD {
 							} catch (Exception e) {
 								response.add(idRendicontazione.getIdentificativoFlusso() + "#Parsing del flusso fallita: " + e + ".");
 								log.error("Errore durante il parsing del flusso di rendicontazione: " + e);
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", idRendicontazione.getIdentificativoFlusso(), "Errore durante il parsing del flusso di rendicontazione: " + e);
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Errore durante il parsing del flusso di rendicontazione: " + e);
 								continue;
 							}
 							
@@ -202,20 +202,24 @@ public class Rendicontazioni extends BasicBD {
 							String identificativoUnivocoMittente = null, identificativoUnivocoRicevente = null;
 							try {
 								identificativoUnivocoMittente = flussoRendicontazione.getIstitutoMittente().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco();
-								psp = AnagraficaManager.getPsp(this, identificativoUnivocoMittente);
+								psp = AnagraficaManager.getPspByCodUnivoco(this, identificativoUnivocoMittente);
+								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));
 							} catch (Exception e) {
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", idRendicontazione.getIdentificativoFlusso(), "Impossibile individuare il PSP riferito dal Flusso [IdentificativoUnivocoMittente: " + identificativoUnivocoMittente + "]");
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Impossibile individuare il PSP riferito dal Flusso [IdentificativoUnivocoMittente: " + identificativoUnivocoMittente + "]");
 								continue;
 							}
 							
 							try {
 								identificativoUnivocoRicevente = flussoRendicontazione.getIstitutoRicevente().getIdentificativoUnivocoRicevente().getCodiceIdentificativoUnivoco();
-								dominio = AnagraficaManager.getDominio(this, identificativoUnivocoRicevente);						
+								dominio = AnagraficaManager.getDominio(this, identificativoUnivocoRicevente);			
+								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", dominio.getCodDominio()));
 							} catch (Exception e) {
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", idRendicontazione.getIdentificativoFlusso(), "Impossibile individuare il Dominio riferito dal Flusso [IdentificativoUnivocoRicevente: " + identificativoUnivocoMittente + "]");
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Impossibile individuare il Dominio riferito dal Flusso [IdentificativoUnivocoRicevente: " + identificativoUnivocoMittente + "]");
 								continue;
 							}
 							
+							
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso", flussoRendicontazione.getIdentificativoUnivocoRegolamento());
 							
 							Fr fr = new Fr();
 							
@@ -256,22 +260,26 @@ public class Rendicontazioni extends BasicBD {
 									try {
 										pagamento = pagamentiBD.getPagamento(dominio.getCodDominio(), iuv, iur); 
 									} catch (NotFoundException e) {
+										GpThreadLocal.get().log("rendicontazioni.noPagamento", iuv, iur);
 										erroriAcquisizione.add("Rendicontazione [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: nessun pagamento associato alla rendicontazione.");
 										log.error("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: il pagamento non risulta presente in base dati.");
 										continue;
 									} catch (MultipleResultException e) {
+										GpThreadLocal.get().log("rendicontazioni.poliPagamento", iuv, iur);
 										erroriAcquisizione.add("Rendicontazione [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: nessun pagamento associato alla rendicontazione.");
 										log.error("Pagamento rendicontato duplicato: [CodDominio: " + dominio.getCodDominio() + "] [Iuv: "+ iuv + "] [Iur: " + iur + "]");
 										continue;
 									} 
 									
 									if(pagamento.getIdFrApplicazione() != null) {
+										GpThreadLocal.get().log("rendicontazioni.giaRendicontato", iuv, iur);
 										erroriAcquisizione.add("Rendicontazione [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: pagamento gia' rendicontato dal flusso [CodFlusso:" + pagamento.getCodFlussoRendicontazione() + "]");
 										log.error("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: pagamento gia' rendicontato dal flusso [CodFlusso:" + pagamento.getCodFlussoRendicontazione() + "]");
 										continue;
 									}
 											
 					 				if(pagamento.getImportoPagato().compareTo(importoRendicontato) != 0) {
+					 					GpThreadLocal.get().log("rendicontazioni.importoErrato", iuv, iur);
 										erroriAcquisizione.add("Rendicontazione [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: l'importo rendicontato ["+importoRendicontato+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato() + "]");
 										log.error("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato() + "]");
 										continue;
@@ -303,6 +311,7 @@ public class Rendicontazioni extends BasicBD {
 									try {
 										iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 									} catch (NotFoundException e) {
+										GpThreadLocal.get().log("rendicontazioni.noVersamento", iuv, iur);
 										erroriAcquisizione.add("Rendicontazione senza RPT [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: Iuv sconosciuto");
 										log.error("Rendicontazione senza RPT [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: Iuv sconosciuto");
 										continue;
@@ -312,12 +321,14 @@ public class Rendicontazioni extends BasicBD {
 										it.govpay.bd.model.Versamento versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 										List<SingoloVersamento> singoli = versamento.getSingoliVersamenti(this);
 										if(singoli.size() != 1) {
+											GpThreadLocal.get().log("rendicontazioni.noVersamento", iuv);
 											erroriAcquisizione.add("Rendicontazione senza RPT [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: il versamento riferito ha piu' voci di pagamento.");
 											log.error("Rendicontazione senza RPT [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: il versamento riferito ha piu' voci di pagamento.");
 											continue;
 										}
 										rendicontazioneSenzaRpt.setIdSingoloVersamento(singoli.get(0).getId());
 									} catch (NotFoundException e) {
+										GpThreadLocal.get().log("rendicontazioni.noVersamento", iuv);
 										erroriAcquisizione.add("Rendicontazione senza RPT [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: nessun versamento associato al pagamento.");
 										log.error("Rendicontazione senza RPT [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] acquisita con errore: nessun versamento associato al pagamento.");
 										continue;
@@ -341,12 +352,14 @@ public class Rendicontazioni extends BasicBD {
 							}
 	
 							if(totaleImportiRendicontati.compareTo(flussoRendicontazione.getImportoTotalePagamenti()) != 0){
+								GpThreadLocal.get().log("rendicontazioni.importoTotaleErrato");
 								erroriAcquisizione.add("La somma degli importi rendicontati ["+totaleImportiRendicontati+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getImportoTotalePagamenti()  + "]");
 								log.error("La somma degli importi rendicontati ["+totaleImportiRendicontati+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getImportoTotalePagamenti()  + "]");
 							}
 							
 							try {
 								if(flussoRendicontazione.getDatiSingoliPagamenti().size() != flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()) {
+									GpThreadLocal.get().log("rendicontazioni.numeroRendicontazioniErrato");
 									erroriAcquisizione.add("Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamenti().size()+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()  + "]");
 									log.error("Il numero di pagamenti rendicontati ["+flussoRendicontazione.getDatiSingoliPagamenti().size()+"] non corrisponde al totale indicato nella testata del flusso [" + flussoRendicontazione.getNumeroTotalePagamenti().longValueExact()  + "]");
 								}	
@@ -381,14 +394,14 @@ public class Rendicontazioni extends BasicBD {
 								this.commit();
 								response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisiti " + flussoRendicontazione.getDatiSingoliPagamenti().size() + " pagamenti per un totale di " + flussoRendicontazione.getImportoTotalePagamenti() + " Euro.");
 								log.info("Flusso di rendicontazione acquisito con successo.");
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoOk");
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoOk", idRendicontazione.getIdentificativoFlusso());
 							} else {
 								fr.setStato(StatoFr.RIFIUTATA);
 								fr.setDescrizioneStato(StringUtils.join(erroriAcquisizione,"#"));
 								frBD.insertFr(fr);
 								log.error("Flusso di rendicontazione acquisito con errori: " + StringUtils.join(erroriAcquisizione,"#"));
 								response.add(idRendicontazione.getIdentificativoFlusso() + "#Flusso rifiutato.");
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", StringUtils.join(erroriAcquisizione,"\n"));
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), StringUtils.join(erroriAcquisizione,"\n"));
 							}
 						}
 					} finally {

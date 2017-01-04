@@ -89,7 +89,7 @@ public class NodoClient extends BasicClient {
 			if(response == null) {
 				throw new ClientException("Il Nodo dei Pagamenti ha ritornato un messaggio vuoto.");
 			}
-			JAXBElement<?> jaxbElement = SOAPUtils.toJaxb(response);
+			JAXBElement<?> jaxbElement = SOAPUtils.toJaxb(response, null);
 			Risposta r = (Risposta) jaxbElement.getValue();
 			if(r.getFault() != null) {
 				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";

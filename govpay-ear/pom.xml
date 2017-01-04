@@ -6,12 +6,16 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>2.2.3</version>
+		<version>2.2.4</version>
 	</parent>
 
 	<artifactId>govpay-ear</artifactId>
 	<packaging>ear</packaging>
 	<name>GovPay EAR module</name>
+	
+	<properties>
+		<rel-to-parent>..</rel-to-parent>
+	</properties>
 
 	<dependencies>
 		<dependency>

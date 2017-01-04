@@ -66,7 +66,7 @@ public class Evento extends BasicModel {
 		}
 	}
 	
-	public static final String COMPONENTE = "GP";
+	public static final String COMPONENTE = "FESP";
 	public static final String NDP = "NodoDeiPagamentiSPC";
 	
 	private Long id;

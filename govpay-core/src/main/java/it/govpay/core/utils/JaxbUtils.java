@@ -43,28 +43,36 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
+import org.apache.logging.log4j.LogManager;
 import org.xml.sax.SAXException;
 
 public class JaxbUtils {
 
 	private static JAXBContext jaxbContext, jaxbContextCodes, jaxbContextIntestazioneCarrelloPPT;
-	private static Schema RPT_RT_schema, RR_ER_schema;
+	public static Schema RPT_RT_schema, RR_ER_schema, GP_PA_schema;
+	private static GpEventHandler gpEventHandler;
 
 	public static void init() throws JAXBException, SAXException {
 		if(jaxbContext == null || RPT_RT_schema==null) {
 			SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			RPT_RT_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RPT_RT_6_0_2_FR_1_0_4.xsd"))); 
+			Source[] GP_PA_sources = {new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/govpay_commons.xsd")), new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/govpay_pa.xsd"))};
+			GP_PA_schema = schemaFactory.newSchema(GP_PA_sources); 
 			RR_ER_schema = schemaFactory.newSchema(new StreamSource(JaxbUtils.class.getResourceAsStream("/xsd/RR_ER_1_0_0.xsd"))); 
 			jaxbContext = JAXBContext.newInstance("it.gov.digitpa.schemas._2011.pagamenti:it.gov.digitpa.schemas._2011.pagamenti.revoche:it.gov.digitpa.schemas._2011.ws.paa:it.gov.digitpa.schemas._2011.psp:gov.telematici.pagamenti.ws.ppthead:it.govpay.servizi.pa");
 			jaxbContextCodes = JAXBContext.newInstance("it.gov.spcoop.avvisopagamentopa.informazioniversamentoqr");
 			jaxbContextIntestazioneCarrelloPPT = JAXBContext.newInstance(IntestazioneCarrelloPPT.class);
+			gpEventHandler = new JaxbUtils().new GpEventHandler();
 		}
 	}
 	
@@ -152,6 +160,16 @@ public class JaxbUtils {
 		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
 		return jaxbUnmarshaller.unmarshal(xsr);
 	}
+	
+	public static Object unmarshal(XMLStreamReader xsr, Schema schema) throws JAXBException, SAXException {
+		if(schema == null) return unmarshal(xsr);
+		
+		init();
+		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+		jaxbUnmarshaller.setSchema(schema);
+		jaxbUnmarshaller.setEventHandler(gpEventHandler);
+		return jaxbUnmarshaller.unmarshal(xsr);
+	}
     
 	public static CtRichiestaPagamentoTelematico toRPT(byte[] rpt) throws JAXBException, SAXException {
 		init();
@@ -201,6 +219,19 @@ public class JaxbUtils {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		jaxbMarshaller.marshal(numeroAvviso, baos);
 		return baos.toByteArray();
+	}
+	
+	
+	public class GpEventHandler implements ValidationEventHandler {
+		@Override
+		public boolean handleEvent(ValidationEvent ve) {
+			if(ve.getSeverity() == 0) {
+				LogManager.getLogger().warn("Ricevuto warning di validazione durante il marshalling del messaggio: " + ve.getMessage());
+				return true;
+			} else {
+				return false;
+			}
+		}
 	}
 
 }

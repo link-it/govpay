@@ -196,7 +196,7 @@ public class RtUtils extends NdpValidationUtils {
 		if (esitoPagamento == Rpt.EsitoPagamento.DECORRENZA_TERMINI && rt.getImportoTotalePagato().compareTo(BigDecimal.ZERO) != 0)
 			esito.addErrore("ImportoTotalePagato [" + rt.getImportoTotalePagato().doubleValue() + "] diverso da 0 per un pagamento con esito 'Decorrenza temini'.", true);
 		if (esitoPagamento == Rpt.EsitoPagamento.PAGAMENTO_ESEGUITO && rt.getImportoTotalePagato().compareTo(rpt.getImportoTotaleDaVersare()) != 0)
-			esito.addErrore("ImportoTotalePagato [" + rt.getImportoTotalePagato().doubleValue() + "] diverso dall'ImportoTotaleDaVersare [" + rpt.getImportoTotaleDaVersare().doubleValue() + "] per un pagamento con esito 'Eseguito'", true);
+			esito.addErrore("Importo totale del pagamento [" + rt.getImportoTotalePagato().doubleValue() + "] diverso da quanto richiesto [" + rpt.getImportoTotaleDaVersare().doubleValue() + "]", false);
 	}
 
 	private static void validaSemanticaSingoloVersamento(CtDatiSingoloVersamentoRPT singoloVersamento, CtDatiSingoloPagamentoRT singoloPagamento, EsitoValidazione esito) {
@@ -211,7 +211,7 @@ public class RtUtils extends NdpValidationUtils {
 				esito.addErrore("IdentificativoUnivocoRiscossione deve essere n/a per pagamenti non eseguiti.", false);
 			}
 		} else if(singoloPagamento.getSingoloImportoPagato().compareTo(singoloVersamento.getImportoSingoloVersamento()) != 0) {
-			esito.addErrore("Importo di un pagamento eseguito [" + singoloPagamento.getSingoloImportoPagato().longValue() + "] non corrisponde a quanto indicato nella richiesta di pagamento [" + singoloVersamento.getImportoSingoloVersamento().longValue() + "]", true);
+			esito.addErrore("Importo di un pagamento [" + singoloPagamento.getSingoloImportoPagato().doubleValue() + "] diverso da quanto richiesto [" + singoloVersamento.getImportoSingoloVersamento().doubleValue() + "]", false);
 		}
 	}
 
@@ -398,8 +398,11 @@ public class RtUtils extends NdpValidationUtils {
 				if(!irregolare) {
 					versamento.setStatoVersamento(StatoVersamento.ESEGUITO);
 					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-					break;
+				} else {
+					versamento.setStatoVersamento(StatoVersamento.ANOMALO);
+					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
 				}
+				break;
 			default:
 				versamento.setStatoVersamento(StatoVersamento.ANOMALO);
 				versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
@@ -415,7 +418,9 @@ public class RtUtils extends NdpValidationUtils {
 				if(!irregolare) {
 					versamento.setStatoVersamento(StatoVersamento.PARZIALMENTE_ESEGUITO);
 					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
-					break;
+				} else {
+					versamento.setStatoVersamento(StatoVersamento.ANOMALO);
+					versamentiBD.updateStatoVersamento(versamento.getId(), versamento.getStatoVersamento(), null);
 				}
 			default:
 				versamento.setStatoVersamento(StatoVersamento.ANOMALO);
