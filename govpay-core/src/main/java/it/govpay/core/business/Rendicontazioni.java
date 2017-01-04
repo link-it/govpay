@@ -160,7 +160,7 @@ public class Rendicontazioni extends BasicBD {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + e + ".");
 							log.error("Richiesta flusso  rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + e);
-							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", idRendicontazione.getIdentificativoFlusso(), e.getMessage());
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", e.getMessage());
 							continue;
 						} 
 	
@@ -168,7 +168,7 @@ public class Rendicontazioni extends BasicBD {
 							// Errore nella richiesta. Loggo e continuo con il prossimo flusso
 							response.add(idRendicontazione.getIdentificativoFlusso() + "#Richiesta al nodo fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString() + ".");
 							log.error("Richiesta flusso rendicontazione [" + idRendicontazione.getIdentificativoFlusso() + "] fallita: " + risposta.getFault().getFaultCode() + " " + risposta.getFault().getFaultString());
-							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", risposta.getFault().getFaultCode(), risposta.getFault().getFaultString(), risposta.getFault().getDescription());
 						} else {
 							byte[] tracciato = null;
 							try {
@@ -179,7 +179,7 @@ public class Rendicontazioni extends BasicBD {
 							} catch (IOException e) {
 								response.add(idRendicontazione.getIdentificativoFlusso() + "#Lettura del flusso fallita: " + e + ".");
 								log.error("Errore durante la lettura del flusso di rendicontazione: " + e);
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", idRendicontazione.getIdentificativoFlusso(), "Lettura del flusso fallita: " + e);
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
 								continue;
 							}
 							
@@ -202,7 +202,7 @@ public class Rendicontazioni extends BasicBD {
 							String identificativoUnivocoMittente = null, identificativoUnivocoRicevente = null;
 							try {
 								identificativoUnivocoMittente = flussoRendicontazione.getIstitutoMittente().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco();
-								psp = AnagraficaManager.getPsp(this, identificativoUnivocoMittente);
+								psp = AnagraficaManager.getPspByCodUnivoco(this, identificativoUnivocoMittente);
 								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));
 							} catch (Exception e) {
 								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Impossibile individuare il PSP riferito dal Flusso [IdentificativoUnivocoMittente: " + identificativoUnivocoMittente + "]");
