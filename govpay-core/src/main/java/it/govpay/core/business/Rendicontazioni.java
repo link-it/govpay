@@ -141,6 +141,7 @@ public class Rendicontazioni extends BasicBD {
 				closeConnection();
 				
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
+					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
 					String idTransaction2 = null;
 					try {
 						idTransaction2 = GpThreadLocal.get().openTransaction();
@@ -199,14 +200,20 @@ public class Rendicontazioni extends BasicBD {
 							
 							Psp psp = null;
 							Dominio dominio = null;
-							String identificativoUnivocoMittente = null, identificativoUnivocoRicevente = null;
+							String identificativoUnivocoMittente = null, identificativoUnivocoRicevente = null, identificativoPsp =  null;
 							try {
-								identificativoUnivocoMittente = flussoRendicontazione.getIstitutoMittente().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco();
-								psp = AnagraficaManager.getPspByCodUnivoco(this, identificativoUnivocoMittente);
-								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));
+								identificativoPsp = idRendicontazione.getIdentificativoFlusso().substring(10, idRendicontazione.getIdentificativoFlusso().indexOf("-", 10));
+								log.debug("Identificativo PSP estratto dall'identificativo flusso: " + identificativoPsp);
+								psp = AnagraficaManager.getPsp(this, identificativoPsp);
 							} catch (Exception e) {
-								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Impossibile individuare il PSP riferito dal Flusso [IdentificativoUnivocoMittente: " + identificativoUnivocoMittente + "]");
-								continue;
+								try {
+									identificativoUnivocoMittente = flussoRendicontazione.getIstitutoMittente().getIdentificativoUnivocoMittente().getCodiceIdentificativoUnivoco();
+									psp = AnagraficaManager.getPspByCodUnivoco(this, identificativoUnivocoMittente);
+									GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", psp.getCodPsp()));
+								} catch (Exception e1) {
+									GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Impossibile individuare il PSP riferito dal Flusso [IdentificativoUnivocoMittente: " + identificativoUnivocoMittente + "]");
+									continue;
+								}
 							}
 							
 							try {
