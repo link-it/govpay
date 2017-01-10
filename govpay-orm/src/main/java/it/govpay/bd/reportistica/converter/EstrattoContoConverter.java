@@ -8,6 +8,7 @@ import java.util.Map;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.Versamento;
+import it.govpay.model.Versamento.Causale;
 import it.govpay.model.Versamento.StatoVersamento;
 
 public class EstrattoContoConverter {
@@ -34,7 +35,8 @@ public class EstrattoContoConverter {
 		estrattoConto.setIbanAccredito((String) list.get(15)); // iban_accredito
 		estrattoConto.setDebitoreIdentificativo((String) list.get(16)); // cf_debitore
 		estrattoConto.setNote((String) list.get(17)); // note
-		estrattoConto.setCausale(Versamento.decode((String) list.get(18)).getSimple()); // causale
+		Causale causale = Versamento.decode((String) list.get(18));
+		estrattoConto.setCausale(causale != null ? causale.getSimple() : null); // causale
 
 		return estrattoConto;
 	}
