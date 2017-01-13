@@ -38,7 +38,7 @@ CREATE TABLE canali
 	-- unique constraints
 	CONSTRAINT unique_canali_1 UNIQUE (id_psp,cod_canale,tipo_versamento),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_canali_1 FOREIGN KEY (id_psp) REFERENCES psp(id) ON DELETE CASCADE,
+	CONSTRAINT fk_canali_1 FOREIGN KEY (id_psp) REFERENCES psp(id),
 	CONSTRAINT pk_canali PRIMARY KEY (id)
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE stazioni
 	-- unique constraints
 	CONSTRAINT unique_stazioni_1 UNIQUE (cod_stazione),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_stazioni_1 FOREIGN KEY (id_intermediario) REFERENCES intermediari(id) ON DELETE CASCADE,
+	CONSTRAINT fk_stazioni_1 FOREIGN KEY (id_intermediario) REFERENCES intermediari(id),
 	CONSTRAINT pk_stazioni PRIMARY KEY (id)
 );
 
@@ -128,8 +128,8 @@ CREATE TABLE domini
 	-- unique constraints
 	CONSTRAINT unique_domini_1 UNIQUE (cod_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_domini_1 FOREIGN KEY (id_stazione) REFERENCES stazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_domini_2 FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_domini_1 FOREIGN KEY (id_stazione) REFERENCES stazioni(id),
+	CONSTRAINT fk_domini_2 FOREIGN KEY (id_applicazione_default) REFERENCES applicazioni(id),
 	CONSTRAINT pk_domini PRIMARY KEY (id)
 );
 
@@ -156,7 +156,7 @@ CREATE TABLE uo
 	-- unique constraints
 	CONSTRAINT unique_uo_1 UNIQUE (cod_uo,id_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_uo_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT fk_uo_1 FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_uo PRIMARY KEY (id)
 );
 
@@ -241,7 +241,7 @@ CREATE TABLE iban_accredito
 	-- unique constraints
 	CONSTRAINT unique_iban_accredito_1 UNIQUE (cod_iban,id_dominio),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_iban_accredito_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT fk_iban_accredito_1 FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iban_accredito PRIMARY KEY (id)
 );
 
@@ -280,9 +280,9 @@ CREATE TABLE tributi
 	-- unique constraints
 	CONSTRAINT unique_tributi_1 UNIQUE (id_dominio,id_tipo_tributo),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
-	CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
-	CONSTRAINT fk_tributi_3 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
+	CONSTRAINT fk_tributi_1 FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_tributi_2 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
+	CONSTRAINT fk_tributi_3 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_tributi PRIMARY KEY (id)
 );
 
@@ -303,11 +303,11 @@ CREATE TABLE acl
 	id_dominio BIGINT,
 	id_tipo_tributo BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_acl_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_acl_2 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
-	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id) ON DELETE CASCADE,
-	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
-	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id) ON DELETE CASCADE,
+	CONSTRAINT fk_acl_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_acl_2 FOREIGN KEY (id_portale) REFERENCES portali(id),
+	CONSTRAINT fk_acl_3 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT fk_acl_4 FOREIGN KEY (id_dominio) REFERENCES domini(id),
+	CONSTRAINT fk_acl_5 FOREIGN KEY (id_tipo_tributo) REFERENCES tipi_tributo(id),
 	CONSTRAINT pk_acl PRIMARY KEY (id)
 );
 
@@ -347,8 +347,8 @@ CREATE TABLE versamenti
 	-- unique constraints
 	CONSTRAINT unique_versamenti_1 UNIQUE (cod_versamento_ente,id_applicazione),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_versamenti_1 FOREIGN KEY (id_uo) REFERENCES uo(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_versamenti_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	-- CONSTRAINT fk_versamenti_1 FOREIGN KEY (id_uo) REFERENCES uo(id),
+	-- CONSTRAINT fk_versamenti_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_versamenti PRIMARY KEY (id)
 );
 
@@ -380,9 +380,9 @@ CREATE TABLE singoli_versamenti
 	-- unique constraints
 	CONSTRAINT unique_singoli_versamenti_1 UNIQUE (id_versamento,cod_singolo_versamento_ente),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_singoli_versamenti_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_singoli_versamenti_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_singoli_versamenti_3 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id) ON DELETE CASCADE,
+	-- CONSTRAINT fk_singoli_versamenti_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	-- CONSTRAINT fk_singoli_versamenti_2 FOREIGN KEY (id_tributo) REFERENCES tributi(id),
+	-- CONSTRAINT fk_singoli_versamenti_3 FOREIGN KEY (id_iban_accredito) REFERENCES iban_accredito(id),
 	CONSTRAINT pk_singoli_versamenti PRIMARY KEY (id)
 );
 
@@ -432,9 +432,9 @@ CREATE TABLE rpt
 	CONSTRAINT unique_rpt_1 UNIQUE (cod_msg_richiesta),
 	CONSTRAINT unique_rpt_2 UNIQUE (iuv,ccp,cod_dominio),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_rpt_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_rpt_2 FOREIGN KEY (id_canale) REFERENCES canali(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_rpt_3 FOREIGN KEY (id_portale) REFERENCES portali(id) ON DELETE CASCADE,
+	-- CONSTRAINT fk_rpt_1 FOREIGN KEY (id_versamento) REFERENCES versamenti(id),
+	-- CONSTRAINT fk_rpt_2 FOREIGN KEY (id_canale) REFERENCES canali(id),
+	-- CONSTRAINT fk_rpt_3 FOREIGN KEY (id_portale) REFERENCES portali(id),
 	CONSTRAINT pk_rpt PRIMARY KEY (id)
 );
 
@@ -466,7 +466,7 @@ CREATE TABLE rr
 	-- unique constraints
 	CONSTRAINT unique_rr_1 UNIQUE (cod_msg_revoca),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_rr_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id) ON DELETE CASCADE,
+	CONSTRAINT fk_rr_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id),
 	CONSTRAINT pk_rr PRIMARY KEY (id)
 );
 
@@ -490,9 +490,9 @@ CREATE TABLE notifiche
 	id_rpt BIGINT,
 	id_rr BIGINT,
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_notifiche_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_notifiche_2 FOREIGN KEY (id_rpt) REFERENCES rpt(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_notifiche_3 FOREIGN KEY (id_rr) REFERENCES rr(id) ON DELETE CASCADE,
+	-- CONSTRAINT fk_notifiche_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	-- CONSTRAINT fk_notifiche_2 FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	-- CONSTRAINT fk_notifiche_3 FOREIGN KEY (id_rr) REFERENCES rr(id),
 	CONSTRAINT pk_notifiche PRIMARY KEY (id)
 );
 
@@ -516,8 +516,8 @@ CREATE TABLE iuv
 	-- unique constraints
 	CONSTRAINT unique_iuv_1 UNIQUE (id_dominio,iuv),
 	-- fk/pk keys constraints
-	-- CONSTRAINT fk_iuv_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	-- CONSTRAINT fk_iuv_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	-- CONSTRAINT fk_iuv_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	-- CONSTRAINT fk_iuv_2 FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_iuv PRIMARY KEY (id)
 );
 
@@ -549,8 +549,8 @@ CREATE TABLE fr
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,anno_riferimento),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_fr_1 FOREIGN KEY (id_psp) REFERENCES psp(id) ON DELETE CASCADE,
-	CONSTRAINT fk_fr_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
+	CONSTRAINT fk_fr_1 FOREIGN KEY (id_psp) REFERENCES psp(id),
+	CONSTRAINT fk_fr_2 FOREIGN KEY (id_dominio) REFERENCES domini(id),
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );
 
@@ -568,8 +568,8 @@ CREATE TABLE fr_applicazioni
 	id_applicazione BIGINT NOT NULL,
 	id_fr BIGINT NOT NULL,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_fr_applicazioni_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_fr_applicazioni_2 FOREIGN KEY (id_fr) REFERENCES fr(id) ON DELETE CASCADE,
+	CONSTRAINT fk_fr_applicazioni_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
+	CONSTRAINT fk_fr_applicazioni_2 FOREIGN KEY (id_fr) REFERENCES fr(id),
 	CONSTRAINT pk_fr_applicazioni PRIMARY KEY (id)
 );
 
@@ -614,11 +614,11 @@ CREATE TABLE pagamenti
 	id_rr BIGINT,
 	id_fr_applicazione_revoca BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_pagamenti_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id) ON DELETE CASCADE,
-	CONSTRAINT fk_pagamenti_2 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id) ON DELETE CASCADE,
-	CONSTRAINT fk_pagamenti_3 FOREIGN KEY (id_fr_applicazione) REFERENCES fr_applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_pagamenti_4 FOREIGN KEY (id_rr) REFERENCES rr(id) ON DELETE CASCADE,
-	CONSTRAINT fk_pagamenti_5 FOREIGN KEY (id_fr_applicazione_revoca) REFERENCES fr_applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_pagamenti_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id),
+	CONSTRAINT fk_pagamenti_2 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
+	CONSTRAINT fk_pagamenti_3 FOREIGN KEY (id_fr_applicazione) REFERENCES fr_applicazioni(id),
+	CONSTRAINT fk_pagamenti_4 FOREIGN KEY (id_rr) REFERENCES rr(id),
+	CONSTRAINT fk_pagamenti_5 FOREIGN KEY (id_fr_applicazione_revoca) REFERENCES fr_applicazioni(id),
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 );
 
@@ -669,9 +669,9 @@ CREATE TABLE rendicontazioni_senza_rpt
 	id_iuv BIGINT NOT NULL,
 	id_singolo_versamento BIGINT,
 	-- fk/pk keys constraints
-	CONSTRAINT fk_rendicontazioni_senza_rpt_1 FOREIGN KEY (id_fr_applicazione) REFERENCES fr_applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_rendicontazioni_senza_rpt_2 FOREIGN KEY (id_iuv) REFERENCES iuv(id) ON DELETE CASCADE,
-	CONSTRAINT fk_rendicontazioni_senza_rpt_3 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id) ON DELETE CASCADE,
+	CONSTRAINT fk_rendicontazioni_senza_rpt_1 FOREIGN KEY (id_fr_applicazione) REFERENCES fr_applicazioni(id),
+	CONSTRAINT fk_rendicontazioni_senza_rpt_2 FOREIGN KEY (id_iuv) REFERENCES iuv(id),
+	CONSTRAINT fk_rendicontazioni_senza_rpt_3 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id),
 	CONSTRAINT pk_rendicontazioni_senza_rpt PRIMARY KEY (id)
 );
 
