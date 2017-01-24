@@ -43,7 +43,6 @@ public class IntermediarioConverter {
 		dto.setId(vo.getId());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setDenominazione(vo.getDenominazione());
-		dto.setSegregationCode(vo.getSegregationCode());
 		return dto; 
 	}
 
@@ -58,7 +57,6 @@ public class IntermediarioConverter {
 		if(dto.getConnettorePdd()!= null) {
 			dto.getConnettorePdd().setIdConnettore(dto.getCodIntermediario());
 		}
-		vo.setSegregationCode(dto.getSegregationCode());
 		return vo;
 	}
 

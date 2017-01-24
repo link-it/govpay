@@ -39,12 +39,9 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.RendicontazionePagamento;
-import it.govpay.bd.model.RendicontazionePagamentoSenzaRpt;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.wrapper.RendicontazionePagamentoBD;
-import it.govpay.bd.wrapper.RendicontazionePagamentoSenzaRptBD;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
-import it.govpay.bd.wrapper.filters.RendicontazionePagamentoSenzaRptFilter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.Gp21Utils;
@@ -52,7 +49,6 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.FrApplicazione;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.servizi.PagamentiTelematiciGPRnd;
 import it.govpay.servizi.commons.EsitoOperazione;
@@ -150,7 +146,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			ctx.log("gprnd.ricevutaRichiesta");
 
 			//Autorizzazione alla richiesta: controllo che il dominio sia tra quelli abilitati per l'applicazione
-			Fr frModel = new FrBD(bd).getFr(bodyrichiesta.getAnnoRiferimento(), bodyrichiesta.getCodFlusso());
+			Fr frModel = new FrBD(bd).getFr(bodyrichiesta.getCodFlusso());
 			
 			if(!AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, frModel.getDominio(bd).getCodDominio(), null)) {
 				throw new GovPayException(EsitoOperazione.RND_001);
@@ -168,15 +164,13 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			fr.setNumeroPagamenti(0l);
 			
 			if(rends.size() > 0) {
-				FrApplicazione frApplicazione = rends.get(0).getFrApplicazione();
-				
 				fr.setAnnoRiferimento(frModel.getAnnoRiferimento());
 				fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 				fr.setCodFlusso(frModel.getCodFlusso());
 				fr.setCodPsp(frModel.getPsp(bd).getCodPsp());
 				fr.setDataFlusso(frModel.getDataFlusso());
 				fr.setDataRegolamento(frModel.getDataRegolamento());
-				fr.setIur(frApplicazione.getFr(bd).getIur());
+				fr.setIur(frModel.getIur());
 				
 				for(RendicontazionePagamento rend : rends) {
 					fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
@@ -185,35 +179,6 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 				}
 				response.setFlussoRendicontazione(fr);
 			}
-			
-			
-			RendicontazionePagamentoSenzaRptBD rendicontazionePagamentoSenzaRptBD = new RendicontazionePagamentoSenzaRptBD(bd); 
-			RendicontazionePagamentoSenzaRptFilter filter2 = rendicontazionePagamentoSenzaRptBD.newFilter();
-			filter2.setAnnoRiferimento(bodyrichiesta.getAnnoRiferimento());
-			filter2.setCodFlusso(bodyrichiesta.getCodFlusso());
-			filter2.setCodApplicazione(bodyrichiesta.getCodApplicazione());
-			List<RendicontazionePagamentoSenzaRpt> rendsSenzaRpt= rendicontazionePagamentoSenzaRptBD.findAll(filter2);
-			
-			if(rendsSenzaRpt.size() > 0) {
-				FrApplicazione frApplicazione = rendsSenzaRpt.get(0).getFrApplicazione();
-				
-				fr.setAnnoRiferimento(frModel.getAnnoRiferimento());
-				fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
-				fr.setCodFlusso(frModel.getCodFlusso());
-				fr.setCodPsp(frModel.getPsp(bd).getCodPsp());
-				fr.setDataFlusso(frModel.getDataFlusso());
-				fr.setDataRegolamento(frModel.getDataRegolamento());
-				fr.setIur(frApplicazione.getFr(bd).getIur());
-				
-				for(RendicontazionePagamentoSenzaRpt rend : rendsSenzaRpt) {
-					fr.setImportoTotale(rend.getRendicontazioneSenzaRpt().getImportoPagato().add(fr.getImportoTotale()));
-					fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend.getRendicontazioneSenzaRpt(), applicazione.getVersione(), bd));
-				}
-				response.setFlussoRendicontazione(fr);
-			}
-			
-			
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException e) {

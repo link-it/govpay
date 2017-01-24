@@ -1,5 +1,8 @@
 package it.govpay.core.utils;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import it.govpay.model.Acl;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
@@ -79,6 +82,22 @@ public class AclEngine {
 		}
 		
 		return isDominioAbilitato && isTributoAbilitato;
+	}
+	
+	/** 
+	 * Ritorna la lista dei domini autorizzati al servizio Rendicontazione per l'applicazione indicata
+	 * 
+	 * @param applicazione
+	 * @param servizio
+	 * @return
+	 */
+	public static Set<String> getAuthorizedRnd(Applicazione applicazione) {
+		Set<String> domini = new HashSet<String>();
+		for(Acl acl : applicazione.getAcls()) {
+			if(acl.getServizio().equals(Servizio.RENDICONTAZIONE))
+				domini.add(acl.getCodDominio());
+		}
+		return domini;
 	}
 
 }

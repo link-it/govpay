@@ -20,12 +20,18 @@
  */
 package it.govpay.bd.model;
 
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 
 public class Pagamento extends it.govpay.model.Pagamento {
 
@@ -34,6 +40,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	private Rpt rpt;
 	private SingoloVersamento singoloVersamento;
 	private Rr rr;
+	private List<Rendicontazione> rendicontazioni;
 
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(rpt == null) {
@@ -72,6 +79,34 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	public void setSingoloVersamento(SingoloVersamento singoloVersamento) {
 		this.singoloVersamento = singoloVersamento;
 		this.setIdSingoloVersamento(singoloVersamento.getId());
+	}
+
+	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
+		if(rendicontazioni == null){
+			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			RendicontazioneFilter newFilter = rendicontazioniBD.newFilter();
+			newFilter.setCodDominio(getCodDominio());
+			newFilter.setIuv(getIuv());
+			newFilter.setIur(getIur());
+			rendicontazioni = rendicontazioniBD.findAll(newFilter);
+		}
+		return rendicontazioni;
+	}
+	
+	public boolean isPagamentoRendicontato(BasicBD bd) throws ServiceException {
+		for(Rendicontazione r : getRendicontazioni(bd)) {
+			if(r.getEsito().equals(EsitoRendicontazione.ESEGUITO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT))
+				return true;
+		}
+		return false;
+	}
+	
+	public boolean isPagamentoRevocato(BasicBD bd) throws ServiceException {
+		for(Rendicontazione r : getRendicontazioni(bd)) {
+			if(r.getEsito().equals(EsitoRendicontazione.REVOCATO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT))
+				return true;
+		}
+		return false;
 	}
 }
 

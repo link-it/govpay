@@ -123,5 +123,4 @@ public class Iuv extends BasicModel {
 	public void setAuxDigit(int auxDigit) {
 		this.auxDigit = auxDigit;
 	}
-	
 }

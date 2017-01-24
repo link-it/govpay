@@ -67,13 +67,29 @@ public class IuvBD extends BasicBD {
 		switch (type) {
 		case ISO11694:
 			{
-				String reference = prefix + String.format("%0" + (15 - prefix.length()) + "d", prg);
-				if(reference.length() > 15) 
-					throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
-				String check = IuvUtils.getCheckDigit(reference);
-				iuv = "RF" + check + reference;
+				String reference, check;
+				
+				switch (dominio.getAuxDigit()) {
+				case 0: 
+					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
+					if(reference.length() > 21) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					check = IuvUtils.getCheckDigit(reference);
+					iuv = "RF" + check + reference;
+				break;
+				case 3: 
+					reference = prefix + String.format("%0" + (19 - prefix.length()) + "d", prg);
+					if(reference.length() > 19) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					
+					reference = String.format("%02d", dominio.getSegregationCode()) + reference;
+					check = IuvUtils.getCheckDigit(reference);
+					
+					iuv = "RF" + check + reference;
+				break;
+				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
+				}
 			}
-			break;
 		case NUMERICO:
 			{
 				String reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
@@ -86,17 +102,19 @@ public class IuvBD extends BasicBD {
 				switch (dominio.getAuxDigit()) {
 					case 0: 
 						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode()); 
+						iuv = reference + check;
 					break;
 					case 3: 
-						if(dominio.getStazione(this).getIntermediario(this).getSegregationCode() == null)
-							throw new ServiceException("Dominio con IUV segregato associato ad Intermediario privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+" Intermediario:"+dominio.getStazione(this).getIntermediario(this).getCodIntermediario()+"]" ); 
+						if(dominio.getSegregationCode() == null)
+							throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
 						
-						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getIntermediario(this).getSegregationCode()); 
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode()); 
+						iuv = String.format("%02d", dominio.getSegregationCode()) + reference + check;
 					break;
 					default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
 				}
 				
-				iuv = reference + check;
+				
 				break;
 			}
 		}
@@ -111,14 +129,7 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setCodVersamentoEnte(codVersamentoEnte);
 		iuvDTO.setAuxDigit(dominio.getAuxDigit());
 		iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
-		switch (dominio.getAuxDigit()) {
-			case 0: 
-				iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
-			break;
-			case 3: 
-				iuvDTO.setApplicationCode(dominio.getStazione(this).getIntermediario(this).getSegregationCode());
-			break;
-		}
+		
 		return insertIuv(iuvDTO);
 	}
 

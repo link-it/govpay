@@ -22,8 +22,6 @@ package it.govpay.bd.model.converter;
 
 import it.govpay.bd.model.Fr;
 import it.govpay.model.Fr.StatoFr;
-import it.govpay.orm.IdDominio;
-import it.govpay.orm.IdPsp;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,19 +45,19 @@ public class FrConverter {
 		dto.setAnnoRiferimento(vo.getAnnoRiferimento());
 		dto.setCodBicRiversamento(vo.getCodBicRiversamento());
 		dto.setCodFlusso(vo.getCodFlusso());
+		//TODO GP-439.3 Bussu scommentare
+		//dto.setCodDominio(vo.getCodDominio());
+		//dto.setCodPsp(vo.getCodPsp());
 		dto.setDataAcquisizione(vo.getDataAcquisizione());
 		dto.setDataFlusso(vo.getDataOraFlusso());
 		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
-		dto.setIdPsp(vo.getIdPsp().getId());
-		dto.setIdDominio(vo.getIdDominio().getId());
 		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
 		dto.setIur(vo.getIur());
 		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
 		dto.setStato(StatoFr.valueOf(vo.getStato()));
 		dto.setXml(vo.getXml());
-		
 		return dto;
 	}
 
@@ -68,20 +66,14 @@ public class FrConverter {
 		vo.setAnnoRiferimento(dto.getAnnoRiferimento());
 		vo.setCodBicRiversamento(dto.getCodBicRiversamento());
 		vo.setCodFlusso(dto.getCodFlusso());
+		//TODO GP-439.3 Bussu scommentare
+		//vo.setCodDominio(dto.getCodDominio());
+		//vo.setCodPsp(dto.getCodPsp());
 		vo.setDataAcquisizione(dto.getDataAcquisizione());
 		vo.setDataOraFlusso(dto.getDataFlusso());
 		vo.setDataRegolamento(dto.getDataRegolamento());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
-		
-		IdDominio idDominio = new IdDominio();
-		idDominio.setId(dto.getIdDominio());
-		vo.setIdDominio(idDominio);
-		
-		IdPsp idPsp = new IdPsp();
-		idPsp.setId(dto.getIdPsp());
-		vo.setIdPsp(idPsp);
-		
 		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti());
 		vo.setIur(dto.getIur());
 		vo.setNumeroPagamenti(dto.getNumeroPagamenti());

@@ -24,31 +24,25 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.FR;
-import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
 
 public class FrFilter extends AbstractFilter {
 	
-	private String codFlusso;
+	//select distinct id from fr join rendicontazioni on rendicontazioni.id_fr = fr.id join pagamenti on rendicontazioni.id_pagamento = pagamenti.id join singoli_versamenti on pagamenti.id_singolo_versamento = singoli_versamenti.id join versamenti on singoli_versamenti.id_versamento = versamenti.id and versamenti.id_applicazione = 5;
+	private Long idApplicazione;
+	private List<String> codDominio;
 	private String codPsp;
 	private String stato;
-	private int annoRiferimento;
 	private Date datainizio;
 	private Date dataFine;
-	private List<Long> idDomini;
-	private List<Long> idFlussi; 
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
@@ -63,22 +57,6 @@ public class FrFilter extends AbstractFilter {
 			// Filtro sullo stato pagamenti
 			if(this.stato != null && StringUtils.isNotEmpty(this.stato)){
 				newExpression.equals(FR.model().STATO, this.stato);
-				addAnd = true;
-			}
-			
-			if(this.annoRiferimento > 0){
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(FR.model().ANNO_RIFERIMENTO, this.annoRiferimento);
-				addAnd = true;
-			}
-			
-			if(this.codFlusso != null && StringUtils.isNotEmpty(this.codFlusso)) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 			
@@ -98,26 +76,6 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.idDomini!= null && !this.idDomini.isEmpty()) {
-				if(addAnd)
-					newExpression.and();
-				
-				FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabaseType());
-				IField idDominioField = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(FR.model()));
-				newExpression.in(idDominioField, this.idDomini);
-				addAnd = true;
-			}
-			
-			if(this.idFlussi != null && !this.idFlussi.isEmpty()){
-				if(addAnd)
-					newExpression.and();
-				
-				FRFieldConverter converter = new FRFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabaseType());
-				IField idField = new CustomField("id", Long.class, "id", converter.toTable(FR.model()));
-				newExpression.in(idField, this.idFlussi);
-				addAnd = true;
-			}
-			
 			return newExpression;
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -134,22 +92,6 @@ public class FrFilter extends AbstractFilter {
 
 	public void setStato(String stato) {
 		this.stato = stato;
-	}
-
-	public int getAnnoRiferimento() {
-		return annoRiferimento;
-	}
-
-	public void setAnnoRiferimento(int annoRiferimento) {
-		this.annoRiferimento = annoRiferimento;
-	}
-
-	public String getCodFlusso() {
-		return codFlusso;
-	}
-
-	public void setCodFlusso(String codFlusso) {
-		this.codFlusso = codFlusso;
 	}
 
 	public Date getDatainizio() {
@@ -176,19 +118,20 @@ public class FrFilter extends AbstractFilter {
 		this.codPsp = codPsp;
 	}
 
-	public List<Long> getIdDomini() {
-		return idDomini;
+	public Long getIdApplicazione() {
+		return idApplicazione;
 	}
 
-	public void setIdDomini(List<Long> idDomini) {
-		this.idDomini = idDomini;
+	public void setIdApplicazione(long idApplicazione) {
+		this.idApplicazione = idApplicazione;
 	}
 
-	public List<Long> getIdFlussi() {
-		return idFlussi;
+	public List<String> getCodDominio() {
+		return codDominio;
 	}
 
-	public void setIdFlussi(List<Long> idFlussi) {
-		this.idFlussi = idFlussi;
+	public void setCodDominio(List<String> codDominio) {
+		this.codDominio = codDominio;
 	}
+
 }

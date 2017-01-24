@@ -46,8 +46,8 @@ public class IuvUtils {
 		info.setCodiceIdentificativoEnte(codDominio);
 		info.setImportoVersamento(importoTotale);
 		CtNumeroAvviso numeroAvviso = new CtNumeroAvviso();
-		numeroAvviso.setApplicationCode(String.format("%02d", applicationCode));
 		numeroAvviso.setAuxDigit("0");
+		numeroAvviso.setApplicationCode(String.format("%02d", applicationCode));
 		numeroAvviso.setIUV(iuv);
 		info.setNumeroAvviso(numeroAvviso);
 		byte[] infoByte = JaxbUtils.toByte(info);

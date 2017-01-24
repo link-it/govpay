@@ -38,6 +38,8 @@ public class Dominio extends BasicModel {
 	private byte[] contiAccredito;
 	private byte[] tabellaControparti;
 	private int auxDigit;
+	private Integer segregationCode;
+	
 	private String iuvPrefix;
 	private boolean iuvPrefixStrict;
 	
@@ -153,6 +155,13 @@ public class Dominio extends BasicModel {
 		this.iuvPrefixStrict = iuvPrefixStrict;
 	}
 
+	public Integer getSegregationCode() {
+		return segregationCode;
+	}
+
+	public void setSegregationCode(Integer segregationCode) {
+		this.segregationCode = segregationCode;
+	}
 
 }
 

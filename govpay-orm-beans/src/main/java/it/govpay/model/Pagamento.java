@@ -23,36 +23,7 @@ package it.govpay.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 public class Pagamento extends BasicModel {
-
-	public enum EsitoRendicontazione {
-		ESEGUITO(0), REVOCATO(3), ESEGUITO_SENZA_RPT(9);
-
-		private int codifica;
-
-		EsitoRendicontazione(int codifica) {
-			this.codifica = codifica;
-		}
-
-		public int getCodifica() {
-			return codifica;
-		}
-
-		public static EsitoRendicontazione toEnum(String codifica) throws ServiceException {
-			return toEnum(Integer.parseInt(codifica));
-		}
-
-		public static EsitoRendicontazione toEnum(int codifica) throws ServiceException {
-			for(EsitoRendicontazione p : EsitoRendicontazione.values()){
-				if(p.getCodifica() == codifica)
-					return p;
-			}
-			throw new ServiceException("Codifica inesistente per EsitoRendicontazione. Valore fornito [" + codifica + "] valori possibili " + ArrayUtils.toString(EsitoRendicontazione.values()));
-		}
-	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -61,40 +32,28 @@ public class Pagamento extends BasicModel {
 	}
 
 	private Long id;
-	private long idRpt;
-	private long idSingoloVersamento;
-	private String codSingoloVersamentoEnte;
-	private BigDecimal importoPagato;
-	private BigDecimal commissioniPsp;
+	private String codDominio;
+	private String iuv;
 	private String iur;
+	
+	private BigDecimal importoPagato;
+	private Date dataAcquisizione;
 	private Date dataPagamento;
-	private String ibanAccredito;
+	private BigDecimal commissioniPsp;
 	private TipoAllegato tipoAllegato;
 	private byte[] allegato;
-
-	private Long idFrApplicazione;
-	private EsitoRendicontazione esitoRendicontazione;
-	private Date dataRendicontazione;
-	private Integer annoRiferimento;
-	private String codFlussoRendicontazione;
-	private Integer indice;
-	private Date dataAcquisizione;
-
+	private String ibanAccredito;
+	
+	private Long idRpt;
+	private Long idSingoloVersamento;
 	private Long idRr;
+	
+	private Date dataAcquisizioneRevoca;
 	private String causaleRevoca;
 	private String datiRevoca;
 	private String esitoRevoca;
 	private String datiEsitoRevoca;
 	private BigDecimal importoRevocato;
-
-	private Long idFrApplicazioneRevoca;
-	private EsitoRendicontazione esitoRendicontazioneRevoca;
-	private Date dataRendicontazioneRevoca;
-	private String codFlussoRendicontazioneRevoca;
-	private Integer annoRiferimentoRevoca;
-	private Integer indiceRevoca;
-	private Date dataAcquisizioneRevoca;
-
 
 	public Pagamento() {
 		super();
@@ -109,7 +68,7 @@ public class Pagamento extends BasicModel {
 		this.id = id;
 	}
 
-	public long getIdRpt() {
+	public Long getIdRpt() {
 		return idRpt;
 	}
 
@@ -117,11 +76,11 @@ public class Pagamento extends BasicModel {
 		this.idRpt = idRpt;
 	}
 
-	public long getIdSingoloVersamento() {
+	public Long getIdSingoloVersamento() {
 		return idSingoloVersamento;
 	}
 
-	public void setIdSingoloVersamento(long idSingoloVersamento) {
+	public void setIdSingoloVersamento(Long idSingoloVersamento) {
 		this.idSingoloVersamento = idSingoloVersamento;
 	}
 
@@ -165,52 +124,12 @@ public class Pagamento extends BasicModel {
 		this.allegato = allegato;
 	}
 
-	public EsitoRendicontazione getEsitoRendicontazione() {
-		return esitoRendicontazione;
-	}
-
-	public void setEsitoRendicontazione(EsitoRendicontazione esitoRendicontazione) {
-		this.esitoRendicontazione = esitoRendicontazione;
-	}
-
-	public Date getDataRendicontazione() {
-		return dataRendicontazione;
-	}
-
-	public void setDataRendicontazione(Date dataRendicontazione) {
-		this.dataRendicontazione = dataRendicontazione;
-	}
-
-	public String getCodFlussoRendicontazione() {
-		return codFlussoRendicontazione;
-	}
-
-	public void setCodFlussoRendicontazione(String codFlussoRendicontazione) {
-		this.codFlussoRendicontazione = codFlussoRendicontazione;
-	}
-
 	public BigDecimal getCommissioniPsp() {
 		return commissioniPsp;
 	}
 
 	public void setCommissioniPsp(BigDecimal commissioniPsp) {
 		this.commissioniPsp = commissioniPsp;
-	}
-
-	public Integer getAnnoRiferimento() {
-		return annoRiferimento;
-	}
-
-	public void setAnnoRiferimento(Integer annoRiferimento) {
-		this.annoRiferimento = annoRiferimento;
-	}
-
-	public Integer getIndice() {
-		return indice;
-	}
-
-	public void setIndice(Integer indice) {
-		this.indice = indice;
 	}
 
 	public Long getIdRr() {
@@ -261,54 +180,6 @@ public class Pagamento extends BasicModel {
 		this.importoRevocato = importoRevocato;
 	}
 
-	public Long getIdFrApplicazioneRevoca() {
-		return idFrApplicazioneRevoca;
-	}
-
-	public void setIdFrApplicazioneRevoca(Long idFrApplicazioneRevoca) {
-		this.idFrApplicazioneRevoca = idFrApplicazioneRevoca;
-	}
-
-	public EsitoRendicontazione getEsitoRendicontazioneRevoca() {
-		return esitoRendicontazioneRevoca;
-	}
-
-	public void setEsitoRendicontazioneRevoca(EsitoRendicontazione esitoRendicontazioneRevoca) {
-		this.esitoRendicontazioneRevoca = esitoRendicontazioneRevoca;
-	}
-
-	public Date getDataRendicontazioneRevoca() {
-		return dataRendicontazioneRevoca;
-	}
-
-	public void setDataRendicontazioneRevoca(Date dataRendicontazioneRevoca) {
-		this.dataRendicontazioneRevoca = dataRendicontazioneRevoca;
-	}
-
-	public String getCodFlussoRendicontazioneRevoca() {
-		return codFlussoRendicontazioneRevoca;
-	}
-
-	public void setCodFlussoRendicontazioneRevoca(String codFlussoRendicontazioneRevoca) {
-		this.codFlussoRendicontazioneRevoca = codFlussoRendicontazioneRevoca;
-	}
-
-	public Integer getAnnoRiferimentoRevoca() {
-		return annoRiferimentoRevoca;
-	}
-
-	public void setAnnoRiferimentoRevoca(Integer annoRiferimentoRevoca) {
-		this.annoRiferimentoRevoca = annoRiferimentoRevoca;
-	}
-
-	public Integer getIndiceRevoca() {
-		return indiceRevoca;
-	}
-
-	public void setIndiceRevoca(Integer indiceRevoca) {
-		this.indiceRevoca = indiceRevoca;
-	}
-
 	public Date getDataAcquisizione() {
 		return dataAcquisizione;
 	}
@@ -325,22 +196,6 @@ public class Pagamento extends BasicModel {
 		this.dataAcquisizioneRevoca = dataAcquisizioneRevoca;
 	}
 
-	public String getCodSingoloVersamentoEnte() {
-		return codSingoloVersamentoEnte;
-	}
-
-	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
-		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
-	}
-
-	public Long getIdFrApplicazione() {
-		return idFrApplicazione;
-	}
-
-	public void setIdFrApplicazione(Long idFrApplicazione) {
-		this.idFrApplicazione = idFrApplicazione;
-	}
-
 	public String getIbanAccredito() {
 		return ibanAccredito;
 	}
@@ -349,7 +204,20 @@ public class Pagamento extends BasicModel {
 		this.ibanAccredito = ibanAccredito;
 	}
 
+	public String getCodDominio() {
+		return codDominio;
+	}
 
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
+	}
 
+	public String getIuv() {
+		return iuv;
+	}
+
+	public void setIuv(String iuv) {
+		this.iuv = iuv;
+	}
 }
 

@@ -42,7 +42,6 @@ import it.govpay.orm.dao.IDBPortaleService;
 import it.govpay.orm.dao.IDBPspService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
-import it.govpay.orm.dao.IDBRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
@@ -64,9 +63,7 @@ import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IRendicontazionePagamentoSenzaRPTServiceSearch;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
-import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
@@ -105,9 +102,7 @@ public class BasicBD {
 	private IPagamentoService pagamentoService;
 	private IPortaleService portaleService;
 	private IPspService pspService;
-	private IRendicontazioneSenzaRPTService rendicontazioneSenzaRPTService;
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
-	private IRendicontazionePagamentoSenzaRPTServiceSearch rendicontazionePagamentoSenzaRPTServiceSearch;
 	private IRPTService rptService;
 	private IRRService rrService;
 	private ISingoloVersamentoService singoloVersamentoService;
@@ -174,9 +169,7 @@ public class BasicBD {
 				this.portaleService = this.serviceManager.getPortaleService();
 				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.pspService = this.serviceManager.getPspService();
-				this.rendicontazioneSenzaRPTService = this.serviceManager.getRendicontazioneSenzaRPTService();
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
-				this.rendicontazionePagamentoSenzaRPTServiceSearch = this.serviceManager.getRendicontazionePagamentoSenzaRPTServiceSearch();
 				this.rptService = this.serviceManager.getRPTService();
 				this.rrService = this.serviceManager.getRRService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
@@ -215,7 +208,6 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
 			((IDBPspService)this.pspService).enableSelectForUpdate();
-			((IDBRendicontazioneSenzaRPTService)this.rendicontazioneSenzaRPTService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBRRService)this.rrService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
@@ -251,7 +243,6 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
 			((IDBPspService)this.pspService).disableSelectForUpdate();
-			((IDBRendicontazioneSenzaRPTService)this.rendicontazioneSenzaRPTService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBRRService)this.rrService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
@@ -393,13 +384,6 @@ public class BasicBD {
 		return pspService;
 	}
 	
-	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() {
-		if(father != null) {
-			return father.getRendicontazioneSenzaRPTService();
-		}
-		return rendicontazioneSenzaRPTService;
-	}
-
 	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
 		if(father != null) {
 			return father.getRendicontazionePagamentoServiceSearch();
@@ -407,13 +391,6 @@ public class BasicBD {
 		return rendicontazionePagamentoServiceSearch;
 	}
 	
-	public IRendicontazionePagamentoSenzaRPTServiceSearch getRendicontazionePagamentoSenzaRPTServiceSearch() {
-		if(father != null) {
-			return father.getRendicontazionePagamentoSenzaRPTServiceSearch();
-		}
-		return rendicontazionePagamentoSenzaRPTServiceSearch;
-	}
-
 	public IRPTService getRptService() {
 		if(father != null) {
 			return father.getRptService();

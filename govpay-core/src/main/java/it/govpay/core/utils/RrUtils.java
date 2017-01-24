@@ -362,7 +362,7 @@ public class RrUtils extends NdpValidationUtils {
 			for(Pagamento pagamento : pagamenti) {
 				
 				if(pagamento.getImportoRevocato().compareTo(BigDecimal.ZERO) == 0){ 
-					ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
+					ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
 					continue;
 				}
 					
@@ -370,7 +370,7 @@ public class RrUtils extends NdpValidationUtils {
 				
 				sv = pagamento.getSingoloVersamento(bd);
 				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ANOMALO);
-				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
+				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
 			}
 			versamentiBD.updateStatoVersamento(sv.getIdVersamento(), StatoVersamento.ANOMALO, "Pagamenti stornati");
 			v.setStatoVersamento(StatoVersamento.ANOMALO);

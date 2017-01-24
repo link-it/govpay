@@ -20,6 +20,7 @@
  */
 package it.govpay.web.ws;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import it.govpay.bd.BasicBD;
@@ -31,11 +32,12 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.bd.model.FrApplicazione;
-import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Versamento;
+import it.govpay.bd.wrapper.RendicontazionePagamentoBD;
+import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
 import it.govpay.servizi.PagamentiTelematiciGPApp;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.FlussoRendicontazione;
@@ -354,20 +356,20 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			ctx.log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Rendicontazioni rendicontazioneBusiness = new it.govpay.core.business.Rendicontazioni(bd);
-			List<FrApplicazione> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazioneAutenticata);
+			List<Fr> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazioneAutenticata);
 			response.setCodApplicazione(applicazioneAutenticata.getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			
-			for(FrApplicazione frApplicazione : rendicontazioni) {
+			for(Fr frApplicazione : rendicontazioni) {
 				FlussoRendicontazione fr = new FlussoRendicontazione();
-				fr.setAnnoRiferimento(frApplicazione.getFr(bd).getAnnoRiferimento());
-				fr.setCodBicRiversamento(frApplicazione.getFr(bd).getCodBicRiversamento());
-				fr.setCodFlusso(frApplicazione.getFr(bd).getCodFlusso());
-				fr.setCodPsp(frApplicazione.getFr(bd).getPsp(bd).getCodPsp());
-				fr.setDataFlusso(frApplicazione.getFr(bd).getDataFlusso());
-				fr.setDataRegolamento(frApplicazione.getFr(bd).getDataRegolamento());
-				fr.setImportoTotale(frApplicazione.getImportoTotalePagamenti());
-				fr.setIur(frApplicazione.getFr(bd).getIur());
+				fr.setAnnoRiferimento(frApplicazione.getAnnoRiferimento());
+				fr.setCodBicRiversamento(frApplicazione.getCodBicRiversamento());
+				fr.setCodFlusso(frApplicazione.getCodFlusso());
+				fr.setCodPsp(frApplicazione.getCodPsp());
+				fr.setDataFlusso(frApplicazione.getDataFlusso());
+				fr.setDataRegolamento(frApplicazione.getDataRegolamento());
+				fr.setImportoTotale(new BigDecimal(frApplicazione.getImportoTotalePagamenti()));
+				fr.setIur(frApplicazione.getIur());
 				fr.setNumeroPagamenti(frApplicazione.getNumeroPagamenti());
 				response.getFlussoRendicontazione().add(fr);
 			}
@@ -405,33 +407,33 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			ctx.log("ws.ricevutaRichiesta");
 			verificaApplicazione(applicazioneAutenticata, bodyrichiesta.getCodApplicazione());
 			it.govpay.core.business.Rendicontazioni rendicontazioneBusiness = new it.govpay.core.business.Rendicontazioni(bd);
-			FrApplicazione frApplicazione = rendicontazioneBusiness.chiediRendicontazione(applicazioneAutenticata, bodyrichiesta.getAnnoRiferimento(), bodyrichiesta.getCodFlusso());
+			
+			Fr fr = rendicontazioneBusiness.chiediRendicontazione(bodyrichiesta.getCodFlusso());
 			response.setCodApplicazione(applicazioneAutenticata.getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			FlussoRendicontazione fr = new FlussoRendicontazione();
-			fr.setAnnoRiferimento(frApplicazione.getFr(bd).getAnnoRiferimento());
-			fr.setCodBicRiversamento(frApplicazione.getFr(bd).getCodBicRiversamento());
-			fr.setCodFlusso(frApplicazione.getFr(bd).getCodFlusso());
-			fr.setCodPsp(frApplicazione.getFr(bd).getPsp(bd).getCodPsp());
-			fr.setDataFlusso(frApplicazione.getFr(bd).getDataFlusso());
-			fr.setDataRegolamento(frApplicazione.getFr(bd).getDataRegolamento());
-			fr.setImportoTotale(frApplicazione.getImportoTotalePagamenti());
-			fr.setIur(frApplicazione.getFr(bd).getIur());
-			fr.setNumeroPagamenti(frApplicazione.getNumeroPagamenti());
+			FlussoRendicontazione flusso = new FlussoRendicontazione();
+			flusso.setAnnoRiferimento(fr.getAnnoRiferimento());
+			flusso.setCodBicRiversamento(fr.getCodBicRiversamento());
+			flusso.setCodFlusso(fr.getCodFlusso());
+			flusso.setCodPsp(fr.getPsp(bd).getCodPsp());
+			flusso.setDataFlusso(fr.getDataFlusso());
+			flusso.setDataRegolamento(fr.getDataRegolamento());
+			flusso.setImportoTotale(new BigDecimal(fr.getImportoTotalePagamenti()));
+			flusso.setIur(fr.getIur());
+			flusso.setNumeroPagamenti(fr.getNumeroPagamenti());
 			
-			if(frApplicazione.getPagamenti(bd) != null) {
-				for(Pagamento pagamento : frApplicazione.getPagamenti(bd)) {
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd));
-				}
+			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd);
+			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
+			
+			filter.setCodFlusso(fr.getCodFlusso());
+			filter.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+			
+			List<RendicontazionePagamento> rendicontazionePagamenti = rendicontazionePagamentoBD.findAll(filter);
+			for(RendicontazionePagamento pagamento : rendicontazionePagamenti) {
+				flusso.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd));
 			}
 			
-			if(frApplicazione.getRendicontazioniSenzaRpt(bd) != null) {
-				for(RendicontazioneSenzaRpt rendicontazione : frApplicazione.getRendicontazioniSenzaRpt(bd)) {
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rendicontazione, applicazioneAutenticata.getVersione(), bd));
-				}
-			}
-			
-			response.setFlussoRendicontazione(fr);
+			response.setFlussoRendicontazione(flusso);
 			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());

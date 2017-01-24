@@ -53,6 +53,8 @@ public class IuvConverter {
 		dto.setTipo(TipoIUV.toEnum(vo.getTipoIuv()));
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 		dto.setApplicationCode(vo.getApplicationCode());
+		//TODO GP-439.3 Bussu scommentare
+		//dto.setSegregationCode(vo.getSegregationCode());
 		return dto;
 	}
 
@@ -65,6 +67,8 @@ public class IuvConverter {
 		vo.setTipoIuv(dto.getTipo().getCodifica());
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
 		vo.setApplicationCode(dto.getApplicationCode());
+		//TODO GP-439.3 Bussu scommentare
+		//vo.setSegregationCode(dto.getSegregationCode())
 		IdApplicazione idApplicazione = new IdApplicazione();
 		idApplicazione.setId(dto.getIdApplicazione());
 		vo.setIdApplicazione(idApplicazione);

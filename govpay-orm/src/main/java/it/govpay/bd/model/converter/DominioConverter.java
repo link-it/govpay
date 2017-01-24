@@ -59,6 +59,8 @@ public class DominioConverter {
 		dto.setAuxDigit(vo.getAuxDigit());
 		dto.setIuvPrefix(vo.getIuvPrefix());
 		dto.setIuvPrefixStrict(vo.isIuvPrefixStrict());
+		//TODO GP-439.3 Bussu Scommentare
+		//dto.setSegregationCode(vo.getSegregationCode());
 		return dto;
 	}
 
@@ -84,6 +86,8 @@ public class DominioConverter {
 		IdStazione idStazione = new IdStazione();
 		idStazione.setId(dto.getIdStazione());
 		vo.setIdStazione(idStazione);
+		//TODO GP-439.3 Bussu Scommentare
+		//vo.setSegregationCode(dto.getSegregationCode());
 		return vo;
 	}
 

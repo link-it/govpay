@@ -20,19 +20,21 @@
  */
 package it.govpay.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Fr extends BasicModel{
 	private static final long serialVersionUID = 1L;
 	
 	public enum StatoFr {
 		ACCETTATA,
-		RIFIUTATA
+		ANOMALA
 	}
 	
 	private Long id;
-	private long idPsp;
-	private long idDominio;
+	private String codPsp;
+	private String codDominio;
 	private String codFlusso;
 	private StatoFr stato;
 	private String descrizioneStato;
@@ -45,6 +47,7 @@ public class Fr extends BasicModel{
 	private long numeroPagamenti;
 	private double importoTotalePagamenti;
 	private byte[] xml;
+	private List<Anomalia> anomalie;
 	
 	public Long getId() {
 		return id;
@@ -52,17 +55,17 @@ public class Fr extends BasicModel{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public long getIdPsp() {
-		return idPsp;
+	public String getCodPsp() {
+		return codPsp;
 	}
-	public void setIdPsp(long idPsp) {
-		this.idPsp = idPsp;
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
 	}
-	public long getIdDominio() {
-		return idDominio;
+	public String getCodDominio() {
+		return codDominio;
 	}
-	public void setIdDominio(long idDominio) {
-		this.idDominio = idDominio;
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 	public String getCodFlusso() {
 		return codFlusso;
@@ -136,5 +139,55 @@ public class Fr extends BasicModel{
 	}
 	public void setDataAcquisizione(Date dataAcquisizione) {
 		this.dataAcquisizione = dataAcquisizione;
+	}
+	
+	public class Anomalia {
+		String codAnomalia;
+		String descrizione;
+	}
+	
+	public List<Anomalia> getAnomalie() {
+		if(anomalie == null)
+			anomalie = new ArrayList<Anomalia>();
+		return anomalie;
+	}
+	
+	public void addAnomalia(String codAnomalia, String descrizione) {
+		Anomalia a = new Anomalia();
+		a.codAnomalia = codAnomalia;
+		a.descrizione = descrizione;
+		getAnomalie().add(a);
+	}
+	
+	public String marshall(List<Anomalia> anomalie) {
+		if(anomalie == null || anomalie.size() == 0) return "";
+		StringBuffer sb = new StringBuffer();
+		
+		for(Anomalia a : anomalie){
+			sb.append(a.codAnomalia);
+			sb.append("#");
+			sb.append(a.descrizione);
+			sb.append("|");
+		}
+		
+		// Elimino l'ultimo pipe
+		String txt = sb.toString();
+		return txt.substring(0, txt.length()-1);
+	}
+	
+	public List<Anomalia> unmarshall(String anomalie) {
+		List<Anomalia> list = new ArrayList<Anomalia>();
+		
+		if(anomalie == null || anomalie.isEmpty()) return list;
+		
+		String[] split = anomalie.split("\\|");
+		for(String s : split){
+			String[] split2 = s.split("#");
+			Anomalia a = new Anomalia();
+			a.codAnomalia = split2[0];
+			a.descrizione = split2[1];
+			list.add(a);
+		}
+		return list;
 	}
 }

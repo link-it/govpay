@@ -20,21 +20,28 @@
  */
 package it.govpay.bd.model;
 
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.pagamento.RendicontazioniBD;
+import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 
-public class Fr extends it.govpay.model.Fr{
+public class Fr extends it.govpay.model.Fr {
 	private static final long serialVersionUID = 1L;
 
 	// Business
 	private Dominio dominio;
 	private Psp psp;
+	private List<Rendicontazione> rendicontazioni;
 	
-	public Dominio getDominio(BasicBD bd) throws ServiceException {
+	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
 		if(dominio == null){
-			dominio = AnagraficaManager.getDominio(bd, this.getIdDominio());
+			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
 		}
 		return dominio;
 	}
@@ -42,13 +49,28 @@ public class Fr extends it.govpay.model.Fr{
 		this.dominio = dominio;
 	}
 
-	public Psp getPsp(BasicBD bd) throws ServiceException {
+	public Psp getPsp(BasicBD bd) throws ServiceException, NotFoundException {
 		if(psp == null){
-			psp = AnagraficaManager.getPsp(bd, this.getIdPsp());
+			psp = AnagraficaManager.getPsp(bd, this.getCodPsp());
 		}
 		return psp;
 	}
 	public void setPsp(Psp psp) {
 		this.psp = psp;
 	}
+	
+	public List<Rendicontazione> getRendicontazioni(BasicBD bd) throws ServiceException {
+		if(rendicontazioni == null) {
+			RendicontazioniBD rendicontazioniBD = new RendicontazioniBD(bd);
+			RendicontazioneFilter newFilter = rendicontazioniBD.newFilter();
+			newFilter.setIdFr(getId());
+			rendicontazioni = rendicontazioniBD.findAll(newFilter);
+		}
+		return rendicontazioni;
+	}
+	
+	public void addRendicontazione(Rendicontazione rendicontazione) {
+		this.rendicontazioni.add(rendicontazione);
+	}
+	
 }
