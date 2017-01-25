@@ -17,7 +17,7 @@ ALTER TABLE versamenti ADD COLUMN debitore_telefono VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN debitore_cellulare VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN debitore_fax VARCHAR(35);
 
---GP-451
+--GP-439
 
 -- Spostare il segregation code dall'intermediario al dominio
 -- DA COMPENSARE CON L'AGGIUNTA IN INTERMEDIARIO FATTA SOPRA
