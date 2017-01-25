@@ -63,7 +63,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(FR.model().ID_PSP.COD_PSP, this.codPsp);
+				newExpression.equals(FR.model().COD_PSP, this.codPsp);
 				addAnd = true;
 			}
 			

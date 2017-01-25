@@ -69,21 +69,15 @@ public class ModelFactory {
 	
 	public static RRModel RR = new RRModel();
 	
+	public static RendicontazioneModel RENDICONTAZIONE = new RendicontazioneModel();
+	
 	public static PagamentoModel PAGAMENTO = new PagamentoModel();
 	
 	public static NotificaModel NOTIFICA = new NotificaModel();
 	
 	public static FRModel FR = new FRModel();
 	
-	public static FrApplicazioneModel FR_APPLICAZIONE = new FrApplicazioneModel();
-	
-	public static RendicontazioneSenzaRPTModel RENDICONTAZIONE_SENZA_RPT = new RendicontazioneSenzaRPTModel();
-	
 	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
-	
-	public static RendicontazionePagamentoSenzaRPTModel RENDICONTAZIONE_PAGAMENTO_SENZA_RPT = new RendicontazionePagamentoSenzaRPTModel();
-	
-	public static FrFiltroAppModel FR_FILTRO_APP = new FrFiltroAppModel();
 	
 
 }

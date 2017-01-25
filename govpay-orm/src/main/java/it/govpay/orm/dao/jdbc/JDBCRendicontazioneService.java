@@ -19,7 +19,8 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithoutId;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceCRUDWithId;
+import it.govpay.orm.IdRendicontazione;
 
 import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.beans.UpdateField;
@@ -33,8 +34,8 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-import it.govpay.orm.RendicontazioneSenzaRPT;
-import it.govpay.orm.dao.IDBRendicontazioneSenzaRPTService;
+import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.utils.ProjectInfo;
 
 import java.sql.Connection;
@@ -42,7 +43,7 @@ import java.sql.Connection;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
- * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT} 
+ * Service can be used to search for and manage the backend objects of type {@link it.govpay.orm.Rendicontazione} 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -50,22 +51,22 @@ import org.openspcoop2.utils.sql.ISQLQueryObject;
  * @version $Rev$, $Date$
  */
 
-public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenzaRPTServiceSearch  implements IDBRendicontazioneSenzaRPTService {
+public class JDBCRendicontazioneService extends JDBCRendicontazioneServiceSearch  implements IDBRendicontazioneService {
 
 
-	private IJDBCServiceCRUDWithoutId<RendicontazioneSenzaRPT, JDBCServiceManager> serviceCRUD = null;
-	public JDBCRendicontazioneSenzaRPTService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
+	private IJDBCServiceCRUDWithId<Rendicontazione, IdRendicontazione, JDBCServiceManager> serviceCRUD = null;
+	public JDBCRendicontazioneService(JDBCServiceManager jdbcServiceManager) throws ServiceException {
 		super(jdbcServiceManager);
-		this.log.debug(JDBCRendicontazioneSenzaRPTService.class.getName()+ " initialized");
-		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("rendicontazioneSenzaRPT");
+		this.log.debug(JDBCRendicontazioneService.class.getName()+ " initialized");
+		this.serviceCRUD = JDBCProperties.getInstance(ProjectInfo.getInstance()).getServiceCRUD("rendicontazione");
 		this.serviceCRUD.setServiceManager(new JDBCLimitedServiceManager(this.jdbcServiceManager));
 	}
 
 	
 	@Override
-	public void create(RendicontazioneSenzaRPT rendicontazioneSenzaRPT) throws ServiceException, NotImplementedException {
+	public void create(Rendicontazione rendicontazione) throws ServiceException, NotImplementedException {
 		try{
-			this.create(rendicontazioneSenzaRPT, false, null);
+			this.create(rendicontazione, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -73,9 +74,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void create(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void create(Rendicontazione rendicontazione, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.create(rendicontazioneSenzaRPT, false, idMappingResolutionBehaviour);
+			this.create(rendicontazione, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -83,12 +84,12 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void create(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.create(rendicontazioneSenzaRPT, validate, null);
+	public void create(Rendicontazione rendicontazione, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.create(rendicontazione, validate, null);
 	}
 	
 	@Override
-	public void create(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void create(Rendicontazione rendicontazione, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -96,13 +97,13 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(rendicontazione==null){
+				throw new Exception("Parameter (type:"+Rendicontazione.class.getName()+") 'rendicontazione' is null");
 			}
 			
 			// validate
 			if(validate){
-				this.validate(rendicontazioneSenzaRPT);
+				this.validate(rendicontazione);
 			}
 
 			// ISQLQueryObject
@@ -117,7 +118,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 		
-			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazioneSenzaRPT,idMappingResolutionBehaviour);			
+			this.serviceCRUD.create(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazione,idMappingResolutionBehaviour);			
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -157,9 +158,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 
 	@Override
-	public void update(RendicontazioneSenzaRPT rendicontazioneSenzaRPT) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdRendicontazione oldId, Rendicontazione rendicontazione) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(rendicontazioneSenzaRPT, false, null);
+			this.update(oldId, rendicontazione, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -167,9 +168,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void update(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(IdRendicontazione oldId, Rendicontazione rendicontazione, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(rendicontazioneSenzaRPT, false, idMappingResolutionBehaviour);
+			this.update(oldId, rendicontazione, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -177,12 +178,12 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void update(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(rendicontazioneSenzaRPT, validate, null);
+	public void update(IdRendicontazione oldId, Rendicontazione rendicontazione, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(oldId, rendicontazione, validate, null);
 	}
 		
 	@Override
-	public void update(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(IdRendicontazione oldId, Rendicontazione rendicontazione, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -190,13 +191,16 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(rendicontazione==null){
+				throw new Exception("Parameter (type:"+Rendicontazione.class.getName()+") 'rendicontazione' is null");
+			}
+			if(oldId==null){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(rendicontazioneSenzaRPT);
+				this.validate(rendicontazione);
 			}
 
 			// ISQLQueryObject
@@ -211,7 +215,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazioneSenzaRPT,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,rendicontazione,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -254,9 +258,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void update(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, Rendicontazione rendicontazione) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, rendicontazioneSenzaRPT, false, null);
+			this.update(tableId, rendicontazione, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -264,9 +268,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void update(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
+	public void update(long tableId, Rendicontazione rendicontazione, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException {
 		try{
-			this.update(tableId, rendicontazioneSenzaRPT, false, idMappingResolutionBehaviour);
+			this.update(tableId, rendicontazione, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -274,12 +278,12 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void update(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
-		this.update(tableId, rendicontazioneSenzaRPT, validate, null);
+	public void update(long tableId, Rendicontazione rendicontazione, boolean validate) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+		this.update(tableId, rendicontazione, validate, null);
 	}
 		
 	@Override
-	public void update(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
+	public void update(long tableId, Rendicontazione rendicontazione, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotFoundException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -287,8 +291,8 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(rendicontazione==null){
+				throw new Exception("Parameter (type:"+Rendicontazione.class.getName()+") 'rendicontazione' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -296,7 +300,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 
 			// validate
 			if(validate){
-				this.validate(rendicontazioneSenzaRPT);
+				this.validate(rendicontazione);
 			}
 
 			// ISQLQueryObject
@@ -311,7 +315,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,rendicontazioneSenzaRPT,idMappingResolutionBehaviour);
+			this.serviceCRUD.update(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,rendicontazione,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -354,7 +358,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void updateFields(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdRendicontazione id, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -362,8 +366,8 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'id' is null");
 			}
 			if(updateFields==null){
 				throw new Exception("Parameter (type:"+UpdateField.class.getName()+") 'updateFields' is null");
@@ -381,7 +385,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazioneSenzaRPT,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -421,7 +425,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void updateFields(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdRendicontazione id, IExpression condition, UpdateField ... updateFields) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -429,8 +433,8 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'id' is null");
 			}
 			if(condition==null){
 				throw new Exception("Parameter (type:"+IExpression.class.getName()+") 'condition' is null");
@@ -451,7 +455,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazioneSenzaRPT,condition,updateFields);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,condition,updateFields);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -491,7 +495,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 
 	@Override
-	public void updateFields(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
+	public void updateFields(IdRendicontazione id, UpdateModel ... updateModels) throws ServiceException, NotFoundException, NotImplementedException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -499,8 +503,8 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'id' is null");
 			}
 			if(updateModels==null){
 				throw new Exception("Parameter (type:"+UpdateModel.class.getName()+") 'updateModels' is null");
@@ -518,7 +522,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazioneSenzaRPT,updateModels);
+			this.serviceCRUD.updateFields(this.jdbcProperties,this.log,connection,sqlQueryObject,id,updateModels);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -762,9 +766,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 
 	@Override
-	public void updateOrCreate(RendicontazioneSenzaRPT rendicontazioneSenzaRPT) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdRendicontazione oldId, Rendicontazione rendicontazione) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(rendicontazioneSenzaRPT, false, null);
+			this.updateOrCreate(oldId, rendicontazione, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -772,9 +776,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void updateOrCreate(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(IdRendicontazione oldId, Rendicontazione rendicontazione, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(rendicontazioneSenzaRPT, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(oldId, rendicontazione, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -782,12 +786,12 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 
 	@Override
-	public void updateOrCreate(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(rendicontazioneSenzaRPT, validate, null);
+	public void updateOrCreate(IdRendicontazione oldId, Rendicontazione rendicontazione, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(oldId, rendicontazione, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(IdRendicontazione oldId, Rendicontazione rendicontazione, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 	
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -795,13 +799,16 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(rendicontazione==null){
+				throw new Exception("Parameter (type:"+Rendicontazione.class.getName()+") 'rendicontazione' is null");
+			}
+			if(oldId==null){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'oldId' is null");
 			}
 
 			// validate
 			if(validate){
-				this.validate(rendicontazioneSenzaRPT);
+				this.validate(rendicontazione);
 			}
 
 			// ISQLQueryObject
@@ -816,7 +823,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazioneSenzaRPT,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,oldId,rendicontazione,idMappingResolutionBehaviour);
 			
 		}catch(ServiceException e){
 			rollback = true;
@@ -856,9 +863,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, Rendicontazione rendicontazione) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, rendicontazioneSenzaRPT, false, null);
+			this.updateOrCreate(tableId, rendicontazione, false, null);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -866,9 +873,9 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void updateOrCreate(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
+	public void updateOrCreate(long tableId, Rendicontazione rendicontazione, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException {
 		try{
-			this.updateOrCreate(tableId, rendicontazioneSenzaRPT, false, idMappingResolutionBehaviour);
+			this.updateOrCreate(tableId, rendicontazione, false, idMappingResolutionBehaviour);
 		}catch(ValidationException vE){
 			// not possible
 			throw new ServiceException(vE.getMessage(), vE);
@@ -876,12 +883,12 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
-		this.updateOrCreate(tableId, rendicontazioneSenzaRPT, validate, null);
+	public void updateOrCreate(long tableId, Rendicontazione rendicontazione, boolean validate) throws ServiceException, NotImplementedException, ValidationException {
+		this.updateOrCreate(tableId, rendicontazione, validate, null);
 	}
 
 	@Override
-	public void updateOrCreate(long tableId, RendicontazioneSenzaRPT rendicontazioneSenzaRPT, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
+	public void updateOrCreate(long tableId, Rendicontazione rendicontazione, boolean validate, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws ServiceException, NotImplementedException, ValidationException {
 
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -889,8 +896,8 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(rendicontazione==null){
+				throw new Exception("Parameter (type:"+Rendicontazione.class.getName()+") 'rendicontazione' is null");
 			}
 			if(tableId<=0){
 				throw new Exception("Parameter (type:"+long.class.getName()+") 'tableId' is less equals 0");
@@ -898,7 +905,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 
 			// validate
 			if(validate){
-				this.validate(rendicontazioneSenzaRPT);
+				this.validate(rendicontazione);
 			}
 
 			// ISQLQueryObject
@@ -913,7 +920,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,rendicontazioneSenzaRPT,idMappingResolutionBehaviour);
+			this.serviceCRUD.updateOrCreate(this.jdbcProperties,this.log,connection,sqlQueryObject,tableId,rendicontazione,idMappingResolutionBehaviour);
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -953,7 +960,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 	@Override
-	public void delete(RendicontazioneSenzaRPT rendicontazioneSenzaRPT) throws ServiceException,NotImplementedException {
+	public void delete(Rendicontazione rendicontazione) throws ServiceException,NotImplementedException {
 		
 		Connection connection = null;
 		boolean oldValueAutoCommit = false;
@@ -961,8 +968,8 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 		try{
 			
 			// check parameters
-			if(rendicontazioneSenzaRPT==null){
-				throw new Exception("Parameter (type:"+RendicontazioneSenzaRPT.class.getName()+") 'rendicontazioneSenzaRPT' is null");
+			if(rendicontazione==null){
+				throw new Exception("Parameter (type:"+Rendicontazione.class.getName()+") 'rendicontazione' is null");
 			}
 
 			// ISQLQueryObject
@@ -977,7 +984,7 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 				connection.setAutoCommit(false);
 			}
 
-			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazioneSenzaRPT);	
+			this.serviceCRUD.delete(this.jdbcProperties,this.log,connection,sqlQueryObject,rendicontazione);	
 
 		}catch(ServiceException e){
 			rollback = true;
@@ -1014,6 +1021,66 @@ public class JDBCRendicontazioneSenzaRPTService extends JDBCRendicontazioneSenza
 	}
 	
 
+	@Override
+	public void deleteById(IdRendicontazione id) throws ServiceException, NotImplementedException {
+
+		Connection connection = null;
+		boolean oldValueAutoCommit = false;
+		boolean rollback = false;
+		try{
+			
+			// check parameters
+			if(id==null){
+				throw new Exception("Parameter (type:"+IdRendicontazione.class.getName()+") 'id' is null");
+			}
+
+			// ISQLQueryObject
+			ISQLQueryObject sqlQueryObject = this.jdbcSqlObjectFactory.createSQLQueryObject(this.jdbcProperties.getDatabase());
+			sqlQueryObject.setANDLogicOperator(true);
+			// Connection sql
+			connection = this.jdbcServiceManager.getConnection();
+
+			// transaction
+			if(this.jdbcProperties.isAutomaticTransactionManagement()){
+				oldValueAutoCommit = connection.getAutoCommit();
+				connection.setAutoCommit(false);
+			}
+
+			this.serviceCRUD.deleteById(this.jdbcProperties,this.log,connection,sqlQueryObject,id);			
+
+		}catch(ServiceException e){
+			rollback = true;
+			this.log.error(e,e); throw e;
+		}catch(NotImplementedException e){
+			rollback = true;
+			this.log.error(e,e); throw e;
+		}catch(Exception e){
+			rollback = true;
+			this.log.error(e,e); throw new ServiceException("DeleteById not completed: "+e.getMessage(),e);
+		}finally{
+			if(this.jdbcProperties.isAutomaticTransactionManagement()){
+				if(rollback){
+					try{
+						if(connection!=null)
+							connection.rollback();
+					}catch(Exception eIgnore){}
+				}else{
+					try{
+						if(connection!=null)
+							connection.commit();
+					}catch(Exception eIgnore){}
+				}
+				try{
+					if(connection!=null)
+						connection.setAutoCommit(oldValueAutoCommit);
+				}catch(Exception eIgnore){}
+			}
+			if(connection!=null){
+				this.jdbcServiceManager.closeConnection(connection);
+			}
+		}
+
+	}
 
 	@Override
 	public NonNegativeNumber deleteAll() throws ServiceException, NotImplementedException {

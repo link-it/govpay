@@ -19,12 +19,13 @@
  */
 package it.govpay.orm.dao;
 
-import it.govpay.orm.RendicontazioneSenzaRPT;
-import org.openspcoop2.generic_project.dao.IServiceSearchWithoutId;
+import it.govpay.orm.Rendicontazione;
+import org.openspcoop2.generic_project.dao.IDBServiceSearchWithId;
+import it.govpay.orm.IdRendicontazione;
 
 
 /** 
-* Service can be used for research objects on the backend of type it.govpay.orm.RendicontazioneSenzaRPT  
+* Service can be used for research objects on the backend of type it.govpay.orm.Rendicontazione  
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -32,5 +33,5 @@ import org.openspcoop2.generic_project.dao.IServiceSearchWithoutId;
  * @version $Rev$, $Date$
  */
 
-public interface IRendicontazioneSenzaRPTServiceSearch extends IServiceSearchWithoutId<RendicontazioneSenzaRPT> {
+public interface IDBRendicontazioneServiceSearch extends IRendicontazioneServiceSearch,IDBServiceSearchWithId<Rendicontazione, IdRendicontazione> {
 }

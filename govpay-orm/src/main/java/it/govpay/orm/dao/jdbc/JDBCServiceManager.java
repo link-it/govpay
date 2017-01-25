@@ -33,9 +33,6 @@ import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IEventoServiceSearch;
 import it.govpay.orm.dao.IFRService;
 import it.govpay.orm.dao.IFRServiceSearch;
-import it.govpay.orm.dao.IFrApplicazioneService;
-import it.govpay.orm.dao.IFrApplicazioneServiceSearch;
-import it.govpay.orm.dao.IFrFiltroAppServiceSearch;
 import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIUVServiceSearch;
 import it.govpay.orm.dao.IIbanAccreditoService;
@@ -56,10 +53,7 @@ import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRPTServiceSearch;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRRServiceSearch;
-import it.govpay.orm.dao.IRendicontazionePagamentoSenzaRPTServiceSearch;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
-import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
-import it.govpay.orm.dao.IRendicontazioneSenzaRPTServiceSearch;
 import it.govpay.orm.dao.IServiceManager;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.ISingoloVersamentoServiceSearch;
@@ -73,6 +67,8 @@ import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
+import it.govpay.orm.dao.IRendicontazioneServiceSearch;
+import it.govpay.orm.dao.IRendicontazioneService;
 
 import java.sql.Connection;
 import java.util.Properties;
@@ -838,6 +834,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:Rendicontazione type:Rendicontazione
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Rendicontazione}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Rendicontazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IRendicontazioneServiceSearch getRendicontazioneServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCRendicontazioneServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rendicontazione}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rendicontazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IRendicontazioneService getRendicontazioneService() throws ServiceException,NotImplementedException{
+		return new JDBCRendicontazioneService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Pagamento type:Pagamento
 	 =====================================================================================================================
 	*/
@@ -934,70 +962,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:FrApplicazione type:FrApplicazione
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IFrApplicazioneServiceSearch getFrApplicazioneServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCFrApplicazioneServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IFrApplicazioneService getFrApplicazioneService() throws ServiceException,NotImplementedException{
-		return new JDBCFrApplicazioneService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RendicontazioneSenzaRPT type:RendicontazioneSenzaRPT
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRendicontazioneSenzaRPTServiceSearch getRendicontazioneSenzaRPTServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRendicontazioneSenzaRPTServiceSearch(this);
-	}
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() throws ServiceException,NotImplementedException{
-		return new JDBCRendicontazioneSenzaRPTService(this);
-	}
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:RendicontazionePagamento type:RendicontazionePagamento
 	 =====================================================================================================================
 	*/
@@ -1012,48 +976,6 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() throws ServiceException,NotImplementedException{
 		return new JDBCRendicontazionePagamentoServiceSearch(this);
-	}
-	
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RendicontazionePagamentoSenzaRPT type:RendicontazionePagamentoSenzaRPT
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IRendicontazionePagamentoSenzaRPTServiceSearch getRendicontazionePagamentoSenzaRPTServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCRendicontazionePagamentoSenzaRPTServiceSearch(this);
-	}
-	
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:FrFiltroApp type:FrFiltroApp
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	@Override
-	public IFrFiltroAppServiceSearch getFrFiltroAppServiceSearch() throws ServiceException,NotImplementedException{
-		return new JDBCFrFiltroAppServiceSearch(this);
 	}
 	
 	

@@ -384,7 +384,7 @@ public class EstrattiContoBD extends BasicBD{
 		listaFields.add(it.govpay.orm.Pagamento.model().ID_RPT.IUV.getFieldType()); // iuv
 		listaFields.add(it.govpay.orm.Pagamento.model().IUR.getFieldType());  // iur1
 		listaFields.add(it.govpay.orm.FR.model().IUR.getFieldType()); // iur2
-		listaFields.add(it.govpay.orm.Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType()); // cod_flusso_rendicontazione
+//		listaFields.add(it.govpay.orm.Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType()); // cod_flusso_rendicontazione //TODO Nardi
 		listaFields.add(it.govpay.orm.FR.model().COD_BIC_RIVERSAMENTO.getFieldType()); // codice_bic_riversamento
 		listaFields.add(it.govpay.orm.Versamento.model().COD_VERSAMENTO_ENTE.getFieldType()); // cod_versamento_ente
 		listaFields.add(it.govpay.orm.Versamento.model().STATO_VERSAMENTO.getFieldType()); // stato_versamento

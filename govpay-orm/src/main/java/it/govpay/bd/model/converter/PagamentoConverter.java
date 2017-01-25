@@ -46,9 +46,8 @@ public class PagamentoConverter {
 		Pagamento dto = new Pagamento();
 		
 		dto.setId(vo.getId());
-		//TODO GP-439.3 Bussu scommentare
-		//dto.setCodDominio(vo.getCodDominio());
-		//dto.setIuv(vo.getIuv());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setIuv(vo.getIuv());
 		dto.setIur(vo.getIur());
 		
 		dto.setImportoPagato(BigDecimal.valueOf(vo.getImportoPagato()));
@@ -83,9 +82,8 @@ public class PagamentoConverter {
 		it.govpay.orm.Pagamento vo = new it.govpay.orm.Pagamento();
 		
 		vo.setId(dto.getId());
-		//TODO GP-439.3 Bussu scommentare
-		//vo.setCodDominio(dto.getCodDominio());
-		//vo.setIuv(dto.getIuv());
+		vo.setCodDominio(dto.getCodDominio());
+		vo.setIuv(dto.getIuv());
 		vo.setIur(dto.getIur());
 		
 		if(dto.getImportoPagato() != null)

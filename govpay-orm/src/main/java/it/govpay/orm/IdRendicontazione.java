@@ -28,15 +28,14 @@ import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 
-/** <p>Java class for FrFiltroApp complex type.
+/** <p>Java class for id-rendicontazione complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="FrFiltroApp">
+ * &lt;complexType name="id-rendicontazione">
  * 		&lt;sequence>
- * 			&lt;element name="FR" type="{http://www.govpay.it/orm}FR" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="FrApplicazione" type="{http://www.govpay.it/orm}FrApplicazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idRendicontazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -49,17 +48,16 @@ import java.io.Serializable;
  * */
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FrFiltroApp", 
+@XmlType(name = "id-rendicontazione", 
   propOrder = {
-  	"fr",
-  	"frApplicazione"
+  	"idRendicontazione"
   }
 )
 
-@XmlRootElement(name = "FrFiltroApp")
+@XmlRootElement(name = "id-rendicontazione")
 
-public class FrFiltroApp extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
-  public FrFiltroApp() {
+public class IdRendicontazione extends org.openspcoop2.utils.beans.BaseBean implements Serializable , Cloneable {
+  public IdRendicontazione() {
   }
 
   public Long getId() {
@@ -76,20 +74,12 @@ public class FrFiltroApp extends org.openspcoop2.utils.beans.BaseBean implements
 		this.id=new Long(-1);
   }
 
-  public FR getFr() {
-    return this.fr;
+  public long getIdRendicontazione() {
+    return this.idRendicontazione;
   }
 
-  public void setFr(FR fr) {
-    this.fr = fr;
-  }
-
-  public FrApplicazione getFrApplicazione() {
-    return this.frApplicazione;
-  }
-
-  public void setFrApplicazione(FrApplicazione frApplicazione) {
-    this.frApplicazione = frApplicazione;
+  public void setIdRendicontazione(long idRendicontazione) {
+    this.idRendicontazione = idRendicontazione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -97,24 +87,10 @@ public class FrFiltroApp extends org.openspcoop2.utils.beans.BaseBean implements
   @XmlTransient
   private Long id;
 
-  private static it.govpay.orm.model.FrFiltroAppModel modelStaticInstance = null;
-  private static synchronized void initModelStaticInstance(){
-	  if(it.govpay.orm.FrFiltroApp.modelStaticInstance==null){
-  			it.govpay.orm.FrFiltroApp.modelStaticInstance = new it.govpay.orm.model.FrFiltroAppModel();
-	  }
-  }
-  public static it.govpay.orm.model.FrFiltroAppModel model(){
-	  if(it.govpay.orm.FrFiltroApp.modelStaticInstance==null){
-	  		initModelStaticInstance();
-	  }
-	  return it.govpay.orm.FrFiltroApp.modelStaticInstance;
-  }
 
 
-  @XmlElement(name="FR",required=true,nillable=false)
-  protected FR fr;
-
-  @XmlElement(name="FrApplicazione",required=true,nillable=false)
-  protected FrApplicazione frApplicazione;
+  @javax.xml.bind.annotation.XmlSchemaType(name="long")
+  @XmlElement(name="idRendicontazione",required=true,nillable=false)
+  protected long idRendicontazione;
 
 }

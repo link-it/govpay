@@ -54,6 +54,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.AUX_DIGIT = new Field("auxDigit",int.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX = new Field("iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX_STRICT = new Field("iuvPrefixStrict",boolean.class,"Dominio",Dominio.class);
+		this.SEGREGATION_CODE = new Field("segregationCode",java.lang.Integer.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -74,6 +75,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.AUX_DIGIT = new ComplexField(father,"auxDigit",int.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX = new ComplexField(father,"iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX_STRICT = new ComplexField(father,"iuvPrefixStrict",boolean.class,"Dominio",Dominio.class);
+		this.SEGREGATION_CODE = new ComplexField(father,"segregationCode",java.lang.Integer.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -104,6 +106,8 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField IUV_PREFIX = null;
 	 
 	public IField IUV_PREFIX_STRICT = null;
+	 
+	public IField SEGREGATION_CODE = null;
 	 
 
 	@Override

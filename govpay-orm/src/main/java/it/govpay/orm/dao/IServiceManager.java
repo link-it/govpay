@@ -556,6 +556,32 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
+	 Services relating to the object with name:Rendicontazione type:Rendicontazione
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Rendicontazione}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Rendicontazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IRendicontazioneServiceSearch getRendicontazioneServiceSearch() throws ServiceException,NotImplementedException;
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rendicontazione}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Rendicontazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	public IRendicontazioneService getRendicontazioneService() throws ServiceException,NotImplementedException;
+	
+	
+	
+	/*
+	 =====================================================================================================================
 	 Services relating to the object with name:Pagamento type:Pagamento
 	 =====================================================================================================================
 	*/
@@ -634,58 +660,6 @@ public interface IServiceManager {
 	
 	/*
 	 =====================================================================================================================
-	 Services relating to the object with name:FrApplicazione type:FrApplicazione
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IFrApplicazioneServiceSearch getFrApplicazioneServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.FrApplicazione}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IFrApplicazioneService getFrApplicazioneService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RendicontazioneSenzaRPT type:RendicontazioneSenzaRPT
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRendicontazioneSenzaRPTServiceSearch getRendicontazioneSenzaRPTServiceSearch() throws ServiceException,NotImplementedException;
-	
-	/**
-	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}
-	 *
-	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.RendicontazioneSenzaRPT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() throws ServiceException,NotImplementedException;
-	
-	
-	
-	/*
-	 =====================================================================================================================
 	 Services relating to the object with name:RendicontazionePagamento type:RendicontazionePagamento
 	 =====================================================================================================================
 	*/
@@ -698,42 +672,6 @@ public interface IServiceManager {
 	 * @throws NotImplementedException Exception thrown when the method is not implemented
 	 */
 	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() throws ServiceException,NotImplementedException;
-	
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:RendicontazionePagamentoSenzaRPT type:RendicontazionePagamentoSenzaRPT
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.RendicontazionePagamentoSenzaRPT}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IRendicontazionePagamentoSenzaRPTServiceSearch getRendicontazionePagamentoSenzaRPTServiceSearch() throws ServiceException,NotImplementedException;
-	
-	
-	
-	
-	/*
-	 =====================================================================================================================
-	 Services relating to the object with name:FrFiltroApp type:FrFiltroApp
-	 =====================================================================================================================
-	*/
-	
-	/**
-	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}
-	 *
-	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.FrFiltroApp}	
-	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
-	 * @throws NotImplementedException Exception thrown when the method is not implemented
-	 */
-	public IFrFiltroAppServiceSearch getFrFiltroAppServiceSearch() throws ServiceException,NotImplementedException;
 	
 	
 	

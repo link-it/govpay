@@ -19,12 +19,12 @@
  */
 package it.govpay.orm.dao;
 
-import it.govpay.orm.FrApplicazione;
+import it.govpay.orm.Rendicontazione;
 import org.openspcoop2.generic_project.dao.IDBServiceWithId;
-import it.govpay.orm.IdFrApplicazione;
+import it.govpay.orm.IdRendicontazione;
 
 /**     
- * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.FrApplicazione 
+ * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.Rendicontazione 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
@@ -32,6 +32,6 @@ import it.govpay.orm.IdFrApplicazione;
  * @version $Rev$, $Date$
  */
 
-public interface IDBFrApplicazioneService extends IFrApplicazioneService,IDBServiceWithId<FrApplicazione, IdFrApplicazione> {
+public interface IDBRendicontazioneService extends IRendicontazioneService,IDBServiceWithId<Rendicontazione, IdRendicontazione> {
 
 }

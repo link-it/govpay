@@ -77,7 +77,6 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().COD_CONNETTORE_PDD,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().DENOMINAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().ABILITATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().SEGREGATION_CODE,false),"?");
 
 		// Insert intermediario
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getIntermediarioFetch().getKeyGeneratorObject(Intermediario.model());
@@ -85,8 +84,7 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodIntermediario(),Intermediario.model().COD_INTERMEDIARIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getCodConnettorePdd(),Intermediario.model().COD_CONNETTORE_PDD.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getDenominazione(),Intermediario.model().DENOMINAZIONE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getAbilitato(),Intermediario.model().ABILITATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getSegregationCode(),Intermediario.model().SEGREGATION_CODE.getFieldType())
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(intermediario.getAbilitato(),Intermediario.model().ABILITATO.getFieldType())
 		);
 		intermediario.setId(id);
 
@@ -148,8 +146,6 @@ public class JDBCIntermediarioServiceImpl extends JDBCIntermediarioServiceSearch
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getDenominazione(), Intermediario.model().DENOMINAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().ABILITATO,false), "?");
 		lstObjects_intermediario.add(new JDBCObject(intermediario.getAbilitato(), Intermediario.model().ABILITATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getIntermediarioFieldConverter().toColumn(Intermediario.model().SEGREGATION_CODE,false), "?");
-		lstObjects_intermediario.add(new JDBCObject(intermediario.getSegregationCode(), Intermediario.model().SEGREGATION_CODE.getFieldType()));
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_intermediario.add(new JDBCObject(tableId, Long.class));
 

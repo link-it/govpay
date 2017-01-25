@@ -4,6 +4,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.bd.model.converter.FrConverter;
 import it.govpay.bd.model.converter.PagamentoConverter;
+import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.model.converter.SingoloVersamentoConverter;
 import it.govpay.bd.model.converter.VersamentoConverter;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
@@ -49,8 +50,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 	private RendicontazionePagamento getRendicontazionePagamento(it.govpay.orm.RendicontazionePagamento rendicontazionePagamentoVO) throws ServiceException {
 		RendicontazionePagamento rp = new RendicontazionePagamento();
 		rp.setFr(FrConverter.toDTO(rendicontazionePagamentoVO.getFr()));
-		//TODO GP-439.3 Bussu Scommentare
-		//rp.setRendicontazione(RendicontazioneConverter.toDTO(rendicontazionePagamentoVO.getRendicontazione()));
+		rp.setRendicontazione(RendicontazioneConverter.toDTO(rendicontazionePagamentoVO.getRendicontazione()));
 		rp.setPagamento(PagamentoConverter.toDTO(rendicontazionePagamentoVO.getPagamento()));
 		rp.setVersamento(VersamentoConverter.toDTO(rendicontazionePagamentoVO.getVersamento()));
 		rp.setSingoloVersamento(SingoloVersamentoConverter.toDTO(rendicontazionePagamentoVO.getSingoloVersamento()));

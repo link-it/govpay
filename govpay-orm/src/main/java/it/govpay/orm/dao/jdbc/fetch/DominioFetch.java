@@ -76,6 +76,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iuv_prefix", Dominio.model().IUV_PREFIX.getFieldType()));
 				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iuv_prefix_strict", Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
+				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
 				return object;
 			}
 			
@@ -120,6 +122,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"iuvPrefix"));
 				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
 					this.getObjectFromMap(map,"iuvPrefixStrict"));
+				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+					this.getObjectFromMap(map,"segregationCode"));
 				return object;
 			}
 			

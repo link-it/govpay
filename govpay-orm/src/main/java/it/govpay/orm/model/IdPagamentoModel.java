@@ -19,7 +19,7 @@
  */
 package it.govpay.orm.model;
 
-import it.govpay.orm.FrFiltroApp;
+import it.govpay.orm.IdPagamento;
 
 import org.openspcoop2.generic_project.beans.AbstractModel;
 import org.openspcoop2.generic_project.beans.IField;
@@ -28,43 +28,39 @@ import org.openspcoop2.generic_project.beans.ComplexField;
 
 
 /**     
- * Model FrFiltroApp 
+ * Model IdPagamento 
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class FrFiltroAppModel extends AbstractModel<FrFiltroApp> {
+public class IdPagamentoModel extends AbstractModel<IdPagamento> {
 
-	public FrFiltroAppModel(){
+	public IdPagamentoModel(){
 	
 		super();
 	
-		this.FR = new it.govpay.orm.model.FRModel(new Field("FR",it.govpay.orm.FR.class,"FrFiltroApp",FrFiltroApp.class));
-		this.FR_APPLICAZIONE = new it.govpay.orm.model.FrApplicazioneModel(new Field("FrApplicazione",it.govpay.orm.FrApplicazione.class,"FrFiltroApp",FrFiltroApp.class));
+		this.ID_PAGAMENTO = new Field("idPagamento",long.class,"id-pagamento",IdPagamento.class);
 	
 	}
 	
-	public FrFiltroAppModel(IField father){
+	public IdPagamentoModel(IField father){
 	
 		super(father);
 	
-		this.FR = new it.govpay.orm.model.FRModel(new ComplexField(father,"FR",it.govpay.orm.FR.class,"FrFiltroApp",FrFiltroApp.class));
-		this.FR_APPLICAZIONE = new it.govpay.orm.model.FrApplicazioneModel(new ComplexField(father,"FrApplicazione",it.govpay.orm.FrApplicazione.class,"FrFiltroApp",FrFiltroApp.class));
+		this.ID_PAGAMENTO = new ComplexField(father,"idPagamento",long.class,"id-pagamento",IdPagamento.class);
 	
 	}
 	
 	
 
-	public it.govpay.orm.model.FRModel FR = null;
-	 
-	public it.govpay.orm.model.FrApplicazioneModel FR_APPLICAZIONE = null;
+	public IField ID_PAGAMENTO = null;
 	 
 
 	@Override
-	public Class<FrFiltroApp> getModeledClass(){
-		return FrFiltroApp.class;
+	public Class<IdPagamento> getModeledClass(){
+		return IdPagamento.class;
 	}
 	
 	@Override

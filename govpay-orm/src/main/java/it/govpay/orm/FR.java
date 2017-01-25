@@ -35,8 +35,8 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="FR">
  * 		&lt;sequence>
- * 			&lt;element name="idPsp" type="{http://www.govpay.it/orm}id-psp" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codFlusso" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
@@ -63,8 +63,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FR", 
   propOrder = {
-  	"idPsp",
-  	"idDominio",
+  	"codPsp",
+  	"codDominio",
   	"codFlusso",
   	"stato",
   	"descrizioneStato",
@@ -100,20 +100,20 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 		this.id=new Long(-1);
   }
 
-  public IdPsp getIdPsp() {
-    return this.idPsp;
+  public java.lang.String getCodPsp() {
+    return this.codPsp;
   }
 
-  public void setIdPsp(IdPsp idPsp) {
-    this.idPsp = idPsp;
+  public void setCodPsp(java.lang.String codPsp) {
+    this.codPsp = codPsp;
   }
 
-  public IdDominio getIdDominio() {
-    return this.idDominio;
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
   }
 
-  public void setIdDominio(IdDominio idDominio) {
-    this.idDominio = idDominio;
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
   }
 
   public java.lang.String getCodFlusso() {
@@ -231,11 +231,13 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   }
 
 
-  @XmlElement(name="idPsp",required=true,nillable=false)
-  protected IdPsp idPsp;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codPsp",required=true,nillable=false)
+  protected java.lang.String codPsp;
 
-  @XmlElement(name="idDominio",required=true,nillable=false)
-  protected IdDominio idDominio;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=true,nillable=false)
+  protected java.lang.String codDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codFlusso",required=true,nillable=false)

@@ -30,18 +30,18 @@ import java.util.Map;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
-import it.govpay.orm.FrApplicazione;
+import it.govpay.orm.Rendicontazione;
 
 
 /**     
- * FrApplicazioneFetch
+ * RendicontazioneFetch
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class FrApplicazioneFetch extends AbstractJDBCFetch {
+public class RendicontazioneFetch extends AbstractJDBCFetch {
 
 	@Override
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
@@ -50,14 +50,24 @@ public class FrApplicazioneFetch extends AbstractJDBCFetch {
 			JDBCParameterUtilities jdbcParameterUtilities =  
 					new JDBCParameterUtilities(tipoDatabase);
 
-			if(model.equals(FrApplicazione.model())){
-				FrApplicazione object = new FrApplicazione();
+			if(model.equals(Rendicontazione.model())){
+				Rendicontazione object = new Rendicontazione();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setNumeroPagamenti", FrApplicazione.model().NUMERO_PAGAMENTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "numero_pagamenti", FrApplicazione.model().NUMERO_PAGAMENTI.getFieldType()));
-				setParameter(object, "setImportoTotalePagamenti", FrApplicazione.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_totale_pagamenti", FrApplicazione.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType()));
+				setParameter(object, "setIuv", Rendicontazione.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", Rendicontazione.model().IUV.getFieldType()));
+				setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iur", Rendicontazione.model().IUR.getFieldType()));
+				setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType()));
+				setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "esito", Rendicontazione.model().ESITO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "data", Rendicontazione.model().DATA.getFieldType()));
+				setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "stato", Rendicontazione.model().STATO.getFieldType()));
+				setParameter(object, "setAnomalie", Rendicontazione.model().ANOMALIE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "anomalie", Rendicontazione.model().ANOMALIE.getFieldType()));
 				return object;
 			}
 			
@@ -76,14 +86,24 @@ public class FrApplicazioneFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(FrApplicazione.model())){
-				FrApplicazione object = new FrApplicazione();
+			if(model.equals(Rendicontazione.model())){
+				Rendicontazione object = new Rendicontazione();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setNumeroPagamenti", FrApplicazione.model().NUMERO_PAGAMENTI.getFieldType(),
-					this.getObjectFromMap(map,"numeroPagamenti"));
-				setParameter(object, "setImportoTotalePagamenti", FrApplicazione.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType(),
-					this.getObjectFromMap(map,"importoTotalePagamenti"));
+				setParameter(object, "setIuv", Rendicontazione.model().IUV.getFieldType(),
+					this.getObjectFromMap(map,"iuv"));
+				setParameter(object, "setIur", Rendicontazione.model().IUR.getFieldType(),
+					this.getObjectFromMap(map,"iur"));
+				setParameter(object, "setImportoPagato", Rendicontazione.model().IMPORTO_PAGATO.getFieldType(),
+					this.getObjectFromMap(map,"importoPagato"));
+				setParameter(object, "setEsito", Rendicontazione.model().ESITO.getFieldType(),
+					this.getObjectFromMap(map,"esito"));
+				setParameter(object, "setData", Rendicontazione.model().DATA.getFieldType(),
+					this.getObjectFromMap(map,"data"));
+				setParameter(object, "setStato", Rendicontazione.model().STATO.getFieldType(),
+					this.getObjectFromMap(map,"stato"));
+				setParameter(object, "setAnomalie", Rendicontazione.model().ANOMALIE.getFieldType(),
+					this.getObjectFromMap(map,"anomalie"));
 				return object;
 			}
 			
@@ -103,8 +123,8 @@ public class FrApplicazioneFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(FrApplicazione.model())){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("fr_applicazioni","id","seq_fr_applicazioni","fr_applicazioni_init_seq");
+			if(model.equals(Rendicontazione.model())){
+				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("rendicontazioni","id","seq_rendicontazioni","rendicontazioni_init_seq");
 			}
 			
 			else{

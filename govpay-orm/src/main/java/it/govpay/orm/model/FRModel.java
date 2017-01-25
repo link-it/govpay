@@ -41,8 +41,8 @@ public class FRModel extends AbstractModel<FR> {
 	
 		super();
 	
-		this.ID_PSP = new it.govpay.orm.model.IdPspModel(new Field("idPsp",it.govpay.orm.IdPsp.class,"FR",FR.class));
-		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
+		this.COD_PSP = new Field("codPsp",java.lang.String.class,"FR",FR.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"FR",FR.class);
 		this.COD_FLUSSO = new Field("codFlusso",java.lang.String.class,"FR",FR.class);
 		this.STATO = new Field("stato",java.lang.String.class,"FR",FR.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"FR",FR.class);
@@ -62,8 +62,8 @@ public class FRModel extends AbstractModel<FR> {
 	
 		super(father);
 	
-		this.ID_PSP = new it.govpay.orm.model.IdPspModel(new ComplexField(father,"idPsp",it.govpay.orm.IdPsp.class,"FR",FR.class));
-		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"FR",FR.class));
+		this.COD_PSP = new ComplexField(father,"codPsp",java.lang.String.class,"FR",FR.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"FR",FR.class);
 		this.COD_FLUSSO = new ComplexField(father,"codFlusso",java.lang.String.class,"FR",FR.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"FR",FR.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"FR",FR.class);
@@ -81,9 +81,9 @@ public class FRModel extends AbstractModel<FR> {
 	
 	
 
-	public it.govpay.orm.model.IdPspModel ID_PSP = null;
+	public IField COD_PSP = null;
 	 
-	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
+	public IField COD_DOMINIO = null;
 	 
 	public IField COD_FLUSSO = null;
 	 

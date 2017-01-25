@@ -54,6 +54,10 @@ public class FRFetch extends AbstractJDBCFetch {
 				FR object = new FR();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setCodPsp", FR.model().COD_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_psp", FR.model().COD_PSP.getFieldType()));
+				setParameter(object, "setCodDominio", FR.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", FR.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setCodFlusso", FR.model().COD_FLUSSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_flusso", FR.model().COD_FLUSSO.getFieldType()));
 				setParameter(object, "setStato", FR.model().STATO.getFieldType(),
@@ -100,6 +104,10 @@ public class FRFetch extends AbstractJDBCFetch {
 				FR object = new FR();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
+				setParameter(object, "setCodPsp", FR.model().COD_PSP.getFieldType(),
+					this.getObjectFromMap(map,"codPsp"));
+				setParameter(object, "setCodDominio", FR.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
 				setParameter(object, "setCodFlusso", FR.model().COD_FLUSSO.getFieldType(),
 					this.getObjectFromMap(map,"codFlusso"));
 				setParameter(object, "setStato", FR.model().STATO.getFieldType(),

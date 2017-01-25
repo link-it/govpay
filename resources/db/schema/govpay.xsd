@@ -42,10 +42,9 @@
 								<linkit:sql-table object-name="Notifica" object-type="Notifica" />
 								<linkit:sql-table object-name="IUV" object-type="IUV" />
 								<linkit:sql-table object-name="FR" object-type="FR" />
-								<linkit:sql-table object-name="FrApplicazione" object-type="FrApplicazione" />
 								<linkit:sql-table object-name="Pagamento" object-type="Pagamento" />
+								<linkit:sql-table object-name="Rendicontazione" object-type="Rendicontazione" />
 								<linkit:sql-table object-name="Evento" object-type="Evento" />
-								<linkit:sql-table object-name="RendicontazioneSenzaRPT" object-type="RendicontazioneSenzaRPT" />
 								<linkit:sql-table object-name="id-messaggio" object-type="id-messaggio"/>
 							</linkit:sql-table-list>
 						</linkit:sql-script>
@@ -199,6 +198,12 @@
 	<xsd:complexType name="id-pagamento">
 		<xsd:sequence>
 			<xsd:element name="idPagamento" type="xsd:long" />
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-rendicontazione">
+		<xsd:sequence>
+			<xsd:element name="idRendicontazione" type="xsd:long" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -409,13 +414,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:complexType name="id-fr-applicazione">
-		<xsd:sequence>
-			<xsd:element name="id-fr" type="id-fr" />
-			<xsd:element name="id-applicazione" type="id-applicazione" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
 	<xsd:complexType name="id-fr">
 		<xsd:sequence>
 			<xsd:element name="codFlusso" type="xsd:string" />
@@ -490,6 +488,7 @@
 			<xsd:element name="auxDigit" type="Int1" default="0" />
 			<xsd:element name="iuvPrefix" type="String255" minOccurs="0"/>
 			<xsd:element name="iuvPrefixStrict" type="xsd:boolean" default="false" />
+			<xsd:element name="segregationCode" type="Int2" minOccurs="0" />
 			
 		</xsd:sequence>
 	</xsd:complexType>
@@ -690,7 +689,6 @@
 			<xsd:element name="codConnettorePdd" type="String35" />
 			<xsd:element name="denominazione" type="xsd:string" />
 			<xsd:element name="abilitato" type="xsd:boolean" />
-			<xsd:element name="segregationCode" type="Int2" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1402,6 +1400,57 @@
 	</xsd:complexType>
 	
 	
+	<xsd:element name="Rendicontazione" type="Rendicontazione" />
+	<xsd:complexType name="Rendicontazione">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-rendicontazione" />
+					<linkit:sql-table-mapping generate-sql="true"
+						name="rendicontazioni" on-delete-cascade="true">
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="iuv" type="String35" />
+			<xsd:element name="iur" type="String35" />
+			<xsd:element name="importoPagato" type="xsd:decimal" minOccurs="0"/>
+			<xsd:element name="esito" type="xsd:positiveInteger" minOccurs="0"/>
+			<xsd:element name="data" type="xsd:dateTime" minOccurs="0" />
+			<xsd:element name="stato" type="String35" />
+			<xsd:element name="anomalie" type="String512" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator
+							xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idFR" type="id-fr">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="FR" object-type="FR" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idPagamento" type="id-pagamento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Pagamento" object-type="Pagamento" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	
 	<xsd:element name="Pagamento" type="Pagamento" />
 	<xsd:complexType name="Pagamento">
 		<xsd:annotation>
@@ -1424,7 +1473,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="idSingoloVersamento" type="id-singolo-versamento">
+			<xsd:element name="idSingoloVersamento" type="id-singolo-versamento" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1433,7 +1482,8 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codSingoloVersamentoEnte" type="String35"/>
+			<xsd:element name="codDominio" type="String35" />
+			<xsd:element name="iuv" type="String35" />
 			<xsd:element name="importoPagato" type="xsd:double" />
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
 			<xsd:element name="iur" type="String35" />
@@ -1452,21 +1502,6 @@
 			
 			<xsd:element name="allegato" type="xsd:base64Binary" minOccurs="0" />			
 
-			<xsd:element name="idFrApplicazione" type="id-fr-applicazione" minOccurs="0" >
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="FrApplicazione" object-type="FrApplicazione" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-			<xsd:element name="rendicontazioneEsito" type="xsd:integer" minOccurs="0"/>
-			<xsd:element name="rendicontazioneData" type="xsd:dateTime" minOccurs="0" />
-			<xsd:element name="codflussoRendicontazione" type="String35" minOccurs="0"/>
-			<xsd:element name="annoRiferimento" type="FourDigitsDecimal" minOccurs="0" />
-			<xsd:element name="indiceSingoloPagamento" type="OneDigitDecimal" minOccurs="0"/>
 			<xsd:element name="idRr" type="id-rr" minOccurs="0" >
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1483,37 +1518,6 @@
 			<xsd:element name="esitoRevoca" type="String140" minOccurs="0"/>
 			<xsd:element name="datiEsitoRevoca" type="String140" minOccurs="0"/>
 
-			<xsd:element name="idFrApplicazioneRevoca" type="id-fr-applicazione" minOccurs="0" >
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="FrApplicazione" object-type="FrApplicazione" relationship="reversed" />
-							<linkit:sql-column-mapping name="id_fr_applicazione_revoca" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="rendicontazioneEsitoRevoca" type="OneDigitDecimal" minOccurs="0"/>
-			<xsd:element name="rendicontazioneDataRevoca" type="xsd:dateTime" minOccurs="0"/>
-			<xsd:element name="codFlussoRendicontazioneRevoca" type="String35" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping name="cod_flusso_rendicontaz_revoca" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="annoRiferimentoRevoca" type="FourDigitsDecimal" minOccurs="0"/>
-			<xsd:element name="indiceSingoloPagamentoRevoca" type="OneDigitDecimal" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-column-mapping name="ind_singolo_pagamento_revoca" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1589,25 +1593,8 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idPsp" type="id-psp">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Psp" object-type="Psp" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-			<xsd:element name="idDominio" type="id-dominio">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Dominio" object-type="Dominio" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
+			<xsd:element name="codPsp" type="String35" />
+			<xsd:element name="codDominio" type="String35" />
 			
 			<xsd:element name="codFlusso" type="String35" />
 			<xsd:element name="stato" type="String35" />
@@ -1633,97 +1620,6 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
-	<xsd:element name="FrApplicazione" type="FrApplicazione" />
-	<xsd:complexType name="FrApplicazione">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true" id="id-fr-applicazione" />
-					<linkit:sql-table-mapping generate-sql="true"
-						name="fr_applicazioni" on-delete-cascade="true">
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="idApplicazione" type="id-applicazione">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="Applicazione"
-								object-type="Applicazione" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="idFr" type="id-fr">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="FR"
-								object-type="FR" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			<xsd:element name="numeroPagamenti" type="xsd:long"/>
-			<xsd:element name="importoTotalePagamenti" type="xsd:double"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:element name="RendicontazioneSenzaRPT" type="RendicontazioneSenzaRPT" />
-	<xsd:complexType name="RendicontazioneSenzaRPT">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="true"/>
-					<linkit:sql-table-mapping generate-sql="true"
-						name="rendicontazioni_senza_rpt" on-delete-cascade="true">
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element name="idFrApplicazione" type="id-fr-applicazione">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="FrApplicazione"
-								object-type="FrApplicazione" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-			<xsd:element name="importoPagato" type="xsd:double"/>
-			
-			<xsd:element name="idIuv" type="id-iuv">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="IUV"
-								object-type="IUV" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-			<xsd:element name="iur" type="String35"/>
-			<xsd:element name="rendicontazioneData" type="xsd:date"/>
-			
-			<xsd:element name="idSingoloVersamento" type="id-singolo-versamento" minOccurs="0">
-				<xsd:annotation>
-					<xsd:appinfo>
-						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-							<linkit:sql-id-mapping object-name="SingoloVersamento" object-type="SingoloVersamento" relationship="reversed" />
-						</linkit:generator>
-					</xsd:appinfo>
-				</xsd:annotation>
-			</xsd:element>
-			
-		</xsd:sequence>
-	</xsd:complexType>	
-	
 	<xsd:element name="RendicontazionePagamento" type="RendicontazionePagamento" />
 	<xsd:complexType name="RendicontazionePagamento">
 		<xsd:annotation>
@@ -1738,50 +1634,11 @@
 		</xsd:annotation>
 		<xsd:sequence>
 			<xsd:element ref="FR" />
-			<xsd:element ref="FrApplicazione" />
+			<xsd:element ref="Rendicontazione" />
 			<xsd:element ref="Pagamento" />
 			<xsd:element ref="SingoloVersamento" />
 			<xsd:element ref="Versamento" />
 			<xsd:element ref="RPT" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:element name="RendicontazionePagamentoSenzaRPT" type="RendicontazionePagamentoSenzaRPT" />
-	<xsd:complexType name="RendicontazionePagamentoSenzaRPT">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="false"/>
-					<linkit:sql-table-mapping generate-sql="false">
-						<linkit:sql-table-primary-key generate="false" generate-id="false"/>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element ref="FR" />
-			<xsd:element ref="FrApplicazione" />
-			<xsd:element ref="RendicontazioneSenzaRPT" />
-			<xsd:element ref="SingoloVersamento" />
-			<xsd:element ref="Versamento" />
-		</xsd:sequence>
-	</xsd:complexType>
-	
-	<xsd:element name="FrFiltroApp" type="FrFiltroApp" />
-	<xsd:complexType name="FrFiltroApp">
-		<xsd:annotation>
-			<xsd:appinfo>
-				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
-					<linkit:interface crud="false"/>
-					<linkit:sql-table-mapping generate-sql="false">
-						<linkit:sql-table-primary-key generate="false" generate-id="false"/>
-					</linkit:sql-table-mapping>
-				</linkit:generator>
-			</xsd:appinfo>
-		</xsd:annotation>
-		<xsd:sequence>
-			<xsd:element ref="FR" />
-			<xsd:element ref="FrApplicazione" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

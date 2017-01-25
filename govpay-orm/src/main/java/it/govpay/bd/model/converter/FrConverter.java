@@ -44,9 +44,8 @@ public class FrConverter {
 		dto.setAnnoRiferimento(vo.getAnnoRiferimento());
 		dto.setCodBicRiversamento(vo.getCodBicRiversamento());
 		dto.setCodFlusso(vo.getCodFlusso());
-		//TODO GP-439.3 Bussu scommentare
-		//dto.setCodDominio(vo.getCodDominio());
-		//dto.setCodPsp(vo.getCodPsp());
+		dto.setCodDominio(vo.getCodDominio());
+		dto.setCodPsp(vo.getCodPsp());
 		dto.setDataAcquisizione(vo.getDataAcquisizione());
 		dto.setDataFlusso(vo.getDataOraFlusso());
 		dto.setDataRegolamento(vo.getDataRegolamento());
@@ -65,9 +64,8 @@ public class FrConverter {
 		vo.setAnnoRiferimento(dto.getAnnoRiferimento());
 		vo.setCodBicRiversamento(dto.getCodBicRiversamento());
 		vo.setCodFlusso(dto.getCodFlusso());
-		//TODO GP-439.3 Bussu scommentare
-		//vo.setCodDominio(dto.getCodDominio());
-		//vo.setCodPsp(dto.getCodPsp());
+		vo.setCodDominio(dto.getCodDominio());
+		vo.setCodPsp(dto.getCodPsp());
 		vo.setDataAcquisizione(dto.getDataAcquisizione());
 		vo.setDataOraFlusso(dto.getDataFlusso());
 		vo.setDataRegolamento(dto.getDataRegolamento());

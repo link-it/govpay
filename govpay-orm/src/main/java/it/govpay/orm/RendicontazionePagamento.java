@@ -36,7 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="RendicontazionePagamento">
  * 		&lt;sequence>
  * 			&lt;element name="FR" type="{http://www.govpay.it/orm}FR" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="FrApplicazione" type="{http://www.govpay.it/orm}FrApplicazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="Rendicontazione" type="{http://www.govpay.it/orm}Rendicontazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="Pagamento" type="{http://www.govpay.it/orm}Pagamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="SingoloVersamento" type="{http://www.govpay.it/orm}SingoloVersamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="Versamento" type="{http://www.govpay.it/orm}Versamento" minOccurs="1" maxOccurs="1"/>
@@ -56,7 +56,7 @@ import java.io.Serializable;
 @XmlType(name = "RendicontazionePagamento", 
   propOrder = {
   	"fr",
-  	"frApplicazione",
+  	"rendicontazione",
   	"pagamento",
   	"singoloVersamento",
   	"versamento",
@@ -92,12 +92,12 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
     this.fr = fr;
   }
 
-  public FrApplicazione getFrApplicazione() {
-    return this.frApplicazione;
+  public Rendicontazione getRendicontazione() {
+    return this.rendicontazione;
   }
 
-  public void setFrApplicazione(FrApplicazione frApplicazione) {
-    this.frApplicazione = frApplicazione;
+  public void setRendicontazione(Rendicontazione rendicontazione) {
+    this.rendicontazione = rendicontazione;
   }
 
   public Pagamento getPagamento() {
@@ -154,8 +154,8 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
   @XmlElement(name="FR",required=true,nillable=false)
   protected FR fr;
 
-  @XmlElement(name="FrApplicazione",required=true,nillable=false)
-  protected FrApplicazione frApplicazione;
+  @XmlElement(name="Rendicontazione",required=true,nillable=false)
+  protected Rendicontazione rendicontazione;
 
   @XmlElement(name="Pagamento",required=true,nillable=false)
   protected Pagamento pagamento;

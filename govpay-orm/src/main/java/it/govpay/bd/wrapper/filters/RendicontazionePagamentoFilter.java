@@ -54,11 +54,12 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = this.newExpression();
 			if(this.codDominio != null){
-				newExpression.equals(RendicontazionePagamento.model().FR.ID_DOMINIO.COD_DOMINIO, this.codDominio);
+				newExpression.equals(RendicontazionePagamento.model().FR.COD_DOMINIO, this.codDominio);
 			}
-			if(this.codApplicazione != null){
-				newExpression.equals(RendicontazionePagamento.model().FR_APPLICAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
-			}
+			//TODO Nardi
+//			if(this.codApplicazione != null){
+//				newExpression.equals(RendicontazionePagamento.model().FR_APPLICAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+//			}
 			if(this.dataPagamentoMin != null){
 				newExpression.greaterEquals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO, this.dataPagamentoMin);
 			}

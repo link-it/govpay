@@ -158,6 +158,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "iuv_prefix_strict";
 			}
 		}
+		if(field.equals(Dominio.model().SEGREGATION_CODE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".segregation_code";
+			}else{
+				return "segregation_code";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -208,6 +215,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().IUV_PREFIX_STRICT)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().SEGREGATION_CODE)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

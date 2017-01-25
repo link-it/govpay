@@ -151,20 +151,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RendicontazionePagamentoSenzaRPT }
-     */
-    public RendicontazionePagamentoSenzaRPT createRendicontazionePagamentoSenzaRPT() {
-        return new RendicontazionePagamentoSenzaRPT();
-    }
-
-    /**
-     * Create an instance of {@link IdFrApplicazione }
-     */
-    public IdFrApplicazione createIdFrApplicazione() {
-        return new IdFrApplicazione();
-    }
-
-    /**
      * Create an instance of {@link IdTipoTributo }
      */
     public IdTipoTributo createIdTipoTributo() {
@@ -291,6 +277,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdRendicontazione }
+     */
+    public IdRendicontazione createIdRendicontazione() {
+        return new IdRendicontazione();
+    }
+
+    /**
      * Create an instance of {@link IdIbanAccredito }
      */
     public IdIbanAccredito createIdIbanAccredito() {
@@ -340,13 +333,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FrFiltroApp }
-     */
-    public FrFiltroApp createFrFiltroApp() {
-        return new FrFiltroApp();
-    }
-
-    /**
      * Create an instance of {@link Tributo }
      */
     public Tributo createTributo() {
@@ -358,6 +344,13 @@ public class ObjectFactory {
      */
     public IdEr createIdEr() {
         return new IdEr();
+    }
+
+    /**
+     * Create an instance of {@link Rendicontazione }
+     */
+    public Rendicontazione createRendicontazione() {
+        return new Rendicontazione();
     }
 
     /**
@@ -421,20 +414,6 @@ public class ObjectFactory {
      */
     public IUV createIUV() {
         return new IUV();
-    }
-
-    /**
-     * Create an instance of {@link FrApplicazione }
-     */
-    public FrApplicazione createFrApplicazione() {
-        return new FrApplicazione();
-    }
-
-    /**
-     * Create an instance of {@link RendicontazioneSenzaRPT }
-     */
-    public RendicontazioneSenzaRPT createRendicontazioneSenzaRPT() {
-        return new RendicontazioneSenzaRPT();
     }
 
     /**
