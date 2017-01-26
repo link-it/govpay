@@ -37,6 +37,7 @@ import java.io.Serializable;
  * 		&lt;sequence>
  * 			&lt;element name="codFlusso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -52,7 +53,8 @@ import java.io.Serializable;
 @XmlType(name = "id-fr", 
   propOrder = {
   	"codFlusso",
-  	"annoRiferimento"
+  	"annoRiferimento",
+  	"codDominio"
   }
 )
 
@@ -92,6 +94,14 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
     this.annoRiferimento = annoRiferimento;
   }
 
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
+  }
+
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -106,5 +116,9 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
   @javax.xml.bind.annotation.XmlSchemaType(name="int")
   @XmlElement(name="annoRiferimento",required=true,nillable=false)
   protected int annoRiferimento;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=false,nillable=false)
+  protected java.lang.String codDominio;
 
 }

@@ -43,6 +43,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	
 		this.COD_FLUSSO = new Field("codFlusso",java.lang.String.class,"id-fr",IdFr.class);
 		this.ANNO_RIFERIMENTO = new Field("annoRiferimento",int.class,"id-fr",IdFr.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -52,6 +53,7 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	
 		this.COD_FLUSSO = new ComplexField(father,"codFlusso",java.lang.String.class,"id-fr",IdFr.class);
 		this.ANNO_RIFERIMENTO = new ComplexField(father,"annoRiferimento",int.class,"id-fr",IdFr.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"id-fr",IdFr.class);
 	
 	}
 	
@@ -60,6 +62,8 @@ public class IdFrModel extends AbstractModel<IdFr> {
 	public IField COD_FLUSSO = null;
 	 
 	public IField ANNO_RIFERIMENTO = null;
+	 
+	public IField COD_DOMINIO = null;
 	 
 
 	@Override

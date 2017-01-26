@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -42,6 +43,9 @@ public class FrFilter extends AbstractFilter {
 	private String stato;
 	private Date datainizio;
 	private Date dataFine;
+	private List<String> idFr; // Lista di fr.id
+	private String codFlusso; // stringa da cercare in like tra i fr.cod_flusso
+	
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
@@ -72,6 +76,22 @@ public class FrFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
+				addAnd = true;
+			}
+			
+			if(this.codFlusso != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.like(FR.model().COD_FLUSSO, this.codFlusso);
+				addAnd = true;
+			}
+			if(this.idFr != null && !this.idFr.isEmpty()) {
+				if(addAnd)
+					newExpression.and();
+				CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
+
+				newExpression.in(baseField, this.idFr);
 				addAnd = true;
 			}
 			
@@ -132,5 +152,19 @@ public class FrFilter extends AbstractFilter {
 	public void setCodDominio(List<String> codDominio) {
 		this.codDominio = codDominio;
 	}
+	public List<String> getIdFr() {
+		return idFr;
+	}
 
+	public void setIdFr(List<String> idFr) {
+		this.idFr = idFr;
+	}
+
+	public String getCodFlusso() {
+		return codFlusso;
+	}
+
+	public void setCodFlusso(String codFlusso) {
+		this.codFlusso = codFlusso;
+	}
 }

@@ -8,6 +8,7 @@
   <mapping name="idPagamento" class="it.govpay.orm.IdPagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idPagamento" field="idPagamento" usage="required"/>
+    <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
   </mapping>
   <mapping name="id-rendicontazione" class="it.govpay.orm.IdRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -225,6 +226,7 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
     <value name="annoRiferimento" field="annoRiferimento" usage="required"/>
+    <value name="codDominio" field="codDominio" usage="optional"/>
   </mapping>
   <mapping name="id-singola-rendicontazione" class="it.govpay.orm.IdSingolaRendicontazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

@@ -62,13 +62,16 @@ public class RendicontazioneFilter extends AbstractFilter{
 				exp.equals(idPagamentoField, this.idPagamento);
 			}
 
-//			if(this.codDominio != null) {
-//				exp.equals(Rendicontazione.model().ID_FR.COD_DOMINIO, this.codDominio);
-//			}
-//
-//			if(this.idApplicazione != null) {
-//				exp.equals(Rendicontazione.model().ID_PAGAMENTO.ID_APPLICAZIONE, this.idApplicazione);
-//			}
+			if(this.codDominio != null) {
+				exp.equals(Rendicontazione.model().ID_FR.COD_DOMINIO, this.codDominio);
+			}
+
+			if(this.idApplicazione != null) {
+				exp.isNotNull(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO); //per forzare la join
+				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO));
+				exp.equals(idApplicazioneField, this.idApplicazione);
+				
+			}
 
 			return exp;
 			

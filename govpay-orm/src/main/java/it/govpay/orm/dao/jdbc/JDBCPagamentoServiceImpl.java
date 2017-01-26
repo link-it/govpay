@@ -141,9 +141,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATI_ESITO_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 		sqlQueryObjectInsert.addInsertField("id_singolo_versamento","?");
-		sqlQueryObjectInsert.addInsertField("id_fr_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_rr","?");
-		sqlQueryObjectInsert.addInsertField("id_fr_applicazione_revoca","?");
 
 		// Insert pagamento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getPagamentoFetch().getKeyGeneratorObject(Pagamento.model());

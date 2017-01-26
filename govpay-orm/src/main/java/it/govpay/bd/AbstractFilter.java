@@ -118,6 +118,11 @@ public abstract class AbstractFilter implements IFilter {
 		IModel<?> model = converter.getRootModel();
 		return converter.toTable(model);
 	}
+
+	protected String getTable(IModel<?> model) throws ExpressionException {
+		ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.expressionConstructor).getFieldConverter();
+		return converter.toTable(model);
+	}
 	
 	protected FilterSortWrapper getDefaultFilterSortWrapper() throws ServiceException {
 		try {

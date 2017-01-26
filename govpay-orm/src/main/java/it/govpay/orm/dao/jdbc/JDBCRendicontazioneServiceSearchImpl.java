@@ -21,6 +21,7 @@ package it.govpay.orm.dao.jdbc;
 
 import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.RendicontazioneFetch;
 
@@ -623,8 +624,27 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 		
 		if(expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO,false)){
 			String tableName1 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model());
-			String tableName2 = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_PAGAMENTO);
-			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento="+tableName2+".id");
+			String pagamento = this.getRendicontazioneFieldConverter().toAliasTable(Rendicontazione.model().ID_PAGAMENTO);
+			sqlQueryObject.addWhereCondition(tableName1+".id_pagamento="+pagamento+".id");
+			
+			
+			if(expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO,false)){
+				
+				if(!expression.inUseModel(Rendicontazione.model().ID_PAGAMENTO,false)){
+					sqlQueryObject.addFromTable(pagamento);
+					sqlQueryObject.addWhereCondition(tableName1+".id_pagamento="+pagamento+".id");
+				}
+
+				String singoloVersamento = "singoli_versamenti";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+				String versamento = "versamenti";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+				String rpt = "rpt";//this.getSingoloVersamentoFieldConverter().toAliasTable(SingoloVersamento.model());
+				
+				sqlQueryObject.addWhereCondition(rpt+".id="+pagamento+".id_rpt");
+				sqlQueryObject.addWhereCondition(singoloVersamento+".id="+pagamento+".id_singolo_versamento");
+				sqlQueryObject.addWhereCondition(versamento+".id="+singoloVersamento+".id_versamento");
+
+			}
+
 		}
 		
 	}
