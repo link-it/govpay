@@ -1,8 +1,7 @@
 DELETE FROM ID_MESSAGGIO_RELATIVO;
-DELETE FROM rendicontazioni_senza_rpt;
 DELETE FROM eventi;
+DELETE FROM rendicontazioni;
 DELETE FROM pagamenti;
-DELETE FROM fr_applicazioni;
 DELETE FROM fr;
 DELETE FROM iuv;
 DELETE FROM notifiche;

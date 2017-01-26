@@ -53,7 +53,6 @@ CREATE TABLE intermediari
 	cod_connettore_pdd VARCHAR(35) NOT NULL,
 	denominazione VARCHAR(255) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
-	segregation_code INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_intermediari') NOT NULL,
 	-- unique constraints
@@ -126,6 +125,7 @@ CREATE TABLE domini
 	aux_digit INT NOT NULL DEFAULT 0,
 	iuv_prefix VARCHAR(255),
 	iuv_prefix_strict BOOLEAN NOT NULL DEFAULT false,
+	segregation_code INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,
@@ -543,6 +543,8 @@ CREATE SEQUENCE seq_fr start 1 increment 1 maxvalue 9223372036854775807 minvalue
 
 CREATE TABLE fr
 (
+	cod_psp VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL,
 	cod_flusso VARCHAR(35) NOT NULL,
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato TEXT,
@@ -557,33 +559,10 @@ CREATE TABLE fr
 	xml BYTEA NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_fr') NOT NULL,
-	id_psp BIGINT NOT NULL,
-	id_dominio BIGINT NOT NULL,
 	-- unique constraints
 	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,anno_riferimento),
 	-- fk/pk keys constraints
-	CONSTRAINT fk_fr_1 FOREIGN KEY (id_psp) REFERENCES psp(id) ON DELETE CASCADE,
-	CONSTRAINT fk_fr_2 FOREIGN KEY (id_dominio) REFERENCES domini(id) ON DELETE CASCADE,
 	CONSTRAINT pk_fr PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_fr_applicazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE fr_applicazioni
-(
-	numero_pagamenti BIGINT NOT NULL,
-	importo_totale_pagamenti DOUBLE PRECISION NOT NULL,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_fr_applicazioni') NOT NULL,
-	id_applicazione BIGINT NOT NULL,
-	id_fr BIGINT NOT NULL,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_fr_applicazioni_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_fr_applicazioni_2 FOREIGN KEY (id_fr) REFERENCES fr(id) ON DELETE CASCADE,
-	CONSTRAINT pk_fr_applicazioni PRIMARY KEY (id)
 );
 
 
@@ -593,7 +572,8 @@ CREATE SEQUENCE seq_pagamenti start 1 increment 1 maxvalue 9223372036854775807 m
 
 CREATE TABLE pagamenti
 (
-	cod_singolo_versamento_ente VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL,
+	iuv VARCHAR(35) NOT NULL,
 	importo_pagato DOUBLE PRECISION NOT NULL,
 	data_acquisizione TIMESTAMP NOT NULL,
 	iur VARCHAR(35) NOT NULL,
@@ -603,36 +583,46 @@ CREATE TABLE pagamenti
 	-- Valori possibili:\nES: Esito originario\nBD: Marca da Bollo
 	tipo_allegato VARCHAR(2),
 	allegato BYTEA,
-	rendicontazione_esito INT,
-	rendicontazione_data TIMESTAMP,
-	codflusso_rendicontazione VARCHAR(35),
-	anno_riferimento INT,
-	indice_singolo_pagamento INT,
 	data_acquisizione_revoca TIMESTAMP,
 	causale_revoca VARCHAR(140),
 	dati_revoca VARCHAR(140),
 	importo_revocato DOUBLE PRECISION,
 	esito_revoca VARCHAR(140),
 	dati_esito_revoca VARCHAR(140),
-	rendicontazione_esito_revoca INT,
-	rendicontazione_data_revoca TIMESTAMP,
-	cod_flusso_rendicontaz_revoca VARCHAR(35),
-	anno_riferimento_revoca INT,
-	ind_singolo_pagamento_revoca INT,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_pagamenti') NOT NULL,
 	id_rpt BIGINT,
-	id_singolo_versamento BIGINT NOT NULL,
-	id_fr_applicazione BIGINT,
+	id_singolo_versamento BIGINT,
 	id_rr BIGINT,
-	id_fr_applicazione_revoca BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pagamenti_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id) ON DELETE CASCADE,
 	CONSTRAINT fk_pagamenti_2 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id) ON DELETE CASCADE,
-	CONSTRAINT fk_pagamenti_3 FOREIGN KEY (id_fr_applicazione) REFERENCES fr_applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_pagamenti_4 FOREIGN KEY (id_rr) REFERENCES rr(id) ON DELETE CASCADE,
-	CONSTRAINT fk_pagamenti_5 FOREIGN KEY (id_fr_applicazione_revoca) REFERENCES fr_applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT fk_pagamenti_3 FOREIGN KEY (id_rr) REFERENCES rr(id) ON DELETE CASCADE,
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_rendicontazioni start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE rendicontazioni
+(
+	iuv VARCHAR(35) NOT NULL,
+	iur VARCHAR(35) NOT NULL,
+	importo_pagato DOUBLE PRECISION,
+	esito INT,
+	data TIMESTAMP,
+	stato VARCHAR(35) NOT NULL,
+	anomalie TEXT,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_rendicontazioni') NOT NULL,
+	id_fr BIGINT NOT NULL,
+	id_pagamento BIGINT,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_rendicontazioni_1 FOREIGN KEY (id_fr) REFERENCES fr(id) ON DELETE CASCADE,
+	CONSTRAINT fk_rendicontazioni_2 FOREIGN KEY (id_pagamento) REFERENCES pagamenti(id) ON DELETE CASCADE,
+	CONSTRAINT pk_rendicontazioni PRIMARY KEY (id)
 );
 
 
@@ -664,28 +654,6 @@ CREATE TABLE eventi
 	id BIGINT DEFAULT nextval('seq_eventi') NOT NULL,
 	-- fk/pk keys constraints
 	CONSTRAINT pk_eventi PRIMARY KEY (id)
-);
-
-
-
-
-CREATE SEQUENCE seq_rendicontazioni_senza_rpt start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
-
-CREATE TABLE rendicontazioni_senza_rpt
-(
-	importo_pagato DOUBLE PRECISION NOT NULL,
-	iur VARCHAR(35) NOT NULL,
-	rendicontazione_data DATE NOT NULL,
-	-- fk/pk columns
-	id BIGINT DEFAULT nextval('seq_rendicontazioni_senza_rpt') NOT NULL,
-	id_fr_applicazione BIGINT NOT NULL,
-	id_iuv BIGINT NOT NULL,
-	id_singolo_versamento BIGINT,
-	-- fk/pk keys constraints
-	CONSTRAINT fk_rendicontazioni_senza_rpt_1 FOREIGN KEY (id_fr_applicazione) REFERENCES fr_applicazioni(id) ON DELETE CASCADE,
-	CONSTRAINT fk_rendicontazioni_senza_rpt_2 FOREIGN KEY (id_iuv) REFERENCES iuv(id) ON DELETE CASCADE,
-	CONSTRAINT fk_rendicontazioni_senza_rpt_3 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id) ON DELETE CASCADE,
-	CONSTRAINT pk_rendicontazioni_senza_rpt PRIMARY KEY (id)
 );
 
 

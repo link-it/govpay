@@ -1,5 +1,4 @@
 --GP-393
-ALTER TABLE intermediari ADD COLUMN segregation_code INT;
 ALTER TABLE applicazioni ADD COLUMN cod_applicazione_iuv VARCHAR(3);
 ALTER TABLE domini ADD COLUMN aux_digit INT NOT NULL DEFAULT 0;
 ALTER TABLE domini ADD COLUMN iuv_prefix VARCHAR(255);
@@ -18,11 +17,6 @@ ALTER TABLE versamenti ADD COLUMN debitore_cellulare VARCHAR(35);
 ALTER TABLE versamenti ADD COLUMN debitore_fax VARCHAR(35);
 
 --GP-439
-
--- Spostare il segregation code dall'intermediario al dominio
--- DA COMPENSARE CON L'AGGIUNTA IN INTERMEDIARIO FATTA SOPRA
-
-ALTER TABLE intermediari DROP COLUMN segregation_code INT;
 ALTER TABLE domini ADD COLUMN segregation_code INT;
 
 --Eliminare le FK della tabella FR
