@@ -47,7 +47,6 @@ public class FRModel extends AbstractModel<FR> {
 		this.STATO = new Field("stato",java.lang.String.class,"FR",FR.class);
 		this.DESCRIZIONE_STATO = new Field("descrizioneStato",java.lang.String.class,"FR",FR.class);
 		this.IUR = new Field("iur",java.lang.String.class,"FR",FR.class);
-		this.ANNO_RIFERIMENTO = new Field("annoRiferimento",int.class,"FR",FR.class);
 		this.DATA_ORA_FLUSSO = new Field("dataOraFlusso",java.util.Date.class,"FR",FR.class);
 		this.DATA_REGOLAMENTO = new Field("dataRegolamento",java.util.Date.class,"FR",FR.class);
 		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"FR",FR.class);
@@ -68,7 +67,6 @@ public class FRModel extends AbstractModel<FR> {
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"FR",FR.class);
 		this.DESCRIZIONE_STATO = new ComplexField(father,"descrizioneStato",java.lang.String.class,"FR",FR.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"FR",FR.class);
-		this.ANNO_RIFERIMENTO = new ComplexField(father,"annoRiferimento",int.class,"FR",FR.class);
 		this.DATA_ORA_FLUSSO = new ComplexField(father,"dataOraFlusso",java.util.Date.class,"FR",FR.class);
 		this.DATA_REGOLAMENTO = new ComplexField(father,"dataRegolamento",java.util.Date.class,"FR",FR.class);
 		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"FR",FR.class);
@@ -92,8 +90,6 @@ public class FRModel extends AbstractModel<FR> {
 	public IField DESCRIZIONE_STATO = null;
 	 
 	public IField IUR = null;
-	 
-	public IField ANNO_RIFERIMENTO = null;
 	 
 	public IField DATA_ORA_FLUSSO = null;
 	 

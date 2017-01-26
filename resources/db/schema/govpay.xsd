@@ -418,7 +418,6 @@
 	<xsd:complexType name="id-fr">
 		<xsd:sequence>
 			<xsd:element name="codFlusso" type="xsd:string" />
-			<xsd:element name="annoRiferimento" type="xsd:int" />
 			<xsd:element name="codDominio" type="String35" minOccurs="0" />
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1588,7 +1587,6 @@
 						name="fr" on-delete-cascade="true">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codFlusso" />
-							<linkit:sql-table-unique-field name="annoRiferimento" />
 						</linkit:sql-table-unique>
 					</linkit:sql-table-mapping>
 				</linkit:generator>
@@ -1611,7 +1609,6 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="iur" type="String35" />
-			<xsd:element name="annoRiferimento" type="xsd:int" />
 			<xsd:element name="dataOraFlusso" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataRegolamento" type="xsd:dateTime" minOccurs="0"/>
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>

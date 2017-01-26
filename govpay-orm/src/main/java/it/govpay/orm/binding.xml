@@ -225,7 +225,6 @@
   <mapping name="idFR" class="it.govpay.orm.IdFr">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="codFlusso" field="codFlusso" usage="required"/>
-    <value name="annoRiferimento" field="annoRiferimento" usage="required"/>
     <value name="codDominio" field="codDominio" usage="optional"/>
   </mapping>
   <mapping name="id-singola-rendicontazione" class="it.govpay.orm.IdSingolaRendicontazione">
@@ -565,7 +564,6 @@
     <value name="stato" field="stato" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
     <value name="iur" field="iur" usage="required"/>
-    <value name="annoRiferimento" field="annoRiferimento" usage="required"/>
     <value name="dataOraFlusso" field="dataOraFlusso" usage="optional"/>
     <value name="dataRegolamento" field="dataRegolamento" usage="optional"/>
     <value name="dataAcquisizione" field="dataAcquisizione" usage="required"/>

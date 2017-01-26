@@ -39,7 +39,6 @@ public class Fr extends BasicModel{
 	private String descrizioneStato;
 	private String iur;
 	private String codBicRiversamento;
-	private int annoRiferimento;
 	private Date dataFlusso;
 	private Date dataRegolamento;
 	private Date dataAcquisizione;
@@ -89,12 +88,6 @@ public class Fr extends BasicModel{
 	}
 	public void setIur(String iur) {
 		this.iur = iur;
-	}
-	public int getAnnoRiferimento() {
-		return annoRiferimento;
-	}
-	public void setAnnoRiferimento(int annoRiferimento) {
-		this.annoRiferimento = annoRiferimento;
 	}
 	public Date getDataFlusso() {
 		return dataFlusso;

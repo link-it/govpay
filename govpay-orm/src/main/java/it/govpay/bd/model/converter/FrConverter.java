@@ -41,7 +41,6 @@ public class FrConverter {
 
 	public static Fr toDTO(it.govpay.orm.FR vo) throws ServiceException {
 		Fr dto = new Fr();
-		dto.setAnnoRiferimento(vo.getAnnoRiferimento());
 		dto.setCodBicRiversamento(vo.getCodBicRiversamento());
 		dto.setCodFlusso(vo.getCodFlusso());
 		dto.setCodDominio(vo.getCodDominio());
@@ -61,7 +60,6 @@ public class FrConverter {
 
 	public static it.govpay.orm.FR toVO(Fr dto) {
 		it.govpay.orm.FR vo = new it.govpay.orm.FR();
-		vo.setAnnoRiferimento(dto.getAnnoRiferimento());
 		vo.setCodBicRiversamento(dto.getCodBicRiversamento());
 		vo.setCodFlusso(dto.getCodFlusso());
 		vo.setCodDominio(dto.getCodDominio());

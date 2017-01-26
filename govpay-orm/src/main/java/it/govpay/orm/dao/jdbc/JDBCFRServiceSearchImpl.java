@@ -106,7 +106,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	public IdFr convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, FR fr) throws NotImplementedException, ServiceException, Exception{
 	
 		IdFr idFR = new IdFr();
-		idFR.setAnnoRiferimento(fr.getAnnoRiferimento());
 		idFR.setCodFlusso(fr.getCodFlusso());
 	
 		return idFR;
@@ -141,7 +140,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			List<IField> fields = new ArrayList<IField>();
 
 			fields.add(FR.model().COD_FLUSSO);
-			fields.add(FR.model().ANNO_RIFERIMENTO);
         
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
@@ -171,7 +169,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 			fields.add(FR.model().COD_DOMINIO);
 			fields.add(FR.model().STATO);
 			fields.add(FR.model().DESCRIZIONE_STATO);
-			fields.add(FR.model().ANNO_RIFERIMENTO);
 			fields.add(FR.model().DATA_ORA_FLUSSO);
 			fields.add(FR.model().DATA_REGOLAMENTO);
 			fields.add(FR.model().NUMERO_PAGAMENTI);
@@ -635,7 +632,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		// Object _fr
 		sqlQueryObjectGet.addFromTable(this.getFRFieldConverter().toTable(FR.model()));
 		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true));
-		sqlQueryObjectGet.addSelectField(this.getFRFieldConverter().toColumn(FR.model().ANNO_RIFERIMENTO,true));
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -645,7 +641,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		};
 		List<Class<?>> listaFieldIdReturnType_fr = new ArrayList<Class<?>>();
 		listaFieldIdReturnType_fr.add(FR.model().COD_FLUSSO.getFieldType());
-		listaFieldIdReturnType_fr.add(FR.model().ANNO_RIFERIMENTO.getFieldType());
 		it.govpay.orm.IdFr id_fr = null;
 		List<Object> listaFieldId_fr = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_fr, searchParams_fr);
@@ -657,7 +652,6 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		else{
 			id_fr = new it.govpay.orm.IdFr();
 			id_fr.setCodFlusso((String)listaFieldId_fr.get(0));
-			id_fr.setAnnoRiferimento((Integer)listaFieldId_fr.get(1));
 		}
 		
 		return id_fr;
@@ -695,12 +689,10 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.setSelectDistinct(true);
 		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().COD_FLUSSO,true)+"=?");
-		sqlQueryObjectGet.addWhereCondition(this.getFRFieldConverter().toColumn(FR.model().ANNO_RIFERIMENTO,true)+"=?");
 
 		// Recupero _fr
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_fr = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getCodFlusso(),FR.model().COD_FLUSSO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getAnnoRiferimento(),FR.model().ANNO_RIFERIMENTO.getFieldType())
 		};
 		Long id_fr = null;
 		try{

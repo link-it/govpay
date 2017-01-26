@@ -123,13 +123,6 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_flusso";
 			}
 		}
-		if(field.equals(Rendicontazione.model().ID_FR.ANNO_RIFERIMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".anno_riferimento";
-			}else{
-				return "anno_riferimento";
-			}
-		}
 		if(field.equals(Rendicontazione.model().ID_FR.COD_DOMINIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_dominio";
@@ -242,9 +235,6 @@ public class RendicontazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Rendicontazione.model(), returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_FR.COD_FLUSSO)){
-			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
-		}
-		if(field.equals(Rendicontazione.model().ID_FR.ANNO_RIFERIMENTO)){
 			return this.toTable(Rendicontazione.model().ID_FR, returnAlias);
 		}
 		if(field.equals(Rendicontazione.model().ID_FR.COD_DOMINIO)){

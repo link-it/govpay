@@ -109,13 +109,6 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 				return "iur";
 			}
 		}
-		if(field.equals(FR.model().ANNO_RIFERIMENTO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".anno_riferimento";
-			}else{
-				return "anno_riferimento";
-			}
-		}
 		if(field.equals(FR.model().DATA_ORA_FLUSSO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_ora_flusso";
@@ -194,9 +187,6 @@ public class FRFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().IUR)){
-			return this.toTable(FR.model(), returnAlias);
-		}
-		if(field.equals(FR.model().ANNO_RIFERIMENTO)){
 			return this.toTable(FR.model(), returnAlias);
 		}
 		if(field.equals(FR.model().DATA_ORA_FLUSSO)){

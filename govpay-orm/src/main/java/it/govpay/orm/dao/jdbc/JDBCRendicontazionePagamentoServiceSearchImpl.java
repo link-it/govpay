@@ -124,7 +124,6 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 			fields.add(RendicontazionePagamento.model().FR.STATO);
 			fields.add(RendicontazionePagamento.model().FR.DESCRIZIONE_STATO);
 			fields.add(RendicontazionePagamento.model().FR.IUR);
-			fields.add(RendicontazionePagamento.model().FR.ANNO_RIFERIMENTO);
 			fields.add(RendicontazionePagamento.model().FR.DATA_ORA_FLUSSO);
 			fields.add(RendicontazionePagamento.model().FR.DATA_REGOLAMENTO);
 			fields.add(RendicontazionePagamento.model().FR.DATA_ACQUISIZIONE);

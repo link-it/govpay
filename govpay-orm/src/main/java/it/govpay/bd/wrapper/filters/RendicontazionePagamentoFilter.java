@@ -39,7 +39,6 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	private String codApplicazione;
 	private Date dataPagamentoMin;
 	private Date dataPagamentoMax;
-	private Integer annoRiferimento;
 	private String codFlusso;
 
 	public enum SortFields {
@@ -65,9 +64,6 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 			}
 			if(this.dataPagamentoMax != null){
 				newExpression.lessEquals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO, this.dataPagamentoMax);
-			}
-			if(this.annoRiferimento != null) {
-				newExpression.equals(RendicontazionePagamento.model().FR.ANNO_RIFERIMENTO, this.annoRiferimento);
 			}
 			if(this.codFlusso != null) {
 				newExpression.equals(RendicontazionePagamento.model().FR.COD_FLUSSO, this.codFlusso);
@@ -119,14 +115,6 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 
 	public void setDataPagamentoMax(Date dataPagamentoMax) {
 		this.dataPagamentoMax = dataPagamentoMax;
-	}
-
-	public Integer getAnnoRiferimento() {
-		return annoRiferimento;
-	}
-
-	public void setAnnoRiferimento(Integer annoRiferimento) {
-		this.annoRiferimento = annoRiferimento;
 	}
 
 	public String getCodFlusso() {

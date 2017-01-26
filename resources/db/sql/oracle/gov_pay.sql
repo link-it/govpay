@@ -782,7 +782,6 @@ CREATE TABLE fr
 	stato VARCHAR2(35 CHAR) NOT NULL,
 	descrizione_stato CLOB,
 	iur VARCHAR2(35 CHAR) NOT NULL,
-	anno_riferimento NUMBER NOT NULL,
 	data_ora_flusso TIMESTAMP,
 	data_regolamento TIMESTAMP,
 	data_acquisizione TIMESTAMP NOT NULL,
@@ -793,7 +792,7 @@ CREATE TABLE fr
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	-- unique constraints
-	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,anno_riferimento),
+	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 );

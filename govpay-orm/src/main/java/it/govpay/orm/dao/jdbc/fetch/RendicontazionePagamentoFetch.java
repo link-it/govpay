@@ -76,8 +76,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", RendicontazionePagamento.model().FR.DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setIur", RendicontazionePagamento.model().FR.IUR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iur", RendicontazionePagamento.model().FR.IUR.getFieldType()));
-				setParameter(object, "setAnnoRiferimento", RendicontazionePagamento.model().FR.ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", RendicontazionePagamento.model().FR.ANNO_RIFERIMENTO.getFieldType()));
 				setParameter(object, "setDataOraFlusso", RendicontazionePagamento.model().FR.DATA_ORA_FLUSSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_flusso", RendicontazionePagamento.model().FR.DATA_ORA_FLUSSO.getFieldType()));
 				setParameter(object, "setDataRegolamento", RendicontazionePagamento.model().FR.DATA_REGOLAMENTO.getFieldType(),
@@ -324,8 +322,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"FR.descrizioneStato"));
 				setParameter(object, "setIur", RendicontazionePagamento.model().FR.IUR.getFieldType(),
 					this.getObjectFromMap(map,"FR.iur"));
-				setParameter(object, "setAnnoRiferimento", RendicontazionePagamento.model().FR.ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"FR.annoRiferimento"));
 				setParameter(object, "setDataOraFlusso", RendicontazionePagamento.model().FR.DATA_ORA_FLUSSO.getFieldType(),
 					this.getObjectFromMap(map,"FR.dataOraFlusso"));
 				setParameter(object, "setDataRegolamento", RendicontazionePagamento.model().FR.DATA_REGOLAMENTO.getFieldType(),

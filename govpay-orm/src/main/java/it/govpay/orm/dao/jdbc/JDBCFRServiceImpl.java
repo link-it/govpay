@@ -74,7 +74,6 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DESCRIZIONE_STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().IUR,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().ANNO_RIFERIMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_REGOLAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getFRFieldConverter().toColumn(FR.model().DATA_ACQUISIZIONE,false),"?");
@@ -92,7 +91,6 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getStato(),FR.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDescrizioneStato(),FR.model().DESCRIZIONE_STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getIur(),FR.model().IUR.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getAnnoRiferimento(),FR.model().ANNO_RIFERIMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataOraFlusso(),FR.model().DATA_ORA_FLUSSO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataRegolamento(),FR.model().DATA_REGOLAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(fr.getDataAcquisizione(),FR.model().DATA_ACQUISIZIONE.getFieldType()),
@@ -165,8 +163,6 @@ public class JDBCFRServiceImpl extends JDBCFRServiceSearchImpl
 		lstObjects_fr.add(new JDBCObject(fr.getDescrizioneStato(), FR.model().DESCRIZIONE_STATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().IUR,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getIur(), FR.model().IUR.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().ANNO_RIFERIMENTO,false), "?");
-		lstObjects_fr.add(new JDBCObject(fr.getAnnoRiferimento(), FR.model().ANNO_RIFERIMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_ORA_FLUSSO,false), "?");
 		lstObjects_fr.add(new JDBCObject(fr.getDataOraFlusso(), FR.model().DATA_ORA_FLUSSO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getFRFieldConverter().toColumn(FR.model().DATA_REGOLAMENTO,false), "?");

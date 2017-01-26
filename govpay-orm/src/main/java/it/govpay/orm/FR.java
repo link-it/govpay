@@ -41,7 +41,6 @@ import java.io.Serializable;
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataRegolamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
@@ -69,7 +68,6 @@ import java.io.Serializable;
   	"stato",
   	"descrizioneStato",
   	"iur",
-  	"annoRiferimento",
   	"dataOraFlusso",
   	"dataRegolamento",
   	"dataAcquisizione",
@@ -146,14 +144,6 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 
   public void setIur(java.lang.String iur) {
     this.iur = iur;
-  }
-
-  public int getAnnoRiferimento() {
-    return this.annoRiferimento;
-  }
-
-  public void setAnnoRiferimento(int annoRiferimento) {
-    this.annoRiferimento = annoRiferimento;
   }
 
   public java.util.Date getDataOraFlusso() {
@@ -254,10 +244,6 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iur",required=true,nillable=false)
   protected java.lang.String iur;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
-  @XmlElement(name="annoRiferimento",required=true,nillable=false)
-  protected int annoRiferimento;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")

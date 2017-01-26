@@ -66,8 +66,6 @@ public class FRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", FR.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iur", FR.model().IUR.getFieldType()));
-				setParameter(object, "setAnnoRiferimento", FR.model().ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", FR.model().ANNO_RIFERIMENTO.getFieldType()));
 				setParameter(object, "setDataOraFlusso", FR.model().DATA_ORA_FLUSSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_flusso", FR.model().DATA_ORA_FLUSSO.getFieldType()));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),
@@ -116,8 +114,6 @@ public class FRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizioneStato"));
 				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
 					this.getObjectFromMap(map,"iur"));
-				setParameter(object, "setAnnoRiferimento", FR.model().ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"annoRiferimento"));
 				setParameter(object, "setDataOraFlusso", FR.model().DATA_ORA_FLUSSO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraFlusso"));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),

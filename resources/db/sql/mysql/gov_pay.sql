@@ -559,7 +559,6 @@ CREATE TABLE fr
 	stato VARCHAR(35) NOT NULL,
 	descrizione_stato LONGTEXT,
 	iur VARCHAR(35) NOT NULL,
-	anno_riferimento INT NOT NULL,
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
     -- Per versioni successive alla 5.7, rimuovere dalla sql_mode NO_ZERO_DATE 
 	data_ora_flusso TIMESTAMP(3),
@@ -574,7 +573,7 @@ CREATE TABLE fr
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	-- unique constraints
-	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso,anno_riferimento),
+	CONSTRAINT unique_fr_1 UNIQUE (cod_flusso),
 	-- fk/pk keys constraints
 	CONSTRAINT pk_fr PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
