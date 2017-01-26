@@ -40,23 +40,19 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
-import it.govpay.bd.model.FrApplicazione;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.model.Pagamento.EsitoRendicontazione;
 import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -70,8 +66,6 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
-import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRpt;
-import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRptHandler;
 import it.govpay.web.utils.Utils;
 
 public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
@@ -164,81 +158,84 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			long countRendicontazioniSenzaRpt = 0;
 			List<Long> idFrApplicazioni = new ArrayList<Long>();
-			if(StringUtils.isNotEmpty(idFrApplicazione)){
-				FrBD frBD = new FrBD(bd);
-				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
-
-				if(!isAdmin && idDomini.isEmpty()){
-					boolean vediTuttiDomini = false;
-
-					for(Acl acl: aclOperatore) {
-						if(Tipo.DOMINIO.equals(acl.getTipo())) {
-							if(acl.getIdDominio() == null) {
-								vediTuttiDomini = true;
-								break;
-							} else {
-								idDomini.add(acl.getIdDominio());
-							}
-						}
-					}
-					if(!vediTuttiDomini) {
-						if(idDomini.isEmpty()) {
-							eseguiRicerca = false;
-						} else {
-							frApplicazioneFilter.setIdDomini(idDomini);
-						}
-					}
-				}
-
-				frApplicazioneFilter.setIdFrApplicazione(Long.parseLong(idFrApplicazione));
-
-				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
-				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
-
-
-				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
-				if(eseguiRicerca){
-					// Ricerca Pagamenti uso idFrApplicazione per filtrare
-					idFrApplicazioni.add(Long.parseLong(idFrApplicazione));
-					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
-					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
-
-					// Rendicontazioni 
-					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
-					count += countRendicontazioniSenzaRpt;
-
-				}
-			}
-
-			if(StringUtils.isNotEmpty(idFr)){
-				FrBD frBD = new FrBD(bd);
-				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
-				List<Long> idFlussi = new ArrayList<Long>();
-				idFlussi.add(Long.parseLong(idFr));
-				frApplicazioneFilter.setIdFlussi(idFlussi);
-
-				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
-				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
-
-				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
-				if(eseguiRicerca){
-					//prendere gli id_fr_applicazione
-					idFrApplicazioni = new ArrayList<Long>();
-					List<FrApplicazione> findAllFrApplicazione = frBD.findAllFrApplicazione(frApplicazioneFilter);
-					for (FrApplicazione frApplicazione : findAllFrApplicazione) {
-						idFrApplicazioni.add(frApplicazione.getId());
-					}
-
-					// Ricerca Pagamenti uso idFrApplicazione per filtrare
-					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
-					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
-
-					// Rendicontazioni 
-					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
-					count += countRendicontazioniSenzaRpt;
-
-				}
-			}
+			
+			//TODO
+			
+//			if(StringUtils.isNotEmpty(idFrApplicazione)){
+//				FrBD frBD = new FrBD(bd);
+//				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
+//
+//				if(!isAdmin && idDomini.isEmpty()){
+//					boolean vediTuttiDomini = false;
+//
+//					for(Acl acl: aclOperatore) {
+//						if(Tipo.DOMINIO.equals(acl.getTipo())) {
+//							if(acl.getIdDominio() == null) {
+//								vediTuttiDomini = true;
+//								break;
+//							} else {
+//								idDomini.add(acl.getIdDominio());
+//							}
+//						}
+//					}
+//					if(!vediTuttiDomini) {
+//						if(idDomini.isEmpty()) {
+//							eseguiRicerca = false;
+//						} else {
+//							frApplicazioneFilter.setIdDomini(idDomini);
+//						}
+//					}
+//				}
+//
+//				frApplicazioneFilter.setIdFrApplicazione(Long.parseLong(idFrApplicazione));
+//
+//				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
+//				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
+//
+//
+//				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
+//				if(eseguiRicerca){
+//					// Ricerca Pagamenti uso idFrApplicazione per filtrare
+//					idFrApplicazioni.add(Long.parseLong(idFrApplicazione));
+//					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
+//					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+//
+//					// Rendicontazioni 
+//					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
+//					count += countRendicontazioniSenzaRpt;
+//
+//				}
+//			}
+//
+//			if(StringUtils.isNotEmpty(idFr)){
+//				FrBD frBD = new FrBD(bd);
+//				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
+//				List<Long> idFlussi = new ArrayList<Long>();
+//				idFlussi.add(Long.parseLong(idFr));
+//				frApplicazioneFilter.setIdFlussi(idFlussi);
+//
+//				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
+//				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
+//
+//				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
+//				if(eseguiRicerca){
+//					//prendere gli id_fr_applicazione
+//					idFrApplicazioni = new ArrayList<Long>();
+//					List<FrApplicazione> findAllFrApplicazione = frBD.findAllFrApplicazione(frApplicazioneFilter);
+//					for (FrApplicazione frApplicazione : findAllFrApplicazione) {
+//						idFrApplicazioni.add(frApplicazione.getId());
+//					}
+//
+//					// Ricerca Pagamenti uso idFrApplicazione per filtrare
+//					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
+//					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+//
+//					// Rendicontazioni 
+//					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
+//					count += countRendicontazioniSenzaRpt;
+//
+//				}
+//			}
 
 
 
@@ -254,22 +251,22 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				}
 			}
 
-			// tmp poi fare il merge
-			if(countRendicontazioniSenzaRpt > 0){
-				RendicontazioniSenzaRpt rendicontazioniSenzaRptDars = new RendicontazioniSenzaRpt();
-				RendicontazioniSenzaRptHandler rendicontazioniSenzaRptDarsHandler = (RendicontazioniSenzaRptHandler) rendicontazioniSenzaRptDars.getDarsHandler();
-				UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniSenzaRptDars.getPathServizio()).path("{id}");
-
-				List<RendicontazioneSenzaRpt> rendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(idFrApplicazioni) : new ArrayList<RendicontazioneSenzaRpt>();
-
-				if(rendicontazioniSenzaRpt != null && rendicontazioniSenzaRpt.size() > 0){
-					for (RendicontazioneSenzaRpt entry : rendicontazioniSenzaRpt) {
-						Elemento elemento = rendicontazioniSenzaRptDarsHandler.getElemento(entry, entry.getId(), uriDettaglioRRBuilder,bd);
-						elenco.getElenco().add(elemento);
-
-					}
-				}
-			}
+			// TODO tmp poi fare il merge
+//			if(countRendicontazioniSenzaRpt > 0){
+//				RendicontazioniSenzaRpt rendicontazioniSenzaRptDars = new RendicontazioniSenzaRpt();
+//				RendicontazioniSenzaRptHandler rendicontazioniSenzaRptDarsHandler = (RendicontazioniSenzaRptHandler) rendicontazioniSenzaRptDars.getDarsHandler();
+//				UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniSenzaRptDars.getPathServizio()).path("{id}");
+//
+//				List<RendicontazioneSenzaRpt> rendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(idFrApplicazioni) : new ArrayList<RendicontazioneSenzaRpt>();
+//
+//				if(rendicontazioniSenzaRpt != null && rendicontazioniSenzaRpt.size() > 0){
+//					for (RendicontazioneSenzaRpt entry : rendicontazioniSenzaRpt) {
+//						Elemento elemento = rendicontazioniSenzaRptDarsHandler.getElemento(entry, entry.getId(), uriDettaglioRRBuilder,bd);
+//						elenco.getElenco().add(elemento);
+//
+//					}
+//				}
+//			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -315,8 +312,9 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), uriSVBuilder,bd); 
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
 			}
-			if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte()))
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),pagamento.getCodSingoloVersamentoEnte());
+//			TODO
+//			if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte()))
+//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),pagamento.getCodSingoloVersamentoEnte());
 
 			if(pagamento.getImportoPagato() != null)
 				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),(pagamento.getImportoPagato().toString() + "€"));
@@ -337,18 +335,20 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			//				Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
 			//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.label"),applicazione.getCodApplicazione());
 			//			}
-			EsitoRendicontazione esitoRendicontazione = pagamento.getEsitoRendicontazione();
-			if(esitoRendicontazione != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione.label"),
-						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione."+esitoRendicontazione.name()));
-			if(pagamento.getDataRendicontazione() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazione.label"),this.sdf.format(pagamento.getDataRendicontazione()));
-			if(pagamento.getAnnoRiferimento()!= null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"),pagamento.getAnnoRiferimento() + ""); 
-			if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazione()))
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazione.label"),pagamento.getCodFlussoRendicontazione());
-			if(pagamento.getIndice() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indice.label"),pagamento.getIndice() + ""); 
+			
+//			TODO
+//			EsitoRendicontazione esitoRendicontazione = pagamento.getEsitoRendicontazione();
+//			if(esitoRendicontazione != null)
+//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione.label"),
+//						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione."+esitoRendicontazione.name()));
+//			if(pagamento.getDataRendicontazione() != null)
+//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazione.label"),this.sdf.format(pagamento.getDataRendicontazione()));
+//			if(pagamento.getAnnoRiferimento()!= null)
+//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"),pagamento.getAnnoRiferimento() + ""); 
+//			if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazione()))
+//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazione.label"),pagamento.getCodFlussoRendicontazione());
+//			if(pagamento.getIndice() != null)
+//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indice.label"),pagamento.getIndice() + ""); 
 
 			Rpt rpt = pagamento.getRpt(bd);
 			if(rpt!= null){
@@ -381,18 +381,20 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				//					Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
 				//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazioneRevoca.label"),applicazione.getCodApplicazione());
 				//				}
-				EsitoRendicontazione esitoRendicontazioneRevoca = pagamento.getEsitoRendicontazioneRevoca();
-				if(esitoRendicontazioneRevoca != null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca."+esitoRendicontazioneRevoca.name()));
-				if(pagamento.getDataRendicontazioneRevoca() != null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazioneRevoca.label"),this.sdf.format(pagamento.getDataRendicontazioneRevoca()));
-				if(pagamento.getAnnoRiferimentoRevoca()!= null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimentoRevoca.label"),pagamento.getAnnoRiferimentoRevoca() + ""); 
-				if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazioneRevoca()))
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazioneRevoca.label"),pagamento.getCodFlussoRendicontazioneRevoca());
-				if(pagamento.getIndiceRevoca() != null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indiceRevoca.label"),pagamento.getIndiceRevoca() + ""); 
+				
+//				TODO
+//				EsitoRendicontazione esitoRendicontazioneRevoca = pagamento.getEsitoRendicontazioneRevoca();
+//				if(esitoRendicontazioneRevoca != null)
+//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca.label"),
+//							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca."+esitoRendicontazioneRevoca.name()));
+//				if(pagamento.getDataRendicontazioneRevoca() != null)
+//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazioneRevoca.label"),this.sdf.format(pagamento.getDataRendicontazioneRevoca()));
+//				if(pagamento.getAnnoRiferimentoRevoca()!= null)
+//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimentoRevoca.label"),pagamento.getAnnoRiferimentoRevoca() + ""); 
+//				if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazioneRevoca()))
+//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazioneRevoca.label"),pagamento.getCodFlussoRendicontazioneRevoca());
+//				if(pagamento.getIndiceRevoca() != null)
+//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indiceRevoca.label"),pagamento.getIndiceRevoca() + ""); 
 
 				Rr rr = pagamento.getRr(bd);
 				if(rr != null){

@@ -77,7 +77,10 @@ public class IuvUtils {
 		iuvGenerato.setCodVersamentoEnte(iuv.getCodVersamentoEnte());
 		iuvGenerato.setIuv(iuv.getIuv());
 		if(versione.compareTo(Versione.GP_02_03_00) >= 0) {
-			iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + String.format("%02d", iuv.getApplicationCode()) + iuv.getIuv());
+			if(iuv.getAuxDigit() == 0)
+				iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + String.format("%02d", iuv.getApplicationCode()) + iuv.getIuv());
+			else
+				iuvGenerato.setNumeroAvviso(iuv.getAuxDigit() + iuv.getIuv());
 		}
 		iuvGenerato.setBarCode(buildBarCode(dominio.getGln(), iuv.getApplicationCode(), iuv.getIuv(), importoTotale).getBytes());
 		try {

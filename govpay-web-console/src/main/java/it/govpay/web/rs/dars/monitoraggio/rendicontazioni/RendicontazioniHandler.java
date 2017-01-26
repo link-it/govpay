@@ -104,17 +104,21 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
-			if(StringUtils.isNotEmpty(codFlusso))
-				filter.setCodFlusso(codFlusso); 
+			
+			//TODO
+//			if(StringUtils.isNotEmpty(codFlusso))
+//				filter.setCodFlusso(codFlusso); 
 
 			boolean eseguiRicerca = true;
 			String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
 			Long idApplicazione = this.getParameter(uriInfo, applicazioneId, Long.class);
-			if(idApplicazione != null && idApplicazione > 0){
-				List<Long> idFlussi = frBD.getIdFlussi(idApplicazione);
-				filter.setIdFlussi(idFlussi);
-				eseguiRicerca = eseguiRicerca && !Utils.isEmpty(idFlussi);
-			}
+			
+			//TODO
+//			if(idApplicazione != null && idApplicazione > 0){
+//				List<Long> idFlussi = frBD.getIdFlussi(idApplicazione);
+//				filter.setIdFlussi(idFlussi);
+//				eseguiRicerca = eseguiRicerca && !Utils.isEmpty(idFlussi);
+//			}
 
 			long count = eseguiRicerca ? frBD.count(filter) : 0;
 
@@ -327,14 +331,15 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.ACCETTATA"),
 							numeroPagamenti,(importoTotalePagamenti + "€")));
 			break;
-		case RIFIUTATA:
-		default:
-			sb.append(
-					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
-							)
-					);
-			break;
+			//TODO
+//		case RIFIUTATA:
+//		default:
+//			sb.append(
+//					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
+//					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
+//							)
+//					);
+//			break;
 		}
 
 		return sb.toString();

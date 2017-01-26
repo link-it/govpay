@@ -89,6 +89,7 @@ public class IuvBD extends BasicBD {
 				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
 				}
 			}
+		break;
 		case NUMERICO:
 			{
 				String reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
