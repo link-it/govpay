@@ -21,7 +21,6 @@ package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rendicontazione;
-import it.govpay.bd.model.converter.PagamentoConverter;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 
@@ -40,11 +39,12 @@ public class RendicontazioniBD extends BasicBD {
 		return new RendicontazioneFilter(this.getRendicontazioneService());
 	}
 
-	public Rendicontazione insert(Rendicontazione dto) {
+	public Rendicontazione insert(Rendicontazione dto) throws ServiceException {
 		try {
-			it.govpay.orm.Pagamento vo = PagamentoConverter.toVO(pagamento);
-			this.getPagamentoService().create(vo);
-			pagamento.setId(vo.getId());
+			it.govpay.orm.Rendicontazione vo = RendicontazioneConverter.toVO(dto);
+			this.getRendicontazioneService().create(vo);
+			dto.setId(vo.getId());
+			return dto;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
