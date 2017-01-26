@@ -1614,7 +1614,7 @@ public class RendicontazionePagamentoFieldConverter extends AbstractSQLFieldConv
 		// the full definition of the table containing the alias
 		
 		if(model.equals(RendicontazionePagamento.model())){
-			return "rendicontazione_pagamento";
+			return null;
 		}
 		if(model.equals(RendicontazionePagamento.model().FR)){
 			return "fr";
