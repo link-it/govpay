@@ -338,8 +338,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		principal.setDefaultValue(entry.getConnettorePdd() == null ? null : entry.getConnettorePdd().getPrincipal());
 		sezioneRoot.addField(principal);
 		
+		// TODO GIULIANO
+		// Il segregation code e' nel dominio
 		InputText segregationCode = (InputText) infoCreazioneMap.get(segregationCodeId);
-		String segCode = entry.getSegregationCode()!= null ? ( entry.getSegregationCode() < 10 ? "0"+entry.getSegregationCode() : entry.getSegregationCode()+"" ): null;
+		String segCode = null;
 		segregationCode.setDefaultValue(segCode); 
 		sezioneRoot.addField(segregationCode);
 		
@@ -412,10 +414,12 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.label"), intermediario.getDenominazione());
 			if(connettore != null && StringUtils.isNotEmpty(connettore.getPrincipal()))
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), connettore.getPrincipal());
-			if(intermediario.getSegregationCode() != null){
-				String segCode = intermediario.getSegregationCode() < 10 ? "0"+intermediario.getSegregationCode() : intermediario.getSegregationCode()+"";
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label"), segCode);
-			}
+			
+			// TODO GIULIANO
+//			if(intermediario.getSegregationCode() != null){
+//				String segCode = intermediario.getSegregationCode() < 10 ? "0"+intermediario.getSegregationCode() : intermediario.getSegregationCode()+"";
+//				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label"), segCode);
+//			}
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(intermediario.isAbilitato()));
 
 			// sezione connettore
@@ -528,9 +532,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			c.setPrincipal(principal);
 			entry.setConnettorePdd(c); 
 			
-			if(StringUtils.isNotEmpty(segregationCode)){
-				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
-			}
+			//TODO GIULIANO
+//			if(StringUtils.isNotEmpty(segregationCode)){
+//				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
+//			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;

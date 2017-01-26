@@ -53,7 +53,6 @@ import it.govpay.web.rs.dars.model.Console.VoceMenu;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
-import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.FrApplicazioni;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Rendicontazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.rs.dars.reportistica.pagamenti.EstrattiConto;
@@ -166,11 +165,14 @@ public class Menu extends BaseRsService {
 
 				monitoraggio.getVociMenu().add(voceMenuRendicontazioni);
 			}else {
-				FrApplicazioni frApplicazioniDars = new FrApplicazioni();
-				URI frApplicazioniURI = BaseRsService.checkDarsURI(uriInfo).path(frApplicazioniDars.getPathServizio()).build();
-				VoceMenu voceMenuFrApplicazioni = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(frApplicazioniDars.getNomeServizio() + ".titolo"),	frApplicazioniURI, false);
-
-				monitoraggio.getVociMenu().add(voceMenuFrApplicazioni);
+				
+				// TODO GIULIANO
+				
+//				FrApplicazioni frApplicazioniDars = new FrApplicazioni();
+//				URI frApplicazioniURI = BaseRsService.checkDarsURI(uriInfo).path(frApplicazioniDars.getPathServizio()).build();
+//				VoceMenu voceMenuFrApplicazioni = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(frApplicazioniDars.getNomeServizio() + ".titolo"),	frApplicazioniURI, false);
+//
+//				monitoraggio.getVociMenu().add(voceMenuFrApplicazioni);
 			}
 
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
