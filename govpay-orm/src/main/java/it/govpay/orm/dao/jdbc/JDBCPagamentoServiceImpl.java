@@ -308,13 +308,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_singolo_versamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_fr_applicazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_rr","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_fr_applicazione_revoca","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_pagamento.add(new JDBCObject(id_pagamento_rpt, Long.class));
