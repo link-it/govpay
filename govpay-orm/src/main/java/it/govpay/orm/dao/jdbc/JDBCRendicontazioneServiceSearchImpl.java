@@ -19,43 +19,38 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import it.govpay.orm.IdRendicontazione;
+import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.RendicontazioneFetch;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdRendicontazione;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.RendicontazioneFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import it.govpay.orm.Rendicontazione;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * JDBCRendicontazioneServiceSearchImpl
@@ -132,20 +127,17 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 
 		List<IdRendicontazione> list = new ArrayList<IdRendicontazione>();
 
-		// TODO: implementazione non efficente. 
-		// Per ottenere una implementazione efficente:
-		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari a create l'ID logico
-		// 2. Usare metodo getRendicontazioneFetch() sul risultato della select per ottenere un oggetto Rendicontazione
-		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
-		// 3. Usare metodo convertToId per ottenere l'id
+		try{
+			List<IField> fields = new ArrayList<IField>();
 
-        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
-        
-        for(Long id: ids) {
-        	Rendicontazione rendicontazione = this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
-			IdRendicontazione idRendicontazione = this.convertToId(jdbcProperties,log,connection,sqlQueryObject,rendicontazione);
-        	list.add(idRendicontazione);
-        }
+			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Rendicontazione.model())));
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+
+			for(Map<String, Object> map: returnMap) {
+				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Rendicontazione)this.getRendicontazioneFetch().fetch(jdbcProperties.getDatabase(), Rendicontazione.model(), map)));
+			}
+		} catch(NotFoundException e) {}
 
         return list;
 		
@@ -156,17 +148,63 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 
         List<Rendicontazione> list = new ArrayList<Rendicontazione>();
         
-        // TODO: implementazione non efficente. 
-		// Per ottenere una implementazione efficente:
-		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari
-		// 2. Usare metodo getRendicontazioneFetch() sul risultato della select per ottenere un oggetto Rendicontazione
-		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
+		try{
+			List<IField> fields = new ArrayList<IField>();
 
-        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
-        
-        for(Long id: ids) {
-        	list.add(this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour));
-        }
+			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Rendicontazione.model())));
+			fields.add(new CustomField("id_fr", Long.class, "id_fr", this.getFieldConverter().toTable(Rendicontazione.model())));
+			fields.add(new CustomField("id_pagamento", Long.class, "id_pagamento", this.getFieldConverter().toTable(Rendicontazione.model())));
+			fields.add(Rendicontazione.model().IUV);
+			fields.add(Rendicontazione.model().IUR);
+			fields.add(Rendicontazione.model().IMPORTO_PAGATO);
+			fields.add(Rendicontazione.model().ESITO);
+			fields.add(Rendicontazione.model().DATA);
+			fields.add(Rendicontazione.model().STATO);
+			fields.add(Rendicontazione.model().ANOMALIE);
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+
+			for(Map<String, Object> map: returnMap) {
+				Rendicontazione rendicontazione = (Rendicontazione)this.getRendicontazioneFetch().fetch(jdbcProperties.getDatabase(), Rendicontazione.model(), map);
+				Long id_fr = (Long) map.remove("id_fr");
+				Long id_pagamento = null;
+				
+				Object idPagamentoObj = map.remove("id_pagamento");
+
+				if(idPagamentoObj instanceof Long)
+					id_pagamento = (Long) idPagamentoObj;
+
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+					){
+						it.govpay.orm.IdFr id_rendicontazione_fr = null;
+						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+							id_rendicontazione_fr = ((JDBCFRServiceSearch)(this.getServiceManager().getFRServiceSearch())).findId(id_fr, false);
+						}else{
+							id_rendicontazione_fr = new it.govpay.orm.IdFr();
+						}
+						id_rendicontazione_fr.setId(id_fr);
+						rendicontazione.setIdFR(id_rendicontazione_fr);
+					}
+
+				if(id_pagamento != null) {
+					if(idMappingResolutionBehaviour==null ||
+							(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+						){
+							it.govpay.orm.IdPagamento id_rendicontazione_pagamento = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_rendicontazione_pagamento = ((JDBCPagamentoServiceSearch)(this.getServiceManager().getPagamentoServiceSearch())).findId(id_pagamento, false);
+							}else{
+								id_rendicontazione_pagamento = new it.govpay.orm.IdPagamento();
+							}
+							id_rendicontazione_pagamento.setId(id_pagamento);
+							rendicontazione.setIdPagamento(id_rendicontazione_pagamento);
+						}
+				}
+				
+				list.add(rendicontazione);
+			}
+		} catch(NotFoundException e) {}
 
         return list;      
 		

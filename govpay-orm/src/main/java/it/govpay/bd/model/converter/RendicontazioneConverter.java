@@ -1,6 +1,6 @@
 package it.govpay.bd.model.converter;
 
-import it.govpay.model.Rendicontazione;
+import it.govpay.bd.model.Rendicontazione;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.orm.IdFr;
@@ -25,8 +25,7 @@ public class RendicontazioneConverter {
 		dto.setEsito(EsitoRendicontazione.toEnum(vo.getEsito()));
 		dto.setStato(StatoRendicontazione.valueOf(vo.getStato()));
 	
-		//TODO Nardi
-//		List<Anomalia> anomalie;
+		dto.unmarshall(vo.getAnomalie());
 		
 		dto.setIdFr(vo.getIdFR().getId());
 		if(vo.getIdPagamento() != null)
@@ -44,9 +43,7 @@ public class RendicontazioneConverter {
 		vo.setData(dto.getData());
 		vo.setEsito(dto.getEsito().getCodifica());
 		vo.setStato(dto.getStato().toString());
-	
-		//TODO Nardi
-//		List<Anomalia> anomalie;
+		vo.setAnomalie(dto.marshall(dto.getAnomalie()));
 		
 		IdFr idFr = new IdFr();
 		idFr.setId(dto.getIdFr());

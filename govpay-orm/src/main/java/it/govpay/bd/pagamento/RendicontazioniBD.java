@@ -19,13 +19,16 @@
  */
 package it.govpay.bd.pagamento;
 
-import java.util.List;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.converter.PagamentoConverter;
+import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
+
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class RendicontazioniBD extends BasicBD {
 
@@ -34,18 +37,27 @@ public class RendicontazioniBD extends BasicBD {
 	}
 	
 	public RendicontazioneFilter newFilter() throws ServiceException {
-		//TODO GP-439.3 Bussu 
-		//return new RendicontazioneFilter(this.getRendicontazioneService());
-		return null;
+		return new RendicontazioneFilter(this.getRendicontazioneService());
 	}
 
 	public Rendicontazione insert(Rendicontazione dto) {
-		//TODO GP-439.3 Bussu
-		return null;
+		try {
+			it.govpay.orm.Pagamento vo = PagamentoConverter.toVO(pagamento);
+			this.getPagamentoService().create(vo);
+			pagamento.setId(vo.getId());
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 	
-	public List<Rendicontazione> findAll(RendicontazioneFilter filter) {
-		//TODO GP-439.3 Bussu
-		return null;
+	public List<Rendicontazione> findAll(RendicontazioneFilter filter) throws ServiceException {
+		try {
+			List<it.govpay.orm.Rendicontazione> rendicontazioneVOLst = this
+					.getRendicontazioneService().findAll(
+							filter.toPaginatedExpression());
+			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 }

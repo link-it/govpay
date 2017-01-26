@@ -17,9 +17,9 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 	public Fr getFr(BasicBD bd) throws ServiceException {
 		if(this.fr == null) {
 			FrBD frBD = new FrBD(bd);
-			frBD.getFr(this.getIdFr());
+			this.fr = frBD.getFr(this.getIdFr());
 		}
-		return fr;
+		return this.fr;
 	}
 	public void setFr(Fr fr) {
 		this.fr = fr;
@@ -27,9 +27,9 @@ public class Rendicontazione extends it.govpay.model.Rendicontazione {
 	public Pagamento getPagamento(BasicBD bd) throws ServiceException {
 		if(this.pagamento == null && this.getIdPagamento() != null) {
 			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			pagamentiBD.getPagamento(this.getIdPagamento());
+			this.pagamento = pagamentiBD.getPagamento(this.getIdPagamento());
 		}
-		return pagamento;
+		return this.pagamento;
 	}
 	public void setPagamento(Pagamento pagamento) {
 		this.pagamento = pagamento;
