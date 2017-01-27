@@ -83,3 +83,6 @@ ALTER TABLE pagamenti MODIFY COLUMN id_singolo_versamento BIGINT NULL;
 
 DROP TABLE rendicontazioni_senza_rpt;
 DROP TABLE fr_applicazioni;
+
+ALTER TABLE fr DROP COLUMN anno_riferimento;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso);

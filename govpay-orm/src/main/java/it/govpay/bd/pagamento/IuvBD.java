@@ -77,6 +77,9 @@ public class IuvBD extends BasicBD {
 					iuv = "RF" + check + reference;
 				break;
 				case 3: 
+					if(dominio.getSegregationCode() == null)
+						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
+
 					reference = prefix + String.format("%0" + (19 - prefix.length()) + "d", prg);
 					if(reference.length() > 19) 
 						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );

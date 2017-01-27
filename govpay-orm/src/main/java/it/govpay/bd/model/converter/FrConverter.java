@@ -22,6 +22,7 @@ package it.govpay.bd.model.converter;
 import it.govpay.bd.model.Fr;
 import it.govpay.model.Fr.StatoFr;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class FrConverter {
 		dto.setDataRegolamento(vo.getDataRegolamento());
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 		dto.setId(vo.getId());
-		dto.setImportoTotalePagamenti(vo.getImportoTotalePagamenti());
+		dto.setImportoTotalePagamenti(BigDecimal.valueOf(vo.getImportoTotalePagamenti()));
 		dto.setIur(vo.getIur());
 		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
 		dto.setStato(StatoFr.valueOf(vo.getStato()));
@@ -69,7 +70,7 @@ public class FrConverter {
 		vo.setDataRegolamento(dto.getDataRegolamento());
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 		vo.setId(dto.getId());
-		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti());
+		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti().doubleValue());
 		vo.setIur(dto.getIur());
 		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
 		vo.setStato(dto.getStato().toString());

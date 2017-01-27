@@ -361,13 +361,14 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			for(Fr frApplicazione : rendicontazioni) {
 				FlussoRendicontazione fr = new FlussoRendicontazione();
-				fr.setAnnoRiferimento(frApplicazione.getAnnoRiferimento());
+				int annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(fr.getDataFlusso()));
+				fr.setAnnoRiferimento(annoFlusso);
 				fr.setCodBicRiversamento(frApplicazione.getCodBicRiversamento());
 				fr.setCodFlusso(frApplicazione.getCodFlusso());
 				fr.setCodPsp(frApplicazione.getCodPsp());
 				fr.setDataFlusso(frApplicazione.getDataFlusso());
 				fr.setDataRegolamento(frApplicazione.getDataRegolamento());
-				fr.setImportoTotale(new BigDecimal(frApplicazione.getImportoTotalePagamenti()));
+				fr.setImportoTotale(frApplicazione.getImportoTotalePagamenti());
 				fr.setIur(frApplicazione.getIur());
 				fr.setNumeroPagamenti(frApplicazione.getNumeroPagamenti());
 				response.getFlussoRendicontazione().add(fr);
@@ -411,15 +412,16 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			response.setCodApplicazione(applicazioneAutenticata.getCodApplicazione());
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			FlussoRendicontazione flusso = new FlussoRendicontazione();
-			flusso.setAnnoRiferimento(fr.getAnnoRiferimento());
+			int annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(fr.getDataFlusso()));
+			flusso.setAnnoRiferimento(annoFlusso);
 			flusso.setCodBicRiversamento(fr.getCodBicRiversamento());
 			flusso.setCodFlusso(fr.getCodFlusso());
 			flusso.setCodPsp(fr.getPsp(bd).getCodPsp());
 			flusso.setDataFlusso(fr.getDataFlusso());
 			flusso.setDataRegolamento(fr.getDataRegolamento());
-			flusso.setImportoTotale(new BigDecimal(fr.getImportoTotalePagamenti()));
+			flusso.setImportoTotale(BigDecimal.ZERO);
 			flusso.setIur(fr.getIur());
-			flusso.setNumeroPagamenti(fr.getNumeroPagamenti());
+			flusso.setNumeroPagamenti(0l);
 			
 			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd);
 			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
@@ -429,6 +431,8 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			List<RendicontazionePagamento> rendicontazionePagamenti = rendicontazionePagamentoBD.findAll(filter);
 			for(RendicontazionePagamento pagamento : rendicontazionePagamenti) {
+				flusso.setImportoTotale(flusso.getImportoTotale().add(pagamento.getRendicontazione().getImportoPagato()));
+				flusso.setNumeroPagamenti(flusso.getNumeroPagamenti() + 1);
 				flusso.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd));
 			}
 			

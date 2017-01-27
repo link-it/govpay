@@ -353,6 +353,8 @@ public class RtUtils extends NdpValidationUtils {
 			pagamento.setImportoPagato(ctDatiSingoloPagamentoRT.getSingoloImportoPagato());
 			pagamento.setIur(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione());
 			pagamento.setIbanAccredito(ctDatiSingoloVersamentoRPT.getIbanAccredito());
+			pagamento.setCodDominio(rpt.getCodDominio());
+			pagamento.setIuv(rpt.getIuv());
 
 			if(ctDatiSingoloPagamentoRT.getAllegatoRicevuta() != null) {
 				pagamento.setTipoAllegato(Pagamento.TipoAllegato.valueOf(ctDatiSingoloPagamentoRT.getAllegatoRicevuta().getTipoAllegatoRicevuta().toString()));

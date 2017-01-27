@@ -39,6 +39,7 @@ public class DataTypeAdapter {
 		DecimalFormat format = new DecimalFormat();
 		format.setDecimalFormatSymbols(custom);
 		format.setGroupingUsed(false);
+		format.setMaximumFractionDigits(2);
 		return format.format(value);
 	}
 

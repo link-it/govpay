@@ -100,3 +100,6 @@ DROP TABLE rendicontazioni_senza_rpt;
 DROP SEQUENCE sequence_fr_applicazioni;
 DROP TRIGGER trigger_fr_applicazioni;
 DROP TABLE fr_applicazioni;
+
+ALTER TABLE fr DROP COLUMN anno_riferimento;
+ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso);

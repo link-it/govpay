@@ -1,5 +1,6 @@
 package it.govpay.web.ws;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -8,6 +9,8 @@ import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.MetaInfo.IuvProp;
 
 public class Utils {
+	
+	public static SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 	
 	public static void loadMetaInfo(GpContext ctx, MetaInfo metaInfo) {
 		if(metaInfo != null){

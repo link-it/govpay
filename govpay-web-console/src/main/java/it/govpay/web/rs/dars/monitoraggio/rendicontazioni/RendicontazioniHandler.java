@@ -74,6 +74,8 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 	private static Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
+	private SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
+
 
 	public RendicontazioniHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -272,8 +274,9 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRegolamento.label"), this.sdf.format(fr.getDataRegolamento()));
 
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.label"), fr.getNumeroPagamenti()+ "");
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), fr.getImportoTotalePagamenti()+ "€");
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"), fr.getAnnoRiferimento()+"");
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), fr.getImportoTotalePagamenti().doubleValue()+ "€");
+				int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(fr.getDataFlusso()));
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"), annoFlusso+"");
 
 				Psp psp = fr.getPsp(bd);
 				if(psp != null)
@@ -322,7 +325,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		StringBuilder sb = new StringBuilder();
 		StatoFr stato = entry.getStato();
 		long numeroPagamenti = entry.getNumeroPagamenti();
-		double importoTotalePagamenti = entry.getImportoTotalePagamenti();
+		double importoTotalePagamenti = entry.getImportoTotalePagamenti().doubleValue();
 
 		switch (stato) {
 		case ACCETTATA:

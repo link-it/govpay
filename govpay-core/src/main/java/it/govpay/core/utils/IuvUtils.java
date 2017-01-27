@@ -107,6 +107,7 @@ public class IuvUtils {
 	}
 
 	public static boolean checkIuvNumerico(String iuv, int auxDigit, int applicationCode) {
+		//TODO Gestire aux3
 		if(iuv.length() != 15) return false;
 		String reference = iuv.substring(0, 13);
 		long resto93 = (Long.parseLong(String.valueOf(auxDigit) + String.format("%02d", applicationCode) + reference)) % 93;

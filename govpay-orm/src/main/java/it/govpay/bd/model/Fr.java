@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -69,6 +70,9 @@ public class Fr extends it.govpay.model.Fr {
 	}
 	
 	public void addRendicontazione(Rendicontazione rendicontazione) {
+		if(rendicontazioni == null) {
+			this.rendicontazioni = new ArrayList<Rendicontazione>();
+		}
 		this.rendicontazioni.add(rendicontazione);
 	}
 	

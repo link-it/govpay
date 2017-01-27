@@ -66,7 +66,6 @@ import it.govpay.servizi.commons.EsitoOperazione;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -85,7 +84,6 @@ import org.openspcoop2.utils.logger.beans.Property;
 public class Rendicontazioni extends BasicBD {
 
 	private static Logger log = LogManager.getLogger();
-	private static SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 
 	public Rendicontazioni(BasicBD basicBD) {
 		super(basicBD);
@@ -209,8 +207,6 @@ public class Rendicontazioni extends BasicBD {
 
 
 							Fr fr = new Fr();
-							int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(idRendicontazione.getDataOraFlusso()));
-							fr.setAnnoRiferimento(annoFlusso);
 							fr.setCodBicRiversamento(flussoRendicontazione.getCodiceBicBancaDiRiversamento());
 							fr.setCodFlusso(idRendicontazione.getIdentificativoFlusso());
 							fr.setIur(flussoRendicontazione.getIdentificativoUnivocoRegolamento());
@@ -218,7 +214,7 @@ public class Rendicontazioni extends BasicBD {
 							fr.setDataFlusso(flussoRendicontazione.getDataOraFlusso());
 							fr.setDataRegolamento(flussoRendicontazione.getDataRegolamento());
 							fr.setNumeroPagamenti(flussoRendicontazione.getNumeroTotalePagamenti().longValue());
-							fr.setImportoTotalePagamenti(flussoRendicontazione.getImportoTotalePagamenti().doubleValue());
+							fr.setImportoTotalePagamenti(flussoRendicontazione.getImportoTotalePagamenti());
 
 							fr.setXml(tracciato);
 
@@ -366,12 +362,15 @@ public class Rendicontazioni extends BasicBD {
 											rendicontazione.addAnomalia("007111", "Il versamento risulta sconosciuto: " + erroreVerifica);
 										} else {
 											// Trovato versamento. Creo il pagamento senza rpt 
-											it.govpay.bd.model.Pagamento p = new it.govpay.bd.model.Pagamento();
-											p.setCodDominio(codDominio);
-											p.setDataAcquisizione(rendicontazione.getData());
-											p.setDataPagamento(rendicontazione.getData());
-											p.setImportoPagato(rendicontazione.getImportoPagato());
-											p.setIur(rendicontazione.getIur());
+											pagamento = new it.govpay.bd.model.Pagamento();
+											pagamento.setCodDominio(codDominio);
+											pagamento.setDataAcquisizione(rendicontazione.getData());
+											pagamento.setDataPagamento(rendicontazione.getData());
+											pagamento.setImportoPagato(rendicontazione.getImportoPagato());
+											pagamento.setIur(rendicontazione.getIur());
+											pagamento.setIuv(rendicontazione.getIuv());
+											pagamento.setCodDominio(fr.getCodDominio());
+											
 											rendicontazione.setPagamento(pagamento);
 											rendicontazione.setPagamentoDaCreare(true);
 											rendicontazione.setStato(StatoRendicontazione.OK);
@@ -389,7 +388,9 @@ public class Rendicontazioni extends BasicBD {
 									GpThreadLocal.get().log("rendicontazioni.poliPagamento", iuv, iur);
 									log.info("Pagamento rendicontato duplicato: [CodDominio: " + dominio.getCodDominio() + "] [Iuv: "+ iuv + "] [Iur: " + iur + "]");
 									rendicontazione.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
-								} 
+								} finally {
+									fr.addRendicontazione(rendicontazione);
+								}
 							}
 							
 							
@@ -429,6 +430,8 @@ public class Rendicontazioni extends BasicBD {
 							setAutoCommit(false);
 							frBD.insertFr(fr);
 							for(Rendicontazione r : fr.getRendicontazioni(this)) {
+								r.setIdFr(fr.getId());
+								
 								// controllo se c'e' un pagamento da creare relativo alla rendicontazione
 								// deve anche essere creato il pagamento.
 								if(r.isPagamentoDaCreare()) {
@@ -559,14 +562,12 @@ public class Rendicontazioni extends BasicBD {
 				// Per ogni flusso della lista, vedo se ce l'ho gia' in DB ed in caso lo archivio
 
 				for(TipoIdRendicontazione idRendicontazione : risposta.getElencoFlussiRendicontazione().getIdRendicontazione()) {
-					int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(idRendicontazione.getDataOraFlusso()));
 					setupConnection(GpThreadLocal.get().getTransactionId());
 					FrBD frBD = new FrBD(this);
 					boolean exists = frBD.exists(idRendicontazione.getIdentificativoFlusso());
 					closeConnection();
 					if(exists){
-						GpThreadLocal.get().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso(), annoFlusso + "");
-						//response.add(idRendicontazione.getIdentificativoFlusso() + "#Flusso gia' acquisito");
+						GpThreadLocal.get().log("rendicontazioni.flussoDuplicato",  idRendicontazione.getIdentificativoFlusso());
 						log.trace("Flusso rendicontazione gia' presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");
 					} else {
 						log.debug("Ricevuto flusso rendicontazione non presente negli archivi: " + idRendicontazione.getIdentificativoFlusso() + "");

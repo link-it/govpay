@@ -96,7 +96,8 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			
 			for(Fr frModel : rendicontazioni) {
 				GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione efr = new GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione();
-				efr.setAnnoRiferimento(frModel.getAnnoRiferimento());
+				int annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(efr.getDataFlusso()));
+				efr.setAnnoRiferimento(annoFlusso);
 				efr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 				efr.setCodDominio(frModel.getDominio(bd).getCodDominio());
 				efr.setCodFlusso(frModel.getCodFlusso());
@@ -153,7 +154,6 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			
 			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd); 
 			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
-			filter.setAnnoRiferimento(bodyrichiesta.getAnnoRiferimento());
 			filter.setCodFlusso(bodyrichiesta.getCodFlusso());
 			filter.setCodApplicazione(bodyrichiesta.getCodApplicazione());
 			List<RendicontazionePagamento> rends = rendicontazionePagamentoBD.findAll(filter);
@@ -163,17 +163,18 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			fr.setNumeroPagamenti(0l);
 			
 			if(rends.size() > 0) {
-				fr.setAnnoRiferimento(frModel.getAnnoRiferimento());
+				int annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(frModel.getDataFlusso()));
+				fr.setAnnoRiferimento(annoFlusso);
 				fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 				fr.setCodFlusso(frModel.getCodFlusso());
 				fr.setCodPsp(frModel.getPsp(bd).getCodPsp());
 				fr.setDataFlusso(frModel.getDataFlusso());
 				fr.setDataRegolamento(frModel.getDataRegolamento());
 				fr.setIur(frModel.getIur());
+				fr.setImportoTotale(frModel.getImportoTotalePagamenti());
+				fr.setNumeroPagamenti(frModel.getNumeroPagamenti());
 				
 				for(RendicontazionePagamento rend : rends) {
-					fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
-					fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
 					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend, applicazione.getVersione(), bd));
 				}
 				response.setFlussoRendicontazione(fr);

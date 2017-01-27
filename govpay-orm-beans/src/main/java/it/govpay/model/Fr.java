@@ -19,6 +19,7 @@
  */
 package it.govpay.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,7 +44,7 @@ public class Fr extends BasicModel{
 	private Date dataRegolamento;
 	private Date dataAcquisizione;
 	private long numeroPagamenti;
-	private double importoTotalePagamenti;
+	private BigDecimal importoTotalePagamenti;
 	private byte[] xml;
 	private List<Anomalia> anomalie;
 	
@@ -107,10 +108,10 @@ public class Fr extends BasicModel{
 	public void setNumeroPagamenti(long numeroPagamenti) {
 		this.numeroPagamenti = numeroPagamenti;
 	}
-	public double getImportoTotalePagamenti() {
+	public BigDecimal getImportoTotalePagamenti() {
 		return importoTotalePagamenti;
 	}
-	public void setImportoTotalePagamenti(double importoTotalePagamenti) {
+	public void setImportoTotalePagamenti(BigDecimal importoTotalePagamenti) {
 		this.importoTotalePagamenti = importoTotalePagamenti;
 	}
 	public byte[] getXml() {

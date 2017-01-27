@@ -73,13 +73,21 @@ public class Iuv extends BasicBD {
 			
 			GpGeneraIuvResponse response = new GpGeneraIuvResponse();
 			Exception e = null;
+			
+			IuvBD iuvBD = new IuvBD(this);
 			for(GpGeneraIuv.IuvRichiesto iuvRichiesto : gpGeneraIuv.getIuvRichiesto()) {
 				
 				it.govpay.model.Iuv iuv = null;
 				try {
-					iuv = generaIUV(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte());
-					IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale(), versione);
-					response.getIuvGenerato().add(iuvGenerato);
+					try {
+						iuv = iuvBD.getIuv(applicazione.getId(), iuvRichiesto.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+						IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale(), versione);
+						response.getIuvGenerato().add(iuvGenerato);
+					} catch (NotFoundException nfe) {
+						iuv = generaIUV(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte());
+						IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale(), versione);
+						response.getIuvGenerato().add(iuvGenerato);
+					}
 				} catch (ServiceException se) {
 					e = se;
 					continue;
