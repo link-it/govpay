@@ -52,6 +52,7 @@ public class IuvConverter {
 		dto.setTipo(TipoIUV.toEnum(vo.getTipoIuv()));
 		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
 		dto.setApplicationCode(vo.getApplicationCode());
+		dto.setAuxDigit(vo.getAuxDigit());
 		return dto;
 	}
 
@@ -64,6 +65,7 @@ public class IuvConverter {
 		vo.setTipoIuv(dto.getTipo().getCodifica());
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
 		vo.setApplicationCode(dto.getApplicationCode());
+		vo.setAuxDigit(dto.getAuxDigit());
 		IdApplicazione idApplicazione = new IdApplicazione();
 		idApplicazione.setId(dto.getIdApplicazione());
 		vo.setIdApplicazione(idApplicazione);

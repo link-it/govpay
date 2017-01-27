@@ -66,6 +66,8 @@ public class IUVFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_iuv", IUV.model().TIPO_IUV.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", IUV.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", IUV.model().COD_VERSAMENTO_ENTE.getFieldType()));
+				setParameter(object, "setAuxDigit", IUV.model().AUX_DIGIT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "aux_digit", IUV.model().AUX_DIGIT.getFieldType()));
 				return object;
 			}
 			
@@ -100,6 +102,8 @@ public class IUVFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoIuv"));
 				setParameter(object, "setCodVersamentoEnte", IUV.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
+				setParameter(object, "setAuxDigit", IUV.model().AUX_DIGIT.getFieldType(),
+					this.getObjectFromMap(map,"auxDigit"));
 				return object;
 			}
 			

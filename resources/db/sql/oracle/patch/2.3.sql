@@ -103,3 +103,5 @@ DROP TABLE fr_applicazioni;
 
 ALTER TABLE fr DROP COLUMN anno_riferimento;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso);
+ALTER TABLE iuv ADD aux_digit NUMBER NOT NULL;
+ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;

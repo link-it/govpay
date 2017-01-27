@@ -522,6 +522,7 @@ CREATE TABLE iuv
 	data_generazione DATE NOT NULL,
 	tipo_iuv VARCHAR(1) NOT NULL,
 	cod_versamento_ente VARCHAR(35),
+	aux_digit INT NOT NULL DEFAULT 0,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_iuv') NOT NULL,
 	id_applicazione BIGINT NOT NULL,

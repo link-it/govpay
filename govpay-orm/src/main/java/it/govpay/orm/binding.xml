@@ -392,6 +392,7 @@
     <value name="tipoIuv" field="tipoIuv" usage="required"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="codVersamentoEnte" field="codVersamentoEnte" usage="optional"/>
+    <value name="auxDigit" field="auxDigit" default="0" usage="required"/>
   </mapping>
   <mapping name="Versamento" class="it.govpay.orm.Versamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
