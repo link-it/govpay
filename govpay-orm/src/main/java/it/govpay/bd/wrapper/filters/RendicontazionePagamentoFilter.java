@@ -55,10 +55,9 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 			if(this.codDominio != null){
 				newExpression.equals(RendicontazionePagamento.model().FR.COD_DOMINIO, this.codDominio);
 			}
-			//TODO Nardi
-//			if(this.codApplicazione != null){
-//				newExpression.equals(RendicontazionePagamento.model().FR_APPLICAZIONE.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
-//			}
+			if(this.codApplicazione != null){
+				newExpression.equals(RendicontazionePagamento.model().VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+			}
 			if(this.dataPagamentoMin != null){
 				newExpression.greaterEquals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO, this.dataPagamentoMin);
 			}
