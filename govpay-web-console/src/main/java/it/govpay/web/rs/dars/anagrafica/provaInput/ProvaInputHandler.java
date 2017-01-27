@@ -303,7 +303,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 				//mt.add(".*");
 				UriBuilder uriUploadBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("upload");
 
-				Long dimensioneMassimaFileTracciato = 10000L;
+				Long dimensioneMassimaFileTracciato = 1000000000L;
 				int numeroFileTracciato = 1;
 
 				InputFile fileProva = new InputFile(fileProvaId,fileProvaLabel, true, false, true, mt , dimensioneMassimaFileTracciato ,numeroFileTracciato,uriUploadBuilder.build());
@@ -775,13 +775,27 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 				InputStream is = inputPart.getBody(InputStream.class,null);
 
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				Utils.copy(is, baos);
+			 	Utils.copy(is, baos);
 				
 				String ct = headers.getFirst("Content-Type");
 				
 				String fileName = Utils.getFileName(headers);
 				
 				String val = "Ricevuto file: [" + fileName + "], Content-Type: ["+ct+"], Dimensione: ["+baos.size()+" byte].";
+				
+//				File f = new File("/tmp/fileTemporaneo");
+				
+//				if(f.exists())
+//					f.delete();
+//				
+//				if(!f.exists())
+//					f.createNewFile();
+				
+//				FileOutputStream fos = new FileOutputStream(f);
+				
+//				Utils.copy(is, fos);
+				
+//				fos.close();
 
 				Voce<String> voce = new Voce<String>(risultatoUploadId, val);
 

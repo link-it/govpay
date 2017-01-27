@@ -108,7 +108,9 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
+		URI ricerca = this.getUriRicerca(uriInfo, bd);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
 	}
 
 	@Override
