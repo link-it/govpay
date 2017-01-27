@@ -744,6 +744,7 @@ CREATE TABLE iuv
 	data_generazione DATE NOT NULL,
 	tipo_iuv VARCHAR2(1 CHAR) NOT NULL,
 	cod_versamento_ente VARCHAR2(35 CHAR),
+	aux_digit NUMBER NOT NULL,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_applicazione NUMBER NOT NULL,

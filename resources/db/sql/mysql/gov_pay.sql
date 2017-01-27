@@ -533,6 +533,7 @@ CREATE TABLE iuv
 	data_generazione TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	tipo_iuv VARCHAR(1) NOT NULL,
 	cod_versamento_ente VARCHAR(35),
+	aux_digit INT NOT NULL DEFAULT 0,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT NOT NULL,

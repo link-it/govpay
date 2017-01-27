@@ -1009,6 +1009,7 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codVersamentoEnte" type="String35" minOccurs="0"/>
+			<xsd:element name="auxDigit" type="Int1" default="0" />
 		</xsd:sequence>
 	</xsd:complexType>
 	

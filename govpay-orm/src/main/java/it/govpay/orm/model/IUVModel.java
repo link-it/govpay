@@ -49,6 +49,7 @@ public class IUVModel extends AbstractModel<IUV> {
 		this.TIPO_IUV = new Field("tipoIuv",java.lang.String.class,"IUV",IUV.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new Field("idDominio",it.govpay.orm.IdDominio.class,"IUV",IUV.class));
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"IUV",IUV.class);
+		this.AUX_DIGIT = new Field("auxDigit",int.class,"IUV",IUV.class);
 	
 	}
 	
@@ -64,6 +65,7 @@ public class IUVModel extends AbstractModel<IUV> {
 		this.TIPO_IUV = new ComplexField(father,"tipoIuv",java.lang.String.class,"IUV",IUV.class);
 		this.ID_DOMINIO = new it.govpay.orm.model.IdDominioModel(new ComplexField(father,"idDominio",it.govpay.orm.IdDominio.class,"IUV",IUV.class));
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"IUV",IUV.class);
+		this.AUX_DIGIT = new ComplexField(father,"auxDigit",int.class,"IUV",IUV.class);
 	
 	}
 	
@@ -84,6 +86,8 @@ public class IUVModel extends AbstractModel<IUV> {
 	public it.govpay.orm.model.IdDominioModel ID_DOMINIO = null;
 	 
 	public IField COD_VERSAMENTO_ENTE = null;
+	 
+	public IField AUX_DIGIT = null;
 	 
 
 	@Override

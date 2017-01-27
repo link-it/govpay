@@ -123,6 +123,13 @@ public class IUVFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_versamento_ente";
 			}
 		}
+		if(field.equals(IUV.model().AUX_DIGIT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".aux_digit";
+			}else{
+				return "aux_digit";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -158,6 +165,9 @@ public class IUVFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(IUV.model().ID_DOMINIO, returnAlias);
 		}
 		if(field.equals(IUV.model().COD_VERSAMENTO_ENTE)){
+			return this.toTable(IUV.model(), returnAlias);
+		}
+		if(field.equals(IUV.model().AUX_DIGIT)){
 			return this.toTable(IUV.model(), returnAlias);
 		}
 

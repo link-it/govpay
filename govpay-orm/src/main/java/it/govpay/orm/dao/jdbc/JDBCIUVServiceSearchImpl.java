@@ -166,6 +166,7 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 			fields.add(IUV.model().TIPO_IUV);
 			fields.add(IUV.model().COD_VERSAMENTO_ENTE);
 			fields.add(IUV.model().APPLICATION_CODE);
+			fields.add(IUV.model().AUX_DIGIT);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getIUVFieldConverter().toTable(IUV.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getIUVFieldConverter().toTable(IUV.model())));

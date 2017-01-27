@@ -113,6 +113,7 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().DATA_GENERAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().TIPO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().COD_VERSAMENTO_ENTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getIUVFieldConverter().toColumn(IUV.model().AUX_DIGIT,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 
@@ -125,6 +126,7 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getDataGenerazione(),IUV.model().DATA_GENERAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getTipoIuv(),IUV.model().TIPO_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getCodVersamentoEnte(),IUV.model().COD_VERSAMENTO_ENTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(iuv.getAuxDigit(),IUV.model().AUX_DIGIT.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class)
 		);
@@ -225,6 +227,8 @@ public class JDBCIUVServiceImpl extends JDBCIUVServiceSearchImpl
 		lstObjects_iuv.add(new JDBCObject(iuv.getTipoIuv(), IUV.model().TIPO_IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().COD_VERSAMENTO_ENTE,false), "?");
 		lstObjects_iuv.add(new JDBCObject(iuv.getCodVersamentoEnte(), IUV.model().COD_VERSAMENTO_ENTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getIUVFieldConverter().toColumn(IUV.model().AUX_DIGIT,false), "?");
+		lstObjects_iuv.add(new JDBCObject(iuv.getAuxDigit(), IUV.model().AUX_DIGIT.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_applicazione","?");
 		}

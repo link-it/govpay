@@ -100,3 +100,6 @@ DROP TABLE rendicontazioni_senza_rpt;
 DROP SEQUENCE sequence_fr_applicazioni;
 DROP TRIGGER trigger_fr_applicazioni;
 DROP TABLE fr_applicazioni;
+
+ALTER TABLE iuv ADD aux_digit NUMBER NOT NULL;
+ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;

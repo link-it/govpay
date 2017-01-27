@@ -43,6 +43,7 @@ import java.io.Serializable;
  * 			&lt;element name="tipoIuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="auxDigit" type="{http://www.govpay.it/orm}int" minOccurs="1" maxOccurs="1" default="0"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -64,7 +65,8 @@ import java.io.Serializable;
   	"idApplicazione",
   	"tipoIuv",
   	"idDominio",
-  	"codVersamentoEnte"
+  	"codVersamentoEnte",
+  	"_decimalWrapper_auxDigit"
   }
 )
 
@@ -152,6 +154,14 @@ public class IUV extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.codVersamentoEnte = codVersamentoEnte;
   }
 
+  public int getAuxDigit() {
+    return (java.lang.Integer) this._decimalWrapper_auxDigit.getObject(java.lang.Integer.class);
+  }
+
+  public void setAuxDigit(int auxDigit) {
+    this._decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,auxDigit);
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -201,5 +211,13 @@ public class IUV extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codVersamentoEnte",required=false,nillable=false)
   protected java.lang.String codVersamentoEnte;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @XmlElement(name="auxDigit",required=true,nillable=false,defaultValue="0")
+  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_auxDigit = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,  0);
+
+  @XmlTransient
+  protected int auxDigit;
 
 }

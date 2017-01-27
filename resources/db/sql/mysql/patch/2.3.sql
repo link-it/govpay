@@ -83,3 +83,6 @@ ALTER TABLE pagamenti MODIFY COLUMN id_singolo_versamento BIGINT NULL;
 
 DROP TABLE rendicontazioni_senza_rpt;
 DROP TABLE fr_applicazioni;
+
+ALTER TABLE iuv ADD COLUMN aux_digit INT NOT NULL DEFAULT 0;
+

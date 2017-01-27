@@ -21,7 +21,6 @@ package it.govpay.orm.dao.jdbc;
 
 import it.govpay.orm.FR;
 import it.govpay.orm.Pagamento;
-import it.govpay.orm.RPT;
 import it.govpay.orm.Rendicontazione;
 import it.govpay.orm.RendicontazionePagamento;
 import it.govpay.orm.SingoloVersamento;

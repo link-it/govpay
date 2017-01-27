@@ -90,3 +90,6 @@ DROP TABLE rendicontazioni_senza_rpt;
 DROP SEQUENCE seq_rendicontazioni_senza_rpt;
 DROP TABLE fr_applicazioni;
 DROP SEQUENCE seq_fr_applicazioni;
+
+ALTER TABLE iuv ADD COLUMN aux_digit INT NOT NULL DEFAULT 0;
+
