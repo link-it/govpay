@@ -144,6 +144,7 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 
 			fields.add(new CustomField("Pagamento.id", Long.class, "id", this.getFieldConverter().toTable(RendicontazionePagamento.model().PAGAMENTO)));
 			fields.add(new CustomField("id_rr", Long.class, "id_rr", this.getFieldConverter().toTable(RendicontazionePagamento.model().PAGAMENTO)));
+			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getFieldConverter().toTable(RendicontazionePagamento.model().PAGAMENTO)));
 			fields.add(RendicontazionePagamento.model().PAGAMENTO.COD_DOMINIO);
 			fields.add(RendicontazionePagamento.model().PAGAMENTO.IUV);
 			fields.add(RendicontazionePagamento.model().PAGAMENTO.IMPORTO_PAGATO);
@@ -199,40 +200,12 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.COD_ANNO_TRIBUTARIO);
 			fields.add(RendicontazionePagamento.model().VERSAMENTO.COD_BUNDLEKEY);
 
-			fields.add(new CustomField("RPT.id", Long.class, "id", this.getFieldConverter().toTable(RendicontazionePagamento.model().RPT)));
-			fields.add(new CustomField("id_canale", Long.class, "id_canale", this.getFieldConverter().toTable(RendicontazionePagamento.model().RPT)));
-			fields.add(new CustomField("id_portale", Long.class, "id_portale", this.getFieldConverter().toTable(RendicontazionePagamento.model().RPT)));
-			fields.add(RendicontazionePagamento.model().RPT.COD_CARRELLO);
-			fields.add(RendicontazionePagamento.model().RPT.IUV);
-			fields.add(RendicontazionePagamento.model().RPT.CCP);
-			fields.add(RendicontazionePagamento.model().RPT.COD_DOMINIO);
-			fields.add(RendicontazionePagamento.model().RPT.COD_MSG_RICHIESTA);
-			fields.add(RendicontazionePagamento.model().RPT.DATA_MSG_RICHIESTA);
-			fields.add(RendicontazionePagamento.model().RPT.STATO);
-			fields.add(RendicontazionePagamento.model().RPT.DESCRIZIONE_STATO);
-			fields.add(RendicontazionePagamento.model().RPT.COD_SESSIONE);
-			fields.add(RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL);
-			fields.add(RendicontazionePagamento.model().RPT.XML_RPT);
-			fields.add(RendicontazionePagamento.model().RPT.DATA_AGGIORNAMENTO_STATO);
-			fields.add(RendicontazionePagamento.model().RPT.CALLBACK_URL);
-			fields.add(RendicontazionePagamento.model().RPT.MODELLO_PAGAMENTO);
-			fields.add(RendicontazionePagamento.model().RPT.COD_MSG_RICEVUTA);
-			fields.add(RendicontazionePagamento.model().RPT.DATA_MSG_RICEVUTA);
-			fields.add(RendicontazionePagamento.model().RPT.FIRMA_RICEVUTA);
-			fields.add(RendicontazionePagamento.model().RPT.COD_ESITO_PAGAMENTO);
-			fields.add(RendicontazionePagamento.model().RPT.IMPORTO_TOTALE_PAGATO);
-			fields.add(RendicontazionePagamento.model().RPT.XML_RT);
-			fields.add(RendicontazionePagamento.model().RPT.COD_STAZIONE);
-			fields.add(RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RPT);
-			fields.add(RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RT);
-
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
 
 			for(Map<String, Object> map: returnMap) {
 
 				Object idFK_rendicontazionePagamento_pagamento_rrObj = map.remove("id_rr");
-				Long idFK_rendicontazionePagamento_rpt_canale = (Long) map.remove("id_canale");
-				Object idFK_rendicontazionePagamento_rpt_portaleObj = map.remove("id_portale");
+				Object idFK_rendicontazionePagamento_pagamento_rptObj = map.remove("id_rpt");
 				Object idFK_rendicontazionePagamento_singoloVersamento_tributoObj = map.remove("id_tributo");
 				Object idFK_rendicontazionePagamento_singoloVersamento_ibanAccreditoObj = map.remove("id_iban_accredito");
 				
@@ -274,56 +247,6 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 
 				rendicontazionePagamento.setVersamento(versamento);
 
-				RPT rpt = (RPT) this.getFetch().fetch(jdbcProperties.getDatabase(), RendicontazionePagamento.model().RPT, map);
-				
-				if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdVersamento id_rendicontazionePagamento_rpt_versamento = null;
-						Long idFK_rendicontazionePagamento_rpt_versamento = versamento.getId();
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_rendicontazionePagamento_rpt_versamento = ((JDBCVersamentoServiceSearch)(this.getServiceManager().getVersamentoServiceSearch())).findId(idFK_rendicontazionePagamento_rpt_versamento, false);
-						}else{
-							id_rendicontazionePagamento_rpt_versamento = new it.govpay.orm.IdVersamento();
-						}
-						id_rendicontazionePagamento_rpt_versamento.setId(idFK_rendicontazionePagamento_rpt_versamento);
-						rpt.setIdVersamento(id_rendicontazionePagamento_rpt_versamento);
-					}
-
-					if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						it.govpay.orm.IdCanale id_rendicontazionePagamento_rpt_canale = null;
-						
-						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-							id_rendicontazionePagamento_rpt_canale = ((JDBCCanaleServiceSearch)(this.getServiceManager().getCanaleServiceSearch())).findId(idFK_rendicontazionePagamento_rpt_canale, false);
-						}else{
-							id_rendicontazionePagamento_rpt_canale = new it.govpay.orm.IdCanale();
-						}
-						id_rendicontazionePagamento_rpt_canale.setId(idFK_rendicontazionePagamento_rpt_canale);
-						rpt.setIdCanale(id_rendicontazionePagamento_rpt_canale);
-					}
-
-
-					if(idMappingResolutionBehaviour==null ||
-						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-					){
-						if(idFK_rendicontazionePagamento_rpt_portaleObj instanceof Long) {
-							it.govpay.orm.IdPortale id_rendicontazionePagamento_rpt_portale = null;
-							Long idFK_rendicontazionePagamento_rpt_portale = (Long) idFK_rendicontazionePagamento_rpt_portaleObj;
-							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-								id_rendicontazionePagamento_rpt_portale = ((JDBCPortaleServiceSearch)(this.getServiceManager().getPortaleServiceSearch())).findId(idFK_rendicontazionePagamento_rpt_portale, false);
-							}else{
-								id_rendicontazionePagamento_rpt_portale = new it.govpay.orm.IdPortale();
-							}
-							id_rendicontazionePagamento_rpt_portale.setId(idFK_rendicontazionePagamento_rpt_portale);
-							rpt.setIdPortale(id_rendicontazionePagamento_rpt_portale);
-						}
-						
-					}
-				rendicontazionePagamento.setRpt(rpt);
-
-				
 				SingoloVersamento singoloVersamento = (SingoloVersamento) this.getFetch().fetch(jdbcProperties.getDatabase(), RendicontazionePagamento.model().SINGOLO_VERSAMENTO, map);
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
@@ -375,11 +298,12 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 
 				Pagamento pagamento = (Pagamento) this.getFetch().fetch(jdbcProperties.getDatabase(), RendicontazionePagamento.model().PAGAMENTO, map);
 				
+				if(idFK_rendicontazionePagamento_pagamento_rptObj instanceof Long)
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 					){
 						it.govpay.orm.IdRpt id_rendicontazionePagamento_pagamento_rpt = null;
-						Long idFK_rendicontazionePagamento_pagamento_rpt = rpt.getId();
+						Long idFK_rendicontazionePagamento_pagamento_rpt = (Long) idFK_rendicontazionePagamento_pagamento_rptObj;
 						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
 							id_rendicontazionePagamento_pagamento_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(idFK_rendicontazionePagamento_pagamento_rpt, false);
 						}else{
@@ -747,7 +671,6 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	
 		String fr = this.getRendicontazionePagamentoFieldConverter().toAliasTable(RendicontazionePagamento.model().FR);
-		String rpt = this.getRendicontazionePagamentoFieldConverter().toAliasTable(RendicontazionePagamento.model().RPT);
 		String rendicontazione = this.getRendicontazionePagamentoFieldConverter().toAliasTable(RendicontazionePagamento.model().RENDICONTAZIONE);
 		String pagamento = this.getRendicontazionePagamentoFieldConverter().toAliasTable(RendicontazionePagamento.model().PAGAMENTO);
 		String versamento = this.getRendicontazionePagamentoFieldConverter().toAliasTable(RendicontazionePagamento.model().VERSAMENTO);
@@ -755,7 +678,6 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 		
 		sqlQueryObject.addWhereCondition(fr+".id="+rendicontazione+".id_fr");
 		sqlQueryObject.addWhereCondition(rendicontazione+".id_pagamento="+pagamento+".id");
-		sqlQueryObject.addWhereCondition(rpt+".id="+pagamento+".id_rpt");
 		sqlQueryObject.addWhereCondition(singoloVersamento+".id="+pagamento+".id_singolo_versamento");
 		sqlQueryObject.addWhereCondition(versamento+".id="+singoloVersamento+".id_versamento");
 		
@@ -901,43 +823,6 @@ public class JDBCRendicontazionePagamentoServiceSearchImpl implements IJDBCServi
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().VERSAMENTO.ID_APPLICAZIONE))
 			));
-
-		// RendicontazionePagamento.model().RPT
-		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().RPT),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().RPT))
-			));
-
-		// RendicontazionePagamento.model().RPT.ID_VERSAMENTO
-		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().RPT.ID_VERSAMENTO),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().RPT.ID_VERSAMENTO))
-			));
-
-		// RendicontazionePagamento.model().RPT.ID_VERSAMENTO.ID_APPLICAZIONE
-		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().RPT.ID_VERSAMENTO.ID_APPLICAZIONE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().RPT.ID_VERSAMENTO.ID_APPLICAZIONE))
-			));
-
-		// RendicontazionePagamento.model().RPT.ID_CANALE
-		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().RPT.ID_CANALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().RPT.ID_CANALE))
-			));
-
-		// RendicontazionePagamento.model().RPT.ID_CANALE.ID_PSP
-		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().RPT.ID_CANALE.ID_PSP),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().RPT.ID_CANALE.ID_PSP))
-			));
-
-		// RendicontazionePagamento.model().RPT.ID_PORTALE
-		mapTableToPKColumn.put(converter.toTable(RendicontazionePagamento.model().RPT.ID_PORTALE),
-			utilities.newList(
-				new CustomField("id", Long.class, "id", converter.toTable(RendicontazionePagamento.model().RPT.ID_PORTALE))
-			));
-
 
         return mapTableToPKColumn;		
 	}

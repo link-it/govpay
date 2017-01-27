@@ -40,7 +40,6 @@ import java.io.Serializable;
  * 			&lt;element name="Pagamento" type="{http://www.govpay.it/orm}Pagamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="SingoloVersamento" type="{http://www.govpay.it/orm}SingoloVersamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="Versamento" type="{http://www.govpay.it/orm}Versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="RPT" type="{http://www.govpay.it/orm}RPT" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -59,8 +58,7 @@ import java.io.Serializable;
   	"rendicontazione",
   	"pagamento",
   	"singoloVersamento",
-  	"versamento",
-  	"rpt"
+  	"versamento"
   }
 )
 
@@ -124,14 +122,6 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
     this.versamento = versamento;
   }
 
-  public RPT getRpt() {
-    return this.rpt;
-  }
-
-  public void setRpt(RPT rpt) {
-    this.rpt = rpt;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -165,8 +155,5 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
 
   @XmlElement(name="Versamento",required=true,nillable=false)
   protected Versamento versamento;
-
-  @XmlElement(name="RPT",required=true,nillable=false)
-  protected RPT rpt;
 
 }

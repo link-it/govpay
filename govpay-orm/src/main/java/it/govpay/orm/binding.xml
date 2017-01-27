@@ -579,7 +579,6 @@
     <structure field="pagamento" usage="required" map-as="it.govpay.orm.Pagamento"/>
     <structure field="singoloVersamento" usage="required" map-as="it.govpay.orm.SingoloVersamento"/>
     <structure field="versamento" usage="required" map-as="it.govpay.orm.Versamento"/>
-    <structure field="rpt" usage="required" map-as="it.govpay.orm.RPT"/>
   </mapping>
   <mapping name="id-messaggio" class="it.govpay.orm.IdMessaggio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

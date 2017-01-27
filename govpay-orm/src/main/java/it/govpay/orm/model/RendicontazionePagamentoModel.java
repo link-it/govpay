@@ -46,7 +46,6 @@ public class RendicontazionePagamentoModel extends AbstractModel<Rendicontazione
 		this.PAGAMENTO = new it.govpay.orm.model.PagamentoModel(new Field("Pagamento",it.govpay.orm.Pagamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.SINGOLO_VERSAMENTO = new it.govpay.orm.model.SingoloVersamentoModel(new Field("SingoloVersamento",it.govpay.orm.SingoloVersamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.VERSAMENTO = new it.govpay.orm.model.VersamentoModel(new Field("Versamento",it.govpay.orm.Versamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
-		this.RPT = new it.govpay.orm.model.RPTModel(new Field("RPT",it.govpay.orm.RPT.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 	
 	}
 	
@@ -59,7 +58,6 @@ public class RendicontazionePagamentoModel extends AbstractModel<Rendicontazione
 		this.PAGAMENTO = new it.govpay.orm.model.PagamentoModel(new ComplexField(father,"Pagamento",it.govpay.orm.Pagamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.SINGOLO_VERSAMENTO = new it.govpay.orm.model.SingoloVersamentoModel(new ComplexField(father,"SingoloVersamento",it.govpay.orm.SingoloVersamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.VERSAMENTO = new it.govpay.orm.model.VersamentoModel(new ComplexField(father,"Versamento",it.govpay.orm.Versamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
-		this.RPT = new it.govpay.orm.model.RPTModel(new ComplexField(father,"RPT",it.govpay.orm.RPT.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 	
 	}
 	
@@ -74,8 +72,6 @@ public class RendicontazionePagamentoModel extends AbstractModel<Rendicontazione
 	public it.govpay.orm.model.SingoloVersamentoModel SINGOLO_VERSAMENTO = null;
 	 
 	public it.govpay.orm.model.VersamentoModel VERSAMENTO = null;
-	 
-	public it.govpay.orm.model.RPTModel RPT = null;
 	 
 
 	@Override

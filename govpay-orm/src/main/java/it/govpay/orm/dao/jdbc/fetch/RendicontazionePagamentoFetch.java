@@ -31,7 +31,6 @@ import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
 import it.govpay.orm.FR;
-import it.govpay.orm.RPT;
 import it.govpay.orm.Rendicontazione;
 import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.Versamento;
@@ -232,60 +231,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_bundlekey", RendicontazionePagamento.model().VERSAMENTO.COD_BUNDLEKEY.getFieldType()));
 				return object;
 			}
-			if(model.equals(RendicontazionePagamento.model().RPT)){
-				RPT object = new RPT();
-				setParameter(object, "setId", Long.class,
-					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodCarrello", RendicontazionePagamento.model().RPT.COD_CARRELLO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_carrello", RendicontazionePagamento.model().RPT.COD_CARRELLO.getFieldType()));
-				setParameter(object, "setIuv", RendicontazionePagamento.model().RPT.IUV.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "iuv", RendicontazionePagamento.model().RPT.IUV.getFieldType()));
-				setParameter(object, "setCcp", RendicontazionePagamento.model().RPT.CCP.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ccp", RendicontazionePagamento.model().RPT.CCP.getFieldType()));
-				setParameter(object, "setCodDominio", RendicontazionePagamento.model().RPT.COD_DOMINIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_dominio", RendicontazionePagamento.model().RPT.COD_DOMINIO.getFieldType()));
-				setParameter(object, "setCodMsgRichiesta", RendicontazionePagamento.model().RPT.COD_MSG_RICHIESTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_msg_richiesta", RendicontazionePagamento.model().RPT.COD_MSG_RICHIESTA.getFieldType()));
-				setParameter(object, "setDataMsgRichiesta", RendicontazionePagamento.model().RPT.DATA_MSG_RICHIESTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_msg_richiesta", RendicontazionePagamento.model().RPT.DATA_MSG_RICHIESTA.getFieldType()));
-				setParameter(object, "setStato", RendicontazionePagamento.model().RPT.STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "stato", RendicontazionePagamento.model().RPT.STATO.getFieldType()));
-				setParameter(object, "setDescrizioneStato", RendicontazionePagamento.model().RPT.DESCRIZIONE_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", RendicontazionePagamento.model().RPT.DESCRIZIONE_STATO.getFieldType()));
-				setParameter(object, "setCodSessione", RendicontazionePagamento.model().RPT.COD_SESSIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_sessione", RendicontazionePagamento.model().RPT.COD_SESSIONE.getFieldType()));
-				setParameter(object, "setCodSessionePortale", RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_sessione_portale", RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE.getFieldType()));
-				setParameter(object, "setPspRedirectURL", RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "psp_redirect_url", RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL.getFieldType()));
-				setParameter(object, "setXmlRPT", RendicontazionePagamento.model().RPT.XML_RPT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_rpt", RendicontazionePagamento.model().RPT.XML_RPT.getFieldType()));
-				setParameter(object, "setDataAggiornamentoStato", RendicontazionePagamento.model().RPT.DATA_AGGIORNAMENTO_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_aggiornamento_stato", RendicontazionePagamento.model().RPT.DATA_AGGIORNAMENTO_STATO.getFieldType()));
-				setParameter(object, "setCallbackURL", RendicontazionePagamento.model().RPT.CALLBACK_URL.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "callback_url", RendicontazionePagamento.model().RPT.CALLBACK_URL.getFieldType()));
-				setParameter(object, "setModelloPagamento", RendicontazionePagamento.model().RPT.MODELLO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "modello_pagamento", RendicontazionePagamento.model().RPT.MODELLO_PAGAMENTO.getFieldType()));
-				setParameter(object, "setCodMsgRicevuta", RendicontazionePagamento.model().RPT.COD_MSG_RICEVUTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_msg_ricevuta", RendicontazionePagamento.model().RPT.COD_MSG_RICEVUTA.getFieldType()));
-				setParameter(object, "setDataMsgRicevuta", RendicontazionePagamento.model().RPT.DATA_MSG_RICEVUTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "data_msg_ricevuta", RendicontazionePagamento.model().RPT.DATA_MSG_RICEVUTA.getFieldType()));
-				setParameter(object, "setFirmaRicevuta", RendicontazionePagamento.model().RPT.FIRMA_RICEVUTA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "firma_ricevuta", RendicontazionePagamento.model().RPT.FIRMA_RICEVUTA.getFieldType()));
-				setParameter(object, "setCodEsitoPagamento", RendicontazionePagamento.model().RPT.COD_ESITO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_esito_pagamento", RendicontazionePagamento.model().RPT.COD_ESITO_PAGAMENTO.getFieldType()));
-				setParameter(object, "setImportoTotalePagato", RendicontazionePagamento.model().RPT.IMPORTO_TOTALE_PAGATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "importo_totale_pagato", RendicontazionePagamento.model().RPT.IMPORTO_TOTALE_PAGATO.getFieldType()));
-				setParameter(object, "setXmlRT", RendicontazionePagamento.model().RPT.XML_RT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "xml_rt", RendicontazionePagamento.model().RPT.XML_RT.getFieldType()));
-				setParameter(object, "setCodStazione", RendicontazionePagamento.model().RPT.COD_STAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_stazione", RendicontazionePagamento.model().RPT.COD_STAZIONE.getFieldType()));
-				setParameter(object, "setCodTransazioneRPT", RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RPT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rpt", RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RPT.getFieldType()));
-				setParameter(object, "setCodTransazioneRT", RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RT.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_transazione_rt", RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RT.getFieldType()));
-				return object;
-			}
 			
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
@@ -478,60 +423,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"Versamento.codBundlekey"));
 				return object;
 			}
-			if(model.equals(RendicontazionePagamento.model().RPT)){
-				RPT object = new RPT();
-				setParameter(object, "setId", Long.class,
-					this.getObjectFromMap(map,"RPT.id"));
-				setParameter(object, "setCodCarrello", RendicontazionePagamento.model().RPT.COD_CARRELLO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codCarrello"));
-				setParameter(object, "setIuv", RendicontazionePagamento.model().RPT.IUV.getFieldType(),
-					this.getObjectFromMap(map,"RPT.iuv"));
-				setParameter(object, "setCcp", RendicontazionePagamento.model().RPT.CCP.getFieldType(),
-					this.getObjectFromMap(map,"RPT.ccp"));
-				setParameter(object, "setCodDominio", RendicontazionePagamento.model().RPT.COD_DOMINIO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codDominio"));
-				setParameter(object, "setCodMsgRichiesta", RendicontazionePagamento.model().RPT.COD_MSG_RICHIESTA.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codMsgRichiesta"));
-				setParameter(object, "setDataMsgRichiesta", RendicontazionePagamento.model().RPT.DATA_MSG_RICHIESTA.getFieldType(),
-					this.getObjectFromMap(map,"RPT.dataMsgRichiesta"));
-				setParameter(object, "setStato", RendicontazionePagamento.model().RPT.STATO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.stato"));
-				setParameter(object, "setDescrizioneStato", RendicontazionePagamento.model().RPT.DESCRIZIONE_STATO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.descrizioneStato"));
-				setParameter(object, "setCodSessione", RendicontazionePagamento.model().RPT.COD_SESSIONE.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codSessione"));
-				setParameter(object, "setCodSessionePortale", RendicontazionePagamento.model().RPT.COD_SESSIONE_PORTALE.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codSessionePortale"));
-				setParameter(object, "setPspRedirectURL", RendicontazionePagamento.model().RPT.PSP_REDIRECT_URL.getFieldType(),
-					this.getObjectFromMap(map,"RPT.pspRedirectURL"));
-				setParameter(object, "setXmlRPT", RendicontazionePagamento.model().RPT.XML_RPT.getFieldType(),
-					this.getObjectFromMap(map,"RPT.xmlRPT"));
-				setParameter(object, "setDataAggiornamentoStato", RendicontazionePagamento.model().RPT.DATA_AGGIORNAMENTO_STATO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.dataAggiornamentoStato"));
-				setParameter(object, "setCallbackURL", RendicontazionePagamento.model().RPT.CALLBACK_URL.getFieldType(),
-					this.getObjectFromMap(map,"RPT.callbackURL"));
-				setParameter(object, "setModelloPagamento", RendicontazionePagamento.model().RPT.MODELLO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.modelloPagamento"));
-				setParameter(object, "setCodMsgRicevuta", RendicontazionePagamento.model().RPT.COD_MSG_RICEVUTA.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codMsgRicevuta"));
-				setParameter(object, "setDataMsgRicevuta", RendicontazionePagamento.model().RPT.DATA_MSG_RICEVUTA.getFieldType(),
-					this.getObjectFromMap(map,"RPT.dataMsgRicevuta"));
-				setParameter(object, "setFirmaRicevuta", RendicontazionePagamento.model().RPT.FIRMA_RICEVUTA.getFieldType(),
-					this.getObjectFromMap(map,"RPT.firmaRicevuta"));
-				setParameter(object, "setCodEsitoPagamento", RendicontazionePagamento.model().RPT.COD_ESITO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codEsitoPagamento"));
-				setParameter(object, "setImportoTotalePagato", RendicontazionePagamento.model().RPT.IMPORTO_TOTALE_PAGATO.getFieldType(),
-					this.getObjectFromMap(map,"RPT.importoTotalePagato"));
-				setParameter(object, "setXmlRT", RendicontazionePagamento.model().RPT.XML_RT.getFieldType(),
-					this.getObjectFromMap(map,"RPT.xmlRT"));
-				setParameter(object, "setCodStazione", RendicontazionePagamento.model().RPT.COD_STAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codStazione"));
-				setParameter(object, "setCodTransazioneRPT", RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RPT.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codTransazioneRPT"));
-				setParameter(object, "setCodTransazioneRT", RendicontazionePagamento.model().RPT.COD_TRANSAZIONE_RT.getFieldType(),
-					this.getObjectFromMap(map,"RPT.codTransazioneRT"));
-				return object;
-			}
 			
 			else{
 				throw new ServiceException("Model ["+model.toString()+"] not supported by fetch: "+this.getClass().getName());
@@ -549,6 +440,9 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 		
 		try{
 
+			if(model.equals(RendicontazionePagamento.model())){
+				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("rendicontazione_pagamento","id","seq_rendicontazione_pagamento","rendicontazione_pagamento_init_seq");
+			}
 			if(model.equals(RendicontazionePagamento.model().FR)){
 				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("fr","id","seq_fr","fr_init_seq");
 			}
@@ -563,9 +457,6 @@ public class RendicontazionePagamentoFetch extends AbstractJDBCFetch {
 			}
 			if(model.equals(RendicontazionePagamento.model().VERSAMENTO)){
 				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("versamenti","id","seq_versamenti","versamenti_init_seq");
-			}
-			if(model.equals(RendicontazionePagamento.model().RPT)){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("rpt","id","seq_rpt","rpt_init_seq");
 			}
 			
 			else{

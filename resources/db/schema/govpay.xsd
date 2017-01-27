@@ -1637,7 +1637,6 @@
 			<xsd:element ref="Pagamento" />
 			<xsd:element ref="SingoloVersamento" />
 			<xsd:element ref="Versamento" />
-			<xsd:element ref="RPT" />
 		</xsd:sequence>
 	</xsd:complexType>
 	
