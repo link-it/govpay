@@ -177,7 +177,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		fr.setDataRegolamento((Date)record.get(i++));
 		fr.setDataAcquisizione((Date)record.get(i++));
 		fr.setNumeroPagamenti((Long)record.get(i++));
-		fr.setImportoTotalePagamenti((Double)record.get(i++));
+		fr.setImportoTotalePagamenti(new BigDecimal((Double)record.get(i++)));
 		fr.setCodBicRiversamento((String)record.get(i++));
 		fr.setXml((byte[])record.get(i++));
 		fr.setId((Long)record.get(i++));
