@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
 import org.openspcoop2.generic_project.beans.IModel;
 import org.openspcoop2.generic_project.dao.IDBServiceUtilities;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -122,6 +123,11 @@ public abstract class AbstractFilter implements IFilter {
 	protected String getTable(IModel<?> model) throws ExpressionException {
 		ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.expressionConstructor).getFieldConverter();
 		return converter.toTable(model);
+	}
+	
+	protected String getColumn(IField field) throws ExpressionException {
+		ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.expressionConstructor).getFieldConverter();
+		return converter.toColumn(field,false);
 	}
 	
 	protected FilterSortWrapper getDefaultFilterSortWrapper() throws ServiceException {
