@@ -12,6 +12,7 @@ public class RendicontazionePagamento extends BasicModel {
 	private Pagamento pagamento;
 	private Versamento versamento;
 	private SingoloVersamento singoloVersamento;
+	private String tipo;
 	
 	public Fr getFr() {
 		return fr;
@@ -42,5 +43,11 @@ public class RendicontazionePagamento extends BasicModel {
 	}
 	public void setRendicontazione(Rendicontazione rendicontazione) {
 		this.rendicontazione = rendicontazione;
+	}
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 }

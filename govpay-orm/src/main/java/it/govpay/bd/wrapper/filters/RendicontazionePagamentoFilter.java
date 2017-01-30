@@ -23,7 +23,9 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.RendicontazionePagamento;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -36,7 +38,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 public class RendicontazionePagamentoFilter extends AbstractFilter {
 	
 	private String codDominio;
-	private String codApplicazione;
+	private Long codApplicazione;
 	private Date dataPagamentoMin;
 	private Date dataPagamentoMax;
 	private String codFlusso;
@@ -46,6 +48,88 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	
 	public RendicontazionePagamentoFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
+	}
+
+	public List<Object> getFields(boolean count) throws ServiceException {
+		List<Object> obj = new ArrayList<Object>();
+		
+		if(this.codDominio != null){
+			obj.add(this.codDominio);
+		}
+		if(this.codApplicazione != null){
+			obj.add(this.codApplicazione);
+		}
+		if(this.dataPagamentoMin != null){
+			obj.add(this.dataPagamentoMin);
+		}
+		if(this.dataPagamentoMax != null){
+			obj.add(this.dataPagamentoMax);
+		}
+		if(this.codFlusso != null) {
+			obj.add(this.codFlusso);
+		}
+		
+		if(!count) {
+			obj.add(this.getOffset());
+			obj.add(this.getLimit());
+		}
+
+		return obj;
+	}
+
+	public String getSQLFilterString(String nativeQuery) throws ServiceException {
+		try {
+			
+			String placeholderIn = "";
+			String placeholderOut = "";
+			if(this.codDominio != null){
+				if(placeholderOut.length() > 0) {
+					placeholderOut += " AND ";
+				} else {
+					placeholderOut += " WHERE ";
+				}
+				placeholderOut +=  "fr." + this.getColumn(RendicontazionePagamento.model().FR.COD_DOMINIO) + " =  ?";
+			}
+			if(this.codApplicazione != null){
+				if(placeholderOut.length() > 0) {
+					placeholderOut += " AND ";
+				} else {
+					placeholderOut += " WHERE ";
+				}
+				placeholderOut += "versamenti.id_applicazione =  ?";
+			}
+			if(this.dataPagamentoMin != null){
+				if(placeholderIn.length() > 0) {
+					placeholderIn += " AND ";
+				} else {
+					placeholderIn += " WHERE ";
+				}
+				placeholderIn += "s1.p_." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " > ?";
+			}
+			if(this.dataPagamentoMax != null){
+				if(placeholderIn.length() > 0) {
+					placeholderIn += " AND ";
+				} else {
+					placeholderIn += " WHERE ";
+				}
+				placeholderIn += "s1.p_." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " <  ?";
+			}
+			if(this.codFlusso != null) {
+				if(placeholderOut.length() > 0) {
+					placeholderOut += " AND ";
+				} else {
+					placeholderOut += " WHERE ";
+				}
+				placeholderOut += "fr." + this.getColumn(RendicontazionePagamento.model().FR.COD_FLUSSO) + " = ?";
+			}
+			
+			nativeQuery.replaceAll("$PLACEHOLDER_IN$", placeholderIn);
+			nativeQuery.replaceAll("$PLACEHOLDER_OUT$", placeholderOut);
+
+			return nativeQuery;
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
@@ -92,11 +176,11 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		this.codDominio = codDominio;
 	}
 
-	public String getCodApplicazione() {
+	public Long getCodApplicazione() {
 		return codApplicazione;
 	}
 
-	public void setCodApplicazione(String codApplicazione) {
+	public void setCodApplicazione(Long codApplicazione) {
 		this.codApplicazione = codApplicazione;
 	}
 

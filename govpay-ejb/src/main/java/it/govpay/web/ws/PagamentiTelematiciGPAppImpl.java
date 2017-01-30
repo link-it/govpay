@@ -427,7 +427,12 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
 			
 			filter.setCodFlusso(fr.getCodFlusso());
-			filter.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+			try {
+				Long idApplicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione()).getId();
+				filter.setCodApplicazione(idApplicazione);
+			} catch (NotFoundException e) {
+				throw new GovPayException(EsitoOperazione.APP_000, bodyrichiesta.getCodApplicazione());
+			}
 			
 			List<RendicontazionePagamento> rendicontazionePagamenti = rendicontazionePagamentoBD.findAll(filter);
 			for(RendicontazionePagamento pagamento : rendicontazionePagamenti) {

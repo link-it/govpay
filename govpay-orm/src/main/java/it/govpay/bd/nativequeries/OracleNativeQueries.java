@@ -12,4 +12,16 @@ public class OracleNativeQueries extends NativeQueries {
 		return "SELECT sum (count_id_pagamento) as totale_pagamenti FROM ( ( select count (p.id) as count_id_pagamento from pagamenti p join rpt r on r.id=p.id_rpt join singoli_versamenti sv on sv.id= p.id_singolo_versamento join versamenti v on v.id = sv.id_versamento $PLACE_HOLDER_1$ ) UNION ALL ( select count (rsr.id) as count_id_pagamento from rendicontazioni_senza_rpt rsr join iuv iu on iu.id=rsr.id_iuv join singoli_versamenti sv on sv.id= rsr.id_singolo_versamento join versamenti v on v.id = sv.id_versamento $PLACE_HOLDER_2$ ) )";
 	}
 
+	@Override
+	public String getRendicontazionePagamentoQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getRendicontazionePagamentoCountQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
