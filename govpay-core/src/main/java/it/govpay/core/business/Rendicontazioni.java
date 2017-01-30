@@ -202,9 +202,7 @@ public class Rendicontazioni extends BasicBD {
 
 							setupConnection(GpThreadLocal.get().getTransactionId());
 
-							GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codFlusso", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
-							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso", flussoRendicontazione.getIdentificativoUnivocoRegolamento());
-
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso");
 
 							Fr fr = new Fr();
 							fr.setCodBicRiversamento(flussoRendicontazione.getCodiceBicBancaDiRiversamento());
@@ -631,7 +629,6 @@ public class Rendicontazioni extends BasicBD {
 
 		FrBD frBD = new FrBD(this);
 		FrFilter newFilter = frBD.newFilter();
-		newFilter.setIdApplicazione(applicazione.getId());
 		newFilter.setCodDominio(domini);
 		newFilter.setDatainizio(da);
 		newFilter.setDataFine(a);

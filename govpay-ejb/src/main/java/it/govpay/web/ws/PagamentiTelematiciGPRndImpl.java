@@ -96,7 +96,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			
 			for(Fr frModel : rendicontazioni) {
 				GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione efr = new GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione();
-				int annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(efr.getDataFlusso()));
+				int annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(frModel.getDataFlusso()));
 				efr.setAnnoRiferimento(annoFlusso);
 				efr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 				efr.setCodDominio(frModel.getDominio(bd).getCodDominio());
