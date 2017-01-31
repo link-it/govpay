@@ -21,6 +21,7 @@ package it.govpay.bd.wrapper.filters;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.GovpayConfig;
 import it.govpay.orm.RendicontazionePagamento;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		super(expressionConstructor);
 	}
 
-	public List<Object> getFields(boolean count) throws ServiceException {
+	public List<Object> getFields() throws ServiceException {
 		List<Object> obj = new ArrayList<Object>();
 		
 		if(this.codDominio != null){
@@ -69,7 +70,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 			obj.add(this.codFlusso);
 		}
 		
-		if(!count) {
+		if(this.getOffset() != null && this.getLimit() != null) {
 			obj.add(this.getOffset());
 			obj.add(this.getLimit());
 		}
@@ -82,6 +83,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 			
 			String placeholderIn = "";
 			String placeholderOut = "";
+			String placeholderOffsetLimit = "";
 			if(this.codDominio != null){
 				if(placeholderOut.length() > 0) {
 					placeholderOut += " AND ";
@@ -123,8 +125,20 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 				placeholderOut += "fr." + this.getColumn(RendicontazionePagamento.model().FR.COD_FLUSSO) + " = ?";
 			}
 			
-			nativeQuery.replaceAll("$PLACEHOLDER_IN$", placeholderIn);
-			nativeQuery.replaceAll("$PLACEHOLDER_OUT$", placeholderOut);
+			if(this.getOffset() != null && this.getLimit() != null) {
+				if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {
+					placeholderOffsetLimit = "OFFSET ? LIMIT ?";
+				}
+				if(GovpayConfig.getInstance().getDatabaseType().equals("mysql")) {
+					placeholderOffsetLimit = "LIMIT ?,?";
+				}
+				if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
+					placeholderOffsetLimit = "OFFSET ? LIMIT ?"; //TODO ORACLE
+				}
+			}
+			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_IN\\$", placeholderIn);
+			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_OUT\\$", placeholderOut);
+			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_OFFSET_LIMIT\\$", placeholderOffsetLimit);
 
 			return nativeQuery;
 		} catch (ExpressionException e) {

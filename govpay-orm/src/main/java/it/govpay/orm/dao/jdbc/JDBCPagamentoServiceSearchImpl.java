@@ -181,7 +181,7 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
-				Long id_rpt = (Long) map.remove("id_rpt");
+				Object id_rptObject = map.remove("id_rpt");
 				Long id_singolo_versamento = (Long) map.remove("id_singolo_versamento");
 				Long idRR = null;
 				
@@ -192,9 +192,11 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 				
 				Pagamento pagamento = (Pagamento)this.getPagamentoFetch().fetch(jdbcProperties.getDatabase(), Pagamento.model(), map);
 				
+				if(id_rptObject instanceof Long)
 				if(idMappingResolutionBehaviour==null ||
 						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
 					){
+						Long id_rpt = (Long) id_rptObject;
 						it.govpay.orm.IdRpt id_pagamento_rpt = null;
 						if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
 							id_pagamento_rpt = ((JDBCRPTServiceSearch)(this.getServiceManager().getRPTServiceSearch())).findId(id_rpt, false);

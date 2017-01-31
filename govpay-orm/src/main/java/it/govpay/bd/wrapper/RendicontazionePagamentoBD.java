@@ -2,22 +2,23 @@ package it.govpay.bd.wrapper;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.RendicontazionePagamento;
-import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.model.Versamento;
 import it.govpay.bd.nativequeries.NativeQueries;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.TipoAllegato;
-import it.govpay.model.Rendicontazione;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.model.SingoloVersamento.TipoBollo;
 import it.govpay.model.Tributo.TipoContabilta;
 import it.govpay.model.Versamento.StatoVersamento;
+import it.govpay.orm.FR;
+import it.govpay.orm.Pagamento;
+import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.SingoloVersamento;
+import it.govpay.orm.Versamento;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -25,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -43,7 +45,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		try {
 			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
 			lstReturnType.add(Long.class);
-			List<List<Object>> count = this.getRendicontazionePagamentoServiceSearch().nativeQuery(filter.getSQLFilterString(NativeQueries.getInstance().getRendicontazionePagamentoCountQuery()), lstReturnType, filter.getFields(true).toArray(new Object[]{}));
+			List<List<Object>> count = this.getRendicontazionePagamentoServiceSearch().nativeQuery(filter.getSQLFilterString(NativeQueries.getInstance().getRendicontazionePagamentoCountQuery()), lstReturnType, filter.getFields().toArray(new Object[]{}));
 			
 			if(count.size() > 0) {
 				return ((Long) count.get(0).get(0)).longValue();
@@ -62,100 +64,113 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		try {
 			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
 			
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Double.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(byte[].class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Double.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Boolean.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Integer.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Double.class);
-			lstReturnType.add(Integer.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Double.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(Double.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(byte[].class);
-			lstReturnType.add(Date.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Double.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Double.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(String.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(Long.class);
-			lstReturnType.add(String.class);
+			lstReturnType.add(FR.model().COD_FLUSSO.getFieldType());
+			lstReturnType.add(FR.model().STATO.getFieldType());
+			lstReturnType.add(FR.model().DESCRIZIONE_STATO.getFieldType());
+			lstReturnType.add(FR.model().IUR.getFieldType());
+			lstReturnType.add(FR.model().DATA_ORA_FLUSSO.getFieldType());
+			lstReturnType.add(FR.model().DATA_REGOLAMENTO.getFieldType());
+			lstReturnType.add(FR.model().DATA_ACQUISIZIONE.getFieldType());
+			lstReturnType.add(FR.model().NUMERO_PAGAMENTI.getFieldType());
+			lstReturnType.add(FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType());
+			lstReturnType.add(FR.model().COD_BIC_RIVERSAMENTO.getFieldType());
+			lstReturnType.add(FR.model().XML.getFieldType());
+			lstReturnType.add(Long.class); //id
+			lstReturnType.add(FR.model().COD_PSP.getFieldType());
+			lstReturnType.add(FR.model().COD_DOMINIO.getFieldType());
+			
+			
+			lstReturnType.add(Versamento.model().COD_VERSAMENTO_ENTE.getFieldType());
+			lstReturnType.add(Versamento.model().IMPORTO_TOTALE.getFieldType());
+			lstReturnType.add(Versamento.model().STATO_VERSAMENTO.getFieldType());
+			lstReturnType.add(Versamento.model().DESCRIZIONE_STATO.getFieldType());
+			lstReturnType.add(Versamento.model().AGGIORNABILE.getFieldType());
+			lstReturnType.add(Versamento.model().DATA_CREAZIONE.getFieldType());
+			lstReturnType.add(Versamento.model().DATA_SCADENZA.getFieldType());
+			lstReturnType.add(Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO.getFieldType());
+			lstReturnType.add(Versamento.model().CAUSALE_VERSAMENTO.getFieldType());
 
-			List<List<Object>> lstRecords = this.getRendicontazionePagamentoServiceSearch().nativeQuery(filter.getSQLFilterString(NativeQueries.getInstance().getRendicontazionePagamentoQuery()), lstReturnType, filter.getFields(false).toArray(new Object[]{}));
+			lstReturnType.add(Versamento.model().DEBITORE_IDENTIFICATIVO.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_ANAGRAFICA.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_INDIRIZZO.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_CIVICO.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_CAP.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_LOCALITA.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_PROVINCIA.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_NAZIONE.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_TELEFONO.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_CELLULARE.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_FAX.getFieldType());
+			lstReturnType.add(Versamento.model().DEBITORE_EMAIL.getFieldType());
+
+			lstReturnType.add(Versamento.model().COD_LOTTO.getFieldType());
+			lstReturnType.add(Versamento.model().COD_VERSAMENTO_LOTTO.getFieldType());
+			lstReturnType.add(Versamento.model().COD_ANNO_TRIBUTARIO.getFieldType());
+			lstReturnType.add(Versamento.model().COD_BUNDLEKEY.getFieldType());
+			lstReturnType.add(Long.class); //id
+			lstReturnType.add(Long.class); //id_uo
+			lstReturnType.add(Long.class); //id_applicazione
+
+			lstReturnType.add(Rendicontazione.model().IUV.getFieldType());
+			lstReturnType.add(Rendicontazione.model().IUR.getFieldType());
+			lstReturnType.add(Rendicontazione.model().IMPORTO_PAGATO.getFieldType());
+			lstReturnType.add(Rendicontazione.model().ESITO.getFieldType());
+			lstReturnType.add(Rendicontazione.model().DATA.getFieldType());
+			lstReturnType.add(Rendicontazione.model().STATO.getFieldType());
+			lstReturnType.add(Rendicontazione.model().ANOMALIE.getFieldType());
+			lstReturnType.add(Long.class);//id
+			lstReturnType.add(Long.class);//id_fr
+			lstReturnType.add(Long.class);//id_pagamento
+			
+			lstReturnType.add(Pagamento.model().IMPORTO_PAGATO.getFieldType());
+			lstReturnType.add(Pagamento.model().DATA_ACQUISIZIONE.getFieldType());
+			lstReturnType.add(Pagamento.model().IUR.getFieldType());
+			lstReturnType.add(Pagamento.model().DATA_PAGAMENTO.getFieldType());
+			lstReturnType.add(Pagamento.model().COMMISSIONI_PSP.getFieldType());
+			lstReturnType.add(Pagamento.model().TIPO_ALLEGATO.getFieldType());
+			lstReturnType.add(Pagamento.model().ALLEGATO.getFieldType());
+			lstReturnType.add(Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType());
+			lstReturnType.add(Pagamento.model().CAUSALE_REVOCA.getFieldType());
+			lstReturnType.add(Pagamento.model().DATI_REVOCA.getFieldType());
+			lstReturnType.add(Pagamento.model().IMPORTO_REVOCATO.getFieldType());
+			lstReturnType.add(Pagamento.model().ESITO_REVOCA.getFieldType());
+			lstReturnType.add(Pagamento.model().DATI_ESITO_REVOCA.getFieldType());
+			lstReturnType.add(Long.class); //id
+			lstReturnType.add(Long.class); //id_rpt
+			lstReturnType.add(Long.class); //id_singolo_versamento
+			lstReturnType.add(Long.class); //id_rr
+			lstReturnType.add(Pagamento.model().IBAN_ACCREDITO.getFieldType());
+			lstReturnType.add(Pagamento.model().COD_DOMINIO.getFieldType());
+			lstReturnType.add(Pagamento.model().IUV.getFieldType());
+
+			lstReturnType.add(SingoloVersamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().STATO_SINGOLO_VERSAMENTO.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().IMPORTO_SINGOLO_VERSAMENTO.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().TIPO_BOLLO.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().HASH_DOCUMENTO.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().PROVINCIA_RESIDENZA.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().TIPO_CONTABILITA.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().CODICE_CONTABILITA.getFieldType());
+			lstReturnType.add(SingoloVersamento.model().NOTE.getFieldType());
+			lstReturnType.add(Long.class); //id
+			lstReturnType.add(Long.class); //id_versamento
+			lstReturnType.add(Long.class); //id_tributo
+			lstReturnType.add(Long.class); //id_iban_accredito
+			
+			
+			lstReturnType.add(String.class); //tipo
+
+			
+			String initialNativeQuery = NativeQueries.getInstance().getRendicontazionePagamentoQuery();
+			String nativeQueryString = filter.getSQLFilterString(initialNativeQuery);
+			
+			Object[] array = filter.getFields().toArray(new Object[]{});
+			List<List<Object>> lstRecords = this.getRendicontazionePagamentoServiceSearch().nativeQuery(nativeQueryString, lstReturnType, array);
 			List<RendicontazionePagamento> lstNonFiltrata = new ArrayList<RendicontazionePagamento>();
 
 			for(List<Object> record: lstRecords) {
 				lstNonFiltrata.add(getRendicontazionePagamento(record));
 			}
-			
 			//TODO filtrare lista applicativamente
 			return lstNonFiltrata;
 		} catch (NotImplementedException e) {
@@ -166,6 +181,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 	}
 
 	private RendicontazionePagamento getRendicontazionePagamento(List<Object> record) throws ServiceException {
+		
 		RendicontazionePagamento rp = new RendicontazionePagamento();
 		int i =0;
 		Fr fr = new Fr();
@@ -187,7 +203,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		rp.setFr(fr);
 
 		
-		Versamento versamento = new Versamento();
+		it.govpay.bd.model.Versamento versamento = new it.govpay.bd.model.Versamento();
 		versamento.setCodVersamentoEnte((String) record.get(i++));
 		versamento.setImportoTotale(new BigDecimal((Double) record.get(i++)));
 		versamento.setStatoVersamento(StatoVersamento.valueOf((String) record.get(i++)));
@@ -228,7 +244,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 
 		rp.setVersamento(versamento);
 		
-		Rendicontazione rendicontazione = new Rendicontazione();
+		it.govpay.bd.model.Rendicontazione rendicontazione = new it.govpay.bd.model.Rendicontazione();
 		rendicontazione.setIuv((String) record.get(i++));
 		rendicontazione.setIur((String) record.get(i++));
 		rendicontazione.setImportoPagato(new BigDecimal((Double) record.get(i++)));
@@ -242,38 +258,75 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		rp.setRendicontazione(rendicontazione);
 		
 		
-		Pagamento pagamento = new Pagamento();
+		it.govpay.bd.model.Pagamento pagamento = new it.govpay.bd.model.Pagamento();
 		pagamento.setImportoPagato(new BigDecimal((Double) record.get(i++)));
 		pagamento.setDataAcquisizione((Date) record.get(i++));
 		pagamento.setIur((String) record.get(i++));
 		pagamento.setDataPagamento((Date) record.get(i++));
-		pagamento.setCommissioniPsp(new BigDecimal((Double) record.get(i++)));
-		pagamento.setTipoAllegato(TipoAllegato.valueOf((String) record.get(i++)));
+		if(record.get(i) != null) {
+			pagamento.setCommissioniPsp(new BigDecimal((Double) record.get(i++)));
+		} else {
+			i++;
+		}
+		
+		if(record.get(i) != null) {
+			pagamento.setTipoAllegato(TipoAllegato.valueOf((String) record.get(i++)));
+		} else {
+			i++;
+		}
+		
 		pagamento.setAllegato((byte[]) record.get(i++));
 		pagamento.setDataAcquisizioneRevoca((Date) record.get(i++));
 		pagamento.setCausaleRevoca((String) record.get(i++));
 		pagamento.setDatiRevoca((String) record.get(i++));
-		pagamento.setImportoRevocato(new BigDecimal((Double) record.get(i++)));
+		if(record.get(i) != null) {
+			pagamento.setImportoRevocato(new BigDecimal((Double) record.get(i++)));
+		} else {
+			i++;
+		}
 		pagamento.setEsitoRevoca((String) record.get(i++));
 		pagamento.setDatiEsitoRevoca((String) record.get(i++));
+		
 		pagamento.setId((Long) record.get(i++));
-		pagamento.setIdRpt((Long) record.get(i++));
-		pagamento.setIdSingoloVersamento((Long) record.get(i++));
-		pagamento.setIdRr((Long) record.get(i++));
+		if(record.get(i) != null) {
+			pagamento.setIdRpt((Long) record.get(i++));
+		} else {
+			i++;
+		}
+		if(record.get(i) != null) {
+			pagamento.setIdSingoloVersamento((Long) record.get(i++));
+		} else {
+			i++;
+		}
+		if(record.get(i) != null) {
+			pagamento.setIdRr((Long) record.get(i++));
+		} else {
+			i++;
+		}
+		
 		pagamento.setIbanAccredito((String) record.get(i++));
 		pagamento.setCodDominio((String) record.get(i++));
 		pagamento.setIuv((String) record.get(i++));
 		rp.setPagamento(pagamento);
 		
 		
-		SingoloVersamento singoloVersamento = new SingoloVersamento();
+		it.govpay.bd.model.SingoloVersamento singoloVersamento = new it.govpay.bd.model.SingoloVersamento();
 		singoloVersamento.setCodSingoloVersamentoEnte((String) record.get(i++));
+		
 		singoloVersamento.setStatoSingoloVersamento(StatoSingoloVersamento.valueOf((String) record.get(i++)));
 		singoloVersamento.setImportoSingoloVersamento(new BigDecimal((Double) record.get(i++)));
-		singoloVersamento.setTipoBollo(TipoBollo.toEnum((String) record.get(i++)));
+		if(record.get(i) != null) {
+			singoloVersamento.setTipoBollo(TipoBollo.toEnum((String) record.get(i++)));
+		} else {
+			i++;
+		}
 		singoloVersamento.setHashDocumento((String) record.get(i++));
 		singoloVersamento.setProvinciaResidenza((String) record.get(i++));
-		singoloVersamento.setTipoContabilita(TipoContabilta.toEnum((String) record.get(i++)));
+		if(record.get(i) != null) {
+			singoloVersamento.setTipoContabilita(TipoContabilta.toEnum((String) record.get(i++)));
+		} else {
+			i++;
+		}
 		singoloVersamento.setCodContabilita((String) record.get(i++));
 		singoloVersamento.setNote((String) record.get(i++));
 		singoloVersamento.setId((Long) record.get(i++));
