@@ -1617,6 +1617,17 @@
 			<xsd:element name="importoTotalePagamenti" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="codBicRiversamento" type="String35" minOccurs="0"/>
 			<xsd:element name="xml" type="xsd:base64Binary" />
+			
+			<xsd:element name="idPagamento" type="id-pagamento" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Pagamento" object-type="Pagamento" relationship="none" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 	

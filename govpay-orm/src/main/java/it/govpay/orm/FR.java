@@ -48,6 +48,7 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idPagamento" type="{http://www.govpay.it/orm}id-pagamento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -74,7 +75,8 @@ import java.io.Serializable;
   	"numeroPagamenti",
   	"importoTotalePagamenti",
   	"codBicRiversamento",
-  	"xml"
+  	"xml",
+  	"idPagamento"
   }
 )
 
@@ -202,6 +204,14 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.xml = xml;
   }
 
+  public IdPagamento getIdPagamento() {
+    return this.idPagamento;
+  }
+
+  public void setIdPagamento(IdPagamento idPagamento) {
+    this.idPagamento = idPagamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -275,5 +285,8 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="xml",required=true,nillable=false)
   protected byte[] xml;
+
+  @XmlElement(name="idPagamento",required=false,nillable=false)
+  protected IdPagamento idPagamento;
 
 }

@@ -63,6 +63,15 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.idApplicazione != null){
+				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
+				
+				
+				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+				newExpression.equals(idApplicazioneField, this.idApplicazione); //per scatenare la join
+				addAnd = true;
+			}
+			
 			if(this.codDominio != null){
 				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
 				addAnd = true;

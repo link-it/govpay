@@ -19,43 +19,38 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import it.govpay.orm.FR;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.FRFetch;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdFr;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import it.govpay.orm.dao.jdbc.converter.FRFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.FRFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import it.govpay.orm.FR;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * JDBCFRServiceSearchImpl
@@ -520,7 +515,24 @@ public class JDBCFRServiceSearchImpl implements IJDBCServiceSearchWithId<FR, IdF
 	}
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
-		
+
+		if(expression.inUseModel(FR.model().ID_PAGAMENTO.ID_VERSAMENTO,false)){
+			String tableNameFr = this.getFieldConverter().toAliasTable(FR.model());
+			String tableNameRendicontazioni = "rendicontazioni";
+			String tableNamePagamenti = this.getFieldConverter().toAliasTable(FR.model().ID_PAGAMENTO);
+			String tableNameSingoliVersamenti = "singoli_versamenti";
+			String tableNameVersamenti = this.getFieldConverter().toAliasTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO);
+			sqlQueryObject.addFromTable(tableNameRendicontazioni);
+			sqlQueryObject.addWhereCondition(tableNameFr+".id="+tableNameRendicontazioni+".id_fr");
+			sqlQueryObject.addFromTable(tableNamePagamenti);
+			sqlQueryObject.addWhereCondition(tableNameRendicontazioni+".id_pagamento="+tableNamePagamenti+".id");
+			sqlQueryObject.addFromTable(tableNameSingoliVersamenti);
+			sqlQueryObject.addWhereCondition(tableNamePagamenti+".id_singolo_versamento="+tableNameSingoliVersamenti+".id");
+
+			sqlQueryObject.addWhereCondition(tableNameSingoliVersamenti+".id_versamento="+tableNameVersamenti+".id");
+			
+			
+		}
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdFr id) throws NotFoundException, ServiceException, NotImplementedException, Exception{

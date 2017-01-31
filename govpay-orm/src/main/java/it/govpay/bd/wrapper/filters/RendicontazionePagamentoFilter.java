@@ -72,7 +72,11 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		
 		if(this.getOffset() != null && this.getLimit() != null) {
 			obj.add(this.getOffset());
-			obj.add(this.getLimit());
+			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
+				obj.add(this.getOffset()+this.getLimit());
+			} else {
+				obj.add(this.getLimit());
+			}
 		}
 
 		return obj;
@@ -133,7 +137,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 					placeholderOffsetLimit = "LIMIT ?,?";
 				}
 				if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
-					placeholderOffsetLimit = "OFFSET ? LIMIT ?"; //TODO ORACLE
+					placeholderOffsetLimit = "WHERE ( rowNumber > ? AND rowNumber <= ? )";
 				}
 			}
 			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_IN\\$", placeholderIn);
