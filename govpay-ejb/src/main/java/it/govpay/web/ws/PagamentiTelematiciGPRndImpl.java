@@ -155,11 +155,14 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd); 
 			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
 			filter.setCodFlusso(bodyrichiesta.getCodFlusso());
-			try {
-				Long idApplicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione()).getId();
-				filter.setCodApplicazione(idApplicazione);
-			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.APP_000, bodyrichiesta.getCodApplicazione());
+			
+			if(bodyrichiesta.getCodApplicazione() != null) {
+				try {
+					Long idApplicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione()).getId();
+					filter.setCodApplicazione(idApplicazione);
+				} catch (NotFoundException e) {
+					throw new GovPayException(EsitoOperazione.APP_000, bodyrichiesta.getCodApplicazione());
+				}
 			}
 			List<RendicontazionePagamento> rends = rendicontazionePagamentoBD.findAll(filter);
 			

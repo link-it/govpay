@@ -311,13 +311,6 @@ public class Rendicontazioni extends BasicBD {
 										}
 									}
 
-									// Controlli finiti. Decido lo stato.
-									if(fr.getAnomalie().isEmpty()) {
-										rendicontazione.setStato(StatoRendicontazione.OK);
-									} else {
-										rendicontazione.setStato(StatoRendicontazione.ANOMALA);
-									}
-
 								} catch (NotFoundException e) {
 									// Pagamento non trovato. Devo capire se ce' un errore.
 
@@ -333,12 +326,19 @@ public class Rendicontazioni extends BasicBD {
 										//Recupero il versamento, internamente o dall'applicazione esterna
 										it.govpay.bd.model.Versamento versamento = null;
 										String erroreVerifica = null;
+										String codApplicazione = null;
 										try {
 											try {
 												it.govpay.model.Iuv iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 												versamento = versamentiBD.getVersamento(iuvModel.getIdApplicazione(), iuvModel.getCodVersamentoEnte());
 											} catch (NotFoundException nfe) {
-												String codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(this));
+												codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(this));
+												if(codApplicazione == null) {
+													response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisizione flusso fallita. Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].");
+													log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "]. Flusso non acquisito.");
+													GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
+													throw new GovPayException(EsitoOperazione.INTERNAL, "Impossibile individuare l'applicativo gestore del versamento per acquisirne i dati [Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
+												}
 												versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(this, codApplicazione), null, null, null, codDominio, iuv, this);
 											}
 										} catch (VersamentoScadutoException e1) {
@@ -352,7 +352,7 @@ public class Rendicontazioni extends BasicBD {
 										} catch (ClientException ce) {
 											response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisizione flusso fallita. Riscontrato errore nell'acquisizione del versamento dall'applicazione gestrice [Transazione: " + idTransaction2 + "].");
 											log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: impossibile acquisire i dati del versamento. Flusso non acquisito.");
-											GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Transazione: " + idTransaction2 + "].  Flusso non acquisito.");
+											GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
 											throw new GovPayException(ce);
 										}
 
@@ -361,7 +361,17 @@ public class Rendicontazioni extends BasicBD {
 											GpThreadLocal.get().log("rendicontazioni.senzaRptNoVersamento", iuv, iur);
 											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
 											rendicontazione.addAnomalia("007111", "Il versamento risulta sconosciuto: " + erroreVerifica);
+											continue;
 										} else {
+											
+											if(versamento.getSingoliVersamenti(this).size() != 1) {
+												// Un pagamento senza rpt DEVE riferire un pagamento tipo 3 con un solo singolo versamento
+												GpThreadLocal.get().log("rendicontazioni.senzaRptVersamentoMalformato", iuv, iur);
+												log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
+												rendicontazione.addAnomalia("007114", "Il versamento presenta piu' singoli versamenti");
+												continue;
+											}
+											
 											// Trovato versamento. Creo il pagamento senza rpt 
 											pagamento = new it.govpay.bd.model.Pagamento();
 											pagamento.setCodDominio(codDominio);
@@ -371,10 +381,10 @@ public class Rendicontazioni extends BasicBD {
 											pagamento.setIur(rendicontazione.getIur());
 											pagamento.setIuv(rendicontazione.getIuv());
 											pagamento.setCodDominio(fr.getCodDominio());
+											pagamento.setSingoloVersamento(versamento.getSingoliVersamenti(this).get(0));
 											
 											rendicontazione.setPagamento(pagamento);
 											rendicontazione.setPagamentoDaCreare(true);
-											rendicontazione.setStato(StatoRendicontazione.OK);
 											continue;
 										}
 									}
@@ -382,7 +392,6 @@ public class Rendicontazioni extends BasicBD {
 									GpThreadLocal.get().log("rendicontazioni.noPagamento", iuv, iur);
 									log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: il pagamento non risulta presente in base dati.");
 									rendicontazione.addAnomalia("007101", "Il pagamento riferito dalla rendicontazione non risulta presente in base dati.");
-									rendicontazione.setStato(StatoRendicontazione.ANOMALA);
 									continue;
 								} catch (MultipleResultException e) {
 									// Individuati piu' pagamenti riferiti dalla rendicontazione
@@ -390,6 +399,11 @@ public class Rendicontazioni extends BasicBD {
 									log.info("Pagamento rendicontato duplicato: [CodDominio: " + dominio.getCodDominio() + "] [Iuv: "+ iuv + "] [Iur: " + iur + "]");
 									rendicontazione.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 								} finally {
+									if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && fr.getAnomalie().isEmpty()) {
+										rendicontazione.setStato(StatoRendicontazione.OK);
+									} else if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && !fr.getAnomalie().isEmpty()) {
+										rendicontazione.setStato(StatoRendicontazione.ANOMALA);
+									}
 									fr.addRendicontazione(rendicontazione);
 								}
 							}
