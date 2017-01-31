@@ -20,6 +20,12 @@ public class OracleNativeQueries extends NativeQueries {
 				" s1.r_iuv,s1.r_iur,s1.r_importo_pagato,s1.r_esito,s1.r_data,s1.r_stato,s1.r_anomalie,s1.r_id,s1.r_id_fr,s1.r_id_pagamento, " +
 				" s1.p_importo_pagato,s1.p_data_acquisizione,s1.p_iur,s1.p_data_pagamento,s1.p_commissioni_psp,s1.p_tipo_allegato,s1.p_allegato,s1.p_data_acquisizione_revoca,s1.p_causale_revoca,s1.p_dati_revoca,s1.p_importo_revocato,s1.p_esito_revoca,s1.p_dati_esito_revoca,s1.p_id,s1.p_id_rpt,s1.p_id_singolo_versamento,s1.p_id_rr,s1.p_iban_accredito,s1.p_cod_dominio,s1.p_iuv, " +
 				" s1.sv_cod_singolo_versamento_ente,s1.sv_stato_singolo_versamento,s1.sv_importo_singolo_versamento,s1.sv_tipo_bollo,s1.sv_hash_documento,s1.sv_provincia_residenza,s1.sv_tipo_contabilita,s1.sv_codice_contabilita,s1.sv_note,s1.sv_id,s1.sv_id_versamento,s1.sv_id_tributo,s1.sv_id_iban_accredito, s1.tipo " +
+				" FROM (SELECT " +
+				" fr.cod_flusso,fr.stato,fr.descrizione_stato,fr.iur,fr.data_ora_flusso,fr.data_regolamento,fr.data_acquisizione,fr.numero_pagamenti,fr.importo_totale_pagamenti,fr.cod_bic_riversamento,fr.xml,fr.id,fr.cod_psp,fr.cod_dominio, " +
+				" versamenti.cod_versamento_ente,versamenti.importo_totale,versamenti.stato_versamento,versamenti.descrizione_stato,versamenti.aggiornabile,versamenti.data_creazione,versamenti.data_scadenza,versamenti.data_ora_ultimo_aggiornamento,versamenti.causale_versamento,versamenti.debitore_identificativo,versamenti.debitore_anagrafica,versamenti.debitore_indirizzo,versamenti.debitore_civico,versamenti.debitore_cap,versamenti.debitore_localita,versamenti.debitore_provincia,versamenti.debitore_nazione,versamenti.debitore_telefono,versamenti.debitore_cellulare,versamenti.debitore_fax,versamenti.debitore_email,versamenti.cod_lotto,versamenti.cod_versamento_lotto,versamenti.cod_anno_tributario,versamenti.cod_bundlekey,versamenti.id,versamenti.id_uo,versamenti.id_applicazione, " +
+				" s1.r_iuv,s1.r_iur,s1.r_importo_pagato,s1.r_esito,s1.r_data,s1.r_stato,s1.r_anomalie,s1.r_id,s1.r_id_fr,s1.r_id_pagamento, " +
+				" s1.p_importo_pagato,s1.p_data_acquisizione,s1.p_iur,s1.p_data_pagamento,s1.p_commissioni_psp,s1.p_tipo_allegato,s1.p_allegato,s1.p_data_acquisizione_revoca,s1.p_causale_revoca,s1.p_dati_revoca,s1.p_importo_revocato,s1.p_esito_revoca,s1.p_dati_esito_revoca,s1.p_id,s1.p_id_rpt,s1.p_id_singolo_versamento,s1.p_id_rr,s1.p_iban_accredito,s1.p_cod_dominio,s1.p_iuv, " +
+				" s1.sv_cod_singolo_versamento_ente,s1.sv_stato_singolo_versamento,s1.sv_importo_singolo_versamento,s1.sv_tipo_bollo,s1.sv_hash_documento,s1.sv_provincia_residenza,s1.sv_tipo_contabilita,s1.sv_codice_contabilita,s1.sv_note,s1.sv_id,s1.sv_id_versamento,s1.sv_id_tributo,s1.sv_id_iban_accredito, s1.tipo, ROW_NUMBER() OVER ( ORDER BY data)" +
 				" FROM " +
 				" (( " +
 				" SELECT (CASE WHEN id_rpt is not null THEN CASE WHEN iban_accredito is not null THEN 'PAGAMENTO' ELSE 'PAGAMENTO_MBT' END ELSE 'PAGAMENTO_SENZA_RPT' END) as tipo, " +
@@ -35,7 +41,7 @@ public class OracleNativeQueries extends NativeQueries {
 				" FROM pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento and id_rr is not null " +
 				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and r.esito=3 $PLACEHOLDER_IN$ " +
 				" ) ) as s1 " +
-				" join fr on fr.id = s1.r_id_fr join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ order by fr.cod_flusso, s1.p_data_pagamento $PLACEHOLDER_OFFSET_LIMIT$";
+				" join fr on fr.id = s1.r_id_fr join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$) $PLACEHOLDER_OFFSET_LIMIT$ order by fr.cod_flusso, p_data_pagamento";
 	}
 	
 	@Override

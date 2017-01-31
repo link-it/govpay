@@ -5,7 +5,13 @@
     <value name="codUo" field="codUo" usage="required"/>
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
   </mapping>
-  <mapping name="idPagamento" class="it.govpay.orm.IdPagamento">
+  <mapping name="idPagamento" class="it.govpay.orm.IdPagamento" abstract="false">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="idPagamento" field="idPagamento" usage="required"/>
+    <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
+  </mapping>
+
+  <mapping type-name="_IdPagamento_Type" class="it.govpay.orm.IdPagamento" abstract="true">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idPagamento" field="idPagamento" usage="required"/>
     <structure name="idVersamento" field="idVersamento" usage="optional" map-as="_IdVersamento_Type"/>
@@ -520,7 +526,7 @@
     <value name="stato" field="stato" usage="required"/>
     <value name="anomalie" field="anomalie" usage="optional"/>
     <structure field="idFR" usage="required" map-as="it.govpay.orm.IdFr"/>
-    <structure field="idPagamento" usage="optional" map-as="it.govpay.orm.IdPagamento"/>
+    <structure name="idPagamento" field="idPagamento" usage="optional" map-as="_IdPagamento_Type"/>
   </mapping>
   <mapping name="Pagamento" class="it.govpay.orm.Pagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -572,6 +578,7 @@
     <value name="importoTotalePagamenti" field="importoTotalePagamenti" usage="optional"/>
     <value name="codBicRiversamento" field="codBicRiversamento" usage="optional"/>
     <value name="xml" field="xml" usage="required"/>
+    <structure name="idPagamento" field="idPagamento" usage="optional" map-as="_IdPagamento_Type"/>
   </mapping>
   <mapping name="RendicontazionePagamento" class="it.govpay.orm.RendicontazionePagamento">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
