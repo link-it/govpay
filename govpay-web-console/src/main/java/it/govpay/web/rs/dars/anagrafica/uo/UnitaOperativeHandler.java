@@ -112,10 +112,12 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 			long count = unitaOperativaBD.count(filter);
 
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(idDominioId, this.idDominio + "");
+			
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
-
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca =this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -142,28 +144,24 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		URI ricerca =  null;
-		try{
-			ricerca =  BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).queryParam(idDominioId, this.idDominio).build();
-		}catch(Exception e ){
-			throw new ConsoleException(e);
-		}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String, String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+		if(visualizzaRicerca) {
+			String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codUnitaOperativa = (InputText) infoRicercaMap.get(codUoId);
+			codUnitaOperativa.setDefaultValue(null);
+			sezioneRoot.addField(codUnitaOperativa);
+
 		}
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codUnitaOperativa = (InputText) infoRicercaMap.get(codUoId);
-		codUnitaOperativa.setDefaultValue(null);
-		sezioneRoot.addField(codUnitaOperativa);
-
 		return infoRicerca;
 	}
 
@@ -525,15 +523,15 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		StringBuilder sb = new StringBuilder();
 
 		try{
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
-		sb.append(", Dominio: ").append(entry.getDominio(bd).getCodDominio());
+			sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+			sb.append(", Dominio: ").append(entry.getDominio(bd).getCodDominio());
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(UnitaOperativa entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -549,7 +547,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

@@ -121,7 +121,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -149,50 +149,52 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
-		String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+		if(visualizzaRicerca) {
+			String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
+			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
-		}
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
-		codFlusso.setDefaultValue(null);
-		sezioneRoot.addField(codFlusso);
-
-		// idDominio
-		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-
-		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-		ApplicazioneFilter filter;
-		try {
-			filter = applicazioniBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Applicazione> findAll = applicazioniBD.findAll(filter );
-
-			applicazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-			if(findAll != null && findAll.size() > 0){
-				for (Applicazione applicazione : findAll) {
-					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));  
-				}
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
 			}
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
-		}
-		SelectList<Long> idApplicazione = (SelectList<Long>) infoRicercaMap.get(idApplicazioneId);
-		idApplicazione.setDefaultValue(-1L);
-		idApplicazione.setValues(applicazioni); 
-		sezioneRoot.addField(idApplicazione);
 
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
+			codFlusso.setDefaultValue(null);
+			sezioneRoot.addField(codFlusso);
+
+			// idDominio
+			List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+
+			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+			ApplicazioneFilter filter;
+			try {
+				filter = applicazioniBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+				fsw.setSortOrder(SortOrder.ASC);
+				filter.getFilterSortList().add(fsw);
+				List<Applicazione> findAll = applicazioniBD.findAll(filter );
+
+				applicazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+				if(findAll != null && findAll.size() > 0){
+					for (Applicazione applicazione : findAll) {
+						applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));  
+					}
+				}
+			} catch (ServiceException e) {
+				throw new ConsoleException(e);
+			}
+			SelectList<Long> idApplicazione = (SelectList<Long>) infoRicercaMap.get(idApplicazioneId);
+			idApplicazione.setDefaultValue(-1L);
+			idApplicazione.setValues(applicazioni); 
+			sezioneRoot.addField(idApplicazione);
+
+		}
 		return infoRicerca;
 	}
 
@@ -281,12 +283,12 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
-				
+
 				Pagamenti pagamentiDars = new Pagamenti();
 				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
 				String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFr.id");
 				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(idFrApplicazioneId, fr.getId());
-				
+
 				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
 			}
 
@@ -332,7 +334,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		default:
 			sb.append(
 					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
+							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
 							)
 					);
 			break;
@@ -340,7 +342,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 		return sb.toString();
 	} 
-	
+
 	@Override
 	public List<String> getValori(Fr entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -408,8 +410,8 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 			Fr fr = frBD.getFr(idToExport);			
 
 			String fileName = "Rendicontazione_" + fr.getIur()+".zip";
-			
-			
+
+
 			ZipEntry frXml = new ZipEntry("fr.xml");
 			zout.putNextEntry(frXml);
 			zout.write(fr.getXml());
@@ -450,7 +452,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

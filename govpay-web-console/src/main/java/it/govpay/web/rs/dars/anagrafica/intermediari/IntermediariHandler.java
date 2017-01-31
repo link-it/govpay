@@ -113,7 +113,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -142,25 +142,26 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
+		if(visualizzaRicerca){
+			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
 
+			}
+
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codIntermediario = (InputText) infoRicercaMap.get(codIntermediarioId);
+			codIntermediario.setDefaultValue(null);
+			codIntermediario.setEditable(true); 
+			sezioneRoot.addField(codIntermediario);
 		}
-
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codIntermediario = (InputText) infoRicercaMap.get(codIntermediarioId);
-		codIntermediario.setDefaultValue(null);
-		codIntermediario.setEditable(true); 
-		sezioneRoot.addField(codIntermediario);
-
 		return infoRicerca;
 	}
 
@@ -208,19 +209,19 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		codIntermediario.setDefaultValue(null);
 		codIntermediario.setEditable(true); 
 		sezioneRoot.addField(codIntermediario);
-		
+
 		InputText denominazione = (InputText) infoCreazioneMap.get(denominazioneId);
 		denominazione.setDefaultValue(null);
 		sezioneRoot.addField(denominazione);
-		
+
 		InputText principal = (InputText) infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(null);
 		sezioneRoot.addField(principal);
-		
+
 		InputText segregationCode = (InputText) infoCreazioneMap.get(segregationCodeId);
 		segregationCode.setDefaultValue(null); 
 		sezioneRoot.addField(segregationCode);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
@@ -285,7 +286,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
 			infoCreazioneMap.put(abilitatoId, abiliato);
-			
+
 			// segregationCode
 			String segregationCodeLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label");
 			InputText segregationCode = new InputText(segregationCodeId, segregationCodeLabel, null, false, false, true, 2, 2);
@@ -330,20 +331,20 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		codIntermediario.setDefaultValue(entry.getCodIntermediario());
 		codIntermediario.setEditable(false); 
 		sezioneRoot.addField(codIntermediario);
-		
+
 		InputText denominazione = (InputText) infoCreazioneMap.get(denominazioneId);
 		denominazione.setDefaultValue(entry.getDenominazione());
 		sezioneRoot.addField(denominazione);
-		
+
 		InputText principal = (InputText) infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(entry.getConnettorePdd() == null ? null : entry.getConnettorePdd().getPrincipal());
 		sezioneRoot.addField(principal);
-		
+
 		InputText segregationCode = (InputText) infoCreazioneMap.get(segregationCodeId);
 		String segCode = entry.getSegregationCode()!= null ? ( entry.getSegregationCode() < 10 ? "0"+entry.getSegregationCode() : entry.getSegregationCode()+"" ): null;
 		segregationCode.setDefaultValue(segCode); 
 		sezioneRoot.addField(segregationCode);
-		
+
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
@@ -405,9 +406,9 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			Dettaglio dettaglio = new Dettaglio(this.getTitolo(intermediario,bd), esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
-			
+
 			Connettore connettore = intermediario.getConnettorePdd();
-						
+
 			// dati dell'intermediario
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label"), intermediario.getCodIntermediario());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".denominazione.label"), intermediario.getDenominazione());
@@ -504,16 +505,16 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			baos.close();
 
 			JSONObject jsonObjectIntermediario = JSONObject.fromObject( baos.toString() );  
-			
+
 			String principal = jsonObjectIntermediario.getString(principalId);
 			jsonObjectIntermediario.remove(principalId);
-			
+
 			String segregationCode = jsonObjectIntermediario.getString(segregationCodeId);
 			jsonObjectIntermediario.remove(segregationCodeId);
-			
+
 			jsonConfig.setRootClass(Intermediario.class);
 			entry = (Intermediario) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
-			
+
 			String tipoSsl = jsonObjectIntermediario.containsKey(tipoSslId) ? jsonObjectIntermediario.getString(tipoSslId) : null;
 			if(tipoSsl != null)
 				jsonObjectIntermediario.remove(tipoSslId);
@@ -521,14 +522,14 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			//jsonObjectIntermediario = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Connettore.class);
 			Connettore c = (Connettore) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
-			
+
 			if(StringUtils.isNotEmpty(tipoSsl)){
 				c.setTipoSsl(EnumSslType.valueOf(tipoSsl)); 
 			}
 
 			c.setPrincipal(principal);
 			entry.setConnettorePdd(c); 
-			
+
 			if(StringUtils.isNotEmpty(segregationCode)){
 				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
 			}
@@ -556,9 +557,9 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		}
 
 		if(entry.getDenominazione() == null || entry.getDenominazione().isEmpty()) throw new ValidationException("Il campo Denominazione deve essere valorizzato.");
-		
+
 		Connettore connettore = entry.getConnettorePdd();
-		
+
 		if(connettore.getPrincipal() == null || connettore.getPrincipal().isEmpty()) throw new ValidationException("Il campo Principal deve essere valorizzato.");
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD, this.titoloServizio, this.pathServizio);
@@ -616,7 +617,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Intermediario entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -632,7 +633,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

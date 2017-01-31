@@ -100,15 +100,17 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<Long> idDomini = new ArrayList<Long>();
-			
+
 			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
 			if(StringUtils.isNotEmpty(codFlusso))
 				filter.setCodFlusso(codFlusso); 
-			
+
 			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
+			Map<String, String> params = new HashMap<String, String>();
 			if(StringUtils.isNotEmpty(idDominio)){
+				params.put(idDominioId, idDominio);
 				long idDom = -1l;
 				try{
 					idDom = Long.parseLong(idDominio);
@@ -121,33 +123,33 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 
 			boolean eseguiRicerca = true;
 			// SE l'operatore non e' admin vede solo le rendicontazioni associate ai domini definiti nelle ACL
-						if(!isAdmin && idDomini.isEmpty()){
-							boolean vediTuttiDomini = false;
-							
-							for(Acl acl: aclOperatore) {
-								if(Tipo.DOMINIO.equals(acl.getTipo())) {
-									if(acl.getIdDominio() == null) {
-										vediTuttiDomini = true;
-										break;
-									} else {
-										idDomini.add(acl.getIdDominio());
-									}
-								}
-							}
-							if(!vediTuttiDomini) {
-								if(idDomini.isEmpty()) {
-									eseguiRicerca = false;
-								} else {
-									filter.setIdDomini(idDomini);
-								}
-							}
+			if(!isAdmin && idDomini.isEmpty()){
+				boolean vediTuttiDomini = false;
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
 						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
+			}
 
 			long count = eseguiRicerca ? frBD.countFrApplicazione(filter) : 0;
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -174,22 +176,22 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd,  boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
+		if(visualizzaRicerca){
+			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 
-		String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
+			codFlusso.setDefaultValue(null);
+			sezioneRoot.addField(codFlusso);
 		}
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
-		codFlusso.setDefaultValue(null);
-		sezioneRoot.addField(codFlusso);
-
 		return infoRicerca;
 	}
 
@@ -239,12 +241,12 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 			if(frApplicazione != null){
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.label"), frApplicazione.getNumeroPagamenti()+ "");
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), frApplicazione.getImportoTotalePagamenti()+ "€");
-				
+
 				Pagamenti pagamentiDars = new Pagamenti();
 				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
 				String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFrApplicazione.id");
 				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(idFrApplicazioneId, frApplicazione.getId());
-				
+
 				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
 			}
 
@@ -291,7 +293,7 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 
 		return sb.toString();
 	} 
-	
+
 	@Override
 	public List<String> getValori(FrApplicazione entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -331,7 +333,7 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

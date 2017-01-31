@@ -186,7 +186,8 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			}
 
 			long count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
-			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd);
+			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			/*
 
@@ -238,115 +239,116 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
-		String dataInizioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
-		String dataFineId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
+		if(visualizzaRicerca) {
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+			String dataInizioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
+			String dataFineId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
-		}
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
 
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-		try{
+			try{
 
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+				ProfiloOperatore profilo = operatore.getProfilo();
+				boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
-			// idDominio
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+				// idDominio
+				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 
-			DominiBD dominiBD = new DominiBD(bd);
-			DominioFilter filter;
-			try {
-				filter = dominiBD.newFilter();
-				boolean eseguiRicerca = true;
-				if(isAdmin){
+				DominiBD dominiBD = new DominiBD(bd);
+				DominioFilter filter;
+				try {
+					filter = dominiBD.newFilter();
+					boolean eseguiRicerca = true;
+					if(isAdmin){
 
-				} else {
-					AclBD aclBD = new AclBD(bd);
-					List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+					} else {
+						AclBD aclBD = new AclBD(bd);
+						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
-					boolean vediTuttiDomini = false;
-					List<Long> idDomini = new ArrayList<Long>();
-					for(Acl acl: aclOperatore) {
-						if(Tipo.DOMINIO.equals(acl.getTipo())) {
-							if(acl.getIdDominio() == null) {
-								vediTuttiDomini = true;
-								break;
+						boolean vediTuttiDomini = false;
+						List<Long> idDomini = new ArrayList<Long>();
+						for(Acl acl: aclOperatore) {
+							if(Tipo.DOMINIO.equals(acl.getTipo())) {
+								if(acl.getIdDominio() == null) {
+									vediTuttiDomini = true;
+									break;
+								} else {
+									idDomini.add(acl.getIdDominio());
+								}
+							}
+						}
+						if(!vediTuttiDomini) {
+							if(idDomini.isEmpty()) {
+								eseguiRicerca = false;
 							} else {
-								idDomini.add(acl.getIdDominio());
+								filter.setIdDomini(idDomini);
 							}
 						}
 					}
-					if(!vediTuttiDomini) {
-						if(idDomini.isEmpty()) {
-							eseguiRicerca = false;
-						} else {
-							filter.setIdDomini(idDomini);
+
+					if(eseguiRicerca) {
+						domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+						fsw.setSortOrder(SortOrder.ASC);
+						filter.getFilterSortList().add(fsw);
+						List<Dominio> findAll = dominiBD.findAll(filter );
+
+						Domini dominiDars = new Domini();
+						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+
+						if(findAll != null && findAll.size() > 0){
+							for (Dominio dominio : findAll) {
+								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+							}
 						}
+					}else {
+						domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 					}
+				} catch (ServiceException e) {
+					throw new ConsoleException(e);
 				}
+				SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+				idDominio.setDefaultValue(-1L);
+				idDominio.setValues(domini); 
+				sezioneRoot.addField(idDominio);
 
-				if(eseguiRicerca) {
-					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-					fsw.setSortOrder(SortOrder.ASC);
-					filter.getFilterSortList().add(fsw);
-					List<Dominio> findAll = dominiBD.findAll(filter );
+				/// datainizio
+				InputDate dataInizio = (InputDate) infoRicercaMap.get(dataInizioId);
+				dataInizio.setDefaultValue(null);
+				sezioneRoot.addField(dataInizio);
 
-					Domini dominiDars = new Domini();
-					DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+				/// dataFine
+				InputDate dataFine = (InputDate) infoRicercaMap.get(dataFineId);
+				dataFine.setDefaultValue(null);
+				sezioneRoot.addField(dataFine);	
 
-					if(findAll != null && findAll.size() > 0){
-						for (Dominio dominio : findAll) {
-							domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
-						}
-					}
-				}else {
-					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-				}
-			} catch (ServiceException e) {
+				// idDominio
+				List<Voce<String>> stati = new ArrayList<Voce<String>>();
+				stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+				stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO.name()), StatoVersamento.ESEGUITO.name()));
+				stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.PARZIALMENTE_ESEGUITO.name()), StatoVersamento.PARZIALMENTE_ESEGUITO.name()));
+				stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO_SENZA_RPT.name()), StatoVersamento.ESEGUITO_SENZA_RPT.name()));
+				stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANOMALO.name()), StatoVersamento.ANOMALO.name()));
+
+				SelectList<String> statoVersamento = (SelectList<String>) infoRicercaMap.get(statoVersamentoId);
+				statoVersamento.setDefaultValue("");
+				statoVersamento.setValues(stati); 
+				sezioneRoot.addField(statoVersamento);
+			}catch(Exception e){
 				throw new ConsoleException(e);
 			}
-			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-			idDominio.setDefaultValue(-1L);
-			idDominio.setValues(domini); 
-			sezioneRoot.addField(idDominio);
-
-			/// datainizio
-			InputDate dataInizio = (InputDate) infoRicercaMap.get(dataInizioId);
-			dataInizio.setDefaultValue(null);
-			sezioneRoot.addField(dataInizio);
-
-			/// dataFine
-			InputDate dataFine = (InputDate) infoRicercaMap.get(dataFineId);
-			dataFine.setDefaultValue(null);
-			sezioneRoot.addField(dataFine);	
-
-			// idDominio
-			List<Voce<String>> stati = new ArrayList<Voce<String>>();
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO.name()), StatoVersamento.ESEGUITO.name()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.PARZIALMENTE_ESEGUITO.name()), StatoVersamento.PARZIALMENTE_ESEGUITO.name()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO_SENZA_RPT.name()), StatoVersamento.ESEGUITO_SENZA_RPT.name()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANOMALO.name()), StatoVersamento.ANOMALO.name()));
-
-			SelectList<String> statoVersamento = (SelectList<String>) infoRicercaMap.get(statoVersamentoId);
-			statoVersamento.setDefaultValue("");
-			statoVersamento.setValues(stati); 
-			sezioneRoot.addField(statoVersamento);
-		}catch(Exception e){
-			throw new ConsoleException(e);
 		}
-
 		return infoRicerca;
 	}
 
@@ -645,7 +647,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					zout.write(baos.toByteArray());
 					zout.closeEntry();
 				}
-				
+
 				for (Long idSingoloVersamento : idsToExport) {
 					SingoloVersamento singoloVersamento = singoliVersamentiBD.getSingoloVersamento(idSingoloVersamento);
 					Versamento versamento = singoloVersamento.getVersamento(bd);
@@ -665,7 +667,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					}
 					idSingoliVersamentiDominio.add(idSingoloVersamento);
 				}
-				
+
 				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
 				for (String codDominio : mappaInputEstrattoConto.keySet()) {
 					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPagamentiPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
@@ -682,7 +684,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 						numeroZipEntries ++;
 						ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
 						ZipEntry estrattoContoEntry = new ZipEntry(nomeEntry);
-//						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+						//						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
 						zout.putNextEntry(estrattoContoEntry);
 						zout.write(baos.toByteArray());
 						zout.closeEntry();
@@ -805,7 +807,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 				// Estratto conto per iban e codiceversamento.
 				List<Long> idSingoliVersamentiDominio = new ArrayList<Long>();
 				idSingoliVersamentiDominio.add(idToExport);
-				
+
 				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPagamentiPDF(dominio, idSingoliVersamentiDominio);
 				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
 				listInputEstrattoConto.add(input);
@@ -817,7 +819,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					for (String nomeEntry : estrattoContoVersamenti.keySet()) {
 						numeroZipEntries ++;
 						ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
-//						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+						//						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
 						ZipEntry estrattoContoEntry = new ZipEntry(nomeEntry);
 						zout.putNextEntry(estrattoContoEntry);
 						zout.write(baos.toByteArray());

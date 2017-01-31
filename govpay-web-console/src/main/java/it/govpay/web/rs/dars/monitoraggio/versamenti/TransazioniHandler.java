@@ -6,7 +6,9 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -82,6 +84,12 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
+			Map<String, String> params = new HashMap<String, String>();
+			
+			if(StringUtils.isNotEmpty(idVersamento)){
+				params.put(versamentoId, idVersamento);
+			}
+			
 			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
 			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
@@ -115,8 +123,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 			long count = eseguiRicerca ? rptBD.count(filter) : 0;
 
-
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
@@ -493,11 +500,15 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			throw new ConsoleException(e);
 		}
 	}
-	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 	return null;	}
-
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm formRicerca = new InfoForm(ricerca);
+		return formRicerca;
+	}
+	
+	/* Operazioni non consentite */
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 

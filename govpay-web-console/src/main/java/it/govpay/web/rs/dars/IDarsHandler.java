@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -45,7 +46,11 @@ public interface IDarsHandler<T> {
 	
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca) throws ConsoleException;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String, String> parameters) throws ConsoleException;
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	
 	public InfoForm getInfoCreazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 	public URI getUriCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;

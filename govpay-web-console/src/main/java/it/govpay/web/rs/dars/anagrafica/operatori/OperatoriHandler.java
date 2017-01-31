@@ -132,7 +132,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -160,29 +160,30 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+		if(visualizzaRicerca){
+			String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+			String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+
+			}
+
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+			InputText principal  = (InputText) infoRicercaMap.get(principalId);
+			sezioneRoot.addField(principal);
+
+			SelectList<String> profilo = (SelectList<String>) infoRicercaMap.get(profiloId);
+			String profiloOperatoreValue = "";
+			profilo.setDefaultValue(profiloOperatoreValue);
+			sezioneRoot.addField(profilo); 
 
 		}
-
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-		InputText principal  = (InputText) infoRicercaMap.get(principalId);
-		sezioneRoot.addField(principal);
-
-		SelectList<String> profilo = (SelectList<String>) infoRicercaMap.get(profiloId);
-		String profiloOperatoreValue = "";
-		profilo.setDefaultValue(profiloOperatoreValue);
-		sezioneRoot.addField(profilo); 
-
-
 		return infoRicerca;
 	}
 
@@ -244,7 +245,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		InputText nome = (InputText) infoCreazioneMap.get(nomeId);
 		nome.setDefaultValue(null);
 		sezioneRoot.addField(nome);
-		
+
 		SelectList<String> profilo = (SelectList<String>) infoCreazioneMap.get(profiloId);
 		String profiloOperatoreValue = PROFILO_OPERATORE_VALUE_ADMIN;
 		profilo.setDefaultValue(profiloOperatoreValue);
@@ -253,11 +254,11 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		List<RawParamValue> tipoAutenticazioneValues = new ArrayList<RawParamValue>();
 		tipoAutenticazioneValues.add(new RawParamValue(operatoreId, null));
 		tipoAutenticazioneValues.add(new RawParamValue(profiloId, PROFILO_OPERATORE_VALUE_ADMIN));
-		
+
 		// GP-348
-//		TipiTributo tipiTributo = (TipiTributo) infoCreazioneMap.get(tipiTributoId);
-//		tipiTributo.init(tipoAutenticazioneValues, bd); 
-//		sezioneRoot.addField(tipiTributo);
+		//		TipiTributo tipiTributo = (TipiTributo) infoCreazioneMap.get(tipiTributoId);
+		//		tipiTributo.init(tipoAutenticazioneValues, bd); 
+		//		sezioneRoot.addField(tipiTributo);
 
 		Domini domini = (Domini) infoCreazioneMap.get(dominiId);
 		domini.init(tipoAutenticazioneValues, bd); 
@@ -266,7 +267,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
-		
+
 		return infoCreazione;
 	}
 
@@ -318,12 +319,12 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			infoCreazioneMap.put(abilitatoId, abiliato);
 
 			// GP-348
-//			String tipiTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.label");
-//			URI tipiTributoRefreshUri = this.getUriField(uriInfo, bd, tipiTributoId); 
-//			TipiTributo tipiTributo = new TipiTributo(this.nomeServizio, tipiTributoId, tipiTributoLabel, tipiTributoRefreshUri , tipoAutenticazioneValues, bd);
-//			tipiTributo.addDependencyField(profilo);
-//			tipiTributo.init(tipoAutenticazioneValues, bd); 
-//			infoCreazioneMap.put(tipiTributoId, tipiTributo);
+			//			String tipiTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.label");
+			//			URI tipiTributoRefreshUri = this.getUriField(uriInfo, bd, tipiTributoId); 
+			//			TipiTributo tipiTributo = new TipiTributo(this.nomeServizio, tipiTributoId, tipiTributoLabel, tipiTributoRefreshUri , tipoAutenticazioneValues, bd);
+			//			tipiTributo.addDependencyField(profilo);
+			//			tipiTributo.init(tipoAutenticazioneValues, bd); 
+			//			infoCreazioneMap.put(tipiTributoId, tipiTributo);
 
 			String dominiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.label");
 			URI dominiRefreshUri = this.getUriField(uriInfo, bd, dominiId); 
@@ -366,7 +367,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		InputText nome = (InputText) infoCreazioneMap.get(nomeId);
 		nome.setDefaultValue(entry.getNome());
 		sezioneRoot.addField(nome);
-		
+
 		SelectList<String> profilo = (SelectList<String>) infoCreazioneMap.get(profiloId);
 		String profiloOperatoreValue = null;
 		ProfiloOperatore profiloOperatore = entry.getProfilo();
@@ -388,9 +389,9 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		tipoAutenticazioneValues.add(new RawParamValue(profiloId, profiloOperatoreValue)); 
 
 		// GP-348
-//		TipiTributo tipiTributo = (TipiTributo) infoCreazioneMap.get(tipiTributoId);
-//		tipiTributo.init(tipoAutenticazioneValues, bd); 
-//		sezioneRoot.addField(tipiTributo);
+		//		TipiTributo tipiTributo = (TipiTributo) infoCreazioneMap.get(tipiTributoId);
+		//		tipiTributo.init(tipoAutenticazioneValues, bd); 
+		//		sezioneRoot.addField(tipiTributo);
 
 		Domini domini = (Domini) infoCreazioneMap.get(dominiId);
 		domini.init(tipoAutenticazioneValues, bd); 
@@ -474,37 +475,37 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			if(!isAdmin){
 				// Elementi correlati dell'operatore UO e Domini
-				
+
 				// GP-348
-//				String etichettaTipiTributo = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
-//				it.govpay.web.rs.dars.model.Sezione sezioneTributi = dettaglio.addSezione(etichettaTipiTributo);
-//
-//				List<Long> idTributi = Utils.getIdsFromAcls(operatore.getAcls(), Tipo.TRIBUTO , Servizio.CRUSCOTTO);
-//				if(!Utils.isEmpty(idTributi)){
-//					if(!idTributi.contains(-1L)){
-//						TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
-//						TipoTributoFilter filter = tipiTributoBD.newFilter();
-//						FilterSortWrapper fsw = new FilterSortWrapper();
-//						fsw.setField(it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
-//						fsw.setSortOrder(SortOrder.ASC);
-//						filter.getFilterSortList().add(fsw);
-//						filter.setListaIdTributi(idTributi);
-//						List<TipoTributo> findAll =  tipiTributoBD.findAll(filter);
-//
-//						it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tipiTributoDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
-//						TipiTributoHandler tipiTributoDarsHandler = (TipiTributoHandler) tipiTributoDars.getDarsHandler();
-//						UriBuilder uriDettaglioUoBuilder = BaseRsService.checkDarsURI(uriInfo).path(tipiTributoDars.getPathServizio()).path("{id}");
-//
-//						if(findAll != null && findAll.size() > 0){
-//							for (TipoTributo entry : findAll) {
-//								Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), uriDettaglioUoBuilder,bd);
-//								sezioneTributi.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
-//							}
-//						}
-//					} else{
-//						sezioneTributi.addVoce(Utils.getInstance().getMessageFromResourceBundle("commons.label.tutti"),null);
-//					}
-//				}
+				//				String etichettaTipiTributo = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
+				//				it.govpay.web.rs.dars.model.Sezione sezioneTributi = dettaglio.addSezione(etichettaTipiTributo);
+				//
+				//				List<Long> idTributi = Utils.getIdsFromAcls(operatore.getAcls(), Tipo.TRIBUTO , Servizio.CRUSCOTTO);
+				//				if(!Utils.isEmpty(idTributi)){
+				//					if(!idTributi.contains(-1L)){
+				//						TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
+				//						TipoTributoFilter filter = tipiTributoBD.newFilter();
+				//						FilterSortWrapper fsw = new FilterSortWrapper();
+				//						fsw.setField(it.govpay.orm.TipoTributo.model().COD_TRIBUTO);
+				//						fsw.setSortOrder(SortOrder.ASC);
+				//						filter.getFilterSortList().add(fsw);
+				//						filter.setListaIdTributi(idTributi);
+				//						List<TipoTributo> findAll =  tipiTributoBD.findAll(filter);
+				//
+				//						it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tipiTributoDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
+				//						TipiTributoHandler tipiTributoDarsHandler = (TipiTributoHandler) tipiTributoDars.getDarsHandler();
+				//						UriBuilder uriDettaglioUoBuilder = BaseRsService.checkDarsURI(uriInfo).path(tipiTributoDars.getPathServizio()).path("{id}");
+				//
+				//						if(findAll != null && findAll.size() > 0){
+				//							for (TipoTributo entry : findAll) {
+				//								Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), uriDettaglioUoBuilder,bd);
+				//								sezioneTributi.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
+				//							}
+				//						}
+				//					} else{
+				//						sezioneTributi.addVoce(Utils.getInstance().getMessageFromResourceBundle("commons.label.tutti"),null);
+				//					}
+				//				}
 
 				String etichettaDomini = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
 				it.govpay.web.rs.dars.model.Sezione sezioneDomini = dettaglio.addSezione(etichettaDomini);
@@ -612,29 +613,29 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() );  
 
 			// GP-348
-//			JSONArray jsonTributi = jsonObject.getJSONArray(tipiTributoId);
-//			jsonObject.remove(tipiTributoId);
-//
-//			List<Acl> lstAclTributi = new ArrayList<Acl>();
-//			for (int i = 0; i < jsonTributi.size(); i++) {
-//				long idTributo = jsonTributi.getLong(i);
-//
-//				Acl acl = new Acl();
-//				acl.setTipo(Tipo.TRIBUTO);
-//				acl.setServizio(TIPO_SERVIZIO);
-//				if(idTributo > 0){
-//					acl.setIdTributo(idTributo);
-//					lstAclTributi.add(acl);
-//				}else {
-//					lstAclTributi.clear();
-//					lstAclTributi.add(acl);
-//					break;
-//				}
-//			}
+			//			JSONArray jsonTributi = jsonObject.getJSONArray(tipiTributoId);
+			//			jsonObject.remove(tipiTributoId);
+			//
+			//			List<Acl> lstAclTributi = new ArrayList<Acl>();
+			//			for (int i = 0; i < jsonTributi.size(); i++) {
+			//				long idTributo = jsonTributi.getLong(i);
+			//
+			//				Acl acl = new Acl();
+			//				acl.setTipo(Tipo.TRIBUTO);
+			//				acl.setServizio(TIPO_SERVIZIO);
+			//				if(idTributo > 0){
+			//					acl.setIdTributo(idTributo);
+			//					lstAclTributi.add(acl);
+			//				}else {
+			//					lstAclTributi.clear();
+			//					lstAclTributi.add(acl);
+			//					break;
+			//				}
+			//			}
 
 			JSONArray jsonDomini = jsonObject.getJSONArray(dominiId);
 			jsonObject.remove(dominiId);
-			
+
 			List<Acl> lstAclDomini = new ArrayList<Acl>();
 			for (int i = 0; i < jsonDomini.size(); i++) {
 				long idDominio = jsonDomini.getLong(i);
@@ -654,10 +655,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			jsonConfig.setRootClass(Operatore.class);
 			entry = (Operatore) JSONObject.toBean( jsonObject, jsonConfig );
-			
+
 			// GP-348
-//			entry.setAcls(lstAclTributi);
-//			entry.getAcls().addAll(lstAclDomini);
+			//			entry.setAcls(lstAclTributi);
+			//			entry.getAcls().addAll(lstAclDomini);
 			entry.setAcls(lstAclDomini);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -740,7 +741,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Operatore entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -756,7 +757,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

@@ -106,30 +106,29 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
 			if(StringUtils.isNotEmpty(codTributo))
 				filter.setCodTributo(codTributo); 
-			
+
 			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String tipocontabilitaS = this.getParameter(uriInfo, tipoContabilitaId, String.class);
 			if(StringUtils.isNotEmpty(tipocontabilitaS)){
 				filter.setCodificaTipoContabilita(tipocontabilitaS);
 			}
-			
+
 			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 			String codContabilita = this.getParameter(uriInfo, codContabilitaId, String.class);
 			if(StringUtils.isNotEmpty(codContabilita))
 				filter.setCodContabilita(codContabilita);
-			
+
 			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 			String descrizione = this.getParameter(uriInfo, descrizioneId, String.class);
 			if(StringUtils.isNotEmpty(descrizione))
 				filter.setDescrizione(descrizione);
-			
+
 
 			long count = tipiTributoBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
-
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione);  
 
@@ -155,42 +154,40 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI ricerca =  null;
-		try{
-			ricerca =  BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).build();
-		}catch(Exception e ){
-			throw new ConsoleException(e);
-		}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-		String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-		String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-		String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+		if(visualizzaRicerca) {
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText descrizione = (InputText) infoRicercaMap.get(descrizioneId);
+			descrizione.setDefaultValue(null);
+			sezioneRoot.addField(descrizione);
+
+			InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
+			codTributo.setDefaultValue(null);
+			sezioneRoot.addField(codTributo);
+
+			SelectList<String> tipoContabilita = (SelectList<String>) infoRicercaMap.get(tipoContabilitaId);
+			tipoContabilita.setDefaultValue("");
+			sezioneRoot.addField(tipoContabilita);
+
+			InputText codContabilita = (InputText) infoRicercaMap.get(codContabilitaId);
+			codContabilita.setDefaultValue(null);
+			sezioneRoot.addField(codContabilita);
+
 		}
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-		
-		InputText descrizione = (InputText) infoRicercaMap.get(descrizioneId);
-		descrizione.setDefaultValue(null);
-		sezioneRoot.addField(descrizione);
-
-		InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
-		codTributo.setDefaultValue(null);
-		sezioneRoot.addField(codTributo);
-		
-		SelectList<String> tipoContabilita = (SelectList<String>) infoRicercaMap.get(tipoContabilitaId);
-		tipoContabilita.setDefaultValue("");
-		sezioneRoot.addField(tipoContabilita);
-
-		InputText codContabilita = (InputText) infoRicercaMap.get(codContabilitaId);
-		codContabilita.setDefaultValue(null);
-		sezioneRoot.addField(codContabilita);
-
 		return infoRicerca;
 	}
 
@@ -202,7 +199,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-			
+
 			//descrizione
 			String descrizioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
 			InputText descrizione = new InputText(descrizioneId, descrizioneLabel, null, false, false, true, 1, 255);
@@ -212,7 +209,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, false, false, true, 1, 255);
 			infoRicercaMap.put(codTributoId, codTributo);
-			
+
 			// tipoContabilita
 			String tipoContabilitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
 			List<Voce<String>> tipoContabilitaValues = new ArrayList<Voce<String>>();
@@ -265,7 +262,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			descrizione.setDefaultValue(null);
 			descrizione.setEditable(true);
 			sezioneRoot.addField(descrizione);
-			
+
 			SelectList<String> tipoContabilita = (SelectList<String>) infoCreazioneMap.get(tipoContabilitaId);
 			tipoContabilita.setDefaultValue(null);
 			sezioneRoot.addField(tipoContabilita);
@@ -273,7 +270,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			InputText codContabilita = (InputText) infoCreazioneMap.get(codContabilitaId);
 			codContabilita.setDefaultValue(null);
 			sezioneRoot.addField(codContabilita);
-			
+
 			InputText codificaTributoInIuv = (InputText) infoCreazioneMap.get(codificaTributoInIuvId);
 			codificaTributoInIuv.setDefaultValue(null);
 			sezioneRoot.addField(codificaTributoInIuv);
@@ -296,7 +293,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 
-			
+
 			// id 
 			InputNumber id = new InputNumber(tributoId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(tributoId, id);
@@ -312,7 +309,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			String descrizioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
 			InputText descrizione = new InputText(descrizioneId, descrizioneLabel, null, true, false, true, 1, 255);
 			infoCreazioneMap.put(descrizioneId, descrizione);
-			
+
 			// tipoContabilita
 			String tipoContabilitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
 			List<Voce<String>> tipoContabilitaValues = new ArrayList<Voce<String>>();
@@ -330,7 +327,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			codContabilita.setValidation("^\\S+$", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.errorMessage"));
 			infoCreazioneMap.put(codContabilitaId, codContabilita);
 
-			
+
 			// codificaTributoInIuv
 			String codificaTributoInIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
 			InputText codificaTributoInIuv = new InputText(codificaTributoInIuvId, codificaTributoInIuvLabel, null, false, false, true, 1,4);
@@ -374,9 +371,9 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			descrizione.setEditable(false);
 		else 
 			descrizione.setEditable(true);
-		
+
 		sezioneRoot.addField(descrizione);
-		
+
 		SelectList<String> tipoContabilita = (SelectList<String>) infoCreazioneMap.get(tipoContabilitaId);
 		tipoContabilita.setDefaultValue(entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault().getCodifica() : null);
 		sezioneRoot.addField(tipoContabilita);
@@ -384,7 +381,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 		InputText codContabilita = (InputText) infoCreazioneMap.get(codContabilitaId);
 		codContabilita.setDefaultValue(entry.getCodContabilitaDefault());
 		sezioneRoot.addField(codContabilita);
-		
+
 		InputText codificaTributoInIuv = (InputText) infoCreazioneMap.get(codificaTributoInIuvId);
 		codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvDefault());
 		sezioneRoot.addField(codificaTributoInIuv);
@@ -535,16 +532,16 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			baos.close();
 
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() ); 
-			
+
 			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String tipocontabilitaS = jsonObject.getString(tipoContabilitaId);
 			jsonObject.remove(tipoContabilitaId);
 			jsonConfig.setRootClass(TipoTributo.class);
 			entry = (TipoTributo) JSONObject.toBean( jsonObject, jsonConfig );
-			
+
 			TipoContabilta tipoContabilita =  TipoContabilta.toEnum(tipocontabilitaS);
 			entry.setTipoContabilitaDefault(tipoContabilita); 
-			
+
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -561,7 +558,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 		if(entry == null || entry.getTipoContabilitaDefault() == null) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
 		if(entry == null || entry.getCodContabilitaDefault() == null || entry.getCodContabilitaDefault().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
 		if(StringUtils.contains(entry.getCodContabilitaDefault()," ")) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaNoSpazi"));
-		
+
 		if(oldEntry != null) {
 			if(!entry.getCodTributo().equals(oldEntry.getCodTributo())) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodTributoModificato"));
 		}
@@ -610,7 +607,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	@Override
 	public String getSottotitolo(TipoTributo entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
-		
+
 		TipoContabilta tipoContabilita = entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault() : TipoContabilta.CAPITOLO;
 		String tipoContabilitaValue = null;
 		switch (tipoContabilita) {
@@ -628,11 +625,11 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
 			break;
 		}
-		
+
 		String codContabilitaValue = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ? entry.getCodContabilitaDefault() : "--";
-		
+
 		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",entry.getCodTributo(), tipoContabilitaValue,codContabilitaValue));
-		
+
 		return sb.toString();
 	}
 

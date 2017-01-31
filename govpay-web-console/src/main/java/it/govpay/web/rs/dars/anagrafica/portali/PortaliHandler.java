@@ -130,7 +130,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -157,23 +157,24 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
+		if(visualizzaRicerca){
+			String codPortaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
 
+			}
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codPortale= (InputText) infoRicercaMap.get(codPortaleId);
+			codPortale.setDefaultValue(null);
+			codPortale.setEditable(true); 
+			sezioneRoot.addField(codPortale);
 		}
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codPortale= (InputText) infoRicercaMap.get(codPortaleId);
-		codPortale.setDefaultValue(null);
-		codPortale.setEditable(true); 
-		sezioneRoot.addField(codPortale);
-
 		return infoRicerca;
 	}
 
@@ -247,7 +248,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		InputText defaultCallbackURL = (InputText) infoCreazioneMap.get(defaultCallbackURLId);
 		defaultCallbackURL.setDefaultValue(null);
 		sezioneRoot.addField(defaultCallbackURL);
-		
+
 		// versione
 		SelectList<String> versione = (SelectList<String>) infoCreazioneMap.get(versioneId);
 		versione.setDefaultValue(Versione.getUltimaVersione().getLabel());
@@ -463,7 +464,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		InputText defaultCallbackURL = (InputText) infoCreazioneMap.get(defaultCallbackURLId);
 		defaultCallbackURL.setDefaultValue(entry.getDefaultCallbackURL());
 		sezioneRoot.addField(defaultCallbackURL);
-		
+
 		// versione
 		SelectList<String> versione = (SelectList<String>) infoCreazioneMap.get(versioneId);
 		versione.setDefaultValue(entry.getVersione().getLabel());
@@ -937,12 +938,12 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			jsonObjectPortale.remove(pagamentiOnlineId);
 			jsonObjectPortale.remove(tipiTributoPoId);
 			jsonObjectPortale.remove(dominiPoId);
-			
+
 			Versione versione = this.getVersioneSelezionata(jsonObjectPortale, versioneId, true); 
 
 			jsonConfig.setRootClass(Portale.class);
 			entry = (Portale) JSONObject.toBean( jsonObjectPortale, jsonConfig );
-			
+
 			entry.setVersione(versione); 
 
 			entry.setAcls(lstAclTributiPa);
@@ -1024,7 +1025,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Portale entry, BasicBD bd) throws ConsoleException {
 		return null;

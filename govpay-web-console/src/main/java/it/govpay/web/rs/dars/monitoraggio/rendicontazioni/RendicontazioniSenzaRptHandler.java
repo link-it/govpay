@@ -26,7 +26,9 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -96,8 +98,9 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 			fsw.setField(it.govpay.orm.Pagamento.model().DATA_PAGAMENTO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
-
+			Map<String, String> params = new HashMap<String, String>();
 			if(StringUtils.isNotEmpty(idFrApplicazione)){
+				params.put(idFrApplicazioneId, idFrApplicazione);
 //				if(!isAdmin){
 //					eseguiRicerca = !Utils.isEmpty(idApplicazioniOperatore);
 //
@@ -109,7 +112,7 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 
 			long count = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(Long.parseLong(idFrApplicazione)) : 0;			
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
@@ -214,10 +217,14 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	/* Operazioni non consentite */
-
+	
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 	return null;	}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm formRicerca = new InfoForm(ricerca);
+		return formRicerca;
+		}
+	/* Operazioni non consentite */
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}

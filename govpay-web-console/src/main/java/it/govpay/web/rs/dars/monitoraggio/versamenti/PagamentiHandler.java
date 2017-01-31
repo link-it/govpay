@@ -26,7 +26,9 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -121,9 +123,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			filter.getFilterSortList().add(fsw);
 
 			long count = 0;
+			Map<String, String> params = new HashMap<String, String>();
 
 			// elemento correlato al versamento.
 			if(StringUtils.isNotEmpty(idVersamento)){
+				params.put(versamentoId, idVersamento);
+				
 				VersamentoFilter versamentoFilter = versamentiBD.newFilter();
 				// SE l'operatore non e' admin vede solo i versamenti associati ai suoi domini
 				if(!isAdmin && idDomini.isEmpty()){
@@ -160,12 +165,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
 				eseguiRicerca = eseguiRicerca && count > 0;
 
-
+			
 			}
 
 			long countRendicontazioniSenzaRpt = 0;
 			List<Long> idFrApplicazioni = new ArrayList<Long>();
 			if(StringUtils.isNotEmpty(idFrApplicazione)){
+				params.put(idFrApplicazioneId, idFrApplicazione);
 				FrBD frBD = new FrBD(bd);
 				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
 
@@ -212,6 +218,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			}
 
 			if(StringUtils.isNotEmpty(idFr)){
+				params.put(idFrId, idFr);
 				FrBD frBD = new FrBD(bd);
 				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
 				List<Long> idFlussi = new ArrayList<Long>();
@@ -241,9 +248,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				}
 			}
 
-
-
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
@@ -452,10 +457,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	/* Operazioni non consentite */
-
+	
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 	return null;	}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm formRicerca = new InfoForm(ricerca);
+		return formRicerca;
+	}
+	/* Operazioni non consentite */
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}

@@ -131,7 +131,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
@@ -156,7 +156,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		//String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		URI ricerca =  null;
 		try{

@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -71,7 +73,9 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			long count = rrBD.count(filter);
 
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(rptId, idRpt);
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
@@ -290,10 +294,15 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			throw new ConsoleException(e);
 		}
 	}
-	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 	return null;	}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
+		URI ricerca = this.getUriRicerca(uriInfo, bd,parameters);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
+	}
+	
+	/* Operazioni non consentite */
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}

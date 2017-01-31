@@ -148,7 +148,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -176,53 +176,55 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
-		String idStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
+		if(visualizzaRicerca) {
+			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
+			String idStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
 
-		}
-
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codDominio = (InputText) infoRicercaMap.get(codDominioId);
-		codDominio.setDefaultValue(null);
-		codDominio.setEditable(true); 
-		sezioneRoot.addField(codDominio);
-
-		List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
-
-		try{
-			StazioniBD stazioniBD = new StazioniBD(bd);
-			StazioneFilter filter = stazioniBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-
-			List<Stazione> findAll = stazioniBD.findAll(filter);
-
-			stazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-			if(findAll != null && findAll.size() > 0){
-				for (Stazione entry : findAll) {
-					stazioni.add(new Voce<Long>(entry.getCodStazione(), entry.getId()));
-				}
 			}
-		}catch(Exception e){
-			throw new ConsoleException(e);
+
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codDominio = (InputText) infoRicercaMap.get(codDominioId);
+			codDominio.setDefaultValue(null);
+			codDominio.setEditable(true); 
+			sezioneRoot.addField(codDominio);
+
+			List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
+
+			try{
+				StazioniBD stazioniBD = new StazioniBD(bd);
+				StazioneFilter filter = stazioniBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.Stazione.model().COD_STAZIONE);
+				fsw.setSortOrder(SortOrder.ASC);
+				filter.getFilterSortList().add(fsw);
+
+				List<Stazione> findAll = stazioniBD.findAll(filter);
+
+				stazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+				if(findAll != null && findAll.size() > 0){
+					for (Stazione entry : findAll) {
+						stazioni.add(new Voce<Long>(entry.getCodStazione(), entry.getId()));
+					}
+				}
+			}catch(Exception e){
+				throw new ConsoleException(e);
+			}
+
+			SelectList<Long> stazione = (SelectList<Long>) infoRicercaMap.get(idStazioneId);
+			stazione.setDefaultValue(-1L);
+			stazione.setValues(stazioni);
+			sezioneRoot.addField(stazione); 
+
 		}
-
-		SelectList<Long> stazione = (SelectList<Long>) infoRicercaMap.get(idStazioneId);
-		stazione.setDefaultValue(-1L);
-		stazione.setValues(stazioni);
-		sezioneRoot.addField(stazione); 
-
 		return infoRicerca;
 	}
 
@@ -353,9 +355,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
-		
+
 		// sezione Gestione IUV
-		
+
 		Sezione sezioneGestioneIuv = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
 
 		CheckButton riusoIuv = (CheckButton) infoCreazioneMap.get(riusoIuvId);
@@ -366,7 +368,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		customIuv.setDefaultValue(false);
 		customIuv.setEditable(true);
 		sezioneGestioneIuv.addField(customIuv);
-		
+
 		List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
 		modalitaIntermediazioneValues.add(new RawParamValue(dominioId, null));
 		modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, null));
@@ -374,17 +376,17 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) infoCreazioneMap.get(modalitaIntermediazioneId);
 		modalitaIntermediazione.init(modalitaIntermediazioneValues, bd); 
 		sezioneGestioneIuv.addField(modalitaIntermediazione); 
-		
+
 		// prefissoIuv
 		InputText prefissoIuv = (InputText) infoCreazioneMap.get(prefissoIuvId);
 		prefissoIuv.setDefaultValue(null);
 		sezioneGestioneIuv.addField(prefissoIuv);
-		
+
 		// prefissoIuvRigoroso
 		CheckButton prefissoIuvRigoroso = (CheckButton) infoCreazioneMap.get(prefissoIuvRigorosoId);
 		prefissoIuvRigoroso.setDefaultValue(false);
 		sezioneGestioneIuv.addField(prefissoIuvRigoroso);
-		
+
 		// sezione anagrafica
 
 		Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DOMINI + ".titolo"));
@@ -617,10 +619,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
-		
-		
+
+
 		// sezione Gestione IUV
-		
+
 		Sezione sezioneGestioneIuv = infoModifica.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneIuv"));
 
 		CheckButton riusoIuv = (CheckButton) infoCreazioneMap.get(riusoIuvId);
@@ -633,20 +635,20 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		if(entry.isCustomIuv())
 			customIuv.setEditable(false);
 		sezioneGestioneIuv.addField(customIuv);
-		
+
 		List<RawParamValue> modalitaIntermediazioneValues = new ArrayList<RawParamValue>();
 		modalitaIntermediazioneValues.add(new RawParamValue(dominioId, ""+entry.getId()));
 		modalitaIntermediazioneValues.add(new RawParamValue(idStazioneId, ""+entry.getIdStazione()));
-		
+
 		ModalitaIntermediazione modalitaIntermediazione =  (ModalitaIntermediazione) infoCreazioneMap.get(modalitaIntermediazioneId);
 		modalitaIntermediazione.init(modalitaIntermediazioneValues, bd); 
 		sezioneGestioneIuv.addField(modalitaIntermediazione); 
-		
+
 		// prefissoIuv
 		InputText prefissoIuv = (InputText) infoCreazioneMap.get(prefissoIuvId);
 		prefissoIuv.setDefaultValue(entry.getIuvPrefix());
 		sezioneGestioneIuv.addField(prefissoIuv);
-		
+
 		// prefissoIuvRigoroso
 		CheckButton prefissoIuvRigoroso = (CheckButton) infoCreazioneMap.get(prefissoIuvRigorosoId);
 		prefissoIuvRigoroso.setDefaultValue(entry.isIuvPrefixStrict());

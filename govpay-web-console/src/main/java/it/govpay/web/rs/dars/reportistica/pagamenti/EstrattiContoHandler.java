@@ -99,7 +99,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 					filter.setIdDomini(idDomini);
 				}
 			}
-			
+
 			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
 			if(!isAdmin && idDomini.isEmpty()){
@@ -129,8 +129,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			List<String> titoli = new ArrayList<String>();
 			titoli.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"));
@@ -164,88 +163,91 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		try{
 			URI ricerca = this.getUriRicerca(uriInfo, bd);
 			InfoForm infoRicerca = new InfoForm(ricerca);
 
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
-			ProfiloOperatore ruolo = operatore.getProfilo();
-			boolean isAdmin = ruolo.equals(ProfiloOperatore.ADMIN);
+			if(visualizzaRicerca){
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
+				ProfiloOperatore ruolo = operatore.getProfilo();
+				boolean isAdmin = ruolo.equals(ProfiloOperatore.ADMIN);
 
-			if(infoRicercaMap == null){
-				this.initInfoRicerca(uriInfo, bd);
-			}
+				String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+				if(infoRicercaMap == null){
+					this.initInfoRicerca(uriInfo, bd);
+				}
 
-			try{
-				DominiBD dominiBD = new DominiBD(bd);
-				DominioFilter filter;
-				try {
-					filter = dominiBD.newFilter();
-					boolean eseguiRicerca = true;
-					if(isAdmin){
+				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+				Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-					} else {
-						AclBD aclBD = new AclBD(bd);
-						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+				try{
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter;
+					try {
+						filter = dominiBD.newFilter();
+						boolean eseguiRicerca = true;
+						if(isAdmin){
 
-						boolean vediTuttiDomini = false;
-						List<Long> idDomini = new ArrayList<Long>();
-						for(Acl acl: aclOperatore) {
-							if(Tipo.DOMINIO.equals(acl.getTipo())) {
-								if(acl.getIdDominio() == null) {
-									vediTuttiDomini = true;
-									break;
+						} else {
+							AclBD aclBD = new AclBD(bd);
+							List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+							boolean vediTuttiDomini = false;
+							List<Long> idDomini = new ArrayList<Long>();
+							for(Acl acl: aclOperatore) {
+								if(Tipo.DOMINIO.equals(acl.getTipo())) {
+									if(acl.getIdDominio() == null) {
+										vediTuttiDomini = true;
+										break;
+									} else {
+										idDomini.add(acl.getIdDominio());
+									}
+								}
+							}
+							if(!vediTuttiDomini) {
+								if(idDomini.isEmpty()) {
+									eseguiRicerca = false;
 								} else {
-									idDomini.add(acl.getIdDominio());
+									filter.setIdDomini(idDomini);
 								}
 							}
 						}
-						if(!vediTuttiDomini) {
-							if(idDomini.isEmpty()) {
-								eseguiRicerca = false;
-							} else {
-								filter.setIdDomini(idDomini);
+
+
+
+						if(eseguiRicerca) {
+							domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+							FilterSortWrapper fsw = new FilterSortWrapper();
+							fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+							fsw.setSortOrder(SortOrder.ASC);
+							filter.getFilterSortList().add(fsw);
+							List<Dominio> findAll = dominiBD.findAll(filter );
+
+							Domini dominiDars = new Domini();
+							DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+
+							if(findAll != null && findAll.size() > 0){
+								for (Dominio dominio : findAll) {
+									domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+								}
 							}
+						}else {
+							domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						}
+					} catch (ServiceException e) {
+						throw new ConsoleException(e);
 					}
+					SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+					idDominio.setDefaultValue(-1L);
+					idDominio.setValues(domini); 
+					sezioneRoot.addField(idDominio);
 
-
-
-					if(eseguiRicerca) {
-						domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-						FilterSortWrapper fsw = new FilterSortWrapper();
-						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-						fsw.setSortOrder(SortOrder.ASC);
-						filter.getFilterSortList().add(fsw);
-						List<Dominio> findAll = dominiBD.findAll(filter );
-
-						Domini dominiDars = new Domini();
-						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-
-						if(findAll != null && findAll.size() > 0){
-							for (Dominio dominio : findAll) {
-								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
-							}
-						}
-					}else {
-						domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-					}
-				} catch (ServiceException e) {
+				}catch(Exception e){
 					throw new ConsoleException(e);
 				}
-				SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-				idDominio.setDefaultValue(-1L);
-				idDominio.setValues(domini); 
-				sezioneRoot.addField(idDominio);
-
-			}catch(Exception e){
-				throw new ConsoleException(e);
 			}
 			return infoRicerca;
 		}catch(Exception e){
@@ -323,7 +325,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".formato.label"), estrattoConto.getFormato());
 			if(StringUtils.isNotEmpty(estrattoConto.getIbanAccredito()))
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"), estrattoConto.getIbanAccredito());
-			
+
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.label"), estrattoConto.getNomeFile());
 			root.addDownloadLink(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".estrattoConto.label"), Utils.getInstance().getMessageFromResourceBundle("commons.label.scarica"),uriBuilderCsv.build(estrattoConto.getId())); 
 
@@ -410,7 +412,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 		valori.add(dominioLabel);
 		valori.add(entry.getMeseAnno());
 		valori.add(entry.getFormato());
-		
+
 		if(StringUtils.isNotEmpty(entry.getIbanAccredito()))
 			valori.add(entry.getIbanAccredito());
 		else
@@ -443,12 +445,12 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
 			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
- 
+
 			for (Long idTracciato : idsToExport) {
-				
+
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				String fileName = estrattiContoBD.getCSVEstrattoConto(idTracciato,operatore.getPrincipal(), baos); 
-				
+
 				String folderName = fileName;
 				int indexOfCsv = folderName.indexOf(".csv");
 				if(indexOfCsv > -1){
@@ -492,7 +494,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			if(indexOfCsv > -1){
 				fileZipName = fileName.substring(0, indexOfCsv);
 			}
-			
+
 			fileZipName = fileZipName+".zip";
 
 			ZipEntry estrattoContoEntry = new ZipEntry(fileName);

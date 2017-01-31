@@ -137,7 +137,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca =  this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
@@ -164,22 +164,24 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+		if(visualizzaRicerca){
+			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
 
+			}
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codApplicazione= (InputText) infoRicercaMap.get(codApplicazioneId);
+			codApplicazione.setDefaultValue(null);
+			sezioneRoot.addField(codApplicazione);
 		}
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codApplicazione= (InputText) infoRicercaMap.get(codApplicazioneId);
-		codApplicazione.setDefaultValue(null);
-		sezioneRoot.addField(codApplicazione);
-
+		
 		return infoRicerca;
 	}
 
@@ -246,7 +248,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		InputText codificaApplicazioneInIuv = (InputText) infoCreazioneMap.get(codificaApplicazioneInIuvId);
 		codificaApplicazioneInIuv.setDefaultValue(null);
 		sezioneRoot.addField(codificaApplicazioneInIuv);
-		
+
 		// versione
 		SelectList<String> versione = (SelectList<String>) infoCreazioneMap.get(versioneId);
 		versione.setDefaultValue(Versione.getUltimaVersione().getLabel());
@@ -334,7 +336,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
 			String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 			String codificaApplicazioneInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
-			
+
 			// id 
 			InputNumber id = new InputNumber(applicazioneId, null, null, true, true, false, 1, 20);
 			infoCreazioneMap.put(applicazioneId, id);
@@ -424,7 +426,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			dominiVersamenti.addDependencyField(trusted);
 			dominiVersamenti.init(versamentiValues, bd); 
 			infoCreazioneMap.put(dominiVersamentiId, dominiVersamenti);
-			
+
 			// codificaApplicazioneInIuv
 			String codificaApplicazioneInIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label");
 			InputText codificaApplicazioneInIuv = new InputText(codificaApplicazioneInIuvId, codificaApplicazioneInIuvLabel, null, false, false, true, 1,3);
@@ -497,7 +499,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(firmaRichiestaValue.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
-		
+
 		InputText codificaApplicazioneInIuv = (InputText) infoCreazioneMap.get(codificaApplicazioneInIuvId);
 		codificaApplicazioneInIuv.setDefaultValue(entry.getCodApplicazioneIuv());
 		sezioneRoot.addField(codificaApplicazioneInIuv);
@@ -861,10 +863,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String dominiVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
 		String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
 		String versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
-		
+
 		String tipoSslIdNot = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".tipoSsl.id");
 		String tipoSslIdVer = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".tipoSsl.id");
-		
+
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -957,13 +959,13 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			jsonObjectApplicazione.remove(dominiVersamentiId);
 
 			Versione versione = this.getVersioneSelezionata(jsonObjectApplicazione, versioneId, true); 
-			
-			
+
+
 			jsonConfig.setRootClass(Applicazione.class);
 			entry = (Applicazione) JSONObject.toBean( jsonObjectApplicazione, jsonConfig );
 
 			entry.setVersione(versione); 
-			
+
 			entry.setAcls(lstAclDominiRendicontazione);
 			entry.getAcls().addAll(lstAclTributiVersamenti);
 			entry.getAcls().addAll(lstAclDominiVersamenti);
@@ -974,11 +976,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				FirmaRichiesta enum1 = FirmaRichiesta.toEnum(codFirma);
 				entry.setFirmaRichiesta(enum1); 
 			}
-			
+
 			String tipoSslNot = jsonObjectApplicazione.containsKey(tipoSslIdNot) ? jsonObjectApplicazione.getString(tipoSslIdNot) : null;
 			if(tipoSslNot != null)
 				jsonObjectApplicazione.remove(tipoSslIdNot);
-			
+
 			String tipoSslVer = jsonObjectApplicazione.containsKey(tipoSslIdVer) ? jsonObjectApplicazione.getString(tipoSslIdVer) : null;
 			if(tipoSslVer != null)
 				jsonObjectApplicazione.remove(tipoSslIdVer);
@@ -1001,19 +1003,19 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			jsonConfig.setRootClass(Connettore.class);
 			Connettore cv = (Connettore) JSONObject.toBean( jsonObjectCV, jsonConfig );
-			
+
 			if(StringUtils.isNotEmpty(tipoSslVer)){
 				cv.setTipoSsl(EnumSslType.valueOf(tipoSslVer)); 
 			}
-			
+
 			entry.setConnettoreVerifica(cv);
 
 			Connettore cn = (Connettore) JSONObject.toBean( jsonObjectCN, jsonConfig );
-			
+
 			if(StringUtils.isNotEmpty(tipoSslNot)){
 				cn.setTipoSsl(EnumSslType.valueOf(tipoSslNot)); 
 			}
-			
+
 			entry.setConnettoreNotifica(cn);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -1098,7 +1100,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Applicazione entry, BasicBD bd) throws ConsoleException {
 		return null;

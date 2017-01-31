@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars.anagrafica.psp;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -107,7 +108,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 		return infoRicerca;

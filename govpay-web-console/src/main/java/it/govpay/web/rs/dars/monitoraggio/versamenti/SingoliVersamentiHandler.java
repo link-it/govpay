@@ -3,6 +3,7 @@ package it.govpay.web.rs.dars.monitoraggio.versamenti;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -38,7 +39,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		return null;
 	}
 

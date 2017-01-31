@@ -91,8 +91,6 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			URI esportazione = null;
 			URI cancellazione = null;
 
-
-
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			StazioneFilter filter = stazioniBD.newFilter();
 			filter.setCodIntermediario(this.codIntermediario);
@@ -102,10 +100,12 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			filter.getFilterSortList().add(fsw);
 			filter.setOffset(offset);
 
-
 			long count = stazioniBD.count(filter);
+			
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codIntermediarioId, this.codIntermediario);
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
@@ -130,8 +130,10 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
 	}
 
 	@Override

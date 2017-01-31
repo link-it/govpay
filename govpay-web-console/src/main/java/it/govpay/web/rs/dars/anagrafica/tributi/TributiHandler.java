@@ -124,10 +124,11 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			long count = tributiBD.count(filter);
 
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(idDominioId, this.idDominio + "");
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
-
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
@@ -152,27 +153,24 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		URI ricerca =  null;
-		try{
-			ricerca =  BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).queryParam(idDominioId, this.idDominio).build();
-		}catch(Exception e ){
-			throw new ConsoleException(e);
-		}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String, String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+		if(visualizzaRicerca) {
+			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
+			codTributo.setDefaultValue(null);
+			sezioneRoot.addField(codTributo);
+
 		}
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
-		codTributo.setDefaultValue(null);
-		sezioneRoot.addField(codTributo);
 		return infoRicerca;
 	}
 
@@ -370,7 +368,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			InputText codContabilitaMod = new InputText(codContabilitaId, codContabilitaLabel, null, false, false, true, 1, 255);
 			codContabilitaMod.setValidation("^\\S+$", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.errorMessage"));
-			
+
 
 			infoCreazioneMap.put(codContabilitaId, codContabilita);
 			infoCreazioneMap.put(codContabilitaId+"_update", codContabilitaMod);
@@ -494,12 +492,12 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 				break;
 			}
 		}
-		
+
 		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
 		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
 		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
 		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
-		
+
 
 		if(tipoContabilitaCustom == null)
 			tipoContabilita.setDefaultValue(tipoContabilitaDefault.getCodifica() + "_p");
@@ -733,7 +731,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		//		if(entry == null || entry.getTipoContabilita() == null) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
 		//		if(entry == null || entry.getCodContabilita() == null || entry.getCodContabilita().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
 		if(entry.getCodContabilitaCustom() != null && StringUtils.contains(entry.getCodContabilitaCustom()," ")) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaNoSpazi"));
-		
+
 		if(oldEntry != null) {
 			if(entry.getIdTipoTributo() != oldEntry.getIdTipoTributo()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreTipoModificato"));
 			if(entry.getIdDominio() != oldEntry.getIdDominio()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreDominioModificato"));

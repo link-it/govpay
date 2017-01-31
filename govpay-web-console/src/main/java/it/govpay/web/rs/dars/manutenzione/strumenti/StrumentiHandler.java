@@ -116,22 +116,22 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			for(String nodo : urlJMX.keySet()) {
 
 				String url = urlJMX.get(nodo);
-				
+
 				try{
 					GestoreRisorseJMX gestoreJMX = null;
-					
+
 					if(url.equals("locale"))
 						gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
 					else
 						gestoreJMX = new GestoreRisorseJMX(as, factory, url, username, password, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
 
 					invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
-					
+
 					if(id==3) {
 						root.addVoce("Esito operazione sul nodo " + nodo,"Reset cache completata con successo.");
 					} else {
 						root.addVoce("Operazione completata sul nodo",nodo);
-						
+
 						if(invoke != null && invoke instanceof String){
 							String esito = (String) invoke;
 							String[] voci = esito.split("\\|");
@@ -146,7 +146,7 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 							}
 						}
 					}
-					
+
 					if(id!=3) {
 						break;
 					}
@@ -174,7 +174,11 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {	return null; }
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {	
+		URI ricerca = this.getUriRicerca(uriInfo, bd);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
+	}
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {	return null;	}

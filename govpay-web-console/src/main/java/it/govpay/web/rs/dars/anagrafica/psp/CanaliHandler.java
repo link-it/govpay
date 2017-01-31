@@ -22,7 +22,9 @@ package it.govpay.web.rs.dars.anagrafica.psp;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -76,14 +78,17 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 			long count = psp.getCanalis().size();
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codPspId, codPsp);
+
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
-			
+
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Canale entry : findAll) {
 					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
@@ -101,8 +106,10 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String, String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
 	}
 
 	@Override
@@ -164,10 +171,10 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
 					break;
 				}
-				
+
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
 			}
-			
+
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
 			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());
@@ -231,7 +238,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Canale entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -242,12 +249,12 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

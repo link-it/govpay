@@ -106,10 +106,14 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			String idTransazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
 			String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
 			SortOrder sortOrder = SortOrder.DESC;
+
+			Map<String, String> params = new HashMap<String, String>();
+
 			// se visualizzo gli eventi nella pagina delle transazioni li ordino in ordine crescente
 			if(StringUtils.isNotEmpty(idTransazione)){
 				visualizzaRicerca = false;
 				sortOrder = SortOrder.ASC;
+				params.put(idTransazioneId, idTransazione);
 			}
 
 			EventiBD eventiBD = new EventiBD(bd);
@@ -129,23 +133,29 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 
 			String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
-			if(StringUtils.isNotEmpty(codDominio))
+			if(StringUtils.isNotEmpty(codDominio)){
 				filter.setCodDominio(codDominio);
+				params.put(codDominioId, codDominio);
+			}
 
 			String iuv = this.getParameter(uriInfo, iuvId, String.class);
-			if(StringUtils.isNotEmpty(iuv))
+			if(StringUtils.isNotEmpty(iuv)){
 				filter.setIuv(iuv); 
+				params.put(iuvId, iuv);
+			}
 
 
 			String ccp = this.getParameter(uriInfo, ccpId, String.class);
-			if(StringUtils.isNotEmpty(ccp))
+			if(StringUtils.isNotEmpty(ccp)){
 				filter.setCcp(ccp); 
+				params.put(ccpId, ccp);
+			}
 
 			long count = eventiBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit e se non sono nella schermata degli eventi di una transazione.
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
 			List<String> valori = new ArrayList<String>();
 			valori.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label"));
@@ -181,58 +191,61 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI ricerca = this.getUriRicerca(uriInfo, bd);
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
+		URI ricerca = this.getUriRicerca(uriInfo, bd,parameters);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
-		String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-		String ccpId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
-		}
+		if(visualizzaRicerca) {
+			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
+			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String ccpId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
 
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		// codDominio
-		List<Voce<String>> domini = new ArrayList<Voce<String>>();
-
-		DominiBD dominiBD = new DominiBD(bd);
-		DominioFilter filter;
-		try {
-			filter = dominiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Dominio> findAll = dominiBD.findAll(filter );
-
-			Domini dominiDars = new Domini();
-			DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-
-			domini.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-			if(findAll != null && findAll.size() > 0){
-				for (Dominio dominio : findAll) {
-					domini.add(new Voce<String>(dominiHandler.getTitolo(dominio,bd), dominio.getCodDominio()));  
-				}
+			if(infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
 			}
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			// codDominio
+			List<Voce<String>> domini = new ArrayList<Voce<String>>();
+
+			DominiBD dominiBD = new DominiBD(bd);
+			DominioFilter filter;
+			try {
+				filter = dominiBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+				fsw.setSortOrder(SortOrder.ASC);
+				filter.getFilterSortList().add(fsw);
+				List<Dominio> findAll = dominiBD.findAll(filter );
+
+				Domini dominiDars = new Domini();
+				DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+
+				domini.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+				if(findAll != null && findAll.size() > 0){
+					for (Dominio dominio : findAll) {
+						domini.add(new Voce<String>(dominiHandler.getTitolo(dominio,bd), dominio.getCodDominio()));  
+					}
+				}
+			} catch (ServiceException e) {
+				throw new ConsoleException(e);
+			}
+			SelectList<String> codDominio = (SelectList<String>) infoRicercaMap.get(codDominioId);
+			codDominio.setDefaultValue("");
+			codDominio.setValues(domini); 
+			sezioneRoot.addField(codDominio);
+
+			InputText iuv = (InputText) infoRicercaMap.get(iuvId);
+			iuv.setDefaultValue(null);
+			sezioneRoot.addField(iuv);
+
+			InputText ccp = (InputText) infoRicercaMap.get(ccpId);
+			ccp.setDefaultValue(null);
+			sezioneRoot.addField(ccp);
+
 		}
-		SelectList<String> codDominio = (SelectList<String>) infoRicercaMap.get(codDominioId);
-		codDominio.setDefaultValue("");
-		codDominio.setValues(domini); 
-		sezioneRoot.addField(codDominio);
-
-		InputText iuv = (InputText) infoRicercaMap.get(iuvId);
-		iuv.setDefaultValue(null);
-		sezioneRoot.addField(iuv);
-
-		InputText ccp = (InputText) infoRicercaMap.get(ccpId);
-		ccp.setDefaultValue(null);
-		sezioneRoot.addField(ccp);
-
 		return infoRicerca;
 	}
 
@@ -340,7 +353,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 				sb.append(long1);
 			}
-//		Printer printer  = null;
+		//		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
 		String fileName = "Eventi.zip";
@@ -392,10 +405,10 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			}
 		}
 	}
-	
+
 	private List<String> getCsvHeader(){
 		List<String> header = new ArrayList<String>();
-		
+
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
 		header.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"));
@@ -493,7 +506,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			oneLine.add(evento.getAltriParametriRisposta());
 		else 
 			oneLine.add("");
-		
+
 		return oneLine;
 	}
 

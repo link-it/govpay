@@ -26,6 +26,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -88,7 +89,24 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public abstract Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	@Override
-	public abstract InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd ) throws ConsoleException{
+		return this.getInfoRicerca(uriInfo, bd, true);
+	}
+
+	@Override
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca) throws ConsoleException{
+		return this.getInfoRicerca(uriInfo, bd, visualizzaRicerca, null);
+	}
+	
+	@Override
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters)
+			throws ConsoleException {
+		return this.getInfoRicerca(uriInfo, bd, true, parameters);
+	}
+
+	@Override
+	public abstract InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters ) throws ConsoleException;
+	
 	@Override
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		try{
@@ -99,6 +117,28 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		}
 	}
 
+	@Override
+	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
+		URI ricerca =  null;
+		if(parameters != null && parameters.size() > 0){
+			try{
+				UriBuilder path = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio);
+
+				for(String parameterId : parameters.keySet()) {
+					path =  path.queryParam(parameterId, parameters.get(parameterId));
+				}
+
+				ricerca =  path.build();
+			}catch(Exception e ){
+				throw new ConsoleException(e);
+			}
+		}else {
+			ricerca = this.getUriRicerca(uriInfo, bd);
+		}
+		
+		return ricerca;
+	}
+	
 	@Override
 	public abstract InfoForm getInfoCreazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 	@Override

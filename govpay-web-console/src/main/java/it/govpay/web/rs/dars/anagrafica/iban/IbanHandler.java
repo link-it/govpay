@@ -109,8 +109,12 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 
 			long count = ibanAccreditoBD.count(filter);
+			
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(idDominioId, this.idDominio + "");
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd, params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
@@ -135,8 +139,10 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
 	}
 
 	@Override
