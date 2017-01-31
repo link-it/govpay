@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Calendar;
+import java.util.Date;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -56,5 +57,28 @@ public class DataTypeAdapter {
 		}
 		return year.toString();
 	}
+	
+    public static Date parseDateTime(String s) {
+        if (s == null) {
+            return null;
+        }
+        return DatatypeConverter.parseDateTime(s).getTime();
+    }
+    
+    public static String printDateTime(Date dt) {
+        if (dt == null) {
+            return null;
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        String date = DatatypeConverter.printDateTime(c);
+        if(date != null && date.contains("+"))
+        	date = date.substring(0, date.indexOf("+"));
+        
+        if(date != null && date.length() > 19) {
+        	date = date.substring(0, 19);
+        }
+        return date;
+    }
 
 }
