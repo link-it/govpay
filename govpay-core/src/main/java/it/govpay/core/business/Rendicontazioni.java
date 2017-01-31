@@ -203,7 +203,8 @@ public class Rendicontazioni extends BasicBD {
 							setupConnection(GpThreadLocal.get().getTransactionId());
 
 							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlusso");
-
+							GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("trn", flussoRendicontazione.getIdentificativoUnivocoRegolamento()));
+							
 							Fr fr = new Fr();
 							fr.setCodBicRiversamento(flussoRendicontazione.getCodiceBicBancaDiRiversamento());
 							fr.setCodFlusso(idRendicontazione.getIdentificativoFlusso());
@@ -222,8 +223,10 @@ public class Rendicontazioni extends BasicBD {
 								fr.setCodPsp(codPsp);
 								log.debug("Identificativo PSP estratto dall'identificativo flusso: " + codPsp);
 								AnagraficaManager.getPsp(this, codPsp);
+								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp));
 							} catch (Exception e) {
 								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoPspNonCensito", codPsp == null ? "null" : codPsp);
+								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codPsp", codPsp == null ? "null" : codPsp));
 								fr.addAnomalia("007108", "L'identificativo PSP [" + codPsp + "] ricavato dal codice flusso non riferisce un PSP censito");
 							}
 
@@ -440,7 +443,7 @@ public class Rendicontazioni extends BasicBD {
 							}
 							this.commit();
 							log.info("Flusso di rendicontazione acquisito con successo.");
-							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoOk", idRendicontazione.getIdentificativoFlusso());
+							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoOk");
 						}
 					} catch (GovPayException ce) {
 						errori = true;

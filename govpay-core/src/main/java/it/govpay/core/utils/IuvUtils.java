@@ -107,10 +107,16 @@ public class IuvUtils {
 	}
 
 	public static boolean checkIuvNumerico(String iuv, int auxDigit, int applicationCode) {
-		//TODO Gestire aux3
-		if(iuv.length() != 15) return false;
-		String reference = iuv.substring(0, 13);
-		long resto93 = (Long.parseLong(String.valueOf(auxDigit) + String.format("%02d", applicationCode) + reference)) % 93;
-		return iuv.equals(reference + String.format("%02d", resto93));
+		if(iuv.length() == 15 && auxDigit == 0) {
+			String reference = iuv.substring(0, 13);
+			long resto93 = (Long.parseLong(String.valueOf(auxDigit) + String.format("%02d", applicationCode) + reference)) % 93;
+			return iuv.equals(reference + String.format("%02d", resto93));
+		} else if(iuv.length() == 17 && auxDigit == 3) {
+			String reference = iuv.substring(0, 15);
+			long resto93 = (Long.parseLong(String.valueOf(auxDigit) + reference)) % 93;
+			return iuv.equals(reference + String.format("%02d", resto93));
+		} else {
+			return false;
+		}
 	}
 }
