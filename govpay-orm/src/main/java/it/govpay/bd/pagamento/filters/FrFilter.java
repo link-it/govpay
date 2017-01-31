@@ -63,6 +63,11 @@ public class FrFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.codDominio != null){
+				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
+				addAnd = true;
+			}
+			
 			if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
 				if(addAnd)
 					newExpression.and();

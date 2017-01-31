@@ -42,9 +42,11 @@ public class Pagamento extends it.govpay.model.Pagamento {
 	private List<Rendicontazione> rendicontazioni;
 
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
-		if(rpt == null) {
-			RptBD rptBD = new RptBD(bd);
-			rpt = rptBD.getRpt(this.getIdRpt());
+		if(this.getIdRpt() != null) {
+			if(rpt == null) {
+				RptBD rptBD = new RptBD(bd);
+				rpt = rptBD.getRpt(this.getIdRpt());
+			}
 		}
 		return rpt;
 	}
