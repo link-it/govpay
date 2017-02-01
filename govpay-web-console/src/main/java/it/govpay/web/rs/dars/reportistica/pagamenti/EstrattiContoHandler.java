@@ -23,6 +23,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
@@ -74,7 +75,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			URI esportazione = this.getUriEsportazione(uriInfo, bd);
 			URI cancellazione = null;
 
-			List<Long> idDomini = new ArrayList<Long>();
+			List<String> idDomini = new ArrayList<String>();
 			AclBD aclBD = new AclBD(bd);
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
@@ -95,7 +96,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 					idDom = Long.parseLong(idDominio);
 				}catch(Exception e){ idDom = -1l;	}
 				if(idDom > 0){
-					idDomini.add(idDom);
+					idDomini.add(AnagraficaManager.getDominio(bd, idDom).getCodDominio());
 					filter.setIdDomini(idDomini);
 				}
 			}
@@ -111,7 +112,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getIdDominio());
+							idDomini.add(AnagraficaManager.getDominio(bd, acl.getIdDominio()).getCodDominio());
 						}
 					}
 				}
