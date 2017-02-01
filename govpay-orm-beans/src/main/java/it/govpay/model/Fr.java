@@ -37,7 +37,6 @@ public class Fr extends BasicModel{
 	private String codDominio;
 	private String codFlusso;
 	private StatoFr stato;
-	private String descrizioneStato;
 	private String iur;
 	private String codBicRiversamento;
 	private Date dataFlusso;
@@ -79,10 +78,11 @@ public class Fr extends BasicModel{
 		this.stato = stato;
 	}
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return marshall(getAnomalie());
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
-		this.descrizioneStato = descrizioneStato;
+		if(descrizioneStato != null)
+			this.anomalie = unmarshall(descrizioneStato);
 	}
 	public String getIur() {
 		return iur;
@@ -152,8 +152,8 @@ public class Fr extends BasicModel{
 		getAnomalie().add(a);
 	}
 	
-	public String marshall(List<Anomalia> anomalie) {
-		if(anomalie == null || anomalie.size() == 0) return "";
+	private String marshall(List<Anomalia> anomalie) {
+		if(anomalie == null || anomalie.size() == 0) return null;
 		StringBuffer sb = new StringBuffer();
 		
 		for(Anomalia a : anomalie){
@@ -168,7 +168,7 @@ public class Fr extends BasicModel{
 		return txt.substring(0, txt.length()-1);
 	}
 	
-	public List<Anomalia> unmarshall(String anomalie) {
+	private List<Anomalia> unmarshall(String anomalie) {
 		List<Anomalia> list = new ArrayList<Anomalia>();
 		
 		if(anomalie == null || anomalie.isEmpty()) return list;
