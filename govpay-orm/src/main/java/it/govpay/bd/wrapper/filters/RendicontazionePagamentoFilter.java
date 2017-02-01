@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
@@ -38,11 +37,34 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 public class RendicontazionePagamentoFilter extends AbstractFilter {
 	
-	private String codDominio;
 	private Long codApplicazione;
 	private Date dataPagamentoMin;
 	private Date dataPagamentoMax;
 	private String codFlusso;
+
+	private List<String> codDomini;
+	public void setCodDomini(List<String> codDomini) {
+		this.codDomini = codDomini;
+	}
+
+	public void setIdVersamento(List<Long> idVersamento) {
+		this.idVersamento = idVersamento;
+	}
+
+	public void setStatoVersamento(String statoVersamento) {
+		this.statoVersamento = statoVersamento;
+	}
+
+	public void setIgnoraStatoVersamento(boolean ignoraStatoVersamento) {
+		this.ignoraStatoVersamento = ignoraStatoVersamento;
+	}
+
+	private List<Long> idVersamento;
+	private List<Long> idSingoloVersamento;
+	
+	public String statoVersamento ;
+	private boolean ignoraStatoVersamento;
+	
 
 	public enum SortFields {
 	}
@@ -51,26 +73,49 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		super(expressionConstructor);
 	}
 
-	public List<Object> getFields() throws ServiceException {
+	public List<Object> getFields(boolean count) throws ServiceException {
 		List<Object> obj = new ArrayList<Object>();
-		
-		if(this.codDominio != null){
-			obj.add(this.codDominio);
-		}
-		if(this.codApplicazione != null){
-			obj.add(this.codApplicazione);
-		}
+
 		if(this.dataPagamentoMin != null){
 			obj.add(this.dataPagamentoMin);
 		}
 		if(this.dataPagamentoMax != null){
 			obj.add(this.dataPagamentoMax);
 		}
+		if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
+			obj.addAll(this.idSingoloVersamento);
+		}
+		
+		//ripeto per doppia condizione, nella query inner
+		if(this.dataPagamentoMin != null){
+			obj.add(this.dataPagamentoMin);
+		}
+		if(this.dataPagamentoMax != null){
+			obj.add(this.dataPagamentoMax);
+		}
+		if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
+			obj.addAll(this.idSingoloVersamento);
+		}
+
+		//query outter
+		
+		if(this.codDomini != null && !this.codDomini.isEmpty()){
+			obj.addAll(this.codDomini);
+		}
+		if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+			obj.addAll(this.idVersamento);
+		}
+		if(!this.ignoraStatoVersamento && this.statoVersamento != null){
+			obj.add(this.statoVersamento);
+		}
+		if(this.codApplicazione != null){
+			obj.add(this.codApplicazione);
+		}
 		if(this.codFlusso != null) {
 			obj.add(this.codFlusso);
 		}
 		
-		if(this.getOffset() != null && this.getLimit() != null) {
+		if(this.getOffset() != null && this.getLimit() != null && !count) {
 			obj.add(this.getOffset());
 			if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
 				obj.add(this.getOffset()+this.getLimit());
@@ -88,13 +133,83 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 			String placeholderIn = "";
 			String placeholderOut = "";
 			String placeholderOffsetLimit = "";
-			if(this.codDominio != null){
+			if(this.dataPagamentoMin != null){
+				if(placeholderIn.length() > 0) {
+					placeholderIn += " AND ";
+				} else {
+					placeholderIn += " WHERE ";
+				}
+				placeholderIn += "p." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " > ?";
+			}
+			if(this.dataPagamentoMax != null){
+				if(placeholderIn.length() > 0) {
+					placeholderIn += " AND ";
+				} else {
+					placeholderIn += " WHERE ";
+				}
+				placeholderIn += "p." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " <  ?";
+			}
+			if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
+				if(placeholderIn.length() > 0) {
+					placeholderIn += " AND ";
+				} else {
+					placeholderIn += " WHERE ";
+				}
+				String idSingoliVersamenti = "";
+				for(@SuppressWarnings("unused") Long idPagamento: this.idSingoloVersamento) {
+					if(idSingoliVersamenti.length() > 0) {
+						idSingoliVersamenti += ",";
+					}
+					idSingoliVersamenti += "?";
+				}
+				placeholderIn +=  "sv.id in ("+idSingoliVersamenti+")";				
+			}
+			if(this.codDomini != null && !this.codDomini.isEmpty()){
 				if(placeholderOut.length() > 0) {
 					placeholderOut += " AND ";
 				} else {
 					placeholderOut += " WHERE ";
 				}
-				placeholderOut +=  "fr." + this.getColumn(RendicontazionePagamento.model().FR.COD_DOMINIO) + " =  ?";
+				String idDomini = "";
+				for(@SuppressWarnings("unused") String idDominio: this.codDomini) {
+					if(idDomini.length() > 0) {
+						idDomini += ",";
+					}
+					idDomini += "?";
+				}
+				placeholderOut +=  "fr." + this.getColumn(RendicontazionePagamento.model().FR.COD_DOMINIO) + " in ("+idDomini+")";				
+			}
+			if(this.idVersamento != null && !this.idVersamento.isEmpty()){
+				if(placeholderOut.length() > 0) {
+					placeholderOut += " AND ";
+				} else {
+					placeholderOut += " WHERE ";
+				}
+				String idVersamenti = "";
+				for(@SuppressWarnings("unused") Long idPagamento: this.idVersamento) {
+					if(idVersamenti.length() > 0) {
+						idVersamenti += ",";
+					}
+					idVersamenti += "?";
+				}
+				placeholderOut +=  "versamenti.id in ("+idVersamenti+")";				
+			}
+			if(this.ignoraStatoVersamento){
+				if(placeholderOut.length() > 0) {
+					placeholderOut += " AND ";
+				} else {
+					placeholderOut += " WHERE ";
+				}
+				placeholderOut +=  "versamenti." + this.getColumn(RendicontazionePagamento.model().VERSAMENTO.STATO_VERSAMENTO) + " != 'NON_ESEGUITO' and versamenti." + this.getColumn(RendicontazionePagamento.model().VERSAMENTO.STATO_VERSAMENTO) + " != 'ANNULLATO'";
+			} else {
+				if(this.statoVersamento != null){
+					if(placeholderOut.length() > 0) {
+						placeholderOut += " AND ";
+					} else {
+						placeholderOut += " WHERE ";
+					}
+					placeholderOut += "versamenti." + this.getColumn(RendicontazionePagamento.model().VERSAMENTO.STATO_VERSAMENTO) + " = ?";
+				}
 			}
 			if(this.codApplicazione != null){
 				if(placeholderOut.length() > 0) {
@@ -103,22 +218,6 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 					placeholderOut += " WHERE ";
 				}
 				placeholderOut += "versamenti.id_applicazione =  ?";
-			}
-			if(this.dataPagamentoMin != null){
-				if(placeholderIn.length() > 0) {
-					placeholderIn += " AND ";
-				} else {
-					placeholderIn += " WHERE ";
-				}
-				placeholderIn += "s1.p_." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " > ?";
-			}
-			if(this.dataPagamentoMax != null){
-				if(placeholderIn.length() > 0) {
-					placeholderIn += " AND ";
-				} else {
-					placeholderIn += " WHERE ";
-				}
-				placeholderIn += "s1.p_." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " <  ?";
 			}
 			if(this.codFlusso != null) {
 				if(placeholderOut.length() > 0) {
@@ -154,29 +253,29 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	public IExpression toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
-			if(this.codDominio != null){
-				newExpression.equals(RendicontazionePagamento.model().FR.COD_DOMINIO, this.codDominio);
-			}
-			if(this.codApplicazione != null){
-				newExpression.equals(RendicontazionePagamento.model().VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
-			}
-			if(this.dataPagamentoMin != null){
-				newExpression.greaterEquals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO, this.dataPagamentoMin);
-			}
-			if(this.dataPagamentoMax != null){
-				newExpression.lessEquals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO, this.dataPagamentoMax);
-			}
-			if(this.codFlusso != null) {
-				newExpression.equals(RendicontazionePagamento.model().FR.COD_FLUSSO, this.codFlusso);
-			}
+//			if(this.codDominio != null){
+//				newExpression.equals(RendicontazionePagamento.model().FR.COD_DOMINIO, this.codDominio);
+//			}
+//			if(this.codApplicazione != null){
+//				newExpression.equals(RendicontazionePagamento.model().VERSAMENTO.ID_APPLICAZIONE.COD_APPLICAZIONE, this.codApplicazione);
+//			}
+//			if(this.dataPagamentoMin != null){
+//				newExpression.greaterEquals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO, this.dataPagamentoMin);
+//			}
+//			if(this.dataPagamentoMax != null){
+//				newExpression.lessEquals(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO, this.dataPagamentoMax);
+//			}
+//			if(this.codFlusso != null) {
+//				newExpression.equals(RendicontazionePagamento.model().FR.COD_FLUSSO, this.codFlusso);
+//			}
 			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
+//		} catch (ExpressionNotImplementedException e) {
+//			throw new ServiceException(e);
+//		} catch (ExpressionException e) {
+//			throw new ServiceException(e);
 		}
 	}
 
@@ -184,14 +283,6 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
-	}
-
-	public String getCodDominio() {
-		return codDominio;
-	}
-
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
 	}
 
 	public Long getCodApplicazione() {
@@ -224,6 +315,10 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 
 	public void setCodFlusso(String codFlusso) {
 		this.codFlusso = codFlusso;
+	}
+
+	public void setIdSingoloVersamento(List<Long> idSingoloVersamento) {
+		this.idSingoloVersamento = idSingoloVersamento;
 	}
 
 	

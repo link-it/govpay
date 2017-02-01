@@ -39,6 +39,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.csv.Printer;
@@ -136,7 +137,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 				}catch(Exception e){ idDom = -1l;	}
 				if(idDom > 0){
 					idDomini.add(idDom);
-					filter.setIdDomini(idDomini);
+					filter.setIdDomini(toListCodDomini(idDomini, bd));
 				}
 			}
 
@@ -179,7 +180,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-						filter.setIdDomini(idDomini);
+						filter.setIdDomini(toListCodDomini(idDomini, bd));
 					}
 				}
 			}
@@ -427,7 +428,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-						filter.setIdDomini(idDomini);
+						filter.setIdDomini(toListCodDomini(idDomini, bd));
 					}
 				}
 
@@ -601,7 +602,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-						filter.setIdDomini(idDomini);
+						filter.setIdDomini(toListCodDomini(idDomini, bd));
 					}
 				}
 
@@ -755,7 +756,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-						filter.setIdDomini(idDomini);
+						filter.setIdDomini(toListCodDomini(idDomini, bd));
 					}
 				}
 
@@ -847,6 +848,13 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 		}
 	}
 
+	private List<String > toListCodDomini(List<Long> lstCodDomini, BasicBD bd) throws ServiceException, NotFoundException {
+		List<String > lst = new ArrayList<String >();
+		for(Long codDominio: lstCodDomini) {
+			lst.add(AnagraficaManager.getDominio(bd, codDominio).getCodDominio());
+		}
+		return lst;
+	}
 	/* Creazione/Update non consentiti**/
 
 	@Override

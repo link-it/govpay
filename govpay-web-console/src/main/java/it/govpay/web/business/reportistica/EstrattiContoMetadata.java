@@ -22,6 +22,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
@@ -78,8 +79,12 @@ public class EstrattiContoMetadata extends BasicBD{
 			List<EstrattoContoMetadata> lst = new ArrayList<EstrattoContoMetadata>();
 
 			if(eseguiRicerca){
+				List<Long> idDomini = new ArrayList<Long>();
+				for(String codDominio: filter.getIdDomini()) {
+					idDomini.add(AnagraficaManager.getDominio(dominiBd, codDominio).getId());
+				}
 				//filtro sui domini disponibili all'utente;
-				dominioFilter.setIdDomini(filter.getIdDomini());
+				dominioFilter.setIdDomini(idDomini);
 
 				List<Dominio> findAll = dominiBd.findAll(dominioFilter );
 				long id = 1;
