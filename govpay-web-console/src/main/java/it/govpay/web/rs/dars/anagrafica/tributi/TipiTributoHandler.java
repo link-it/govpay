@@ -660,6 +660,9 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 		return valori;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(TipoTributo entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

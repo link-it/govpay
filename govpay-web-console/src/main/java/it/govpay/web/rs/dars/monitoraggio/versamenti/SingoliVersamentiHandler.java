@@ -54,6 +54,9 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(SingoloVersamento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String getTitolo(SingoloVersamento entry,BasicBD bd) {

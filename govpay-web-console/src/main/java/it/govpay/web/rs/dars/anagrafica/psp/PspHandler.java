@@ -226,6 +226,9 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	public List<String> getValori(Psp entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Psp entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

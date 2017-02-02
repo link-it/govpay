@@ -24,22 +24,22 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.PortaliBD;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.bd.model.Canale;
+import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Operatore;
-import it.govpay.model.Portale;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Stazione;
-import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Portale;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
@@ -407,6 +407,9 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	public List<String> getValori(Rpt entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Rpt entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

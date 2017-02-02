@@ -43,8 +43,8 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.model.Connettore;
-import it.govpay.model.Intermediario;
 import it.govpay.model.Connettore.EnumSslType;
+import it.govpay.model.Intermediario;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -629,6 +629,9 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	public List<String> getValori(Intermediario entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Intermediario entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

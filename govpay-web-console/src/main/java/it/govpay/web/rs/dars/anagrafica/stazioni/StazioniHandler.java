@@ -43,8 +43,8 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
-import it.govpay.model.Intermediario;
 import it.govpay.bd.model.Stazione;
+import it.govpay.model.Intermediario;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -487,6 +487,9 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	public List<String> getValori(Stazione entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Stazione entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

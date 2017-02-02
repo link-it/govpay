@@ -422,6 +422,9 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 		return valori;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

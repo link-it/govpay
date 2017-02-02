@@ -45,12 +45,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
-import it.govpay.bd.pagamento.FrBD;
-import it.govpay.bd.pagamento.filters.FrFilter;
-import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Psp;
+import it.govpay.bd.pagamento.FrBD;
+import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -357,6 +357,9 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 	public List<String> getValori(Fr entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Fr entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

@@ -555,6 +555,9 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 		return valori; 
 	}
+	
+	@Override
+	public Map<String, String> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

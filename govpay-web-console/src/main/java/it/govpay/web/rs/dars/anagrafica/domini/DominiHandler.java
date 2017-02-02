@@ -1084,6 +1084,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	public List<String> getValori(Dominio entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Dominio entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

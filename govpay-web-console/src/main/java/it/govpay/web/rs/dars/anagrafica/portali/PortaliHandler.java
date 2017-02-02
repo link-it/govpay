@@ -47,12 +47,12 @@ import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.anagrafica.filters.PortaleFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.model.Acl;
 import it.govpay.bd.model.Dominio;
-import it.govpay.model.Portale;
-import it.govpay.model.TipoTributo;
+import it.govpay.model.Acl;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Portale;
+import it.govpay.model.TipoTributo;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -60,8 +60,8 @@ import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPA;
-import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPA;
 import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPO;
+import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPA;
 import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPO;
 import it.govpay.web.rs.dars.anagrafica.portali.input.Trusted;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributoHandler;
@@ -1034,6 +1034,9 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	public List<String> getValori(Portale entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Portale entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

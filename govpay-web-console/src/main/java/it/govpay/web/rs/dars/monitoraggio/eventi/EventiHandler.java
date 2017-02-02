@@ -47,12 +47,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
-import it.govpay.bd.model.Dominio;
 import it.govpay.model.Evento;
-import it.govpay.model.Operatore;
 import it.govpay.model.Evento.TipoEvento;
+import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -338,6 +338,9 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 		return valori; 
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Evento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

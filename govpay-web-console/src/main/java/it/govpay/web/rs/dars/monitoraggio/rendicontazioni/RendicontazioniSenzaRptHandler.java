@@ -42,11 +42,11 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.model.RendicontazioneSenzaRpt;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.model.Iuv;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
-import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -208,6 +208,9 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 	public List<String> getValori(RendicontazioneSenzaRpt entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(RendicontazioneSenzaRpt entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

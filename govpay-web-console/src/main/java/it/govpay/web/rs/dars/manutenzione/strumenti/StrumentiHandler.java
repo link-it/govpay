@@ -212,6 +212,9 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 
 	@Override
 	public List<String> getValori(Object entry, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public Map<String, String> getVoci(Object entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException { return null; }

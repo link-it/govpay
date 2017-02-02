@@ -828,6 +828,9 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	public List<String> getValori(Tributo entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(Tributo entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

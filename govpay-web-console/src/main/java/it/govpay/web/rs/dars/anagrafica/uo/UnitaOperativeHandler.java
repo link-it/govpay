@@ -42,9 +42,9 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
-import it.govpay.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
+import it.govpay.model.Anagrafica;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -548,6 +548,9 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	public List<String> getValori(UnitaOperativa entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, String> getVoci(UnitaOperativa entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
