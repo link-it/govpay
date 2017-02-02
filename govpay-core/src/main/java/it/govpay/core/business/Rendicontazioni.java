@@ -143,6 +143,7 @@ public class Rendicontazioni extends BasicBD {
 
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					log.debug("Acquisizione flusso di rendicontazione " + idRendicontazione.getIdentificativoFlusso());
+					boolean hasFrAnomalia = false;
 					String idTransaction2 = null;
 					try {
 						idTransaction2 = GpThreadLocal.get().openTransaction();
@@ -263,7 +264,7 @@ public class Rendicontazioni extends BasicBD {
 									rendicontazione.setEsito(EsitoRendicontazione.toEnum(dsp.getCodiceEsitoSingoloPagamento()));
 								} catch (Exception e) {
 									GpThreadLocal.get().log("rendicontazioni.esitoSconosciuto", iuv, iur, dsp.getCodiceEsitoSingoloPagamento() == null ? "null" : dsp.getCodiceEsitoSingoloPagamento());
-									fr.addAnomalia("007110", "Codice esito [" + dsp.getCodiceEsitoSingoloPagamento() + "] sconosciuto");
+									rendicontazione.addAnomalia("007110", "Codice esito [" + dsp.getCodiceEsitoSingoloPagamento() + "] sconosciuto");
 								}
 
 								rendicontazione.setData(dsp.getDataEsitoSingoloPagamento());
@@ -286,28 +287,28 @@ public class Rendicontazioni extends BasicBD {
 										if(pagamento.getImportoRevocato().compareTo(importoRendicontato) != 0) {
 											GpThreadLocal.get().log("rendicontazioni.importoStornoErrato", iuv, iur);
 											log.info("Revoca [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
-											fr.addAnomalia("007112", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
+											rendicontazione.addAnomalia("007112", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
 										}
 
 										// Verifico che il pagamento non sia gia' rendicontato
 										if(pagamento.isPagamentoRendicontato(this)) {
 											GpThreadLocal.get().log("rendicontazioni.giaStornato", iuv, iur);
 											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
-											fr.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
+											rendicontazione.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
 										}
 
 									} else {
 										if(pagamento.getImportoPagato().compareTo(importoRendicontato) != 0) {
 											GpThreadLocal.get().log("rendicontazioni.importoErrato", iuv, iur);
 											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
-											fr.addAnomalia("007104", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
+											rendicontazione.addAnomalia("007104", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
 										}
 
 										// Verifico che il pagamento non sia gia' rendicontato
 										if(pagamento.isPagamentoRendicontato(this)) {
 											GpThreadLocal.get().log("rendicontazioni.giaRendicontato", iuv, iur);
 											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: pagamento gia' rendicontato da altri flussi");
-											fr.addAnomalia("007103", "Il pagamento riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
+											rendicontazione.addAnomalia("007103", "Il pagamento riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
 										}
 									}
 
@@ -399,10 +400,11 @@ public class Rendicontazioni extends BasicBD {
 									log.info("Pagamento rendicontato duplicato: [CodDominio: " + dominio.getCodDominio() + "] [Iuv: "+ iuv + "] [Iur: " + iur + "]");
 									rendicontazione.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 								} finally {
-									if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && fr.getAnomalie().isEmpty()) {
+									if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && rendicontazione.getAnomalie().isEmpty()) {
 										rendicontazione.setStato(StatoRendicontazione.OK);
-									} else if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && !fr.getAnomalie().isEmpty()) {
+									} else if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && !rendicontazione.getAnomalie().isEmpty()) {
 										rendicontazione.setStato(StatoRendicontazione.ANOMALA);
+										hasFrAnomalia = true;
 									}
 									fr.addRendicontazione(rendicontazione);
 								}
@@ -435,6 +437,7 @@ public class Rendicontazioni extends BasicBD {
 								fr.setStato(StatoFr.ACCETTATA);
 							} else {
 								fr.setStato(StatoFr.ANOMALA);
+								hasFrAnomalia = true;
 							}
 								
 							
@@ -456,8 +459,13 @@ public class Rendicontazioni extends BasicBD {
 								rendicontazioniBD.insert(r);
 							}
 							this.commit();
-							log.info("Flusso di rendicontazione acquisito con successo.");
-							GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoOk");
+							if(!hasFrAnomalia) {
+								log.info("Flusso di rendicontazione acquisito senza anomalie.");
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoOk");
+							} else {
+								log.info("Flusso di rendicontazione acquisito con anomalie.");
+								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoOkAnomalia");
+							}
 						}
 					} catch (GovPayException ce) {
 						errori = true;

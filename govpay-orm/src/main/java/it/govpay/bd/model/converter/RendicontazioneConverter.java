@@ -16,7 +16,7 @@ public class RendicontazioneConverter {
 
 	public static Rendicontazione toDTO(it.govpay.orm.Rendicontazione vo) throws ServiceException {
 		Rendicontazione dto = new Rendicontazione();
-		
+		dto.setAnomalie(vo.getAnomalie());
 		dto.setId(vo.getId());
 		dto.setIuv(vo.getIuv());
 		dto.setIur(vo.getIur());
@@ -24,9 +24,6 @@ public class RendicontazioneConverter {
 		dto.setData(vo.getData());
 		dto.setEsito(EsitoRendicontazione.toEnum(vo.getEsito()));
 		dto.setStato(StatoRendicontazione.valueOf(vo.getStato()));
-	
-		dto.unmarshall(vo.getAnomalie());
-		
 		dto.setIdFr(vo.getIdFR().getId());
 		if(vo.getIdPagamento() != null)
 			dto.setIdPagamento(vo.getIdPagamento().getId());
@@ -43,7 +40,7 @@ public class RendicontazioneConverter {
 		vo.setData(dto.getData());
 		vo.setEsito(dto.getEsito().getCodifica());
 		vo.setStato(dto.getStato().toString());
-		vo.setAnomalie(dto.marshall(dto.getAnomalie()));
+		vo.setAnomalie(dto.getAnomalieString());
 		
 		IdFr idFr = new IdFr();
 		idFr.setId(dto.getIdFr());

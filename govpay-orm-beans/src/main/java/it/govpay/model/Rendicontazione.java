@@ -137,6 +137,18 @@ public class Rendicontazione extends BasicModel {
 		return anomalie;
 	}
 	
+	public String getAnomalieString() {
+		return marshall(getAnomalie());
+	}
+	
+	public void setAnomalie(List<Anomalia> anomalie) {
+		this.anomalie = anomalie;
+	}
+	
+	public void setAnomalie(String anomalie) {
+		this.anomalie = unmarshall(anomalie);
+	}
+	
 	public void addAnomalia(String codAnomalia, String descrizione) {
 		Anomalia a = new Anomalia();
 		a.codAnomalia = codAnomalia;
@@ -144,7 +156,7 @@ public class Rendicontazione extends BasicModel {
 		getAnomalie().add(a);
 	}
 	
-	public String marshall(List<Anomalia> anomalie) {
+	private String marshall(List<Anomalia> anomalie) {
 		if(anomalie == null || anomalie.size() == 0) return "";
 		StringBuffer sb = new StringBuffer();
 		
@@ -160,7 +172,7 @@ public class Rendicontazione extends BasicModel {
 		return txt.substring(0, txt.length()-1);
 	}
 	
-	public List<Anomalia> unmarshall(String anomalie) {
+	private List<Anomalia> unmarshall(String anomalie) {
 		List<Anomalia> list = new ArrayList<Anomalia>();
 		
 		if(anomalie == null || anomalie.isEmpty()) return list;
