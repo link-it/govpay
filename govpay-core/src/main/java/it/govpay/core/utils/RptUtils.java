@@ -218,7 +218,7 @@ public class RptUtils {
 		} catch (NotFoundException e) {
 		}
 
-		if(uo.getAnagrafica() != null) {
+		if(!uo.getCodUo().equals(Dominio.EC) && uo.getAnagrafica() != null) {
 			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)
 				enteBeneficiario.setCodiceUnitOperBeneficiario(uo.getAnagrafica().getCodUnivoco());
 			if(uo.getAnagrafica().getRagioneSociale() != null && uo.getAnagrafica().getRagioneSociale().trim().length()>0)
