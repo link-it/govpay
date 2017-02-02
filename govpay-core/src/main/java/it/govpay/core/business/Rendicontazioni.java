@@ -66,6 +66,7 @@ import it.govpay.servizi.commons.EsitoOperazione;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -505,7 +506,7 @@ public class Rendicontazioni extends BasicBD {
 		boolean isNumerico;
 
 		try {
-			Long.parseLong(iuv);
+			new BigInteger(iuv);
 			isNumerico = true;
 		} catch (Exception e) {
 			isNumerico = false;
@@ -533,8 +534,8 @@ public class Rendicontazioni extends BasicBD {
 				return true;
 
 			// Pagamenti tipo 3
-			if(isNumerico && iuv.length() == 17 && iuv.startsWith(String.format("%02d", dominio.getSegregationCode())));
-			return true;
+			if(isNumerico && iuv.length() == 17 && iuv.startsWith(String.format("%02d", dominio.getSegregationCode())))
+				return true;
 		}
 		return false;
 	}
