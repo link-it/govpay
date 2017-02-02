@@ -644,9 +644,15 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public List<String> getValori(Versamento entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
-	public Map<String, String> getVoci(Versamento entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, String> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
+		Map<String, String> voci = new HashMap<String, String>();
+		voci.put("titolo", this.getTitolo(entry, bd));
+		voci.put("sottotitolo", this.getSottotitolo(entry, bd));
+
+		return voci; 
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
