@@ -27,8 +27,10 @@ import java.io.Reader;
 import java.io.Writer;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -47,6 +49,7 @@ import it.govpay.model.Intermediario;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
+import it.govpay.web.rs.dars.model.Lingua;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 
@@ -60,21 +63,118 @@ public class Utils {
 
 	public static final String MISSING_RESOURCE_END_PLACEHOLDER = " not found ??";
 	public static final String MISSING_RESOURCE_START_PLACEHOLDER = "?? key ";
+	public static final String PREFIX_LABEL_CONSOLE = "console.label.";
+	public static final String LIST_LABEL_CONSOLE = "console.label.list";
 
-	private static Utils instance = null;
+	private static Map<String, Utils> instance = null;
+
+	public Utils() {
+		this.locale = Locale.ITALIAN;
+	}
+
+	public Utils(Locale locale) {
+		this.locale = locale;
+	}
+
+	private Locale locale = null;
 
 	public static Utils getInstance(){
+		if(Utils.instance == null)
+			init();
+		return Utils.instance.get(Locale.ITALIAN.getLanguage()); 
+	}
 
+	public static Utils getInstance(Locale locale){
 		if(Utils.instance == null)
 			init();
 
+		if(locale == null)
+			locale = Locale.ITALIAN;
 
-		return Utils.instance;
+		Utils utils = Utils.instance.get(locale.getLanguage());
+
+		return utils != null ? utils : getInstance(); 
+	}
+	
+	public static Utils getInstance(String locale){
+		if(Utils.instance == null)
+			init();
+
+		if(locale == null)
+			locale = Locale.ITALIAN.getLanguage();
+
+		Utils utils = Utils.instance.get(locale);
+
+		return utils != null ? utils : getInstance(); 
 	}
 
 	private synchronized static void init(){
-		if(Utils.instance == null)
-			Utils.instance = new Utils();
+		if(Utils.instance == null){
+			List<Locale> listaLingueDisponibili = Utils.getListaLingueDisponibili();
+			Utils.instance = new HashMap<String, Utils>();
+			if(listaLingueDisponibili != null && listaLingueDisponibili.size() > 0) {
+				for (int i = 0 ; i < listaLingueDisponibili.size() ; i++) {
+					Locale locale = listaLingueDisponibili.get(i);
+					Utils.instance.put(locale.getLanguage(),new Utils(locale));
+				} 
+			}else {
+				// italiano sempre presente
+				Utils.instance.put(Locale.ITALIAN.getLanguage(),new Utils(Locale.ITALIAN));
+			}
+		}
+	}
+
+	public static List<Locale> getListaLingueDisponibili(){
+		List<Locale> lst = new ArrayList<Locale>();
+		lst.add(Locale.ITALY);
+		lst.add(Locale.UK);
+		return lst;
+	}
+
+	public List<Lingua> getLingue(){
+		List<Lingua> lst = new ArrayList<Lingua>();
+		for (Locale locale : Utils.getListaLingueDisponibili()) {
+			lst.add(this.getLabelLingua(locale));
+		}
+
+		return lst;
+	}
+
+	public Lingua getLabelLingua(Locale locale) {
+		Map<String, String> etichette = new HashMap<String, String>();
+		for (String key : this.getElencoKeyLabelConsole()) {
+			String etichetta = this.getConsoleLabel(key, locale);
+			etichette.put(key,etichetta);
+		}
+
+		Lingua lingua = new Lingua(locale.getLanguage(), etichette );
+		return lingua;
+	}
+
+	public List<String> getElencoKeyLabelConsole(){
+		List<String> list = new ArrayList<String>();
+
+		String listL = this.getMessageFromResourceBundle(LIST_LABEL_CONSOLE);
+
+		if(listL != null){
+			String[] split = listL.split(",");
+			if(split != null && split.length > 0){
+				for (String string : split) {
+					list.add(string);
+				}
+			}
+		}
+
+		return list;
+	}
+
+	public String getConsoleLabel(String key){
+		Locale locale = this.getLocale();
+		return getConsoleLabel(key, locale); 
+	}
+
+	public String getConsoleLabel(String key, Locale locale){
+		return getMessageFromResourceBundle(PREFIX_LABEL_CONSOLE + key, locale);
 	}
 
 	public   String getMessageFromResourceBundle(String key) {
@@ -156,7 +256,7 @@ public class Utils {
 			}
 		}
 	}
-	
+
 	public static void copy2(Reader in, Writer out) 
 			throws IOException {
 
@@ -216,9 +316,7 @@ public class Utils {
 	}
 
 	public Locale getLocale() {
-		Locale locale = Locale.ITALY;
-
-		return locale;
+		return this.locale;
 	}
 
 	public static String getAbilitatoAsLabel(boolean abilitato){
@@ -286,16 +384,16 @@ public class Utils {
 		}
 		return lst;
 	}
-	
+
 	public static String getFileName(MultivaluedMap<String, String> header) {
 
 		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
-		
+
 		for (String filename : contentDisposition) {
 			if ((filename.trim().startsWith("filename"))) {
 
 				String[] name = filename.split("=");
-				
+
 				String finalFileName = name[1].trim().replaceAll("\"", "");
 				return finalFileName;
 			}

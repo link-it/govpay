@@ -85,8 +85,8 @@ import net.sf.json.JsonConfig;
 
 public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDarsHandler<Tributo>{
 
-	private static Map<String, ParamField<?>> infoCreazioneMap = null;
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoCreazioneMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 //	private Long idDominio = null;
 
 	public ProvaInputHandler(Logger log, BaseDarsService darsService) {
@@ -117,12 +117,12 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-//			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
+//			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 //			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 //
 //			filter.setIdDominio(this.idDominio);
 
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
 			filter.setCodTributo(codTributo); 
 
@@ -157,7 +157,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
-		//String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		//String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		URI ricerca =  null;
 		try{
 			ricerca =  this.getUriRicerca(uriInfo, bd);// BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).queryParam(idDominioId, this.idDominio).build();
@@ -166,30 +166,30 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 		}
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+		String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 
-		if(infoRicercaMap == null){
+		if(this.infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-		InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
+		InputText codTributo = (InputText) this.infoRicercaMap.get(codTributoId);
 		codTributo.setDefaultValue(null);
 		sezioneRoot.addField(codTributo);
 		return infoRicerca;
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 
 			// codTributo
-			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
+			String codTributoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, false, false, true, 1, 255);
-			infoRicercaMap.put(codTributoId, codTributo);
+			this.infoRicercaMap.put(codTributoId, codTributo);
 
 		}
 	}
@@ -198,26 +198,26 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		String fileProvaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fileProva.id");
-		String risultatoUploadId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.id");
-		String contenutoFileId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.id");
+		String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+		String fileProvaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileProva.id");
+		String risultatoUploadId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.id");
+		String contenutoFileId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.id");
 		
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
 
-		InputNumber idITributo = (InputNumber) infoCreazioneMap.get(tributoId);
+		InputNumber idITributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
 		idITributo.setDefaultValue(null);
 		sezioneRoot.addField(idITributo);
 
-		SelectList<Long> idTipoTributo  = (SelectList<Long>) infoCreazioneMap.get(idTipoTributoId);
+		SelectList<Long> idTipoTributo  = (SelectList<Long>) this.infoCreazioneMap.get(idTipoTributoId);
 		List<Voce<Long>> idTipoTributoValues = new ArrayList<Voce<Long>>();
 
 		try{
@@ -235,7 +235,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 			List<it.govpay.model.TipoTributo> findAll = tipiTributoBD.findAll(filterTipiTributi);
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.model.TipoTributo tipoTributo : findAll) {
-					String label = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".idTipoTributo.label.form", tipoTributo.getDescrizione(),tipoTributo.getCodTributo());
+					String label = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".idTipoTributo.label.form", tipoTributo.getDescrizione(),tipoTributo.getCodTributo());
 					idTipoTributoValues.add(new Voce<Long>(label, tipoTributo.getId()));
 				}
 			}
@@ -248,15 +248,15 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 		idTipoTributo.setDefaultValue(null);
 		sezioneRoot.addField(idTipoTributo);
 		
-		InputFile fileProva = (InputFile) infoCreazioneMap.get(fileProvaId);
+		InputFile fileProva = (InputFile) this.infoCreazioneMap.get(fileProvaId);
 		fileProva.setDefaultValue(null);
 		sezioneRoot.addField(fileProva);
 		
-		InputText risultatoUpload = (InputText) infoCreazioneMap.get(risultatoUploadId);
+		InputText risultatoUpload = (InputText) this.infoCreazioneMap.get(risultatoUploadId);
 		risultatoUpload.setDefaultValue(null);
 		sezioneRoot.addField(risultatoUpload);
 		
-		InputTextArea contenutoFile = (InputTextArea) infoCreazioneMap.get(contenutoFileId);
+		InputTextArea contenutoFile = (InputTextArea) this.infoCreazioneMap.get(contenutoFileId);
 		contenutoFile.setDefaultValue(null);
 		sezioneRoot.addField(contenutoFile);
 
@@ -265,39 +265,39 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 	}
 
 	private void initInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoCreazioneMap == null){
-			infoCreazioneMap = new HashMap<String, ParamField<?>>();
+		if(this.infoCreazioneMap == null){
+			this.infoCreazioneMap = new HashMap<String, ParamField<?>>();
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			String idIbanAccreditoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
-			String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-			String risultatoUploadId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.id");
-			String contenutoFileId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+			String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+			String risultatoUploadId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.id");
+			String contenutoFileId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.id");
 			
 			// id 
 			InputNumber id = new InputNumber(tributoId, null, null, true, true, false, 1, 20);
-			infoCreazioneMap.put(tributoId, id);
+			this.infoCreazioneMap.put(tributoId, id);
 
 			// tipoTributo
-			String idTipoTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.label");
+			String idTipoTributoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.label");
 			List<Voce<Long>> idTipoTributoValues = new ArrayList<Voce<Long>>();
 			SelectList<Long> idTipoTributo = new SelectList<Long>(idTipoTributoId, idTipoTributoLabel, null, true, false, true, idTipoTributoValues );
-			idTipoTributo.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.suggestion"));
-			infoCreazioneMap.put(idTipoTributoId, idTipoTributo);
+			idTipoTributo.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.suggestion"));
+			this.infoCreazioneMap.put(idTipoTributoId, idTipoTributo);
 
 			// idDominio
 			InputNumber idDominio = new InputNumber(idDominioId, null, null, true, true, false, 1, 255);
-			infoCreazioneMap.put(idDominioId, idDominio);
+			this.infoCreazioneMap.put(idDominioId, idDominio);
 
-			String idIbanAccreditoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label");
+			String idIbanAccreditoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label");
 			List<Voce<Long>> ibanValues = new ArrayList<Voce<Long>>();
 			SelectList<Long> idIbanAccredito = new SelectList<Long>(idIbanAccreditoId, idIbanAccreditoLabel, null, true, false, true, ibanValues );
-			infoCreazioneMap.put(idIbanAccreditoId, idIbanAccredito);
+			this.infoCreazioneMap.put(idIbanAccreditoId, idIbanAccredito);
 
 			try {
-				String fileProvaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fileProva.id");
-				String fileProvaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fileProva.label");
+				String fileProvaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileProva.id");
+				String fileProvaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileProva.label");
 
 				List<String> mt = new ArrayList<String>();
 				//mt.add(".*");
@@ -307,21 +307,21 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 				int numeroFileTracciato = 1;
 
 				InputFile fileProva = new InputFile(fileProvaId,fileProvaLabel, true, false, true, mt , dimensioneMassimaFileTracciato ,numeroFileTracciato,uriUploadBuilder.build());
-				fileProva.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".fileProva.suggestion"));
-				infoCreazioneMap.put(fileProvaId, fileProva);
+				fileProva.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileProva.suggestion"));
+				this.infoCreazioneMap.put(fileProvaId, fileProva);
 			} catch(Exception e ){
 				throw new ConsoleException(e); 
 			}
 			
 			// risultatoUpload
-			String risultatoUploadLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.label");
+			String risultatoUploadLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.label");
 			InputText risultatoUpload = new InputText(risultatoUploadId, risultatoUploadLabel, null, false, false, true, 1, 255);
-			infoCreazioneMap.put(risultatoUploadId, risultatoUpload);
+			this.infoCreazioneMap.put(risultatoUploadId, risultatoUpload);
 
 			// contenuto file
-			String contenutoFileLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.label");
+			String contenutoFileLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.label");
 			InputTextArea contenutoFile = new InputTextArea(contenutoFileId, contenutoFileLabel, null, false, false, true, 1, 50000, 10, 200);
-			infoCreazioneMap.put(contenutoFileId, contenutoFile);
+			this.infoCreazioneMap.put(contenutoFileId, contenutoFile);
 		}
 
 
@@ -331,23 +331,23 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String idIbanAccreditoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-		String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-		String idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		String codificaTributoInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		String idIbanAccreditoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+		String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+		String idTipoTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+		String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idTributo = (InputNumber) infoCreazioneMap.get(tributoId);
+		InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
 		idTributo.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idTributo);
 
@@ -355,14 +355,14 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 		idTipoTributo.setDefaultValue(entry.getIdTipoTributo());
 		sezioneRoot.addField(idTipoTributo);
 
-		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
+		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(entry.getIdDominio());
 		sezioneRoot.addField(idDominio);
 
-		SelectList<Long> idIbanAccredito  = (SelectList<Long>) infoCreazioneMap.get(idIbanAccreditoId);
+		SelectList<Long> idIbanAccredito  = (SelectList<Long>) this.infoCreazioneMap.get(idIbanAccreditoId);
 		List<Voce<Long>> listaIban = new ArrayList<Voce<Long>>();
 
-		if(!entry.getCodTributo().equals(Tributo.BOLLOT)){
+		if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT)){
 			try{
 				DominiBD dominiBD = new DominiBD(bd);
 				IbanAccreditoBD ibanAccreditoBD = new IbanAccreditoBD(bd);
@@ -397,7 +397,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 		sezioneRoot.addField(idIbanAccredito);
 
 		// prelevo le versioni statiche per l'update
-		SelectList<String> tipoContabilita = (SelectList<String>) infoCreazioneMap.get(tipoContabilitaId+"_update");
+		SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId+"_update");
 
 		TipoContabilta tipoContabilitaCustom = entry.getTipoContabilitaCustom();
 		TipoContabilta tipoContabilitaDefault = entry.getTipoContabilitaDefault();
@@ -406,49 +406,50 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 		if(tipoContabilitaDefault != null){
 			switch(tipoContabilitaDefault){
 			case ALTRO:
-				lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
 				break;
 			case SIOPE:
-				lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
 				break;
 			case SPECIALE:
-				lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
 				break;
 			case CAPITOLO:
 			default:
-				lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
+				lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
 				break;
 			}
 		}
 		
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
 		
 
-		if(tipoContabilitaCustom == null)
+		if(tipoContabilitaCustom == null) {
 			tipoContabilita.setDefaultValue(tipoContabilitaDefault.getCodifica() + "_p");
-		else
+		} else {
 			tipoContabilita.setDefaultValue(tipoContabilitaCustom.getCodifica());
+		}
 
 		tipoContabilita.setValues(lst); 
 		sezioneRoot.addField(tipoContabilita);
 
-		InputText codContabilita = (InputText) infoCreazioneMap.get(codContabilitaId+"_update");
-		String codContabilitaLabel = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ?	Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",entry.getCodContabilitaDefault()) :	Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
+		InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId+"_update");
+		String codContabilitaLabel = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ?	Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",entry.getCodContabilitaDefault()) :	Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
 		codContabilita.setLabel(codContabilitaLabel);
 		codContabilita.setDefaultValue(entry.getCodContabilitaCustom());
 		sezioneRoot.addField(codContabilita);
 
-		InputText codificaTributoInIuv = (InputText) infoCreazioneMap.get(codificaTributoInIuvId+"_update");
-		String codificaTributoInIuvLabel = StringUtils.isNotEmpty(entry.getCodTributoIuvDefault()) ? Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",entry.getCodTributoIuvDefault()) : Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
+		InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId+"_update");
+		String codificaTributoInIuvLabel = StringUtils.isNotEmpty(entry.getCodTributoIuvDefault()) ? Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",entry.getCodTributoIuvDefault()) : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
 
 		codificaTributoInIuv.setLabel(codificaTributoInIuvLabel);
 		codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvCustom());
 		sezioneRoot.addField(codificaTributoInIuv);
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
 
@@ -462,12 +463,12 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			if(infoCreazioneMap == null){
+			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
 
-			if(infoCreazioneMap.containsKey(fieldId)){
-				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
+			if(this.infoCreazioneMap.containsKey(fieldId)){
+				RefreshableParamField<?> paramField = (RefreshableParamField<?>) this.infoCreazioneMap.get(fieldId);
 				paramField.aggiornaParametro(values,bd);
 				return paramField;
 			}
@@ -502,44 +503,44 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati del tributo
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label"), tributo.getCodTributo());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label"), tributo.getCodTributo());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
 
 			if(tributo.getIdIbanAccredito() != null){
 				IbanAccredito ibanAccredito = tributo.getIbanAccredito(bd); 
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label"), ibanAccredito.getCodIban());
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIbanAccredito.label"), ibanAccredito.getCodIban());
 			}
 
 			TipoContabilta tipoContabilita = tributo.getTipoContabilita() != null ? tributo.getTipoContabilita() : TipoContabilta.CAPITOLO;
 			String tipoContabilitaValue = null;
 			switch (tipoContabilita) {
 			case ALTRO:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
 				break;
 			case SPECIALE:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
 				break;
 			case SIOPE:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
 				break;
 			case CAPITOLO:
 			default:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
 				break;
 			}
 
-			String tipoContabilitaLabel = !tributo.isTipoContabilitaCustom() ? Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label.default") : Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label.custom");
+			String tipoContabilitaLabel = !tributo.isTipoContabilitaCustom() ? Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label.default") : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label.custom");
 			root.addVoce(tipoContabilitaLabel, tipoContabilitaValue);
 
-			String codContabilitaLabel = !tributo.isCodContabilitaCustom() ? Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label.default") : Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label.custom");
+			String codContabilitaLabel = !tributo.isCodContabilitaCustom() ? Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label.default") : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label.custom");
 			root.addVoce(codContabilitaLabel, tributo.getCodContabilita());
 
 			if(StringUtils.isNotEmpty(tributo.getCodTributoIuv())){
-				String codificaTributoInIuvLabel = !tributo.isCodTributoIuvCustom() ? Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default") : Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.custom");
+				String codificaTributoInIuvLabel = !tributo.isCodTributoIuvCustom() ? Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default") : Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.custom");
 				root.addVoce(codificaTributoInIuvLabel, tributo.getCodTributoIuv(),true);
 			}
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(tributo.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(tributo.isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -569,7 +570,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 //
 //			try{
 //				tributiBD.getTributo(entry.getIdDominio(),entry.getCodTributo());
-//				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodTributo());
+//				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodTributo());
 //				throw new DuplicatedEntryException(msg);
 //			}catch(NotFoundException e){}
 //
@@ -610,9 +611,9 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() ); 
 
-			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-			String codificaTributoInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+			String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
 
 			String tipocontabilitaS = jsonObject.getString(tipoContabilitaId);
 			jsonObject.remove(tipoContabilitaId);
@@ -637,11 +638,13 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 				entry.setTipoContabilitaCustom(tipoContabilita);
 			} 
 
-			if(StringUtils.isNotBlank(codContabilitaS))
+			if(StringUtils.isNotBlank(codContabilitaS)) {
 				entry.setCodContabilitaCustom(codContabilitaS);
+			}
 
-			if(StringUtils.isNotBlank(codificaTributoInIuvS))
-				entry.setCodTributoIuvCustom(codificaTributoInIuvS); 
+			if(StringUtils.isNotBlank(codificaTributoInIuvS)) {
+				entry.setCodTributoIuvCustom(codificaTributoInIuvS);
+			} 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
@@ -654,16 +657,28 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 
 	@Override
 	public void checkEntry(Tributo entry, Tributo oldEntry) throws ValidationException {
-		if(entry == null || entry.getIdTipoTributo() == 0 ) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoObbligatorio"));
-		if(entry == null || entry.getIdDominio() == 0) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDominioObbligatorio"));
-		if(!entry.getCodTributo().equals(Tributo.BOLLOT) && entry.getIdIbanAccredito() == null ) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreIbanAccreditoObbligatorio"));
-		//		if(entry == null || entry.getTipoContabilita() == null) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
-		//		if(entry == null || entry.getCodContabilita() == null || entry.getCodContabilita().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
-		if(entry.getCodContabilitaCustom() != null && StringUtils.contains(entry.getCodContabilitaCustom()," ")) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaNoSpazi"));
+		if(entry == null || entry.getIdTipoTributo() == 0 ) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoObbligatorio"));
+		}
+		if(entry == null || entry.getIdDominio() == 0) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDominioObbligatorio"));
+		}
+		if(!entry.getCodTributo().equals(it.govpay.model.Tributo.BOLLOT) && entry.getIdIbanAccredito() == null ) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreIbanAccreditoObbligatorio"));
+		}
+		//		if(entry == null || entry.getTipoContabilita() == null) throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
+		//		if(entry == null || entry.getCodContabilita() == null || entry.getCodContabilita().isEmpty()) throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
+		if(entry.getCodContabilitaCustom() != null && StringUtils.contains(entry.getCodContabilitaCustom()," ")) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaNoSpazi"));
+		}
 		
 		if(oldEntry != null) {
-			if(entry.getIdTipoTributo() != oldEntry.getIdTipoTributo()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreTipoModificato"));
-			if(entry.getIdDominio() != oldEntry.getIdDominio()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreDominioModificato"));
+			if(entry.getIdTipoTributo() != oldEntry.getIdTipoTributo()) {
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreTipoModificato"));
+			}
+			if(entry.getIdDominio() != oldEntry.getIdDominio()) {
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreDominioModificato"));
+			}
 		}
 	}
 
@@ -704,7 +719,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 	@Override
 	public String getTitolo(Tributo entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", entry.getDescrizione()));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", entry.getDescrizione()));
 		return sb.toString();
 	}
 
@@ -716,23 +731,23 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 		String tipoContabilitaValue = null;
 		switch (tipoContabilita) {
 		case ALTRO:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
 			break;
 		case SPECIALE:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
 			break;
 		case SIOPE:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
 			break;
 		case CAPITOLO:
 		default:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
 			break;
 		}
 
 		String codContabilitaValue = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ? entry.getCodContabilitaDefault() : "--";
 
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",entry.getCodTributo(), tipoContabilitaValue,codContabilitaValue,Utils.getAbilitatoAsLabel(entry.isAbilitato())));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",entry.getCodTributo(), tipoContabilitaValue,codContabilitaValue,Utils.getAbilitatoAsLabel(entry.isAbilitato())));
 
 		return sb.toString();
 	}
@@ -758,8 +773,8 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 		String methodName = "Simulazione caricamento file per il servizio " + this.titoloServizio;
 		this.log.info("Esecuzione " + methodName + " in corso...");
 
-		String risultatoUploadId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.id");
-		String contenutoFileId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.id");
+		String risultatoUploadId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".risultatoUpload.id");
+		String contenutoFileId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".contenutoFile.id");
 		Map<String, List<InputPart>> formParts = input.getFormDataMap();
 
 		JSONArray res = new JSONArray();

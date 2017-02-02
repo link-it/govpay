@@ -68,7 +68,7 @@ import it.govpay.web.utils.Utils;
 
 public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> implements IDarsHandler<FrApplicazione>{
 
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 
 	public FrApplicazioniHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -101,12 +101,13 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<Long> idDomini = new ArrayList<Long>();
 
-			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
-			if(StringUtils.isNotEmpty(codFlusso))
-				filter.setCodFlusso(codFlusso); 
+			if(StringUtils.isNotEmpty(codFlusso)) {
+				filter.setCodFlusso(codFlusso);
+			} 
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
 			Map<String, String> params = new HashMap<String, String>();
 			if(StringUtils.isNotEmpty(idDominio)){
@@ -180,15 +181,15 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 		if(visualizzaRicerca){
-			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 
-			if(infoRicercaMap == null){
+			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
 
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-			InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
+			InputText codFlusso = (InputText) this.infoRicercaMap.get(codFlussoId);
 			codFlusso.setDefaultValue(null);
 			sezioneRoot.addField(codFlusso);
 		}
@@ -196,15 +197,15 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 
 			// codFlusso
-			String codFlussoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label");
+			String codFlussoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label");
 			InputText codFlusso = new InputText(codFlussoId, codFlussoLabel, null, false, false, true, 0, 35);
-			infoRicercaMap.put(codFlussoId, codFlusso);
+			this.infoRicercaMap.put(codFlussoId, codFlusso);
 
 		}
 	}
@@ -239,12 +240,12 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			if(frApplicazione != null){
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.label"), frApplicazione.getNumeroPagamenti()+ "");
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), frApplicazione.getImportoTotalePagamenti()+ "€");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.label"), frApplicazione.getNumeroPagamenti()+ "");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), frApplicazione.getImportoTotalePagamenti()+ "€");
 
 				Pagamenti pagamentiDars = new Pagamenti();
-				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
-				String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFrApplicazione.id");
+				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+				String idFrApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFrApplicazione.id");
 				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(idFrApplicazioneId, frApplicazione.getId());
 
 				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
@@ -272,7 +273,7 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 			String codApplicazione = applicazione.getCodApplicazione();
 
 			sb.append(
-					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo",
+					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo",
 							codApplicazione,codFlusso));
 		}catch (Exception e ){
 			throw new ConsoleException(e);
@@ -288,7 +289,7 @@ public class FrApplicazioniHandler extends BaseDarsHandler<FrApplicazione> imple
 		BigDecimal importoTotalePagamenti = entry.getImportoTotalePagamenti(); 
 
 		sb.append(
-				Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
+				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
 						numeroPagamenti,(importoTotalePagamenti + "€")));
 
 		return sb.toString();

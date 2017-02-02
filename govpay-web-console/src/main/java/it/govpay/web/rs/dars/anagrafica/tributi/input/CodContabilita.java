@@ -2,6 +2,7 @@ package it.govpay.web.rs.dars.anagrafica.tributi.input;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -21,8 +22,9 @@ public class CodContabilita extends InputText {
 	public CodContabilita(String nomeServizio,String id, String label, int minLength, int maxLength, URI refreshUri,List<RawParamValue> values, Object... objects) {
 		super(id, label, minLength, maxLength, refreshUri, values);
 		this.nomeServizio = nomeServizio;
-		this.idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		//		this.tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+		this.idTipoTributoId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+		//		this.tributoId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 	
 	
@@ -50,8 +52,9 @@ public class CodContabilita extends InputText {
 	@Override
 	protected String getDefaultValue(List<RawParamValue> values, Object... objects) {
 		String idTipoTributoValue = Utils.getValue(values, this.idTipoTributoId);
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		// Imposto la label di default
-		this.label = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
+		this.label = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
 		//		String idTributo = Utils.getValue(values, this.tributoId);
 
 		if(StringUtils.isEmpty(idTipoTributoValue)){
@@ -66,7 +69,7 @@ public class CodContabilita extends InputText {
 
 			// prelevo il valore dal parent e lo inserisco nella label
 			if(codContabilitaDefault != null) {
-				this.label = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",codContabilitaDefault);
+				this.label = Utils.getInstance(locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codContabilita.label.default.form",codContabilitaDefault);
 			}
 
 		} catch (Exception e) {

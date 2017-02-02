@@ -152,18 +152,18 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati del psp
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label"), psp.getCodPsp());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"), psp.getRagioneSociale());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label"), psp.getCodPsp());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"), psp.getRagioneSociale());
 			if(StringUtils.isNotEmpty(psp.getCodFlusso()))
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), psp.getCodFlusso());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), psp.getUrlInfo());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(psp.isAbilitato()));
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".bolloGestito.label"), Utils.getAbilitatoAsLabel(psp.isBolloGestito()));
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stornoGestito.label"), Utils.getAbilitatoAsLabel(psp.isStornoGestito()));
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), psp.getCodFlusso());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), psp.getUrlInfo());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(psp.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".bolloGestito.label"), Utils.getAbilitatoAsLabel(psp.isBolloGestito()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stornoGestito.label"), Utils.getAbilitatoAsLabel(psp.isStornoGestito()));
 			
 			// Elementi correlati
-			String etichettaCanali = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.canali.titolo");
-			String codPspId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
+			String etichettaCanali = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.canali.titolo");
+			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
 			
 			Canali canaliDars = new Canali();
 			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(canaliDars.getPathServizio()).queryParam(codPspId, psp.getCodPsp());

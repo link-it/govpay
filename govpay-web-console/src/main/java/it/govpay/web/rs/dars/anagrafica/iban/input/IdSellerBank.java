@@ -22,6 +22,7 @@ package it.govpay.web.rs.dars.anagrafica.iban.input;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -37,7 +38,8 @@ public class IdSellerBank  extends InputText{
 	public IdSellerBank(String nomeServizio,String id, String label, int minLength, int maxLength, URI refreshUri,	List<RawParamValue> values, Object... objects) {
 		super(id, label, minLength, maxLength, refreshUri, values);
 		this.nomeServizio = nomeServizio;
-		this.attivatoObepId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio +  ".attivatoObep.id");
+		Locale locale = objects[0] != null ? (Locale) objects[0] : null;
+		this.attivatoObepId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio +  ".attivatoObep.id");
 	}
 
 	@Override

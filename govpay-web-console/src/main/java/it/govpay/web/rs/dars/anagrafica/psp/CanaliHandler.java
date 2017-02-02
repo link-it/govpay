@@ -65,7 +65,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);			
 
-			String codPspId = Utils.getInstance().getMessageFromResourceBundle("psp.codPsp.id");
+			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("psp.codPsp.id");
 			String codPsp = this.getParameter(uriInfo, codPspId, String.class);
 
 			URI esportazione = null;
@@ -151,35 +151,35 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			// dati del canale
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
 			ModelloPagamento modelloPagamento = canale.getModelloPagamento();
 			if(modelloPagamento != null){
 				String modelloPagamentoString = null;
 				switch (modelloPagamento) {
 				case ATTIVATO_PRESSO_PSP:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.ATTIVATO_PRESSO_PSP");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.ATTIVATO_PRESSO_PSP");
 					break;
 				case DIFFERITO:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.DIFFERITO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.DIFFERITO");
 					break;
 				case IMMEDIATO:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO");
 					break;
 				case IMMEDIATO_MULTIBENEFICIARIO:
 				default:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
 					break;
 				}
 
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
 			}
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), canale.getUrlInfo());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(canale.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), canale.getUrlInfo());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(canale.isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -231,9 +231,9 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Tipo Versamento: ")
-		.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento."+	entry.getTipoVersamento().name()))
+		.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento."+	entry.getTipoVersamento().name()))
 		.append(", Modello Pagamento: ").append(
-				Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento."+	entry.getModelloPagamento().name())
+				Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento."+	entry.getModelloPagamento().name())
 				);
 
 		return sb.toString();

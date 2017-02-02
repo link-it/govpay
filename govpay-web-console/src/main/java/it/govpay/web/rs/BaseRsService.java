@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,12 +54,12 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.utils.ConsoleProperties;
+import it.govpay.web.utils.Utils;
 
 @Path("/")
 public abstract class BaseRsService {
 
 	public static List<String> datePatterns = null;
-
 	static {
 
 		datePatterns = new ArrayList<String>();
@@ -69,6 +70,7 @@ public abstract class BaseRsService {
 	}
 
 	public static final String ERRORE_INTERNO = "Errore Interno";
+	public static final String PARAMETER_LINGUA = "lang";
 
 	@Context protected HttpServletRequest request;
 	@Context protected HttpServletResponse response;
@@ -200,5 +202,14 @@ public abstract class BaseRsService {
 			return DateUtils.parseDate(dateJson, datPat);
 		}
 		return null;
+	}
+	
+	public Locale getLanguage(){
+		Locale locale = null;
+		
+		String lingua =  this.request != null ? this.request.getParameter(BaseRsService.PARAMETER_LINGUA) : null;
+		locale = Utils.getInstance(lingua).getLocale();
+				
+		return locale;
 	}
 }

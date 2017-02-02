@@ -22,6 +22,7 @@ package it.govpay.web.rs.dars.anagrafica.intermediari.input;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -43,8 +44,9 @@ public class SslType  extends InputText{
 		super(id, label, minLength, maxLength, refreshUri, values);
 		this.nomeServizio = nomeServizio;
 		this.nomeConnettore = nomeConnettore;
-		this.tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
-		this.idOwnerId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		Locale locale = objects[0] != null ? (Locale) objects[0] : null;
+		this.tipoAutenticazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
+		this.idOwnerId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override

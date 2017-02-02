@@ -62,7 +62,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 		BigDecimal importoTotale = entry.getImportoSingoloVersamento();
 		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
 		
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle((this.nomeServizio + ".label.titolo"), codVersamentoEnte, (importoTotale + "€")));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle((this.nomeServizio + ".label.titolo"), codVersamentoEnte, (importoTotale + "€")));
 		
 		return sb.toString();
 	}
@@ -74,14 +74,14 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 		StatoSingoloVersamento statoVersamento = entry.getStatoSingoloVersamento();
 		switch (statoVersamento) {
 		case ANOMALO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.anomalo"));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.anomalo"));
 			break;
 		case NON_ESEGUITO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.nonEseguito"));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.nonEseguito"));
 			break;
 		case ESEGUITO:
 		default:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.eseguito"));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.eseguito"));
 			break;
 		}
 		return sb.toString();

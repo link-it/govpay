@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars.anagrafica.portali.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -54,9 +55,10 @@ public class DominiPO extends MultiSelectList<Long, List<Long>>{
 	public DominiPO(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			 Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		this.nomeServizio = nomeServizio;
-		this.pagamentiOnlineId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
-		this.portaleId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.pagamentiOnlineId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".pagamentiOnline.id");
+		this.portaleId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override

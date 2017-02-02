@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
@@ -86,4 +87,5 @@ public interface IDarsHandler<T> {
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 
 	public Format getFormat();
+	public Locale getLanguage();
 }

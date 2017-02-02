@@ -56,8 +56,8 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			for (int i = 0; i < listaOperazioni.length; i++) {
 				String operazione = listaOperazioni[i];
 				long idOperazione = i;
-				String titoloOperazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".titolo");
-				String sottotitoloOperazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".sottotitolo");
+				String titoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".titolo");
+				String sottotitoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".sottotitolo");
 				URI urlDettaglio = uriDettaglioBuilder.build(idOperazione);
 				Elemento elemento = new Elemento(idOperazione, titoloOperazione, sottotitoloOperazione, urlDettaglio);
 				elenco.getElenco().add(elemento);
@@ -82,9 +82,9 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			String[] listaOperazioni =  ConsoleProperties.getInstance().getOperazioniJMXDisponibili(); 
 			String operazione = listaOperazioni[(int) id];
 
-			String titoloOperazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".titolo");
+			String titoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".titolo");
 			methodName = this.titoloServizio + "Esecuzione dell'operazione con id: "+ id +", CodiceOperazione: [" + titoloOperazione +"]";
-			String nomeMetodo = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".nomeMetodo");
+			String nomeMetodo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".nomeMetodo");
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore

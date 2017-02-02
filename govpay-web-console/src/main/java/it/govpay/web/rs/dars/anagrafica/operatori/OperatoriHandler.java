@@ -81,8 +81,8 @@ import net.sf.json.JsonConfig;
 public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDarsHandler<Operatore>{
 
 	private static final Servizio TIPO_SERVIZIO = Servizio.CRUSCOTTO;
-	private static Map<String, ParamField<?>> infoCreazioneMap = null;
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoCreazioneMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 
 	public static final String PROFILO_OPERATORE_VALUE_ADMIN = "ADMIN";
 	public static final String PROFILO_OPERATORE_VALUE_OPERATORE = "ENTE";
@@ -114,9 +114,9 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 			String principal = this.getParameter(uriInfo, principalId, String.class);
-			String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+			String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 			String profiloValue = this.getParameter(uriInfo, profiloId, String.class);
 
 			if(StringUtils.isNotEmpty(principal)){
@@ -165,20 +165,20 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		if(visualizzaRicerca){
-			String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+			String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 
-			if(infoRicercaMap == null){
+			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
 			}
 
 
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-			InputText principal  = (InputText) infoRicercaMap.get(principalId);
+			InputText principal  = (InputText) this.infoRicercaMap.get(principalId);
 			sezioneRoot.addField(principal);
 
-			SelectList<String> profilo = (SelectList<String>) infoRicercaMap.get(profiloId);
+			SelectList<String> profilo = (SelectList<String>) this.infoRicercaMap.get(profiloId);
 			String profiloOperatoreValue = "";
 			profilo.setDefaultValue(profiloOperatoreValue);
 			sezioneRoot.addField(profilo); 
@@ -188,26 +188,26 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+			String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
 
 			// principal
-			String principalLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
+			String principalLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
 			InputText principal = new InputText(principalId, principalLabel, null, false, false, true, 1, 50);
-			infoRicercaMap.put(principalId, principal);
+			this.infoRicercaMap.put(principalId, principal);
 
 			// profilo
-			String profiloLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.label");
+			String profiloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.label");
 			List<Voce<String>> tipiProfili = new ArrayList<Voce<String>>();
-			tipiProfili.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"),""));
-			tipiProfili.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.admin"),PROFILO_OPERATORE_VALUE_ADMIN));
-			tipiProfili.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.ente"),PROFILO_OPERATORE_VALUE_OPERATORE));
+			tipiProfili.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"),""));
+			tipiProfili.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.admin"),PROFILO_OPERATORE_VALUE_ADMIN));
+			tipiProfili.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.ente"),PROFILO_OPERATORE_VALUE_OPERATORE));
 
 			SelectList<String> profilo = new SelectList<String>(profiloId, profiloLabel, PROFILO_OPERATORE_VALUE_ADMIN, false, false, true, tipiProfili);
-			infoRicercaMap.put(profiloId, profilo);
+			this.infoRicercaMap.put(profiloId, profilo);
 
 		}
 	}
@@ -216,37 +216,37 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String operatoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String nomeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
-		String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
-		//String tipiTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
+		String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+		String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
+		String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String dominiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
+		//String tipiTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
 
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
 
-		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(operatoreId);
+		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(operatoreId);
 		idInterm.setDefaultValue(null);
 		sezioneRoot.addField(idInterm);
 
-		InputText principal  = (InputText) infoCreazioneMap.get(principalId);
+		InputText principal  = (InputText) this.infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(null);
 		principal.setEditable(true); 
 		sezioneRoot.addField(principal);
 
-		InputText nome = (InputText) infoCreazioneMap.get(nomeId);
+		InputText nome = (InputText) this.infoCreazioneMap.get(nomeId);
 		nome.setDefaultValue(null);
 		sezioneRoot.addField(nome);
 
-		SelectList<String> profilo = (SelectList<String>) infoCreazioneMap.get(profiloId);
+		SelectList<String> profilo = (SelectList<String>) this.infoCreazioneMap.get(profiloId);
 		String profiloOperatoreValue = PROFILO_OPERATORE_VALUE_ADMIN;
 		profilo.setDefaultValue(profiloOperatoreValue);
 		sezioneRoot.addField(profilo); 
@@ -257,14 +257,14 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 		// GP-348
 		//		TipiTributo tipiTributo = (TipiTributo) infoCreazioneMap.get(tipiTributoId);
-		//		tipiTributo.init(tipoAutenticazioneValues, bd); 
+		//		tipiTributo.init(tipoAutenticazioneValues, bd,this.getLanguage()); 
 		//		sezioneRoot.addField(tipiTributo);
 
-		Domini domini = (Domini) infoCreazioneMap.get(dominiId);
-		domini.init(tipoAutenticazioneValues, bd); 
+		Domini domini = (Domini) this.infoCreazioneMap.get(dominiId);
+		domini.init(tipoAutenticazioneValues, bd,this.getLanguage()); 
 		sezioneRoot.addField(domini); 
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
 
@@ -272,66 +272,66 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	}
 
 	private void initInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoCreazioneMap == null){
-			infoCreazioneMap = new HashMap<String, ParamField<?>>();
+		if(this.infoCreazioneMap == null){
+			this.infoCreazioneMap = new HashMap<String, ParamField<?>>();
 
-			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-			String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String nomeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
-			String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
-			String operatoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
-			//String tipiTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+			String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
+			String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+			String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String dominiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
+			//String tipiTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
 
 			// id 
 			InputNumber id = new InputNumber(operatoreId, null, null, true, true, false, 1, 20);
-			infoCreazioneMap.put(operatoreId, id);
+			this.infoCreazioneMap.put(operatoreId, id);
 
 			// principal
-			String principalLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
+			String principalLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
 			InputText principal = new InputText(principalId, principalLabel, null, true, false, true, 1, 50);
-			principal.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.errorMessage"));
-			infoCreazioneMap.put(principalId, principal);
+			principal.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.errorMessage"));
+			this.infoCreazioneMap.put(principalId, principal);
 
 			// nome
-			String nomeLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nome.label");
+			String nomeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.label");
 			InputText nome = new InputText(nomeId, nomeLabel, null, true, false, true, 1, 255);
-			nome.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nome.errorMessage"));
-			infoCreazioneMap.put(nomeId, nome);
+			nome.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.errorMessage"));
+			this.infoCreazioneMap.put(nomeId, nome);
 
 			// profilo
 			// tipo autenticazione
-			String profiloLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.label");
+			String profiloLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.label");
 			List<Voce<String>> tipiProfili = new ArrayList<Voce<String>>();
-			tipiProfili.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.admin"),PROFILO_OPERATORE_VALUE_ADMIN));
-			tipiProfili.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.ente"),PROFILO_OPERATORE_VALUE_OPERATORE));
+			tipiProfili.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.admin"),PROFILO_OPERATORE_VALUE_ADMIN));
+			tipiProfili.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.ente"),PROFILO_OPERATORE_VALUE_OPERATORE));
 
 			SelectList<String> profilo = new SelectList<String>(profiloId, profiloLabel, PROFILO_OPERATORE_VALUE_ADMIN, true, false, true, tipiProfili);
-			infoCreazioneMap.put(profiloId, profilo);
+			this.infoCreazioneMap.put(profiloId, profilo);
 
 			List<RawParamValue> tipoAutenticazioneValues = new ArrayList<RawParamValue>();
 			tipoAutenticazioneValues.add(new RawParamValue(operatoreId, null));
 			tipoAutenticazioneValues.add(new RawParamValue(profiloId, PROFILO_OPERATORE_VALUE_ADMIN));
 
 			// abilitato
-			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
+			String abilitatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
-			infoCreazioneMap.put(abilitatoId, abiliato);
+			this.infoCreazioneMap.put(abilitatoId, abiliato);
 
 			// GP-348
-			//			String tipiTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.label");
+			//			String tipiTributoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.label");
 			//			URI tipiTributoRefreshUri = this.getUriField(uriInfo, bd, tipiTributoId); 
-			//			TipiTributo tipiTributo = new TipiTributo(this.nomeServizio, tipiTributoId, tipiTributoLabel, tipiTributoRefreshUri , tipoAutenticazioneValues, bd);
+			//			TipiTributo tipiTributo = new TipiTributo(this.nomeServizio, tipiTributoId, tipiTributoLabel, tipiTributoRefreshUri , tipoAutenticazioneValues, bd,this.getLanguage());
 			//			tipiTributo.addDependencyField(profilo);
-			//			tipiTributo.init(tipoAutenticazioneValues, bd); 
+			//			tipiTributo.init(tipoAutenticazioneValues, bd,this.getLanguage()); 
 			//			infoCreazioneMap.put(tipiTributoId, tipiTributo);
 
-			String dominiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.label");
+			String dominiLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.label");
 			URI dominiRefreshUri = this.getUriField(uriInfo, bd, dominiId); 
-			Domini domini = new Domini(this.nomeServizio, dominiId, dominiLabel, dominiRefreshUri , tipoAutenticazioneValues, bd);
+			Domini domini = new Domini(this.nomeServizio, dominiId, dominiLabel, dominiRefreshUri , tipoAutenticazioneValues, bd,this.getLanguage());
 			domini.addDependencyField(profilo);
-			domini.init(tipoAutenticazioneValues, bd); 
-			infoCreazioneMap.put(dominiId, domini);
+			domini.init(tipoAutenticazioneValues, bd,this.getLanguage()); 
+			this.infoCreazioneMap.put(dominiId, domini);
 
 		}
 	}
@@ -340,35 +340,35 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String nomeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
-		String profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
-		String operatoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
-		//String tipiTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+		String nomeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.id");
+		String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+		String operatoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String dominiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
+		//String tipiTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(operatoreId);
+		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(operatoreId);
 		idInterm.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idInterm);
 
-		InputText principal  = (InputText) infoCreazioneMap.get(principalId);
+		InputText principal  = (InputText) this.infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(entry.getPrincipal());
 		principal.setEditable(false); 
 		sezioneRoot.addField(principal);
 
-		InputText nome = (InputText) infoCreazioneMap.get(nomeId);
+		InputText nome = (InputText) this.infoCreazioneMap.get(nomeId);
 		nome.setDefaultValue(entry.getNome());
 		sezioneRoot.addField(nome);
 
-		SelectList<String> profilo = (SelectList<String>) infoCreazioneMap.get(profiloId);
+		SelectList<String> profilo = (SelectList<String>) this.infoCreazioneMap.get(profiloId);
 		String profiloOperatoreValue = null;
 		ProfiloOperatore profiloOperatore = entry.getProfilo();
 		switch (profiloOperatore) {
@@ -390,14 +390,14 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 		// GP-348
 		//		TipiTributo tipiTributo = (TipiTributo) infoCreazioneMap.get(tipiTributoId);
-		//		tipiTributo.init(tipoAutenticazioneValues, bd); 
+		//		tipiTributo.init(tipoAutenticazioneValues, bd,this.getLanguage()); 
 		//		sezioneRoot.addField(tipiTributo);
 
-		Domini domini = (Domini) infoCreazioneMap.get(dominiId);
-		domini.init(tipoAutenticazioneValues, bd); 
+		Domini domini = (Domini) this.infoCreazioneMap.get(dominiId);
+		domini.init(tipoAutenticazioneValues, bd,this.getLanguage()); 
 		sezioneRoot.addField(domini); 
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
 
@@ -412,14 +412,14 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			if(infoCreazioneMap == null){
+			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
 
-			if(infoCreazioneMap.containsKey(fieldId)){
-				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
+			if(this.infoCreazioneMap.containsKey(fieldId)){
+				RefreshableParamField<?> paramField = (RefreshableParamField<?>) this.infoCreazioneMap.get(fieldId);
 
-				paramField.aggiornaParametro(values,bd);
+				paramField.aggiornaParametro(values,bd,this.getLanguage());
 
 				return paramField;
 
@@ -451,11 +451,11 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			boolean isAdmin = false;
 			switch(profilo){
 			case ADMIN:
-				profiloValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.admin");
+				profiloValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.admin");
 				isAdmin = true;
 				break;
 			case ENTE:
-				profiloValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.ente");
+				profiloValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.ente");
 			default: break;
 			}
 
@@ -468,16 +468,16 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati del psp
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), operatore.getPrincipal());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nome.label"), operatore.getNome());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.label"), profiloValue);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(operatore.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), operatore.getPrincipal());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.label"), operatore.getNome());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.label"), profiloValue);
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(operatore.isAbilitato()));
 
 			if(!isAdmin){
 				// Elementi correlati dell'operatore UO e Domini
 
 				// GP-348
-				//				String etichettaTipiTributo = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
+				//				String etichettaTipiTributo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
 				//				it.govpay.web.rs.dars.model.Sezione sezioneTributi = dettaglio.addSezione(etichettaTipiTributo);
 				//
 				//				List<Long> idTributi = Utils.getIdsFromAcls(operatore.getAcls(), Tipo.TRIBUTO , Servizio.CRUSCOTTO);
@@ -503,11 +503,11 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 				//							}
 				//						}
 				//					} else{
-				//						sezioneTributi.addVoce(Utils.getInstance().getMessageFromResourceBundle("commons.label.tutti"),null);
+				//						sezioneTributi.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti"),null);
 				//					}
 				//				}
 
-				String etichettaDomini = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
+				String etichettaDomini = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
 				it.govpay.web.rs.dars.model.Sezione sezioneDomini = dettaglio.addSezione(etichettaDomini);
 
 				List<Long> idDomini = Utils.getIdsFromAcls(operatore.getAcls(), Tipo.DOMINIO, Servizio.CRUSCOTTO);
@@ -533,7 +533,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 							}
 						}
 					}else {
-						sezioneDomini.addVoce(Utils.getInstance().getMessageFromResourceBundle("commons.label.tutti"),null);
+						sezioneDomini.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti"),null);
 					}
 				}
 			}
@@ -566,7 +566,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			try{
 				operatoriBD.getOperatore(entry.getPrincipal());
-				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getPrincipal());
+				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getPrincipal());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
 
@@ -591,8 +591,8 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			throws WebApplicationException, ConsoleException {
 		String methodName = "creaEntry " + this.titoloServizio;
 		Operatore entry = null;
-		String dominiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
-		// String tipiTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
+		String dominiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".domini.id");
+		// String tipiTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributo.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -672,17 +672,25 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 	@Override
 	public void checkEntry(Operatore entry, Operatore oldEntry) throws ValidationException {
-		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty())   throw new ValidationException("E' necessario valorizzare il campo Principal");
-		if(entry.getPrincipal().contains(" ")) throw new ValidationException("Principal non valida. Caratteri blank non ammessi");
+		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) {
+			throw new ValidationException("E' necessario valorizzare il campo Principal");
+		}
+		if(entry.getPrincipal().contains(" ")) {
+			throw new ValidationException("Principal non valida. Caratteri blank non ammessi");
+		}
 
-		if(entry != null && entry.getPrincipal() != null && entry.getPrincipal().length() > 255) 
-			throw new ValidationException("Il campo Principal non puo' essere piu' lungo di 255 caratteri."); 
+		if(entry != null && entry.getPrincipal() != null && entry.getPrincipal().length() > 255) {
+			throw new ValidationException("Il campo Principal non puo' essere piu' lungo di 255 caratteri.");
+		} 
 
-		if(entry != null && entry.getNome() != null && entry.getNome().length() > 255)  
-			throw new ValidationException("Il campo Nome non puo' essere piu' lungo di 255 caratteri."); 
+		if(entry != null && entry.getNome() != null && entry.getNome().length() > 255) {
+			throw new ValidationException("Il campo Nome non puo' essere piu' lungo di 255 caratteri.");
+		} 
 
 		if(oldEntry != null) {
-			if(!entry.getPrincipal().equals(oldEntry.getPrincipal())) throw new ValidationException("Il campo Principal non e' modificabile");
+			if(!entry.getPrincipal().equals(oldEntry.getPrincipal())) {
+				throw new ValidationException("Il campo Principal non e' modificabile");
+			}
 		}
 	}
 
@@ -734,10 +742,11 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
 		sb.append(", Ruolo: ");
 		ProfiloOperatore profilo = entry.getProfilo();
-		if(profilo.equals(ProfiloOperatore.ADMIN))
+		if(profilo.equals(ProfiloOperatore.ADMIN)) {
 			sb.append("Amministratore");
-		else 
+		} else {
 			sb.append("Operatore");
+		}
 
 		return sb.toString();
 	}

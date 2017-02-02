@@ -86,7 +86,7 @@ public class EstrattiConto extends BaseDarsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".dettaglio.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".dettaglio.erroreGenerico"));
 			
 			return Response.serverError().entity(darsResponse).build();
 		}finally {

@@ -23,6 +23,7 @@ package it.govpay.web.rs.dars.anagrafica.applicazioni.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -54,9 +55,10 @@ public class DominiRendicontazione extends MultiSelectList<Long, List<Long>>{
 	public DominiRendicontazione(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		this.nomeServizio = nomeServizio;
-		this.rendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
-		this.applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.rendicontazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
+		this.applicazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override

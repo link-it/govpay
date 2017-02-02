@@ -87,7 +87,7 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
-			String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.id");
+			String idFrApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.id");
 			String idFrApplicazione = this.getParameter(uriInfo, idFrApplicazioneId, String.class);
 
 			boolean eseguiRicerca = true;// isAdmin;
@@ -159,13 +159,13 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 
 			Iuv iuv = rendicontazioneSenzaRpt.getIuv(bd);
 			if(iuv != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),iuv.getIuv());
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),iuv.getIuv());
 			if(StringUtils.isNotEmpty(rendicontazioneSenzaRpt.getIur()))
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),rendicontazioneSenzaRpt.getIur());
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),rendicontazioneSenzaRpt.getIur());
 			if(rendicontazioneSenzaRpt.getImportoPagato() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),(rendicontazioneSenzaRpt.getImportoPagato().toString() + "€"));
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),(rendicontazioneSenzaRpt.getImportoPagato().toString() + "€"));
 			if(rendicontazioneSenzaRpt.getDataRendicontazione() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazione.label"),this.sdf.format(rendicontazioneSenzaRpt.getDataRendicontazione()));
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazione.label"),this.sdf.format(rendicontazioneSenzaRpt.getDataRendicontazione()));
 
 			SingoloVersamento singoloVersamento = rendicontazioneSenzaRpt.getSingoloVersamento(bd);
 			if(singoloVersamento != null){
@@ -173,7 +173,7 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 				SingoliVersamentiHandler svHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
 				UriBuilder uriSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
 				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), uriSVBuilder,bd); 
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -193,7 +193,7 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 		StringBuilder sb = new StringBuilder();
 
 		String pagamentoString = 
-				Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", (importoPagato.toString() + "€") , this.sdf.format(dataRendicontazione)); 
+				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", (importoPagato.toString() + "€") , this.sdf.format(dataRendicontazione)); 
 		sb.append(pagamentoString);	
 		return sb.toString();
 	}

@@ -40,357 +40,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 </head><body><div hidden="" by-vulcanize="">
 
-<style>
-  /* IE 10 support for HTML5 hidden attr */
-  [hidden] {
-    display: none !important;
-  }
-</style>
-
-<style is="custom-style">
-  :root {
-
-    --layout: {
-      display: -ms-flexbox;
-      display: -webkit-flex;
-      display: flex;
-    };
-
-    --layout-inline: {
-      display: -ms-inline-flexbox;
-      display: -webkit-inline-flex;
-      display: inline-flex;
-    };
-
-    --layout-horizontal: {
-      @apply(--layout);
-
-      -ms-flex-direction: row;
-      -webkit-flex-direction: row;
-      flex-direction: row;
-    };
-
-    --layout-horizontal-reverse: {
-      @apply(--layout);
-
-      -ms-flex-direction: row-reverse;
-      -webkit-flex-direction: row-reverse;
-      flex-direction: row-reverse;
-    };
-
-    --layout-vertical: {
-      @apply(--layout);
-
-      -ms-flex-direction: column;
-      -webkit-flex-direction: column;
-      flex-direction: column;
-    };
-
-    --layout-vertical-reverse: {
-      @apply(--layout);
-
-      -ms-flex-direction: column-reverse;
-      -webkit-flex-direction: column-reverse;
-      flex-direction: column-reverse;
-    };
-
-    --layout-wrap: {
-      -ms-flex-wrap: wrap;
-      -webkit-flex-wrap: wrap;
-      flex-wrap: wrap;
-    };
-
-    --layout-wrap-reverse: {
-      -ms-flex-wrap: wrap-reverse;
-      -webkit-flex-wrap: wrap-reverse;
-      flex-wrap: wrap-reverse;
-    };
-
-    --layout-flex-auto: {
-      -ms-flex: 1 1 auto;
-      -webkit-flex: 1 1 auto;
-      flex: 1 1 auto;
-    };
-
-    --layout-flex-none: {
-      -ms-flex: none;
-      -webkit-flex: none;
-      flex: none;
-    };
-
-    --layout-flex: {
-      -ms-flex: 1 1 0.000000001px;
-      -webkit-flex: 1;
-      flex: 1;
-      -webkit-flex-basis: 0.000000001px;
-      flex-basis: 0.000000001px;
-    };
-
-    --layout-flex-2: {
-      -ms-flex: 2;
-      -webkit-flex: 2;
-      flex: 2;
-    };
-
-    --layout-flex-3: {
-      -ms-flex: 3;
-      -webkit-flex: 3;
-      flex: 3;
-    };
-
-    --layout-flex-4: {
-      -ms-flex: 4;
-      -webkit-flex: 4;
-      flex: 4;
-    };
-
-    --layout-flex-5: {
-      -ms-flex: 5;
-      -webkit-flex: 5;
-      flex: 5;
-    };
-
-    --layout-flex-6: {
-      -ms-flex: 6;
-      -webkit-flex: 6;
-      flex: 6;
-    };
-
-    --layout-flex-7: {
-      -ms-flex: 7;
-      -webkit-flex: 7;
-      flex: 7;
-    };
-
-    --layout-flex-8: {
-      -ms-flex: 8;
-      -webkit-flex: 8;
-      flex: 8;
-    };
-
-    --layout-flex-9: {
-      -ms-flex: 9;
-      -webkit-flex: 9;
-      flex: 9;
-    };
-
-    --layout-flex-10: {
-      -ms-flex: 10;
-      -webkit-flex: 10;
-      flex: 10;
-    };
-
-    --layout-flex-11: {
-      -ms-flex: 11;
-      -webkit-flex: 11;
-      flex: 11;
-    };
-
-    --layout-flex-12: {
-      -ms-flex: 12;
-      -webkit-flex: 12;
-      flex: 12;
-    };
-
-    /* alignment in cross axis */
-
-    --layout-start: {
-      -ms-flex-align: start;
-      -webkit-align-items: flex-start;
-      align-items: flex-start;
-    };
-
-    --layout-center: {
-      -ms-flex-align: center;
-      -webkit-align-items: center;
-      align-items: center;
-    };
-
-    --layout-end: {
-      -ms-flex-align: end;
-      -webkit-align-items: flex-end;
-      align-items: flex-end;
-    };
-
-    --layout-baseline: {
-      -ms-flex-align: baseline;
-      -webkit-align-items: baseline;
-      align-items: baseline;
-    };
-
-    /* alignment in main axis */
-
-    --layout-start-justified: {
-      -ms-flex-pack: start;
-      -webkit-justify-content: flex-start;
-      justify-content: flex-start;
-    };
-
-    --layout-center-justified: {
-      -ms-flex-pack: center;
-      -webkit-justify-content: center;
-      justify-content: center;
-    };
-
-    --layout-end-justified: {
-      -ms-flex-pack: end;
-      -webkit-justify-content: flex-end;
-      justify-content: flex-end;
-    };
-
-    --layout-around-justified: {
-      -ms-flex-pack: distribute;
-      -webkit-justify-content: space-around;
-      justify-content: space-around;
-    };
-
-    --layout-justified: {
-      -ms-flex-pack: justify;
-      -webkit-justify-content: space-between;
-      justify-content: space-between;
-    };
-
-    --layout-center-center: {
-      @apply(--layout-center);
-      @apply(--layout-center-justified);
-    };
-
-    /* self alignment */
-
-    --layout-self-start: {
-      -ms-align-self: flex-start;
-      -webkit-align-self: flex-start;
-      align-self: flex-start;
-    };
-
-    --layout-self-center: {
-      -ms-align-self: center;
-      -webkit-align-self: center;
-      align-self: center;
-    };
-
-    --layout-self-end: {
-      -ms-align-self: flex-end;
-      -webkit-align-self: flex-end;
-      align-self: flex-end;
-    };
-
-    --layout-self-stretch: {
-      -ms-align-self: stretch;
-      -webkit-align-self: stretch;
-      align-self: stretch;
-    };
-
-    --layout-self-baseline: {
-      -ms-align-self: baseline;
-      -webkit-align-self: baseline;
-      align-self: baseline;
-    };
-
-    /* multi-line alignment in main axis */
-
-    --layout-start-aligned: {
-      -ms-flex-line-pack: start;  /* IE10 */
-      -ms-align-content: flex-start;
-      -webkit-align-content: flex-start;
-      align-content: flex-start;
-    };
-
-    --layout-end-aligned: {
-      -ms-flex-line-pack: end;  /* IE10 */
-      -ms-align-content: flex-end;
-      -webkit-align-content: flex-end;
-      align-content: flex-end;
-    };
-
-    --layout-center-aligned: {
-      -ms-flex-line-pack: center;  /* IE10 */
-      -ms-align-content: center;
-      -webkit-align-content: center;
-      align-content: center;
-    };
-
-    --layout-between-aligned: {
-      -ms-flex-line-pack: justify;  /* IE10 */
-      -ms-align-content: space-between;
-      -webkit-align-content: space-between;
-      align-content: space-between;
-    };
-
-    --layout-around-aligned: {
-      -ms-flex-line-pack: distribute;  /* IE10 */
-      -ms-align-content: space-around;
-      -webkit-align-content: space-around;
-      align-content: space-around;
-    };
-
-    /*******************************
-              Other Layout
-    *******************************/
-
-    --layout-block: {
-      display: block;
-    };
-
-    --layout-invisible: {
-      visibility: hidden !important;
-    };
-
-    --layout-relative: {
-      position: relative;
-    };
-
-    --layout-fit: {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-    };
-
-    --layout-scroll: {
-      -webkit-overflow-scrolling: touch;
-      overflow: auto;
-    };
-
-    --layout-fullbleed: {
-      margin: 0;
-      height: 100vh;
-    };
-
-    /* fixed position */
-
-    --layout-fixed-top: {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-    };
-
-    --layout-fixed-right: {
-      position: fixed;
-      top: 0;
-      right: 0;
-      bottom: 0;
-    };
-
-    --layout-fixed-bottom: {
-      position: fixed;
-      right: 0;
-      bottom: 0;
-      left: 0;
-    };
-
-    --layout-fixed-left: {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-    };
-
-  }
-
-</style>
 <script>(function () {
 function resolve() {
 document.body.removeAttribute('unresolved');
@@ -1097,7 +746,21 @@ _initFeatures: function () {
 this._marshalHostAttributes();
 this._marshalBehaviors();
 }
-});</script><script>Polymer.Base._addFeature({
+});</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>Polymer.Base._addFeature({
 _prepTemplate: function () {
 if (this._template === undefined) {
 this._template = Polymer.DomModule.import(this.is, 'template');
@@ -8596,7 +8259,355 @@ this._children = Polymer.TreeApi.arrayCopyChildNodes(this.root);
 this._insertChildren();
 this.fire('dom-change');
 }
-});</script>
+});</script><style>
+  /* IE 10 support for HTML5 hidden attr */
+  [hidden] {
+    display: none !important;
+  }
+</style><style is="custom-style">
+  :root {
+
+    --layout: {
+      display: -ms-flexbox;
+      display: -webkit-flex;
+      display: flex;
+    };
+
+    --layout-inline: {
+      display: -ms-inline-flexbox;
+      display: -webkit-inline-flex;
+      display: inline-flex;
+    };
+
+    --layout-horizontal: {
+      @apply(--layout);
+
+      -ms-flex-direction: row;
+      -webkit-flex-direction: row;
+      flex-direction: row;
+    };
+
+    --layout-horizontal-reverse: {
+      @apply(--layout);
+
+      -ms-flex-direction: row-reverse;
+      -webkit-flex-direction: row-reverse;
+      flex-direction: row-reverse;
+    };
+
+    --layout-vertical: {
+      @apply(--layout);
+
+      -ms-flex-direction: column;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+    };
+
+    --layout-vertical-reverse: {
+      @apply(--layout);
+
+      -ms-flex-direction: column-reverse;
+      -webkit-flex-direction: column-reverse;
+      flex-direction: column-reverse;
+    };
+
+    --layout-wrap: {
+      -ms-flex-wrap: wrap;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+    };
+
+    --layout-wrap-reverse: {
+      -ms-flex-wrap: wrap-reverse;
+      -webkit-flex-wrap: wrap-reverse;
+      flex-wrap: wrap-reverse;
+    };
+
+    --layout-flex-auto: {
+      -ms-flex: 1 1 auto;
+      -webkit-flex: 1 1 auto;
+      flex: 1 1 auto;
+    };
+
+    --layout-flex-none: {
+      -ms-flex: none;
+      -webkit-flex: none;
+      flex: none;
+    };
+
+    --layout-flex: {
+      -ms-flex: 1 1 0.000000001px;
+      -webkit-flex: 1;
+      flex: 1;
+      -webkit-flex-basis: 0.000000001px;
+      flex-basis: 0.000000001px;
+    };
+
+    --layout-flex-2: {
+      -ms-flex: 2;
+      -webkit-flex: 2;
+      flex: 2;
+    };
+
+    --layout-flex-3: {
+      -ms-flex: 3;
+      -webkit-flex: 3;
+      flex: 3;
+    };
+
+    --layout-flex-4: {
+      -ms-flex: 4;
+      -webkit-flex: 4;
+      flex: 4;
+    };
+
+    --layout-flex-5: {
+      -ms-flex: 5;
+      -webkit-flex: 5;
+      flex: 5;
+    };
+
+    --layout-flex-6: {
+      -ms-flex: 6;
+      -webkit-flex: 6;
+      flex: 6;
+    };
+
+    --layout-flex-7: {
+      -ms-flex: 7;
+      -webkit-flex: 7;
+      flex: 7;
+    };
+
+    --layout-flex-8: {
+      -ms-flex: 8;
+      -webkit-flex: 8;
+      flex: 8;
+    };
+
+    --layout-flex-9: {
+      -ms-flex: 9;
+      -webkit-flex: 9;
+      flex: 9;
+    };
+
+    --layout-flex-10: {
+      -ms-flex: 10;
+      -webkit-flex: 10;
+      flex: 10;
+    };
+
+    --layout-flex-11: {
+      -ms-flex: 11;
+      -webkit-flex: 11;
+      flex: 11;
+    };
+
+    --layout-flex-12: {
+      -ms-flex: 12;
+      -webkit-flex: 12;
+      flex: 12;
+    };
+
+    /* alignment in cross axis */
+
+    --layout-start: {
+      -ms-flex-align: start;
+      -webkit-align-items: flex-start;
+      align-items: flex-start;
+    };
+
+    --layout-center: {
+      -ms-flex-align: center;
+      -webkit-align-items: center;
+      align-items: center;
+    };
+
+    --layout-end: {
+      -ms-flex-align: end;
+      -webkit-align-items: flex-end;
+      align-items: flex-end;
+    };
+
+    --layout-baseline: {
+      -ms-flex-align: baseline;
+      -webkit-align-items: baseline;
+      align-items: baseline;
+    };
+
+    /* alignment in main axis */
+
+    --layout-start-justified: {
+      -ms-flex-pack: start;
+      -webkit-justify-content: flex-start;
+      justify-content: flex-start;
+    };
+
+    --layout-center-justified: {
+      -ms-flex-pack: center;
+      -webkit-justify-content: center;
+      justify-content: center;
+    };
+
+    --layout-end-justified: {
+      -ms-flex-pack: end;
+      -webkit-justify-content: flex-end;
+      justify-content: flex-end;
+    };
+
+    --layout-around-justified: {
+      -ms-flex-pack: distribute;
+      -webkit-justify-content: space-around;
+      justify-content: space-around;
+    };
+
+    --layout-justified: {
+      -ms-flex-pack: justify;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+    };
+
+    --layout-center-center: {
+      @apply(--layout-center);
+      @apply(--layout-center-justified);
+    };
+
+    /* self alignment */
+
+    --layout-self-start: {
+      -ms-align-self: flex-start;
+      -webkit-align-self: flex-start;
+      align-self: flex-start;
+    };
+
+    --layout-self-center: {
+      -ms-align-self: center;
+      -webkit-align-self: center;
+      align-self: center;
+    };
+
+    --layout-self-end: {
+      -ms-align-self: flex-end;
+      -webkit-align-self: flex-end;
+      align-self: flex-end;
+    };
+
+    --layout-self-stretch: {
+      -ms-align-self: stretch;
+      -webkit-align-self: stretch;
+      align-self: stretch;
+    };
+
+    --layout-self-baseline: {
+      -ms-align-self: baseline;
+      -webkit-align-self: baseline;
+      align-self: baseline;
+    };
+
+    /* multi-line alignment in main axis */
+
+    --layout-start-aligned: {
+      -ms-flex-line-pack: start;  /* IE10 */
+      -ms-align-content: flex-start;
+      -webkit-align-content: flex-start;
+      align-content: flex-start;
+    };
+
+    --layout-end-aligned: {
+      -ms-flex-line-pack: end;  /* IE10 */
+      -ms-align-content: flex-end;
+      -webkit-align-content: flex-end;
+      align-content: flex-end;
+    };
+
+    --layout-center-aligned: {
+      -ms-flex-line-pack: center;  /* IE10 */
+      -ms-align-content: center;
+      -webkit-align-content: center;
+      align-content: center;
+    };
+
+    --layout-between-aligned: {
+      -ms-flex-line-pack: justify;  /* IE10 */
+      -ms-align-content: space-between;
+      -webkit-align-content: space-between;
+      align-content: space-between;
+    };
+
+    --layout-around-aligned: {
+      -ms-flex-line-pack: distribute;  /* IE10 */
+      -ms-align-content: space-around;
+      -webkit-align-content: space-around;
+      align-content: space-around;
+    };
+
+    /*******************************
+              Other Layout
+    *******************************/
+
+    --layout-block: {
+      display: block;
+    };
+
+    --layout-invisible: {
+      visibility: hidden !important;
+    };
+
+    --layout-relative: {
+      position: relative;
+    };
+
+    --layout-fit: {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    };
+
+    --layout-scroll: {
+      -webkit-overflow-scrolling: touch;
+      overflow: auto;
+    };
+
+    --layout-fullbleed: {
+      margin: 0;
+      height: 100vh;
+    };
+
+    /* fixed position */
+
+    --layout-fixed-top: {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+    };
+
+    --layout-fixed-right: {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+    };
+
+    --layout-fixed-bottom: {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    };
+
+    --layout-fixed-left: {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+    };
+
+  }
+
+</style>
 
 
 
@@ -12888,63 +12899,6 @@ this.fire('dom-change');
 <style is="custom-style">
 
   :root {
-    /*
-     * You can use these generic variables in your elements for easy theming.
-     * For example, if all your elements use `--primary-text-color` as its main
-     * color, then switching from a light to a dark theme is just a matter of
-     * changing the value of `--primary-text-color` in your application.
-     */
-    --primary-text-color: var(--light-theme-text-color);
-    --primary-background-color: var(--light-theme-background-color);
-    --secondary-text-color: var(--light-theme-secondary-color);
-    --disabled-text-color: var(--light-theme-disabled-color);
-    --divider-color: var(--light-theme-divider-color);
-    --error-color: var(--paper-deep-orange-a700);
-
-    /*
-     * Primary and accent colors. Also see color.html for more colors.
-     */
-    --primary-color: var(--paper-indigo-500);
-    --light-primary-color: var(--paper-indigo-100);
-    --dark-primary-color: var(--paper-indigo-700);
-
-    --accent-color: var(--paper-pink-a200);
-    --light-accent-color: var(--paper-pink-a100);
-    --dark-accent-color: var(--paper-pink-a400);
-
-
-    /*
-     * Material Design Light background theme
-     */
-    --light-theme-background-color: #ffffff;
-    --light-theme-base-color: #000000;
-    --light-theme-text-color: var(--paper-grey-900);
-    --light-theme-secondary-color: #737373;  /* for secondary text and icons */
-    --light-theme-disabled-color: #9b9b9b;  /* disabled/hint text */
-    --light-theme-divider-color: #dbdbdb;
-
-    /*
-     * Material Design Dark background theme
-     */
-    --dark-theme-background-color: var(--paper-grey-900);
-    --dark-theme-base-color: #ffffff;
-    --dark-theme-text-color: #ffffff;
-    --dark-theme-secondary-color: #bcbcbc;  /* for secondary text and icons */
-    --dark-theme-disabled-color: #646464;  /* disabled/hint text */
-    --dark-theme-divider-color: #3c3c3c;
-
-    /*
-     * Deprecated values because of their confusing names.
-     */
-    --text-primary-color: var(--dark-theme-text-color);
-    --default-primary-color: var(--primary-color);
-
-  }
-
-</style>
-<style is="custom-style">
-
-  :root {
 
     /* Material Design color palette for Google products */
 
@@ -13262,8 +13216,63 @@ this.fire('dom-change');
 
   }
 
-</style>
-<dom-module id="paper-icon-button" assetpath="../bower_components/paper-icon-button/">
+</style><style is="custom-style">
+
+  :root {
+    /*
+     * You can use these generic variables in your elements for easy theming.
+     * For example, if all your elements use `--primary-text-color` as its main
+     * color, then switching from a light to a dark theme is just a matter of
+     * changing the value of `--primary-text-color` in your application.
+     */
+    --primary-text-color: var(--light-theme-text-color);
+    --primary-background-color: var(--light-theme-background-color);
+    --secondary-text-color: var(--light-theme-secondary-color);
+    --disabled-text-color: var(--light-theme-disabled-color);
+    --divider-color: var(--light-theme-divider-color);
+    --error-color: var(--paper-deep-orange-a700);
+
+    /*
+     * Primary and accent colors. Also see color.html for more colors.
+     */
+    --primary-color: var(--paper-indigo-500);
+    --light-primary-color: var(--paper-indigo-100);
+    --dark-primary-color: var(--paper-indigo-700);
+
+    --accent-color: var(--paper-pink-a200);
+    --light-accent-color: var(--paper-pink-a100);
+    --dark-accent-color: var(--paper-pink-a400);
+
+
+    /*
+     * Material Design Light background theme
+     */
+    --light-theme-background-color: #ffffff;
+    --light-theme-base-color: #000000;
+    --light-theme-text-color: var(--paper-grey-900);
+    --light-theme-secondary-color: #737373;  /* for secondary text and icons */
+    --light-theme-disabled-color: #9b9b9b;  /* disabled/hint text */
+    --light-theme-divider-color: #dbdbdb;
+
+    /*
+     * Material Design Dark background theme
+     */
+    --dark-theme-background-color: var(--paper-grey-900);
+    --dark-theme-base-color: #ffffff;
+    --dark-theme-text-color: #ffffff;
+    --dark-theme-secondary-color: #bcbcbc;  /* for secondary text and icons */
+    --dark-theme-disabled-color: #646464;  /* disabled/hint text */
+    --dark-theme-divider-color: #3c3c3c;
+
+    /*
+     * Deprecated values because of their confusing names.
+     */
+    --text-primary-color: var(--dark-theme-text-color);
+    --default-primary-color: var(--primary-color);
+
+  }
+
+</style><dom-module id="paper-icon-button" assetpath="../bower_components/paper-icon-button/">
   <template strip-whitespace="">
     <style>
       :host {
@@ -13388,7 +13397,9 @@ this.fire('dom-change');
     Polymer.IronControlState,
     Polymer.PaperItemBehaviorImpl
   ];
-</script><style is="custom-style">
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700">
+<style is="custom-style">
 
   :root {
 
@@ -13543,8 +13554,7 @@ this.fire('dom-change');
 
   }
 
-</style>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300,300italic,400italic,500,500italic,700,700italic"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,700"><dom-module id="paper-item-shared-styles" assetpath="../bower_components/paper-item/">
+</style><dom-module id="paper-item-shared-styles" assetpath="../bower_components/paper-item/">
   <template>
     <style>
       :host, .paper-item {
@@ -13774,8 +13784,7 @@ this.fire('dom-change');
     };
   }
 
-</style>
-<dom-module id="paper-material-shared-styles" assetpath="../bower_components/paper-material/">
+</style><dom-module id="paper-material-shared-styles" assetpath="../bower_components/paper-material/">
   <template>
     <style>
       :host {
@@ -15870,7 +15879,7 @@ Use `noOverlap` to position the element around another element without overlappi
   };
 </script>
 
-<dom-module id="iron-overlay-backdrop" assetpath="/">
+<dom-module id="iron-overlay-backdrop" assetpath="../bower_components/iron-overlay-behavior/">
 
   <template>
     <style>
@@ -18251,7 +18260,6 @@ context. You should place this element as a child of `<body>` whenever possible.
   /* desktop-xlarge */
   @media all and (min-width: 1601px) and (max-width: 1920px) { }
 </style>
-
 <dom-module id="shared-styles" assetpath="../styles/">
   <template>
     <style>
@@ -18289,14 +18297,23 @@ context. You should place this element as a child of `<body>` whenever possible.
       paper-toolbar {
         --paper-toolbar-background: var(--toolbar-color);
       }
+	/* GIULIANO FIX TEMPORANEO PER VEDERE FORM EDIT*/
+	#mainDialog {
+	 height: 100%;
+	}
 
-      paper-scroll-header-panel {
+      /*paper-scroll-header-panel {
         height: 100%;
-      }
+      }*/
+
+      /*#mainContainer {
+        top: 0;
+      }*/
 
       paper-menu {
-      --paper-menu-selected-item: {
-         color: var(--primary-color);
+        --paper-menu-selected-item: {
+          color: var(--primary-color);
+        }
       }
 
       --paper-menu-focused-item-after: {
@@ -18331,11 +18348,6 @@ context. You should place this element as a child of `<body>` whenever possible.
 
       paper-tabs {
         --paper-tabs-selection-bar-color: var(--accent-color);
-      }
-
-      /* Height of the scroll area */
-      .content {
-        height: 900px;
       }
 
       section[data-route="home"] paper-material {
@@ -18399,6 +18411,11 @@ context. You should place this element as a child of `<body>` whenever possible.
       .accentColor {
         background-color: var(--accent-color);
         color: #fff;
+      }
+
+      vaadin-combo-box-overlay::content #selector .item {
+        white-space: normal !important;
+        color: red;
       }
 
       /*#spinner {
@@ -20087,7 +20104,8 @@ if (!window.Promise) {
 
 !function(a,b){var c={},d={},e={},f=null;!function(a,b){function c(a){if("number"==typeof a)return a;var b={};for(var c in a)b[c]=a[c];return b}function d(){this._delay=0,this._endDelay=0,this._fill="none",this._iterationStart=0,this._iterations=1,this._duration=0,this._playbackRate=1,this._direction="normal",this._easing="linear",this._easingFunction=x}function e(){return a.isDeprecated("Invalid timing inputs","2016-03-02","TypeError exceptions will be thrown instead.",!0)}function f(b,c,e){var f=new d;return c&&(f.fill="both",f.duration="auto"),"number"!=typeof b||isNaN(b)?void 0!==b&&Object.getOwnPropertyNames(b).forEach(function(c){if("auto"!=b[c]){if(("number"==typeof f[c]||"duration"==c)&&("number"!=typeof b[c]||isNaN(b[c])))return;if("fill"==c&&v.indexOf(b[c])==-1)return;if("direction"==c&&w.indexOf(b[c])==-1)return;if("playbackRate"==c&&1!==b[c]&&a.isDeprecated("AnimationEffectTiming.playbackRate","2014-11-28","Use Animation.playbackRate instead."))return;f[c]=b[c]}}):f.duration=b,f}function g(a){return"number"==typeof a&&(a=isNaN(a)?{duration:0}:{duration:a}),a}function h(b,c){return b=a.numericTimingToObject(b),f(b,c)}function i(a,b,c,d){return a<0||a>1||c<0||c>1?x:function(e){function f(a,b,c){return 3*a*(1-c)*(1-c)*c+3*b*(1-c)*c*c+c*c*c}if(e<=0){var g=0;return a>0?g=b/a:!b&&c>0&&(g=d/c),g*e}if(e>=1){var h=0;return c<1?h=(d-1)/(c-1):1==c&&a<1&&(h=(b-1)/(a-1)),1+h*(e-1)}for(var i=0,j=1;i<j;){var k=(i+j)/2,l=f(a,c,k);if(Math.abs(e-l)<1e-5)return f(b,d,k);l<e?i=k:j=k}return f(b,d,k)}}function j(a,b){return function(c){if(c>=1)return 1;var d=1/a;return c+=b*d,c-c%d}}function k(a){C||(C=document.createElement("div").style),C.animationTimingFunction="",C.animationTimingFunction=a;var b=C.animationTimingFunction;if(""==b&&e())throw new TypeError(a+" is not a valid value for easing");return b}function l(a){if("linear"==a)return x;var b=E.exec(a);if(b)return i.apply(this,b.slice(1).map(Number));var c=F.exec(a);if(c)return j(Number(c[1]),{start:y,middle:z,end:A}[c[2]]);var d=B[a];return d?d:x}function m(a){return Math.abs(n(a)/a.playbackRate)}function n(a){return 0===a.duration||0===a.iterations?0:a.duration*a.iterations}function o(a,b,c){if(null==b)return G;var d=c.delay+a+c.endDelay;return b<Math.min(c.delay,d)?H:b>=Math.min(c.delay+a,d)?I:J}function p(a,b,c,d,e){switch(d){case H:return"backwards"==b||"both"==b?0:null;case J:return c-e;case I:return"forwards"==b||"both"==b?a:null;case G:return null}}function q(a,b,c,d,e){var f=e;return 0===a?b!==H&&(f+=c):f+=d/a,f}function r(a,b,c,d,e,f){var g=a===1/0?b%1:a%1;return 0!==g||c!==I||0===d||0===e&&0!==f||(g=1),g}function s(a,b,c,d){return a===I&&b===1/0?1/0:1===c?Math.floor(d)-1:Math.floor(d)}function t(a,b,c){var d=a;if("normal"!==a&&"reverse"!==a){var e=b;"alternate-reverse"===a&&(e+=1),d="normal",e!==1/0&&e%2!==0&&(d="reverse")}return"normal"===d?c:1-c}function u(a,b,c){var d=o(a,b,c),e=p(a,c.fill,b,d,c.delay);if(null===e)return null;var f=q(c.duration,d,c.iterations,e,c.iterationStart),g=r(f,c.iterationStart,d,c.iterations,e,c.duration),h=s(d,c.iterations,g,f),i=t(c.direction,h,g);return c._easingFunction(i)}var v="backwards|forwards|both|none".split("|"),w="reverse|alternate|alternate-reverse".split("|"),x=function(a){return a};d.prototype={_setMember:function(b,c){this["_"+b]=c,this._effect&&(this._effect._timingInput[b]=c,this._effect._timing=a.normalizeTimingInput(this._effect._timingInput),this._effect.activeDuration=a.calculateActiveDuration(this._effect._timing),this._effect._animation&&this._effect._animation._rebuildUnderlyingAnimation())},get playbackRate(){return this._playbackRate},set delay(a){this._setMember("delay",a)},get delay(){return this._delay},set endDelay(a){this._setMember("endDelay",a)},get endDelay(){return this._endDelay},set fill(a){this._setMember("fill",a)},get fill(){return this._fill},set iterationStart(a){if((isNaN(a)||a<0)&&e())throw new TypeError("iterationStart must be a non-negative number, received: "+timing.iterationStart);this._setMember("iterationStart",a)},get iterationStart(){return this._iterationStart},set duration(a){if("auto"!=a&&(isNaN(a)||a<0)&&e())throw new TypeError("duration must be non-negative or auto, received: "+a);this._setMember("duration",a)},get duration(){return this._duration},set direction(a){this._setMember("direction",a)},get direction(){return this._direction},set easing(a){this._easingFunction=l(k(a)),this._setMember("easing",a)},get easing(){return this._easing},set iterations(a){if((isNaN(a)||a<0)&&e())throw new TypeError("iterations must be non-negative, received: "+a);this._setMember("iterations",a)},get iterations(){return this._iterations}};var y=1,z=.5,A=0,B={ease:i(.25,.1,.25,1),"ease-in":i(.42,0,1,1),"ease-out":i(0,0,.58,1),"ease-in-out":i(.42,0,.58,1),"step-start":j(1,y),"step-middle":j(1,z),"step-end":j(1,A)},C=null,D="\\s*(-?\\d+\\.?\\d*|-?\\.\\d+)\\s*",E=new RegExp("cubic-bezier\\("+D+","+D+","+D+","+D+"\\)"),F=/steps\(\s*(\d+)\s*,\s*(start|middle|end)\s*\)/,G=0,H=1,I=2,J=3;a.cloneTimingInput=c,a.makeTiming=f,a.numericTimingToObject=g,a.normalizeTimingInput=h,a.calculateActiveDuration=m,a.calculateIterationProgress=u,a.calculatePhase=o,a.normalizeEasing=k,a.parseEasingFunction=l}(c,f),function(a,b){function c(a,b){return a in k?k[a][b]||b:b}function d(a){return"display"===a||0===a.lastIndexOf("animation",0)||0===a.lastIndexOf("transition",0)}function e(a,b,e){if(!d(a)){var f=h[a];if(f){i.style[a]=b;for(var g in f){var j=f[g],k=i.style[j];e[j]=c(j,k)}}else e[a]=c(a,b)}}function f(a){var b=[];for(var c in a)if(!(c in["easing","offset","composite"])){var d=a[c];Array.isArray(d)||(d=[d]);for(var e,f=d.length,g=0;g<f;g++)e={},"offset"in a?e.offset=a.offset:1==f?e.offset=1:e.offset=g/(f-1),"easing"in a&&(e.easing=a.easing),"composite"in a&&(e.composite=a.composite),e[c]=d[g],b.push(e)}return b.sort(function(a,b){return a.offset-b.offset}),b}function g(b){function c(){var a=d.length;null==d[a-1].offset&&(d[a-1].offset=1),a>1&&null==d[0].offset&&(d[0].offset=0);for(var b=0,c=d[0].offset,e=1;e<a;e++){var f=d[e].offset;if(null!=f){for(var g=1;g<e-b;g++)d[b+g].offset=c+(f-c)*g/(e-b);b=e,c=f}}}if(null==b)return[];window.Symbol&&Symbol.iterator&&Array.prototype.from&&b[Symbol.iterator]&&(b=Array.from(b)),Array.isArray(b)||(b=f(b));for(var d=b.map(function(b){var c={};for(var d in b){var f=b[d];if("offset"==d){if(null!=f){if(f=Number(f),!isFinite(f))throw new TypeError("Keyframe offsets must be numbers.");if(f<0||f>1)throw new TypeError("Keyframe offsets must be between 0 and 1.")}}else if("composite"==d){if("add"==f||"accumulate"==f)throw{type:DOMException.NOT_SUPPORTED_ERR,name:"NotSupportedError",message:"add compositing is not supported"};if("replace"!=f)throw new TypeError("Invalid composite mode "+f+".")}else f="easing"==d?a.normalizeEasing(f):""+f;e(d,f,c)}return void 0==c.offset&&(c.offset=null),void 0==c.easing&&(c.easing="linear"),c}),g=!0,h=-(1/0),i=0;i<d.length;i++){var j=d[i].offset;if(null!=j){if(j<h)throw new TypeError("Keyframes are not loosely sorted by offset. Sort or specify offsets.");h=j}else g=!1}return d=d.filter(function(a){return a.offset>=0&&a.offset<=1}),g||c(),d}var h={background:["backgroundImage","backgroundPosition","backgroundSize","backgroundRepeat","backgroundAttachment","backgroundOrigin","backgroundClip","backgroundColor"],border:["borderTopColor","borderTopStyle","borderTopWidth","borderRightColor","borderRightStyle","borderRightWidth","borderBottomColor","borderBottomStyle","borderBottomWidth","borderLeftColor","borderLeftStyle","borderLeftWidth"],borderBottom:["borderBottomWidth","borderBottomStyle","borderBottomColor"],borderColor:["borderTopColor","borderRightColor","borderBottomColor","borderLeftColor"],borderLeft:["borderLeftWidth","borderLeftStyle","borderLeftColor"],borderRadius:["borderTopLeftRadius","borderTopRightRadius","borderBottomRightRadius","borderBottomLeftRadius"],borderRight:["borderRightWidth","borderRightStyle","borderRightColor"],borderTop:["borderTopWidth","borderTopStyle","borderTopColor"],borderWidth:["borderTopWidth","borderRightWidth","borderBottomWidth","borderLeftWidth"],flex:["flexGrow","flexShrink","flexBasis"],font:["fontFamily","fontSize","fontStyle","fontVariant","fontWeight","lineHeight"],margin:["marginTop","marginRight","marginBottom","marginLeft"],outline:["outlineColor","outlineStyle","outlineWidth"],padding:["paddingTop","paddingRight","paddingBottom","paddingLeft"]},i=document.createElementNS("http://www.w3.org/1999/xhtml","div"),j={thin:"1px",medium:"3px",thick:"5px"},k={borderBottomWidth:j,borderLeftWidth:j,borderRightWidth:j,borderTopWidth:j,fontSize:{"xx-small":"60%","x-small":"75%",small:"89%",medium:"100%",large:"120%","x-large":"150%","xx-large":"200%"},fontWeight:{normal:"400",bold:"700"},outlineWidth:j,textShadow:{none:"0px 0px 0px transparent"},boxShadow:{none:"0px 0px 0px 0px transparent"}};a.convertToArrayForm=f,a.normalizeKeyframes=g}(c,f),function(a){var b={};a.isDeprecated=function(a,c,d,e){var f=e?"are":"is",g=new Date,h=new Date(c);return h.setMonth(h.getMonth()+3),!(g<h&&(a in b||console.warn("Web Animations: "+a+" "+f+" deprecated and will stop working on "+h.toDateString()+". "+d),b[a]=!0,1))},a.deprecated=function(b,c,d,e){var f=e?"are":"is";if(a.isDeprecated(b,c,d,e))throw new Error(b+" "+f+" no longer supported. "+d)}}(c),function(){if(document.documentElement.animate){var a=document.documentElement.animate([],0),b=!0;if(a&&(b=!1,"play|currentTime|pause|reverse|playbackRate|cancel|finish|startTime|playState".split("|").forEach(function(c){void 0===a[c]&&(b=!0)})),!b)return}!function(a,b,c){function d(a){for(var b={},c=0;c<a.length;c++)for(var d in a[c])if("offset"!=d&&"easing"!=d&&"composite"!=d){var e={offset:a[c].offset,easing:a[c].easing,value:a[c][d]};b[d]=b[d]||[],b[d].push(e)}for(var f in b){var g=b[f];if(0!=g[0].offset||1!=g[g.length-1].offset)throw{type:DOMException.NOT_SUPPORTED_ERR,name:"NotSupportedError",message:"Partial keyframes are not supported"}}return b}function e(c){var d=[];for(var e in c)for(var f=c[e],g=0;g<f.length-1;g++){var h=g,i=g+1,j=f[h].offset,k=f[i].offset,l=j,m=k;0==g&&(l=-(1/0),0==k&&(i=h)),g==f.length-2&&(m=1/0,1==j&&(h=i)),d.push({applyFrom:l,applyTo:m,startOffset:f[h].offset,endOffset:f[i].offset,easingFunction:a.parseEasingFunction(f[h].easing),property:e,interpolation:b.propertyInterpolation(e,f[h].value,f[i].value)})}return d.sort(function(a,b){return a.startOffset-b.startOffset}),d}b.convertEffectInput=function(c){var f=a.normalizeKeyframes(c),g=d(f),h=e(g);return function(a,c){if(null!=c)h.filter(function(a){return c>=a.applyFrom&&c<a.applyTo}).forEach(function(d){var e=c-d.startOffset,f=d.endOffset-d.startOffset,g=0==f?0:d.easingFunction(e/f);b.apply(a,d.property,d.interpolation(g))});else for(var d in g)"offset"!=d&&"easing"!=d&&"composite"!=d&&b.clear(a,d)}}}(c,d,f),function(a,b,c){function d(a){return a.replace(/-(.)/g,function(a,b){return b.toUpperCase()})}function e(a,b,c){h[c]=h[c]||[],h[c].push([a,b])}function f(a,b,c){for(var f=0;f<c.length;f++){var g=c[f];e(a,b,d(g))}}function g(c,e,f){var g=c;/-/.test(c)&&!a.isDeprecated("Hyphenated property names","2016-03-22","Use camelCase instead.",!0)&&(g=d(c)),"initial"!=e&&"initial"!=f||("initial"==e&&(e=i[g]),"initial"==f&&(f=i[g]));for(var j=e==f?[]:h[g],k=0;j&&k<j.length;k++){var l=j[k][0](e),m=j[k][0](f);if(void 0!==l&&void 0!==m){var n=j[k][1](l,m);if(n){var o=b.Interpolation.apply(null,n);return function(a){return 0==a?e:1==a?f:o(a)}}}}return b.Interpolation(!1,!0,function(a){return a?f:e})}var h={};b.addPropertiesHandler=f;var i={backgroundColor:"transparent",backgroundPosition:"0% 0%",borderBottomColor:"currentColor",borderBottomLeftRadius:"0px",borderBottomRightRadius:"0px",borderBottomWidth:"3px",borderLeftColor:"currentColor",borderLeftWidth:"3px",borderRightColor:"currentColor",borderRightWidth:"3px",borderSpacing:"2px",borderTopColor:"currentColor",borderTopLeftRadius:"0px",borderTopRightRadius:"0px",borderTopWidth:"3px",bottom:"auto",clip:"rect(0px, 0px, 0px, 0px)",color:"black",fontSize:"100%",fontWeight:"400",height:"auto",left:"auto",letterSpacing:"normal",lineHeight:"120%",marginBottom:"0px",marginLeft:"0px",marginRight:"0px",marginTop:"0px",maxHeight:"none",maxWidth:"none",minHeight:"0px",minWidth:"0px",opacity:"1.0",outlineColor:"invert",outlineOffset:"0px",outlineWidth:"3px",paddingBottom:"0px",paddingLeft:"0px",paddingRight:"0px",paddingTop:"0px",right:"auto",textIndent:"0px",textShadow:"0px 0px 0px transparent",top:"auto",transform:"",verticalAlign:"0px",visibility:"visible",width:"auto",wordSpacing:"normal",zIndex:"auto"};b.propertyInterpolation=g}(c,d,f),function(a,b,c){function d(b){var c=a.calculateActiveDuration(b),d=function(d){return a.calculateIterationProgress(c,d,b)};return d._totalDuration=b.delay+c+b.endDelay,d}b.KeyframeEffect=function(c,e,f,g){var h,i=d(a.normalizeTimingInput(f)),j=b.convertEffectInput(e),k=function(){j(c,h)};return k._update=function(a){return h=i(a),null!==h},k._clear=function(){j(c,null)},k._hasSameTarget=function(a){return c===a},k._target=c,k._totalDuration=i._totalDuration,k._id=g,k},b.NullEffect=function(a){var b=function(){a&&(a(),a=null)};return b._update=function(){return null},b._totalDuration=0,b._hasSameTarget=function(){return!1},b}}(c,d,f),function(a,b){a.apply=function(b,c,d){b.style[a.propertyName(c)]=d},a.clear=function(b,c){b.style[a.propertyName(c)]=""}}(d,f),function(a){window.Element.prototype.animate=function(b,c){var d="";return c&&c.id&&(d=c.id),a.timeline._play(a.KeyframeEffect(this,b,c,d))}}(d),function(a,b){function c(a,b,d){if("number"==typeof a&&"number"==typeof b)return a*(1-d)+b*d;if("boolean"==typeof a&&"boolean"==typeof b)return d<.5?a:b;if(a.length==b.length){for(var e=[],f=0;f<a.length;f++)e.push(c(a[f],b[f],d));return e}throw"Mismatched interpolation arguments "+a+":"+b}a.Interpolation=function(a,b,d){return function(e){return d(c(a,b,e))}}}(d,f),function(a,b,c){a.sequenceNumber=0;var d=function(a,b,c){this.target=a,this.currentTime=b,this.timelineTime=c,this.type="finish",this.bubbles=!1,this.cancelable=!1,this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,this.timeStamp=Date.now()};b.Animation=function(b){this.id="",b&&b._id&&(this.id=b._id),this._sequenceNumber=a.sequenceNumber++,this._currentTime=0,this._startTime=null,this._paused=!1,this._playbackRate=1,this._inTimeline=!0,this._finishedFlag=!0,this.onfinish=null,this._finishHandlers=[],this._effect=b,this._inEffect=this._effect._update(0),this._idle=!0,this._currentTimePending=!1},b.Animation.prototype={_ensureAlive:function(){this.playbackRate<0&&0===this.currentTime?this._inEffect=this._effect._update(-1):this._inEffect=this._effect._update(this.currentTime),this._inTimeline||!this._inEffect&&this._finishedFlag||(this._inTimeline=!0,b.timeline._animations.push(this))},_tickCurrentTime:function(a,b){a!=this._currentTime&&(this._currentTime=a,this._isFinished&&!b&&(this._currentTime=this._playbackRate>0?this._totalDuration:0),this._ensureAlive())},get currentTime(){return this._idle||this._currentTimePending?null:this._currentTime},set currentTime(a){a=+a,isNaN(a)||(b.restart(),this._paused||null==this._startTime||(this._startTime=this._timeline.currentTime-a/this._playbackRate),this._currentTimePending=!1,this._currentTime!=a&&(this._idle&&(this._idle=!1,this._paused=!0),this._tickCurrentTime(a,!0),b.applyDirtiedAnimation(this)))},get startTime(){return this._startTime},set startTime(a){a=+a,isNaN(a)||this._paused||this._idle||(this._startTime=a,this._tickCurrentTime((this._timeline.currentTime-this._startTime)*this.playbackRate),b.applyDirtiedAnimation(this))},get playbackRate(){return this._playbackRate},set playbackRate(a){if(a!=this._playbackRate){var c=this.currentTime;this._playbackRate=a,this._startTime=null,"paused"!=this.playState&&"idle"!=this.playState&&(this._finishedFlag=!1,this._idle=!1,this._ensureAlive(),b.applyDirtiedAnimation(this)),null!=c&&(this.currentTime=c)}},get _isFinished(){return!this._idle&&(this._playbackRate>0&&this._currentTime>=this._totalDuration||this._playbackRate<0&&this._currentTime<=0)},get _totalDuration(){return this._effect._totalDuration},get playState(){return this._idle?"idle":null==this._startTime&&!this._paused&&0!=this.playbackRate||this._currentTimePending?"pending":this._paused?"paused":this._isFinished?"finished":"running"},_rewind:function(){if(this._playbackRate>=0)this._currentTime=0;else{if(!(this._totalDuration<1/0))throw new DOMException("Unable to rewind negative playback rate animation with infinite duration","InvalidStateError");this._currentTime=this._totalDuration}},play:function(){this._paused=!1,(this._isFinished||this._idle)&&(this._rewind(),this._startTime=null),this._finishedFlag=!1,this._idle=!1,this._ensureAlive(),b.applyDirtiedAnimation(this)},pause:function(){this._isFinished||this._paused||this._idle?this._idle&&(this._rewind(),this._idle=!1):this._currentTimePending=!0,this._startTime=null,this._paused=!0},finish:function(){this._idle||(this.currentTime=this._playbackRate>0?this._totalDuration:0,this._startTime=this._totalDuration-this.currentTime,this._currentTimePending=!1,b.applyDirtiedAnimation(this))},cancel:function(){this._inEffect&&(this._inEffect=!1,this._idle=!0,this._paused=!1,this._isFinished=!0,this._finishedFlag=!0,this._currentTime=0,this._startTime=null,this._effect._update(null),b.applyDirtiedAnimation(this))},reverse:function(){this.playbackRate*=-1,this.play()},addEventListener:function(a,b){"function"==typeof b&&"finish"==a&&this._finishHandlers.push(b)},removeEventListener:function(a,b){if("finish"==a){var c=this._finishHandlers.indexOf(b);c>=0&&this._finishHandlers.splice(c,1)}},_fireEvents:function(a){if(this._isFinished){if(!this._finishedFlag){var b=new d(this,this._currentTime,a),c=this._finishHandlers.concat(this.onfinish?[this.onfinish]:[]);setTimeout(function(){c.forEach(function(a){a.call(b.target,b)})},0),this._finishedFlag=!0}}else this._finishedFlag=!1},_tick:function(a,b){this._idle||this._paused||(null==this._startTime?b&&(this.startTime=a-this._currentTime/this.playbackRate):this._isFinished||this._tickCurrentTime((a-this._startTime)*this.playbackRate)),b&&(this._currentTimePending=!1,this._fireEvents(a))},get _needsTick(){return this.playState in{pending:1,running:1}||!this._finishedFlag},_targetAnimations:function(){var a=this._effect._target;return a._activeAnimations||(a._activeAnimations=[]),a._activeAnimations},_markTarget:function(){var a=this._targetAnimations();a.indexOf(this)===-1&&a.push(this)},_unmarkTarget:function(){var a=this._targetAnimations(),b=a.indexOf(this);b!==-1&&a.splice(b,1)}}}(c,d,f),function(a,b,c){function d(a){var b=j;j=[],a<q.currentTime&&(a=q.currentTime),q._animations.sort(e),q._animations=h(a,!0,q._animations)[0],b.forEach(function(b){b[1](a)}),g(),l=void 0}function e(a,b){return a._sequenceNumber-b._sequenceNumber}function f(){this._animations=[],this.currentTime=window.performance&&performance.now?performance.now():0}function g(){o.forEach(function(a){a()}),o.length=0}function h(a,c,d){p=!0,n=!1;var e=b.timeline;e.currentTime=a,m=!1;var f=[],g=[],h=[],i=[];return d.forEach(function(b){b._tick(a,c),b._inEffect?(g.push(b._effect),b._markTarget()):(f.push(b._effect),b._unmarkTarget()),b._needsTick&&(m=!0);var d=b._inEffect||b._needsTick;b._inTimeline=d,d?h.push(b):i.push(b)}),o.push.apply(o,f),o.push.apply(o,g),m&&requestAnimationFrame(function(){}),p=!1,[h,i]}var i=window.requestAnimationFrame,j=[],k=0;window.requestAnimationFrame=function(a){var b=k++;return 0==j.length&&i(d),j.push([b,a]),b},window.cancelAnimationFrame=function(a){j.forEach(function(b){b[0]==a&&(b[1]=function(){})})},f.prototype={_play:function(c){c._timing=a.normalizeTimingInput(c.timing);var d=new b.Animation(c);return d._idle=!1,d._timeline=this,this._animations.push(d),b.restart(),b.applyDirtiedAnimation(d),d}};var l=void 0,m=!1,n=!1;b.restart=function(){return m||(m=!0,requestAnimationFrame(function(){}),n=!0),n},b.applyDirtiedAnimation=function(a){if(!p){a._markTarget();var c=a._targetAnimations();c.sort(e);var d=h(b.timeline.currentTime,!1,c.slice())[1];d.forEach(function(a){var b=q._animations.indexOf(a);b!==-1&&q._animations.splice(b,1)}),g()}};var o=[],p=!1,q=new f;b.timeline=q}(c,d,f),function(a){function b(a,b){var c=a.exec(b);if(c)return c=a.ignoreCase?c[0].toLowerCase():c[0],[c,b.substr(c.length)]}function c(a,b){b=b.replace(/^\s*/,"");var c=a(b);if(c)return[c[0],c[1].replace(/^\s*/,"")]}function d(a,d,e){a=c.bind(null,a);for(var f=[];;){var g=a(e);if(!g)return[f,e];if(f.push(g[0]),e=g[1],g=b(d,e),!g||""==g[1])return[f,e];e=g[1]}}function e(a,b){for(var c=0,d=0;d<b.length&&(!/\s|,/.test(b[d])||0!=c);d++)if("("==b[d])c++;else if(")"==b[d]&&(c--,0==c&&d++,c<=0))break;var e=a(b.substr(0,d));return void 0==e?void 0:[e,b.substr(d)]}function f(a,b){for(var c=a,d=b;c&&d;)c>d?c%=d:d%=c;return c=a*b/(c+d)}function g(a){return function(b){var c=a(b);return c&&(c[0]=void 0),c}}function h(a,b){return function(c){var d=a(c);return d?d:[b,c]}}function i(b,c){for(var d=[],e=0;e<b.length;e++){var f=a.consumeTrimmed(b[e],c);if(!f||""==f[0])return;void 0!==f[0]&&d.push(f[0]),c=f[1]}if(""==c)return d}function j(a,b,c,d,e){for(var g=[],h=[],i=[],j=f(d.length,e.length),k=0;k<j;k++){var l=b(d[k%d.length],e[k%e.length]);if(!l)return;g.push(l[0]),h.push(l[1]),i.push(l[2])}return[g,h,function(b){var d=b.map(function(a,b){return i[b](a)}).join(c);return a?a(d):d}]}function k(a,b,c){for(var d=[],e=[],f=[],g=0,h=0;h<c.length;h++)if("function"==typeof c[h]){var i=c[h](a[g],b[g++]);d.push(i[0]),e.push(i[1]),f.push(i[2])}else!function(a){d.push(!1),e.push(!1),f.push(function(){return c[a]})}(h);return[d,e,function(a){for(var b="",c=0;c<a.length;c++)b+=f[c](a[c]);return b}]}a.consumeToken=b,a.consumeTrimmed=c,a.consumeRepeated=d,a.consumeParenthesised=e,a.ignore=g,a.optional=h,a.consumeList=i,a.mergeNestedRepeated=j.bind(null,null),a.mergeWrappedNestedRepeated=j,a.mergeList=k}(d),function(a){function b(b){function c(b){var c=a.consumeToken(/^inset/i,b);if(c)return d.inset=!0,c;var c=a.consumeLengthOrPercent(b);if(c)return d.lengths.push(c[0]),c;var c=a.consumeColor(b);return c?(d.color=c[0],c):void 0}var d={inset:!1,lengths:[],color:null},e=a.consumeRepeated(c,/^/,b);if(e&&e[0].length)return[d,e[1]]}function c(c){var d=a.consumeRepeated(b,/^,/,c);if(d&&""==d[1])return d[0]}function d(b,c){for(;b.lengths.length<Math.max(b.lengths.length,c.lengths.length);)b.lengths.push({px:0});for(;c.lengths.length<Math.max(b.lengths.length,c.lengths.length);)c.lengths.push({px:0});if(b.inset==c.inset&&!!b.color==!!c.color){for(var d,e=[],f=[[],0],g=[[],0],h=0;h<b.lengths.length;h++){var i=a.mergeDimensions(b.lengths[h],c.lengths[h],2==h);f[0].push(i[0]),g[0].push(i[1]),e.push(i[2])}if(b.color&&c.color){var j=a.mergeColors(b.color,c.color);f[1]=j[0],g[1]=j[1],d=j[2]}return[f,g,function(a){for(var c=b.inset?"inset ":" ",f=0;f<e.length;f++)c+=e[f](a[0][f])+" ";return d&&(c+=d(a[1])),c}]}}function e(b,c,d,e){function f(a){return{inset:a,color:[0,0,0,0],lengths:[{px:0},{px:0},{px:0},{px:0}]}}for(var g=[],h=[],i=0;i<d.length||i<e.length;i++){var j=d[i]||f(e[i].inset),k=e[i]||f(d[i].inset);g.push(j),h.push(k)}return a.mergeNestedRepeated(b,c,g,h)}var f=e.bind(null,d,", ");a.addPropertiesHandler(c,f,["box-shadow","text-shadow"])}(d),function(a,b){function c(a){return a.toFixed(3).replace(".000","")}function d(a,b,c){return Math.min(b,Math.max(a,c))}function e(a){if(/^\s*[-+]?(\d*\.)?\d+\s*$/.test(a))return Number(a)}function f(a,b){return[a,b,c]}function g(a,b){if(0!=a)return i(0,1/0)(a,b)}function h(a,b){return[a,b,function(a){return Math.round(d(1,1/0,a))}]}function i(a,b){return function(e,f){return[e,f,function(e){return c(d(a,b,e))}]}}function j(a,b){return[a,b,Math.round]}a.clamp=d,a.addPropertiesHandler(e,i(0,1/0),["border-image-width","line-height"]),a.addPropertiesHandler(e,i(0,1),["opacity","shape-image-threshold"]),a.addPropertiesHandler(e,g,["flex-grow","flex-shrink"]),a.addPropertiesHandler(e,h,["orphans","widows"]),a.addPropertiesHandler(e,j,["z-index"]),a.parseNumber=e,a.mergeNumbers=f,a.numberToString=c}(d,f),function(a,b){function c(a,b){if("visible"==a||"visible"==b)return[0,1,function(c){return c<=0?a:c>=1?b:"visible"}]}a.addPropertiesHandler(String,c,["visibility"])}(d),function(a,b){function c(a){a=a.trim(),f.fillStyle="#000",f.fillStyle=a;var b=f.fillStyle;if(f.fillStyle="#fff",f.fillStyle=a,b==f.fillStyle){f.fillRect(0,0,1,1);var c=f.getImageData(0,0,1,1).data;f.clearRect(0,0,1,1);var d=c[3]/255;return[c[0]*d,c[1]*d,c[2]*d,d]}}function d(b,c){return[b,c,function(b){function c(a){return Math.max(0,Math.min(255,a))}if(b[3])for(var d=0;d<3;d++)b[d]=Math.round(c(b[d]/b[3]));return b[3]=a.numberToString(a.clamp(0,1,b[3])),"rgba("+b.join(",")+")"}]}var e=document.createElementNS("http://www.w3.org/1999/xhtml","canvas");e.width=e.height=1;var f=e.getContext("2d");a.addPropertiesHandler(c,d,["background-color","border-bottom-color","border-left-color","border-right-color","border-top-color","color","outline-color","text-decoration-color"]),a.consumeColor=a.consumeParenthesised.bind(null,c),a.mergeColors=d}(d,f),function(a,b){function c(a,b){if(b=b.trim().toLowerCase(),"0"==b&&"px".search(a)>=0)return{px:0};if(/^[^(]*$|^calc/.test(b)){b=b.replace(/calc\(/g,"(");var c={};b=b.replace(a,function(a){return c[a]=null,"U"+a});for(var d="U("+a.source+")",e=b.replace(/[-+]?(\d*\.)?\d+/g,"N").replace(new RegExp("N"+d,"g"),"D").replace(/\s[+-]\s/g,"O").replace(/\s/g,""),f=[/N\*(D)/g,/(N|D)[*\/]N/g,/(N|D)O\1/g,/\((N|D)\)/g],g=0;g<f.length;)f[g].test(e)?(e=e.replace(f[g],"$1"),g=0):g++;if("D"==e){for(var h in c){var i=eval(b.replace(new RegExp("U"+h,"g"),"").replace(new RegExp(d,"g"),"*0"));if(!isFinite(i))return;c[h]=i}return c}}}function d(a,b){return e(a,b,!0)}function e(b,c,d){var e,f=[];for(e in b)f.push(e);for(e in c)f.indexOf(e)<0&&f.push(e);return b=f.map(function(a){return b[a]||0}),c=f.map(function(a){return c[a]||0}),[b,c,function(b){var c=b.map(function(c,e){return 1==b.length&&d&&(c=Math.max(c,0)),a.numberToString(c)+f[e]}).join(" + ");return b.length>1?"calc("+c+")":c}]}var f="px|em|ex|ch|rem|vw|vh|vmin|vmax|cm|mm|in|pt|pc",g=c.bind(null,new RegExp(f,"g")),h=c.bind(null,new RegExp(f+"|%","g")),i=c.bind(null,/deg|rad|grad|turn/g);a.parseLength=g,a.parseLengthOrPercent=h,a.consumeLengthOrPercent=a.consumeParenthesised.bind(null,h),a.parseAngle=i,a.mergeDimensions=e;var j=a.consumeParenthesised.bind(null,g),k=a.consumeRepeated.bind(void 0,j,/^/),l=a.consumeRepeated.bind(void 0,k,/^,/);a.consumeSizePairList=l;var m=function(a){var b=l(a);if(b&&""==b[1])return b[0]},n=a.mergeNestedRepeated.bind(void 0,d," "),o=a.mergeNestedRepeated.bind(void 0,n,",");a.mergeNonNegativeSizePair=n,a.addPropertiesHandler(m,o,["background-size"]),a.addPropertiesHandler(h,d,["border-bottom-width","border-image-width","border-left-width","border-right-width","border-top-width","flex-basis","font-size","height","line-height","max-height","max-width","outline-width","width"]),a.addPropertiesHandler(h,e,["border-bottom-left-radius","border-bottom-right-radius","border-top-left-radius","border-top-right-radius","bottom","left","letter-spacing","margin-bottom","margin-left","margin-right","margin-top","min-height","min-width","outline-offset","padding-bottom","padding-left","padding-right","padding-top","perspective","right","shape-margin","text-indent","top","vertical-align","word-spacing"])}(d,f),function(a,b){function c(b){return a.consumeLengthOrPercent(b)||a.consumeToken(/^auto/,b)}function d(b){var d=a.consumeList([a.ignore(a.consumeToken.bind(null,/^rect/)),a.ignore(a.consumeToken.bind(null,/^\(/)),a.consumeRepeated.bind(null,c,/^,/),a.ignore(a.consumeToken.bind(null,/^\)/))],b);if(d&&4==d[0].length)return d[0]}function e(b,c){return"auto"==b||"auto"==c?[!0,!1,function(d){var e=d?b:c;if("auto"==e)return"auto";var f=a.mergeDimensions(e,e);return f[2](f[0])}]:a.mergeDimensions(b,c)}function f(a){return"rect("+a+")"}var g=a.mergeWrappedNestedRepeated.bind(null,f,e,", ");a.parseBox=d,a.mergeBoxes=g,a.addPropertiesHandler(d,g,["clip"])}(d,f),function(a,b){function c(a){return function(b){var c=0;return a.map(function(a){return a===k?b[c++]:a})}}function d(a){return a}function e(b){if(b=b.toLowerCase().trim(),"none"==b)return[];for(var c,d=/\s*(\w+)\(([^)]*)\)/g,e=[],f=0;c=d.exec(b);){if(c.index!=f)return;f=c.index+c[0].length;var g=c[1],h=n[g];if(!h)return;var i=c[2].split(","),j=h[0];if(j.length<i.length)return;for(var k=[],o=0;o<j.length;o++){var p,q=i[o],r=j[o];if(p=q?{A:function(b){return"0"==b.trim()?m:a.parseAngle(b)},N:a.parseNumber,T:a.parseLengthOrPercent,L:a.parseLength}[r.toUpperCase()](q):{a:m,n:k[0],t:l}[r],void 0===p)return;k.push(p)}if(e.push({t:g,d:k}),d.lastIndex==b.length)return e}}function f(a){return a.toFixed(6).replace(".000000","")}function g(b,c){if(b.decompositionPair!==c){b.decompositionPair=c;var d=a.makeMatrixDecomposition(b)}if(c.decompositionPair!==b){c.decompositionPair=b;var e=a.makeMatrixDecomposition(c)}return null==d[0]||null==e[0]?[[!1],[!0],function(a){return a?c[0].d:b[0].d}]:(d[0].push(0),e[0].push(1),[d,e,function(b){var c=a.quat(d[0][3],e[0][3],b[5]),g=a.composeMatrix(b[0],b[1],b[2],c,b[4]),h=g.map(f).join(",");return h}])}function h(a){return a.replace(/[xy]/,"")}function i(a){return a.replace(/(x|y|z|3d)?$/,"3d")}function j(b,c){var d=a.makeMatrixDecomposition&&!0,e=!1;if(!b.length||!c.length){b.length||(e=!0,b=c,c=[]);for(var f=0;f<b.length;f++){var j=b[f].t,k=b[f].d,l="scale"==j.substr(0,5)?1:0;c.push({t:j,d:k.map(function(a){if("number"==typeof a)return l;var b={};for(var c in a)b[c]=l;return b})})}}var m=function(a,b){return"perspective"==a&&"perspective"==b||("matrix"==a||"matrix3d"==a)&&("matrix"==b||"matrix3d"==b)},o=[],p=[],q=[];if(b.length!=c.length){if(!d)return;var r=g(b,c);o=[r[0]],p=[r[1]],q=[["matrix",[r[2]]]]}else for(var f=0;f<b.length;f++){var j,s=b[f].t,t=c[f].t,u=b[f].d,v=c[f].d,w=n[s],x=n[t];if(m(s,t)){if(!d)return;var r=g([b[f]],[c[f]]);o.push(r[0]),p.push(r[1]),q.push(["matrix",[r[2]]])}else{if(s==t)j=s;else if(w[2]&&x[2]&&h(s)==h(t))j=h(s),u=w[2](u),v=x[2](v);else{if(!w[1]||!x[1]||i(s)!=i(t)){if(!d)return;var r=g(b,c);o=[r[0]],p=[r[1]],q=[["matrix",[r[2]]]];break}j=i(s),u=w[1](u),v=x[1](v)}for(var y=[],z=[],A=[],B=0;B<u.length;B++){var C="number"==typeof u[B]?a.mergeNumbers:a.mergeDimensions,r=C(u[B],v[B]);y[B]=r[0],z[B]=r[1],A.push(r[2])}o.push(y),p.push(z),q.push([j,A])}}if(e){var D=o;o=p,p=D}return[o,p,function(a){return a.map(function(a,b){var c=a.map(function(a,c){return q[b][1][c](a)}).join(",");return"matrix"==q[b][0]&&16==c.split(",").length&&(q[b][0]="matrix3d"),q[b][0]+"("+c+")"}).join(" ")}]}var k=null,l={px:0},m={deg:0},n={matrix:["NNNNNN",[k,k,0,0,k,k,0,0,0,0,1,0,k,k,0,1],d],matrix3d:["NNNNNNNNNNNNNNNN",d],rotate:["A"],rotatex:["A"],rotatey:["A"],rotatez:["A"],rotate3d:["NNNA"],perspective:["L"],scale:["Nn",c([k,k,1]),d],scalex:["N",c([k,1,1]),c([k,1])],scaley:["N",c([1,k,1]),c([1,k])],scalez:["N",c([1,1,k])],scale3d:["NNN",d],skew:["Aa",null,d],skewx:["A",null,c([k,m])],skewy:["A",null,c([m,k])],translate:["Tt",c([k,k,l]),d],translatex:["T",c([k,l,l]),c([k,l])],translatey:["T",c([l,k,l]),c([l,k])],translatez:["L",c([l,l,k])],translate3d:["TTL",d]};a.addPropertiesHandler(e,j,["transform"])}(d,f),function(a,b){function c(a,b){b.concat([a]).forEach(function(b){b in document.documentElement.style&&(d[a]=b)})}var d={};c("transform",["webkitTransform","msTransform"]),c("transformOrigin",["webkitTransformOrigin"]),c("perspective",["webkitPerspective"]),c("perspectiveOrigin",["webkitPerspectiveOrigin"]),a.propertyName=function(a){return d[a]||a}}(d,f)}(),!function(){if(void 0===document.createElement("div").animate([]).oncancel){var a;if(window.performance&&performance.now)var a=function(){return performance.now()};else var a=function(){return Date.now()};var b=function(a,b,c){this.target=a,this.currentTime=b,this.timelineTime=c,this.type="cancel",this.bubbles=!1,this.cancelable=!1,
 this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,this.timeStamp=Date.now()},c=window.Element.prototype.animate;window.Element.prototype.animate=function(d,e){var f=c.call(this,d,e);f._cancelHandlers=[],f.oncancel=null;var g=f.cancel;f.cancel=function(){g.call(this);var c=new b(this,null,a()),d=this._cancelHandlers.concat(this.oncancel?[this.oncancel]:[]);setTimeout(function(){d.forEach(function(a){a.call(c.target,c)})},0)};var h=f.addEventListener;f.addEventListener=function(a,b){"function"==typeof b&&"cancel"==a?this._cancelHandlers.push(b):h.call(this,a,b)};var i=f.removeEventListener;return f.removeEventListener=function(a,b){if("cancel"==a){var c=this._cancelHandlers.indexOf(b);c>=0&&this._cancelHandlers.splice(c,1)}else i.call(this,a,b)},f}}}(),function(a){var b=document.documentElement,c=null,d=!1;try{var e=getComputedStyle(b).getPropertyValue("opacity"),f="0"==e?"1":"0";c=b.animate({opacity:[f,f]},{duration:1}),c.currentTime=0,d=getComputedStyle(b).getPropertyValue("opacity")==f}catch(a){}finally{c&&c.cancel()}if(!d){var g=window.Element.prototype.animate;window.Element.prototype.animate=function(b,c){return window.Symbol&&Symbol.iterator&&Array.prototype.from&&b[Symbol.iterator]&&(b=Array.from(b)),Array.isArray(b)||null===b||(b=a.convertToArrayForm(b)),g.call(this,b,c)}}}(c),!function(a,b,c){function d(a){var c=b.timeline;c.currentTime=a,c._discardAnimations(),0==c._animations.length?f=!1:requestAnimationFrame(d)}var e=window.requestAnimationFrame;window.requestAnimationFrame=function(a){return e(function(c){b.timeline._updateAnimationsPromises(),a(c),b.timeline._updateAnimationsPromises()})},b.AnimationTimeline=function(){this._animations=[],this.currentTime=void 0},b.AnimationTimeline.prototype={getAnimations:function(){return this._discardAnimations(),this._animations.slice()},_updateAnimationsPromises:function(){b.animationsWithPromises=b.animationsWithPromises.filter(function(a){return a._updatePromises()})},_discardAnimations:function(){this._updateAnimationsPromises(),this._animations=this._animations.filter(function(a){return"finished"!=a.playState&&"idle"!=a.playState})},_play:function(a){var c=new b.Animation(a,this);return this._animations.push(c),b.restartWebAnimationsNextTick(),c._updatePromises(),c._animation.play(),c._updatePromises(),c},play:function(a){return a&&a.remove(),this._play(a)}};var f=!1;b.restartWebAnimationsNextTick=function(){f||(f=!0,requestAnimationFrame(d))};var g=new b.AnimationTimeline;b.timeline=g;try{Object.defineProperty(window.document,"timeline",{configurable:!0,get:function(){return g}})}catch(a){}try{window.document.timeline=g}catch(a){}}(c,e,f),function(a,b,c){b.animationsWithPromises=[],b.Animation=function(b,c){if(this.id="",b&&b._id&&(this.id=b._id),this.effect=b,b&&(b._animation=this),!c)throw new Error("Animation with null timeline is not supported");this._timeline=c,this._sequenceNumber=a.sequenceNumber++,this._holdTime=0,this._paused=!1,this._isGroup=!1,this._animation=null,this._childAnimations=[],this._callback=null,this._oldPlayState="idle",this._rebuildUnderlyingAnimation(),this._animation.cancel(),this._updatePromises()},b.Animation.prototype={_updatePromises:function(){var a=this._oldPlayState,b=this.playState;return this._readyPromise&&b!==a&&("idle"==b?(this._rejectReadyPromise(),this._readyPromise=void 0):"pending"==a?this._resolveReadyPromise():"pending"==b&&(this._readyPromise=void 0)),this._finishedPromise&&b!==a&&("idle"==b?(this._rejectFinishedPromise(),this._finishedPromise=void 0):"finished"==b?this._resolveFinishedPromise():"finished"==a&&(this._finishedPromise=void 0)),this._oldPlayState=this.playState,this._readyPromise||this._finishedPromise},_rebuildUnderlyingAnimation:function(){this._updatePromises();var a,c,d,e,f=!!this._animation;f&&(a=this.playbackRate,c=this._paused,d=this.startTime,e=this.currentTime,this._animation.cancel(),this._animation._wrapper=null,this._animation=null),(!this.effect||this.effect instanceof window.KeyframeEffect)&&(this._animation=b.newUnderlyingAnimationForKeyframeEffect(this.effect),b.bindAnimationForKeyframeEffect(this)),(this.effect instanceof window.SequenceEffect||this.effect instanceof window.GroupEffect)&&(this._animation=b.newUnderlyingAnimationForGroup(this.effect),b.bindAnimationForGroup(this)),this.effect&&this.effect._onsample&&b.bindAnimationForCustomEffect(this),f&&(1!=a&&(this.playbackRate=a),null!==d?this.startTime=d:null!==e?this.currentTime=e:null!==this._holdTime&&(this.currentTime=this._holdTime),c&&this.pause()),this._updatePromises()},_updateChildren:function(){if(this.effect&&"idle"!=this.playState){var a=this.effect._timing.delay;this._childAnimations.forEach(function(c){this._arrangeChildren(c,a),this.effect instanceof window.SequenceEffect&&(a+=b.groupChildDuration(c.effect))}.bind(this))}},_setExternalAnimation:function(a){if(this.effect&&this._isGroup)for(var b=0;b<this.effect.children.length;b++)this.effect.children[b]._animation=a,this._childAnimations[b]._setExternalAnimation(a)},_constructChildAnimations:function(){if(this.effect&&this._isGroup){var a=this.effect._timing.delay;this._removeChildAnimations(),this.effect.children.forEach(function(c){var d=b.timeline._play(c);this._childAnimations.push(d),d.playbackRate=this.playbackRate,this._paused&&d.pause(),c._animation=this.effect._animation,this._arrangeChildren(d,a),this.effect instanceof window.SequenceEffect&&(a+=b.groupChildDuration(c))}.bind(this))}},_arrangeChildren:function(a,b){null===this.startTime?a.currentTime=this.currentTime-b/this.playbackRate:a.startTime!==this.startTime+b/this.playbackRate&&(a.startTime=this.startTime+b/this.playbackRate)},get timeline(){return this._timeline},get playState(){return this._animation?this._animation.playState:"idle"},get finished(){return window.Promise?(this._finishedPromise||(b.animationsWithPromises.indexOf(this)==-1&&b.animationsWithPromises.push(this),this._finishedPromise=new Promise(function(a,b){this._resolveFinishedPromise=function(){a(this)},this._rejectFinishedPromise=function(){b({type:DOMException.ABORT_ERR,name:"AbortError"})}}.bind(this)),"finished"==this.playState&&this._resolveFinishedPromise()),this._finishedPromise):(console.warn("Animation Promises require JavaScript Promise constructor"),null)},get ready(){return window.Promise?(this._readyPromise||(b.animationsWithPromises.indexOf(this)==-1&&b.animationsWithPromises.push(this),this._readyPromise=new Promise(function(a,b){this._resolveReadyPromise=function(){a(this)},this._rejectReadyPromise=function(){b({type:DOMException.ABORT_ERR,name:"AbortError"})}}.bind(this)),"pending"!==this.playState&&this._resolveReadyPromise()),this._readyPromise):(console.warn("Animation Promises require JavaScript Promise constructor"),null)},get onfinish(){return this._animation.onfinish},set onfinish(a){"function"==typeof a?this._animation.onfinish=function(b){b.target=this,a.call(this,b)}.bind(this):this._animation.onfinish=a},get oncancel(){return this._animation.oncancel},set oncancel(a){"function"==typeof a?this._animation.oncancel=function(b){b.target=this,a.call(this,b)}.bind(this):this._animation.oncancel=a},get currentTime(){this._updatePromises();var a=this._animation.currentTime;return this._updatePromises(),a},set currentTime(a){this._updatePromises(),this._animation.currentTime=isFinite(a)?a:Math.sign(a)*Number.MAX_VALUE,this._register(),this._forEachChild(function(b,c){b.currentTime=a-c}),this._updatePromises()},get startTime(){return this._animation.startTime},set startTime(a){this._updatePromises(),this._animation.startTime=isFinite(a)?a:Math.sign(a)*Number.MAX_VALUE,this._register(),this._forEachChild(function(b,c){b.startTime=a+c}),this._updatePromises()},get playbackRate(){return this._animation.playbackRate},set playbackRate(a){this._updatePromises();var b=this.currentTime;this._animation.playbackRate=a,this._forEachChild(function(b){b.playbackRate=a}),null!==b&&(this.currentTime=b),this._updatePromises()},play:function(){this._updatePromises(),this._paused=!1,this._animation.play(),this._timeline._animations.indexOf(this)==-1&&this._timeline._animations.push(this),this._register(),b.awaitStartTime(this),this._forEachChild(function(a){var b=a.currentTime;a.play(),a.currentTime=b}),this._updatePromises()},pause:function(){this._updatePromises(),this.currentTime&&(this._holdTime=this.currentTime),this._animation.pause(),this._register(),this._forEachChild(function(a){a.pause()}),this._paused=!0,this._updatePromises()},finish:function(){this._updatePromises(),this._animation.finish(),this._register(),this._updatePromises()},cancel:function(){this._updatePromises(),this._animation.cancel(),this._register(),this._removeChildAnimations(),this._updatePromises()},reverse:function(){this._updatePromises();var a=this.currentTime;this._animation.reverse(),this._forEachChild(function(a){a.reverse()}),null!==a&&(this.currentTime=a),this._updatePromises()},addEventListener:function(a,b){var c=b;"function"==typeof b&&(c=function(a){a.target=this,b.call(this,a)}.bind(this),b._wrapper=c),this._animation.addEventListener(a,c)},removeEventListener:function(a,b){this._animation.removeEventListener(a,b&&b._wrapper||b)},_removeChildAnimations:function(){for(;this._childAnimations.length;)this._childAnimations.pop().cancel()},_forEachChild:function(b){var c=0;if(this.effect.children&&this._childAnimations.length<this.effect.children.length&&this._constructChildAnimations(),this._childAnimations.forEach(function(a){b.call(this,a,c),this.effect instanceof window.SequenceEffect&&(c+=a.effect.activeDuration)}.bind(this)),"pending"!=this.playState){var d=this.effect._timing,e=this.currentTime;null!==e&&(e=a.calculateIterationProgress(a.calculateActiveDuration(d),e,d)),(null==e||isNaN(e))&&this._removeChildAnimations()}}},window.Animation=b.Animation}(c,e,f),function(a,b,c){function d(b){this._frames=a.normalizeKeyframes(b)}function e(){for(var a=!1;i.length;){var b=i.shift();b._updateChildren(),a=!0}return a}var f=function(a){if(a._animation=void 0,a instanceof window.SequenceEffect||a instanceof window.GroupEffect)for(var b=0;b<a.children.length;b++)f(a.children[b])};b.removeMulti=function(a){for(var b=[],c=0;c<a.length;c++){var d=a[c];d._parent?(b.indexOf(d._parent)==-1&&b.push(d._parent),d._parent.children.splice(d._parent.children.indexOf(d),1),d._parent=null,f(d)):d._animation&&d._animation.effect==d&&(d._animation.cancel(),d._animation.effect=new KeyframeEffect(null,[]),d._animation._callback&&(d._animation._callback._animation=null),d._animation._rebuildUnderlyingAnimation(),f(d))}for(c=0;c<b.length;c++)b[c]._rebuild()},b.KeyframeEffect=function(b,c,e,f){return this.target=b,this._parent=null,e=a.numericTimingToObject(e),this._timingInput=a.cloneTimingInput(e),this._timing=a.normalizeTimingInput(e),this.timing=a.makeTiming(e,!1,this),this.timing._effect=this,"function"==typeof c?(a.deprecated("Custom KeyframeEffect","2015-06-22","Use KeyframeEffect.onsample instead."),this._normalizedKeyframes=c):this._normalizedKeyframes=new d(c),this._keyframes=c,this.activeDuration=a.calculateActiveDuration(this._timing),this._id=f,this},b.KeyframeEffect.prototype={getFrames:function(){return"function"==typeof this._normalizedKeyframes?this._normalizedKeyframes:this._normalizedKeyframes._frames},set onsample(a){if("function"==typeof this.getFrames())throw new Error("Setting onsample on custom effect KeyframeEffect is not supported.");this._onsample=a,this._animation&&this._animation._rebuildUnderlyingAnimation()},get parent(){return this._parent},clone:function(){if("function"==typeof this.getFrames())throw new Error("Cloning custom effects is not supported.");var b=new KeyframeEffect(this.target,[],a.cloneTimingInput(this._timingInput),this._id);return b._normalizedKeyframes=this._normalizedKeyframes,b._keyframes=this._keyframes,b},remove:function(){b.removeMulti([this])}};var g=Element.prototype.animate;Element.prototype.animate=function(a,c){var d="";return c&&c.id&&(d=c.id),b.timeline._play(new b.KeyframeEffect(this,a,c,d))};var h=document.createElementNS("http://www.w3.org/1999/xhtml","div");b.newUnderlyingAnimationForKeyframeEffect=function(a){if(a){var b=a.target||h,c=a._keyframes;"function"==typeof c&&(c=[]);var d=a._timingInput;d.id=a._id}else var b=h,c=[],d=0;return g.apply(b,[c,d])},b.bindAnimationForKeyframeEffect=function(a){a.effect&&"function"==typeof a.effect._normalizedKeyframes&&b.bindAnimationForCustomEffect(a)};var i=[];b.awaitStartTime=function(a){null===a.startTime&&a._isGroup&&(0==i.length&&requestAnimationFrame(e),i.push(a))};var j=window.getComputedStyle;Object.defineProperty(window,"getComputedStyle",{configurable:!0,enumerable:!0,value:function(){b.timeline._updateAnimationsPromises();var a=j.apply(this,arguments);return e()&&(a=j.apply(this,arguments)),b.timeline._updateAnimationsPromises(),a}}),window.KeyframeEffect=b.KeyframeEffect,window.Element.prototype.getAnimations=function(){return document.timeline.getAnimations().filter(function(a){return null!==a.effect&&a.effect.target==this}.bind(this))}}(c,e,f),function(a,b,c){function d(a){a._registered||(a._registered=!0,g.push(a),h||(h=!0,requestAnimationFrame(e)))}function e(a){var b=g;g=[],b.sort(function(a,b){return a._sequenceNumber-b._sequenceNumber}),b=b.filter(function(a){a();var b=a._animation?a._animation.playState:"idle";return"running"!=b&&"pending"!=b&&(a._registered=!1),a._registered}),g.push.apply(g,b),g.length?(h=!0,requestAnimationFrame(e)):h=!1}var f=(document.createElementNS("http://www.w3.org/1999/xhtml","div"),0);b.bindAnimationForCustomEffect=function(b){var c,e=b.effect.target,g="function"==typeof b.effect.getFrames();c=g?b.effect.getFrames():b.effect._onsample;var h=b.effect.timing,i=null;h=a.normalizeTimingInput(h);var j=function(){var d=j._animation?j._animation.currentTime:null;null!==d&&(d=a.calculateIterationProgress(a.calculateActiveDuration(h),d,h),isNaN(d)&&(d=null)),d!==i&&(g?c(d,e,b.effect):c(d,b.effect,b.effect._animation)),i=d};j._animation=b,j._registered=!1,j._sequenceNumber=f++,b._callback=j,d(j)};var g=[],h=!1;b.Animation.prototype._register=function(){this._callback&&d(this._callback)}}(c,e,f),function(a,b,c){function d(a){return a._timing.delay+a.activeDuration+a._timing.endDelay}function e(b,c,d){this._id=d,this._parent=null,this.children=b||[],this._reparent(this.children),c=a.numericTimingToObject(c),this._timingInput=a.cloneTimingInput(c),this._timing=a.normalizeTimingInput(c,!0),this.timing=a.makeTiming(c,!0,this),this.timing._effect=this,"auto"===this._timing.duration&&(this._timing.duration=this.activeDuration)}window.SequenceEffect=function(){e.apply(this,arguments)},window.GroupEffect=function(){e.apply(this,arguments)},e.prototype={_isAncestor:function(a){for(var b=this;null!==b;){if(b==a)return!0;b=b._parent}return!1},_rebuild:function(){for(var a=this;a;)"auto"===a.timing.duration&&(a._timing.duration=a.activeDuration),a=a._parent;this._animation&&this._animation._rebuildUnderlyingAnimation()},_reparent:function(a){b.removeMulti(a);for(var c=0;c<a.length;c++)a[c]._parent=this},_putChild:function(a,b){for(var c=b?"Cannot append an ancestor or self":"Cannot prepend an ancestor or self",d=0;d<a.length;d++)if(this._isAncestor(a[d]))throw{type:DOMException.HIERARCHY_REQUEST_ERR,name:"HierarchyRequestError",message:c};for(var d=0;d<a.length;d++)b?this.children.push(a[d]):this.children.unshift(a[d]);this._reparent(a),this._rebuild()},append:function(){this._putChild(arguments,!0)},prepend:function(){this._putChild(arguments,!1)},get parent(){return this._parent},get firstChild(){return this.children.length?this.children[0]:null},get lastChild(){return this.children.length?this.children[this.children.length-1]:null},clone:function(){for(var b=a.cloneTimingInput(this._timingInput),c=[],d=0;d<this.children.length;d++)c.push(this.children[d].clone());return this instanceof GroupEffect?new GroupEffect(c,b):new SequenceEffect(c,b)},remove:function(){b.removeMulti([this])}},window.SequenceEffect.prototype=Object.create(e.prototype),Object.defineProperty(window.SequenceEffect.prototype,"activeDuration",{get:function(){var a=0;return this.children.forEach(function(b){a+=d(b)}),Math.max(a,0)}}),window.GroupEffect.prototype=Object.create(e.prototype),Object.defineProperty(window.GroupEffect.prototype,"activeDuration",{get:function(){var a=0;return this.children.forEach(function(b){a=Math.max(a,d(b))}),a}}),b.newUnderlyingAnimationForGroup=function(c){var d,e=null,f=function(b){var c=d._wrapper;if(c&&"pending"!=c.playState&&c.effect)return null==b?void c._removeChildAnimations():0==b&&c.playbackRate<0&&(e||(e=a.normalizeTimingInput(c.effect.timing)),b=a.calculateIterationProgress(a.calculateActiveDuration(e),-1,e),isNaN(b)||null==b)?(c._forEachChild(function(a){a.currentTime=-1}),void c._removeChildAnimations()):void 0},g=new KeyframeEffect(null,[],c._timing,c._id);return g.onsample=f,d=b.timeline._play(g)},b.bindAnimationForGroup=function(a){a._animation._wrapper=a,a._isGroup=!0,b.awaitStartTime(a),a._constructChildAnimations(),a._setExternalAnimation(a)},b.groupChildDuration=d}(c,e,f),b.true=a}({},function(){return this}());
-//# sourceMappingURL=web-animations-next-lite.min.js.map</script><script>
+//# sourceMappingURL=web-animations-next-lite.min.js.map</script>
+<script>
 
   Polymer({
 
@@ -24484,39 +24502,6 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     ]
   });
 </script>
-<style include="shared-styles">
-  .titoloSezione {
-    padding-top: 24px;
-    font-size: 14px;
-    font-weight: 500;
-    text-transform: uppercase;
-    color: #9e9e9e;
-  }
-
-  .sezioneForm {
-    padding-left: 24px;
-    background: #fff;
-    padding-bottom: 16px;
-    margin-bottom: 2px;
-    padding-right: 24px;
-  }
-
-  .titoloElemento {
-    padding: 24px 0 0 0;
-  }
-
-  .sottotitoloElemento {
-    font-size: 12px;
-    color: #C1C1C1;
-  }
-
-  .titoloMultiselect {
-    padding-top: 24px;
-    font-size: 16px;
-    font-weight: 400;
-    color: #9e9e9e;
-  }
-</style>
 
 
 <iron-iconset-svg name="paper-dropdown-menu" size="24">
@@ -27838,6 +27823,3104 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
 </script>
 <script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.combobox = vaadin.elements.combobox || {};
+
+  /** @polymerBehavior vaadin.elements.combobox.DropdownBehavior */
+  vaadin.elements.combobox.DropdownBehavior = {
+    properties: {
+      /**
+       * True if the dropdown is open, false otherwise.
+       */
+      opened: {
+        type: Boolean,
+        notify: true,
+        value: false,
+        reflectToAttribute: true,
+        observer: '_openedChanged'
+      },
+
+      /**
+       * Set to true to disable this element.
+       */
+      disabled: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
+
+      /**
+       * When present, it specifies that the element field is read-only.
+       */
+      readonly: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      }
+    },
+
+    /**
+     * Fired after the `vaadin-dropdown` opens.
+     *
+     * @event vaadin-dropdown-opened
+     */
+    /**
+     * Fired after the `vaadin-dropdown` closes.
+     *
+     * @event vaadin-dropdown-closed
+     */
+
+    /**
+     * Opens the dropdown list.
+     */
+    open: function() {
+      // Prevent _open() being called when input is disabled or read-only
+      if (!this.disabled && !this.readonly) {
+        this.opened = true;
+      }
+    },
+
+    /**
+     * Closes the dropdown list.
+     */
+    close: function() {
+      this.opened = false;
+    },
+
+    detached: function() {
+      // Making sure the overlay is closed and removed from DOM after detaching the dropdown.
+      this.close();
+    },
+
+    _openedChanged: function(value, old) {
+      // Prevent _close() being called when opened is set to its default value (false).
+      if (old === undefined) {
+        return;
+      }
+
+      if (this.opened) {
+        this._open();
+      } else {
+        this._close();
+      }
+    },
+
+    _open: function() {
+      this.$.overlay._moveTo(document.body);
+
+      this._addOutsideClickListener();
+
+      // For touch devices, we don't want to popup virtual keyboard on touch devices unless input
+      // is explicitly focused by the user.
+      if (!this.$.overlay.touchDevice) {
+        // If the inputElement is a paper-input, it would trigger an
+        // unnecessary blur event on focus. Check to see if there is a
+        // focused property and if it's already true.
+        // See also https://github.com/PolymerElements/paper-input/issues/341
+        if (!this.inputElement.focused) {
+          this.inputElement.focus();
+        }
+      }
+
+      this.fire('vaadin-dropdown-opened');
+    },
+
+    _close: function() {
+      this.$.overlay._moveTo(this.root);
+
+      this._removeOutsideClickListener();
+
+      this.fire('vaadin-dropdown-closed');
+    },
+
+    // We need to listen on 'click' / 'tap' event and capture it and close the overlay before
+    // propagating the event to the listener in the button. Otherwise, if the clicked button would call
+    // open(), this would happen: https://www.youtube.com/watch?v=Z86V_ICUCD4
+    _outsideClickListener: function(event) {
+      var eventPath = Polymer.dom(event).path;
+      if (eventPath.indexOf(this) === -1) {
+        this.opened = false;
+      }
+    },
+
+    _addOutsideClickListener: function() {
+      // With desktop mouse, 'click' will make Polymer to fire 'tap' event.
+      // With touch devices, 'touchend' will make Polymer to fire 'tap' event, but browser will also fire 'click'.
+      // So, 'click' and 'tap' can come in any order and we need to make sure that the first one fired will close the overlay.
+      if (this.$.overlay.touchDevice) {
+        Polymer.Gestures.add(document, 'tap', null);
+        document.addEventListener('tap', this._outsideClickListener.bind(this), true);
+      } else {
+        document.addEventListener('click', this._outsideClickListener.bind(this), true);
+      }
+    },
+
+    _removeOutsideClickListener: function() {
+      if (this.$.overlay.touchDevice) {
+        // Not sure if this is a good idea to remove this Gesture globally, but that's how the iron-overlay-behavior does it.
+        Polymer.Gestures.remove(document, 'tap', null);
+        document.removeEventListener('tap', this._outsideClickListener.bind(this), true);
+      } else {
+        document.removeEventListener('click', this._outsideClickListener.bind(this), true);
+      }
+    }
+  };
+</script>
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.combobox = vaadin.elements.combobox || {};
+
+  /** @polymerBehavior vaadin.elements.combobox.ComboBoxBehavior */
+  vaadin.elements.combobox.ComboBoxBehaviorImpl = {
+    properties: {
+      /**
+       * An array of values to be displayed as options in the dropdown. The
+       * options can be of either `String` or `Object` type.
+       */
+      items: {
+        type: Array
+      },
+
+      /**
+       * If `true`, the user can input a value that is not present in the items list.
+       * `value` property will be set to the input value in this case.
+       * Also, when `value` is set programmatically, the input value will be set
+       * to reflect that value.
+       */
+      allowCustomValue: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The `String` value for the selected item of the combo box. Provides
+       * the value for `iron-form`.
+       *
+       * When there’s no item selected, the value is an empty string.
+       *
+       * Use `selectedItem` property to get the raw selected item from
+       * the `items` array.
+       */
+      value: {
+        type: String,
+        observer: '_valueChanged',
+        //notify: true already set in IronFormBehavior, setting this to true will make two value-changed events(?)
+        notify: false
+      },
+
+      /**
+       * A read-only property indicating whether this combo box has a value
+       * selected or not. It can be used for example in styling of the component.
+       */
+      hasValue: {
+        type: Boolean,
+        value: false,
+        readonly: true,
+        reflectToAttribute: true
+      },
+
+      _focusedIndex: {
+        type: Number,
+        value: -1
+      },
+
+      _filter: {
+        type: String,
+        value: ''
+      },
+
+      /**
+       * The selected item from the `items` array.
+       */
+      selectedItem: {
+        type: Object,
+        readOnly: true,
+        notify: true
+      },
+
+      /**
+       * Path for label of the item. If `items` is an array of objects, the
+       * `itemLabelPath` is used to fetch the displayed string label for each
+       * item.
+       *
+       * The item label is also used for matching items when processing user
+       * input, i.e., for filtering and selecting items.
+       */
+      itemLabelPath: {
+        type: String,
+        value: 'label'
+      },
+
+      /**
+       * Path for the value of the item. If `items` is an array of objects, the
+       * `itemValuePath:` is used to fetch the string value for the selected
+       * item.
+       *
+       * The item value is used in the `value` property of the combo box,
+       * to provide the form value.
+       */
+      itemValuePath: {
+        type: String,
+        value: 'value'
+      },
+
+      /**
+       * Returns a reference to the input element.
+       */
+      inputElement: {
+        type: HTMLElement,
+        readOnly: true
+      },
+      _toggleElement: Object,
+      _clearElement: Object,
+
+      _inputElementValue: String,
+
+      _closeOnBlurIsPrevented: Boolean
+    },
+
+    observers: [
+      '_filterChanged(_filter, itemValuePath, itemLabelPath)',
+      '_itemsChanged(items.splices)',
+      '_setItems(items, itemValuePath, itemLabelPath)'
+    ],
+
+    listeners: {
+      'vaadin-dropdown-opened': '_onOpened',
+      'vaadin-dropdown-closed': '_onClosed',
+      'keydown': '_onKeyDown',
+      'tap': '_onTap'
+    },
+
+    ready: function() {
+      // The value property is also defined in IronFormElementBehavior, which
+      // will mix up the default value if set in the property.
+      if (this.value === undefined) {
+        this.value = '';
+      }
+      Polymer.IronA11yAnnouncer.requestAvailability();
+    },
+
+    _onBlur: function() {
+      if (!this._closeOnBlurIsPrevented) {
+        this.close();
+      }
+    },
+
+    _onOverlayDown: function(event) {
+      if (this.$.overlay.touchDevice && event.target !== this.$.overlay.$.scroller) {
+        // On touch devices, blur the input on touch start inside the overlay, in order to hide
+        // the virtual keyboard. But don't close the overlay on this blur.
+        this._closeOnBlurIsPrevented = true;
+        this.inputElement.blur();
+        this._closeOnBlurIsPrevented = false;
+      }
+    },
+
+    _onTap: function(e) {
+      this._closeOnBlurIsPrevented = true;
+
+      var path = Polymer.dom(e).path;
+      if (path.indexOf(this._clearElement) !== -1) {
+        this._clear();
+      } else if (path.indexOf(this._toggleElement) !== -1) {
+        this._toggle();
+      } else if (path.indexOf(this.inputElement) !== -1) {
+        this._openAsync();
+      }
+
+      this._closeOnBlurIsPrevented = false;
+    },
+
+    /**
+     * Keyboard navigation
+     */
+
+    _onKeyDown: function(e) {
+      if (this._isEventKey(e, 'down')) {
+        this._closeOnBlurIsPrevented = true;
+        this._onArrowDown();
+        this._closeOnBlurIsPrevented = false;
+
+        // prevent caret from moving
+        e.preventDefault();
+      } else if (this._isEventKey(e, 'up')) {
+        this._closeOnBlurIsPrevented = true;
+        this._onArrowUp();
+        this._closeOnBlurIsPrevented = false;
+
+        // prevent caret from moving
+        e.preventDefault();
+      } else if (this._isEventKey(e, 'enter')) {
+        this._onEnter(e);
+      } else if (this._isEventKey(e, 'esc')) {
+        this._onEscape();
+      }
+    },
+
+    _isEventKey: function(e, k) {
+      return Polymer.IronA11yKeysBehavior.keyboardEventMatchesKeys(e, k);
+    },
+
+    _getItemLabel: function(item) {
+      return this.$.overlay.getItemLabel(item);
+    },
+
+    _getItemValue: function(item) {
+      var value = this.get(this.itemValuePath, item);
+      if (value === undefined || value === null) {
+        value = item ? item.toString() : '';
+      }
+      return value;
+    },
+
+    _onArrowDown: function() {
+      if (this.opened) {
+        if (this.$.overlay._items) {
+          this._focusedIndex = Math.min(this.$.overlay._items.length - 1, this._focusedIndex + 1);
+          this._prefillFocusedItemLabel();
+        }
+      } else {
+        this.open();
+      }
+    },
+
+    _onArrowUp: function() {
+      if (this.opened) {
+        if (this._focusedIndex > -1) {
+          this._focusedIndex = Math.max(0, this._focusedIndex - 1);
+        } else {
+          if (this.$.overlay._items) {
+            this._focusedIndex = this.$.overlay._items.length - 1;
+          }
+        }
+
+        this._prefillFocusedItemLabel();
+      } else {
+        this.open();
+      }
+    },
+
+    _prefillFocusedItemLabel: function() {
+      if (this._focusedIndex > -1) {
+        this._inputElementValue = this._getItemLabel(this.$.overlay._focusedItem);
+        this._setSelectionRange();
+      }
+    },
+
+    _setSelectionRange: function() {
+      if (this.inputElement.setSelectionRange) {
+        this.inputElement.setSelectionRange(0, this._inputElementValue.length);
+      }
+    },
+
+    _onEnter: function(e) {
+      // should close on enter when custom values are allowed, input field is cleared, or when an existing
+      // item is focused with keyboard.
+      if (this.opened && (this.allowCustomValue || this._inputElementValue === '' || this._focusedIndex > -1)) {
+        this.close();
+
+        // Do not submit the surrounding form.
+        e.preventDefault();
+      }
+    },
+
+    _onEscape: function() {
+      if (this.opened) {
+        if (this._focusedIndex > -1) {
+          this._focusedIndex = -1;
+          this._revertInputValue();
+        } else {
+          this.cancel();
+        }
+      }
+    },
+
+    /**
+     * Opening and closing related functionality
+     */
+
+    /**
+     * Opens the dropdown list asynchronously.
+     */
+    _openAsync: function() {
+      // Needed for MS Edge. Otherwise, it does not pop the virtual keyboard up
+      // when tapping the combobox that has non-empty value.
+      this.async(this.open);
+    },
+
+    /**
+     * Opens and closes the dropdown list.
+     */
+    _toggle: function() {
+      if (this.opened) {
+        this.close();
+      } else {
+        this.open();
+      }
+    },
+
+    /**
+     * Clears the current value.
+     */
+    _clear: function() {
+      this.value = '';
+    },
+
+    /**
+     * Reverts back to original value.
+     */
+    cancel: function() {
+      this._inputElementValue = this._getItemLabel(this.selectedItem);
+      this.close();
+    },
+
+    _onOpened: function() {
+      this.$.overlay.hidden = !this._hasItems(this.$.overlay._items);
+
+      // With iron-list v1.3.9, calling `notifyResize()` no longer renders
+      // the items synchonously. It is required to have the items rendered
+      // before we update the overlay and the list positions and sizes.
+      this.$.overlay.ensureItemsRendered();
+
+      this.$.overlay.notifyResize();
+      this.$.overlay.adjustScrollPosition();
+    },
+
+    _onClosed: function() {
+      if (this._focusedIndex > -1) {
+        this.$.overlay._selectItem(this._focusedIndex);
+        this._inputElementValue = this._getItemLabel(this.selectedItem);
+      } else if (this._inputElementValue === '') {
+        this._clear();
+      } else {
+        if (this.allowCustomValue) {
+          var e = this.fire('custom-value-set', this._inputElementValue, {cancelable: true});
+          if (!e.defaultPrevented) {
+            this.value = this._inputElementValue;
+          }
+        } else {
+          this._inputElementValue = this._getItemLabel(this.selectedItem);
+        }
+      }
+
+      this._clearSelectionRange();
+
+      this._filter = '';
+    },
+
+    /**
+     *  Filtering and items handling
+     */
+
+    _inputValueChanged: function(e) {
+      // Handle only input events from our inputElement.
+      if (Polymer.dom(e).path.indexOf(this.inputElement) !== -1) {
+        if (this._filter === this._inputElementValue) {
+          // Filter and input value might get out of sync, while keyboard navigating for example.
+          // Afterwards, input value might be changed to the same value as used in filtering.
+          // In situation like these, we need to make sure all the filter changes handlers are run.
+          this._filterChanged(this._filter);
+        } else {
+          this._filter = this._inputElementValue;
+        }
+
+        if (!this.opened) {
+          this.open();
+        }
+      }
+    },
+
+    _clearSelectionRange: function() {
+      // Setting selection range focuses and/or moves the caret in some browsers,
+      // and there's no need to modify the selection range if the input isn't focused anyway.
+      //
+      // Notice also that document.activeElement doesn't return elements from inside shadow root
+      // and therefore we're using _focusedInput method here.
+      if (this._focusedInput() === this.inputElement && this.inputElement.setSelectionRange) {
+        var caretIndex = this._inputElementValue ? this._inputElementValue.length : 0;
+        this.inputElement.setSelectionRange(caretIndex, caretIndex);
+      }
+    },
+
+    _focusedInput: function() {
+      // Use either light DOM input or one from local DOM.
+      return Polymer.dom(this).querySelector('input:focus') || Polymer.dom(this.root).querySelector('input:focus');
+    },
+
+    _filterChanged: function(filter) {
+      this.unlisten(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
+
+      this._setItems(this._filterItems(this.items, filter));
+      this._focusedIndex = this.$.overlay.indexOfLabel(filter);
+
+      this.listen(this.$.overlay, '_selected-item-changed', '_selectedItemChanged');
+
+      // async needed to reposition correctly after filtering
+      this.async(function() {
+        this.$.overlay.notifyResize();
+      }.bind(this));
+    },
+
+    _revertInputValue: function() {
+      if (this._filter !== '') {
+        this._inputElementValue = this._filter;
+      } else {
+        this._inputElementValue = this._getItemLabel(this.selectedItem);
+      }
+
+      this._clearSelectionRange();
+    },
+
+    _valueChanged: function(value) {
+      this.hasValue = !!value;
+
+      var valueIndex = this._indexOfValue(value);
+      var item = valueIndex > -1 && this.items[valueIndex];
+      if (this.$.overlay._items && item && this.$.overlay._items.indexOf(item) > -1) {
+        this.$.overlay._selectItem(item);
+      } else {
+        this._inputElementValue = this.allowCustomValue ? value : '';
+        this._setSelectedItem(null);
+        this._focusedIndex = -1;
+        this.$.overlay.$.selector.clearSelection();
+      }
+
+      this.fire('change', undefined, {bubbles: true});
+      this.close();
+    },
+
+    _itemsChanged: function(change) {
+      if (change && change.indexSplices) {
+        this._setItems(change.indexSplices[0].object);
+      }
+    },
+
+    _filterItems: function(arr, filter) {
+      if (!arr) {
+        return arr;
+      }
+
+      return arr.filter((function(item) {
+        filter = filter.toString().toLowerCase() || '';
+
+        // Check if item contains input value.
+        return this._getItemLabel(item).toString().toLowerCase()
+          .indexOf(filter) > -1;
+      }).bind(this));
+    },
+
+    _setItems: function(items) {
+      //TODO: There is something wrong with observers and using set function
+      // see here: https://github.com/Polymer/polymer/issues/3254
+      //As a workaround setting/notifying the observer with the value undefined helps
+      this.$.overlay.notifyPath('_items', undefined);
+      this.$.overlay.set('_items', items);
+
+      var valueIndex = this._indexOfValue(this.value, items);
+      if (valueIndex > -1) {
+        this.$.overlay._selectItem(valueIndex);
+      }
+
+      this.$.overlay.hidden = !this._hasItems(items);
+      this.$.overlay.notifyResize();
+    },
+
+    _hasItems: function(array) {
+      return array && array.length;
+    },
+
+    _indexOfValue: function(value, items) {
+      items = items || this.items;
+      if (items && value) {
+        for (var i = 0; i < items.length; i++) {
+          if (this._getItemValue(items[i]).toString() === value.toString()) {
+            return i;
+          }
+        }
+      }
+
+      return -1;
+    },
+
+    _selectedItemChanged: function(event, detail) {
+      if (detail.value !== null) {
+        this._setSelectedItem(detail.value);
+        this._inputElementValue = this._getItemLabel(this.selectedItem);
+        this.value = this._getItemValue(this.selectedItem);
+        this._focusedIndex = this.$.overlay._items.indexOf(detail.value);
+      }
+
+      if (this.opened) {
+        this.close();
+      }
+    },
+
+    /**
+     * Validates the input element and sets an error style if needed.
+     *
+     * @return {boolean}
+     */
+    _getValidity: function() {
+      if (this.inputElement.validate) {
+        return this.inputElement.validate();
+      }
+    },
+
+    _preventDefault: function(e) {
+      e.preventDefault();
+    },
+
+    _stopPropagation: function(e) {
+      e.stopPropagation();
+    }
+  };
+
+  /** @polymerBehavior vaadin.elements.combobox.ComboBoxBehavior */
+  vaadin.elements.combobox.ComboBoxBehavior = [
+    Polymer.IronFormElementBehavior,
+    vaadin.elements.combobox.DropdownBehavior,
+    vaadin.elements.combobox.ComboBoxBehaviorImpl
+  ];
+
+  /**
+   * Fired when the value changes.
+   *
+   * @event value-changed
+   * @param {Object} detail
+   *  @param {String} detail.value the combobox value
+   */
+
+  /**
+   * Fired when selected item changes.
+   *
+   * @event selected-item-changed
+   * @param {Object} detail
+   *  @param {Object|String} detail.value the selected item. Type is the same as the type of `items`.
+   */
+
+  /**
+   * Fired when the user sets a custom value.
+   * @event custom-value-set
+   * @param {String} detail the custom value
+   */
+
+  /**
+   * Fired when value changes.
+   * To comply with https://developer.mozilla.org/en-US/docs/Web/Events/change
+   * @event change
+   */
+</script>
+
+<dom-module id="iron-list" assetpath="../bower_components/iron-list/">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: relative;
+      }
+
+      @media only screen and (-webkit-max-device-pixel-ratio: 1) {
+        :host {
+          will-change: transform;
+        }
+      }
+
+      #items {
+        @apply(--iron-list-items-container);
+        position: relative;
+      }
+
+      :host(:not([grid])) #items > ::content > * {
+        width: 100%;
+      };
+
+      #items > ::content > * {
+        box-sizing: border-box;
+        margin: 0;
+        position: absolute;
+        top: 0;
+        will-change: transform;
+      }
+    </style>
+
+    <array-selector id="selector" items="{{items}}" selected="{{selectedItems}}" selected-item="{{selectedItem}}">
+    </array-selector>
+
+    <div id="items">
+      <content></content>
+    </div>
+
+  </template>
+</dom-module>
+
+<script>
+
+(function() {
+
+  var IOS = navigator.userAgent.match(/iP(?:hone|ad;(?: U;)? CPU) OS (\d+)/);
+  var IOS_TOUCH_SCROLLING = IOS && IOS[1] >= 8;
+  var DEFAULT_PHYSICAL_COUNT = 3;
+  var HIDDEN_Y = '-10000px';
+  var ITEM_WIDTH = 0;
+  var ITEM_HEIGHT = 1;
+  var SECRET_TABINDEX = -100;
+
+  Polymer({
+
+    is: 'iron-list',
+
+    properties: {
+
+      /**
+       * An array containing items determining how many instances of the template
+       * to stamp and that that each template instance should bind to.
+       */
+      items: {
+        type: Array
+      },
+
+      /**
+       * The max count of physical items the pool can extend to.
+       */
+      maxPhysicalCount: {
+        type: Number,
+        value: 500
+      },
+
+      /**
+       * The name of the variable to add to the binding scope for the array
+       * element associated with a given template instance.
+       */
+      as: {
+        type: String,
+        value: 'item'
+      },
+
+      /**
+       * The name of the variable to add to the binding scope with the index
+       * for the row.
+       */
+      indexAs: {
+        type: String,
+        value: 'index'
+      },
+
+      /**
+       * The name of the variable to add to the binding scope to indicate
+       * if the row is selected.
+       */
+      selectedAs: {
+        type: String,
+        value: 'selected'
+      },
+
+      /**
+       * When true, the list is rendered as a grid. Grid items must have
+       * fixed width and height set via CSS. e.g.
+       *
+       * ```html
+       * <iron-list grid>
+       *   <template>
+       *      <div style="width: 100px; height: 100px;"> 100x100 </div>
+       *   </template>
+       * </iron-list>
+       * ```
+       */
+      grid: {
+        type: Boolean,
+        value: false,
+        reflectToAttribute: true
+      },
+
+      /**
+       * When true, tapping a row will select the item, placing its data model
+       * in the set of selected items retrievable via the selection property.
+       *
+       * Note that tapping focusable elements within the list item will not
+       * result in selection, since they are presumed to have their * own action.
+       */
+      selectionEnabled: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * When `multiSelection` is false, this is the currently selected item, or `null`
+       * if no item is selected.
+       */
+      selectedItem: {
+        type: Object,
+        notify: true
+      },
+
+      /**
+       * When `multiSelection` is true, this is an array that contains the selected items.
+       */
+      selectedItems: {
+        type: Object,
+        notify: true
+      },
+
+      /**
+       * When `true`, multiple items may be selected at once (in this case,
+       * `selected` is an array of currently selected items).  When `false`,
+       * only one item may be selected at a time.
+       */
+      multiSelection: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    observers: [
+      '_itemsChanged(items.*)',
+      '_selectionEnabledChanged(selectionEnabled)',
+      '_multiSelectionChanged(multiSelection)',
+      '_setOverflow(scrollTarget)'
+    ],
+
+    behaviors: [
+      Polymer.Templatizer,
+      Polymer.IronResizableBehavior,
+      Polymer.IronA11yKeysBehavior,
+      Polymer.IronScrollTargetBehavior
+    ],
+
+    keyBindings: {
+      'up': '_didMoveUp',
+      'down': '_didMoveDown',
+      'enter': '_didEnter'
+    },
+
+    /**
+     * The ratio of hidden tiles that should remain in the scroll direction.
+     * Recommended value ~0.5, so it will distribute tiles evely in both directions.
+     */
+    _ratio: 0.5,
+
+    /**
+     * The padding-top value for the list.
+     */
+    _scrollerPaddingTop: 0,
+
+    /**
+     * This value is the same as `scrollTop`.
+     */
+    _scrollPosition: 0,
+
+    /**
+     * The sum of the heights of all the tiles in the DOM.
+     */
+    _physicalSize: 0,
+
+    /**
+     * The average `offsetHeight` of the tiles observed till now.
+     */
+    _physicalAverage: 0,
+
+    /**
+     * The number of tiles which `offsetHeight` > 0 observed until now.
+     */
+    _physicalAverageCount: 0,
+
+    /**
+     * The Y position of the item rendered in the `_physicalStart`
+     * tile relative to the scrolling list.
+     */
+    _physicalTop: 0,
+
+    /**
+     * The number of items in the list.
+     */
+    _virtualCount: 0,
+
+    /**
+     * A map between an item key and its physical item index
+     */
+    _physicalIndexForKey: null,
+
+    /**
+     * The estimated scroll height based on `_physicalAverage`
+     */
+    _estScrollHeight: 0,
+
+    /**
+     * The scroll height of the dom node
+     */
+    _scrollHeight: 0,
+
+    /**
+     * The height of the list. This is referred as the viewport in the context of list.
+     */
+    _viewportHeight: 0,
+
+    /**
+     * The width of the list. This is referred as the viewport in the context of list.
+     */
+    _viewportWidth: 0,
+
+    /**
+     * An array of DOM nodes that are currently in the tree
+     * @type {?Array<!TemplatizerNode>}
+     */
+    _physicalItems: null,
+
+    /**
+     * An array of heights for each item in `_physicalItems`
+     * @type {?Array<number>}
+     */
+    _physicalSizes: null,
+
+    /**
+     * A cached value for the first visible index.
+     * See `firstVisibleIndex`
+     * @type {?number}
+     */
+    _firstVisibleIndexVal: null,
+
+    /**
+     * A cached value for the last visible index.
+     * See `lastVisibleIndex`
+     * @type {?number}
+     */
+    _lastVisibleIndexVal: null,
+
+    /**
+     * A Polymer collection for the items.
+     * @type {?Polymer.Collection}
+     */
+    _collection: null,
+
+    /**
+     * The max number of pages to render. One page is equivalent to the height of the list.
+     */
+    _maxPages: 2,
+
+    /**
+     * The currently focused physical item.
+     */
+    _focusedItem: null,
+
+    /**
+     * The index of the `_focusedItem`.
+     */
+    _focusedIndex: -1,
+
+    /**
+     * The the item that is focused if it is moved offscreen.
+     * @private {?TemplatizerNode}
+     */
+    _offscreenFocusedItem: null,
+
+    /**
+     * The item that backfills the `_offscreenFocusedItem` in the physical items
+     * list when that item is moved offscreen.
+     */
+    _focusBackfillItem: null,
+
+    /**
+     * The maximum items per row
+     */
+    _itemsPerRow: 1,
+
+    /**
+     * The width of each grid item
+     */
+    _itemWidth: 0,
+
+    /**
+     * The height of the row in grid layout.
+     */
+    _rowHeight: 0,
+
+    /**
+     * The cost of stamping a template in ms.
+     */
+    _templateCost: 0,
+
+    /**
+     * The bottom of the physical content.
+     */
+    get _physicalBottom() {
+      return this._physicalTop + this._physicalSize;
+    },
+
+    /**
+     * The bottom of the scroll.
+     */
+    get _scrollBottom() {
+      return this._scrollPosition + this._viewportHeight;
+    },
+
+    /**
+     * The n-th item rendered in the last physical item.
+     */
+    get _virtualEnd() {
+      return this._virtualStart + this._physicalCount - 1;
+    },
+
+    /**
+     * The height of the physical content that isn't on the screen.
+     */
+    get _hiddenContentSize() {
+      var size = this.grid ? this._physicalRows * this._rowHeight : this._physicalSize;
+      return size - this._viewportHeight;
+    },
+
+    /**
+     * The maximum scroll top value.
+     */
+    get _maxScrollTop() {
+      return this._estScrollHeight - this._viewportHeight + this._scrollerPaddingTop;
+    },
+
+    /**
+     * The lowest n-th value for an item such that it can be rendered in `_physicalStart`.
+     */
+    _minVirtualStart: 0,
+
+    /**
+     * The largest n-th value for an item such that it can be rendered in `_physicalStart`.
+     */
+    get _maxVirtualStart() {
+      return Math.max(0, this._virtualCount - this._physicalCount);
+    },
+
+    /**
+     * The n-th item rendered in the `_physicalStart` tile.
+     */
+    _virtualStartVal: 0,
+
+    set _virtualStart(val) {
+      this._virtualStartVal = Math.min(this._maxVirtualStart, Math.max(this._minVirtualStart, val));
+    },
+
+    get _virtualStart() {
+      return this._virtualStartVal || 0;
+    },
+
+    /**
+     * The k-th tile that is at the top of the scrolling list.
+     */
+    _physicalStartVal: 0,
+
+    set _physicalStart(val) {
+      this._physicalStartVal = val % this._physicalCount;
+      if (this._physicalStartVal < 0) {
+        this._physicalStartVal = this._physicalCount + this._physicalStartVal;
+      }
+      this._physicalEnd = (this._physicalStart + this._physicalCount - 1) % this._physicalCount;
+    },
+
+    get _physicalStart() {
+      return this._physicalStartVal || 0;
+    },
+
+    /**
+     * The number of tiles in the DOM.
+     */
+    _physicalCountVal: 0,
+
+    set _physicalCount(val) {
+      this._physicalCountVal = val;
+      this._physicalEnd = (this._physicalStart + this._physicalCount - 1) % this._physicalCount;
+    },
+
+    get _physicalCount() {
+      return this._physicalCountVal;
+    },
+
+    /**
+     * The k-th tile that is at the bottom of the scrolling list.
+     */
+    _physicalEnd: 0,
+
+    /**
+     * An optimal physical size such that we will have enough physical items
+     * to fill up the viewport and recycle when the user scrolls.
+     *
+     * This default value assumes that we will at least have the equivalent
+     * to a viewport of physical items above and below the user's viewport.
+     */
+    get _optPhysicalSize() {
+      if (this.grid) {
+        return this._estRowsInView * this._rowHeight * this._maxPages;
+      }
+      return this._viewportHeight === 0 ? Infinity : this._viewportHeight * this._maxPages;
+    },
+
+   /**
+    * True if the current list is visible.
+    */
+    get _isVisible() {
+      return Boolean(this.offsetWidth || this.offsetHeight);
+    },
+
+    /**
+     * Gets the index of the first visible item in the viewport.
+     *
+     * @type {number}
+     */
+    get firstVisibleIndex() {
+      if (this._firstVisibleIndexVal === null) {
+        var physicalOffset = Math.floor(this._physicalTop + this._scrollerPaddingTop);
+
+        this._firstVisibleIndexVal = this._iterateItems(
+          function(pidx, vidx) {
+            physicalOffset += this._getPhysicalSizeIncrement(pidx);
+
+            if (physicalOffset > this._scrollPosition) {
+              return this.grid ? vidx - (vidx % this._itemsPerRow) : vidx;
+            }
+            // Handle a partially rendered final row in grid mode
+            if (this.grid && this._virtualCount - 1 === vidx) {
+              return vidx - (vidx % this._itemsPerRow);
+            }
+          }) || 0;
+      }
+      return this._firstVisibleIndexVal;
+    },
+
+    /**
+     * Gets the index of the last visible item in the viewport.
+     *
+     * @type {number}
+     */
+    get lastVisibleIndex() {
+      if (this._lastVisibleIndexVal === null) {
+        if (this.grid) {
+          var lastIndex = this.firstVisibleIndex + this._estRowsInView * this._itemsPerRow - 1;
+          this._lastVisibleIndexVal = Math.min(this._virtualCount, lastIndex);
+        } else {
+          var physicalOffset = this._physicalTop;
+          this._iterateItems(function(pidx, vidx) {
+            if (physicalOffset < this._scrollBottom) {
+              this._lastVisibleIndexVal = vidx;
+            } else {
+              // Break _iterateItems
+              return true;
+            }
+            physicalOffset += this._getPhysicalSizeIncrement(pidx);
+          });
+        }
+      }
+      return this._lastVisibleIndexVal;
+    },
+
+    get _defaultScrollTarget() {
+      return this;
+    },
+
+    get _virtualRowCount() {
+      return Math.ceil(this._virtualCount / this._itemsPerRow);
+    },
+
+    get _estRowsInView() {
+      return Math.ceil(this._viewportHeight / this._rowHeight);
+    },
+
+    get _physicalRows() {
+      return Math.ceil(this._physicalCount / this._itemsPerRow);
+    },
+
+    ready: function() {
+      this.addEventListener('focus', this._didFocus.bind(this), true);
+    },
+
+    attached: function() {
+      if (this._physicalCount === 0) {
+        this._debounceTemplate(this._render);
+      }
+      // `iron-resize` is fired when the list is attached if the event is added
+      // before attached causing unnecessary work.
+      this.listen(this, 'iron-resize', '_resizeHandler');
+    },
+
+    detached: function() {
+      this.unlisten(this, 'iron-resize', '_resizeHandler');
+    },
+
+    /**
+     * Set the overflow property if this element has its own scrolling region
+     */
+    _setOverflow: function(scrollTarget) {
+      this.style.webkitOverflowScrolling = scrollTarget === this ? 'touch' : '';
+      this.style.overflow = scrollTarget === this ? 'auto' : '';
+    },
+
+    /**
+     * Invoke this method if you dynamically update the viewport's
+     * size or CSS padding.
+     *
+     * @method updateViewportBoundaries
+     */
+    updateViewportBoundaries: function() {
+      this._scrollerPaddingTop = this.scrollTarget === this ? 0 :
+          parseInt(window.getComputedStyle(this)['padding-top'], 10);
+      this._viewportWidth = this.$.items.offsetWidth;
+      this._viewportHeight = this._scrollTargetHeight;
+      this.grid && this._updateGridMetrics();
+    },
+
+    /**
+     * Recycles the physical items when needed.
+     */
+    _scrollHandler: function() {
+      var scrollTop = Math.max(0, Math.min(this._maxScrollTop, this._scrollTop));
+      var delta = scrollTop - this._scrollPosition;
+      var isScrollingDown = delta >= 0;
+      // Track the current scroll position.
+      this._scrollPosition = scrollTop;
+      // Clear indexes.
+      this._firstVisibleIndexVal = null;
+      this._lastVisibleIndexVal = null;
+
+      // Random access.
+      if (Math.abs(delta) > this._physicalSize) {
+        var idxAdjustment =  Math.round(delta / this._physicalAverage) * this._itemsPerRow
+        this._physicalTop = this._physicalTop + delta;
+        this._virtualStart = this._virtualStart + idxAdjustment;
+        this._physicalStart = this._physicalStart + idxAdjustment;
+        this._update();
+      } else {
+        var reusables = this._getReusables(isScrollingDown);
+        if (isScrollingDown) {
+          this._physicalTop = reusables.physicalTop;
+          this._virtualStart = this._virtualStart + reusables.indexes.length;
+          this._physicalStart = this._physicalStart + reusables.indexes.length;
+        } else {
+          this._virtualStart = this._virtualStart - reusables.indexes.length;
+          this._physicalStart = this._physicalStart - reusables.indexes.length;
+        }
+        if (reusables.indexes.length === 0) {
+          this._increasePoolIfNeeded();
+        } else {
+          this._update(reusables.indexes, isScrollingDown ? null : reusables.indexes);
+        }
+      }
+    },
+
+    /**
+     * Returns an object that contains the indexes of the physical items
+     * that might be reused and the physicalTop.
+     *
+     * @param {boolean} fromTop If the potential reusable items are above the scrolling region.
+     */
+    _getReusables: function(fromTop) {
+      var ith, lastIth, offsetContent, physicalItemHeight;
+      var idxs = [];
+      var protectedOffsetContent = this._hiddenContentSize * this._ratio;
+      var virtualStart = this._virtualStart;
+      var virtualEnd = this._virtualEnd;
+      var physicalCount = this._physicalCount;
+      var physicalTop = this._physicalTop + this._scrollerPaddingTop;
+      var scrollTop = this._scrollTop;
+      var scrollBottom = this._scrollBottom;
+
+      if (fromTop) {
+        ith = this._physicalStart;
+        lastIth = this._physicalEnd;
+        offsetContent = scrollTop - physicalTop;
+      } else {
+        ith = this._physicalEnd;
+        lastIth = this._physicalStart;
+        offsetContent = this._physicalBottom - scrollBottom;
+      }
+      while (true) {
+        physicalItemHeight = this._getPhysicalSizeIncrement(ith);
+        offsetContent = offsetContent - physicalItemHeight;
+        if (idxs.length >= physicalCount || offsetContent <= protectedOffsetContent) {
+          break;
+        }
+        if (fromTop) {
+          // Check that index is within the valid range.
+          if (virtualEnd + idxs.length + 1 >= this._virtualCount) {
+            break;
+          }
+          // Check that the index is not visible.
+          if (physicalTop + physicalItemHeight >= scrollTop) {
+            break;
+          }
+          idxs.push(ith);
+          physicalTop = physicalTop + physicalItemHeight;
+          ith = (ith + 1) % physicalCount;
+        } else {
+          // Check that index is within the valid range.
+          if (virtualStart - idxs.length <= 0) {
+            break;
+          }
+          // Check that the index is not visible.
+          if (physicalTop + this._physicalSize - physicalItemHeight <= scrollBottom) {
+            break;
+          }
+          idxs.push(ith);
+          physicalTop = physicalTop - physicalItemHeight;
+          ith = (ith === 0) ? physicalCount - 1 : ith - 1;
+        }
+      }
+      return { indexes: idxs, physicalTop: physicalTop - this._scrollerPaddingTop };
+    },
+
+    /**
+     * Update the list of items, starting from the `_virtualStart` item.
+     * @param {!Array<number>=} itemSet
+     * @param {!Array<number>=} movingUp
+     */
+    _update: function(itemSet, movingUp) {
+      if (itemSet && itemSet.length === 0) {
+        return;
+      }
+      this._manageFocus();
+      this._assignModels(itemSet);
+      this._updateMetrics(itemSet);
+      // Adjust offset after measuring.
+      if (movingUp) {
+        while (movingUp.length) {
+          var idx = movingUp.pop();
+          this._physicalTop -= this._getPhysicalSizeIncrement(idx);
+        }
+      }
+      this._positionItems();
+      this._updateScrollerSize();
+      this._increasePoolIfNeeded();
+    },
+
+    /**
+     * Creates a pool of DOM elements and attaches them to the local dom.
+     *
+     * @param {number} size Size of the pool
+     */
+    _createPool: function(size) {
+      var physicalItems = new Array(size);
+
+      this._ensureTemplatized();
+
+      for (var i = 0; i < size; i++) {
+        var inst = this.stamp(null);
+        // First element child is item; Safari doesn't support children[0]
+        // on a doc fragment.
+        physicalItems[i] = inst.root.querySelector('*');
+        Polymer.dom(this).appendChild(inst.root);
+      }
+      return physicalItems;
+    },
+
+    /**
+     * Increases the pool of physical items only if needed.
+     *
+     * @return {boolean} True if the pool was increased.
+     */
+    _increasePoolIfNeeded: function() {
+      var self = this;
+      var isClientFull = this._physicalBottom >= this._scrollBottom &&
+          this._physicalTop <= this._scrollPosition;
+
+      // Base case 2: if the physical size is optimal and the list's client height is full
+      // with physical items, don't increase the pool.
+      if (this._physicalSize >= this._optPhysicalSize && isClientFull) {
+        return false;
+      }
+      var maxPoolSize = Math.round(this._physicalCount * 0.5);
+      // Increase the pool synchronously until the client is filled.
+      if (!isClientFull) {
+        this._debounceTemplate(this._increasePool.bind(this, maxPoolSize));
+        return true;
+      }
+      this._yield(function() {
+        self._increasePool(Math.min(maxPoolSize, Math.max(1, Math.round(50 / self._templateCost))));
+      });
+      return true;
+    },
+
+    _yield: function(cb) {
+      var g = window;
+      var handle = g.requestIdleCallback ? g.requestIdleCallback(cb) : g.setTimeout(cb, 16);
+      // Polymer/issues/3895
+      Polymer.dom.addDebouncer(/** @type {!Polymer.Debouncer} */({
+        complete: function() {
+          g.cancelIdleCallback ? g.cancelIdleCallback(handle) : g.clearTimeout(handle);
+          cb();
+        }
+      }));
+    },
+
+    /**
+     * Increases the pool size.
+     */
+    _increasePool: function(missingItems) {
+      var nextPhysicalCount = Math.min(
+          this._physicalCount + missingItems,
+          this._virtualCount - this._virtualStart,
+          Math.max(this.maxPhysicalCount, DEFAULT_PHYSICAL_COUNT)
+        );
+      var prevPhysicalCount = this._physicalCount;
+      var delta = nextPhysicalCount - prevPhysicalCount;
+      var ts = window.performance.now();
+
+      if (delta <= 0) {
+        return;
+      }
+      // Concat arrays in place.
+      [].push.apply(this._physicalItems, this._createPool(delta));
+      [].push.apply(this._physicalSizes, new Array(delta));
+      this._physicalCount = prevPhysicalCount + delta;
+      // Update the physical start if it needs to preserve the model of the focused item.
+      // In this situation, the focused item is currently rendered and its model would
+      // have changed after increasing the pool if the physical start remained unchanged.
+      if (this._physicalStart > this._physicalEnd &&
+          this._isIndexRendered(this._focusedIndex) &&
+          this._getPhysicalIndex(this._focusedIndex) < this._physicalEnd) {
+        this._physicalStart = this._physicalStart + delta;
+      }
+      this._update();
+      this._templateCost = (window.performance.now() - ts) / delta;
+    },
+
+    /**
+     * Renders the a new list.
+     */
+    _render: function() {
+      if (this.isAttached && this._isVisible) {
+        if (this._physicalCount === 0) {
+          this.updateViewportBoundaries();
+          this._increasePool(DEFAULT_PHYSICAL_COUNT);
+        } else {
+          // Try to recycle nodes
+          var reusables = this._getReusables(true);
+          this._physicalTop = reusables.physicalTop;
+          this._virtualStart = this._virtualStart + reusables.indexes.length;
+          this._physicalStart = this._physicalStart + reusables.indexes.length;
+          this._update(reusables.indexes);
+          this._update();
+        }
+      }
+    },
+
+    /**
+     * Templetizes the user template.
+     */
+    _ensureTemplatized: function() {
+      if (!this.ctor) {
+        // Template instance props that should be excluded from forwarding
+        var props = {};
+        props.__key__ = true;
+        props[this.as] = true;
+        props[this.indexAs] = true;
+        props[this.selectedAs] = true;
+        props.tabIndex = true;
+        this._instanceProps = props;
+        this._userTemplate = Polymer.dom(this).querySelector('template');
+
+        if (this._userTemplate) {
+          this.templatize(this._userTemplate);
+        } else {
+          console.warn('iron-list requires a template to be provided in light-dom');
+        }
+      }
+    },
+
+    /**
+     * Implements extension point from Templatizer mixin.
+     */
+    _getStampedChildren: function() {
+      return this._physicalItems;
+    },
+
+    /**
+     * Implements extension point from Templatizer
+     * Called as a side effect of a template instance path change, responsible
+     * for notifying items.<key-for-instance>.<path> change up to host.
+     */
+    _forwardInstancePath: function(inst, path, value) {
+      if (path.indexOf(this.as + '.') === 0) {
+        this.notifyPath('items.' + inst.__key__ + '.' +
+          path.slice(this.as.length + 1), value);
+      }
+    },
+
+    /**
+     * Implements extension point from Templatizer mixin
+     * Called as side-effect of a host property change, responsible for
+     * notifying parent path change on each row.
+     */
+    _forwardParentProp: function(prop, value) {
+      if (this._physicalItems) {
+        this._physicalItems.forEach(function(item) {
+          item._templateInstance[prop] = value;
+        }, this);
+      }
+    },
+
+    /**
+     * Implements extension point from Templatizer
+     * Called as side-effect of a host path change, responsible for
+     * notifying parent.<path> path change on each row.
+     */
+    _forwardParentPath: function(path, value) {
+      if (this._physicalItems) {
+        this._physicalItems.forEach(function(item) {
+          item._templateInstance.notifyPath(path, value, true);
+        }, this);
+      }
+    },
+
+    /**
+     * Called as a side effect of a host items.<key>.<path> path change,
+     * responsible for notifying item.<path> changes.
+     */
+    _forwardItemPath: function(path, value) {
+      if (!this._physicalIndexForKey) {
+        return;
+      }
+      var dot = path.indexOf('.');
+      var key = path.substring(0, dot < 0 ? path.length : dot);
+      var idx = this._physicalIndexForKey[key];
+      var offscreenItem = this._offscreenFocusedItem;
+      var el = offscreenItem && offscreenItem._templateInstance.__key__ === key ?
+          offscreenItem : this._physicalItems[idx];
+
+      if (!el || el._templateInstance.__key__ !== key) {
+        return;
+      }
+      if (dot >= 0) {
+        path = this.as + '.' + path.substring(dot+1);
+        el._templateInstance.notifyPath(path, value, true);
+      } else {
+        // Update selection if needed
+        var currentItem = el._templateInstance[this.as];
+        if (Array.isArray(this.selectedItems)) {
+          for (var i = 0; i < this.selectedItems.length; i++) {
+            if (this.selectedItems[i] === currentItem) {
+              this.set('selectedItems.' + i, value);
+              break;
+            }
+          }
+        } else if (this.selectedItem === currentItem) {
+          this.set('selectedItem', value);
+        }
+        el._templateInstance[this.as] = value;
+      }
+    },
+
+    /**
+     * Called when the items have changed. That is, ressignments
+     * to `items`, splices or updates to a single item.
+     */
+    _itemsChanged: function(change) {
+      if (change.path === 'items') {
+        this._virtualStart = 0;
+        this._physicalTop = 0;
+        this._virtualCount = this.items ? this.items.length : 0;
+        this._collection = this.items ? Polymer.Collection.get(this.items) : null;
+        this._physicalIndexForKey = {};
+        this._firstVisibleIndexVal = null;
+        this._lastVisibleIndexVal = null;
+        this._physicalCount = this._physicalCount || 0;
+        this._physicalItems = this._physicalItems || [];
+        this._physicalSizes = this._physicalSizes || [];
+        this._physicalStart = 0;
+        if (this._scrollTop > this._scrollerPaddingTop) {
+          this._resetScrollPosition(0);
+        }
+        this._removeFocusedItem();
+        this._debounceTemplate(this._render);
+
+      } else if (change.path === 'items.splices') {
+        this._adjustVirtualIndex(change.value.indexSplices);
+        this._virtualCount = this.items ? this.items.length : 0;
+
+        this._debounceTemplate(this._render);
+
+      } else {
+        this._forwardItemPath(change.path.split('.').slice(1).join('.'), change.value);
+      }
+    },
+
+    /**
+     * @param {!Array<!PolymerSplice>} splices
+     */
+    _adjustVirtualIndex: function(splices) {
+      splices.forEach(function(splice) {
+        // deselect removed items
+        splice.removed.forEach(this._removeItem, this);
+        // We only need to care about changes happening above the current position
+        if (splice.index < this._virtualStart) {
+          var delta = Math.max(
+              splice.addedCount - splice.removed.length,
+              splice.index - this._virtualStart);
+
+          this._virtualStart = this._virtualStart + delta;
+
+          if (this._focusedIndex >= 0) {
+            this._focusedIndex = this._focusedIndex + delta;
+          }
+        }
+      }, this);
+    },
+
+    _removeItem: function(item) {
+      this.$.selector.deselect(item);
+      // remove the current focused item
+      if (this._focusedItem && this._focusedItem._templateInstance[this.as] === item) {
+        this._removeFocusedItem();
+      }
+    },
+
+    /**
+     * Executes a provided function per every physical index in `itemSet`
+     * `itemSet` default value is equivalent to the entire set of physical indexes.
+     *
+     * @param {!function(number, number)} fn
+     * @param {!Array<number>=} itemSet
+     */
+    _iterateItems: function(fn, itemSet) {
+      var pidx, vidx, rtn, i;
+
+      if (arguments.length === 2 && itemSet) {
+        for (i = 0; i < itemSet.length; i++) {
+          pidx = itemSet[i];
+          vidx = this._computeVidx(pidx);
+          if ((rtn = fn.call(this, pidx, vidx)) != null) {
+            return rtn;
+          }
+        }
+      } else {
+        pidx = this._physicalStart;
+        vidx = this._virtualStart;
+
+        for (; pidx < this._physicalCount; pidx++, vidx++) {
+          if ((rtn = fn.call(this, pidx, vidx)) != null) {
+            return rtn;
+          }
+        }
+        for (pidx = 0; pidx < this._physicalStart; pidx++, vidx++) {
+          if ((rtn = fn.call(this, pidx, vidx)) != null) {
+            return rtn;
+          }
+        }
+      }
+    },
+
+    /**
+     * Returns the virtual index for a given physical index
+     *
+     * @param {number} pidx Physical index
+     * @return {number}
+     */
+    _computeVidx: function(pidx) {
+      if (pidx >= this._physicalStart) {
+        return this._virtualStart + (pidx - this._physicalStart);
+      }
+      return this._virtualStart + (this._physicalCount - this._physicalStart) + pidx;
+    },
+
+    /**
+     * Assigns the data models to a given set of items.
+     * @param {!Array<number>=} itemSet
+     */
+    _assignModels: function(itemSet) {
+      this._iterateItems(function(pidx, vidx) {
+        var el = this._physicalItems[pidx];
+        var inst = el._templateInstance;
+        var item = this.items && this.items[vidx];
+        if (item != null) {
+          inst[this.as] = item;
+          inst.__key__ = this._collection.getKey(item);
+          inst[this.selectedAs] = /** @type {!ArraySelectorElement} */ (this.$.selector).isSelected(item);
+          inst[this.indexAs] = vidx;
+          inst.tabIndex = this._focusedIndex === vidx ? 0 : -1;
+          this._physicalIndexForKey[inst.__key__] = pidx;
+          el.removeAttribute('hidden');
+        } else {
+          inst.__key__ = null;
+          el.setAttribute('hidden', '');
+        }
+      }, itemSet);
+    },
+
+    /**
+     * Updates the height for a given set of items.
+     *
+     * @param {!Array<number>=} itemSet
+     */
+     _updateMetrics: function(itemSet) {
+      // Make sure we distributed all the physical items
+      // so we can measure them.
+      Polymer.dom.flush();
+
+      var newPhysicalSize = 0;
+      var oldPhysicalSize = 0;
+      var prevAvgCount = this._physicalAverageCount;
+      var prevPhysicalAvg = this._physicalAverage;
+
+      this._iterateItems(function(pidx, vidx) {
+        oldPhysicalSize += this._physicalSizes[pidx] || 0;
+        this._physicalSizes[pidx] = this._physicalItems[pidx].offsetHeight;
+        newPhysicalSize += this._physicalSizes[pidx];
+        this._physicalAverageCount += this._physicalSizes[pidx] ? 1 : 0;
+      }, itemSet);
+
+      if (this.grid) {
+        this._updateGridMetrics();
+        this._physicalSize = Math.ceil(this._physicalCount / this._itemsPerRow) * this._rowHeight;
+      } else {
+        this._physicalSize = this._physicalSize + newPhysicalSize - oldPhysicalSize;
+      }
+      // Update the average if it measured something.
+      if (this._physicalAverageCount !== prevAvgCount) {
+        this._physicalAverage = Math.round(
+            ((prevPhysicalAvg * prevAvgCount) + newPhysicalSize) /
+            this._physicalAverageCount);
+      }
+    },
+
+    _updateGridMetrics: function() {
+      this._itemWidth = this._physicalCount > 0 ? this._physicalItems[0].getBoundingClientRect().width : 200;
+      this._rowHeight = this._physicalCount > 0 ? this._physicalItems[0].offsetHeight : 200;
+      this._itemsPerRow = this._itemWidth ? Math.floor(this._viewportWidth / this._itemWidth) : this._itemsPerRow;
+    },
+
+    /**
+     * Updates the position of the physical items.
+     */
+    _positionItems: function() {
+      this._adjustScrollPosition();
+
+      var y = this._physicalTop;
+
+      if (this.grid) {
+        var totalItemWidth = this._itemsPerRow * this._itemWidth;
+        var rowOffset = (this._viewportWidth - totalItemWidth) / 2;
+
+        this._iterateItems(function(pidx, vidx) {
+          var modulus = vidx % this._itemsPerRow;
+          var x = Math.floor((modulus * this._itemWidth) + rowOffset);
+          this.translate3d(x + 'px', y + 'px', 0, this._physicalItems[pidx]);
+          if (this._shouldRenderNextRow(vidx)) {
+            y += this._rowHeight;
+          }
+        });
+      } else {
+        this._iterateItems(function(pidx, vidx) {
+          this.translate3d(0, y + 'px', 0, this._physicalItems[pidx]);
+          y += this._physicalSizes[pidx];
+        });
+      }
+    },
+
+    _getPhysicalSizeIncrement: function(pidx) {
+      if (!this.grid) {
+        return this._physicalSizes[pidx];
+      }
+      if (this._computeVidx(pidx) % this._itemsPerRow !== this._itemsPerRow - 1) {
+        return 0;
+      }
+      return this._rowHeight;
+    },
+
+    /**
+     * Returns, based on the current index,
+     * whether or not the next index will need
+     * to be rendered on a new row.
+     *
+     * @param {number} vidx Virtual index
+     * @return {boolean}
+     */
+    _shouldRenderNextRow: function(vidx) {
+      return vidx % this._itemsPerRow === this._itemsPerRow - 1;
+    },
+
+    /**
+     * Adjusts the scroll position when it was overestimated.
+     */
+    _adjustScrollPosition: function() {
+      var deltaHeight = this._virtualStart === 0 ? this._physicalTop :
+          Math.min(this._scrollPosition + this._physicalTop, 0);
+
+      if (deltaHeight) {
+        this._physicalTop = this._physicalTop - deltaHeight;
+        // juking scroll position during interial scrolling on iOS is no bueno
+        if (!IOS_TOUCH_SCROLLING && this._physicalTop !== 0) {
+          this._resetScrollPosition(this._scrollTop - deltaHeight);
+        }
+      }
+    },
+
+    /**
+     * Sets the position of the scroll.
+     */
+    _resetScrollPosition: function(pos) {
+      if (this.scrollTarget) {
+        this._scrollTop = pos;
+        this._scrollPosition = this._scrollTop;
+      }
+    },
+
+    /**
+     * Sets the scroll height, that's the height of the content,
+     *
+     * @param {boolean=} forceUpdate If true, updates the height no matter what.
+     */
+    _updateScrollerSize: function(forceUpdate) {
+      if (this.grid) {
+        this._estScrollHeight = this._virtualRowCount * this._rowHeight;
+      } else {
+        this._estScrollHeight = (this._physicalBottom +
+            Math.max(this._virtualCount - this._physicalCount - this._virtualStart, 0) * this._physicalAverage);
+      }
+
+      forceUpdate = forceUpdate || this._scrollHeight === 0;
+      forceUpdate = forceUpdate || this._scrollPosition >= this._estScrollHeight - this._physicalSize;
+      forceUpdate = forceUpdate || this.grid && this.$.items.style.height < this._estScrollHeight;
+
+      // Amortize height adjustment, so it won't trigger large repaints too often.
+      if (forceUpdate || Math.abs(this._estScrollHeight - this._scrollHeight) >= this._optPhysicalSize) {
+        this.$.items.style.height = this._estScrollHeight + 'px';
+        this._scrollHeight = this._estScrollHeight;
+      }
+    },
+
+    /**
+     * Scroll to a specific item in the virtual list regardless
+     * of the physical items in the DOM tree.
+     *
+     * @method scrollToItem
+     * @param {(Object)} item The item to be scrolled to
+     */
+    scrollToItem: function(item){
+      return this.scrollToIndex(this.items.indexOf(item));
+    },
+
+    /**
+     * Scroll to a specific index in the virtual list regardless
+     * of the physical items in the DOM tree.
+     *
+     * @method scrollToIndex
+     * @param {number} idx The index of the item
+     */
+    scrollToIndex: function(idx) {
+      if (typeof idx !== 'number' || idx < 0 || idx > this.items.length - 1) {
+        return;
+      }
+      Polymer.dom.flush();
+      // Items should have been rendered prior scrolling to an index.
+      if (this._physicalCount === 0) {
+        return;
+      }
+      idx = Math.min(Math.max(idx, 0), this._virtualCount-1);
+      // Update the virtual start only when needed.
+      if (!this._isIndexRendered(idx) || idx >= this._maxVirtualStart) {
+        this._virtualStart = this.grid ? (idx - this._itemsPerRow * 2) : (idx - 1);
+      }
+      this._manageFocus();
+      this._assignModels();
+      this._updateMetrics();
+      // Estimate new physical offset.
+      this._physicalTop = Math.floor(this._virtualStart / this._itemsPerRow)  * this._physicalAverage;
+
+      var currentTopItem = this._physicalStart;
+      var currentVirtualItem = this._virtualStart;
+      var targetOffsetTop = 0;
+      var hiddenContentSize = this._hiddenContentSize;
+      // scroll to the item as much as we can.
+      while (currentVirtualItem < idx && targetOffsetTop <= hiddenContentSize) {
+        targetOffsetTop = targetOffsetTop + this._getPhysicalSizeIncrement(currentTopItem);
+        currentTopItem = (currentTopItem + 1) % this._physicalCount;
+        currentVirtualItem++;
+      }
+      this._updateScrollerSize(true);
+      this._positionItems();
+      this._resetScrollPosition(this._physicalTop + this._scrollerPaddingTop + targetOffsetTop);
+      this._increasePoolIfNeeded();
+      // clear cached visible index.
+      this._firstVisibleIndexVal = null;
+      this._lastVisibleIndexVal = null;
+    },
+
+    /**
+     * Reset the physical average and the average count.
+     */
+    _resetAverage: function() {
+      this._physicalAverage = 0;
+      this._physicalAverageCount = 0;
+    },
+
+    /**
+     * A handler for the `iron-resize` event triggered by `IronResizableBehavior`
+     * when the element is resized.
+     */
+    _resizeHandler: function() {
+      this._debounceTemplate(function() {
+        // Skip the resize event on touch devices when the address bar slides up.
+        var delta = Math.abs(this._viewportHeight - this._scrollTargetHeight);
+        this.updateViewportBoundaries();
+        if (('ontouchstart' in window || navigator.maxTouchPoints > 0) && delta > 0 && delta < 100) {
+          return;
+        }
+        if (this._isVisible) {
+          // Reinstall the scroll event listener.
+          this.toggleScrollListener(true);
+          this._resetAverage();
+          this._render();
+        } else {
+          // Uninstall the scroll event listener.
+          this.toggleScrollListener(false);
+        }
+      }.bind(this));
+    },
+
+    _getModelFromItem: function(item) {
+      var key = this._collection.getKey(item);
+      var pidx = this._physicalIndexForKey[key];
+
+      if (pidx != null) {
+        return this._physicalItems[pidx]._templateInstance;
+      }
+      return null;
+    },
+
+    /**
+     * Gets a valid item instance from its index or the object value.
+     *
+     * @param {(Object|number)} item The item object or its index
+     */
+    _getNormalizedItem: function(item) {
+      if (this._collection.getKey(item) === undefined) {
+        if (typeof item === 'number') {
+          item = this.items[item];
+          if (!item) {
+            throw new RangeError('<item> not found');
+          }
+          return item;
+        }
+        throw new TypeError('<item> should be a valid item');
+      }
+      return item;
+    },
+
+    /**
+     * Select the list item at the given index.
+     *
+     * @method selectItem
+     * @param {(Object|number)} item The item object or its index
+     */
+    selectItem: function(item) {
+      item = this._getNormalizedItem(item);
+      var model = this._getModelFromItem(item);
+
+      if (!this.multiSelection && this.selectedItem) {
+        this.deselectItem(this.selectedItem);
+      }
+      if (model) {
+        model[this.selectedAs] = true;
+      }
+      this.$.selector.select(item);
+      this.updateSizeForItem(item);
+    },
+
+    /**
+     * Deselects the given item list if it is already selected.
+     *
+
+     * @method deselect
+     * @param {(Object|number)} item The item object or its index
+     */
+    deselectItem: function(item) {
+      item = this._getNormalizedItem(item);
+      var model = this._getModelFromItem(item);
+
+      if (model) {
+        model[this.selectedAs] = false;
+      }
+      this.$.selector.deselect(item);
+      this.updateSizeForItem(item);
+    },
+
+    /**
+     * Select or deselect a given item depending on whether the item
+     * has already been selected.
+     *
+     * @method toggleSelectionForItem
+     * @param {(Object|number)} item The item object or its index
+     */
+    toggleSelectionForItem: function(item) {
+      item = this._getNormalizedItem(item);
+      if (/** @type {!ArraySelectorElement} */ (this.$.selector).isSelected(item)) {
+        this.deselectItem(item);
+      } else {
+        this.selectItem(item);
+      }
+    },
+
+    /**
+     * Clears the current selection state of the list.
+     *
+     * @method clearSelection
+     */
+    clearSelection: function() {
+      function unselect(item) {
+        var model = this._getModelFromItem(item);
+        if (model) {
+          model[this.selectedAs] = false;
+        }
+      }
+
+      if (Array.isArray(this.selectedItems)) {
+        this.selectedItems.forEach(unselect, this);
+      } else if (this.selectedItem) {
+        unselect.call(this, this.selectedItem);
+      }
+
+      /** @type {!ArraySelectorElement} */ (this.$.selector).clearSelection();
+    },
+
+    /**
+     * Add an event listener to `tap` if `selectionEnabled` is true,
+     * it will remove the listener otherwise.
+     */
+    _selectionEnabledChanged: function(selectionEnabled) {
+      var handler = selectionEnabled ? this.listen : this.unlisten;
+      handler.call(this, this, 'tap', '_selectionHandler');
+    },
+
+    /**
+     * Select an item from an event object.
+     */
+    _selectionHandler: function(e) {
+      var model = this.modelForElement(e.target);
+      if (!model) {
+        return;
+      }
+      var modelTabIndex, activeElTabIndex;
+      var target = Polymer.dom(e).path[0];
+      var activeEl = Polymer.dom(this.domHost ? this.domHost.root : document).activeElement;
+      var physicalItem = this._physicalItems[this._getPhysicalIndex(model[this.indexAs])];
+      // Safari does not focus certain form controls via mouse
+      // https://bugs.webkit.org/show_bug.cgi?id=118043
+      if (target.localName === 'input' ||
+          target.localName === 'button' ||
+          target.localName === 'select') {
+        return;
+      }
+      // Set a temporary tabindex
+      modelTabIndex = model.tabIndex;
+      model.tabIndex = SECRET_TABINDEX;
+      activeElTabIndex = activeEl ? activeEl.tabIndex : -1;
+      model.tabIndex = modelTabIndex;
+      // Only select the item if the tap wasn't on a focusable child
+      // or the element bound to `tabIndex`
+      if (activeEl && physicalItem !== activeEl && physicalItem.contains(activeEl) && activeElTabIndex !== SECRET_TABINDEX) {
+        return;
+      }
+      this.toggleSelectionForItem(model[this.as]);
+    },
+
+    _multiSelectionChanged: function(multiSelection) {
+      this.clearSelection();
+      this.$.selector.multi = multiSelection;
+    },
+
+    /**
+     * Updates the size of an item.
+     *
+     * @method updateSizeForItem
+     * @param {(Object|number)} item The item object or its index
+     */
+    updateSizeForItem: function(item) {
+      item = this._getNormalizedItem(item);
+      var key = this._collection.getKey(item);
+      var pidx = this._physicalIndexForKey[key];
+
+      if (pidx != null) {
+        this._updateMetrics([pidx]);
+        this._positionItems();
+      }
+    },
+
+    /**
+     * Creates a temporary backfill item in the rendered pool of physical items
+     * to replace the main focused item. The focused item has tabIndex = 0
+     * and might be currently focused by the user.
+     *
+     * This dynamic replacement helps to preserve the focus state.
+     */
+    _manageFocus: function() {
+      var fidx = this._focusedIndex;
+
+      if (fidx >= 0 && fidx < this._virtualCount) {
+        // if it's a valid index, check if that index is rendered
+        // in a physical item.
+        if (this._isIndexRendered(fidx)) {
+          this._restoreFocusedItem();
+        } else {
+          this._createFocusBackfillItem();
+        }
+      } else if (this._virtualCount > 0 && this._physicalCount > 0) {
+        // otherwise, assign the initial focused index.
+        this._focusedIndex = this._virtualStart;
+        this._focusedItem = this._physicalItems[this._physicalStart];
+      }
+    },
+
+    _isIndexRendered: function(idx) {
+      return idx >= this._virtualStart && idx <= this._virtualEnd;
+    },
+
+    _isIndexVisible: function(idx) {
+      return idx >= this.firstVisibleIndex && idx <= this.lastVisibleIndex;
+    },
+
+    _getPhysicalIndex: function(idx) {
+      return this._physicalIndexForKey[this._collection.getKey(this._getNormalizedItem(idx))];
+    },
+
+    _focusPhysicalItem: function(idx) {
+      if (idx < 0 || idx >= this._virtualCount) {
+        return;
+      }
+      this._restoreFocusedItem();
+      // scroll to index to make sure it's rendered
+      if (!this._isIndexRendered(idx)) {
+        this.scrollToIndex(idx);
+      }
+
+      var physicalItem = this._physicalItems[this._getPhysicalIndex(idx)];
+      var model = physicalItem._templateInstance;
+      var focusable;
+      // set a secret tab index
+      model.tabIndex = SECRET_TABINDEX;
+      // check if focusable element is the physical item
+      if (physicalItem.tabIndex === SECRET_TABINDEX) {
+       focusable = physicalItem;
+      }
+      // search for the element which tabindex is bound to the secret tab index
+      if (!focusable) {
+        focusable = Polymer.dom(physicalItem).querySelector('[tabindex="' + SECRET_TABINDEX + '"]');
+      }
+      // restore the tab index
+      model.tabIndex = 0;
+      // focus the focusable element
+      this._focusedIndex = idx;
+      focusable && focusable.focus();
+    },
+
+    _removeFocusedItem: function() {
+      if (this._offscreenFocusedItem) {
+        Polymer.dom(this).removeChild(this._offscreenFocusedItem);
+      }
+      this._offscreenFocusedItem = null;
+      this._focusBackfillItem = null;
+      this._focusedItem = null;
+      this._focusedIndex = -1;
+    },
+
+    _createFocusBackfillItem: function() {
+      var fidx = this._focusedIndex;
+      var pidx = this._getPhysicalIndex(fidx);
+
+      if (this._offscreenFocusedItem || pidx == null || fidx < 0) {
+        return;
+      }
+      if (!this._focusBackfillItem) {
+        // Create a physical item.
+        var stampedTemplate = this.stamp(null);
+        this._focusBackfillItem = stampedTemplate.root.querySelector('*');
+        Polymer.dom(this).appendChild(stampedTemplate.root);
+      }
+      // Set the offcreen focused physical item.
+      this._offscreenFocusedItem = this._physicalItems[pidx];
+      this._offscreenFocusedItem._templateInstance.tabIndex = 0;
+      this._physicalItems[pidx] = this._focusBackfillItem;
+      // Hide the focused physical.
+      this.translate3d(0, HIDDEN_Y, 0, this._offscreenFocusedItem);
+    },
+
+    _restoreFocusedItem: function() {
+      var pidx, fidx = this._focusedIndex;
+
+      if (!this._offscreenFocusedItem || this._focusedIndex < 0) {
+        return;
+      }
+      // Assign models to the focused index.
+      this._assignModels();
+      // Get the new physical index for the focused index.
+      pidx = this._getPhysicalIndex(fidx);
+
+      if (pidx != null) {
+        // Flip the focus backfill.
+        this._focusBackfillItem = this._physicalItems[pidx];
+        this._focusBackfillItem._templateInstance.tabIndex = -1;
+        // Restore the focused physical item.
+        this._physicalItems[pidx] = this._offscreenFocusedItem;
+        // Reset the offscreen focused item.
+        this._offscreenFocusedItem = null;
+        // Hide the physical item that backfills.
+        this.translate3d(0, HIDDEN_Y, 0, this._focusBackfillItem);
+      }
+    },
+
+    _didFocus: function(e) {
+      var targetModel = this.modelForElement(e.target);
+      var focusedModel = this._focusedItem ? this._focusedItem._templateInstance : null;
+      var hasOffscreenFocusedItem = this._offscreenFocusedItem !== null;
+      var fidx = this._focusedIndex;
+
+      if (!targetModel || !focusedModel) {
+        return;
+      }
+      if (focusedModel === targetModel) {
+        // if the user focused the same item, then bring it into view if it's not visible
+        if (!this._isIndexVisible(fidx)) {
+          this.scrollToIndex(fidx);
+        }
+      } else {
+        this._restoreFocusedItem();
+        // restore tabIndex for the currently focused item
+        focusedModel.tabIndex = -1;
+        // set the tabIndex for the next focused item
+        targetModel.tabIndex = 0;
+        fidx = targetModel[this.indexAs];
+        this._focusedIndex = fidx;
+        this._focusedItem = this._physicalItems[this._getPhysicalIndex(fidx)];
+        if (hasOffscreenFocusedItem && !this._offscreenFocusedItem) {
+          this._update();
+        }
+      }
+    },
+
+    _didMoveUp: function() {
+      this._focusPhysicalItem(this._focusedIndex - 1);
+    },
+
+    _didMoveDown: function(e) {
+      // disable scroll when pressing the down key
+      e.detail.keyboardEvent.preventDefault();
+      this._focusPhysicalItem(this._focusedIndex + 1);
+    },
+
+    _didEnter: function(e) {
+      this._focusPhysicalItem(this._focusedIndex);
+      this._selectionHandler(e.detail.keyboardEvent);
+    }
+  });
+
+})();
+
+</script>
+<script>
+  window.vaadin = window.vaadin || {};
+  vaadin.elements = vaadin.elements || {};
+  vaadin.elements.combobox = vaadin.elements.combobox || {};
+
+  /** @polymerBehavior vaadin.elements.combobox.OverlayBehavior */
+  vaadin.elements.combobox.OverlayBehaviorImpl = {
+    properties: {
+      /**
+       * The element to position/align the dropdown by.
+       */
+      positionTarget: {
+        type: Object
+      },
+
+      /**
+       * Vertical offset for the overlay position.
+       */
+      verticalOffset: {
+        type: Number,
+        value: 0
+      },
+
+      /**
+       * If `true`, overlay is aligned above the `positionTarget`
+       */
+      _alignedAbove: {
+        type: Boolean,
+        value: false
+      }
+    },
+
+    listeners: {
+      'iron-resize': '_setPosition'
+    },
+
+    created: function() {
+      this._boundSetPosition = this._setPosition.bind(this);
+    },
+
+    _unwrapIfNeeded: function(element) {
+      var isWrapped = Polymer.Settings.hasShadow && !Polymer.Settings.nativeShadow;
+      return isWrapped ? window.unwrap(element) : element;
+    },
+
+    _processPendingMutationObserversFor: function(node) {
+      if (!Polymer.Settings.useNativeCustomElements) {
+        CustomElements.takeRecords(node);
+      }
+    },
+
+    _moveTo: function(target) {
+      // `attached` and `detached` callbacks are unreliable with Shadow DOM polyfill. They are asynchonous and sometimes
+      // cancel each other. We need to process mutation observers synchonously after moving the overlay. :-(
+      var oldParentNode = this.parentNode;
+      Polymer.dom(target).appendChild(this);
+
+      if (oldParentNode) {
+        this._processPendingMutationObserversFor(oldParentNode);
+        if (oldParentNode.host) {
+          // When moving from local DOM, ensure to remove the old style scope
+          Polymer.StyleTransformer.dom(this, oldParentNode.host.is, this._scopeCssViaAttr, true);
+        }
+      }
+
+      this._processPendingMutationObserversFor(this);
+      if (target.host) {
+        // When moving to local DOM, ensure to add the new style scope
+        Polymer.StyleTransformer.dom(this, target.host.is, this._scopeCssViaAttr);
+      }
+
+      if (target === document.body) {
+        this.style.position = this._isPositionFixed(this.positionTarget) ? 'fixed' : 'absolute';
+        window.addEventListener('scroll', this._boundSetPosition, true);
+        this._setPosition();
+      } else {
+        window.removeEventListener('scroll', this._boundSetPosition, true);
+      }
+    },
+
+    _verticalOffset: function(overlayRect, targetRect) {
+      if (this._alignedAbove) {
+        return -overlayRect.height;
+      } else {
+        return targetRect.height + this.verticalOffset;
+      }
+    },
+
+    _isPositionFixed: function(element) {
+      var offsetParent = element.offsetParent;
+
+      return window.getComputedStyle(this._unwrapIfNeeded(element)).position === 'fixed' ||
+        (offsetParent && this._isPositionFixed(offsetParent));
+    },
+
+    _maxHeight: function(targetRect) {
+      var margin = 8;
+      var minHeight = 116; // Height of two items in combo-box
+      var bottom = Math.min(window.innerHeight, document.body.scrollHeight - document.body.scrollTop);
+
+      if (this._alignedAbove) {
+        return Math.max(targetRect.top - margin + Math.min(document.body.scrollTop, 0), minHeight) + 'px';
+      } else {
+        return Math.max(bottom - targetRect.bottom - margin, minHeight) + 'px';
+      }
+    },
+
+    _setPosition: function(e) {
+      if (e && e.target) {
+        var target = e.target === document ? document.body : e.target;
+        var parent = this._unwrapIfNeeded(this.parentElement);
+        if (!(target.contains(this) || target.contains(this.positionTarget)) || parent !== document.body) {
+          return;
+        }
+      }
+
+      var targetRect = this.positionTarget.getBoundingClientRect();
+      this._alignedAbove = this._shouldAlignAbove();
+
+      // overlay max height is restrained by the #scroller max height which is set to 65vh in CSS.
+      this.style.maxHeight = this._maxHeight(targetRect);
+
+      // we need to set height for iron-list to make its `firstVisibleIndex` work correctly.
+      this.$.selector.style.maxHeight = this._maxHeight(targetRect);
+
+      var overlayRect = this.getBoundingClientRect();
+      this._translateX = targetRect.left - overlayRect.left + (this._translateX || 0);
+      this._translateY = targetRect.top - overlayRect.top + (this._translateY || 0) +
+        this._verticalOffset(overlayRect, targetRect);
+
+      var _devicePixelRatio = window.devicePixelRatio || 1;
+      this._translateX = Math.round(this._translateX * _devicePixelRatio) / _devicePixelRatio;
+      this._translateY = Math.round(this._translateY * _devicePixelRatio) / _devicePixelRatio;
+      this.translate3d(this._translateX + 'px', this._translateY + 'px', '0');
+
+      this.style.width = this.positionTarget.clientWidth + 'px';
+
+      this.updateViewportBoundaries();
+    },
+
+    _shouldAlignAbove: function() {
+      var spaceBelow = (
+          window.innerHeight -
+          this.positionTarget.getBoundingClientRect().bottom -
+          Math.min(document.body.scrollTop, 0)
+        ) / window.innerHeight;
+
+      return spaceBelow < 0.30;
+    }
+  };
+
+  /** @polymerBehavior */
+  vaadin.elements.combobox.OverlayBehavior = [
+    Polymer.IronResizableBehavior,
+    vaadin.elements.combobox.OverlayBehaviorImpl
+  ];
+</script><dom-module id="vaadin-combo-box-overlay" assetpath="../bower_components/vaadin-combo-box/">
+  <style>
+    :host {
+      position: absolute;
+      @apply(--shadow-elevation-2dp);
+      background: #fff;
+      border-radius: 0 0 2px 2px;
+      top: 0;
+      left: 0;
+
+      /**
+      * Keep the vaadin-combo-box-overlay above paper-dialogs.
+      * iron-overlay-manager.html: Polymer.IronOverlayManagerClass.prototype._applyOverlayZ
+      */
+      z-index: 200;
+      overflow: hidden;
+    }
+
+    #scroller {
+      overflow: auto;
+      max-height: var(--vaadin-combo-box-overlay-max-height, 65vh);
+
+      /* Fixes item background from getting on top of scrollbars on Safari */
+      transform: translate3d(0,0,0);
+
+      /* Enable momentum scrolling on iOS (iron-list v1.2+ no longer does it for us) */
+      -webkit-overflow-scrolling: touch;
+    }
+
+    #selector {
+      --iron-list-items-container: {
+        border-top: 8px solid transparent;
+        border-bottom: 8px solid transparent;
+      };
+    }
+
+    #selector .item {
+      cursor: pointer;
+      padding: 13px 16px;
+      color: var(--primary-text-color);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    #selector:not([touch-device]) .item:hover,
+    #selector .item[focused] {
+      background: #eee;
+    }
+
+    #selector .item[selected] {
+      color: var(--primary-color);
+    }
+  </style>
+
+  <template>
+    <div id="scroller" scroller="[[_getScroller()]]" on-tap="_stopPropagation">
+      <iron-list id="selector" touch-device$="[[touchDevice]]" role="listbox" data-selection$="[[_ariaActiveIndex]]" on-touchend="_preventDefault" selected-item="{{_selectedItem}}" items="[[_items]]" selection-enabled="" scroll-target="[[_getScroller()]]">
+        <template>
+          <div class="item" id$="it[[index]]" selected$="[[selected]]" role$="[[_getAriaRole(index)]]" aria-selected$="[[_getAriaSelected(_focusedIndex,index)]]" focused$="[[_isItemFocused(_focusedIndex,index)]]">
+              [[getItemLabel(item)]]
+          </div>
+        </template>
+      </iron-list>
+    </div>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'vaadin-combo-box-overlay',
+
+    behaviors: [
+      vaadin.elements.combobox.OverlayBehavior
+    ],
+
+    properties: {
+
+      /**
+       * True if the device supports touch events.
+       */
+      touchDevice: {
+        type: Boolean,
+        reflectToAttribute: true,
+        value: function() {
+          try {
+            document.createEvent('TouchEvent');
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+      },
+
+      _selectedItem: {
+        type: String,
+        notify: true
+      },
+
+      _items: {
+        type: Object
+      },
+
+      _focusedIndex: {
+        type: Number,
+        notify: true,
+        value: -1,
+        observer: '_focusedIndexChanged'
+      },
+
+      _focusedItem: {
+        type: String,
+        computed: '_getFocusedItem(_focusedIndex)'
+      },
+
+      _ariaActiveIndex: {
+        type: Number,
+        notify: true,
+        computed: '_getAriaActiveIndex(_focusedIndex)'
+      },
+
+      _itemLabelPath: {
+        type: String,
+        value: 'label'
+      },
+
+      _itemValuePath: {
+        type: String,
+        value: 'value'
+      }
+    },
+
+    ready: function() {
+      this._patchWheelOverScrolling();
+
+      // Fix for #182. Only relevant for iron-list 1.0.X and 1.1.X.
+      // 1.2.X works fine without this.
+      if (this.$.selector._scroller !== undefined) {
+        this.$.selector._scroller = this._getScroller();
+      }
+    },
+
+    _getFocusedItem: function(focusedIndex) {
+      if (focusedIndex >= 0) {
+        return this._items[focusedIndex];
+      }
+    },
+
+    /**
+     * Gets the index of the item with the provided label.
+     * @return {Number}
+     */
+    indexOfLabel: function(label) {
+      if (this._items && label) {
+        for (var i = 0; i < this._items.length; i++) {
+          if (this.getItemLabel(this._items[i]).toString().toLowerCase() ===
+              label.toString().toLowerCase()) {
+            return i;
+          }
+        }
+      }
+
+      return -1;
+    },
+
+    /**
+     * Gets the label string for the item based on the `_itemLabelPath`.
+     * @return {String}
+     */
+    getItemLabel: function(item) {
+      var label = this.get(this._itemLabelPath, item);
+      if (label === undefined || label === null) {
+        label = item ? item.toString() : '';
+      }
+      return label;
+    },
+
+    _isItemFocused: function(focusedIndex, itemIndex) {
+      return focusedIndex == itemIndex;
+    },
+
+    _getAriaActiveIndex: function(focusedIndex) {
+      if (focusedIndex >= 0) {
+        return 'it' + focusedIndex;
+      }
+
+      return false;
+    },
+
+    _getAriaSelected: function(focusedIndex, itemIndex) {
+      return this._isItemFocused(focusedIndex, itemIndex).toString();
+    },
+
+    _getAriaRole: function(itemIndex) {
+      return itemIndex !== undefined ? 'option' : false;
+    },
+
+    _focusedIndexChanged: function(index) {
+      if (index >= 0) {
+        this._scrollIntoView(index);
+      }
+    },
+
+    _scrollIntoView: function(index) {
+      if (this._visibleItemsCount() === undefined) {
+        // Scroller is not visible. Moving is unnecessary.
+        return;
+      }
+
+      var targetIndex = index;
+
+      if (index > this._lastVisibleIndex()) {
+        // Index is below the bottom, scrolling down. Make the item appear at the bottom.
+        targetIndex = index - this._visibleItemsCount() + 1;
+
+        // From iron-list 1.2.4, scrolling to an index guarantees that the item
+        // is visible into the viewport, but does not gurarantee that it is at the
+        // first position. Jumping first to the item we want to be at the bottom,
+        // fixes the problem.
+        this.$.selector.scrollToIndex(index);
+      } else if (index > this.$.selector.firstVisibleIndex) {
+        // The item is already visible, scrolling is unnecessary per se. But we need to trigger iron-list to set
+        // the correct scrollTop on the scrollTarget. Scrolling to firstVisibleIndex.
+        targetIndex = this.$.selector.firstVisibleIndex;
+      }
+      this.$.selector.scrollToIndex(Math.max(0, targetIndex));
+    },
+
+    ensureItemsRendered: function() {
+      this.$.selector.flushDebouncer('_debounceTemplate');
+      this.$.selector._render && this.$.selector._render();
+    },
+
+    adjustScrollPosition: function() {
+      if (this._items) {
+        this._scrollIntoView(this._focusedIndex);
+      }
+    },
+
+    // Note: this whole scroller thing is done to support iron lists scrollToIndex()
+    // and features that use it like keyboard navigation in IE11 for iron-list 1.0.x.
+    // Tested that iron-list 1.2.x works nicely even without the external scroller, but
+    // left these here for now for backwards compatibility.
+    _getScroller: function() {
+      return this.$.scroller;
+    },
+
+    /**
+     * We want to prevent the kinetic scrolling energy from being transferred from the overlay contents over to the parent.
+     * Further improvement ideas: after the contents have been scrolled to the top or bottom and scrolling has stopped, it could allow
+     * scrolling the parent similarily to touch scrolling.
+     */
+    _patchWheelOverScrolling: function() {
+      var selector = this.$.selector;
+      selector.addEventListener('wheel', function(e) {
+        var scroller = selector._scroller || selector.scrollTarget;
+        var scrolledToTop = scroller.scrollTop === 0;
+        var scrolledToBottom = (scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight) <= 1;
+
+        if (scrolledToTop && e.deltaY < 0) {
+          e.preventDefault();
+        } else if (scrolledToBottom && e.deltaY > 0) {
+          e.preventDefault();
+        }
+      });
+    },
+
+    updateViewportBoundaries: function() {
+      this._cachedViewportTotalPadding = undefined;
+      this.$.selector.updateViewportBoundaries();
+    },
+
+    get _viewportTotalPadding() {
+      if (this._cachedViewportTotalPadding === undefined) {
+        var itemsStyle = window.getComputedStyle(this._unwrapIfNeeded(this.$.selector.$.items));
+        this._cachedViewportTotalPadding = [
+          itemsStyle.paddingTop,
+          itemsStyle.paddingBottom,
+          itemsStyle.borderTopWidth,
+          itemsStyle.borderBottomWidth
+        ].map(function(v) {
+          return parseInt(v, 10);
+        }).reduce(function(sum, v) {
+          return sum + v;
+        });
+      }
+
+      return this._cachedViewportTotalPadding;
+    },
+
+    // TODO: PR for iron-list: https://github.com/PolymerElements/iron-list/pull/150
+    _visibleItemsCount: function() {
+      var firstItemIndex = this.$.selector._physicalStart;
+      var firstItemHeight = this.$.selector._physicalSizes[firstItemIndex];
+
+      var viewportHeight = this.$.selector._viewportHeight || this.$.selector._viewportSize; //Changed in v1.3.0.
+
+      if (firstItemHeight && viewportHeight) {
+        var visibleItems = (viewportHeight - this._viewportTotalPadding) / firstItemHeight;
+        return Math.floor(visibleItems);
+      }
+    },
+
+    // TODO: PR for iron-list: https://github.com/PolymerElements/iron-list/pull/150
+    _lastVisibleIndex: function() {
+      if (this._visibleItemsCount()) {
+        return this.$.selector.firstVisibleIndex + this._visibleItemsCount() - 1;
+      }
+    },
+
+    _selectItem: function(item) {
+      item = (typeof item === 'number') ? this._items[item] : item;
+      if (this.$.selector.selectedItem !== item) {
+        this.$.selector.selectItem(item);
+      }
+    },
+
+    _preventDefault: function(e) {
+      e.preventDefault();
+    },
+
+    _stopPropagation: function(e) {
+      e.stopPropagation();
+    }
+  });
+</script>
+<dom-module id="vaadin-combo-box-shared-styles" assetpath="../bower_components/vaadin-combo-box/">
+  <template>
+    <style>
+      .rotate-on-open,
+      :host ::content .rotate-on-open {
+        transition: all 0.2s !important;
+      }
+
+      :host([opened]) .rotate-on-open,
+      :host([opened]) ::content .rotate-on-open {
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+      }
+
+      paper-icon-button.small,
+      :host ::content paper-icon-button.small {
+        box-sizing: content-box !important;
+        bottom: -6px !important;
+        width: 20px !important;
+        height: 20px !important;
+        padding: 4px 6px 8px !important;
+      }
+
+      :host(:not([opened])) ::content .clear-button,
+      :host(:not([opened])) .clear-button,
+      :host(:not([has-value])) ::content .clear-button,
+      :host(:not([has-value])) .clear-button {
+        display: none;
+      }
+
+      :host([readonly]) ::content .toggle-button,
+      :host([readonly]) .toggle-button,
+      :host([disabled]) ::content .toggle-button,
+      :host([disabled]) .toggle-button {
+        display: none;
+      }
+    </style>
+  </template>
+  <script>
+    Polymer({
+      is: 'vaadin-combo-box-shared-styles'
+    });
+  </script>
+</dom-module>
+<iron-iconset-svg size="24" name="vaadin-combo-box">
+  <svg>
+    <defs>
+      <g id="arrow-drop-down"><path d="M7 10l5 5 5-5z"></path></g>
+      <g id="clear"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></g>
+    </defs>
+  </svg>
+</iron-iconset-svg>
+<dom-module id="vaadin-combo-box" assetpath="../bower_components/vaadin-combo-box/">
+  <style include="vaadin-combo-box-shared-styles">
+    :host {
+       display: block;
+       padding: 8px 0;
+    }
+
+    :host > #overlay {
+      display: none;
+    }
+
+    paper-input-container {
+      position: relative;
+      padding: 0;
+    }
+
+    paper-icon-button.clear-button,
+    paper-icon-button.toggle-button,
+    :host ::content paper-icon-button.clear-button,
+    :host ::content paper-icon-button.toggle-button {
+      position: absolute;
+      bottom: -4px;
+      right: -4px;
+
+      line-height: 18px !important;
+      width: 32px;
+      height: 32px;
+      padding: 4px;
+      text-align: center;
+
+      color: rgba(0, 0, 0, .38);
+      cursor: pointer;
+      margin-top: -1px;
+      --paper-icon-button-ink-color: rgba(0, 0, 0, .54);
+    }
+
+    paper-input-container paper-icon-button.clear-button,
+    paper-input-container ::content paper-icon-button.clear-button {
+      right: 28px;
+    }
+
+    paper-input-container paper-icon-button:hover,
+    paper-input-container ::content paper-icon-button:hover,
+    :host([opened]) paper-input-container paper-icon-button,
+    :host([opened]) paper-input-container ::content paper-icon-button {
+      color: rgba(0, 0, 0, .54);
+    }
+
+    :host([opened]) paper-input-container ::content paper-icon-button:hover,
+    :host([opened]) paper-input-container paper-icon-button:hover {
+      color: rgba(0, 0, 0, .86);
+    }
+
+    :host([opened]) paper-input-container {
+      /* Keep the paper-input-container above the dropdown. */
+      z-index: 20;
+    }
+
+    #input::-ms-clear {
+      display: none;
+    }
+
+    #input {
+      box-sizing: border-box;
+      padding-right: 28px;
+    }
+
+    :host([opened][has-value]) #input {
+      padding-right: 60px;
+      margin-right: -32px;
+    }
+
+  </style>
+
+  <template>
+    <paper-input-container id="inputContainer" disabled$="[[disabled]]" no-label-float="[[noLabelFloat]]" always-float-label="[[_computeAlwaysFloatLabel(alwaysFloatLabel,placeholder)]]" auto-validate$="[[autoValidate]]" invalid="[[invalid]]">
+      <label on-down="_preventDefault" id="label" hidden$="[[!label]]" aria-hidden="true" on-tap="_openAsync">[[label]]</label>
+
+      <content select="[prefix]"></content>
+
+      <input is="iron-input" id="input" type="text" role="combobox" autocomplete="off" autocapitalize="none" bind-value="{{_inputElementValue}}" aria-labelledby="label" aria-activedescendant$="[[_ariaActiveIndex]]" aria-expanded$="[[_getAriaExpanded(opened)]]" aria-autocomplete="list" aria-owns="overlay" disabled$="[[disabled]]" invalid="{{invalid}}" prevent-invalid-input="[[preventInvalidInput]]" allowed-pattern="[[allowedPattern]]" pattern$="[[pattern]]" required$="[[required]]" autofocus$="[[autofocus]]" inputmode$="[[inputmode]]" name$="[[name]]" placeholder$="[[placeholder]]" readonly$="[[readonly]]" size$="[[size]]" on-input="_inputValueChanged" on-blur="_onBlur" on-change="_stopPropagation" key-event-target="">
+
+      <content select="[suffix]"></content>
+
+      <content select=".clear-button">
+        <paper-icon-button id="clearIcon" tabindex="-1" icon="vaadin-combo-box:clear" on-down="_preventDefault" class="clear-button small">
+        </paper-icon-button>
+      </content>
+
+      <content select=".toggle-button">
+        <paper-icon-button id="toggleIcon" tabindex="-1" icon="vaadin-combo-box:arrow-drop-down" aria-controls="overlay" on-down="_preventDefault" class="toggle-button rotate-on-open">
+        </paper-icon-button>
+      </content>
+
+      <template is="dom-if" if="[[errorMessage]]">
+        <paper-input-error>[[errorMessage]]</paper-input-error>
+      </template>
+    </paper-input-container>
+
+    <vaadin-combo-box-overlay id="overlay" _aria-active-index="{{_ariaActiveIndex}}" position-target="[[_getPositionTarget()]]" _focused-index="[[_focusedIndex]]" _item-label-path="[[itemLabelPath]]" on-down="_onOverlayDown" on-mousedown="_preventDefault" vertical-offset="2">
+    </vaadin-combo-box-overlay>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'vaadin-combo-box',
+
+    behaviors: [
+      Polymer.IronValidatableBehavior,
+      vaadin.elements.combobox.ComboBoxBehavior
+    ],
+
+    properties: {
+      /**
+       * The label for this element.
+       */
+      label: {
+        type: String,
+        reflectToAttribute: true
+      },
+
+      /**
+       * Set to true to disable the floating label.
+       */
+      noLabelFloat: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Set to true to always float the label.
+       */
+      alwaysFloatLabel: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Set to true to auto-validate the input value.
+       */
+      autoValidate: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Set to true to disable this input.
+       */
+      disabled: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * Set to true to prevent the user from entering invalid input.
+       */
+      preventInvalidInput: {
+        type: Boolean
+      },
+
+      /**
+       * Set this to specify the pattern allowed by `preventInvalidInput`.
+       */
+      allowedPattern: {
+        type: String
+      },
+
+      /**
+       * A pattern to validate the `input` with.
+       */
+      pattern: {
+        type: String
+      },
+
+      /**
+       * Set to true to mark the input as required.
+       */
+      required: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
+       * The error message to display when the input is invalid.
+       */
+      errorMessage: {
+        type: String
+      },
+
+      autofocus: {
+        type: Boolean
+      },
+
+      inputmode: {
+        type: String
+      },
+
+      name: {
+        type: String
+      },
+
+      /**
+       * A placeholder string in addition to the label. If this is set, the label will always float.
+       */
+      placeholder: {
+        type: String,
+        // need to set a default so _computeAlwaysFloatLabel is run
+        value: ''
+      },
+
+      readonly: {
+        type: Boolean,
+        value: false
+      },
+
+      size: {
+        type: Number
+      }
+
+    },
+
+    attached: function() {
+      this._setInputElement(this.$.input);
+
+      // Use the default toggle/clear or one replaced in light DOM.
+      this._toggleElement = Polymer.dom(this).querySelector('.toggle-button') || this.$.toggleIcon;
+      this._clearElement = Polymer.dom(this).querySelector('.clear-button') || this.$.clearIcon;
+    },
+
+    _computeAlwaysFloatLabel: function(alwaysFloatLabel, placeholder) {
+      return placeholder || alwaysFloatLabel;
+    },
+
+    _getPositionTarget: function() {
+      return this.$.inputContainer;
+    },
+
+    _getAriaExpanded: function(value) {
+      return value.toString();
+    }
+  });
+
+</script>
+<style include="shared-styles">
+  .titoloSezione {
+    padding-top: 24px;
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    color: #9e9e9e;
+  }
+
+  .sezioneForm {
+    padding-left: 24px;
+    background: #fff;
+    padding-bottom: 16px;
+    margin-bottom: 2px;
+    padding-right: 24px;
+  }
+
+  .titoloElemento {
+    padding: 24px 0 0 0;
+  }
+
+  .sottotitoloElemento {
+    font-size: 12px;
+    color: #C1C1C1;
+  }
+
+  .titoloMultiselect {
+    padding-top: 24px;
+    font-size: 16px;
+    font-weight: 400;
+    color: #9e9e9e;
+  }
+</style><script>
   LinkFormBehavior = {
 
     ready: function(){
@@ -27910,7 +30993,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               break;
             case 'SelectList':
               //Dropdown
-              var pdm = document.createElement('paper-dropdown-menu');
+              var pdm = document.createElement('vaadin-combo-box');
+              pdm.itemLabelPath='etichetta';
+              pdm.itemValuePath='valore';
               this.setDropDownProperties(pdm, obj);
               sezioneDiv.appendChild(pdm);
               pdm.disabled = !obj.editable;
@@ -28001,7 +31086,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     changeData: function(event){
       for (var i = 0; i < event.currentTarget.refreshParamIds.length; i++) {
         var obj = event.currentTarget.refreshParamIds[i];
-        this.$$('#'+obj).refresh();
+	var vObj = this.$$('#'+obj);
+	if(vObj)
+		vObj.refresh();
       }
     },
 
@@ -28027,10 +31114,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           temp.ok=true;
           temp.value=''+this.$$('#'+obj).value;
           break;
-        case 'paper-dropdown-menu':
+        case 'vaadin-combo-box':
           if (this.$$('#'+obj).selectedItem){
             temp.ok=true;
-            temp.value=''+this.$$('#'+obj).selectedItem.value;
+            temp.value=''+this.$$('#'+obj).selectedItem.valore;
           }
           break;
       }
@@ -28129,14 +31216,22 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       dropdown.placeholder = data.suggestion;
       if (data.refreshParamIds.length>0){
         dropdown.refreshParamIds = data.refreshParamIds;
-        dropdown.addEventListener('iron-select', this.changeData.bind(this));
+	dropdown.addEventListener('value-changed', this.changeData.bind(this));
+        //dropdown.addEventListener('iron-select', this.changeData.bind(this));
       }
       if (data.refreshUri){
         dropdown.refreshUri = data.refreshUri;
         dropdown.refreshUriParamIds = data.refreshUriParamIds;
         dropdown.refresh = this.refreshDropdownData.bind(this, dropdown);
       }
-      var plb = document.createElement('paper-listbox');
+      var items = [];
+      for (var v = 0; v < data.values.length; v++) {
+        var voce = data.values[v];
+        items.push(voce);
+      }
+      dropdown.items = items;
+      dropdown.value = data.defaultValue;
+      /*var plb = document.createElement('paper-listbox');
       plb.className = 'dropdown-content';
       plb.attrForSelected='value';
       plb.selected = data.defaultValue;
@@ -28149,11 +31244,12 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         Polymer.dom(plb).appendChild(pi);
       }
       plb.addEventListener('iron-select', this._modifiedForm);
-      Polymer.dom(dropdown).appendChild(plb);
+      Polymer.dom(dropdown).appendChild(plb);*/
     },
 
     refreshDropdownData: function(target){
-      target.contentElement.selected='';
+      //target.contentElement.selected='';
+	target.selectedItem='';
       var query=[];
       for (var i = 0; i < target.refreshUriParamIds.length; i++) {
         var obj = target.refreshUriParamIds[i];
@@ -28489,12 +31585,12 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
 
       // vaadin properties
-      var fu = fu || this.$$('#'+fileInput.id);
+      //      var fu = fu || this.$$('#'+fileInput.id);
       if(data.maxFileSize) {
-        fu.maxFileSize = data.maxFileSize;
+        fileInput.maxFileSize = data.maxFileSize;
       }
       if(data.maxFiles) {
-        fu.maxFiles = data.maxFiles;
+        fileInput.maxFiles = data.maxFiles;
       }
       if(data.acceptedMimeTypes){
         var acc = '';
@@ -28504,14 +31600,16 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
             acc += data.acceptedMimeTypes[i];
         }
-        fu.accept = acc;
+        fileInput.accept = acc;
       }
-      fu.nodrop = true;
+      fileInput.nodrop = true;
       if(data.target) {
-        fu.target = data.target;
+        fileInput.target = data.target;
       }
-
-      fu.addEventListener('upload-success', function(event) {
+      fileInput.addEventListener('file-reject', function(event){
+        console.log(event.detail);
+      });
+      fileInput.addEventListener('upload-success', function(event) {
         console.log("Upload Success: ");
         if(event.detail){
           if(event.detail.xhr){
@@ -29711,6 +32809,14 @@ It will also ensure that focus remains in the dialog.
         height: 24px;
       }
 
+      #scrollThreshold {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
     </style>
     <paper-scroll-header-panel id="headerPanelMain" class="main" main="" fixed="">
       
@@ -29737,8 +32843,8 @@ It will also ensure that focus remains in the dialog.
             </div>
           </div>
           <div class="mainContent">
-            <link-searchbox id="searchbox" auto="" on-append-response="appendResults" hidden$="[[!ricercaUrl]]" on-response="setResults"></link-searchbox>
-            <span class="gap" hidden$="[[showSpaceBetween(results.length, ricercaUrl)]]"></span>
+            <link-searchbox id="searchbox" auto="" on-append-response="appendResults" hidden$="[[_hideSearch(obj)]]" on-response="setResults"></link-searchbox>
+            <span class="gap" hidden$="[[showSpaceBetween(results.length, obj)]]"></span>
             <template is="dom-if" if="{{useVaadin}}">
               <link-vaadinlistbox id="vaadinResultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" intestazione="{{intestazione}}"></link-vaadinlistbox>
             </template>
@@ -29882,6 +32988,7 @@ It will also ensure that focus remains in the dialog.
           this.$.searchbox.build(response.infoRicerca);
         } else {
           this.ricercaUrl='';
+          this.$.searchbox.searchUrl='';
         }
         if (response.elenco){
           this.numResults = response.totaleRisultati;
@@ -29923,8 +33030,8 @@ It will also ensure that focus remains in the dialog.
         return (this.cancellazioneUrl || this.esportazioneUrl) ? true : false;
       },
 
-      showSpaceBetween: function(numResults, url){
-        return numResults!=0 && !url;
+      showSpaceBetween: function(numResults, obj){
+        return numResults!=0 && this._hideSearch(obj);
       },
 
       resultText: function(numResults){
@@ -29994,7 +33101,7 @@ It will also ensure that focus remains in the dialog.
       },
 
       loadMoreData: function(event){
-        if (this.numResults > this.results.length){
+        if (this.numResults > this.results.length && this.$.searchbox.searchUrl!=''){
           this.$.searchbox.searchWithOffset(this.results.length);
         }
         this.$.scrollThreshold.clearTriggers();
@@ -30016,6 +33123,13 @@ It will also ensure that focus remains in the dialog.
           //temp.titolo = this.obj.titolo;
           temp.template = this.obj.infoCreazione;
         }
+      },
+
+      _hideSearch: function(obj){
+        if (obj && obj.infoRicerca && ((obj.infoRicerca.titolo==null && obj.infoRicerca.sezioni[0].fields.length>0) || (obj.infoRicerca.titolo!=null))){
+          return false;
+        }
+        return true;
       },
 
       saved: function(event){
@@ -32366,9 +35480,9 @@ event and do your own custom submission:
           var newValue = temp[obj];
           if (this.$$('#'+obj)){
             switch (this.$$('#'+obj).localName){
-              case 'paper-dropdown-menu':
+              case 'vaadin-combo-box':
                 if (this.$$('#'+obj).selectedItem){
-                  newValue=this.$$('#'+obj).selectedItem.value;
+                  newValue=this.$$('#'+obj).selectedItem.valore;
                 } else {
                   newValue = null;
                 }
@@ -32542,7 +35656,8 @@ event and do your own custom submission:
             extends: "template"
         });
     })(window);
-</script><dom-module id="link-listbox" assetpath="link-listbox/">
+</script>
+<dom-module id="link-listbox" assetpath="link-listbox/">
   <template>
     <style include="shared-styles">
       :host {
@@ -32588,7 +35703,8 @@ event and do your own custom submission:
     </style>
     <paper-material elevation="0">
       <paper-input hidden$="[[onlyOne(dataProvider.length)]]" class="header" label="filtra" bind-value="{{filtro}}" on-bind-value-changed="filtraRisultati"></paper-input>
-      <paper-item hidden$="[[notSelectable(selectable)]]">
+      <paper-item hidden="">
+      
         <paper-checkbox id="sa" on-change="checkSelectAll"></paper-checkbox>
         <paper-item-body class$="[[classForItem(selectable)]]">
           <div>seleziona tutti</div>
@@ -32705,62 +35821,6 @@ event and do your own custom submission:
   })();
   </script>
 </dom-module>
-<style>
-  vaadin-grid > table {
-    display: none;
-  }
-
-  .vaadin-grid-sidebar-popup {
-    background-color: #ffffff;
-    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 6px 0 rgba(0,0,0,.12);
-    border-radius: 2px;
-    font-family: arial;
-    font-size: 12px;
-    transition: opacity 0.1s ease-in;
-  }
-
-  .vaadin-grid-sidebar-content > div {
-    padding: 16px 0;
-  }
-
-  .vaadin-grid-sidebar-content span:before {
-    content: url("../bower_components/vaadin-grid/img/ic_check_black_24px.svg");
-    opacity: 0.6;
-    display: inline-block;
-    padding: 0 10px;
-  }
-
-  .vaadin-grid-sidebar-content span div {
-    display: inline-block;
-  }
-
-  .vaadin-grid-sidebar-content .v-off:before {
-    visibility: hidden;
-  }
-
-  .vaadin-grid-sidebar-content span div {
-    display: inline-block;
-    vertical-align: super;
-    padding-right: 20px;
-  }
-
-  .vaadin-grid-sidebar-content table {
-    border-collapse: collapse;
-    border-top: 1px solid #E6E6E6;
-    border-bottom: 1px solid #E6E6E6;
-    min-width: 150px;
-  }
-
-  .vaadin-grid-sidebar-content .column-hiding-toggle {
-    cursor: pointer;
-    white-space: nowrap;
-  }
-
-  .vaadin-grid-sidebar-content .gwt-MenuItem-selected {
-    background: #eeeeee;
-  }
-</style>
-
 
 <script>function VaadinGridImport(){var ub='',vb=0,wb='gwt.codesvr=',xb='gwt.hosted=',yb='gwt.hybrid',zb='VaadinGridImport',Ab='meta',Bb='name',Cb='gwt:property',Db='content',Eb='=',Fb=1,Gb='gwt:onPropertyErrorFn',Hb='Bad handler "',Ib='" for "gwt:onPropertyErrorFn"',Jb='gwt:onLoadErrorFn',Kb='" for "gwt:onLoadErrorFn"',Lb='user.agent',Mb='webkit',Nb='safari',Ob='msie',Pb=10,Qb=11,Rb='ie10',Sb=9,Tb='ie9',Ub=8,Vb='ie8',Wb='gecko',Xb='gecko1_8',Yb=2,Zb=3,$b=4,_b='Single-script hosted mode not yet implemented. See issue ',ac='http://code.google.com/p/google-web-toolkit/issues/detail?id=2079',bc='E135F543371DA0288F0DEF17BCFB6306',cc=':1',dc=':',ec='DOMContentLoaded',fc=50;var j=ub,k=vb,l=wb,m=xb,n=yb,o=zb,p=Ab,q=Bb,r=Cb,s=Db,t=Eb,u=Fb,v=Gb,w=Hb,A=Ib,B=Jb,C=Kb,D=Lb,F=Mb,G=Nb,H=Ob,I=Pb,J=Qb,K=Rb,L=Sb,M=Tb,N=Ub,O=Vb,P=Wb,Q=Xb,R=Yb,S=Zb,T=$b,U=_b,V=ac,W=bc,X=cc,Y=dc,Z=ec,$=fc;var _=window,ab=document,bb,cb,db=j,eb={},fb=[],gb=[],hb=[],ib=k,jb,kb;if(!_.__gwt_stylesLoaded){_.__gwt_stylesLoaded={}}if(!_.__gwt_scriptsLoaded){_.__gwt_scriptsLoaded={}}function lb(){var b=false;try{var c=_.location.search;return (c.indexOf(l)!=-1||(c.indexOf(m)!=-1||_.external&&_.external.gwtOnLoad))&&c.indexOf(n)==-1}catch(a){}lb=function(){return b};return b}
 function mb(){if(bb&&cb){bb(jb,o,db,ib)}}
@@ -33399,7 +36459,61 @@ function Qq(a){-1==this.Z?Ap((S(),this.ab),a|(this.ab.__eventBits||0)):this.Z|=a
 function tH(a){return mH(this,a)}function sH(){return this.rf(Ib(I,h,1,this.od(),5))}function Tab(){RH(this)}function LH(){return this.a.od()}function TH(){return this.a.Xc()}function UH(){this.a.Zc()}function dI(){return this.a.length}function jI(){return gl(),kI(),lI}function nI(){throw(new od).backingJsObject;}function iw(){return null}function aI(){return this.b.od()}function pI(a){return this.b.of(a)}function rI(){return new ou(this.b.Mc())}function sI(){return this.b.qf()}
 function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(){return this.b.Yc()}function wI(){oI()}function AI(){throw(new lH).backingJsObject;}function XH(){throw(new lH).backingJsObject;}function qI(){return this.b.pf()}function Fq(){throw(new lH).backingJsObject;}function xI(a){return this.a.bb(a)}function yI(){return this.a.db()};window.gwtOnLoad=gwtOnLoad;if (VaadinGridImport) VaadinGridImport.onScriptLoad(gwtOnLoad);})();
 // vaadin.elements.grid.hash = '5858cc346539ed52b6c37d2fd006a93bb379ff2a';
-</script><dom-module id="vaadin-grid" assetpath="../bower_components/vaadin-grid/">
+</script><style>
+  vaadin-grid > table {
+    display: none;
+  }
+
+  .vaadin-grid-sidebar-popup {
+    background-color: #ffffff;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 6px 0 rgba(0,0,0,.12);
+    border-radius: 2px;
+    font-family: arial;
+    font-size: 12px;
+    transition: opacity 0.1s ease-in;
+  }
+
+  .vaadin-grid-sidebar-content > div {
+    padding: 16px 0;
+  }
+
+  .vaadin-grid-sidebar-content span:before {
+    content: url("../bower_components/vaadin-grid/img/ic_check_black_24px.svg");
+    opacity: 0.6;
+    display: inline-block;
+    padding: 0 10px;
+  }
+
+  .vaadin-grid-sidebar-content span div {
+    display: inline-block;
+  }
+
+  .vaadin-grid-sidebar-content .v-off:before {
+    visibility: hidden;
+  }
+
+  .vaadin-grid-sidebar-content span div {
+    display: inline-block;
+    vertical-align: super;
+    padding-right: 20px;
+  }
+
+  .vaadin-grid-sidebar-content table {
+    border-collapse: collapse;
+    border-top: 1px solid #E6E6E6;
+    border-bottom: 1px solid #E6E6E6;
+    min-width: 150px;
+  }
+
+  .vaadin-grid-sidebar-content .column-hiding-toggle {
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .vaadin-grid-sidebar-content .gwt-MenuItem-selected {
+    background: #eeeeee;
+  }
+</style><dom-module id="vaadin-grid" assetpath="../bower_components/vaadin-grid/">
   <style>
  /* Host styles */
   :host {

@@ -70,8 +70,8 @@ import net.sf.json.JsonConfig;
 
 public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements IDarsHandler<TipoTributo>{
 
-	private static Map<String, ParamField<?>> infoCreazioneMap = null;
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoCreazioneMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 	public static final String ANAGRAFICA_UO = "anagrafica";
 
 	public TipiTributoHandler(Logger log, BaseDarsService darsService) {
@@ -102,26 +102,29 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
-			if(StringUtils.isNotEmpty(codTributo))
-				filter.setCodTributo(codTributo); 
+			if(StringUtils.isNotEmpty(codTributo)) {
+				filter.setCodTributo(codTributo);
+			} 
 
-			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String tipocontabilitaS = this.getParameter(uriInfo, tipoContabilitaId, String.class);
 			if(StringUtils.isNotEmpty(tipocontabilitaS)){
 				filter.setCodificaTipoContabilita(tipocontabilitaS);
 			}
 
-			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 			String codContabilita = this.getParameter(uriInfo, codContabilitaId, String.class);
-			if(StringUtils.isNotEmpty(codContabilita))
+			if(StringUtils.isNotEmpty(codContabilita)) {
 				filter.setCodContabilita(codContabilita);
+			}
 
-			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 			String descrizione = this.getParameter(uriInfo, descrizioneId, String.class);
-			if(StringUtils.isNotEmpty(descrizione))
+			if(StringUtils.isNotEmpty(descrizione)) {
 				filter.setDescrizione(descrizione);
+			}
 
 
 			long count = tipiTributoBD.count(filter);
@@ -160,30 +163,30 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 		if(visualizzaRicerca) {
 
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 
-			if(infoRicercaMap == null){
+			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 			}
 
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-			InputText descrizione = (InputText) infoRicercaMap.get(descrizioneId);
+			InputText descrizione = (InputText) this.infoRicercaMap.get(descrizioneId);
 			descrizione.setDefaultValue(null);
 			sezioneRoot.addField(descrizione);
 
-			InputText codTributo = (InputText) infoRicercaMap.get(codTributoId);
+			InputText codTributo = (InputText) this.infoRicercaMap.get(codTributoId);
 			codTributo.setDefaultValue(null);
 			sezioneRoot.addField(codTributo);
 
-			SelectList<String> tipoContabilita = (SelectList<String>) infoRicercaMap.get(tipoContabilitaId);
+			SelectList<String> tipoContabilita = (SelectList<String>) this.infoRicercaMap.get(tipoContabilitaId);
 			tipoContabilita.setDefaultValue("");
 			sezioneRoot.addField(tipoContabilita);
 
-			InputText codContabilita = (InputText) infoRicercaMap.get(codContabilitaId);
+			InputText codContabilita = (InputText) this.infoRicercaMap.get(codContabilitaId);
 			codContabilita.setDefaultValue(null);
 			sezioneRoot.addField(codContabilita);
 
@@ -192,39 +195,39 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
 
 			//descrizione
-			String descrizioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
+			String descrizioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
 			InputText descrizione = new InputText(descrizioneId, descrizioneLabel, null, false, false, true, 1, 255);
-			infoRicercaMap.put(descrizioneId, descrizione);
+			this.infoRicercaMap.put(descrizioneId, descrizione);
 
 			// codTributo
-			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
+			String codTributoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, false, false, true, 1, 255);
-			infoRicercaMap.put(codTributoId, codTributo);
+			this.infoRicercaMap.put(codTributoId, codTributo);
 
 			// tipoContabilita
-			String tipoContabilitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
+			String tipoContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
 			List<Voce<String>> tipoContabilitaValues = new ArrayList<Voce<String>>();
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
 			SelectList<String> tipoContabilita = new SelectList<String>(tipoContabilitaId, tipoContabilitaLabel, null, false, false, true, tipoContabilitaValues );
-			infoRicercaMap.put(tipoContabilitaId, tipoContabilita);
+			this.infoRicercaMap.put(tipoContabilitaId, tipoContabilita);
 
 			// codContabilita
-			String codContabilitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
+			String codContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
 			InputText codContabilita = new InputText(codContabilitaId, codContabilitaLabel, null, false, false, true, 1, 255);
-			infoRicercaMap.put(codContabilitaId, codContabilita);
+			this.infoRicercaMap.put(codContabilitaId, codContabilita);
 		}
 	}
 
@@ -232,46 +235,46 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
 		try{
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-			String codificaTributoInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
-			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 
-			if(infoCreazioneMap == null){
+			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 
 			}
 
 			Sezione sezioneRoot = infoCreazione.getSezioneRoot();
 
-			InputNumber idITributo = (InputNumber) infoCreazioneMap.get(tributoId);
+			InputNumber idITributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
 			idITributo.setDefaultValue(null);
 			sezioneRoot.addField(idITributo);
 
-			InputText codTributo = (InputText) infoCreazioneMap.get(codTributoId);
+			InputText codTributo = (InputText) this.infoCreazioneMap.get(codTributoId);
 			codTributo.setDefaultValue(null);
 			codTributo.setEditable(true);
 			sezioneRoot.addField(codTributo);
 
-			InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
+			InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
 			descrizione.setDefaultValue(null);
 			descrizione.setEditable(true);
 			sezioneRoot.addField(descrizione);
 
-			SelectList<String> tipoContabilita = (SelectList<String>) infoCreazioneMap.get(tipoContabilitaId);
+			SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId);
 			tipoContabilita.setDefaultValue(null);
 			sezioneRoot.addField(tipoContabilita);
 
-			InputText codContabilita = (InputText) infoCreazioneMap.get(codContabilitaId);
+			InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId);
 			codContabilita.setDefaultValue(null);
 			sezioneRoot.addField(codContabilita);
 
-			InputText codificaTributoInIuv = (InputText) infoCreazioneMap.get(codificaTributoInIuvId);
+			InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId);
 			codificaTributoInIuv.setDefaultValue(null);
 			sezioneRoot.addField(codificaTributoInIuv);
 
@@ -283,57 +286,57 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	}
 
 	private void initInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoCreazioneMap == null){
-			infoCreazioneMap = new HashMap<String, ParamField<?>>();
+		if(this.infoCreazioneMap == null){
+			this.infoCreazioneMap = new HashMap<String, ParamField<?>>();
 
-			String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-			String codificaTributoInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
-			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+			String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+			String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 
 
 			// id 
 			InputNumber id = new InputNumber(tributoId, null, null, true, true, false, 1, 20);
-			infoCreazioneMap.put(tributoId, id);
+			this.infoCreazioneMap.put(tributoId, id);
 
 			// codTributo
-			String codTributoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
+			String codTributoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label");
 			InputText codTributo = new InputText(codTributoId, codTributoLabel, null, true, false, true, 1, 35);
-			codTributo.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.suggestion"));
-			codTributo.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.errorMessage"));
-			infoCreazioneMap.put(codTributoId, codTributo);
+			codTributo.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.suggestion"));
+			codTributo.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.errorMessage"));
+			this.infoCreazioneMap.put(codTributoId, codTributo);
 
 			//descrizione
-			String descrizioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
+			String descrizioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label");
 			InputText descrizione = new InputText(descrizioneId, descrizioneLabel, null, true, false, true, 1, 255);
-			infoCreazioneMap.put(descrizioneId, descrizione);
+			this.infoCreazioneMap.put(descrizioneId, descrizione);
 
 			// tipoContabilita
-			String tipoContabilitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
+			String tipoContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label");
 			List<Voce<String>> tipoContabilitaValues = new ArrayList<Voce<String>>();
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
+			tipoContabilitaValues.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
 			SelectList<String> tipoContabilita = new SelectList<String>(tipoContabilitaId, tipoContabilitaLabel, null, true, false, true, tipoContabilitaValues );
-			tipoContabilita.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.suggestion"));
-			infoCreazioneMap.put(tipoContabilitaId, tipoContabilita);
+			tipoContabilita.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.suggestion"));
+			this.infoCreazioneMap.put(tipoContabilitaId, tipoContabilita);
 
 			// codContabilita
-			String codContabilitaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
+			String codContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
 			InputText codContabilita = new InputText(codContabilitaId, codContabilitaLabel, null, true, false, true, 1, 255);
-			codContabilita.setValidation("^\\S+$", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.errorMessage"));
-			infoCreazioneMap.put(codContabilitaId, codContabilita);
+			codContabilita.setValidation("^\\S+$", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.errorMessage"));
+			this.infoCreazioneMap.put(codContabilitaId, codContabilita);
 
 
 			// codificaTributoInIuv
-			String codificaTributoInIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
+			String codificaTributoInIuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
 			InputText codificaTributoInIuv = new InputText(codificaTributoInIuvId, codificaTributoInIuvLabel, null, false, false, true, 1,4);
-			codificaTributoInIuv.setValidation("[0-9]{4}", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
+			codificaTributoInIuv.setValidation("[0-9]{4}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
 			codificaTributoInIuv.setAvanzata(true); 
-			infoCreazioneMap.put(codificaTributoInIuvId, codificaTributoInIuv);
+			this.infoCreazioneMap.put(codificaTributoInIuvId, codificaTributoInIuv);
 		}
 	}
 
@@ -341,48 +344,49 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, TipoTributo entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-		String tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String descrizioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-		String codificaTributoInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
-		String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-		String codContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+		String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+		String tributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+		String codificaTributoInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.id");
+		String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+		String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idTributo = (InputNumber) infoCreazioneMap.get(tributoId);
+		InputNumber idTributo = (InputNumber) this.infoCreazioneMap.get(tributoId);
 		idTributo.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idTributo);
 
-		InputText codTributo = (InputText) infoCreazioneMap.get(codTributoId);
+		InputText codTributo = (InputText) this.infoCreazioneMap.get(codTributoId);
 		codTributo.setDefaultValue(entry.getCodTributo());
 		codTributo.setEditable(false); 
 		sezioneRoot.addField(codTributo);
 
-		InputText descrizione = (InputText) infoCreazioneMap.get(descrizioneId);
+		InputText descrizione = (InputText) this.infoCreazioneMap.get(descrizioneId);
 		descrizione.setDefaultValue(entry.getDescrizione());
 
-		if(!entry.getCodTributo().equals(Tributo.BOLLOT))
+		if(!entry.getCodTributo().equals(Tributo.BOLLOT)) {
 			descrizione.setEditable(false);
-		else 
+		} else {
 			descrizione.setEditable(true);
+		}
 
 		sezioneRoot.addField(descrizione);
 
-		SelectList<String> tipoContabilita = (SelectList<String>) infoCreazioneMap.get(tipoContabilitaId);
+		SelectList<String> tipoContabilita = (SelectList<String>) this.infoCreazioneMap.get(tipoContabilitaId);
 		tipoContabilita.setDefaultValue(entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault().getCodifica() : null);
 		sezioneRoot.addField(tipoContabilita);
 
-		InputText codContabilita = (InputText) infoCreazioneMap.get(codContabilitaId);
+		InputText codContabilita = (InputText) this.infoCreazioneMap.get(codContabilitaId);
 		codContabilita.setDefaultValue(entry.getCodContabilitaDefault());
 		sezioneRoot.addField(codContabilita);
 
-		InputText codificaTributoInIuv = (InputText) infoCreazioneMap.get(codificaTributoInIuvId);
+		InputText codificaTributoInIuv = (InputText) this.infoCreazioneMap.get(codificaTributoInIuvId);
 		codificaTributoInIuv.setDefaultValue(entry.getCodTributoIuvDefault());
 		sezioneRoot.addField(codificaTributoInIuv);
 
@@ -396,14 +400,14 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			if(infoCreazioneMap == null){
+			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
 
-			if(infoCreazioneMap.containsKey(fieldId)){
-				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
+			if(this.infoCreazioneMap.containsKey(fieldId)){
+				RefreshableParamField<?> paramField = (RefreshableParamField<?>) this.infoCreazioneMap.get(fieldId);
 
-				paramField.aggiornaParametro(values,bd);
+				paramField.aggiornaParametro(values,bd,this.getLanguage());
 
 				return paramField;
 
@@ -439,31 +443,33 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati del tributo
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label"), tributo.getCodTributo());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.label"), tributo.getCodTributo());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), tributo.getDescrizione());
 			TipoContabilta tipoContabilita = tributo.getTipoContabilitaDefault() != null ? tributo.getTipoContabilitaDefault() : TipoContabilta.CAPITOLO;
 			String tipoContabilitaValue = null;
 			switch (tipoContabilita) {
 			case ALTRO:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
 				break;
 			case SPECIALE:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
 				break;
 			case SIOPE:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
 				break;
 			case CAPITOLO:
 			default:
-				tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
+				tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
 				break;
 			}
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label"), tipoContabilitaValue);
-			if(StringUtils.isNotEmpty(tributo.getCodContabilitaDefault()))
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label"), tributo.getCodContabilitaDefault());
-			if(StringUtils.isNotEmpty(tributo.getCodTributoIuvDefault()))
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label"), tributo.getCodTributoIuvDefault(),true);
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.label"), tipoContabilitaValue);
+			if(StringUtils.isNotEmpty(tributo.getCodContabilitaDefault())) {
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label"), tributo.getCodContabilitaDefault());
+			}
+			if(StringUtils.isNotEmpty(tributo.getCodTributoIuvDefault())) {
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label"), tributo.getCodTributoIuvDefault(),true);
+			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -493,7 +499,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			try{
 				tipiTributoBD.getTipoTributo(entry.getCodTributo());
-				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodTributo());
+				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodTributo());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
 
@@ -533,7 +539,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			JSONObject jsonObject = JSONObject.fromObject( baos.toString() ); 
 
-			String tipoContabilitaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
 			String tipocontabilitaS = jsonObject.getString(tipoContabilitaId);
 			jsonObject.remove(tipoContabilitaId);
 			jsonConfig.setRootClass(TipoTributo.class);
@@ -553,14 +559,26 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 	@Override
 	public void checkEntry(TipoTributo entry, TipoTributo oldEntry) throws ValidationException {
-		if(entry == null || entry.getCodTributo() == null || entry.getCodTributo().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodTributoObbligatorio"));
-		if(entry == null || entry.getDescrizione() == null || entry.getDescrizione().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDecrizioneObbligatoria"));
-		if(entry == null || entry.getTipoContabilitaDefault() == null) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
-		if(entry == null || entry.getCodContabilitaDefault() == null || entry.getCodContabilitaDefault().isEmpty()) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
-		if(StringUtils.contains(entry.getCodContabilitaDefault()," ")) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaNoSpazi"));
+		if(entry == null || entry.getCodTributo() == null || entry.getCodTributo().isEmpty()) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodTributoObbligatorio"));
+		}
+		if(entry == null || entry.getDescrizione() == null || entry.getDescrizione().isEmpty()) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDecrizioneObbligatoria"));
+		}
+		if(entry == null || entry.getTipoContabilitaDefault() == null) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreTipoContabilitaObbligatorio"));
+		}
+		if(entry == null || entry.getCodContabilitaDefault() == null || entry.getCodContabilitaDefault().isEmpty()) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaObbligatorio"));
+		}
+		if(StringUtils.contains(entry.getCodContabilitaDefault()," ")) {
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodContabilitaNoSpazi"));
+		}
 
 		if(oldEntry != null) {
-			if(!entry.getCodTributo().equals(oldEntry.getCodTributo())) throw new ValidationException(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodTributoModificato"));
+			if(!entry.getCodTributo().equals(oldEntry.getCodTributo())) {
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodTributoModificato"));
+			}
 		}
 	}
 
@@ -600,7 +618,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	@Override
 	public String getTitolo(TipoTributo entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", entry.getDescrizione()));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", entry.getDescrizione()));
 		return sb.toString();
 	}
 
@@ -612,23 +630,23 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 		String tipoContabilitaValue = null;
 		switch (tipoContabilita) {
 		case ALTRO:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro");
 			break;
 		case SPECIALE:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale");
 			break;
 		case SIOPE:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope");
 			break;
 		case CAPITOLO:
 		default:
-			tipoContabilitaValue = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
+			tipoContabilitaValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo");				
 			break;
 		}
 
 		String codContabilitaValue = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ? entry.getCodContabilitaDefault() : "--";
 
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",entry.getCodTributo(), tipoContabilitaValue,codContabilitaValue));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",entry.getCodTributo(), tipoContabilitaValue,codContabilitaValue));
 
 		return sb.toString();
 	}

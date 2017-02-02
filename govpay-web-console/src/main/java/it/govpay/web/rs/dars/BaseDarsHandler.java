@@ -26,6 +26,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
@@ -74,7 +75,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		this.darsService = darsService;
 		this.nomeServizio = this.darsService.getNomeServizio();
 		this.pathServizio = this.darsService.getPathServizio();
-		this.titoloServizio = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".titolo");
+		this.titoloServizio = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".titolo");
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
 		
 		try{
@@ -303,9 +304,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 	
 	public SelectList<String> getSelectListVersione(String versioneId){
-		if(versioneId == null) versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		if(versioneId == null) versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 		
-		String firmaRichiestaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.label");
+		String firmaRichiestaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label");
 		List<Voce<String>> valoriVersione = new ArrayList<Voce<String>>(); 
 		valoriVersione.add(new Voce<String>(Versione.GP_02_02_00.getLabel(), Versione.GP_02_02_00.getLabel()));
 		valoriVersione.add(new Voce<String>(Versione.GP_02_01_00.getLabel(), Versione.GP_02_01_00.getLabel()));
@@ -317,7 +318,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 	
 	public Versione getVersioneSelezionata(JSONObject jsonObject, String versioneId, boolean remove) throws ServiceException{
-		if(versioneId == null) versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		if(versioneId == null) versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 		
 		String versioneJson = jsonObject.getString(versioneId);
 		
@@ -334,5 +335,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public Format getFormat() {
 		return this.formatW;
+	}
+	@Override
+	public Locale getLanguage(){
+		return this.darsService.getLanguage();
 	}
 }

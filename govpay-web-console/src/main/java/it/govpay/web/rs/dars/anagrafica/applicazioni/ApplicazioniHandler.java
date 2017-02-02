@@ -95,8 +95,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 	public static final String CONNETTORE_VERIFICA = ConnettoreHandler.CONNETTORE_VERIFICA;
 	public static final String CONNETTORE_NOTIFICA = ConnettoreHandler.CONNETTORE_NOTIFICA; 
-	private static Map<String, ParamField<?>> infoCreazioneMap = null;
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoCreazioneMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 
 	public ApplicazioniHandler(Logger log, BaseDarsService darsService) {
 		super(log,darsService);
@@ -126,7 +126,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+			String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
 			String codApplicazione = this.getParameter(uriInfo, codApplicazioneId, String.class	);
 			if(StringUtils.isNotEmpty(codApplicazione)){
 				filter.setCodApplicazione(codApplicazione); 
@@ -169,15 +169,15 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
 		if(visualizzaRicerca){
-			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+			String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
 
-			if(infoRicercaMap == null){
+			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
 
 			}
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-			InputText codApplicazione= (InputText) infoRicercaMap.get(codApplicazioneId);
+			InputText codApplicazione= (InputText) this.infoRicercaMap.get(codApplicazioneId);
 			codApplicazione.setDefaultValue(null);
 			sezioneRoot.addField(codApplicazione);
 		}
@@ -186,13 +186,13 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-			String codApplicazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label");
+			String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+			String codApplicazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label");
 			InputText codApplicazione = new InputText(codApplicazioneId, codApplicazioneLabel, null, false, false, true, 1, 255);
-			infoRicercaMap.put(codApplicazioneId, codApplicazione);
+			this.infoRicercaMap.put(codApplicazioneId, codApplicazione);
 		}
 	}
 
@@ -200,68 +200,68 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
-		String versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String applicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String firmaRichiestaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
+		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-		String versamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
-		String rendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
-		String dominiVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
-		String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
-		String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
-		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
-		String codificaApplicazioneInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
+		String versamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
+		String rendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
+		String dominiVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
+		String tipiTributoVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
+		String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
+		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		String codificaApplicazioneInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
 
-		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
+		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 		List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd,true);
 
-		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
+		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 		List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd,true);
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(applicazioneId);
+		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(applicazioneId);
 		idInterm.setDefaultValue(null);
 		sezioneRoot.addField(idInterm);
 
-		InputText codApplicazione = (InputText) infoCreazioneMap.get(codApplicazioneId);
+		InputText codApplicazione = (InputText) this.infoCreazioneMap.get(codApplicazioneId);
 		codApplicazione.setDefaultValue(null);
 		codApplicazione.setEditable(true); 
 		sezioneRoot.addField(codApplicazione);
 
-		InputText principal = (InputText) infoCreazioneMap.get(principalId);
+		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(null);
 		sezioneRoot.addField(principal);
 
-		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
+		SelectList<String> firmaRichiesta = (SelectList<String>) this.infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(FirmaRichiesta.NESSUNA.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
 
-		InputText codificaApplicazioneInIuv = (InputText) infoCreazioneMap.get(codificaApplicazioneInIuvId);
+		InputText codificaApplicazioneInIuv = (InputText) this.infoCreazioneMap.get(codificaApplicazioneInIuvId);
 		codificaApplicazioneInIuv.setDefaultValue(null);
 		sezioneRoot.addField(codificaApplicazioneInIuv);
 
 		// versione
-		SelectList<String> versione = (SelectList<String>) infoCreazioneMap.get(versioneId);
+		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
 		versione.setDefaultValue(Versione.getUltimaVersione().getLabel());
 		sezioneRoot.addField(versione);
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
 
-		String etichettaVersamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
+		String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
 		Sezione sezioneVersamenti = infoCreazione.addSezione(etichettaVersamenti);
 
-		CheckButton versamenti = (CheckButton) infoCreazioneMap.get(versamentiId);
+		CheckButton versamenti = (CheckButton) this.infoCreazioneMap.get(versamentiId);
 		versamenti.setDefaultValue(false); 
 		sezioneVersamenti.addField(versamenti);
 
@@ -269,26 +269,26 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		versamentiValues.add(new RawParamValue(applicazioneId, null));
 		versamentiValues.add(new RawParamValue(versamentiId, "false"));
 
-		Trusted trusted = (Trusted) infoCreazioneMap.get(trustedId);
-		trusted.init(versamentiValues, bd); 
+		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
+		trusted.init(versamentiValues, bd, this.getLanguage()); 
 		sezioneVersamenti.addField(trusted);
 
 		List<RawParamValue> versamentiTrustedValues = new ArrayList<RawParamValue>();
 		versamentiTrustedValues.addAll(versamentiValues);
 		versamentiTrustedValues.add(new RawParamValue(trustedId, "false"));
 
-		TipiTributoVersamenti tipiTributoVersamenti = (TipiTributoVersamenti) infoCreazioneMap.get(tipiTributoVersamentiId);
-		tipiTributoVersamenti.init(versamentiTrustedValues, bd); 
+		TipiTributoVersamenti tipiTributoVersamenti = (TipiTributoVersamenti) this.infoCreazioneMap.get(tipiTributoVersamentiId);
+		tipiTributoVersamenti.init(versamentiTrustedValues, bd, this.getLanguage()); 
 		sezioneVersamenti.addField(tipiTributoVersamenti);
 
-		DominiVersamenti dominiVersamenti = (DominiVersamenti) infoCreazioneMap.get(dominiVersamentiId);
-		dominiVersamenti.init(versamentiValues, bd); 
+		DominiVersamenti dominiVersamenti = (DominiVersamenti) this.infoCreazioneMap.get(dominiVersamentiId);
+		dominiVersamenti.init(versamentiValues, bd, this.getLanguage()); 
 		sezioneVersamenti.addField(dominiVersamenti); 
 
-		String etichettaRendicontazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
+		String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
 		Sezione sezioneRendicontazione = infoCreazione.addSezione(etichettaRendicontazione);
 
-		CheckButton rendicontazione = (CheckButton) infoCreazioneMap.get(rendicontazioneId);
+		CheckButton rendicontazione = (CheckButton) this.infoCreazioneMap.get(rendicontazioneId);
 		rendicontazione.setDefaultValue(false); 
 		sezioneRendicontazione.addField(rendicontazione);
 
@@ -297,18 +297,18 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		rendicontazioneValues.add(new RawParamValue(applicazioneId, null));
 		rendicontazioneValues.add(new RawParamValue(rendicontazioneId, "false"));
 
-		DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) infoCreazioneMap.get(dominiRendicontazioneId);
-		dominiRendicontazione.init(rendicontazioneValues, bd); 
+		DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) this.infoCreazioneMap.get(dominiRendicontazioneId);
+		dominiRendicontazione.init(rendicontazioneValues, bd, this.getLanguage()); 
 		sezioneRendicontazione.addField(dominiRendicontazione); 
 
 
-		Sezione sezioneConnettoreVerifica = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
+		Sezione sezioneConnettoreVerifica = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
 
 		for (ParamField<?> par : infoCreazioneConnettoreVerifica) { 
 			sezioneConnettoreVerifica.addField(par); 	
 		}
 
-		Sezione sezioneConnettoreNotifica = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
+		Sezione sezioneConnettoreNotifica = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
 
 		for (ParamField<?> par : infoCreazioneConnettoreNotifica) { 
 			sezioneConnettoreNotifica.addField(par); 	
@@ -319,133 +319,135 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	private void initInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoCreazioneMap == null){
-			infoCreazioneMap = new HashMap<String, ParamField<?>>();
+		if(this.infoCreazioneMap == null){
+			this.infoCreazioneMap = new HashMap<String, ParamField<?>>();
 
-			String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-			String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-			String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
-			String versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+			String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String applicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String firmaRichiestaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
+			String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-			String versamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
-			String rendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
-			String dominiVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
-			String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
-			String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
-			String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
-			String codificaApplicazioneInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
+			String versamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
+			String rendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
+			String dominiVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
+			String tipiTributoVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
+			String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
+			String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+			String codificaApplicazioneInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
 
 			// id 
 			InputNumber id = new InputNumber(applicazioneId, null, null, true, true, false, 1, 20);
-			infoCreazioneMap.put(applicazioneId, id);
+			this.infoCreazioneMap.put(applicazioneId, id);
 
 			// versione
 			SelectList<String> versione = this.getSelectListVersione(versioneId);
-			infoCreazioneMap.put(versioneId, versione);
+			this.infoCreazioneMap.put(versioneId, versione);
 
 			// codApplicazione
-			String codApplicazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label");
+			String codApplicazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label");
 			InputText codApplicazione = new InputText(codApplicazioneId, codApplicazioneLabel, null, true, false, true, 1, 35);
-			codApplicazione.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.suggestion"));
-			codApplicazione.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.errorMessage"));
-			infoCreazioneMap.put(codApplicazioneId, codApplicazione);
+			codApplicazione.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.suggestion"));
+			codApplicazione.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.errorMessage"));
+			this.infoCreazioneMap.put(codApplicazioneId, codApplicazione);
 
 			// principal
-			String principalLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
+			String principalLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label");
 			InputText principal = new InputText(principalId, principalLabel, null, true, false, true, 1, 255);
-			principal.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.errorMessage"));
-			infoCreazioneMap.put(principalId, principal);
+			principal.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.errorMessage"));
+			this.infoCreazioneMap.put(principalId, principal);
 
 			// abilitato
-			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
+			String abilitatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
-			infoCreazioneMap.put(abilitatoId, abiliato);
+			this.infoCreazioneMap.put(abilitatoId, abiliato);
 
-			String firmaRichiestaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label");
+			String firmaRichiestaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label");
 			List<Voce<String>> valoriFirma = new ArrayList<Voce<String>>(); 
-			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna"), FirmaRichiesta.NESSUNA.getCodifica()));
-			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des"), FirmaRichiesta.CA_DES.getCodifica()));
-			valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des"), FirmaRichiesta.XA_DES.getCodifica()));
-			//valoriFirma.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata"), FirmaRichiesta.AVANZATA.getCodifica()));
+			valoriFirma.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna"), FirmaRichiesta.NESSUNA.getCodifica()));
+			valoriFirma.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des"), FirmaRichiesta.CA_DES.getCodifica()));
+			valoriFirma.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des"), FirmaRichiesta.XA_DES.getCodifica()));
+			//valoriFirma.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata"), FirmaRichiesta.AVANZATA.getCodifica()));
 			SelectList<String> firmaRichiesta = new SelectList<String>(firmaRichiestaId, firmaRichiestaLabel, null, true, false, true, valoriFirma);
-			infoCreazioneMap.put(firmaRichiestaId, firmaRichiesta);
+			this.infoCreazioneMap.put(firmaRichiestaId, firmaRichiesta);
 
 			//seziona rendicontazione
 			// abilitato
-			String rendicontazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.label");
+			String rendicontazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.label");
 			CheckButton rendicontazione = new CheckButton(rendicontazioneId, rendicontazioneLabel, true, false, false, true);
-			infoCreazioneMap.put(rendicontazioneId, rendicontazione);
+			this.infoCreazioneMap.put(rendicontazioneId, rendicontazione);
 
 			List<RawParamValue> rendicontazioneValues = new ArrayList<RawParamValue>();
 			rendicontazioneValues.add(new RawParamValue(applicazioneId, null));
 			rendicontazioneValues.add(new RawParamValue(rendicontazioneId, "false"));
 
-			String dominiRendicontazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.label");
+			String dominiRendicontazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.label");
 			URI dominiRendicontazioneRefreshUri = this.getUriField(uriInfo, bd, dominiRendicontazioneId); 
-			DominiRendicontazione dominiRendicontazione = new DominiRendicontazione(this.nomeServizio, dominiRendicontazioneId, dominiRendicontazioneLabel, dominiRendicontazioneRefreshUri , rendicontazioneValues, bd);
+			DominiRendicontazione dominiRendicontazione = 
+					new DominiRendicontazione(this.nomeServizio, dominiRendicontazioneId, dominiRendicontazioneLabel, dominiRendicontazioneRefreshUri , rendicontazioneValues, bd, this.getLanguage());
 			dominiRendicontazione.addDependencyField(rendicontazione);
-			dominiRendicontazione.init(rendicontazioneValues, bd); 
-			infoCreazioneMap.put(dominiRendicontazioneId, dominiRendicontazione);
+			dominiRendicontazione.init(rendicontazioneValues, bd, this.getLanguage()); 
+			this.infoCreazioneMap.put(dominiRendicontazioneId, dominiRendicontazione);
 
 			//seziona versamenti
 			// abilitato
-			String versamentiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versamenti.label");
+			String versamentiLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.label");
 			CheckButton versamenti = new CheckButton(versamentiId, versamentiLabel, true, false, false, true);
-			infoCreazioneMap.put(versamentiId, versamenti);
+			this.infoCreazioneMap.put(versamentiId, versamenti);
 
 			List<RawParamValue> versamentiValues = new ArrayList<RawParamValue>();
 			versamentiValues.add(new RawParamValue(applicazioneId, null));
 			versamentiValues.add(new RawParamValue(versamentiId, "false"));
 
 			// trusted
-			String trustedLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.label");
+			String trustedLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.label");
 			URI trustedRefreshUri = this.getUriField(uriInfo, bd, trustedId); 
-			Trusted trusted = new Trusted(this.nomeServizio,trustedId, trustedLabel, trustedRefreshUri, versamentiValues);
+			Trusted trusted = new Trusted(this.nomeServizio,trustedId, trustedLabel, trustedRefreshUri, versamentiValues,this.getLanguage());
 			trusted.addDependencyField(versamenti);
-			trusted.init(versamentiValues, bd);
-			infoCreazioneMap.put(trustedId, trusted);
+			trusted.init(versamentiValues, bd, this.getLanguage());
+			this.infoCreazioneMap.put(trustedId, trusted);
 
 			List<RawParamValue> versamentiTrustedValues = new ArrayList<RawParamValue>();
 			versamentiTrustedValues.addAll(versamentiValues);
 			versamentiTrustedValues.add(new RawParamValue(trustedId, "false"));
 
-			String tipiTributoVersamentiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.label");
+			String tipiTributoVersamentiLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.label");
 			URI tipiTributoVersamentiRefreshUri = this.getUriField(uriInfo, bd, tipiTributoVersamentiId); 
-			TipiTributoVersamenti tipiTributoVersamenti = new TipiTributoVersamenti(this.nomeServizio, tipiTributoVersamentiId, tipiTributoVersamentiLabel, tipiTributoVersamentiRefreshUri , versamentiTrustedValues, bd);
+			TipiTributoVersamenti tipiTributoVersamenti =
+					new TipiTributoVersamenti(this.nomeServizio, tipiTributoVersamentiId, tipiTributoVersamentiLabel, tipiTributoVersamentiRefreshUri , versamentiTrustedValues, bd, this.getLanguage());
 			tipiTributoVersamenti.addDependencyField(versamenti);
 			tipiTributoVersamenti.addDependencyField(trusted);
-			tipiTributoVersamenti.init(versamentiTrustedValues, bd); 
-			infoCreazioneMap.put(tipiTributoVersamentiId, tipiTributoVersamenti);
+			tipiTributoVersamenti.init(versamentiTrustedValues, bd, this.getLanguage()); 
+			this.infoCreazioneMap.put(tipiTributoVersamentiId, tipiTributoVersamenti);
 
-			String dominiVersamentiLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.label");
+			String dominiVersamentiLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.label");
 			URI dominiVersamentiRefreshUri = this.getUriField(uriInfo, bd, dominiVersamentiId); 
-			DominiVersamenti dominiVersamenti = new DominiVersamenti(this.nomeServizio, dominiVersamentiId, dominiVersamentiLabel, dominiVersamentiRefreshUri , versamentiValues, bd);
+			DominiVersamenti dominiVersamenti = new DominiVersamenti(this.nomeServizio, dominiVersamentiId, dominiVersamentiLabel, dominiVersamentiRefreshUri , versamentiValues, bd, this.getLanguage());
 			dominiVersamenti.addDependencyField(versamenti);
 			dominiVersamenti.addDependencyField(trusted);
-			dominiVersamenti.init(versamentiValues, bd); 
-			infoCreazioneMap.put(dominiVersamentiId, dominiVersamenti);
+			dominiVersamenti.init(versamentiValues, bd, this.getLanguage()); 
+			this.infoCreazioneMap.put(dominiVersamentiId, dominiVersamenti);
 
 			// codificaApplicazioneInIuv
-			String codificaApplicazioneInIuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label");
+			String codificaApplicazioneInIuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label");
 			InputText codificaApplicazioneInIuv = new InputText(codificaApplicazioneInIuvId, codificaApplicazioneInIuvLabel, null, false, false, true, 1,3);
-			codificaApplicazioneInIuv.setValidation("[0-9]{3}", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.errorMessage"));
+			codificaApplicazioneInIuv.setValidation("[0-9]{3}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.errorMessage"));
 			codificaApplicazioneInIuv.setAvanzata(true); 
-			infoCreazioneMap.put(codificaApplicazioneInIuvId, codificaApplicazioneInIuv);
+			this.infoCreazioneMap.put(codificaApplicazioneInIuvId, codificaApplicazioneInIuv);
 
-			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
+			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 			List<ParamField<?>> infoCreazioneConnettoreVerifica = connettoreVerificaHandler.getInfoCreazione(uriInfo, bd,true);
 
-			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
+			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 			List<ParamField<?>> infoCreazioneConnettoreNotifica = connettoreNotificaHandler.getInfoCreazione(uriInfo, bd,true);
 
 			for (ParamField<?> par : infoCreazioneConnettoreVerifica) { 
-				infoCreazioneMap.put(par.getId(),par); 	
+				this.infoCreazioneMap.put(par.getId(),par); 	
 			}
 
 			for (ParamField<?> par : infoCreazioneConnettoreNotifica) { 
-				infoCreazioneMap.put(par.getId(),par); 	
+				this.infoCreazioneMap.put(par.getId(),par); 	
 			}
 		}
 	}
@@ -454,73 +456,73 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Applicazione entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-		String principalId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
-		String versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String applicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String firmaRichiestaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
+		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-		String versamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
-		String rendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
-		String dominiVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
-		String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
-		String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
-		String trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
-		String codificaApplicazioneInIuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
+		String versamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
+		String rendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
+		String dominiVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
+		String tipiTributoVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
+		String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
+		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		String codificaApplicazioneInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
 
-		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
+		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 		List<ParamField<?>> infoModificaConnettoreVerifica = connettoreVerificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreVerifica(),entry.getId(),true);
 
-		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
+		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 		List<ParamField<?>> infoModificaConnettoreNotifica = connettoreNotificaHandler.getInfoModifica(uriInfo, bd, entry.getConnettoreNotifica(),entry.getId(),true);
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(applicazioneId);
+		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(applicazioneId);
 		idInterm.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idInterm);
 
-		InputText codApplicazione = (InputText) infoCreazioneMap.get(codApplicazioneId);
+		InputText codApplicazione = (InputText) this.infoCreazioneMap.get(codApplicazioneId);
 		codApplicazione.setDefaultValue(entry.getCodApplicazione());
 		codApplicazione.setEditable(false); 
 		sezioneRoot.addField(codApplicazione);
 
-		InputText principal = (InputText) infoCreazioneMap.get(principalId);
+		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(entry.getPrincipal());
 		sezioneRoot.addField(principal);
 
 		FirmaRichiesta firmaRichiestaValue = entry.getFirmaRichiesta() != null ? entry.getFirmaRichiesta() : FirmaRichiesta.NESSUNA;
-		SelectList<String> firmaRichiesta = (SelectList<String>) infoCreazioneMap.get(firmaRichiestaId);
+		SelectList<String> firmaRichiesta = (SelectList<String>) this.infoCreazioneMap.get(firmaRichiestaId);
 		firmaRichiesta.setDefaultValue(firmaRichiestaValue.getCodifica());
 		sezioneRoot.addField(firmaRichiesta);
 
-		InputText codificaApplicazioneInIuv = (InputText) infoCreazioneMap.get(codificaApplicazioneInIuvId);
+		InputText codificaApplicazioneInIuv = (InputText) this.infoCreazioneMap.get(codificaApplicazioneInIuvId);
 		codificaApplicazioneInIuv.setDefaultValue(entry.getCodApplicazioneIuv());
 		sezioneRoot.addField(codificaApplicazioneInIuv);
 
 		// versione
-		SelectList<String> versione = (SelectList<String>) infoCreazioneMap.get(versioneId);
+		SelectList<String> versione = (SelectList<String>) this.infoCreazioneMap.get(versioneId);
 		versione.setDefaultValue(entry.getVersione().getLabel());
 		sezioneRoot.addField(versione);
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
 
-		String etichettaVersamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
+		String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
 		Sezione sezioneVersamenti = infoModifica.addSezione(etichettaVersamenti);
 
 		List<Long> idsAclDominiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.VERSAMENTI);
 		List<Long> idsAclTributiVersamenti = Utils.getIdsFromAcls(entry.getAcls(), Tipo.TRIBUTO, Servizio.VERSAMENTI);
 		boolean visualizzaVersamenti = idsAclDominiVersamenti.size() > 0 || idsAclTributiVersamenti.size() > 0 || entry.isTrusted(); 
 
-		CheckButton versamenti = (CheckButton) infoCreazioneMap.get(versamentiId);
+		CheckButton versamenti = (CheckButton) this.infoCreazioneMap.get(versamentiId);
 		versamenti.setDefaultValue(visualizzaVersamenti); 
 		sezioneVersamenti.addField(versamenti);
 
@@ -528,29 +530,29 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		versamentiValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
 		versamentiValues.add(new RawParamValue(versamentiId, (visualizzaVersamenti? "true" : "false")));
 
-		Trusted trusted = (Trusted) infoCreazioneMap.get(trustedId);
-		trusted.init(versamentiValues, bd); 
+		Trusted trusted = (Trusted) this.infoCreazioneMap.get(trustedId);
+		trusted.init(versamentiValues, bd, this.getLanguage()); 
 		sezioneVersamenti.addField(trusted);
 
 		List<RawParamValue> versamentiTrustedValues = new ArrayList<RawParamValue>();
 		versamentiTrustedValues.addAll(versamentiValues);
 		versamentiTrustedValues.add(new RawParamValue(trustedId, (entry.isTrusted() ? "true" : "false")));
 
-		TipiTributoVersamenti tipiTributoVersamenti = (TipiTributoVersamenti) infoCreazioneMap.get(tipiTributoVersamentiId);
-		tipiTributoVersamenti.init(versamentiTrustedValues, bd); 
+		TipiTributoVersamenti tipiTributoVersamenti = (TipiTributoVersamenti) this.infoCreazioneMap.get(tipiTributoVersamentiId);
+		tipiTributoVersamenti.init(versamentiTrustedValues, bd, this.getLanguage()); 
 		sezioneVersamenti.addField(tipiTributoVersamenti);
 
-		DominiVersamenti dominiVersamenti = (DominiVersamenti) infoCreazioneMap.get(dominiVersamentiId);
-		dominiVersamenti.init(versamentiValues, bd); 
+		DominiVersamenti dominiVersamenti = (DominiVersamenti) this.infoCreazioneMap.get(dominiVersamentiId);
+		dominiVersamenti.init(versamentiValues, bd, this.getLanguage()); 
 		sezioneVersamenti.addField(dominiVersamenti); 
 
-		String etichettaRendicontazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
+		String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
 		Sezione sezioneRendicontazione = infoModifica.addSezione(etichettaRendicontazione);
 
 		List<Long> idsAclDominiRendicontazione = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.RENDICONTAZIONE);
 		boolean visualizzaRendicontazione = idsAclDominiRendicontazione.size() > 0 ;
 
-		CheckButton rendicontazione = (CheckButton) infoCreazioneMap.get(rendicontazioneId);
+		CheckButton rendicontazione = (CheckButton) this.infoCreazioneMap.get(rendicontazioneId);
 		rendicontazione.setDefaultValue(visualizzaRendicontazione); 
 		sezioneRendicontazione.addField(rendicontazione);
 
@@ -558,18 +560,18 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		rendicontazioneValues.add(new RawParamValue(applicazioneId, entry.getId() + ""));
 		rendicontazioneValues.add(new RawParamValue(rendicontazioneId,  (visualizzaRendicontazione? "true" : "false")));
 
-		DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) infoCreazioneMap.get(dominiRendicontazioneId);
-		dominiRendicontazione.init(rendicontazioneValues, bd); 
+		DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) this.infoCreazioneMap.get(dominiRendicontazioneId);
+		dominiRendicontazione.init(rendicontazioneValues, bd, this.getLanguage()); 
 		sezioneRendicontazione.addField(dominiRendicontazione);
 
 
-		Sezione sezioneConnettoreVerifica = infoModifica.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
+		Sezione sezioneConnettoreVerifica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
 
 		for (ParamField<?> par : infoModificaConnettoreVerifica) { 
 			sezioneConnettoreVerifica.addField(par); 	
 		}
 
-		Sezione sezioneConnettoreNotifica = infoModifica.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
+		Sezione sezioneConnettoreNotifica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
 
 		for (ParamField<?> par : infoModificaConnettoreNotifica) { 
 			sezioneConnettoreNotifica.addField(par); 	
@@ -585,14 +587,14 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			if(infoCreazioneMap == null){
+			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
 
-			if(infoCreazioneMap.containsKey(fieldId)){
-				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
+			if(this.infoCreazioneMap.containsKey(fieldId)){
+				RefreshableParamField<?> paramField = (RefreshableParamField<?>) this.infoCreazioneMap.get(fieldId);
 
-				paramField.aggiornaParametro(values,bd);
+				paramField.aggiornaParametro(values,bd, this.getLanguage());
 
 				return paramField;
 
@@ -628,40 +630,41 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati dell'intermediario
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label"), applicazione.getCodApplicazione());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), applicazione.getPrincipal());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.label"), applicazione.getCodApplicazione());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), applicazione.getPrincipal());
 
 			FirmaRichiesta firmaRichiestaValue = applicazione.getFirmaRichiesta() != null ? applicazione.getFirmaRichiesta() : FirmaRichiesta.NESSUNA;
 			String firmaRichiestaAsString = null;
 
 			switch (firmaRichiestaValue) {
 			case AVANZATA:
-				firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata");
+				firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata");
 				break;
 			case CA_DES: 
-				firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des");
+				firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des");
 				break;
 			case XA_DES :
-				firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des");
+				firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des");
 				break;
 			case NESSUNA: 
 			default:
-				firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna");
+				firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna");
 				break;
 			}
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"), firmaRichiestaAsString);
-			if(StringUtils.isNotEmpty(applicazione.getCodApplicazioneIuv()))
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label"), applicazione.getCodApplicazioneIuv(),true);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), applicazione.getVersione().getLabel(), true);
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(applicazione.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"), firmaRichiestaAsString);
+			if(StringUtils.isNotEmpty(applicazione.getCodApplicazioneIuv())) {
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label"), applicazione.getCodApplicazioneIuv(),true);
+			}
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), applicazione.getVersione().getLabel(), true);
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(applicazione.isAbilitato()));
 
 			List<Acl> acls = applicazione.getAcls();
 
-			String etichettaTipiTributo = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
-			String etichettaDomini = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
+			String etichettaTipiTributo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.tipiTributo.titolo");
+			String etichettaDomini = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.domini.titolo");
 
-			String etichettaVersamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
+			String etichettaVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.versamenti.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneVersamenti = dettaglio.addSezione(etichettaVersamenti);
 
 			List<Long> idTributi = Utils.getIdsFromAcls(acls, Tipo.TRIBUTO , Servizio.VERSAMENTI);
@@ -689,17 +692,18 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 						}
 					}
 				}else{
-					valore = Utils.getInstance().getMessageFromResourceBundle("commons.label.tutti");
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
 				}
 			} else {
-				valore = Utils.getInstance().getMessageFromResourceBundle("commons.label.nessuno");
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
-			sezioneVersamenti.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.label"), Utils.getSiNoAsLabel(applicazione.isTrusted()));
+			sezioneVersamenti.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.label"), Utils.getSiNoAsLabel(applicazione.isTrusted()));
 
 			if(Utils.isEmpty(listaVociTributi)){
-				if(!applicazione.isTrusted())
-					sezioneVersamenti.addVoce(etichettaTipiTributo, valore); 
+				if(!applicazione.isTrusted()) {
+					sezioneVersamenti.addVoce(etichettaTipiTributo, valore);
+				} 
 			} else {
 				sezioneVersamenti.addVoce(etichettaTipiTributo, null); 
 				for (Voce<String> voce : listaVociTributi) {
@@ -732,10 +736,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 						}
 					}
 				}else{
-					valore = Utils.getInstance().getMessageFromResourceBundle("commons.label.tutti");
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
 				}
 			} else {
-				valore = Utils.getInstance().getMessageFromResourceBundle("commons.label.nessuno");
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
 			if(Utils.isEmpty(listaVociDomini)){
@@ -747,7 +751,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 				}
 			}
 
-			String etichettaRendicontazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
+			String etichettaRendicontazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazione.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneRendicontazione = dettaglio.addSezione(etichettaRendicontazione);
 
 			idDomini = Utils.getIdsFromAcls(acls, Tipo.DOMINIO, Servizio.RENDICONTAZIONE);
@@ -775,10 +779,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 						}
 					}
 				}else{
-					valore = Utils.getInstance().getMessageFromResourceBundle("commons.label.tutti");
+					valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.tutti");
 				}
 			} else {
-				valore = Utils.getInstance().getMessageFromResourceBundle("commons.label.nessuno");
+				valore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuno");
 			}
 
 			if(Utils.isEmpty(listaVociDomini)){
@@ -793,14 +797,14 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			// sezione connettore
 			Connettore connettoreVerifica = applicazione.getConnettoreVerifica();
-			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreVerifica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
-			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio);
+			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreVerifica = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".titolo"));
+			ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 			connettoreVerificaHandler.fillSezione(sezioneConnettoreVerifica, connettoreVerifica,true);
 
 			// sezione connettore
 			Connettore connettoreNotifica = applicazione.getConnettoreNotifica();
-			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreNotifica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
-			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio);
+			it.govpay.web.rs.dars.model.Sezione sezioneConnettoreNotifica = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".titolo"));
+			ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA,this.nomeServizio,this.pathServizio,this.getLanguage());
 			connettoreNotificaHandler.fillSezione(sezioneConnettoreNotifica, connettoreNotifica,true);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -831,7 +835,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			try{
 				applicazioniBD.getApplicazione(entry.getCodApplicazione());
-				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodApplicazione());
+				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodApplicazione());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
 
@@ -857,15 +861,15 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			throws WebApplicationException, ConsoleException {
 		String methodName = "creaEntry " + this.titoloServizio;
 		Applicazione entry = null;
-		String rendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
-		String versamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
-		String dominiRendicontazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
-		String dominiVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
-		String tipiTributoVersamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
-		String versioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
+		String rendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rendicontazione.id");
+		String versamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
+		String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
+		String dominiVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiVersamenti.id");
+		String tipiTributoVersamentiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipiTributoVersamenti.id");
+		String versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
 
-		String tipoSslIdNot = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".tipoSsl.id");
-		String tipoSslIdVer = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".tipoSsl.id");
+		String tipoSslIdNot = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".tipoSsl.id");
+		String tipoSslIdVer = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".tipoSsl.id");
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
@@ -970,7 +974,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			entry.getAcls().addAll(lstAclTributiVersamenti);
 			entry.getAcls().addAll(lstAclDominiVersamenti);
 
-			String firmaRichiestaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
+			String firmaRichiestaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.id");
 			String codFirma = jsonObjectApplicazione.getString(firmaRichiestaId);
 			if(codFirma != null){
 				FirmaRichiesta enum1 = FirmaRichiesta.toEnum(codFirma);
@@ -978,17 +982,19 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			}
 
 			String tipoSslNot = jsonObjectApplicazione.containsKey(tipoSslIdNot) ? jsonObjectApplicazione.getString(tipoSslIdNot) : null;
-			if(tipoSslNot != null)
+			if(tipoSslNot != null) {
 				jsonObjectApplicazione.remove(tipoSslIdNot);
+			}
 
 			String tipoSslVer = jsonObjectApplicazione.containsKey(tipoSslIdVer) ? jsonObjectApplicazione.getString(tipoSslIdVer) : null;
-			if(tipoSslVer != null)
+			if(tipoSslVer != null) {
 				jsonObjectApplicazione.remove(tipoSslIdVer);
+			}
 
 
-			String cvPrefix = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".idPrefix");
+			String cvPrefix = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_VERIFICA + ".idPrefix");
 			JSONObject jsonObjectCV = new JSONObject();
-			String cnPrefix = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".idPrefix");
+			String cnPrefix = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_NOTIFICA + ".idPrefix");
 			JSONObject jsonObjectCN = new JSONObject();
 
 			Set<String> keySet = jsonObjectApplicazione.keySet();
@@ -1033,19 +1039,22 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			throw new ValidationException("il campo Cod Applicazione deve essere valorizzato.");
 		}
 
-		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) throw new ValidationException("Il campo Principal deve essere valorizzato.");
+		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) {
+			throw new ValidationException("Il campo Principal deve essere valorizzato.");
+		}
 
 		Connettore connettoreNotifica = entry.getConnettoreNotifica();
-		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA, this.titoloServizio, this.pathServizio);
+		ConnettoreHandler connettoreNotificaHandler = new ConnettoreHandler(CONNETTORE_NOTIFICA, this.titoloServizio, this.pathServizio,this.getLanguage());
 		connettoreNotificaHandler.valida(connettoreNotifica,true);
 
 		Connettore connettoreVerifica = entry.getConnettoreVerifica();
-		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA, this.titoloServizio, this.pathServizio);
+		ConnettoreHandler connettoreVerificaHandler = new ConnettoreHandler(CONNETTORE_VERIFICA, this.titoloServizio, this.pathServizio,this.getLanguage());
 		connettoreVerificaHandler.valida(connettoreVerifica,true);
 
 		if(oldEntry != null) { //caso update
-			if(!oldEntry.getCodApplicazione().equals(entry.getCodApplicazione()))
+			if(!oldEntry.getCodApplicazione().equals(entry.getCodApplicazione())) {
 				throw new ValidationException("Cod Applicazione non deve cambiare in update. Atteso ["+oldEntry.getCodApplicazione()+"] trovato ["+entry.getCodApplicazione()+"]");
+			}
 		}
 	}
 
