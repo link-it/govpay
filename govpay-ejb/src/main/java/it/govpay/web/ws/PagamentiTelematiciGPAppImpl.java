@@ -19,7 +19,6 @@
  */
 package it.govpay.web.ws;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import it.govpay.bd.BasicBD;
@@ -419,10 +418,9 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			flusso.setCodPsp(fr.getPsp(bd).getCodPsp());
 			flusso.setDataFlusso(fr.getDataFlusso());
 			flusso.setDataRegolamento(fr.getDataRegolamento());
-			flusso.setImportoTotale(BigDecimal.ZERO);
 			flusso.setIur(fr.getIur());
-			flusso.setNumeroPagamenti(0l);
-			
+			flusso.setImportoTotale(fr.getImportoTotalePagamenti());
+			flusso.setNumeroPagamenti(fr.getNumeroPagamenti());
 			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd);
 			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
 			
@@ -436,8 +434,6 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			
 			List<RendicontazionePagamento> rendicontazionePagamenti = rendicontazionePagamentoBD.findAll(filter);
 			for(RendicontazionePagamento pagamento : rendicontazionePagamenti) {
-				flusso.setImportoTotale(flusso.getImportoTotale().add(pagamento.getRendicontazione().getImportoPagato()));
-				flusso.setNumeroPagamenti(flusso.getNumeroPagamenti() + 1);
 				flusso.getPagamento().add(Gp21Utils.toRendicontazionePagamento(pagamento, applicazioneAutenticata.getVersione(), bd));
 			}
 			
