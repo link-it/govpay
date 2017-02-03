@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +44,6 @@ import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Intermediario;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -59,6 +57,7 @@ import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
@@ -121,13 +120,11 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			//elenco.setFiltro(true);
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}"); 
-
 			List<Intermediario> findAll = intermediariBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (Intermediario entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -430,8 +427,11 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 
 			Stazioni stazioniDars = new Stazioni();
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(stazioniDars.getPathServizio()).queryParam(codIntermediarioId, intermediario.getCodIntermediario());
-			dettaglio.addElementoCorrelato(etichettaStazioni, uriBuilder.build());
+			
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codIntermediarioId, intermediario.getCodIntermediario());
+			URI stazioneDettaglio = Utils.creaUriConParametri(stazioniDars.getPathServizio(), params );
+			dettaglio.addElementoCorrelato(etichettaStazioni, stazioneDettaglio);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -631,7 +631,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Intermediario entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Intermediario entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

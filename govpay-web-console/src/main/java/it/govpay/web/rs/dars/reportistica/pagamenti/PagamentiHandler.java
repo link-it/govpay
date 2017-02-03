@@ -34,7 +34,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -65,7 +64,6 @@ import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -217,13 +215,11 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione,true,intestazione ); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<EstrattoConto> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>(); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (EstrattoConto entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getIdSingoloVersamento(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getIdSingoloVersamento(), this.pathServizio,bd));
 				}
 			}
 
@@ -458,7 +454,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 				// codVersamentoEnte
 				if(StringUtils.isNotEmpty(pagamento.getCodVersamentoEnte())){
 					Versamenti versamentiDars = new Versamenti();
-					URI uriVersamento= BaseRsService.checkDarsURI(uriInfo).path(versamentiDars.getPathServizio()).path("{id}").build(id); 
+					URI uriVersamento = Utils.creaUriConPath(versamentiDars.getPathServizio(),  id + "");
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), pagamento.getCodVersamentoEnte(), uriVersamento);
 				}
 				// IUV
@@ -557,7 +553,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 	}
 	
 	@Override
-	public Map<String, String> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

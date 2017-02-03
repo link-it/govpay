@@ -32,7 +32,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -52,7 +51,6 @@ import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -128,13 +126,11 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Fr> findAll = eseguiRicerca ? frBD.findAll(filter) : new ArrayList<Fr>(); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (Fr entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -297,9 +293,11 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 				Pagamenti pagamentiDars = new Pagamenti();
 				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
 				String idFrApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFr.id");
-				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(idFrApplicazioneId, fr.getId());
-
-				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
+				
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(idFrApplicazioneId, fr.getId()+ "");
+				URI eventoDettaglio = Utils.creaUriConParametri(pagamentiDars.getPathServizio(), params );
+				dettaglio.addElementoCorrelato(etichettaPagamenti, eventoDettaglio); 
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -359,7 +357,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Fr entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

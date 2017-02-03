@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,18 +38,20 @@ import java.util.ResourceBundle;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.model.Acl;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Acl.Tipo;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
+import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.model.Lingua;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
@@ -431,5 +434,85 @@ public class Utils {
 		}
 
 		return c;
+	}
+	
+	public static String getSigla(String nome){
+		StringBuffer sb = new StringBuffer();
+		
+		int init = 0;
+		if(StringUtils.isNotBlank(nome)){
+			String[] split = nome.split(" ");
+			
+			if(split != null && split.length > 0){
+				for (String string : split) {
+					sb.append(string.charAt(0));
+					init++;
+				}
+			} else {
+				sb.append(nome.charAt(0));
+				init++;
+			}
+		}
+		
+		return sb.toString().substring(0, Math.min(2, init));  
+	}
+	
+	public static URI creaUriConParametri(String pathServizio, Map<String, String> parameters)
+			throws ConsoleException {
+		try{
+			URI uri = null;
+			if(parameters != null && parameters.size() > 0){
+				try{
+					StringBuffer sb = new StringBuffer();
+
+					sb.append(pathServizio);
+					int  i=0;
+					for(String parameterId : parameters.keySet()) {
+						if(i == 0) sb.append("?"); else sb.append("&"); 
+						sb.append(parameterId).append("=").append(parameters.get(parameterId));
+						i++;
+					}
+
+					uri = new URI(sb.toString());
+				}catch(Exception e ){
+					throw new ConsoleException(e);
+				}
+			}else {
+				uri = new URI(pathServizio);
+			}
+
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
+	
+	public static URI creaUriConPath(String pathServizio, String ... paths)	throws ConsoleException {
+		try{
+			URI ricerca = null;
+			if(paths != null && paths.length > 0){
+				try{
+					StringBuffer sb = new StringBuffer();
+
+					sb.append(pathServizio);
+					for(String parameterId : paths) {
+						if(sb.toString().endsWith("/"))
+							sb.append(parameterId);
+						else
+							sb.append("/").append(parameterId);
+					}
+
+					ricerca = new URI(sb.toString());
+				}catch(Exception e ){
+					throw new ConsoleException(e);
+				}
+			}else {
+				ricerca = new URI(pathServizio);
+			}
+
+			return ricerca;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 	}
 }

@@ -31,7 +31,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -54,7 +53,6 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo.TipoContabilta;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -135,13 +133,11 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Tributo> findAll = tributiBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (Tributo entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -301,12 +297,12 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 
 				List<String> mt = new ArrayList<String>();
 				//mt.add(".*");
-				UriBuilder uriUploadBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("upload");
+				URI uriUpload = Utils.creaUriConPath(this.pathServizio,"upload");
 
 				Long dimensioneMassimaFileTracciato = 1000000000L;
 				int numeroFileTracciato = 1;
 
-				InputFile fileProva = new InputFile(fileProvaId,fileProvaLabel, true, false, true, mt , dimensioneMassimaFileTracciato ,numeroFileTracciato,uriUploadBuilder.build());
+				InputFile fileProva = new InputFile(fileProvaId,fileProvaLabel, true, false, true, mt , dimensioneMassimaFileTracciato ,numeroFileTracciato,uriUpload);
 				fileProva.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileProva.suggestion"));
 				this.infoCreazioneMap.put(fileProvaId, fileProva);
 			} catch(Exception e ){
@@ -758,7 +754,7 @@ public class ProvaInputHandler extends BaseDarsHandler<Tributo> implements IDars
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Tributo entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Tributo entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

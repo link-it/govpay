@@ -25,6 +25,7 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.Utils;
 
 public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento> implements IDarsHandler<SingoloVersamento>{
@@ -56,7 +57,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	}
 	
 	@Override
-	public Map<String, String> getVoci(SingoloVersamento entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(SingoloVersamento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String getTitolo(SingoloVersamento entry,BasicBD bd) {

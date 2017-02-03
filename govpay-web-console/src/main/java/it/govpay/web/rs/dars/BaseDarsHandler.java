@@ -32,7 +32,6 @@ import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MultivaluedMap;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
@@ -44,7 +43,6 @@ import org.openspcoop2.utils.csv.FormatReader;
 import it.govpay.bd.BasicBD;
 import it.govpay.core.utils.CSVSerializerProperties;
 import it.govpay.model.Versionabile.Versione;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
@@ -77,7 +75,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		this.pathServizio = this.darsService.getPathServizio();
 		this.titoloServizio = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".titolo");
 		this.limit = ConsoleProperties.getInstance().getNumeroRisultatiPerPagina();
-		
+
 		try{
 			// Setto le properties di scrittura
 			FormatReader formatWriter = new FormatReader(CSVSerializerProperties.getInstance(log).getProperties());
@@ -98,7 +96,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca) throws ConsoleException{
 		return this.getInfoRicerca(uriInfo, bd, visualizzaRicerca, null);
 	}
-	
+
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters)
 			throws ConsoleException {
@@ -107,11 +105,11 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
 	@Override
 	public abstract InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters ) throws ConsoleException;
-	
+
 	@Override
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).build();
+			URI uri = new URI(this.pathServizio);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -120,32 +118,15 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
 	@Override
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
-		URI ricerca =  null;
-		if(parameters != null && parameters.size() > 0){
-			try{
-				UriBuilder path = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio);
-
-				for(String parameterId : parameters.keySet()) {
-					path =  path.queryParam(parameterId, parameters.get(parameterId));
-				}
-
-				ricerca =  path.build();
-			}catch(Exception e ){
-				throw new ConsoleException(e);
-			}
-		}else {
-			ricerca = this.getUriRicerca(uriInfo, bd);
-		}
-		
-		return ricerca;
+		return Utils.creaUriConParametri(this.pathServizio,parameters);
 	}
-	
+
 	@Override
 	public abstract InfoForm getInfoCreazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 	@Override
 	public URI getUriCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).build();
+			URI uri = new URI(this.pathServizio);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -156,7 +137,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public URI getUriModifica(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).build();
+			URI uri = new URI(this.pathServizio);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -166,7 +147,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_CANCELLA).build();
+			URI uri =Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_CANCELLA);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -176,17 +157,17 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_ESPORTA).build(); 
+			URI uri = Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_ESPORTA);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path(BaseDarsService.PATH_CANCELLA).build(id);
+			URI uri = Utils.creaUriConPath(this.pathServizio, id+"" , BaseDarsService.PATH_CANCELLA); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -196,17 +177,17 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path(BaseDarsService.PATH_ESPORTA).build(id); 
+			URI uri = Utils.creaUriConPath(this.pathServizio, id+"" , BaseDarsService.PATH_CANCELLA); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public URI getUriUpload(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_UPLOAD).build(); 
+			URI uri = Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_UPLOAD);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -218,7 +199,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
+			URI uri =  Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_FIELD , fieldName);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -237,7 +218,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public abstract void checkEntry(T entry, T oldEntry) throws ValidationException;
 	@Override
 	public abstract Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
-	
+
 	@Override
 	public abstract Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException;
 
@@ -245,28 +226,30 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public  abstract String getTitolo(T entry, BasicBD bd) throws ConsoleException;
 	@Override
 	public  abstract String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
-	
+
 	@Override
 	public abstract String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
-	
+
 	@Override
 	public abstract String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException;
 
-	public Elemento getElemento(T entry, Long id, UriBuilder uriDettaglioBuilder, BasicBD bd) throws ConsoleException{
-		String titolo = this.getTitolo(entry,bd);
-		String sottotitolo = this.getSottotitolo(entry,bd);
-		URI urlDettaglio = (id != null && uriDettaglioBuilder != null) ?  uriDettaglioBuilder.build(id) : null;
-		Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-		elemento.setValori(this.getValori(entry, bd)); 
-		elemento.setVoci(this.getVoci(entry, bd)); 
-		return elemento;
+	public Elemento getElemento(T entry, Long id, String uriDettaglio, BasicBD bd) throws ConsoleException{
+		try{
+			String titolo = this.getTitolo(entry,bd);
+			String sottotitolo = this.getSottotitolo(entry,bd);
+			URI urlDettaglio = (id != null && uriDettaglio != null) ?  Utils.creaUriConPath(uriDettaglio , id+"") : null;
+			Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
+			elemento.setValori(this.getValori(entry, bd)); 
+			elemento.setVoci(this.getVoci(entry, bd)); 
+			return elemento;
+		}catch(Exception e) {throw new ConsoleException(e);}
 	}
-	
+
 	public abstract List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
-	
+
 	@Override
-	public abstract Map<String, String> getVoci(T entry, BasicBD bd) throws ConsoleException;
-		
+	public abstract Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
+
 	public <P> P getParameter(UriInfo uriInfo, String parameterName, Class<P> type) throws ConsoleException{
 		P toReturn = null;
 		try{
@@ -303,13 +286,13 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			if(count < limit)
 				nascondi = true;
 		}
-		
+
 		return !nascondi;
 	}
-	
+
 	public SelectList<String> getSelectListVersione(String versioneId){
 		if(versioneId == null) versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
-		
+
 		String firmaRichiestaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label");
 		List<Voce<String>> valoriVersione = new ArrayList<Voce<String>>(); 
 		valoriVersione.add(new Voce<String>(Versione.GP_02_02_00.getLabel(), Versione.GP_02_02_00.getLabel()));
@@ -317,25 +300,25 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 		SelectList<String> versione = new SelectList<String>(versioneId, firmaRichiestaLabel, null, true, false, true, valoriVersione);
 		versione.setAvanzata(true);
 		versione.setDefaultValue(Versione.GP_02_02_00.getLabel()); 
-		
+
 		return versione;
 	}
-	
+
 	public Versione getVersioneSelezionata(JSONObject jsonObject, String versioneId, boolean remove) throws ServiceException{
 		if(versioneId == null) versioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.id");
-		
+
 		String versioneJson = jsonObject.getString(versioneId);
-		
+
 		if(remove)
 			jsonObject.remove(versioneId);
-		
+
 		return Versione.toEnum(versioneJson);
 	}
 
 	public Date convertJsonStringToDate(String dateJson) throws Exception{
 		return BaseDarsService.convertJsonStringToDate(dateJson);
 	}
-	
+
 	@Override
 	public Format getFormat() {
 		return this.formatW;

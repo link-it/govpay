@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -47,7 +46,6 @@ import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.model.Iuv;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -59,6 +57,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.SingoliVersamenti;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.SingoliVersamentiHandler;
 import it.govpay.web.utils.Utils;
@@ -114,13 +113,11 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<RendicontazioneSenzaRpt> pagamenti = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(Long.parseLong(idFrApplicazione)) : new ArrayList<RendicontazioneSenzaRpt>();
 
 			if(pagamenti != null && pagamenti.size() > 0){
 				for (RendicontazioneSenzaRpt entry : pagamenti) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -171,8 +168,7 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 			if(singoloVersamento != null){
 				SingoliVersamenti svDars = new SingoliVersamenti();
 				SingoliVersamentiHandler svHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
-				UriBuilder uriSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
-				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), uriSVBuilder,bd); 
+				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), svDars.getPathServizio(),bd); 
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
 			}
 
@@ -210,7 +206,7 @@ public class RendicontazioniSenzaRptHandler extends BaseDarsHandler<Rendicontazi
 	}
 	
 	@Override
-	public Map<String, String> getVoci(RendicontazioneSenzaRpt entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(RendicontazioneSenzaRpt entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

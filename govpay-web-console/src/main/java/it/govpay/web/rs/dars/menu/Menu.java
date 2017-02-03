@@ -93,7 +93,7 @@ public class Menu extends BaseRsService {
 			Operatore operatore = this.getOperatoreByPrincipal(bd);
 			ProfiloOperatore profilo = operatore.getProfilo(); 
 
-			URI logout = BaseRsService.checkDarsURI(uriInfo).path("../logout").build();
+			URI logout = new URI("/logout"); 
 
 			Console console = new Console(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("govpay.appTitle"), logout);
 			About about = new About();
@@ -111,7 +111,7 @@ public class Menu extends BaseRsService {
 			Versamenti versamentiDars = new Versamenti();
 
 
-			URI versamentiURI = BaseRsService.checkDarsURI(uriInfo).path(versamentiDars.getPathServizio()).build();
+			URI versamentiURI = new URI(versamentiDars.getPathServizio()); 
 			VoceMenu voceMenuVersamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	versamentiURI, false);
 
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
@@ -120,36 +120,36 @@ public class Menu extends BaseRsService {
 
 				SezioneMenu anagrafica = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anagrafica"));
 				Psp pspDars = new Psp();
-				URI pspURI = BaseRsService.checkDarsURI(uriInfo).path(pspDars.getPathServizio()).build();
+				URI pspURI = new URI(pspDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), pspURI, false));
 
-				URI intermediariURI = BaseRsService.checkDarsURI(uriInfo).path(intermediariDars.getPathServizio()).build();
+				URI intermediariURI = new URI(intermediariDars.getPathServizio());
 				VoceMenu voceMenuIntermediari = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, false);
 				anagrafica.getVociMenu().add(voceMenuIntermediari);
 				
 				TipiTributo tipoTributiDars = new TipiTributo();
-				URI tipiTributiURI = BaseRsService.checkDarsURI(uriInfo).path(tipoTributiDars.getPathServizio()).build();
+				URI tipiTributiURI = new URI(tipoTributiDars.getPathServizio());
 				VoceMenu voceMenuTipoTributi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(tipoTributiDars.getNomeServizio() + ".titolo"),	tipiTributiURI, false);
 				anagrafica.getVociMenu().add(voceMenuTipoTributi);
 
 				Domini dominiDars = new Domini();
-				URI dominiURI = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).build();
+				URI dominiURI = new URI(dominiDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(dominiDars.getNomeServizio() + ".titolo"), dominiURI, false));
 
 				Applicazioni applicazioniDars = new Applicazioni();
-				URI applicazioniURI = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).build();
+				URI applicazioniURI = new URI(applicazioniDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(applicazioniDars.getNomeServizio() + ".titolo"),	applicazioniURI, false));
 
 				Portali portaliDars = new Portali();
-				URI portaliURI = BaseRsService.checkDarsURI(uriInfo).path(portaliDars.getPathServizio()).build();
+				URI portaliURI = new URI(portaliDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(portaliDars.getNomeServizio() + ".titolo"), portaliURI, false));
 
 				Operatori operatoriDars = new Operatori();
-				URI operatoriURI = BaseRsService.checkDarsURI(uriInfo).path(operatoriDars.getPathServizio()).build();
+				URI operatoriURI = new URI(operatoriDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"), operatoriURI, false));
 				
 				ProvaInput provaInputDars = new ProvaInput();
-				URI provaInputURI = BaseRsService.checkDarsURI(uriInfo).path(provaInputDars.getPathServizio()).build();
+				URI provaInputURI = new URI(provaInputDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(provaInputDars.getNomeServizio() + ".titolo"), provaInputURI, false));
 				
 				menu.getSezioni().add(anagrafica);
@@ -167,13 +167,13 @@ public class Menu extends BaseRsService {
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
 
 				Rendicontazioni rendicontazioniDars = new Rendicontazioni();
-				URI rendicontazioniURI = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniDars.getPathServizio()).build();
+				URI rendicontazioniURI = new URI(rendicontazioniDars.getPathServizio());
 				VoceMenu voceMenuRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(rendicontazioniDars.getNomeServizio() + ".titolo"),	rendicontazioniURI, false);
 
 				monitoraggio.getVociMenu().add(voceMenuRendicontazioni);
 			}else {
 				FrApplicazioni frApplicazioniDars = new FrApplicazioni();
-				URI frApplicazioniURI = BaseRsService.checkDarsURI(uriInfo).path(frApplicazioniDars.getPathServizio()).build();
+				URI frApplicazioniURI = new URI(frApplicazioniDars.getPathServizio());
 				VoceMenu voceMenuFrApplicazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(frApplicazioniDars.getNomeServizio() + ".titolo"),	frApplicazioniURI, false);
 
 				monitoraggio.getVociMenu().add(voceMenuFrApplicazioni);
@@ -182,7 +182,7 @@ public class Menu extends BaseRsService {
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
 
 				Eventi eventiDars = new Eventi();
-				URI eventiURI = BaseRsService.checkDarsURI(uriInfo).path(eventiDars.getPathServizio()).build();
+				URI eventiURI = new URI(eventiDars.getPathServizio());
 				VoceMenu voceMenuEventi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".titolo"),	eventiURI, false);
 
 				monitoraggio.getVociMenu().add(voceMenuEventi);
@@ -194,13 +194,13 @@ public class Menu extends BaseRsService {
 			SezioneMenu reportistica = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".reportistica"));
 			
 			Pagamenti reportisticaPagamentiDars = new Pagamenti();
-			URI reportisticaPagamentiURI = BaseRsService.checkDarsURI(uriInfo).path(reportisticaPagamentiDars.getPathServizio()).build();
+			URI reportisticaPagamentiURI = new URI(reportisticaPagamentiDars.getPathServizio());
 			VoceMenu voceMenuReportisticaPagamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(reportisticaPagamentiDars.getNomeServizio() + ".titolo"), reportisticaPagamentiURI, false);
 
 			reportistica.getVociMenu().add(voceMenuReportisticaPagamenti);
 			
 //			EstrattiConto estrattiContoDars = new EstrattiConto();
-//			URI estrattiContoURI = BaseRsService.checkDarsURI(uriInfo).path(estrattiContoDars.getPathServizio()).build();
+//			URI estrattiContoURI = new URI(estrattiContoDars.getPathServizio()).build();
 //			VoceMenu voceMenuReportisticaEstrattiConto = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(estrattiContoDars.getNomeServizio() + ".titolo"), estrattiContoURI, false);
 
 //			reportistica.getVociMenu().add(voceMenuReportisticaEstrattiConto);
@@ -212,7 +212,7 @@ public class Menu extends BaseRsService {
 				SezioneMenu manutenzione = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".manutenzione"));
 
 				Strumenti strumentiDars = new Strumenti();
-				URI strumentiURI = BaseRsService.checkDarsURI(uriInfo).path(strumentiDars.getPathServizio()).build();
+				URI strumentiURI = new URI(strumentiDars.getPathServizio());
 				VoceMenu voceMenuStrumenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(strumentiDars.getNomeServizio() + ".titolo"),	strumentiURI, false);
 				manutenzione.getVociMenu().add(voceMenuStrumenti);
 				menu.getSezioni().add(manutenzione);

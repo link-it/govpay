@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
@@ -15,7 +14,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.utils.resources.GestoreRisorseJMX;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -27,6 +25,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
@@ -49,8 +48,6 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),	this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			String[] listaOperazioni =  ConsoleProperties.getInstance().getOperazioniJMXDisponibili(); 
 
 			for (int i = 0; i < listaOperazioni.length; i++) {
@@ -58,7 +55,7 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 				long idOperazione = i;
 				String titoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".titolo");
 				String sottotitoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".sottotitolo");
-				URI urlDettaglio = uriDettaglioBuilder.build(idOperazione);
+				URI urlDettaglio = Utils.creaUriConPath(this.pathServizio, idOperazione+"");
 				Elemento elemento = new Elemento(idOperazione, titoloOperazione, sottotitoloOperazione, urlDettaglio);
 				elenco.getElenco().add(elemento);
 			}
@@ -214,7 +211,7 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 	public List<String> getValori(Object entry, BasicBD bd) throws ConsoleException { return null; }
 	
 	@Override
-	public Map<String, String> getVoci(Object entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Object entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException { return null; }

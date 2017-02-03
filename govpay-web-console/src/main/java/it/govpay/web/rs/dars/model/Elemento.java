@@ -34,7 +34,7 @@ public class Elemento {
 		this.sottotitolo = sottotitolo;
 		this.titolo = titolo;
 		this.uri = urlDettaglio;
-		this.voci = new HashMap<String, String>();
+		this.voci = new HashMap<String, Voce<String>>();
 	}
 	
 	public Elemento(long id, List<String> valori, URI urlDettaglio) {
@@ -48,7 +48,7 @@ public class Elemento {
 	private String sottotitolo;
 	private URI uri;
 	private String formatter;
-	private Map<String, String> voci;
+	private Map<String, Voce<String>> voci; 
 	
 	private List<String> valori;
 	
@@ -76,10 +76,10 @@ public class Elemento {
 	public void setFormatter(String formatter) {
 		this.formatter = formatter;
 	}
-	public Map<String, String> getVoci() {
+	public Map<String, Voce<String>> getVoci() {
 		return voci;
 	}
-	public void setVoci(Map<String, String> voci) {
+	public void setVoci(Map<String, Voce<String>> voci) {
 		this.voci = voci;
 	}
 }

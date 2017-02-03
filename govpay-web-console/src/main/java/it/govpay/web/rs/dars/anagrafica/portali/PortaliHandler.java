@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -54,7 +53,6 @@ import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Portale;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Versionabile.Versione;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -136,13 +134,11 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Portale> findAll = portaliBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (Portale entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -613,11 +609,9 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 					it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tipiTributoDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
 					TipiTributoHandler tipiTributoDarsHandler = (TipiTributoHandler) tipiTributoDars.getDarsHandler();
-					UriBuilder uriDettaglioUoBuilder = BaseRsService.checkDarsURI(uriInfo).path(tipiTributoDars.getPathServizio()).path("{id}");
-
 					if(findAll != null && findAll.size() > 0){
 						for (TipoTributo entry : findAll) {
-							Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), uriDettaglioUoBuilder,bd);
+							Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), tipiTributoDars.getPathServizio(),bd);
 							listaVociTributi.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
 						}
 					}
@@ -654,11 +648,9 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
 					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
-					UriBuilder uriDettaglioDominiBuilder = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).path("{id}");
-
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), uriDettaglioDominiBuilder,bd);
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
 							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
 						}
 					}
@@ -699,11 +691,9 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 					it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo tipiTributoDars = new it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo();
 					TipiTributoHandler tipiTributoDarsHandler = (TipiTributoHandler) tipiTributoDars.getDarsHandler();
-					UriBuilder uriDettaglioUoBuilder = BaseRsService.checkDarsURI(uriInfo).path(tipiTributoDars.getPathServizio()).path("{id}");
-
 					if(findAll != null && findAll.size() > 0){
 						for (TipoTributo entry : findAll) {
-							Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), uriDettaglioUoBuilder,bd);
+							Elemento elemento = tipiTributoDarsHandler.getElemento(entry, entry.getId(), tipiTributoDars.getPathServizio(),bd);
 							listaVociTributi.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
 						}
 					}
@@ -743,11 +733,9 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 					it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
 					DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
-					UriBuilder uriDettaglioDominiBuilder = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).path("{id}");
-
 					if(findAll != null && findAll.size() > 0){
 						for (Dominio entry : findAll) {
-							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), uriDettaglioDominiBuilder,bd);
+							Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
 							listaVociDomini.add(new VoceRiferimento<String>(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri()));
 						}
 					}
@@ -1036,7 +1024,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Portale entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Portale entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

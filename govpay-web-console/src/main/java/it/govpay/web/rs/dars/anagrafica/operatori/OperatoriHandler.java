@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +50,6 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -138,13 +136,11 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Operatore> findAll = operatoriBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (Operatore entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -524,11 +520,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 						it.govpay.web.rs.dars.anagrafica.domini.Domini dominiDars = new it.govpay.web.rs.dars.anagrafica.domini.Domini();
 						DominiHandler dominiDarsHandler = (DominiHandler) dominiDars.getDarsHandler();
-						UriBuilder uriDettaglioDominiBuilder = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).path("{id}");
 
 						if(findAll != null && findAll.size() > 0){
 							for (Dominio entry : findAll) {
-								Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), uriDettaglioDominiBuilder,bd);
+								Elemento elemento = dominiDarsHandler.getElemento(entry, entry.getId(), dominiDars.getPathServizio(),bd);
 								sezioneDomini.addVoce(elemento.getTitolo(), elemento.getSottotitolo(), elemento.getUri());
 							}
 						}
@@ -757,7 +752,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Operatore entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Operatore entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

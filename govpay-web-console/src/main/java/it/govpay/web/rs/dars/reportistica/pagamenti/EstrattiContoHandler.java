@@ -11,7 +11,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,7 +31,6 @@ import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.business.reportistica.EstrattiContoMetadata;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -143,11 +141,9 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione,true,intestazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.model.reportistica.EstrattoContoMetadata entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -319,8 +315,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), estrattoConto.getCodDominio());
 			}
 
-			UriBuilder uriBuilderCsv = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("estrattoConto");
-
+			URI uriCsv = Utils.creaUriConPath(this.pathServizio,  estrattoConto.getId() + "", "estrattoConto");
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riferimento.label"), estrattoConto.getMeseAnno());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".formato.label"), estrattoConto.getFormato());
 			if(StringUtils.isNotEmpty(estrattoConto.getIbanAccredito())) {
@@ -328,7 +323,8 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			}
 
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.label"), estrattoConto.getNomeFile());
-			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".estrattoConto.label"), Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriBuilderCsv.build(estrattoConto.getId())); 
+			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".estrattoConto.label"), 
+					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriCsv); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -424,7 +420,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 	
 	@Override
-	public Map<String, String> getVoci(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

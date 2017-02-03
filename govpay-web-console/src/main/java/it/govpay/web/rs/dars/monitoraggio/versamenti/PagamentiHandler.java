@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -61,7 +60,6 @@ import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Pagamento.EsitoRendicontazione;
 import it.govpay.model.Pagamento.TipoAllegato;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -73,6 +71,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRpt;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRptHandler;
 import it.govpay.web.utils.Utils;
@@ -250,13 +249,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Pagamento> pagamenti = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
 
 			if(pagamenti != null && pagamenti.size() > 0){
 				for (Pagamento entry : pagamenti) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -264,13 +261,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			if(countRendicontazioniSenzaRpt > 0){
 				RendicontazioniSenzaRpt rendicontazioniSenzaRptDars = new RendicontazioniSenzaRpt();
 				RendicontazioniSenzaRptHandler rendicontazioniSenzaRptDarsHandler = (RendicontazioniSenzaRptHandler) rendicontazioniSenzaRptDars.getDarsHandler();
-				UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniSenzaRptDars.getPathServizio()).path("{id}");
-
 				List<RendicontazioneSenzaRpt> rendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(idFrApplicazioni) : new ArrayList<RendicontazioneSenzaRpt>();
 
 				if(rendicontazioniSenzaRpt != null && rendicontazioniSenzaRpt.size() > 0){
 					for (RendicontazioneSenzaRpt entry : rendicontazioniSenzaRpt) {
-						Elemento elemento = rendicontazioniSenzaRptDarsHandler.getElemento(entry, entry.getId(), uriDettaglioRRBuilder,bd);
+						Elemento elemento = rendicontazioniSenzaRptDarsHandler.getElemento(entry, entry.getId(), rendicontazioniSenzaRptDars.getPathServizio(),bd);
 						elenco.getElenco().add(elemento);
 
 					}
@@ -317,8 +312,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			if(singoloVersamento != null){
 				SingoliVersamenti svDars = new SingoliVersamenti();
 				SingoliVersamentiHandler svHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
-				UriBuilder uriSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
-				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), uriSVBuilder,bd); 
+				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), svDars.getPathServizio(),bd); 
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
 			}
 			if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte()))
@@ -360,8 +354,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			if(rpt!= null){
 				Transazioni transazioniDars = new Transazioni();
 				TransazioniHandler transazioniDarsHandler = (TransazioniHandler) transazioniDars.getDarsHandler();
-				UriBuilder uriRptBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).path("{id}");
-				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), uriRptBuilder,bd);
+				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), transazioniDars.getPathServizio(),bd);
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rpt.label"),elemento.getTitolo(),elemento.getUri());
 			}
 
@@ -404,8 +397,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				if(rr != null){
 					Revoche revocheDars = new Revoche();
 					RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
-					UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
-					Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder,bd);
+					Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), revocheDars.getPathServizio(),bd);
 					sezioneRevoca.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rr.label"),elemento.getTitolo(),elemento.getUri());
 				}
 			}
@@ -450,7 +442,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Pagamento entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Pagamento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

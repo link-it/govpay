@@ -31,7 +31,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -62,7 +61,6 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -154,13 +152,11 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Dominio> findAll = dominiBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (Dominio entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -721,8 +717,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			if(dominio.getIdApplicazioneDefault() != null){
 				Applicazione applicazione = dominio.getApplicazioneDefault(bd);
 				it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni applicazioniDars = new it.govpay.web.rs.dars.anagrafica.applicazioni.Applicazioni();
-				UriBuilder uriDettaglioApplicazioniBuilder = BaseRsService.checkDarsURI(uriInfo).path(applicazioniDars.getPathServizio()).path("{id}");
-				URI applicazioneURI = uriDettaglioApplicazioniBuilder.build(applicazione.getId());
+				URI applicazioneURI = Utils.creaUriConPath(applicazioniDars.getPathServizio(), applicazione.getId()+"");
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), applicazione.getCodApplicazione(),applicazioneURI,true); 
 			} else {
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuna"),true);
@@ -785,18 +780,24 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			UnitaOperative uoDars =new UnitaOperative();
 			String idDominioId =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(uoDars.getNomeServizio() + ".idDominio.id");
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(uoDars.getPathServizio()).queryParam(idDominioId, dominio.getId());
-			dettaglio.addElementoCorrelato(etichettaUnitaOperative, uriBuilder.build());
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(idDominioId, dominio.getId() + "");
+			URI uoDettaglio = Utils.creaUriConParametri(uoDars.getPathServizio(), params );
+			dettaglio.addElementoCorrelato(etichettaUnitaOperative, uoDettaglio);
 
 			Iban ibanDars =new Iban();
 			idDominioId =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(ibanDars.getNomeServizio() + ".idDominio.id");
-			UriBuilder uriBuilderIban = BaseRsService.checkDarsURI(uriInfo).path(ibanDars.getPathServizio()).queryParam(idDominioId, dominio.getId());
-			dettaglio.addElementoCorrelato(etichettaIban, uriBuilderIban.build());
+			params = new HashMap<String, String>();
+			params.put(idDominioId, dominio.getId() + "");
+			URI ibanDettaglio = Utils.creaUriConParametri(ibanDars.getPathServizio(), params );
+			dettaglio.addElementoCorrelato(etichettaIban, ibanDettaglio);
 
 			Tributi tributiDars =new Tributi();
 			idDominioId =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(tributiDars.getNomeServizio() + ".idDominio.id");
-			UriBuilder uriBuilderTributi = BaseRsService.checkDarsURI(uriInfo).path(tributiDars.getPathServizio()).queryParam(idDominioId, dominio.getId());
-			dettaglio.addElementoCorrelato(etichettaTributi, uriBuilderTributi.build());
+			params = new HashMap<String, String>();
+			params.put(idDominioId, dominio.getId() + "");
+			URI tributoDettaglio = Utils.creaUriConParametri(tributiDars.getPathServizio(), params );
+			dettaglio.addElementoCorrelato(etichettaTributi, tributoDettaglio);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -1086,7 +1087,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Dominio entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Dominio entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

@@ -1,0 +1,79 @@
+<link rel="import" href="../bower_components/polymer/polymer.html"><link rel="import" href="../bower_components/paper-styles/typography.html"><dom-module id="elenco-custom"><template><style>
+/* Classi css per le visualizzazioni custom */
+
+/* Visualizzazione versamenti2 */
+
+.avatar {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--toolbar-color);
+  /*margin-bottom: 16px;*/
+  color: white;
+  text-align: center;
+  padding: 8px;
+}
+
+.vers_etichetta {
+  color: var(--secondary-text-color);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.vers_valore {
+  color: var(--primary-text-color);
+  font-size: 14px;
+}
+
+.vers_colonna {
+  display: inline-block;
+  padding-left: 16px;
+}
+
+.vers_colonna-nopadding {
+  display: inline-block;
+  vertical-align: 32px;
+}
+
+.vers_voce {
+  min-height: 24px;
+  padding-bottom: 4px;
+  padding-top: 4px;
+}
+
+.vers_stato_ESEGUITO, .vers_stato_ESEGUITO_SENZA_RPT, .vers_stato_PARZIALMENTE_ESEGUITO{
+  display: inline-block;
+  border-radius: 5%;
+  background: #4F8A10;
+  color: white;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-transform: uppercase;
+}
+
+.vers_stato_NON_ESEGUITO{
+  display: inline-block;
+  border-radius: 5%;
+  background: #5F6364;
+  color: white;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-transform: uppercase;
+}
+
+.vers_stato_ANNULLATO, .vers_stato_ANOMALO{
+  display: inline-block;
+  border-radius: 5%;
+  background: #D8000C;
+  color: white;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-transform: uppercase;
+}
+
+    </style></template></dom-module>

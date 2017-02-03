@@ -55,6 +55,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.utils.Utils;
 
@@ -127,8 +128,6 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Rpt> rpt = eseguiRicerca ? rptBD.findAll(filter) : new ArrayList<Rpt>();
 
 			RrBD rrBD = new RrBD(bd);
@@ -138,11 +137,10 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 			Revoche revocheDars = new Revoche();
 			RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
-			UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
 
 			if(rpt != null && rpt.size() > 0){
 				for (Rpt entry : rpt) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 
 					RrFilter rrFilter = rrBD.newFilter();
 					rrFilter.getFilterSortList().add(rrFsw);
@@ -150,7 +148,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 					List<Rr> findAll = rrBD.findAll(rrFilter);
 					if(findAll != null && findAll.size() > 0){
 						for (Rr rr : findAll) {
-							Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder,bd);
+							Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), revocheDars.getPathServizio(),bd);
 							elenco.getElenco().add(elemento);
 						}
 					}
@@ -328,15 +326,14 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".iuv.id");
 			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".ccp.id");
 			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".idTransazione.id");
-
-		
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(eventiDars.getPathServizio())
-					.queryParam(codDominioId, rpt.getCodDominio())
-					.queryParam(iuvId, rpt.getIuv())
-					.queryParam(ccpId, rpt.getCcp())
-					.queryParam(idTransazioneId, rpt.getId());
 			
-			dettaglio.addElementoCorrelato(etichettaEventi, uriBuilder.build());
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codDominioId, rpt.getCodDominio());
+			params.put(iuvId, rpt.getIuv());
+			params.put(ccpId, rpt.getCcp());
+			params.put(idTransazioneId, rpt.getId()+"");
+			URI eventoDettaglio = Utils.creaUriConParametri(eventiDars.getPathServizio(), params );
+			dettaglio.addElementoCorrelato(etichettaEventi, eventoDettaglio);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -409,7 +406,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Rpt entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Rpt entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

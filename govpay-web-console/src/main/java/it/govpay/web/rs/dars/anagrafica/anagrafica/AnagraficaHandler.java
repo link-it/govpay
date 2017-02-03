@@ -20,7 +20,6 @@
  */
 package it.govpay.web.rs.dars.anagrafica.anagrafica;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,8 +32,6 @@ import org.apache.commons.lang.StringUtils;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Anagrafica;
-import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputText;
@@ -42,7 +39,8 @@ import it.govpay.web.utils.Utils;
 
 public class AnagraficaHandler {
 
-	private Map<String, Map<String, ParamField<?>>> infoCreazioneMap = null; 
+	private Map<String, Map<String, ParamField<?>>> infoCreazioneMap = null;
+	@SuppressWarnings("unused")
 	private String pathServizio =null;
 	private String nomeServizio = null;
 	private String nomeAnagrafica = null;
@@ -565,15 +563,6 @@ public class AnagraficaHandler {
 			listaParametri.add(fax);
 		}
 		return listaParametri;
-	}
-
-	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
-		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
-			return uri;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		} 
 	}
 
 	public void fillSezioneAnagraficaUO(it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica, Anagrafica anagrafica) {

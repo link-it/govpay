@@ -41,6 +41,7 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 
 public interface IDarsHandler<T> {
 
@@ -82,7 +83,7 @@ public interface IDarsHandler<T> {
 	public String getTitolo(T entry, BasicBD bd) throws ConsoleException;
 	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 	public List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
-	public Map<String, String> getVoci(T entry, BasicBD bd) throws ConsoleException;
+	public Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
 	
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;

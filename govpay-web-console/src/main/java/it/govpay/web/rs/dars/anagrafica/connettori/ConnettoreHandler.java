@@ -424,7 +424,7 @@ public class ConnettoreHandler {
 
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
-			URI uri = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path(BaseDarsService.PATH_FIELD).path(fieldName).build(); 
+			URI uri = Utils.creaUriConPath(this.pathServizio,BaseDarsService.PATH_FIELD,fieldName);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);

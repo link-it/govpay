@@ -77,6 +77,7 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Evento;
+import it.govpay.model.Iuv;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
@@ -231,13 +232,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Versamento> findAll = eseguiRicerca ? versamentiBD.findAll(filter) : new ArrayList<Versamento>(); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (Versamento entry : findAll) {
-					Elemento elemento = this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd);
+					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
 					elemento.setFormatter(formatter); 
 					elenco.getElenco().add(elemento);
 				}
@@ -480,9 +479,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				if(uo != null){
 					Dominio dominio = uo.getDominio(bd);
 					Domini dominiDars = new Domini();
-					UriBuilder uriDettaglioDominioBuilder = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).path("{id}");
-					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), uriDettaglioDominioBuilder, bd);
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo(),uriDettaglioDominioBuilder.build(dominio.getId())); 
+					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo(),elemento.getUri()); 
 				}
 
 				// Applicazione
@@ -529,29 +527,30 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				if(!Utils.isEmpty(singoliVersamenti)){
 					SingoliVersamenti svDars = new SingoliVersamenti();
 					SingoliVersamentiHandler svDarsHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
-					UriBuilder uriDettaglioSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
-
 					if(singoliVersamenti != null && singoliVersamenti.size() > 0){
 						for (SingoloVersamento entry : singoliVersamenti) {
-							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), uriDettaglioSVBuilder,bd);
+							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), svDars.getPathServizio(),bd);
 							sezioneSingoliVersamenti.addVoce(elemento.getTitolo(), elemento.getSottotitolo());
 						}
 					}
 				}
 
 				Pagamenti pagamentiDars = new Pagamenti();
-				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
 				String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idVersamento.id");
-				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
-
-				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
+				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(versamentoId, versamento.getId()+ "");
+				URI pagamentoDettaglio = Utils.creaUriConParametri(pagamentiDars.getPathServizio(), params );
+				dettaglio.addElementoCorrelato(etichettaPagamenti, pagamentoDettaglio); 
 
 				Transazioni transazioniDars = new Transazioni();
 				String etichettaTransazioni = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.transazioni.titolo");
 				versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(transazioniDars.getNomeServizio()+ ".idVersamento.id");
-				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
+				params = new HashMap<String, String>();
+				params.put(versamentoId, versamento.getId()+ "");
+				URI transazioneDettaglio = Utils.creaUriConParametri(transazioniDars.getPathServizio(), params );
 
-				dettaglio.addElementoCorrelato(etichettaTransazioni, uriBuilder.build());
+				dettaglio.addElementoCorrelato(etichettaTransazioni, transazioneDettaglio);
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -646,10 +645,60 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	}
 
 	@Override
-	public Map<String, String> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
-		Map<String, String> voci = new HashMap<String, String>();
-		voci.put("titolo", this.getTitolo(entry, bd));
-		voci.put("sottotitolo", this.getSottotitolo(entry, bd));
+	public Map<String, Voce<String>> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
+		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
+		try {
+			// voci da inserire nella visualizzazione personalizzata 
+			// logo, codversamentoente, iuv, piva/cf, importo, scadenza, stato
+			if(StringUtils.isNotEmpty(entry.getCodVersamentoEnte())) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.label"), entry.getCodVersamentoEnte()));
+			}
+
+			if(entry.getDataScadenza() != null) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.label"), this.sdf.format(entry.getDataScadenza())));
+			}
+
+			Iuv iuv  = entry.getIuv(bd);
+			if(iuv!= null && StringUtils.isNotEmpty(iuv.getIuv())) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"), iuv.getIuv()));
+			}
+
+			// Dominio
+			UnitaOperativa uo = entry.getUo(bd);
+			if(uo != null){
+				Dominio dominio = uo.getDominio(bd);
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id"),
+						new Voce<String>(dominio.getCodDominio(),
+								Utils.getSigla(dominio.getRagioneSociale()))); 
+
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSocialeDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSocialeDominio.label"),
+								dominio.getRagioneSociale())); 
+			}
+
+			if(entry.getStatoVersamento() != null) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+entry.getStatoVersamento().name()),
+								entry.getStatoVersamento().name()));
+			}
+
+			if(entry.getImportoTotale() != null) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), entry.getImportoTotale().toString()+ "€"));
+			}
+
+			Anagrafica anagrafica = entry.getAnagraficaDebitore(); 
+			if(StringUtils.isNotEmpty(anagrafica.getCodUnivoco())){
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cf.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cf.label"), anagrafica.getCodUnivoco()));
+			}
+
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
+		}
 
 		return voci; 
 	}

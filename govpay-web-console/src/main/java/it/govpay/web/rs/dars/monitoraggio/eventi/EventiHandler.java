@@ -340,7 +340,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Evento entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Evento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

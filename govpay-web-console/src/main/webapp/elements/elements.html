@@ -18475,6 +18475,91 @@ context. You should place this element as a child of `<body>` whenever possible.
         }
       }
     </style>
+    <style include="elenco-custom"></style>
+  </template>
+</dom-module>
+
+<dom-module id="elenco-custom" assetpath="../styles/">
+  <template>
+    <style>
+/* Classi css per le visualizzazioni custom */
+
+/* Visualizzazione versamenti2 */
+
+.avatar {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--toolbar-color);
+  /*margin-bottom: 16px;*/
+  color: white;
+  text-align: center;
+  padding: 8px;
+}
+
+.vers_etichetta {
+  color: var(--secondary-text-color);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.vers_valore {
+  color: var(--primary-text-color);
+  font-size: 14px;
+}
+
+.vers_colonna {
+  display: inline-block;
+  padding-left: 16px;
+}
+
+.vers_colonna-nopadding {
+  display: inline-block;
+  vertical-align: 32px;
+}
+
+.vers_voce {
+  min-height: 24px;
+  padding-bottom: 4px;
+  padding-top: 4px;
+}
+
+.vers_stato_ESEGUITO, .vers_stato_ESEGUITO_SENZA_RPT, .vers_stato_PARZIALMENTE_ESEGUITO{
+  display: inline-block;
+  border-radius: 5%;
+  background: #4F8A10;
+  color: white;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-transform: uppercase;
+}
+
+.vers_stato_NON_ESEGUITO{
+  display: inline-block;
+  border-radius: 5%;
+  background: #5F6364;
+  color: white;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-transform: uppercase;
+}
+
+.vers_stato_ANNULLATO, .vers_stato_ANOMALO{
+  display: inline-block;
+  border-radius: 5%;
+  background: #D8000C;
+  color: white;
+  box-sizing: border-box;
+  padding-left: 5px;
+  padding-right: 5px;
+  text-transform: uppercase;
+}
+
+    </style>
   </template>
 </dom-module>
 
@@ -20873,7 +20958,7 @@ this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,th
       },
 
       showDetail: function(event){
-        this.$.getDetail.url = event.detail;
+        this.$.getDetail.url = REST_URL + event.detail;
         app.showSpinner();
         this.$.getDetail.generateRequest();
       },
@@ -31158,7 +31243,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         listBox.addEventListener('iron-select', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        listBox.refreshUri = data.refreshUri;
+        listBox.refreshUri = REST_URL + data.refreshUri;
         listBox.refreshUriParamIds = data.refreshUriParamIds;
         listBox.refresh = this.refreshMultiSelectionDropdownData.bind(this, listBox);
       }
@@ -31220,7 +31305,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         //dropdown.addEventListener('iron-select', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        dropdown.refreshUri = data.refreshUri;
+        dropdown.refreshUri = REST_URL + data.refreshUri;
         dropdown.refreshUriParamIds = data.refreshUriParamIds;
         dropdown.refresh = this.refreshDropdownData.bind(this, dropdown);
       }
@@ -31300,7 +31385,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         checkbox.addEventListener('change', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        checkbox.refreshUri = data.refreshUri;
+        checkbox.refreshUri = REST_URL + data.refreshUri;
         checkbox.refreshUriParamIds = data.refreshUriParamIds;
         checkbox.refresh = this.refreshCheckboxData.bind(this, checkbox);
       }
@@ -31371,7 +31456,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         paperInput.addEventListener('change', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        paperInput.refreshUri = data.refreshUri;
+        paperInput.refreshUri = REST_URL + data.refreshUri;
         paperInput.refreshUriParamIds = data.refreshUriParamIds;
         paperInput.refresh = this.refreshInputData.bind(this, paperInput);
       }
@@ -31441,7 +31526,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         textarea.addEventListener('change', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        textarea.refreshUri = data.refreshUri;
+        textarea.refreshUri = REST_URL + data.refreshUri;
         textarea.refreshUriParamIds = data.refreshUriParamIds;
         textarea.refresh = this.refreshTextareaData.bind(this, textarea);
       }
@@ -31512,7 +31597,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         dateInput.addEventListener('change', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        dateInput.refreshUri = data.refreshUri;
+        dateInput.refreshUri = REST_URL + data.refreshUri;
         dateInput.refreshUriParamIds = data.refreshUriParamIds;
         dateInput.refresh = this.refreshDateInputData.bind(this, dateInput);
       }
@@ -31579,7 +31664,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         fileInput.addEventListener('change', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        fileInput.refreshUri = data.refreshUri;
+        fileInput.refreshUri = REST_URL + data.refreshUri;
         fileInput.refreshUriParamIds = data.refreshUriParamIds;
         fileInput.refresh = this.refreshFileInputData.bind(this, fileInput);
       }
@@ -31738,7 +31823,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         radioGroup.addEventListener('iron-select', this.changeData.bind(this));
       }
       if (data.refreshUri){
-        radioGroup.refreshUri = data.refreshUri;
+        radioGroup.refreshUri = REST_URL + data.refreshUri;
         radioGroup.refreshUriParamIds = data.refreshUriParamIds;
         radioGroup.refresh = this.refreshRadioGroupData.bind(this, radioGroup);
       }
@@ -32652,7 +32737,7 @@ It will also ensure that focus remains in the dialog.
 
       build: function(template){
         if (template){
-          this.editUrl = template.uri;
+          this.editUrl = REST_URL + template.uri;
           this.buildForm(template, this.$.editForm);
           this.open();
         }
@@ -32877,7 +32962,7 @@ It will also ensure that focus remains in the dialog.
 
       requestResourceInfo: function(resource){
         if (this.resource!='' && !this.wait){
-          this.$.getResourceInfo.url = this.resource; //+'/info';
+          this.$.getResourceInfo.url = REST_URL + this.resource;
           app.showSpinner();
           this.$.getResourceInfo.generateRequest();
           this.user=app.USER_LOGGED;
@@ -32888,7 +32973,7 @@ It will also ensure that focus remains in the dialog.
         if (search && !this.$.searchbox.hidden){
           this.$.searchbox.search();
         } else {
-          this.$.getResourceInfo.url = this.resource;
+          this.$.getResourceInfo.url = REST_URL + this.resource;
           app.showSpinner();
           this.$.getResourceInfo.generateRequest();
         }
@@ -32976,15 +33061,23 @@ It will also ensure that focus remains in the dialog.
 
       setResponse: function(response){
         if (response.infoCreazione){
-          this.creazioneUrl = response.infoCreazione.uri;
+          this.creazioneUrl = REST_URL + response.infoCreazione.uri;
         } else {
           this.creazioneUrl = '';
         }
-        this.cancellazioneUrl = response.cancellazione;
+        if (response.cancellazione) {
+          this.cancellazioneUrl = REST_URL + response.cancellazione;
+        } else {
+          this.cancellazioneUrl = '';
+        }
         this.filtrabile = (response.filtro);
-        this.esportazioneUrl = response.esportazione;
+        if (response.esportazione) {
+          this.esportazioneUrl = REST_URL + response.esportazione;
+        } else {
+          this.esportazioneUrl = '';
+        }
         if (response.infoRicerca){
-          this.ricercaUrl = response.infoRicerca.uri;
+          this.ricercaUrl = REST_URL + response.infoRicerca.uri;
           this.$.searchbox.build(response.infoRicerca);
         } else {
           this.ricercaUrl='';
@@ -34722,9 +34815,9 @@ It will also ensure that focus remains in the dialog.
 
       setUri: function(obj){
         if (obj){
-          this.uriEsportazione = (obj.esportazione)?obj.esportazione.uri:'';
-          this.uriCancellazione = (obj.cancellazione)?obj.cancellazione.uri:'';
-          this.uriModifica = (obj.infoModifica)?obj.infoModifica.uri:'';
+          this.uriEsportazione = (obj.esportazione)?REST_URL +obj.esportazione.uri:'';
+          this.uriCancellazione = (obj.cancellazione)?REST_URL +obj.cancellazione.uri:'';
+          this.uriModifica = (obj.infoModifica)?REST_URL +obj.infoModifica.uri:'';
           this.user=app.USER_LOGGED;
         }
       },
@@ -34853,13 +34946,13 @@ It will also ensure that focus remains in the dialog.
 
       cambiaTab: function (event) {
 
-        console.log(this.selectedTab);
+       // console.log(this.selectedTab);
 
         if(this.selectedTab > 0) {
           var ec = this.querySelectorAll('link-search-view');
           for (var k = 0; k < ec.length; k++) {
             var obj = ec[k];
-            console.log(obj.indice);
+            //console.log(obj.indice);
             if(obj.indice == this.selectedTab - 1)
               obj.refresh();
           }
@@ -35458,7 +35551,7 @@ event and do your own custom submission:
       build: function(data){
         if (data){
           this.data = data;
-          this.searchUrl = data.uri;
+          this.searchUrl = REST_URL + data.uri;
           this.buildForm(data, this.$.searchForm);
           if (this.auto){
             this.search();
@@ -35529,6 +35622,182 @@ event and do your own custom submission:
       }
     });
   })();
+  </script>
+</dom-module>
+
+
+<dom-module id="paper-badge" assetpath="../bower_components/paper-badge/">
+  <template>
+    <style>
+      :host {
+        display: block;
+        position: absolute;
+        outline: none;
+      }
+
+      :host([hidden]), [hidden] {
+        display: none !important;
+      }
+
+      iron-icon {
+        --iron-icon-width: 12px;
+        --iron-icon-height: 12px;
+      }
+
+      .badge {
+        @apply(--layout);
+        @apply(--layout-center-center);
+        @apply(--paper-font-common-base);
+
+        font-weight: normal;
+        font-size: 11px;
+        border-radius: 50%;
+        margin-left: var(--paper-badge-margin-left, 0px);
+        margin-bottom: var(--paper-badge-margin-bottom, 0px);
+        width: var(--paper-badge-width, 20px);
+        height: var(--paper-badge-height, 20px);
+        background-color: var(--paper-badge-background, --accent-color);
+        opacity: var(--paper-badge-opacity, 1.0);
+        color: var(--paper-badge-text-color, white);
+
+        @apply(--paper-badge);
+      }
+    </style>
+
+    <div class="badge">
+      <iron-icon hidden$="{{!_computeIsIconBadge(icon)}}" icon="{{icon}}"></iron-icon>
+      <span id="badge-text" hidden$="{{_computeIsIconBadge(icon)}}">{{label}}</span>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'paper-badge',
+
+      hostAttributes: {
+        role: 'status',
+        tabindex: 0
+      },
+
+      behaviors: [
+        Polymer.IronResizableBehavior
+      ],
+
+      listeners: {
+        'iron-resize': 'updatePosition'
+      },
+
+      properties: {
+        /**
+         * The id of the element that the badge is anchored to. This element
+         * must be a sibling of the badge.
+         */
+        for: {
+          type: String,
+          observer: '_forChanged'
+        },
+
+        /**
+         * The label displayed in the badge. The label is centered, and ideally
+         * should have very few characters.
+         */
+        label: {
+          type: String,
+          observer: '_labelChanged'
+        },
+
+        /**
+         * An iron-icon ID. When given, the badge content will use an
+         * `<iron-icon>` element displaying the given icon ID rather than the
+         * label text. However, the label text will still be used for
+         * accessibility purposes.
+         */
+        icon: {
+          type: String,
+          value: ''
+        }
+      },
+
+      attached: function() {
+        this._updateTarget();
+      },
+
+      attributeChanged: function (name) {
+        if (name === 'hidden') {
+          this.updatePosition();
+        }
+      },
+
+      _forChanged: function() {
+        // The first time the property is set is before the badge is attached,
+        // which means we're not ready to position it yet.
+        if (!this.isAttached) {
+          return;
+        }
+        this._updateTarget();
+      },
+
+      _labelChanged: function() {
+        this.setAttribute('aria-label', this.label);
+      },
+
+      _updateTarget: function() {
+        this._target = this.target;
+        this.async(this.notifyResize, 1);
+      },
+
+      _computeIsIconBadge: function(icon) {
+        return icon.length > 0;
+      },
+
+      /**
+       * Returns the target element that this badge is anchored to. It is
+       * either the element given by the `for` attribute, or the immediate parent
+       * of the badge.
+       */
+      get target () {
+        var parentNode = Polymer.dom(this).parentNode;
+        // If the parentNode is a document fragment, then we need to use the host.
+        var ownerRoot = Polymer.dom(this).getOwnerRoot();
+        var target;
+
+        if (this.for) {
+          target = Polymer.dom(ownerRoot).querySelector('#' + this.for);
+        } else {
+          target = parentNode.nodeType == Node.DOCUMENT_FRAGMENT_NODE ?
+              ownerRoot.host : parentNode;
+        }
+
+        return target;
+      },
+
+      /**
+       * Repositions the badge relative to its anchor element. This is called
+       * automatically when the badge is attached or an `iron-resize` event is
+       * fired (for exmaple if the window has resized, or your target is a
+       * custom element that implements IronResizableBehavior).
+       *
+       * You should call this in all other cases when the achor's position
+       * might have changed (for example, if it's visibility has changed, or
+       * you've manually done a page re-layout).
+       */
+      updatePosition: function() {
+        if (!this._target)
+          return;
+
+        if (!this.offsetParent)
+          return;
+
+        var parentRect = this.offsetParent.getBoundingClientRect();
+        var targetRect = this._target.getBoundingClientRect();
+        var thisRect = this.getBoundingClientRect();
+
+        this.style.left = targetRect.left - parentRect.left +
+            (targetRect.width - thisRect.width / 2) + 'px';
+        this.style.top = targetRect.top - parentRect.top -
+            (thisRect.height / 2) + 'px';
+      }
+    })
   </script>
 </dom-module>
 <script>
@@ -35792,7 +36061,7 @@ event and do your own custom submission:
       },
 
       onlyOne: function(numresults){
-        console.debug('Filtro:'+this.filtrabile);
+        //console.debug('Filtro:'+this.filtrabile);
         return (numresults<=1 || !this.filtrabile);
       },
 
@@ -38447,7 +38716,7 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
       },
 
       logout: function(event){
-        this.$.logout.url=app.consoleInfo.logout;
+        this.$.logout.url= REST_SERVER + BASE_URL + app.consoleInfo.logout;
         app.showSpinner();
         this.$.logout.generateRequest();
       },

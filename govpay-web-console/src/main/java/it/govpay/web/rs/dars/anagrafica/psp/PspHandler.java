@@ -22,12 +22,12 @@ package it.govpay.web.rs.dars.anagrafica.psp;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -39,7 +39,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.filters.PspFilter;
 import it.govpay.bd.model.Psp;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -50,6 +49,7 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.Utils;
 
 public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implements IDarsHandler<it.govpay.bd.model.Psp>{
@@ -87,13 +87,11 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<it.govpay.bd.model.Psp> findAll = pspBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Psp entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -166,8 +164,10 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
 			
 			Canali canaliDars = new Canali();
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(canaliDars.getPathServizio()).queryParam(codPspId, psp.getCodPsp());
-			dettaglio.addElementoCorrelato(etichettaCanali, uriBuilder.build());
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codPspId, psp.getCodPsp());
+			URI uriDettaglio = Utils.creaUriConParametri(canaliDars.getPathServizio(), params);
+			dettaglio.addElementoCorrelato(etichettaCanali, uriDettaglio);
 			
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -228,7 +228,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	}
 	
 	@Override
-	public Map<String, String> getVoci(Psp entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Psp entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
