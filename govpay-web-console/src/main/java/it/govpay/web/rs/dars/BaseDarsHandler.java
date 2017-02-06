@@ -177,7 +177,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
 		try{
-			URI uri = Utils.creaUriConPath(this.pathServizio, id+"" , BaseDarsService.PATH_CANCELLA); 
+			URI uri = Utils.creaUriConPath(this.pathServizio, id+"" , BaseDarsService.PATH_ESPORTA); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);

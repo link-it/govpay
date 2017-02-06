@@ -30,7 +30,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -52,7 +51,6 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo.TipoContabilta;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
