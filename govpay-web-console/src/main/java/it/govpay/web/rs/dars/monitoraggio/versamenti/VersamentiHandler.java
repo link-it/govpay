@@ -34,7 +34,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -84,7 +83,6 @@ import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -270,12 +268,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			}
 
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-			SelectList<String> statoVersamento = (SelectList<String>) this.infoRicercaMap.get(statoVersamentoId);
-			statoVersamento.setDefaultValue("");
-			sezioneRoot.addField(statoVersamento);
-
-
-
+			
+			InputText codVersamento = (InputText) this.infoRicercaMap.get(codVersamentoId);
+			codVersamento.setDefaultValue(null);
+			sezioneRoot.addField(codVersamento);
+			
 			try{
 
 				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
@@ -350,19 +347,17 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				throw new ConsoleException(e);
 			}
 
-			// [TODO] SPOSTATI PER SIMULARE BUG DUE SELECT CONSECUTIVE
+			InputText iuv = (InputText) this.infoRicercaMap.get(iuvId);
+			iuv.setDefaultValue(null);
+			sezioneRoot.addField(iuv);
 
 			InputText cfDebitore = (InputText) this.infoRicercaMap.get(cfDebitoreId);
 			cfDebitore.setDefaultValue(null);
 			sezioneRoot.addField(cfDebitore);
-
-			InputText codVersamento = (InputText) this.infoRicercaMap.get(codVersamentoId);
-			codVersamento.setDefaultValue(null);
-			sezioneRoot.addField(codVersamento);
-
-			InputText iuv = (InputText) this.infoRicercaMap.get(iuvId);
-			iuv.setDefaultValue(null);
-			sezioneRoot.addField(iuv);
+			
+			SelectList<String> statoVersamento = (SelectList<String>) this.infoRicercaMap.get(statoVersamentoId);
+			statoVersamento.setDefaultValue("");
+			sezioneRoot.addField(statoVersamento);
 
 		}
 		return infoRicerca;
