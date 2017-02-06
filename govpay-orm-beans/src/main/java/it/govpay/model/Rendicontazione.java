@@ -129,6 +129,14 @@ public class Rendicontazione extends BasicModel {
 	public class Anomalia {
 		String codAnomalia;
 		String descrizione;
+		
+		public String getCodice(){
+			return codAnomalia;
+		}
+		
+		public String getDescrizione(){
+			return descrizione;
+		}
 	}
 	
 	public List<Anomalia> getAnomalie() {

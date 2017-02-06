@@ -110,6 +110,11 @@
 									<wsdl>${basedir}/src/main/resources/wsdl/GpRnd.wsdl</wsdl>
 									<wsdlLocation>classpath:wsdl/GpRnd.wsdl</wsdlLocation>
 								</wsdlOption>
+								<wsdlOption>
+									<frontEnd>jaxws21</frontEnd>
+									<wsdl>${basedir}/src/main/resources/wsdl/GpRnd_2.3.wsdl</wsdl>
+									<wsdlLocation>classpath:wsdl/GpRnd_2.3.wsdl</wsdlLocation>
+								</wsdlOption>
 							</wsdlOptions>
 						</configuration>
 						<goals>

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.ws;
+package it.govpay.web.ws.v2_3;
 
 import java.util.Calendar;
 import java.util.List;
@@ -42,26 +42,27 @@ import it.govpay.bd.wrapper.RendicontazionePagamentoBD;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.AclEngine;
-import it.govpay.core.utils.Gp21Utils;
+import it.govpay.core.utils.Gp23Utils;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Fr;
 import it.govpay.model.Acl.Servizio;
-import it.govpay.servizi.PagamentiTelematiciGPRnd;
+import it.govpay.servizi.v2_3.PagamentiTelematiciGPRnd;
 import it.govpay.servizi.commons.EsitoOperazione;
-import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazione;
-import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazioneResponse;
-import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazione;
-import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
+import it.govpay.servizi.v2_3.gprnd.GpChiediFlussoRendicontazione;
+import it.govpay.servizi.v2_3.gprnd.GpChiediFlussoRendicontazioneResponse;
+import it.govpay.servizi.v2_3.gprnd.GpChiediListaFlussiRendicontazione;
+import it.govpay.servizi.v2_3.gprnd.GpChiediListaFlussiRendicontazioneResponse;
 
 @WebService(serviceName = "PagamentiTelematiciGPRndService",
-endpointInterface = "it.govpay.servizi.PagamentiTelematiciGPRnd",
-targetNamespace = "http://www.govpay.it/servizi/",
+endpointInterface = "it.govpay.servizi.v2_3.PagamentiTelematiciGPRnd",
+targetNamespace = "http://www.govpay.it/servizi/v2_3",
 portName = "GPRndPort",
-wsdlLocation = "classpath:wsdl/GpRnd.wsdl")
+wsdlLocation = "classpath:wsdl/GpRnd_2.3.wsdl",
+name="PagamentiTelematiciGPRndService")
 
-@HandlerChain(file="../../../../handler-chains/handler-chain-gpws.xml")
+@HandlerChain(file="../../../../../handler-chains/handler-chain-gpws.xml")
 
 @org.apache.cxf.annotations.SchemaValidation
 
@@ -91,9 +92,8 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			fine.set(Calendar.MILLISECOND, 999);
 			List<Fr> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazione, bodyrichiesta.getCodDominio(), bodyrichiesta.getCodApplicazione(), bodyrichiesta.getDataInizio(), fine.getTime());
 			for(Fr frModel : rendicontazioni) {
-				response.getFlussoRendicontazione().add(Gp21Utils.toFr(frModel, applicazione.getVersione(), bd));
+				response.getFlussoRendicontazione().add(Gp23Utils.toFr(frModel, applicazione.getVersione(), bd));
 			}
-			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -152,7 +152,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 				}
 			}
 			List<RendicontazionePagamento> rends = rendicontazionePagamentoBD.findAll(filter);
-			response.setFlussoRendicontazione(Gp21Utils.toFr(frModel, rends, applicazione.getVersione(), bd));
+			response.setFlussoRendicontazione(Gp23Utils.toFr(frModel, rends, applicazione.getVersione(), bd));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
