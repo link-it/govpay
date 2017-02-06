@@ -66,7 +66,7 @@ public class Operatori extends BaseDarsService {
 	@Produces({MediaType.APPLICATION_JSON})
 	public DarsResponse getOperatore() throws ConsoleException {
 		this.initLogger("getOperatore");
-		this.log.info("Ricevuta richiesta");
+		this.log.info("Ricevuta richiesta carico profilo operatore ["+this.getPrincipal()+"]");
 
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
@@ -82,7 +82,7 @@ public class Operatori extends BaseDarsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(operatore);
 		} catch(WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore:" +e.getMessage() , e);
+			this.log.error("Riscontrato errore di autorizzazione durante la ricerca dell'operatore ["+this.getPrincipal()+"], utente non riconosciuto.");
 			throw e;
 		} catch (Exception e) {
 			this.log.error("Riscontrato errore durante la ricerca dell'operatore:" +e.getMessage() , e);

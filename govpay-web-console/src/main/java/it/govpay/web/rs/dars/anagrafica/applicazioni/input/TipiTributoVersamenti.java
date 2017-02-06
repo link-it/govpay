@@ -22,6 +22,7 @@ package it.govpay.web.rs.dars.anagrafica.applicazioni.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -55,11 +56,12 @@ public class TipiTributoVersamenti extends MultiSelectList<Long, List<Long>>{
 	public TipiTributoVersamenti(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			 Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		this.nomeServizio = nomeServizio;
-		this.trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
-		this.applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		this.versamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
-		this.trustedId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		this.trustedId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
+		this.applicazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.versamentiId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
+		this.trustedId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 		
 		this.log = LogManager.getLogger();
 	}

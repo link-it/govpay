@@ -22,6 +22,8 @@ package it.govpay.web.rs.dars;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -38,13 +40,18 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 
 public interface IDarsHandler<T> {
 
 	
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca) throws ConsoleException;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String, String> parameters) throws ConsoleException;
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	
 	public InfoForm getInfoCreazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 	public URI getUriCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
@@ -75,9 +82,11 @@ public interface IDarsHandler<T> {
 	public String getTitolo(T entry, BasicBD bd) throws ConsoleException;
 	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 	public List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
+	public Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
 	
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
 
 	public Format getFormat();
+	public Locale getLanguage();
 }

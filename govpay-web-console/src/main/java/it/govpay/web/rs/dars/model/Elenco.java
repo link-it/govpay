@@ -40,7 +40,7 @@ public class Elenco {
 		this(titolo, infoRicerca, infoCreazione, totaleRisultati, esportazione, cancellazione, false, null);
 	}
 	
-	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione,boolean tabella, Elemento intestazione) {
+	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione,  boolean tabella, Elemento intestazione) {
 		this.totaleRisultati = totaleRisultati;
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
@@ -96,7 +96,4 @@ public class Elenco {
 	public boolean isTabella() {
 		return tabella;
 	}
-	
-	
-
 }

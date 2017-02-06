@@ -3,6 +3,7 @@ package it.govpay.web.rs.dars.anagrafica.tributi.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -26,8 +27,9 @@ public class TipoContabilita extends SelectList<String>{
 			Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
 		this.nomeServizio = nomeServizio;
-		this.idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		//		this.tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+		this.idTipoTributoId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+		//		this.tributoId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
@@ -61,11 +63,12 @@ public class TipoContabilita extends SelectList<String>{
 	protected List<Voce<String>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
 		String idTipoTributoValue = Utils.getValue(paramValues, this.idTipoTributoId);
 
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		List<Voce<String>> lst = new ArrayList<Voce<String>>();
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
-		lst.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo"), TipoContabilta.CAPITOLO.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale"), TipoContabilta.SPECIALE.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope"), TipoContabilta.SIOPE.getCodifica()));
+		lst.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro"), TipoContabilta.ALTRO.getCodifica()));
 
 		if(StringUtils.isEmpty(idTipoTributoValue)){
 			return lst;
@@ -80,17 +83,17 @@ public class TipoContabilita extends SelectList<String>{
 			if(tipoContabilitaDefault != null) {
 				switch(tipoContabilitaDefault){
 				case ALTRO:
-					lst.add(0,new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.altro.default"), TipoContabilta.ALTRO.getCodifica() + "_p"));
 					break;
 				case SIOPE:
-					lst.add(0,new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.siope.default"), TipoContabilta.SIOPE.getCodifica() + "_p"));
 					break;
 				case SPECIALE:
-					lst.add(0,new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.speciale.default"), TipoContabilta.SPECIALE.getCodifica() + "_p"));
 					break;
 				case CAPITOLO:
 				default:
-					lst.add(0,new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
+					lst.add(0,new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.capitolo.default"), TipoContabilta.CAPITOLO.getCodifica() + "_p"));
 					break;
 				}
 			} 

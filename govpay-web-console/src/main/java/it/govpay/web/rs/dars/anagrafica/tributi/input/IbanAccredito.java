@@ -22,6 +22,7 @@ package it.govpay.web.rs.dars.anagrafica.tributi.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -49,8 +50,9 @@ public class IbanAccredito extends SelectList<Long>{
 			Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
 		this.nomeServizio = nomeServizio;
-		this.idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		this.tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+		this.idDominioId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		this.tributoId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override

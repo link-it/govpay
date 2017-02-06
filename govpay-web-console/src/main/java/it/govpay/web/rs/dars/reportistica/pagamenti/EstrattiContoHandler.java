@@ -11,7 +11,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +32,6 @@ import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.business.reportistica.EstrattiContoMetadata;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -55,7 +53,7 @@ import it.govpay.web.utils.Utils;
 
 public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata> implements IDarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata>{
 
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 
 	public EstrattiContoHandler(Logger log, BaseDarsService darsService) {
 		super(log,darsService);
@@ -87,7 +85,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
 
 			if(StringUtils.isNotEmpty(idDominio)){
@@ -100,7 +98,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 					filter.setIdDomini(idDomini);
 				}
 			}
-			
+
 			boolean eseguiRicerca = true; // isAdmin;
 			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
 			if(!isAdmin && idDomini.isEmpty()){
@@ -130,14 +128,13 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			List<String> titoli = new ArrayList<String>();
-			titoli.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"));
-			titoli.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riferimento.label"));
-			titoli.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".formato.label"));
-			titoli.add(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"));
+			titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"));
+			titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riferimento.label"));
+			titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".formato.label"));
+			titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"));
 
 			Elemento intestazione = new Elemento(-1, titoli , null);
 
@@ -145,11 +142,9 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione,true,intestazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.model.reportistica.EstrattoContoMetadata entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -165,88 +160,91 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		try{
 			URI ricerca = this.getUriRicerca(uriInfo, bd);
 			InfoForm infoRicerca = new InfoForm(ricerca);
 
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
-			ProfiloOperatore ruolo = operatore.getProfilo();
-			boolean isAdmin = ruolo.equals(ProfiloOperatore.ADMIN);
+			if(visualizzaRicerca){
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
+				ProfiloOperatore ruolo = operatore.getProfilo();
+				boolean isAdmin = ruolo.equals(ProfiloOperatore.ADMIN);
 
-			if(infoRicercaMap == null){
-				this.initInfoRicerca(uriInfo, bd);
-			}
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+				if(this.infoRicercaMap == null){
+					this.initInfoRicerca(uriInfo, bd);
+				}
 
-			try{
-				DominiBD dominiBD = new DominiBD(bd);
-				DominioFilter filter;
-				try {
-					filter = dominiBD.newFilter();
-					boolean eseguiRicerca = true;
-					if(isAdmin){
+				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+				Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-					} else {
-						AclBD aclBD = new AclBD(bd);
-						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+				try{
+					DominiBD dominiBD = new DominiBD(bd);
+					DominioFilter filter;
+					try {
+						filter = dominiBD.newFilter();
+						boolean eseguiRicerca = true;
+						if(isAdmin){
 
-						boolean vediTuttiDomini = false;
-						List<Long> idDomini = new ArrayList<Long>();
-						for(Acl acl: aclOperatore) {
-							if(Tipo.DOMINIO.equals(acl.getTipo())) {
-								if(acl.getIdDominio() == null) {
-									vediTuttiDomini = true;
-									break;
+						} else {
+							AclBD aclBD = new AclBD(bd);
+							List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+							boolean vediTuttiDomini = false;
+							List<Long> idDomini = new ArrayList<Long>();
+							for(Acl acl: aclOperatore) {
+								if(Tipo.DOMINIO.equals(acl.getTipo())) {
+									if(acl.getIdDominio() == null) {
+										vediTuttiDomini = true;
+										break;
+									} else {
+										idDomini.add(acl.getIdDominio());
+									}
+								}
+							}
+							if(!vediTuttiDomini) {
+								if(idDomini.isEmpty()) {
+									eseguiRicerca = false;
 								} else {
-									idDomini.add(acl.getIdDominio());
+									filter.setIdDomini(idDomini);
 								}
 							}
 						}
-						if(!vediTuttiDomini) {
-							if(idDomini.isEmpty()) {
-								eseguiRicerca = false;
-							} else {
-								filter.setIdDomini(idDomini);
+
+
+
+						if(eseguiRicerca) {
+							domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+							FilterSortWrapper fsw = new FilterSortWrapper();
+							fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+							fsw.setSortOrder(SortOrder.ASC);
+							filter.getFilterSortList().add(fsw);
+							List<Dominio> findAll = dominiBD.findAll(filter );
+
+							Domini dominiDars = new Domini();
+							DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+
+							if(findAll != null && findAll.size() > 0){
+								for (Dominio dominio : findAll) {
+									domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+								}
 							}
+						}else {
+							domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 						}
+					} catch (ServiceException e) {
+						throw new ConsoleException(e);
 					}
+					SelectList<Long> idDominio = (SelectList<Long>) this.infoRicercaMap.get(idDominioId);
+					idDominio.setDefaultValue(-1L);
+					idDominio.setValues(domini); 
+					sezioneRoot.addField(idDominio);
 
-
-
-					if(eseguiRicerca) {
-						domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-						FilterSortWrapper fsw = new FilterSortWrapper();
-						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-						fsw.setSortOrder(SortOrder.ASC);
-						filter.getFilterSortList().add(fsw);
-						List<Dominio> findAll = dominiBD.findAll(filter );
-
-						Domini dominiDars = new Domini();
-						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-
-						if(findAll != null && findAll.size() > 0){
-							for (Dominio dominio : findAll) {
-								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
-							}
-						}
-					}else {
-						domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-					}
-				} catch (ServiceException e) {
+				}catch(Exception e){
 					throw new ConsoleException(e);
 				}
-				SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-				idDominio.setDefaultValue(-1L);
-				idDominio.setValues(domini); 
-				sezioneRoot.addField(idDominio);
-
-			}catch(Exception e){
-				throw new ConsoleException(e);
 			}
 			return infoRicerca;
 		}catch(Exception e){
@@ -255,18 +253,18 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 
 			// statoTracciato
-			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
+			String idDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 
-			domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), null));
+			domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), null));
 			SelectList<Long> idDominio  = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini );
-			infoRicercaMap.put(idDominioId, idDominio);
+			this.infoRicercaMap.put(idDominioId, idDominio);
 		}
 	}
 
@@ -311,22 +309,23 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 					Dominio dominio = dominiBD.getDominio(estrattoConto.getCodDominio());
 					Domini dominiDars =new Domini();
 					String titolo = ((DominiHandler)dominiDars.getDarsHandler()).getTitolo(dominio, bd);
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), titolo);
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), titolo);
 				}
 
 			}catch(Exception e ){
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), estrattoConto.getCodDominio());
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), estrattoConto.getCodDominio());
 			}
 
-			UriBuilder uriBuilderCsv = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("estrattoConto");
+			URI uriCsv = Utils.creaUriConPath(this.pathServizio,  estrattoConto.getId() + "", "estrattoConto");
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".riferimento.label"), estrattoConto.getMeseAnno());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".formato.label"), estrattoConto.getFormato());
+			if(StringUtils.isNotEmpty(estrattoConto.getIbanAccredito())) {
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"), estrattoConto.getIbanAccredito());
+			}
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".riferimento.label"), estrattoConto.getMeseAnno());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".formato.label"), estrattoConto.getFormato());
-			if(StringUtils.isNotEmpty(estrattoConto.getIbanAccredito()))
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"), estrattoConto.getIbanAccredito());
-			
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.label"), estrattoConto.getNomeFile());
-			root.addDownloadLink(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".estrattoConto.label"), Utils.getInstance().getMessageFromResourceBundle("commons.label.scarica"),uriBuilderCsv.build(estrattoConto.getId())); 
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.label"), estrattoConto.getNomeFile());
+			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".estrattoConto.label"), 
+					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriCsv); 
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -381,7 +380,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			dominioLabel = entry.getCodDominio(); 
 		}
 		String periodoRiferimento = entry.getMeseAnno();
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", dominioLabel,periodoRiferimento));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", dominioLabel,periodoRiferimento));
 		return sb.toString();
 	}
 
@@ -411,32 +410,39 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 		valori.add(dominioLabel);
 		valori.add(entry.getMeseAnno());
 		valori.add(entry.getFormato());
-		
-		if(StringUtils.isNotEmpty(entry.getIbanAccredito()))
+
+		if(StringUtils.isNotEmpty(entry.getIbanAccredito())) {
 			valori.add(entry.getIbanAccredito());
-		else
-			valori.add("--"); 
+		} else {
+			valori.add("--");
+		} 
 
 		return valori;
 	}
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		StringBuffer sb = new StringBuffer();
-		if(idsToExport != null && idsToExport.size() > 0)
+		if(idsToExport != null && idsToExport.size() > 0) {
 			for (Long long1 : idsToExport) {
 
-				if(sb.length() > 0)
+				if(sb.length() > 0) {
 					sb.append(", ");
+				}
 
 				sb.append(long1);
 			}
+		}
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
-		if(idsToExport.size() == 1)
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
+		if(idsToExport.size() == 1) {
+			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+		} 
 
 		String fileZipName = "EstrattiConto.zip";
 		try{
@@ -444,12 +450,12 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
 			EstrattiContoMetadata estrattiContoBD = new EstrattiContoMetadata(bd);
- 
+
 			for (Long idTracciato : idsToExport) {
-				
+
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				String fileName = estrattiContoBD.getCSVEstrattoConto(idTracciato,operatore.getPrincipal(), baos); 
-				
+
 				String folderName = fileName;
 				int indexOfCsv = folderName.indexOf(".csv");
 				if(indexOfCsv > -1){
@@ -493,7 +499,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			if(indexOfCsv > -1){
 				fileZipName = fileName.substring(0, indexOfCsv);
 			}
-			
+
 			fileZipName = fileZipName+".zip";
 
 			ZipEntry estrattoContoEntry = new ZipEntry(fileName);

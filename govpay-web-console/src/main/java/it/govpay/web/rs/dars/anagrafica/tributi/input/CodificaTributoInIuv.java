@@ -2,6 +2,7 @@ package it.govpay.web.rs.dars.anagrafica.tributi.input;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -21,8 +22,9 @@ public class CodificaTributoInIuv extends InputText {
 	public CodificaTributoInIuv(String nomeServizio,String id, String label, int minLength, int maxLength, URI refreshUri,List<RawParamValue> values, Object... objects) {
 		super(id, label, minLength, maxLength, refreshUri, values);
 		this.nomeServizio = nomeServizio;
-		this.idTipoTributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
-		//		this.tributoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+		this.idTipoTributoId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".idTipoTributo.id");
+		//		this.tributoId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 	
 	
@@ -51,7 +53,8 @@ public class CodificaTributoInIuv extends InputText {
 	protected String getDefaultValue(List<RawParamValue> values, Object... objects) {
 		String idTipoTributoValue = Utils.getValue(values, this.idTipoTributoId);
 		// Imposto la label di default
-		this.label = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+		this.label = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
 		//		String idTributo = Utils.getValue(values, this.tributoId);
 
 		if(StringUtils.isEmpty(idTipoTributoValue)){
@@ -66,7 +69,7 @@ public class CodificaTributoInIuv extends InputText {
 
 			// prelevo il valore dal parent e lo inserisco nella label
 			if(codTributoIuvDefault != null) {
-				this.label = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",codTributoIuvDefault);
+				this.label = Utils.getInstance(locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label.default.form",codTributoIuvDefault);
 			}
 
 		} catch (Exception e) {

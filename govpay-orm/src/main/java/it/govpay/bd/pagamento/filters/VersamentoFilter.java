@@ -80,7 +80,7 @@ public class VersamentoFilter extends AbstractFilter {
 			if(this.codUnivocoDebitore != null) {
 				if(addAnd)
 					newExpression.and();
-				newExpression.equals(Versamento.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore);
+				newExpression.ilike(Versamento.model().DEBITORE_IDENTIFICATIVO, this.codUnivocoDebitore,LikeMode.ANYWHERE);
 				addAnd = true;
 			}
 

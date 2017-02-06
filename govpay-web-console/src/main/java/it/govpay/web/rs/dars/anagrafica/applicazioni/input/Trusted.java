@@ -2,6 +2,7 @@ package it.govpay.web.rs.dars.anagrafica.applicazioni.input;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -18,11 +19,11 @@ public class Trusted extends CheckButton<Boolean>{
 	private String applicazioneId = null;
 	private String nomeServizio = null;
 
-	public Trusted(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues) {
+	public Trusted(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,Locale locale) {
 		super(id, label, refreshUri, paramValues);
 		this.nomeServizio = nomeServizio;
-		this.versamentiId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
-		this.applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.versamentiId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".versamenti.id");
+		this.applicazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override

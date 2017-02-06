@@ -5,7 +5,9 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -23,6 +25,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.model.Rr;
+import it.govpay.model.EstrattoConto;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -35,6 +38,7 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.Utils;
 
 public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<Rr>{
@@ -57,7 +61,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
-			String rptId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idRpt.id");
+			String rptId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRpt.id");
 			String idRpt = this.getParameter(uriInfo, rptId, String.class);
 
 			RrBD rrBD = new RrBD(bd);
@@ -71,18 +75,17 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			long count = rrBD.count(filter);
 
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(rptId, idRpt);
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Rr> rr = rrBD.findAll(filter);
-
 
 			if(rr != null && rr.size() > 0){
 				for (Rr entry : rr) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -118,34 +121,34 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 
 			// Sezione RR
 			it.govpay.web.rs.dars.model.Sezione sezioneRr = dettaglio.getSezioneRoot();
-			String etichettaRr = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneRR.titolo");
+			String etichettaRr = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneRR.titolo");
 			sezioneRr.setEtichetta(etichettaRr); 
 
 			StatoRr stato = rr.getStato(); 
-			sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()));
-			sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),rr.getIuv());
-			sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),rr.getCcp());
-			sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codMsgRevoca.label"),rr.getCodMsgRevoca());
+			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
+					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()));
+			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),rr.getIuv());
+			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),rr.getCcp());
+			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codMsgRevoca.label"),rr.getCodMsgRevoca());
 			if(rr.getDataMsgRevoca() != null)
-				sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRevoca.label"),this.sdf.format(rr.getDataMsgRevoca()));
+				sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRevoca.label"),this.sdf.format(rr.getDataMsgRevoca()));
 			
-			sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"),rr.getCodDominio());
-			sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRichiesto.label"), rr.getImportoTotaleRichiesto() + "€");
+			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"),rr.getCodDominio());
+			sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRichiesto.label"), rr.getImportoTotaleRichiesto() + "€");
 
 			if(StringUtils.isNotEmpty(rr.getDescrizioneStato()))
-				sezioneRr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rr.getDescrizioneStato());
+				sezioneRr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rr.getDescrizioneStato());
 
 			// Singoli Er 
-			String etichettaEr = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneER.titolo");
+			String etichettaEr = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneER.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneEr = dettaglio.addSezione(etichettaEr);
 			if(rr.getDataMsgEsito()!= null){
-				sezioneEr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataMsgEsito.label"), this.sdf.format(rr.getDataMsgEsito()));
-				sezioneEr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codMsgEsito.label"), rr.getCodMsgEsito());
-				sezioneEr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRevocato.label"), rr.getImportoTotaleRevocato() + "€");
+				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgEsito.label"), this.sdf.format(rr.getDataMsgEsito()));
+				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codMsgEsito.label"), rr.getCodMsgEsito());
+				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotaleRevocato.label"), rr.getImportoTotaleRevocato() + "€");
 			}
 			else	{
-				sezioneEr.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".erAssente"), null);
+				sezioneEr.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".erAssente"), null);
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -165,7 +168,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 		String ccp = entry.getCcp();
 		StringBuilder sb = new StringBuilder();
 
-		String statoString = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", iuv , ccp, this.sdf.format(dataMsgRevoca)); 
+		String statoString = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", iuv , ccp, this.sdf.format(dataMsgRevoca)); 
 		sb.append(statoString);	
 		return sb.toString();
 	}
@@ -174,20 +177,20 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	public String getSottotitolo(Rr entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		StatoRr stato = entry.getStato();
-		String statoString  = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name());
+		String statoString  = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name());
 		// ricevuta RT
 		if(entry.getDataMsgEsito()!= null){
 			BigDecimal importoTotalePagato = entry.getImportoTotaleRevocato();
 			int compareTo = importoTotalePagato.compareTo(BigDecimal.ZERO);
 			if(compareTo > 0){
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erPresente.importoPositivo",
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erPresente.importoPositivo",
 						statoString, ( entry.getImportoTotaleRevocato() + "€")));
 			} else{
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erPresente",statoString));
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erPresente",statoString));
 			}
 				
 		} else {
-			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erAssente",statoString));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.erAssente",statoString));
 		}
 	 
 		return sb.toString();
@@ -197,6 +200,9 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	public List<String> getValori(Rr entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(Rr entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -290,10 +296,15 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			throw new ConsoleException(e);
 		}
 	}
-	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 	return null;	}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
+		URI ricerca = this.getUriRicerca(uriInfo, bd,parameters);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
+	}
+	
+	/* Operazioni non consentite */
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}

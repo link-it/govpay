@@ -19,6 +19,27 @@
  */
 package it.govpay.web.rs.dars.monitoraggio.rendicontazioni;
 
+import java.io.InputStream;
+import java.net.URI;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.UriInfo;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Logger;
+import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
@@ -30,7 +51,6 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.model.Fr.StatoFr;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -52,31 +72,9 @@ import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-
-import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-import org.openspcoop2.generic_project.exception.ServiceException;
-import org.openspcoop2.generic_project.expression.SortOrder;
-
 public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 	private SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 
@@ -108,7 +106,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
 
 			if(StringUtils.isNotEmpty(codFlusso))
@@ -122,7 +120,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 //				filter.setIdApplicazione(idApplicazione);
 //			}
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 
 			if(idDominio != null && idDominio > 0){
@@ -162,19 +160,17 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Fr> findAll = eseguiRicerca ? frBD.findAllExt(filter) : new ArrayList<Fr>(); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (Fr entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -190,56 +186,55 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-//		String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
-		String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-		String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
-		String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+		if(visualizzaRicerca) {
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+			String nascondiAltriIntermediariId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
+			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
-		}
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		// stato
-		List<Voce<String>> stati = new ArrayList<Voce<String>>();
-		SelectList<String> stato = (SelectList<String>) infoRicercaMap.get(statoId);
-		stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-		stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoFr.ACCETTATA), StatoFr.ACCETTATA.toString()));
-		stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoFr.ANOMALA), StatoFr.ANOMALA.toString()));
-		stato.setDefaultValue("");
-		stato.setValues(stati); 
-		sezioneRoot.addField(stato);
-
-		// idDominio
-		List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-
-		DominiBD dominiBD = new DominiBD(bd);
-		DominioFilter filter;
-		try {
-			filter = dominiBD.newFilter();
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-			fsw.setSortOrder(SortOrder.ASC);
-			filter.getFilterSortList().add(fsw);
-			List<Dominio> findAll = dominiBD.findAll(filter );
-
-			domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-
-			Domini dominiDars = new Domini();
-			DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-
-			if(findAll != null && findAll.size() > 0){
-				for (Dominio dominio : findAll) {
-					domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
-				}
+			if(this.infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
 			}
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+				
+			// stato
+			List<Voce<String>> stati = new ArrayList<Voce<String>>();
+			SelectList<String> stato = (SelectList<String>) infoRicercaMap.get(statoId);
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoFr.ACCETTATA), StatoFr.ACCETTATA.toString()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoFr.ANOMALA), StatoFr.ANOMALA.toString()));
+			stato.setDefaultValue("");
+			stato.setValues(stati); 
+			sezioneRoot.addField(stato);
+	
+			// idDominio
+			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+	
+			DominiBD dominiBD = new DominiBD(bd);
+			DominioFilter filter;
+			try {
+				filter = dominiBD.newFilter();
+				FilterSortWrapper fsw = new FilterSortWrapper();
+				fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+				fsw.setSortOrder(SortOrder.ASC);
+				filter.getFilterSortList().add(fsw);
+				List<Dominio> findAll = dominiBD.findAll(filter );
+	
+				domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+	
+				Domini dominiDars = new Domini();
+				DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+	
+				if(findAll != null && findAll.size() > 0){
+					for (Dominio dominio : findAll) {
+						domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+					}
+				}
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
@@ -291,24 +286,25 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		nascondiAltriIntermediari.setDefaultValue(false);
 		sezioneRoot.addField(nascondiAltriIntermediari);
 
+		}
 		return infoRicerca;
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
 //			String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
-			String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
-			String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+			String nascondiAltriIntermediariId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
+			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
 
 			// codFlusso
-			String codFlussoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label");
+			String codFlussoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label");
 			InputText codFlusso = new InputText(codFlussoId, codFlussoLabel, null, false, false, true, 0, 35);
-			infoRicercaMap.put(codFlussoId, codFlusso);
+			this.infoRicercaMap.put(codFlussoId, codFlusso);
 
 			// trn
 			String trnLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.label");
@@ -323,19 +319,19 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio
-			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
+			String idDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
 			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
 			infoRicercaMap.put(idDominioId, idDominio);
 
 
 			List<Voce<String>> stati = new ArrayList<Voce<String>>();
 			// stato
-			String statoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.label");
+			String statoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label");
 			SelectList<String> stato = new SelectList<String>(statoId, statoLabel, null, false, false, true, stati);
 			infoRicercaMap.put(statoId, stato);
 
 			// nascondiAltriIntermediari
-			String nascondiAltriIntermediariLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.label");
+			String nascondiAltriIntermediariLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.label");
 			CheckButton nascondiAltriIntermediari = new CheckButton(nascondiAltriIntermediariId, nascondiAltriIntermediariLabel, false, false, false, true);
 			infoRicercaMap.put(nascondiAltriIntermediariId, nascondiAltriIntermediari);
 		}
@@ -372,37 +368,49 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			if(fr != null){
 
-				if(StringUtils.isNotEmpty(fr.getCodFlusso())) 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), fr.getCodFlusso());
+				if(StringUtils.isNotEmpty(fr.getCodFlusso())) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), fr.getCodFlusso());
+				}
 
 				StatoFr stato = fr.getStato();
-				if(stato!= null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name()));
+				if(stato!= null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name()));
+				}
 
-				if(StringUtils.isNotEmpty(fr.getIur())) 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iur.label"), fr.getIur());
+				if(StringUtils.isNotEmpty(fr.getIur())) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"), fr.getIur());
+				}
 				// Uo
 				Dominio dominio = fr.getDominio(bd);
-				if(dominio != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), dominio.getCodDominio());  
+				if(dominio != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), dominio.getCodDominio());
+				}  
 
-				if(fr.getDataFlusso() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataFlusso.label"), this.sdf.format(fr.getDataFlusso()));
-				if(fr.getDataRegolamento() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRegolamento.label"), this.sdf.format(fr.getDataRegolamento()));
+				if(fr.getDataFlusso() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFlusso.label"), this.sdf.format(fr.getDataFlusso()));
+				}
+				if(fr.getDataRegolamento() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataRegolamento.label"), this.sdf.format(fr.getDataRegolamento()));
+				}
 
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.label"), fr.getNumeroPagamenti()+ "");
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), fr.getImportoTotalePagamenti().doubleValue()+ "€");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.label"), fr.getNumeroPagamenti()+ "");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagamenti.label"), fr.getImportoTotalePagamenti().doubleValue()+ "€");
 				int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(fr.getDataFlusso()));
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"), annoFlusso+"");
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"), annoFlusso+"");
 
 				Psp psp = fr.getPsp(bd);
-				if(psp != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
+				if(psp != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
+				}
 
-				if(StringUtils.isNotEmpty(fr.getCodBicRiversamento())) 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codBicRiversamento.label"), fr.getCodBicRiversamento());
+				if(StringUtils.isNotEmpty(fr.getCodBicRiversamento())) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codBicRiversamento.label"), fr.getCodBicRiversamento());
+				}
+
+				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
+				}
 
 				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
@@ -414,11 +422,13 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 				
 
 				Pagamenti pagamentiDars = new Pagamenti();
-				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
-				String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFr.id");
-				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(idFrApplicazioneId, fr.getId());
-
-				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
+				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+				String idFrApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFr.id");
+				
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(idFrApplicazioneId, fr.getId()+ "");
+				URI eventoDettaglio = Utils.creaUriConParametri(pagamentiDars.getPathServizio(), params );
+				dettaglio.addElementoCorrelato(etichettaPagamenti, eventoDettaglio); 
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -439,7 +449,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		Date dataFlusso = entry.getDataFlusso();
 
 		sb.append(
-				Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo",
+				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo",
 						codFlusso,this.sdf.format(dataFlusso)));
 
 		return sb.toString();
@@ -455,16 +465,16 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		switch (stato) {
 		case ACCETTATA:
 			sb.append(
-					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.accettata",
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.ACCETTATA"),
+					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.accettata",
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ACCETTATA"),
 							numeroPagamenti,(importoTotalePagamenti + "€")));
 			break;
 			//TODO
 			//		case RIFIUTATA:
 			//		default:
 			//			sb.append(
-			//					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
-			//					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
+			//					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
+			//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
 			//							)
 			//					);
 			//			break;
@@ -477,24 +487,30 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 	public List<String> getValori(Fr entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		StringBuffer sb = new StringBuffer();
-		if(idsToExport != null && idsToExport.size() > 0)
+		if(idsToExport != null && idsToExport.size() > 0) {
 			for (Long long1 : idsToExport) {
 
-				if(sb.length() > 0)
+				if(sb.length() > 0) {
 					sb.append(", ");
+				}
 
 				sb.append(long1);
 			}
+		}
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
-		if(idsToExport.size() == 1)
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
+		if(idsToExport.size() == 1) {
+			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+		} 
 
 		String fileName = "Rendicontazioni.zip";
 		try{

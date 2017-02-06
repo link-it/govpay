@@ -22,6 +22,7 @@ package it.govpay.web.rs.dars.anagrafica.intermediari.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -44,19 +45,20 @@ public class TipoSsl extends SelectList<String> {
 	private String tipoAutenticazioneId= null;
 	private String idOwnerId = null;
 	
-	public TipoSsl(String nomeConnettore,String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> rawvalues, BasicBD bd) {
+	public TipoSsl(String nomeConnettore,String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> rawvalues, BasicBD bd,Locale locale) {
 		super(id, label, refreshUri, rawvalues, bd);
 		this.nomeServizio = nomeServizio;
 		this.nomeConnettore = nomeConnettore;
-		this.tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
-		this.idOwnerId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.tipoAutenticazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
+		this.idOwnerId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
 	protected List<Voce<String>> getValues(List<RawParamValue> paramValues, Object ... objects) throws ServiceException {
 		List<Voce<String>> voci = new ArrayList<Voce<String>>();
-		voci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.client.label"), TIPO_SSL_VALUE_CLIENT));
-		voci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.server.label"), TIPO_SSL_VALUE_SERVER));
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+		voci.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.client.label"), TIPO_SSL_VALUE_CLIENT));
+		voci.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.server.label"), TIPO_SSL_VALUE_SERVER));
 		
 		return voci; 
 	}

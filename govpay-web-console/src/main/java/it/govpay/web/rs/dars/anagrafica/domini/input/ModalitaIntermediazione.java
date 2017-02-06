@@ -3,6 +3,7 @@ package it.govpay.web.rs.dars.anagrafica.domini.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -23,8 +24,10 @@ public class ModalitaIntermediazione extends SelectList<Integer>{
 	public ModalitaIntermediazione(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		this.nomeServizio = nomeServizio;
-		this.dominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+//		this.idStazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
+		this.dominioId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
@@ -49,9 +52,30 @@ public class ModalitaIntermediazione extends SelectList<Integer>{
 	
 	@Override
 	protected List<Voce<Integer>> getValues(List<RawParamValue> paramValues, Object... objects) throws ServiceException {
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		List<Voce<Integer>> lst = new ArrayList<Voce<Integer>>();
-		lst.add(new Voce<Integer>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.0"), 0));
-		lst.add(new Voce<Integer>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.3"), 3));
+		lst.add(new Voce<Integer>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.0"), 0));
+		lst.add(new Voce<Integer>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.3"), 3));
+//		String idStazioneValue = Utils.getValue(paramValues, this.idStazioneId);
+//
+//		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+//		List<Voce<Integer>> lst = new ArrayList<Voce<Integer>>();
+//		lst.add(new Voce<Integer>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.0"), 0));
+//
+//		if(StringUtils.isEmpty(idStazioneValue)){
+//			return lst;
+//		}
+//
+//		try{
+//			BasicBD bd = (BasicBD) objects[0];
+//			StazioniBD stazioniBD = new StazioniBD(bd);
+//			Stazione stazione = stazioniBD.getStazione(Long.parseLong(idStazioneValue));
+//			Intermediario intermediario = stazione.getIntermediario(bd);
+//
+//			if(intermediario.getSegregationCode()!= null)
+//				lst.add(new Voce<Integer>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".modalitaIntermediazione.3"), 3));
+//
+//		}catch(Exception e){return lst;}
 		return lst;
 	}
 

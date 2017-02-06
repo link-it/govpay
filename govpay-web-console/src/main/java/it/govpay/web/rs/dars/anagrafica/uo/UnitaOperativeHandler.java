@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
@@ -41,10 +40,9 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.UnitaOperativeBD;
 import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
-import it.govpay.model.Anagrafica;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
-import it.govpay.web.rs.BaseRsService;
+import it.govpay.model.Anagrafica;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -57,6 +55,7 @@ import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.RefreshableParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
@@ -68,8 +67,8 @@ import net.sf.json.JsonConfig;
 
 public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> implements IDarsHandler<UnitaOperativa>{
 
-	private static Map<String, ParamField<?>> infoCreazioneMap = null;
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoCreazioneMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 	public static final String ANAGRAFICA_UO = "anagrafica";
 	private Long idDominio = null;
 
@@ -105,28 +104,28 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			// tutte le unita' con codice uo = 'EC' sono nascoste
 			filter.setExcludeEC(true); 
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 			filter.setDominioFilter(this.idDominio);
 
 			long count = unitaOperativaBD.count(filter);
 
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(idDominioId, this.idDominio + "");
+			
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
-
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca =this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<UnitaOperativa> findAll =  unitaOperativaBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (UnitaOperativa entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -141,41 +140,37 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		URI ricerca =  null;
-		try{
-			ricerca =  BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).queryParam(idDominioId, this.idDominio).build();
-		}catch(Exception e ){
-			throw new ConsoleException(e);
-		}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String, String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+		if(visualizzaRicerca) {
+			String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
+			if(this.infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codUnitaOperativa = (InputText) this.infoRicercaMap.get(codUoId);
+			codUnitaOperativa.setDefaultValue(null);
+			sezioneRoot.addField(codUnitaOperativa);
+
 		}
-
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-
-		InputText codUnitaOperativa = (InputText) infoRicercaMap.get(codUoId);
-		codUnitaOperativa.setDefaultValue(null);
-		sezioneRoot.addField(codUnitaOperativa);
-
 		return infoRicerca;
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+			String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
 
 			// codUO
-			String codUnitaOperativaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
+			String codUnitaOperativaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
 			InputText codUnitaOperativa = new InputText(codUoId, codUnitaOperativaLabel, null, false, false, true, 1, 255);
-			infoRicercaMap.put(codUoId, codUnitaOperativa);
+			this.infoRicercaMap.put(codUoId, codUnitaOperativa);
 
 		}
 	}
@@ -183,41 +178,41 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String unitaOperativaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String unitaOperativaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
-		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio);
+		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio,this.getLanguage());
 		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoCreazioneAnagraficaUO(uriInfo, bd);
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 
 		}
 
 		Sezione sezioneRoot = infoCreazione.getSezioneRoot();
 
-		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(unitaOperativaId);
+		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(unitaOperativaId);
 		idInterm.setDefaultValue(null);
 		sezioneRoot.addField(idInterm);
 
-		InputText codUnitaOperativa = (InputText) infoCreazioneMap.get(codUoId);
+		InputText codUnitaOperativa = (InputText) this.infoCreazioneMap.get(codUoId);
 		codUnitaOperativa.setDefaultValue(null);
 		sezioneRoot.addField(codUnitaOperativa);
 
 		// idDominio
-		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
+		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(this.idDominio);
 		sezioneRoot.addField(idDominio);
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
 		sezioneRoot.addField(abilitato);
 
-		Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
+		Sezione sezioneAnagrafica = infoCreazione.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
 
 		for (ParamField<?> par : infoCreazioneAnagrafica) { 
 			sezioneAnagrafica.addField(par); 	
@@ -227,33 +222,33 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	}
 
 	private void initInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoCreazioneMap == null){
-			infoCreazioneMap = new HashMap<String, ParamField<?>>();
+		if(this.infoCreazioneMap == null){
+			this.infoCreazioneMap = new HashMap<String, ParamField<?>>();
 
-			String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-			String unitaOperativaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String unitaOperativaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 			// id 
 			InputNumber id = new InputNumber(unitaOperativaId, null, null, true, true, false, 1, 20);
-			infoCreazioneMap.put(unitaOperativaId, id);
+			this.infoCreazioneMap.put(unitaOperativaId, id);
 
 			// codUnitaOperativa
-			String codUnitaOperativaLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
+			String codUnitaOperativaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.label");
 			InputText codUnitaOperativa = new InputText(codUoId, codUnitaOperativaLabel, null, true, false, true, 1, 35);
-			codUnitaOperativa.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.suggestion"));
-			codUnitaOperativa.setValidation(null, Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.errorMessage"));
-			infoCreazioneMap.put(codUoId, codUnitaOperativa);
+			codUnitaOperativa.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.suggestion"));
+			codUnitaOperativa.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.errorMessage"));
+			this.infoCreazioneMap.put(codUoId, codUnitaOperativa);
 
 			// idDominio
 			InputNumber idDominio = new InputNumber(idDominioId, null, null, true, true, false, 1, 255);
-			infoCreazioneMap.put(idDominioId, idDominio);
+			this.infoCreazioneMap.put(idDominioId, idDominio);
 
 			// abilitato
-			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
+			String abilitatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
-			infoCreazioneMap.put(abilitatoId, abiliato);
+			this.infoCreazioneMap.put(abilitatoId, abiliato);
 
 		}
 
@@ -263,40 +258,40 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String codUoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String unitaOperativaId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String unitaOperativaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 
 
-		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio);
+		AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio,this.getLanguage());
 		List<ParamField<?>> infoCreazioneAnagrafica = anagraficaHandler.getInfoModificaAnagraficaUO(uriInfo, bd,entry.getAnagrafica());
 
-		if(infoCreazioneMap == null){
+		if(this.infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoModifica.getSezioneRoot();
-		InputNumber idInterm = (InputNumber) infoCreazioneMap.get(unitaOperativaId);
+		InputNumber idInterm = (InputNumber) this.infoCreazioneMap.get(unitaOperativaId);
 		idInterm.setDefaultValue(entry.getId());
 		sezioneRoot.addField(idInterm);
 
-		InputText codUnitaOperativa = (InputText) infoCreazioneMap.get(codUoId);
+		InputText codUnitaOperativa = (InputText) this.infoCreazioneMap.get(codUoId);
 		codUnitaOperativa.setDefaultValue(entry.getCodUo());
 		sezioneRoot.addField(codUnitaOperativa);
 
-		InputNumber idDominio = (InputNumber) infoCreazioneMap.get(idDominioId);
+		InputNumber idDominio = (InputNumber) this.infoCreazioneMap.get(idDominioId);
 		idDominio.setDefaultValue(entry.getIdDominio());
 		sezioneRoot.addField(idDominio);
 
-		CheckButton abilitato = (CheckButton) infoCreazioneMap.get(abilitatoId);
+		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
 
 
-		Sezione sezioneAnagrafica = infoModifica.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
+		Sezione sezioneAnagrafica = infoModifica.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
 
 		for (ParamField<?> par : infoCreazioneAnagrafica) { 
 			sezioneAnagrafica.addField(par); 	
@@ -312,14 +307,14 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
-			if(infoCreazioneMap == null){
+			if(this.infoCreazioneMap == null){
 				this.initInfoCreazione(uriInfo, bd);
 			}
 
-			if(infoCreazioneMap.containsKey(fieldId)){
-				RefreshableParamField<?> paramField = (RefreshableParamField<?>) infoCreazioneMap.get(fieldId);
+			if(this.infoCreazioneMap.containsKey(fieldId)){
+				RefreshableParamField<?> paramField = (RefreshableParamField<?>) this.infoCreazioneMap.get(fieldId);
 
-				paramField.aggiornaParametro(values,bd);
+				paramField.aggiornaParametro(values,bd,this.getLanguage());
 
 				return paramField;
 
@@ -355,19 +350,19 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati dell'unitaOperativa
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codUo.label"), unitaOperativa.getCodUo());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.label"), unitaOperativa.getCodUo());
 
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(unitaOperativa.getIdDominio());
 
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), dominio.getCodDominio());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(unitaOperativa.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), dominio.getCodDominio());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(unitaOperativa.isAbilitato()));
 
 			// Sezione Anagrafica
 
 			Anagrafica anagrafica = unitaOperativa.getAnagrafica(); 
-			it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
-			AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio);
+			it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_UO + ".titolo"));
+			AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_UO,this.nomeServizio,this.pathServizio,this.getLanguage());
 			anagraficaHandler.fillSezioneAnagraficaUO(sezioneAnagrafica, anagrafica);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -398,7 +393,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 			try{
 				uoBD.getUnitaOperativa(entry.getIdDominio(),entry.getCodUo());
-				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodUo());
+				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodUo());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
 
@@ -457,17 +452,28 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 	@Override
 	public void checkEntry(UnitaOperativa entry, UnitaOperativa oldEntry) throws ValidationException {
-		if(entry == null || entry.getCodUo() == null || entry.getCodUo().isEmpty()) throw new ValidationException("Il campo Codice Unit\u00E0 Operativa e' obbligatorio");
+		if(entry == null || entry.getCodUo() == null || entry.getCodUo().isEmpty()) {
+			throw new ValidationException("Il campo Codice Unit\u00E0 Operativa e' obbligatorio");
+		}
 
 		Anagrafica anagrafica = entry.getAnagrafica();
-		if(anagrafica != null && anagrafica.getRagioneSociale() != null && anagrafica.getRagioneSociale().length() > 255) 
-			throw new ValidationException("Il campo Ragione Sociale non puo' essere piu' lungo di 255 caratteri."); 
+		if(anagrafica != null && anagrafica.getRagioneSociale() != null && anagrafica.getRagioneSociale().length() > 255) {
+			throw new ValidationException("Il campo Ragione Sociale non puo' essere piu' lungo di 255 caratteri.");
+		} 
 
-		if(anagrafica == null || anagrafica.getCodUnivoco() == null || anagrafica.getCodUnivoco().isEmpty()) throw new ValidationException("Il campo Cod Univoco e' obbligatorio");
-		if(entry.getIdDominio() == 0) throw new ValidationException("Il campo Dominio e' obbligatorio");
+		if(anagrafica == null || anagrafica.getCodUnivoco() == null || anagrafica.getCodUnivoco().isEmpty()) {
+			throw new ValidationException("Il campo Cod Univoco e' obbligatorio");
+		}
+		if(entry.getIdDominio() == 0) {
+			throw new ValidationException("Il campo Dominio e' obbligatorio");
+		}
 		if(oldEntry != null) {
-			if(!entry.getCodUo().equals(oldEntry.getCodUo())) throw new ValidationException("Il campo Codice Unit\u00E0 Operativa non e' modificabile");
-			if(entry.getIdDominio() != oldEntry.getIdDominio()) throw new ValidationException("Il campo Dominio non e' modificabile");
+			if(!entry.getCodUo().equals(oldEntry.getCodUo())) {
+				throw new ValidationException("Il campo Codice Unit\u00E0 Operativa non e' modificabile");
+			}
+			if(entry.getIdDominio() != oldEntry.getIdDominio()) {
+				throw new ValidationException("Il campo Dominio non e' modificabile");
+			}
 		}
 	}
 
@@ -513,8 +519,9 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		if(ragioneSociale != null){
 			sb.append(ragioneSociale);
 			sb.append(" (").append(entry.getCodUo()).append(")");
-		} else 
+		} else {
 			sb.append(entry.getCodUo());
+		}
 
 		return sb.toString();
 	}
@@ -524,19 +531,22 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 		StringBuilder sb = new StringBuilder();
 
 		try{
-		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
-		sb.append(", Dominio: ").append(entry.getDominio(bd).getCodDominio());
+			sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
+			sb.append(", Dominio: ").append(entry.getDominio(bd).getCodDominio());
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(UnitaOperativa entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(UnitaOperativa entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -548,7 +558,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

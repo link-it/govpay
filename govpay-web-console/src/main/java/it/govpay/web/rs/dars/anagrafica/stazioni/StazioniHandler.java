@@ -42,8 +42,8 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
-import it.govpay.model.Intermediario;
 import it.govpay.bd.model.Stazione;
+import it.govpay.model.Intermediario;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -57,6 +57,7 @@ import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputNumber;
@@ -85,12 +86,10 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			Integer offset = this.getOffset(uriInfo);
 
 			Intermediari intermediariDars = new Intermediari();
-			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
+			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 			this.codIntermediario = this.getParameter(uriInfo, codIntermediarioId, String.class);
 			URI esportazione = null;
 			URI cancellazione = null;
-
-
 
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			StazioneFilter filter = stazioniBD.newFilter();
@@ -101,20 +100,20 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			filter.getFilterSortList().add(fsw);
 			filter.setOffset(offset);
 
-
 			long count = stazioniBD.count(filter);
+			
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codIntermediarioId, this.codIntermediario);
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
-
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Stazione> findAll = stazioniBD.findAll(filter);
 
 			if(findAll != null && findAll.size() > 0){
 				for (Stazione entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -129,22 +128,24 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
 	}
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI creazione = this.getUriCreazione(uriInfo, bd);
-		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
+		InfoForm infoCreazione = new InfoForm(creazione,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.titolo"));
 
-		String stazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String codStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
-		String passwordId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".password.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String applicationCodeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
+		String stazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String codStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
+		String passwordId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String applicationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
 		Intermediari intermediariDars = new Intermediari();
-		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
+		String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -163,7 +164,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String codStazioneSuggestion = this.codIntermediario + "_[0-9]{2}"; 
 		codStazione.setDefaultValue(this.codIntermediario + "_");
 		String codStazionePattern = this.codIntermediario + "[_]{1,1}[0-9]{2,2}";
-		String codStazioneErrorMessage = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.errorMessage") +" "+  codStazioneSuggestion;
+		String codStazioneErrorMessage = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.errorMessage") +" "+  codStazioneSuggestion;
 		codStazione.setValidation(codStazionePattern, codStazioneErrorMessage); 
 		codStazione.setSuggestion(codStazioneSuggestion);
 		codStazione.setEditable(true);     
@@ -188,13 +189,13 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		if(infoCreazioneMap == null){
 			infoCreazioneMap = new HashMap<String, ParamField<?>>();
 
-			String stazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-			String codStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
-			String passwordId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".password.id");
-			String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-			String applicationCodeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
+			String stazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+			String codStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
+			String passwordId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.id");
+			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+			String applicationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
 			Intermediari intermediariDars = new Intermediari();
-			String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
+			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 
 			// id 
 			InputNumber id = new InputNumber(stazioneId, null, null, true, true, false, 1, 20);
@@ -205,25 +206,25 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			infoCreazioneMap.put(codIntermediarioId, codIntermediario);
 
 			// application Code
-			String applicationCodeLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.label");
+			String applicationCodeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.label");
 			InputNumber applicationCode = new InputNumber(applicationCodeId, applicationCodeLabel, null, true, true, false, 2, 2);
-			//			applicationCode.setSuggestion(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.suggestion"));
-			//			applicationCode.setValidation("[0-9]", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.errorMessage"));
+			//			applicationCode.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.suggestion"));
+			//			applicationCode.setValidation("[0-9]", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.errorMessage"));
 			infoCreazioneMap.put(applicationCodeId, applicationCode);
 
 			// codStazione
-			String codStazioneLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label");
+			String codStazioneLabel =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label");
 			InputText codStazione = new InputText(codStazioneId, codStazioneLabel, null, true, false, true, 14, 14);
 			infoCreazioneMap.put(codStazioneId, codStazione);
 
 			// password
-			String passwordLabel =  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".password.label");
+			String passwordLabel =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.label");
 			InputSecret password = new InputSecret(passwordId, passwordLabel, null, true, false, true, 1, 255);
-			password.setValidation(null,  Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".password.errorMessage"));
+			password.setValidation(null,  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.errorMessage"));
 			infoCreazioneMap.put(passwordId,password);
 
 			// abilitato
-			String abilitatoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
+			String abilitatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label");
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, null, false, false, true);
 			infoCreazioneMap.put(abilitatoId, abiliato);
 
@@ -235,15 +236,15 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Stazione entry) throws ConsoleException {
 		URI modifica = this.getUriModifica(uriInfo, bd);
-		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
+		InfoForm infoModifica = new InfoForm(modifica,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modifica.titolo"));
 
-		String stazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
-		String codStazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
-		String passwordId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".password.id");
-		String abilitatoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
-		String applicationCodeId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
+		String stazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		String codStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id");
+		String passwordId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.id");
+		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
+		String applicationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicationCode.id");
 		Intermediari intermediariDars = new Intermediari();
-		String codIntermediarioId = Utils.getInstance().getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
+		String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 
 		if(infoCreazioneMap == null){
 			this.initInfoCreazione(uriInfo, bd);
@@ -306,9 +307,9 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati dell'intermediario
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"), stazione.getCodStazione());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".password.label"), stazione.getPassword());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(stazione.isAbilitato()));
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"), stazione.getCodStazione());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.label"), stazione.getPassword());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(stazione.isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -344,7 +345,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			try{
 				stazioniBD.getStazione(entry.getCodStazione());
-				String msg = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodStazione());
+				String msg = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".oggettoEsistente", entry.getCodStazione());
 				throw new DuplicatedEntryException(msg);
 			}catch(NotFoundException e){}
 
@@ -484,6 +485,9 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	public List<String> getValori(Stazione entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(Stazione entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

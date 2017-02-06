@@ -22,6 +22,7 @@ package it.govpay.web.rs.dars.anagrafica.operatori.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -54,9 +55,10 @@ public class TipiTributo extends MultiSelectList<Long, List<Long>>{
 	public TipiTributo(String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> paramValues,
 			Object... objects) {
 		super(id, label, refreshUri, paramValues, objects);
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
 		this.nomeServizio = nomeServizio;
-		this.profiloId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
-		this.operatoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.profiloId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+		this.operatoreId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override

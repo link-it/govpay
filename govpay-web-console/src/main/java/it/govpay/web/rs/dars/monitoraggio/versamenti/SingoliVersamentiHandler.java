@@ -3,6 +3,7 @@ package it.govpay.web.rs.dars.monitoraggio.versamenti;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -24,6 +25,7 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.Utils;
 
 public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento> implements IDarsHandler<SingoloVersamento>{
@@ -38,7 +40,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		return null;
 	}
 
@@ -53,6 +55,9 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(SingoloVersamento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String getTitolo(SingoloVersamento entry,BasicBD bd) {
@@ -61,7 +66,7 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 		BigDecimal importoTotale = entry.getImportoSingoloVersamento();
 		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
 		
-		sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle((this.nomeServizio + ".label.titolo"), codVersamentoEnte, (importoTotale + "€")));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle((this.nomeServizio + ".label.titolo"), codVersamentoEnte, (importoTotale + "€")));
 		
 		return sb.toString();
 	}
@@ -73,14 +78,14 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 		StatoSingoloVersamento statoVersamento = entry.getStatoSingoloVersamento();
 		switch (statoVersamento) {
 		case ANOMALO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.anomalo"));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.anomalo"));
 			break;
 		case NON_ESEGUITO:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.nonEseguito"));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.nonEseguito"));
 			break;
 		case ESEGUITO:
 		default:
-			sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.eseguito"));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoSingoloVersamento.eseguito"));
 			break;
 		}
 		return sb.toString();

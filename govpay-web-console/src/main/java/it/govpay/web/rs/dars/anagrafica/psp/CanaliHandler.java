@@ -21,11 +21,12 @@ package it.govpay.web.rs.dars.anagrafica.psp;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
@@ -34,7 +35,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Canale;
 import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -45,6 +45,7 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.Utils;
 
 public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> implements IDarsHandler<it.govpay.bd.model.Canale>{
@@ -62,7 +63,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);			
 
-			String codPspId = Utils.getInstance().getMessageFromResourceBundle("psp.codPsp.id");
+			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("psp.codPsp.id");
 			String codPsp = this.getParameter(uriInfo, codPspId, String.class);
 
 			URI esportazione = null;
@@ -75,17 +76,18 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 			long count = psp.getCanalis().size();
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codPspId, codPsp);
+
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
-			
+
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Canale entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
 				}
 			}
 
@@ -100,8 +102,10 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 	}
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String, String> parameters) throws ConsoleException {
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
 	}
 
 	@Override
@@ -143,35 +147,35 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			// dati del canale
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
 			ModelloPagamento modelloPagamento = canale.getModelloPagamento();
 			if(modelloPagamento != null){
 				String modelloPagamentoString = null;
 				switch (modelloPagamento) {
 				case ATTIVATO_PRESSO_PSP:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.ATTIVATO_PRESSO_PSP");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.ATTIVATO_PRESSO_PSP");
 					break;
 				case DIFFERITO:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.DIFFERITO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.DIFFERITO");
 					break;
 				case IMMEDIATO:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO");
 					break;
 				case IMMEDIATO_MULTIBENEFICIARIO:
 				default:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
 					break;
 				}
-				
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
+
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
 			}
-			
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), canale.getUrlInfo());
-			root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(canale.isAbilitato()));
+
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), canale.getUrlInfo());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(canale.isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -223,30 +227,33 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Tipo Versamento: ")
-		.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento."+	entry.getTipoVersamento().name()))
+		.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento."+	entry.getTipoVersamento().name()))
 		.append(", Modello Pagamento: ").append(
-				Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento."+	entry.getModelloPagamento().name())
+				Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento."+	entry.getModelloPagamento().name())
 				);
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Canale entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(Canale entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

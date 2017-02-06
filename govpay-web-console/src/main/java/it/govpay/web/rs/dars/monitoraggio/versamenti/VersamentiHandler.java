@@ -33,7 +33,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -76,13 +75,13 @@ import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Evento;
+import it.govpay.model.Iuv;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -110,7 +109,7 @@ import it.govpay.web.utils.Utils;
 public class VersamentiHandler extends BaseDarsHandler<Versamento> implements IDarsHandler<Versamento>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
-	private static Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
 	public VersamentiHandler(Logger log, BaseDarsService darsService) { 
@@ -146,18 +145,20 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			String cfDebitoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
+			String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
 			String cfDebitore = this.getParameter(uriInfo, cfDebitoreId, String.class);
-			if(StringUtils.isNotEmpty(cfDebitore))
-				filter.setCodUnivocoDebitore(cfDebitore); 
+			if(StringUtils.isNotEmpty(cfDebitore)) {
+				filter.setCodUnivocoDebitore(cfDebitore);
+			} 
 
-			String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
+			String codVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
 			String codVersamento = this.getParameter(uriInfo, codVersamentoId, String.class);
-			if(StringUtils.isNotEmpty(codVersamento))
+			if(StringUtils.isNotEmpty(codVersamento)) {
 				filter.setCodVersamento(codVersamento);
+			}
 
 
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
 			if(StringUtils.isNotEmpty(idDominio)){
 				long idDom = -1l;
@@ -170,7 +171,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				}
 			}
 
-			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String iuv = this.getParameter(uriInfo, iuvId, String.class);
 			if(StringUtils.isNotEmpty(iuv)){
 				RptBD rptBD = new RptBD(bd);
@@ -184,10 +185,10 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 				filter.setIdVersamento(idVersamentoL);  
 			}
-			
-			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+
+			String statoVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
 			String statoVersamento = this.getParameter(uriInfo, statoVersamentoId, String.class);
-			
+
 			if(StringUtils.isNotEmpty(statoVersamento)){
 				filter.setStatoVersamento(StatoVersamento.valueOf(statoVersamento));
 			}
@@ -220,19 +221,21 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
-			InfoForm infoRicerca = visualizzaRicerca ? this.getInfoRicerca(uriInfo, bd) : null;
+			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
+			// Indico la visualizzazione custom
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
-
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
 			List<Versamento> findAll = eseguiRicerca ? versamentiBD.findAll(filter) : new ArrayList<Versamento>(); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (Versamento entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elemento.setFormatter(formatter); 
+					elenco.getElenco().add(elemento);
 				}
 			}
 
@@ -248,158 +251,161 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String cfDebitoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
-		String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
-		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-		String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-		String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+		if(visualizzaRicerca) {
+			String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
+			String codVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String statoVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
 
-		if(infoRicercaMap == null){
-			this.initInfoRicerca(uriInfo, bd);
-		}
+			if(this.infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
 
-		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-		SelectList<String> statoVersamento = (SelectList<String>) infoRicercaMap.get(statoVersamentoId);
-		statoVersamento.setDefaultValue("");
-		sezioneRoot.addField(statoVersamento);
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+			
+			InputText codVersamento = (InputText) this.infoRicercaMap.get(codVersamentoId);
+			codVersamento.setDefaultValue(null);
+			sezioneRoot.addField(codVersamento);
+			
+			try{
 
-		InputText cfDebitore = (InputText) infoRicercaMap.get(cfDebitoreId);
-		cfDebitore.setDefaultValue(null);
-		sezioneRoot.addField(cfDebitore);
+				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+				ProfiloOperatore profilo = operatore.getProfilo();
+				boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
-		InputText codVersamento = (InputText) infoRicercaMap.get(codVersamentoId);
-		codVersamento.setDefaultValue(null);
-		sezioneRoot.addField(codVersamento);
+				// idDominio
+				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 
-		InputText iuv = (InputText) infoRicercaMap.get(iuvId);
-		iuv.setDefaultValue(null);
-		sezioneRoot.addField(iuv);
+				DominiBD dominiBD = new DominiBD(bd);
+				DominioFilter filter;
+				try {
+					filter = dominiBD.newFilter();
+					boolean eseguiRicerca = true;
+					if(isAdmin){
 
-		try{
+					} else {
+						AclBD aclBD = new AclBD(bd);
+						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-
-			// idDominio
-			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-
-			DominiBD dominiBD = new DominiBD(bd);
-			DominioFilter filter;
-			try {
-				filter = dominiBD.newFilter();
-				boolean eseguiRicerca = true;
-				if(isAdmin){
-
-				} else {
-					AclBD aclBD = new AclBD(bd);
-					List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-
-					boolean vediTuttiDomini = false;
-					List<Long> idDomini = new ArrayList<Long>();
-					for(Acl acl: aclOperatore) {
-						if(Tipo.DOMINIO.equals(acl.getTipo())) {
-							if(acl.getIdDominio() == null) {
-								vediTuttiDomini = true;
-								break;
+						boolean vediTuttiDomini = false;
+						List<Long> idDomini = new ArrayList<Long>();
+						for(Acl acl: aclOperatore) {
+							if(Tipo.DOMINIO.equals(acl.getTipo())) {
+								if(acl.getIdDominio() == null) {
+									vediTuttiDomini = true;
+									break;
+								} else {
+									idDomini.add(acl.getIdDominio());
+								}
+							}
+						}
+						if(!vediTuttiDomini) {
+							if(idDomini.isEmpty()) {
+								eseguiRicerca = false;
 							} else {
-								idDomini.add(acl.getIdDominio());
+								filter.setIdDomini(idDomini);
 							}
 						}
 					}
-					if(!vediTuttiDomini) {
-						if(idDomini.isEmpty()) {
-							eseguiRicerca = false;
-						} else {
-							filter.setIdDomini(idDomini);
+
+
+
+					if(eseguiRicerca) {
+						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+						fsw.setSortOrder(SortOrder.ASC);
+						filter.getFilterSortList().add(fsw);
+						List<Dominio> findAll = dominiBD.findAll(filter );
+
+						Domini dominiDars = new Domini();
+						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+
+						if(findAll != null && findAll.size() > 0){
+							for (Dominio dominio : findAll) {
+								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+							}
 						}
+					}else {
+						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
 					}
+				} catch (ServiceException e) {
+					throw new ConsoleException(e);
 				}
+				SelectList<Long> idDominio = (SelectList<Long>) this.infoRicercaMap.get(idDominioId);
+				idDominio.setDefaultValue(-1L);
+				idDominio.setValues(domini); 
+				sezioneRoot.addField(idDominio);
 
-
-
-				if(eseguiRicerca) {
-					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-					FilterSortWrapper fsw = new FilterSortWrapper();
-					fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
-					fsw.setSortOrder(SortOrder.ASC);
-					filter.getFilterSortList().add(fsw);
-					List<Dominio> findAll = dominiBD.findAll(filter );
-
-					Domini dominiDars = new Domini();
-					DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-
-					if(findAll != null && findAll.size() > 0){
-						for (Dominio dominio : findAll) {
-							domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
-						}
-					}
-				}else {
-					domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-				}
-			} catch (ServiceException e) {
+			}catch(Exception e){
 				throw new ConsoleException(e);
 			}
-			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-			idDominio.setDefaultValue(-1L);
-			idDominio.setValues(domini); 
-			sezioneRoot.addField(idDominio);
 
-		}catch(Exception e){
-			throw new ConsoleException(e);
+			InputText iuv = (InputText) this.infoRicercaMap.get(iuvId);
+			iuv.setDefaultValue(null);
+			sezioneRoot.addField(iuv);
+
+			InputText cfDebitore = (InputText) this.infoRicercaMap.get(cfDebitoreId);
+			cfDebitore.setDefaultValue(null);
+			sezioneRoot.addField(cfDebitore);
+			
+			SelectList<String> statoVersamento = (SelectList<String>) this.infoRicercaMap.get(statoVersamentoId);
+			statoVersamento.setDefaultValue("");
+			sezioneRoot.addField(statoVersamento);
+
 		}
-
 		return infoRicerca;
 	}
 
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(infoRicercaMap == null){
-			infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String cfDebitoreId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
-			String codVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
-			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			String iuvId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-			String statoVersamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+			String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
+			String codVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String statoVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
 
 			// statoVersamento
 			List<Voce<String>> stati = new ArrayList<Voce<String>>();
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO), StatoVersamento.ESEGUITO.toString()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.NON_ESEGUITO), StatoVersamento.NON_ESEGUITO.toString()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.PARZIALMENTE_ESEGUITO), StatoVersamento.PARZIALMENTE_ESEGUITO.toString()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO_SENZA_RPT), StatoVersamento.ESEGUITO_SENZA_RPT.toString()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANOMALO), StatoVersamento.ANOMALO.toString()));
-			stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANNULLATO), StatoVersamento.ANNULLATO.toString()));
-			
-			String statoVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label");
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO), StatoVersamento.ESEGUITO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.NON_ESEGUITO), StatoVersamento.NON_ESEGUITO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.PARZIALMENTE_ESEGUITO), StatoVersamento.PARZIALMENTE_ESEGUITO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ESEGUITO_SENZA_RPT), StatoVersamento.ESEGUITO_SENZA_RPT.toString()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANOMALO), StatoVersamento.ANOMALO.toString()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+StatoVersamento.ANNULLATO), StatoVersamento.ANNULLATO.toString()));
+
+			String statoVersamentoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label");
 			SelectList<String> statoVersamento = new SelectList<String>(statoVersamentoId, statoVersamentoLabel, null, false, false, true, stati);
-			infoRicercaMap.put(statoVersamentoId, statoVersamento);
-			
+			this.infoRicercaMap.put(statoVersamentoId, statoVersamento);
+
 			// cfDebitore
-			String cfDebitoreLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.label");
+			String cfDebitoreLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.label");
 			InputText cfDebitore = new InputText(cfDebitoreId, cfDebitoreLabel, null, false, false, true, 1, 35);
-			infoRicercaMap.put(cfDebitoreId, cfDebitore);
+			this.infoRicercaMap.put(cfDebitoreId, cfDebitore);
 
 			// Id Versamento
-			String codVersamentoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.label");
+			String codVersamentoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.label");
 			InputText codVersamento = new InputText(codVersamentoId, codVersamentoLabel, null, false, false, true, 1, 35);
-			infoRicercaMap.put(codVersamentoId, codVersamento);
+			this.infoRicercaMap.put(codVersamentoId, codVersamento);
 
 			// iuv
-			String iuvLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
+			String iuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
 			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 1, 35);
-			infoRicercaMap.put(iuvId, iuv);			
+			this.infoRicercaMap.put(iuvId, iuv);			
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio
-			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
+			String idDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
 			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
-			infoRicercaMap.put(idDominioId, idDominio);
+			this.infoRicercaMap.put(idDominioId, idDominio);
 
 		}
 	}
@@ -459,77 +465,86 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			if(versamento != null){
 
-				if(StringUtils.isNotEmpty(versamento.getCodVersamentoEnte())) 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), versamento.getCodVersamentoEnte());
+				if(StringUtils.isNotEmpty(versamento.getCodVersamentoEnte())) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), versamento.getCodVersamentoEnte());
+				}
 				// Uo
 				UnitaOperativa uo = versamento.getUo(bd);
 				if(uo != null){
 					Dominio dominio = uo.getDominio(bd);
 					Domini dominiDars = new Domini();
-					UriBuilder uriDettaglioDominioBuilder = BaseRsService.checkDarsURI(uriInfo).path(dominiDars.getPathServizio()).path("{id}");
-					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), uriDettaglioDominioBuilder, bd);
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo(),uriDettaglioDominioBuilder.build(dominio.getId())); 
+					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo(),elemento.getUri()); 
 				}
 
 				// Applicazione
 				Applicazione applicazione = versamento.getApplicazione(bd);
-				if(applicazione != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".applicazione.label"), applicazione.getCodApplicazione());  
-				if(versamento.getStatoVersamento() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+versamento.getStatoVersamento()));
-				if(StringUtils.isNotEmpty(versamento.getDescrizioneStato())) 
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), versamento.getDescrizioneStato());
-				if(versamento.getImportoTotale() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), versamento.getImportoTotale().toString()+ "€");
-				if(versamento.getDataCreazione() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataCreazione.label"), this.sdf.format(versamento.getDataCreazione()));
-				if(versamento.getDataScadenza() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.label"), this.sdf.format(versamento.getDataScadenza()));
-				if(versamento.getDataUltimoAggiornamento() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataUltimoAggiornamento.label"), this.sdf.format(versamento.getDataUltimoAggiornamento()));
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".aggiornabile.label"), Utils.getSiNoAsLabel(versamento.isAggiornabile()));
-				if(versamento.getCausaleVersamento() != null)
-					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causaleVersamento.label"), versamento.getCausaleVersamento().toString());
+				if(applicazione != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicazione.label"), applicazione.getCodApplicazione());
+				}  
+				if(versamento.getStatoVersamento() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+versamento.getStatoVersamento()));
+				}
+				if(StringUtils.isNotEmpty(versamento.getDescrizioneStato())) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), versamento.getDescrizioneStato());
+				}
+				if(versamento.getImportoTotale() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), versamento.getImportoTotale().toString()+ "€");
+				}
+				if(versamento.getDataCreazione() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataCreazione.label"), this.sdf.format(versamento.getDataCreazione()));
+				}
+				if(versamento.getDataScadenza() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.label"), this.sdf.format(versamento.getDataScadenza()));
+				}
+				if(versamento.getDataUltimoAggiornamento() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataUltimoAggiornamento.label"), this.sdf.format(versamento.getDataUltimoAggiornamento()));
+				}
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".aggiornabile.label"), Utils.getSiNoAsLabel(versamento.isAggiornabile()));
+				if(versamento.getCausaleVersamento() != null) {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".causaleVersamento.label"), versamento.getCausaleVersamento().toString());
+				}
 
 				// Sezione Anagrafica Debitore
 
 				Anagrafica anagrafica = versamento.getAnagraficaDebitore(); 
-				it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DEBITORE + ".titolo"));
-				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DEBITORE,this.nomeServizio,this.pathServizio);
+				it.govpay.web.rs.dars.model.Sezione sezioneAnagrafica = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + ANAGRAFICA_DEBITORE + ".titolo"));
+				AnagraficaHandler anagraficaHandler = new AnagraficaHandler(ANAGRAFICA_DEBITORE,this.nomeServizio,this.pathServizio,this.getLanguage());
 				anagraficaHandler.fillSezioneAnagraficaUO(sezioneAnagrafica, anagrafica);
 
 				// Singoli Versamenti
-				String etichettaSingoliVersamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.singoliVersamenti.titolo");
+				String etichettaSingoliVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.singoliVersamenti.titolo");
 				it.govpay.web.rs.dars.model.Sezione sezioneSingoliVersamenti = dettaglio.addSezione(etichettaSingoliVersamenti);
 
 				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 				if(!Utils.isEmpty(singoliVersamenti)){
 					SingoliVersamenti svDars = new SingoliVersamenti();
 					SingoliVersamentiHandler svDarsHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
-					UriBuilder uriDettaglioSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
-
 					if(singoliVersamenti != null && singoliVersamenti.size() > 0){
 						for (SingoloVersamento entry : singoliVersamenti) {
-							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), uriDettaglioSVBuilder,bd);
+							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), svDars.getPathServizio(),bd);
 							sezioneSingoliVersamenti.addVoce(elemento.getTitolo(), elemento.getSottotitolo());
 						}
 					}
 				}
 
 				Pagamenti pagamentiDars = new Pagamenti();
-				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
-				String versamentoId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idVersamento.id");
-				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
-
-				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
+				String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idVersamento.id");
+				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+				Map<String, String> params = new HashMap<String, String>();
+				params.put(versamentoId, versamento.getId()+ "");
+				URI pagamentoDettaglio = Utils.creaUriConParametri(pagamentiDars.getPathServizio(), params );
+				dettaglio.addElementoCorrelato(etichettaPagamenti, pagamentoDettaglio); 
 
 				Transazioni transazioniDars = new Transazioni();
-				String etichettaTransazioni = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.transazioni.titolo");
-				versamentoId = Utils.getInstance().getMessageFromResourceBundle(transazioniDars.getNomeServizio()+ ".idVersamento.id");
-				UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).queryParam(versamentoId, versamento.getId());
+				String etichettaTransazioni = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.transazioni.titolo");
+				versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(transazioniDars.getNomeServizio()+ ".idVersamento.id");
+				params = new HashMap<String, String>();
+				params.put(versamentoId, versamento.getId()+ "");
+				URI transazioneDettaglio = Utils.creaUriConParametri(transazioniDars.getPathServizio(), params );
 
-				dettaglio.addElementoCorrelato(etichettaTransazioni, uriBuilder.build());
+				dettaglio.addElementoCorrelato(etichettaTransazioni, transazioneDettaglio);
 			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -561,11 +576,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), null, bd);
 				dominioLabel = elemento.getTitolo(); 
 			}
-		}catch(Exception e){log.error(e);}
+		}catch(Exception e){this.log.error(e);}
 
 		switch (statoVersamento) {
 		case NON_ESEGUITO:
-			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo.nonEseguito", codVersamentoEnte,dominioLabel));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo.nonEseguito", codVersamentoEnte,dominioLabel));
 			break;
 		case ANNULLATO:
 		case ANOMALO:
@@ -574,8 +589,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		case ESEGUITO:
 		default:
 			sb.append(
-					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", codVersamentoEnte,dominioLabel,
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name())));
+					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", codVersamentoEnte,dominioLabel,
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name())));
 			break;
 		}
 
@@ -595,10 +610,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		switch (statoVersamento) {
 		case NON_ESEGUITO:
-			if(dataScadenza != null)
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.nonEseguito",this.sdf.format(dataScadenza)));
-			else 
-				sb.append(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".label.sottotitolo.nonEseguito.noScadenza"));
+			if(dataScadenza != null) {
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.nonEseguito",this.sdf.format(dataScadenza)));
+			} else {
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".label.sottotitolo.nonEseguito.noScadenza"));
+			}
 			break;
 		case ANOMALO:
 			sb.append("");
@@ -609,8 +625,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		case ESEGUITO:
 		default:
 			sb.append(
-					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),this.sdf.format(dataUltimoAggiornamento) ));
+					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+statoVersamento.name()),this.sdf.format(dataUltimoAggiornamento) ));
 			break;
 		}
 
@@ -623,25 +639,87 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	}
 
 	@Override
+	public Map<String, Voce<String>> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
+		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
+		try {
+			// voci da inserire nella visualizzazione personalizzata 
+			// logo, codversamentoente, iuv, piva/cf, importo, scadenza, stato
+			if(StringUtils.isNotEmpty(entry.getCodVersamentoEnte())) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.label"), entry.getCodVersamentoEnte()));
+			}
+
+			if(entry.getDataScadenza() != null) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.label"), this.sdf.format(entry.getDataScadenza())));
+			}
+
+			Iuv iuv  = entry.getIuv(bd);
+			if(iuv!= null && StringUtils.isNotEmpty(iuv.getIuv())) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"), iuv.getIuv()));
+			}
+
+			// Dominio
+			UnitaOperativa uo = entry.getUo(bd);
+			if(uo != null){
+				Dominio dominio = uo.getDominio(bd);
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id"),
+						new Voce<String>(dominio.getCodDominio(),
+								Utils.getSigla(dominio.getRagioneSociale()))); 
+
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSocialeDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSocialeDominio.label"),
+								dominio.getRagioneSociale())); 
+			}
+
+			if(entry.getStatoVersamento() != null) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+entry.getStatoVersamento().name()),
+								entry.getStatoVersamento().name()));
+			}
+
+			if(entry.getImportoTotale() != null) {
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.label"), entry.getImportoTotale().toString()+ "€"));
+			}
+
+			Anagrafica anagrafica = entry.getAnagraficaDebitore(); 
+			if(StringUtils.isNotEmpty(anagrafica.getCodUnivoco())){
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cf.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cf.label"), anagrafica.getCodUnivoco()));
+			}
+
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
+		}
+
+		return voci; 
+	}
+
+	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		StringBuffer sb = new StringBuffer();
-		if(idsToExport != null && idsToExport.size() > 0)
+		if(idsToExport != null && idsToExport.size() > 0) {
 			for (Long long1 : idsToExport) {
 
-				if(sb.length() > 0)
+				if(sb.length() > 0) {
 					sb.append(", ");
+				}
 
 				sb.append(long1);
 			}
-	
+		}
+
 		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 		int numeroZipEntries = 0;
 		String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 
-		if(idsToExport.size() == 1)
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
+		if(idsToExport.size() == 1) {
+			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+		} 
 
 		String fileName = "Export.zip";
 		try{
@@ -709,9 +787,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 					// Aggrego i versamenti per dominio per generare gli estratti conto
 					List<Long> idVersamentiDominio = null;
-					if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio()))
+					if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio())) {
 						idVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
-					else{
+					} else{
 						idVersamentiDominio = new ArrayList<Long>();
 						mappaInputEstrattoConto.put(dominio.getCodDominio(), idVersamentiDominio);
 						mappaInputDomini.put(dominio.getCodDominio(), dominio);
@@ -733,7 +811,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					rrFsw.setSortOrder(SortOrder.DESC);
 
 					List<Rpt> listaRpt = rptBD.findAll(rptFilter);
-					if(listaRpt != null && listaRpt.size() >0 )
+					if(listaRpt != null && listaRpt.size() >0 ) {
 						for (Rpt rpt : listaRpt) {
 							numeroZipEntries ++;
 
@@ -743,8 +821,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							String iuvCcpDir = dirVersamento + "/" + iuv;
 
 							// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
-							if(!StringUtils.equalsIgnoreCase(ccp, "n/a"))
+							if(!StringUtils.equalsIgnoreCase(ccp, "n/a")) {
 								iuvCcpDir = iuvCcpDir  + "_" + ccp;
+							}
 
 							String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
 
@@ -769,7 +848,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 								ByteArrayOutputStream baos = new ByteArrayOutputStream();
 								String auxDigit = dominio.getAuxDigit() + "";
 								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, log);
+								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
 								String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
 								numeroZipEntries ++;
 								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
@@ -826,7 +905,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 										String causale = versamento.getCausaleVersamento().getSimple();
 										baos = new ByteArrayOutputStream();
 										Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
-										ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,log);
+										ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,this.log);
 
 										String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
 										numeroZipEntries ++;
@@ -838,6 +917,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 								}
 							}
 						}
+					}
 				}
 
 				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
@@ -1024,7 +1104,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				rrFsw.setSortOrder(SortOrder.DESC);
 
 				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
-				if(listaRpt != null && listaRpt.size() >0 )
+				if(listaRpt != null && listaRpt.size() >0 ) {
 					for (Rpt rpt : listaRpt) {
 						numeroZipEntries ++;
 						String iuv = rpt.getIuv();
@@ -1032,8 +1112,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						String iuvCcpDir = dirVersamento + "/" + iuv;
 
 						// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
-						if(!StringUtils.equalsIgnoreCase(ccp, "n/a"))
+						if(!StringUtils.equalsIgnoreCase(ccp, "n/a")) {
 							iuvCcpDir = iuvCcpDir  + "_" + ccp;
+						}
 
 						String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
 
@@ -1057,7 +1138,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
 							String auxDigit = dominio.getAuxDigit() + "";
 							String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-							RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, log);
+							RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
 
 							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
 							numeroZipEntries ++;
@@ -1116,7 +1197,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 									String causale = versamento.getCausaleVersamento().getSimple();
 									baos = new ByteArrayOutputStream();
 									Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
-									ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,log);
+									ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,this.log);
 
 									String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
 									numeroZipEntries ++;
@@ -1128,6 +1209,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 							}
 						}
 					}
+				}
 
 				//Estratto conto in formato CSV
 				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter(true); 
