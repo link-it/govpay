@@ -20,8 +20,6 @@
  */
 package it.govpay.web.rs;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,8 +35,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -53,7 +49,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 @Path("/")
@@ -177,23 +172,6 @@ public abstract class BaseRsService {
 
 		if(log!= null)
 			log.info("Invalidate Session completata.");
-	}
-
-	public static UriBuilder checkDarsURI(UriInfo uriInfo) throws MalformedURLException{
-		String urlDarsString = ConsoleProperties.getInstance().getUrlDARS();
-		if(urlDarsString != null){
-			try {
-				URL urlDARS = new URL(urlDarsString);
-				return uriInfo.getBaseUriBuilder()
-						.scheme(urlDARS.getProtocol())
-						.host(urlDARS.getHost())
-						.port(urlDARS.getPort());
-			} catch (MalformedURLException e) {
-				throw e;
-			}
-		}
-
-		return uriInfo.getBaseUriBuilder();
 	}
 
 	public static Date convertJsonStringToDate(String dateJson) throws Exception{

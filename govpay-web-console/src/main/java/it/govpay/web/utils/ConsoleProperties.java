@@ -25,8 +25,6 @@ public class ConsoleProperties {
 	private int numeroRisultatiPerPagina;
 	private boolean nascondiRicerca;
 	
-	private String urlDARS;
-	
 	private String dominioOperazioniJMX, tipoOperazioniJMX, nomeRisorsaOperazioniJMX, asJMX, usernameJMX, passwordJMX, factoryJMX;
 	private String[] operazioniJMXDisponibili;
 	private Map<String, String> urlJMX;
@@ -98,8 +96,6 @@ public class ConsoleProperties {
 			
 			String num = ConsoleProperties.getProperty("it.govpay.console.numeroRisultatiPerPagina", props, false);
 			this.numeroRisultatiPerPagina = num != null ? Integer.parseInt(num) : 25;
-			
-			this.urlDARS = ConsoleProperties.getProperty("it.govpay.dars.url", props, false);
 			
 			this.dominioOperazioniJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.dominio", props, false);
 			this.tipoOperazioniJMX = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.tipo", props, false);
@@ -196,10 +192,6 @@ public class ConsoleProperties {
 
 	public boolean isNascondiRicerca() {
 		return this.nascondiRicerca;
-	}
-
-	public String getUrlDARS() {
-		return this.urlDARS;
 	}
 
 	public String getDominioOperazioniJMX() {
