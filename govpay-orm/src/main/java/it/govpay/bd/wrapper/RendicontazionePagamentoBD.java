@@ -253,7 +253,7 @@ public class RendicontazionePagamentoBD extends BasicBD {
 		rendicontazione.setEsito(EsitoRendicontazione.toEnum((Integer) record.get(i++)));
 		rendicontazione.setData((Date) record.get(i++));
 		rendicontazione.setStato(StatoRendicontazione.valueOf((String) record.get(i++)));
-		rendicontazione.getAnomalie().addAll(rendicontazione.unmarshall((String) record.get(i++)));
+		rendicontazione.setAnomalie((String) record.get(i++));
 		rendicontazione.setId((Long) record.get(i++));
 		rendicontazione.setIdFr((Long) record.get(i++));
 		rendicontazione.setIdPagamento((Long) record.get(i++));

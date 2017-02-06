@@ -90,7 +90,7 @@
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>
-		
+			
 			<xsd:complexType name="iuvGenerato">
 				<xsd:sequence>
 					<xsd:element name="codApplicazione" type="com:cod35" />
@@ -99,7 +99,7 @@
 					<xsd:element name="iuv" type="com:cod35" />
 					<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
+							<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="qrCode" type="xsd:base64Binary" />
@@ -250,6 +250,14 @@
 						</xsd:complexType>
 					</xsd:element>
 				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="anomalia">
+				<xsd:simpleContent>
+					<xsd:extension base="xsd:string">
+						<xsd:attribute name="codice" type="xsd:string" />
+					</xsd:extension>
+				</xsd:simpleContent>
 			</xsd:complexType>
 			
 			<xsd:simpleType name="uuid">
@@ -516,6 +524,29 @@
 					<xsd:element name="fax" type="xsd:string" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
+			
+			<xsd:simpleType name="statoFr">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ACCETTATA" />
+					<xsd:enumeration value="ANOMALA" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="statoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="OK" />
+					<xsd:enumeration value="ANOMALA" />
+					<xsd:enumeration value="ALTRO_INTERMEDIARIO" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="esitoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ESEGUITO" />
+					<xsd:enumeration value="REVOCATO" />
+					<xsd:enumeration value="ESEGUITO_SENZA_RPT" />
+				</xsd:restriction>
+			</xsd:simpleType>
 			
 			<xsd:element name="metaInfo" nillable="true">
 				<xsd:complexType>

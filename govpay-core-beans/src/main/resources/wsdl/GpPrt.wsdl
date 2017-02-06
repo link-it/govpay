@@ -4,15 +4,15 @@
 	<wsdl:types>
 
 		<xsd:schema targetNamespace="http://www.govpay.it/servizi/commons/">
-
+		
 			<xsd:complexType name="gpResponse">
 				<xsd:sequence>
 					<xsd:element name="codOperazione" type="com:uuid" />
 					<xsd:element name="codEsitoOperazione" type="com:esitoOperazione" />
-					<xsd:element name="descrizioneEsitoOperazione" type="xsd:string" minOccurs="0" />
+					<xsd:element name="descrizioneEsitoOperazione" type="xsd:string" minOccurs="0"/>
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="canale">
 				<xsd:sequence>
 					<xsd:element name="codPsp" type="com:cod35" />
@@ -20,11 +20,11 @@
 					<xsd:element name="tipoVersamento" type="com:tipoVersamento" />
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="estremiFlussoRendicontazione">
 				<xsd:sequence>
 					<xsd:element name="codFlusso" type="com:cod35" />
-					<xsd:element name="codBicRiversamento" type="xsd:string" minOccurs="0" />
+					<xsd:element name="codBicRiversamento" type="xsd:string" minOccurs="0"/>
 					<xsd:element name="annoRiferimento" type="xsd:gYear" />
 					<xsd:element name="codPsp" type="com:cod35" />
 					<xsd:element name="dataFlusso" type="xsd:dateTime" />
@@ -42,7 +42,7 @@
 					</xsd:element>
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="flussoRendicontazione">
 				<xsd:complexContent>
 					<xsd:extension base="com:estremiFlussoRendicontazione">
@@ -77,7 +77,7 @@
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="iuvGenerato">
 				<xsd:sequence>
 					<xsd:element name="codApplicazione" type="com:cod35" />
@@ -86,22 +86,22 @@
 					<xsd:element name="iuv" type="com:cod35" />
 					<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
 						<xsd:annotation>
-							<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
+							<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
 						</xsd:annotation>
 					</xsd:element>
 					<xsd:element name="qrCode" type="xsd:base64Binary" />
 					<xsd:element name="barCode" type="xsd:base64Binary" />
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="pagamento">
 				<xsd:sequence>
 					<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
 					<xsd:element name="importoPagato" type="com:importo" />
 					<xsd:element name="iur" type="com:cod35" />
 					<xsd:element name="dataPagamento" type="xsd:date" />
-					<xsd:element name="dataAcquisizione" type="xsd:date" minOccurs="0" />
-					<xsd:element name="commissioniPsp" type="com:importo" minOccurs="0" />
+					<xsd:element name="dataAcquisizione" type="xsd:date" minOccurs="0"/>
+					<xsd:element name="commissioniPsp" type="com:importo" minOccurs="0"/>
 					<xsd:element name="allegato" minOccurs="0">
 						<xsd:complexType>
 							<xsd:sequence>
@@ -110,15 +110,15 @@
 							</xsd:sequence>
 						</xsd:complexType>
 					</xsd:element>
-					<xsd:element name="dataAcquisizioneRevoca" type="xsd:date" minOccurs="0" />
-					<xsd:element name="causaleRevoca" type="xsd:string" minOccurs="0" />
-					<xsd:element name="datiRevoca" type="xsd:string" minOccurs="0" />
-					<xsd:element name="importoRevocato" type="com:importo" minOccurs="0" />
-					<xsd:element name="esitoRevoca" type="xsd:string" minOccurs="0" />
-					<xsd:element name="datiEsitoRevoca" type="xsd:string" minOccurs="0" />
+					<xsd:element name="dataAcquisizioneRevoca" type="xsd:date" minOccurs="0"/>
+					<xsd:element name="causaleRevoca" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="datiRevoca" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="importoRevocato" type="com:importo" minOccurs="0"/>
+					<xsd:element name="esitoRevoca" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="datiEsitoRevoca" type="xsd:string" minOccurs="0"/>
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="transazione">
 				<xsd:sequence>
 					<xsd:element name="data" type="xsd:date" minOccurs="0">
@@ -140,7 +140,7 @@
 					<xsd:element name="pagamento" type="com:pagamento" minOccurs="0" maxOccurs="5" />
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="richiestaStorno">
 				<xsd:sequence>
 					<xsd:element name="codRichiesta" type="com:cod35" />
@@ -152,7 +152,7 @@
 					<xsd:element name="importoStornato" type="com:importo" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
 			<xsd:complexType name="versamentoKey">
 				<xsd:choice>
 					<xsd:sequence>
@@ -239,13 +239,21 @@
 				</xsd:sequence>
 			</xsd:complexType>
 
+			<xsd:complexType name="anomalia">
+				<xsd:simpleContent>
+					<xsd:extension base="xsd:string">
+						<xsd:attribute name="codice" type="xsd:string" />
+					</xsd:extension>
+				</xsd:simpleContent>
+			</xsd:complexType>
+			
 			<xsd:simpleType name="uuid">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="36" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="cod35">
 				<xsd:restriction base="xsd:string">
 					<xsd:pattern value="[^ ]*" />
@@ -253,62 +261,62 @@
 					<xsd:maxLength value="35" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string2">
 				<xsd:restriction base="xsd:string">
 					<xsd:pattern value="[A-Z]{2,2}"></xsd:pattern>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string16">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="16" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string20">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="20" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string35">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="35" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string40">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="40" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string70">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="70" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string120">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="120" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string140">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="140" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string256">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
@@ -322,14 +330,14 @@
 		            <xsd:maxLength value="256"/>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="string512">
 				<xsd:restriction base="xsd:string">
 					<xsd:minLength value="1" />
 					<xsd:maxLength value="512" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+		
 			<xsd:simpleType name="importo10">
 				<xsd:restriction base="xsd:decimal">
 					<xsd:minInclusive value="0.00" />
@@ -356,7 +364,7 @@
 					<xsd:totalDigits value="18" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="esitoVerificaVersamento">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="OK"></xsd:enumeration>
@@ -366,7 +374,7 @@
 					<xsd:enumeration value="PAGAMENTO_ANNULLATO"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="tipoAutenticazione">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="CNS"></xsd:enumeration>
@@ -375,7 +383,7 @@
 					<xsd:enumeration value="N/A"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="tipoContabilita">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="CAPITOLO"></xsd:enumeration>
@@ -384,17 +392,13 @@
 					<xsd:enumeration value="ALTRO"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="tipoBollo">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="01">
-						<xsd:annotation>
-							<xsd:documentation>Imposta di Bollo</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
+					<xsd:enumeration value="01"><xsd:annotation><xsd:documentation>Imposta di Bollo</xsd:documentation></xsd:annotation></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="tipoSceltaWisp">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="SI" />
@@ -402,7 +406,7 @@
 					<xsd:enumeration value="PAGA_DOPO" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="modelloPagamento">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="IMMEDIATO"></xsd:enumeration>
@@ -411,7 +415,7 @@
 					<xsd:enumeration value="ATTIVATO_PRESSO_PSP"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="statoVersamento">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="NON_ESEGUITO" />
@@ -422,42 +426,18 @@
 					<xsd:enumeration value="ESEGUITO_SENZA_RPT" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="tipoVersamento">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="BBT">
-						<xsd:annotation>
-							<xsd:documentation>Bonifico Bancario di Tesoreria</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="BP">
-						<xsd:annotation>
-							<xsd:documentation>Bollettino Postale</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="AD">
-						<xsd:annotation>
-							<xsd:documentation>Addebito diretto</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="CP">
-						<xsd:annotation>
-							<xsd:documentation>Carta di Pagamento</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="OBEP">
-						<xsd:annotation>
-							<xsd:documentation>On-line Banking e-payment</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PO">
-						<xsd:annotation>
-							<xsd:documentation>Pagamento attivato presso PSP</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
+					<xsd:enumeration value="BBT"><xsd:annotation><xsd:documentation>Bonifico Bancario di Tesoreria</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="BP"><xsd:annotation><xsd:documentation>Bollettino Postale</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="AD"><xsd:annotation><xsd:documentation>Addebito diretto</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="CP"><xsd:annotation><xsd:documentation>Carta di Pagamento</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="OBEP"><xsd:annotation><xsd:documentation>On-line Banking e-payment</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PO"><xsd:annotation><xsd:documentation>Pagamento attivato presso PSP</xsd:documentation></xsd:annotation></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="tipoRendicontazione">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="ESEGUITO" />
@@ -465,33 +445,25 @@
 					<xsd:enumeration value="ESEGUITO_SENZA_RPT" />
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="tipoAllegato">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="ES">
-						<xsd:annotation>
-							<xsd:documentation>Esito del pagamento prodotto dal PSP</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="BD">
-						<xsd:annotation>
-							<xsd:documentation>Marca da Bollo Digitale</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
+					<xsd:enumeration value="ES"><xsd:annotation><xsd:documentation>Esito del pagamento prodotto dal PSP</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="BD"><xsd:annotation><xsd:documentation>Marca da Bollo Digitale</xsd:documentation></xsd:annotation></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="statoTransazione">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="RPT_ATTIVATA"></xsd:enumeration>
-					<xsd:enumeration value="RPT_ERRORE_INVIO_A_NODO"></xsd:enumeration>
-					<xsd:enumeration value="RPT_RICEVUTA_NODO"></xsd:enumeration>
-					<xsd:enumeration value="RPT_RIFIUTATA_NODO"></xsd:enumeration>
-					<xsd:enumeration value="RPT_ACCETTATA_NODO"></xsd:enumeration>
-					<xsd:enumeration value="RPT_RIFIUTATA_PSP"></xsd:enumeration>
-					<xsd:enumeration value="RPT_ACCETTATA_PSP"></xsd:enumeration>
-					<xsd:enumeration value="RPT_ERRORE_INVIO_A_PSP"></xsd:enumeration>
-					<xsd:enumeration value="RPT_INVIATA_A_PSP"></xsd:enumeration>
+					<xsd:enumeration value="RPT_ERRORE_INVIO_A_NODO"></xsd:enumeration> 
+					<xsd:enumeration value="RPT_RICEVUTA_NODO"></xsd:enumeration> 
+					<xsd:enumeration value="RPT_RIFIUTATA_NODO"></xsd:enumeration> 
+					<xsd:enumeration value="RPT_ACCETTATA_NODO"></xsd:enumeration> 
+					<xsd:enumeration value="RPT_RIFIUTATA_PSP"></xsd:enumeration> 
+					<xsd:enumeration value="RPT_ACCETTATA_PSP"></xsd:enumeration> 
+					<xsd:enumeration value="RPT_ERRORE_INVIO_A_PSP"></xsd:enumeration> 
+					<xsd:enumeration value="RPT_INVIATA_A_PSP"></xsd:enumeration> 
 					<xsd:enumeration value="RPT_DECORSI_TERMINI"></xsd:enumeration>
 					<xsd:enumeration value="RT_RICEVUTA_NODO"></xsd:enumeration>
 					<xsd:enumeration value="RT_RIFIUTATA_NODO"></xsd:enumeration>
@@ -501,18 +473,18 @@
 					<xsd:enumeration value="RT_ESITO_SCONOSCIUTO_PA"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="statoRevoca">
 				<xsd:restriction base="xsd:string">
-					<xsd:enumeration value="RR_ATTIVATA"></xsd:enumeration>
-					<xsd:enumeration value="RR_ERRORE_INVIO_A_NODO"></xsd:enumeration>
-					<xsd:enumeration value="RR_ACCETTATA_NODO"></xsd:enumeration>
-					<xsd:enumeration value="RR_RIFIUTATA_NODO"></xsd:enumeration>
+					<xsd:enumeration value="RR_ATTIVATA"></xsd:enumeration> 
+					<xsd:enumeration value="RR_ERRORE_INVIO_A_NODO"></xsd:enumeration> 
+					<xsd:enumeration value="RR_ACCETTATA_NODO"></xsd:enumeration> 
+					<xsd:enumeration value="RR_RIFIUTATA_NODO"></xsd:enumeration> 
 					<xsd:enumeration value="ER_ACCETTATA_PA"></xsd:enumeration>
 					<xsd:enumeration value="ER_RIFIUTATA_PA"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:simpleType name="esitoTransazione">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="PAGAMENTO_ESEGUITO"></xsd:enumeration>
@@ -522,7 +494,7 @@
 					<xsd:enumeration value="DECORRENZA_TERMINI_PARZIALE"></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
-
+			
 			<xsd:complexType name="anagrafica">
 				<xsd:sequence>
 					<xsd:element name="codUnivoco" type="com:string35" />
@@ -539,11 +511,34 @@
 					<xsd:element name="fax" type="xsd:string" minOccurs="0" />
 				</xsd:sequence>
 			</xsd:complexType>
-
+			
+			<xsd:simpleType name="statoFr">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ACCETTATA" />
+					<xsd:enumeration value="ANOMALA" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="statoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="OK" />
+					<xsd:enumeration value="ANOMALA" />
+					<xsd:enumeration value="ALTRO_INTERMEDIARIO" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="esitoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ESEGUITO" />
+					<xsd:enumeration value="REVOCATO" />
+					<xsd:enumeration value="ESEGUITO_SENZA_RPT" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
 			<xsd:element name="metaInfo" nillable="true">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="iuvProp" minOccurs="0" maxOccurs="unbounded">
+						<xsd:element name="iuvProp" maxOccurs="unbounded">
 							<xsd:complexType>
 								<xsd:simpleContent>
 									<xsd:extension base="xsd:string">
@@ -555,355 +550,79 @@
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
-
+			
 			<xsd:simpleType name="esitoOperazione">
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="OK"></xsd:enumeration>
-					<xsd:enumeration value="INTERNAL">
-						<xsd:annotation>
-							<xsd:documentation>Errore non atteso</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="AUT_000">
-						<xsd:annotation>
-							<xsd:documentation>Principal non fornito</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="AUT_001">
-						<xsd:annotation>
-							<xsd:documentation>Principal non associato ad alcuna Applicazione</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="AUT_002">
-						<xsd:annotation>
-							<xsd:documentation>Principal non associato ad alcun Portale</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="APP_000">
-						<xsd:annotation>
-							<xsd:documentation>Applicazione inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="APP_001">
-						<xsd:annotation>
-							<xsd:documentation>Applicazione disabilitata</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="APP_002">
-						<xsd:annotation>
-							<xsd:documentation>Applicazione autenticata diversa dalla chiamante</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="DOM_000">
-						<xsd:annotation>
-							<xsd:documentation>Dominio inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="DOM_001">
-						<xsd:annotation>
-							<xsd:documentation>Dominio disabilitato</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="DOM_002">
-						<xsd:annotation>
-							<xsd:documentation>Dominio configurato per la generazione custom degli iuv</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="DOM_003">
-						<xsd:annotation>
-							<xsd:documentation>Dominio configurato per la generazione centralizzata degli iuv</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="NDP_000">
-						<xsd:annotation>
-							<xsd:documentation>Errore di comunicazione con il Nodo dei Pagamenti</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="NDP_001">
-						<xsd:annotation>
-							<xsd:documentation>Ricevuto FAULT dal Nodo dei Pagamenti</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_000">
-						<xsd:annotation>
-							<xsd:documentation>I versamenti di una richiesta di pagamento devono afferire alla stessa stazione intermediario</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_001">
-						<xsd:annotation>
-							<xsd:documentation>Il canale indicato non supporta il pagamento di piu' versamenti</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_002">
-						<xsd:annotation>
-							<xsd:documentation>Il canale indicato non puo' eseguire pagamenti ad iniziativa Ente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_003">
-						<xsd:annotation>
-							<xsd:documentation>Il canale indicato non supporta il pagamento di Marca da Bollo Telematica</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_004">
-						<xsd:annotation>
-							<xsd:documentation>Il tipo di pagamento Addebito Diretto richiede di specificare un Iban di Addebito</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_005">
-						<xsd:annotation>
-							<xsd:documentation>Il tipo di pagamento On-line Banking e-Payment (OBEP) consente il pagamento di versamenti con al piu' un singolo versamento</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_006">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile pagare un versamento in stato diverso da NON_ESEGUITO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_007">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile pagare un versamento scaduto</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_008">
-						<xsd:annotation>
-							<xsd:documentation>Transazione di pagamento inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_009">
-						<xsd:annotation>
-							<xsd:documentation>Pagamento gia' stornato</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_010">
-						<xsd:annotation>
-							<xsd:documentation>Richiesta di storno inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PAG_011">
-						<xsd:annotation>
-							<xsd:documentation>Nessun pagamento da stornare</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PRT_000">
-						<xsd:annotation>
-							<xsd:documentation>Portale inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PRT_001">
-						<xsd:annotation>
-							<xsd:documentation>Portale disabilitato</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PRT_002">
-						<xsd:annotation>
-							<xsd:documentation>Portale autenticato diverso dal chiamante</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PRT_003">
-						<xsd:annotation>
-							<xsd:documentation>Portale non autorizzato a pagare i versamenti dell'applicazione indicata</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PRT_004">
-						<xsd:annotation>
-							<xsd:documentation>Portale non autorizzato a visualizzare l'esito della transazione indicata</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PRT_005">
-						<xsd:annotation>
-							<xsd:documentation>Portale non autorizzato all'operazione richiesta</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PSP_000">
-						<xsd:annotation>
-							<xsd:documentation>Il canale non esiste</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="PSP_001">
-						<xsd:annotation>
-							<xsd:documentation>Il canale e' disabilitato</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="RND_000">
-						<xsd:annotation>
-							<xsd:documentation>Il Flusso di Rendicontazione cercato non esiste.</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="RND_001">
-						<xsd:annotation>
-							<xsd:documentation>Applicazione non abilitata all'acquisizione del flusso indicato.</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="STA_000">
-						<xsd:annotation>
-							<xsd:documentation>Stazione inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="STA_001">
-						<xsd:annotation>
-							<xsd:documentation>Stazione disabilitata</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="TRB_000">
-						<xsd:annotation>
-							<xsd:documentation>Tributo inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="UOP_000">
-						<xsd:annotation>
-							<xsd:documentation>Unita Operativa inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="UOP_001">
-						<xsd:annotation>
-							<xsd:documentation>Unita Operativa disabilitata</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_000">
-						<xsd:annotation>
-							<xsd:documentation>Versamento non pagabile ad iniziativa PSP</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_001">
-						<xsd:annotation>
-							<xsd:documentation>Il versamento presenta singoli versamenti con codSingoloVersamento non univoci</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_002">
-						<xsd:annotation>
-							<xsd:documentation>La somma degli importi dei singoli versamenti non corrisponde all'importo totale del versamento</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_003">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile aggiornare un versamento in stato diverso da NON_ESEGUITO o ANNULLATO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_004">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile aggiornare un versamento cambiando l'unità operativa beneficiaria</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_005">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile aggiornare un versamento cambiando il numero di singoli importi</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_006">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile aggiornare un versamento modificando i codSingoliVersamenti dei singoli versamenti</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_007">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile aggiornare un versamento modificando la tipologia di tributo dei singoli versamenti</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_008">
-						<xsd:annotation>
-							<xsd:documentation>Versamento inesistente</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_009">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile annullare un versamento in stato diverso da NON_ESEGUITO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_010">
-						<xsd:annotation>
-							<xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_SCADUTO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_011">
-						<xsd:annotation>
-							<xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_SCONOSCIUTO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_012">
-						<xsd:annotation>
-							<xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_DUPLICATO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_013">
-						<xsd:annotation>
-							<xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_ANNULLATO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_014">
-						<xsd:annotation>
-							<xsd:documentation>L'aggiornamento del versamento dall'applicazione e' fallito</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_015">
-						<xsd:annotation>
-							<xsd:documentation>Aggiornamento non consentito se AggiornaSeEsiste impostato a false</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_016">
-						<xsd:annotation>
-							<xsd:documentation>Non è possibile notificare un pagamento per un versamento in stato diverso da NON_ESEGUITO o ANNULLATO</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_017">
-						<xsd:annotation>
-							<xsd:documentation>Iuv da caricare non conforme alle specifiche AgID</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_018">
-						<xsd:annotation>
-							<xsd:documentation>Iuv da caricare gia' associato ad un diverso Versamento</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_019">
-						<xsd:annotation>
-							<xsd:documentation>Applicazione non autorizzata all'autodeterminazione dei tributi</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_020">
-						<xsd:annotation>
-							<xsd:documentation>Iban di accredito non censito</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_021">
-						<xsd:annotation>
-							<xsd:documentation>Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_022">
-						<xsd:annotation>
-							<xsd:documentation>Applicazione non autorizzata alla gestione del tributo indicato</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="VER_023">
-						<xsd:annotation>
-							<xsd:documentation>Non e' possibile aggiornare un versamento modificando l'iban di accredito</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="WISP_000">
-						<xsd:annotation>
-							<xsd:documentation>Sessione di scelta sconosciuta al WISP</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="WISP_001">
-						<xsd:annotation>
-							<xsd:documentation>Sessione di scelta scaduta per timeout al WISP</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="WISP_002">
-						<xsd:annotation>
-							<xsd:documentation>Canale scelto non presente in anagrafica</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="WISP_003">
-						<xsd:annotation>
-							<xsd:documentation>Il debitore non ha operato alcuna scelta sul WISP</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
-					<xsd:enumeration value="WISP_004">
-						<xsd:annotation>
-							<xsd:documentation>Il debitore ha scelto di pagare dopo tramite avviso di pagamento.</xsd:documentation>
-						</xsd:annotation>
-					</xsd:enumeration>
+					<xsd:enumeration value="INTERNAL"><xsd:annotation><xsd:documentation>Errore non atteso</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="AUT_000"><xsd:annotation><xsd:documentation>Principal non fornito</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="AUT_001"><xsd:annotation><xsd:documentation>Principal non associato ad alcuna Applicazione</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="AUT_002"><xsd:annotation><xsd:documentation>Principal non associato ad alcun Portale</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="APP_000"><xsd:annotation><xsd:documentation>Applicazione inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="APP_001"><xsd:annotation><xsd:documentation>Applicazione disabilitata</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="APP_002"><xsd:annotation><xsd:documentation>Applicazione autenticata diversa dalla chiamante</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="DOM_000"><xsd:annotation><xsd:documentation>Dominio inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="DOM_001"><xsd:annotation><xsd:documentation>Dominio disabilitato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="DOM_002"><xsd:annotation><xsd:documentation>Dominio configurato per la generazione custom degli iuv</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="DOM_003"><xsd:annotation><xsd:documentation>Dominio configurato per la generazione centralizzata degli iuv</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="NDP_000"><xsd:annotation><xsd:documentation>Errore di comunicazione con il Nodo dei Pagamenti</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="NDP_001"><xsd:annotation><xsd:documentation>Ricevuto FAULT dal Nodo dei Pagamenti</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_000"><xsd:annotation><xsd:documentation>I versamenti di una richiesta di pagamento devono afferire alla stessa stazione intermediario</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_001"><xsd:annotation><xsd:documentation>Il canale indicato non supporta il pagamento di piu' versamenti</xsd:documentation></xsd:annotation></xsd:enumeration>	
+					<xsd:enumeration value="PAG_002"><xsd:annotation><xsd:documentation>Il canale indicato non puo' eseguire pagamenti ad iniziativa Ente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_003"><xsd:annotation><xsd:documentation>Il canale indicato non supporta il pagamento di Marca da Bollo Telematica</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_004"><xsd:annotation><xsd:documentation>Il tipo di pagamento Addebito Diretto richiede di specificare un Iban di Addebito</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_005"><xsd:annotation><xsd:documentation>Il tipo di pagamento On-line Banking e-Payment (OBEP) consente il pagamento di versamenti con al piu' un singolo versamento</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_006"><xsd:annotation><xsd:documentation>Non è possibile pagare un versamento in stato diverso da NON_ESEGUITO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_007"><xsd:annotation><xsd:documentation>Non è possibile pagare un versamento scaduto</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_008"><xsd:annotation><xsd:documentation>Transazione di pagamento inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_009"><xsd:annotation><xsd:documentation>Pagamento gia' stornato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_010"><xsd:annotation><xsd:documentation>Richiesta di storno inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PAG_011"><xsd:annotation><xsd:documentation>Nessun pagamento da stornare</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PRT_000"><xsd:annotation><xsd:documentation>Portale inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PRT_001"><xsd:annotation><xsd:documentation>Portale disabilitato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PRT_002"><xsd:annotation><xsd:documentation>Portale autenticato diverso dal chiamante</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PRT_003"><xsd:annotation><xsd:documentation>Portale non autorizzato a pagare i versamenti dell'applicazione indicata</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PRT_004"><xsd:annotation><xsd:documentation>Portale non autorizzato a visualizzare l'esito della transazione indicata</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PRT_005"><xsd:annotation><xsd:documentation>Portale non autorizzato all'operazione richiesta</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PSP_000"><xsd:annotation><xsd:documentation>Il canale non esiste</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="PSP_001"><xsd:annotation><xsd:documentation>Il canale e' disabilitato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="RND_000"><xsd:annotation><xsd:documentation>Il Flusso di Rendicontazione cercato non esiste.</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="RND_001"><xsd:annotation><xsd:documentation>Applicazione non abilitata all'acquisizione del flusso indicato.</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="STA_000"><xsd:annotation><xsd:documentation>Stazione inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="STA_001"><xsd:annotation><xsd:documentation>Stazione disabilitata</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="TRB_000"><xsd:annotation><xsd:documentation>Tributo inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="UOP_000"><xsd:annotation><xsd:documentation>Unita Operativa inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="UOP_001"><xsd:annotation><xsd:documentation>Unita Operativa disabilitata</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_000"><xsd:annotation><xsd:documentation>Versamento non pagabile ad iniziativa PSP</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_001"><xsd:annotation><xsd:documentation>Il versamento presenta singoli versamenti con codSingoloVersamento non univoci</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_002"><xsd:annotation><xsd:documentation>La somma degli importi dei singoli versamenti non corrisponde all'importo totale del versamento</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_003"><xsd:annotation><xsd:documentation>Non è possibile aggiornare un versamento in stato diverso da NON_ESEGUITO o ANNULLATO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_004"><xsd:annotation><xsd:documentation>Non è possibile aggiornare un versamento cambiando l'unità operativa beneficiaria</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_005"><xsd:annotation><xsd:documentation>Non è possibile aggiornare un versamento cambiando il numero di singoli importi</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_006"><xsd:annotation><xsd:documentation>Non è possibile aggiornare un versamento modificando i  codSingoliVersamenti dei singoli versamenti</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_007"><xsd:annotation><xsd:documentation>Non è possibile aggiornare un versamento modificando la tipologia di tributo dei singoli versamenti</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_008"><xsd:annotation><xsd:documentation>Versamento inesistente</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_009"><xsd:annotation><xsd:documentation>Non è possibile annullare un versamento in stato diverso da NON_ESEGUITO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_010"><xsd:annotation><xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_SCADUTO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_011"><xsd:annotation><xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_SCONOSCIUTO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_012"><xsd:annotation><xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_DUPLICATO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_013"><xsd:annotation><xsd:documentation>L'aggiornamento del versamento dall'applicazione ha dato esito PAA_PAGAMENTO_ANNULLATO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_014"><xsd:annotation><xsd:documentation>L'aggiornamento del versamento dall'applicazione e' fallito</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_015"><xsd:annotation><xsd:documentation>Aggiornamento non consentito se AggiornaSeEsiste impostato a false</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_016"><xsd:annotation><xsd:documentation>Non è possibile notificare un pagamento per un versamento in stato diverso da NON_ESEGUITO o ANNULLATO</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_017"><xsd:annotation><xsd:documentation>Iuv da caricare non conforme alle specifiche AgID</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_018"><xsd:annotation><xsd:documentation>Iuv da caricare gia' associato ad un diverso Versamento</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_019"><xsd:annotation><xsd:documentation>Applicazione non autorizzata all'autodeterminazione dei tributi</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_020"><xsd:annotation><xsd:documentation>Iban di accredito non censito</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_021"><xsd:annotation><xsd:documentation>Applicazione non autorizzata all'autodeterminazione dei tributi per il dominio indicato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_022"><xsd:annotation><xsd:documentation>Applicazione non autorizzata alla gestione del tributo indicato</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="VER_023"><xsd:annotation><xsd:documentation>Non e' possibile aggiornare un versamento modificando l'iban di accredito</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="WISP_000"><xsd:annotation><xsd:documentation>Sessione di scelta sconosciuta al WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="WISP_001"><xsd:annotation><xsd:documentation>Sessione di scelta scaduta per timeout al WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="WISP_002"><xsd:annotation><xsd:documentation>Canale scelto non presente in anagrafica</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="WISP_003"><xsd:annotation><xsd:documentation>Il debitore non ha operato alcuna scelta sul WISP</xsd:documentation></xsd:annotation></xsd:enumeration>
+					<xsd:enumeration value="WISP_004"><xsd:annotation><xsd:documentation>Il debitore ha scelto di pagare dopo tramite avviso di pagamento.</xsd:documentation></xsd:annotation></xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
 		</xsd:schema>

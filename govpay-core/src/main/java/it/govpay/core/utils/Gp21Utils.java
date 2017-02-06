@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Iuv;
+import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.bd.model.Rpt;
@@ -49,6 +51,7 @@ import it.govpay.servizi.commons.Transazione;
 import it.govpay.servizi.commons.Pagamento.Allegato;
 import it.govpay.servizi.gpprt.GpChiediListaVersamentiResponse.Versamento.SpezzoneCausaleStrutturata;
 import it.govpay.servizi.gpprt.GpChiediStatoRichiestaStornoResponse.Storno;
+import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse;
 
 public class Gp21Utils {
 
@@ -161,6 +164,26 @@ public class Gp21Utils {
 		}
 		return storno;
 	}
+	
+	public static FlussoRendicontazione toFr(Fr frModel, List<RendicontazionePagamento> rends, Versione versione, BasicBD bd) throws ServiceException {
+		
+		FlussoRendicontazione fr = new FlussoRendicontazione();
+		int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(frModel.getDataFlusso()));
+		fr.setAnnoRiferimento(annoFlusso);
+		fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
+		fr.setCodFlusso(frModel.getCodFlusso());
+		fr.setCodPsp(frModel.getCodPsp());
+		fr.setDataFlusso(frModel.getDataFlusso());
+		fr.setDataRegolamento(frModel.getDataRegolamento());
+		fr.setImportoTotale(frModel.getImportoTotalePagamenti());
+		fr.setNumeroPagamenti(frModel.getNumeroPagamenti());
+		fr.setIur(frModel.getIur());
+		
+		for(RendicontazionePagamento rend : rends) {
+			fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend, versione, bd));
+		}
+		return fr;
+	}
 
 	public static it.govpay.servizi.commons.FlussoRendicontazione.Pagamento toRendicontazionePagamento(RendicontazionePagamento rend, Versione versione, BasicBD bd) throws ServiceException {
 		FlussoRendicontazione.Pagamento p = new FlussoRendicontazione.Pagamento();
@@ -215,4 +238,21 @@ public class Gp21Utils {
 		return null;
 	}
 
+	public static SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
+	public static it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione toFr(Fr frModel, Versione versione, BasicBD bd) {
+		GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione efr = new GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione();
+		int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(frModel.getDataFlusso()));
+		efr.setAnnoRiferimento(annoFlusso);
+		efr.setCodBicRiversamento(frModel.getCodBicRiversamento());
+		efr.setCodDominio(frModel.getCodDominio());
+		efr.setCodFlusso(frModel.getCodFlusso());
+		efr.setCodPsp(frModel.getCodPsp());
+		efr.setDataFlusso(frModel.getDataFlusso());
+		efr.setDataRegolamento(frModel.getDataRegolamento());
+		efr.setIur(frModel.getIur());
+		efr.setImportoTotale(frModel.getImportoTotalePagamenti());
+		efr.setNumeroPagamenti(frModel.getNumeroPagamenti());
+		return efr;
+	}
+	
 }
