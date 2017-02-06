@@ -5,16 +5,52 @@
 		<servlet-name>javax.ws.rs.core.Application</servlet-name>
 		<url-pattern>/rs/*</url-pattern>
 	</servlet-mapping>
+	
+	<!-- PagamentiTelematiciGPRnd  -->
 
-	<servlet id="...">
+	<servlet id="GPRnd_v2.3">
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
 		<servlet-class>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-class>
 	</servlet>
-	
 	<servlet-mapping>
 		<servlet-name>it.govpay.web.ws.v2_3.PagamentiTelematiciGPRndImpl</servlet-name>
 		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni</url-pattern>
 	</servlet-mapping>
+	
+	<servlet id="GPRnd">
+		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPRndImpl</servlet-name>
+		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPRndImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPRndImpl</servlet-name>
+		<url-pattern>/PagamentiTelematiciGPRndService</url-pattern>
+	</servlet-mapping>
+	
+	<!-- PagamentiTelematiciGPApp  -->
+	
+	<servlet id="GPApp">
+		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-name>
+		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
+		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni</url-pattern>
+		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPAppImpl</servlet-name>
+	</servlet-mapping>
+	
+	<!-- PagamentiTelematiciGPPrt  -->
+	
+	<servlet id="GPPrt">
+		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-name>
+		<servlet-class>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
+		<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
+		<servlet-name>it.govpay.web.ws.PagamentiTelematiciGPPrtImpl</servlet-name>
+	</servlet-mapping>
+	
+	
 
 	<security-constraint>
 		<web-resource-collection>
@@ -24,7 +60,9 @@
 			<url-pattern>/PagamentiTelematiciGPAppService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPPrtService</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPRndService</url-pattern>
-			<url-pattern>/PagamentiTelematiciGP/*</url-pattern>
+			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni</url-pattern>
+			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni</url-pattern>
+			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali</url-pattern>
 			<url-pattern>/rs/caricatore/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint>
@@ -41,6 +79,8 @@
 			<url-pattern>/PagamentiTelematiciGPPrtService?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGPRndService?wsdl</url-pattern>
 			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Rendicontazioni?wsdl</url-pattern>
+			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Applicazioni?wsdl</url-pattern>
+			<url-pattern>/PagamentiTelematiciGP/soap/2.3/Portali?wsdl</url-pattern>
 		</web-resource-collection>
 	</security-constraint>
 

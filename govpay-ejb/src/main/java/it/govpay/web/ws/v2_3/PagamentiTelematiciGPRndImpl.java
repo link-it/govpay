@@ -94,6 +94,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			for(Fr frModel : rendicontazioni) {
 				response.getFlussoRendicontazione().add(Gp23Utils.toFr(frModel, applicazione.getVersione(), bd));
 			}
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());

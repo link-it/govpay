@@ -29,11 +29,11 @@ import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.Anomalia;
 import it.govpay.servizi.commons.EsitoRendicontazione;
-import it.govpay.servizi.commons.EstremiFlussoRendicontazione23;
-import it.govpay.servizi.commons.FlussoRendicontazione23;
-import it.govpay.servizi.commons.FlussoRendicontazione23.Rendicontazione;
+import it.govpay.servizi.v2_3.commons.EstremiFlussoRendicontazione;
+import it.govpay.servizi.v2_3.commons.FlussoRendicontazione;
 import it.govpay.servizi.commons.StatoFr;
 import it.govpay.servizi.commons.StatoRendicontazione;
+import it.govpay.servizi.v2_3.commons.FlussoRendicontazione.Rendicontazione;
 
 public class Gp23Utils {
 
@@ -44,7 +44,7 @@ public class Gp23Utils {
 		rendicontazione.setImportoRendicontato(rend.getRendicontazione().getImportoPagato());
 		rendicontazione.setIur(rend.getRendicontazione().getIur());
 		rendicontazione.setIuv(rend.getRendicontazione().getIuv());
-		rendicontazione.setStato(StatoRendicontazione.valueOf(rend.getRendicontazione().toString()));
+		rendicontazione.setStato(StatoRendicontazione.valueOf(rend.getRendicontazione().getStato().toString()));
 		for(it.govpay.model.Rendicontazione.Anomalia a : rend.getRendicontazione().getAnomalie()) {
 			Anomalia anomalia = new Anomalia();
 			anomalia.setCodice(a.getCodice());
@@ -61,8 +61,8 @@ public class Gp23Utils {
 		return rendicontazione;
 	}
 
-	public static FlussoRendicontazione23 toFr(Fr frModel, List<RendicontazionePagamento> rends, Versione versione, BasicBD bd) throws ServiceException {
-		FlussoRendicontazione23 fr = new FlussoRendicontazione23();
+	public static FlussoRendicontazione toFr(Fr frModel, List<RendicontazionePagamento> rends, Versione versione, BasicBD bd) throws ServiceException {
+		FlussoRendicontazione fr = new FlussoRendicontazione();
 		fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 		fr.setCodDominio(frModel.getCodDominio());
 		fr.setCodFlusso(frModel.getCodFlusso());
@@ -73,15 +73,20 @@ public class Gp23Utils {
 		fr.setNumeroPagamenti(frModel.getNumeroPagamenti());
 		fr.setStato(StatoFr.valueOf(frModel.getStato().toString()));
 		fr.setTrn(frModel.getIur());
-		
+		for(it.govpay.model.Fr.Anomalia a : frModel.getAnomalie()) {
+			Anomalia anomalia = new Anomalia();
+			anomalia.setCodice(a.getCodice());
+			anomalia.setValue(a.getDescrizione());
+			fr.getAnomalia().add(anomalia);
+		}
 		for(RendicontazionePagamento rend : rends) {
 			fr.getRendicontazione().add(toRendicontazione(rend, versione, bd));
 		}
 		return fr;
 	}
 
-	public static EstremiFlussoRendicontazione23 toFr(Fr frModel, Versione versione, BasicBD bd) {
-		EstremiFlussoRendicontazione23 fr = new EstremiFlussoRendicontazione23();
+	public static EstremiFlussoRendicontazione toFr(Fr frModel, Versione versione, BasicBD bd) {
+		EstremiFlussoRendicontazione fr = new EstremiFlussoRendicontazione();
 		fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
 		fr.setCodDominio(frModel.getCodDominio());
 		fr.setCodFlusso(frModel.getCodFlusso());
@@ -92,6 +97,12 @@ public class Gp23Utils {
 		fr.setNumeroPagamenti(frModel.getNumeroPagamenti());
 		fr.setStato(StatoFr.valueOf(frModel.getStato().toString()));
 		fr.setTrn(frModel.getIur());
+		for(it.govpay.model.Fr.Anomalia a : frModel.getAnomalie()) {
+			Anomalia anomalia = new Anomalia();
+			anomalia.setCodice(a.getCodice());
+			anomalia.setValue(a.getDescrizione());
+			fr.getAnomalia().add(anomalia);
+		}
 		return fr;
 	}
 }
