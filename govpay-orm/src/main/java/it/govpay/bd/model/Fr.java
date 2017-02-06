@@ -39,6 +39,28 @@ public class Fr extends it.govpay.model.Fr {
 	private Psp psp;
 	private List<Rendicontazione> rendicontazioni;
 	
+	private long numOk;
+	private long numAnomale;
+	private long numAltroIntermediario;
+	
+	public long getNumOk() {
+		return numOk;
+	}
+	public void setNumOk(long numOk) {
+		this.numOk = numOk;
+	}
+	public long getNumAnomale() {
+		return numAnomale;
+	}
+	public void setNumAnomale(long numAnomale) {
+		this.numAnomale = numAnomale;
+	}
+	public long getNumAltroIntermediario() {
+		return numAltroIntermediario;
+	}
+	public void setNumAltroIntermediario(long numAltroIntermediario) {
+		this.numAltroIntermediario = numAltroIntermediario;
+	}
 	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
 		if(dominio == null){
 			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());

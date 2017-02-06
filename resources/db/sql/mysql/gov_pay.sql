@@ -580,7 +580,7 @@ CREATE TABLE fr
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
 -- index
-CREATE INDEX index_fr_1 ON fr (cod_flusso,anno_riferimento);
+CREATE INDEX index_fr_1 ON fr (cod_flusso);
 
 
 

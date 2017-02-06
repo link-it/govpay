@@ -19,10 +19,44 @@
  */
 package it.govpay.web.rs.dars.monitoraggio.rendicontazioni;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.pagamento.FrBD;
+import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.model.Fr.StatoFr;
+import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.dars.BaseDarsHandler;
+import it.govpay.web.rs.dars.BaseDarsService;
+import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.anagrafica.domini.Domini;
+import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elenco;
+import it.govpay.web.rs.dars.model.InfoForm;
+import it.govpay.web.rs.dars.model.InfoForm.Sezione;
+import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.base.CheckButton;
+import it.govpay.web.rs.dars.model.input.base.InputText;
+import it.govpay.web.rs.dars.model.input.base.SelectList;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.Pagamenti;
+import it.govpay.web.utils.Utils;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,36 +73,6 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.bd.anagrafica.ApplicazioniBD;
-import it.govpay.bd.anagrafica.filters.ApplicazioneFilter;
-import it.govpay.bd.pagamento.FrBD;
-import it.govpay.bd.pagamento.filters.FrFilter;
-import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.Psp;
-import it.govpay.model.Fr.StatoFr;
-import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
-import it.govpay.web.rs.dars.exception.ConsoleException;
-import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
-import it.govpay.web.rs.dars.exception.ValidationException;
-import it.govpay.web.rs.dars.model.Dettaglio;
-import it.govpay.web.rs.dars.model.Elenco;
-import it.govpay.web.rs.dars.model.InfoForm;
-import it.govpay.web.rs.dars.model.InfoForm.Sezione;
-import it.govpay.web.rs.dars.model.RawParamValue;
-import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.input.ParamField;
-import it.govpay.web.rs.dars.model.input.base.InputText;
-import it.govpay.web.rs.dars.model.input.base.SelectList;
-import it.govpay.web.rs.dars.monitoraggio.versamenti.Pagamenti;
-import it.govpay.web.utils.Utils;
 
 public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
@@ -106,23 +110,55 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
-			
-			//TODO
-//			if(StringUtils.isNotEmpty(codFlusso))
-//				filter.setCodFlusso(codFlusso); 
+
+			if(StringUtils.isNotEmpty(codFlusso))
+				filter.setCodFlusso(codFlusso); 
 
 			boolean eseguiRicerca = true;
-			String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
-			Long idApplicazione = this.getParameter(uriInfo, applicazioneId, Long.class);
-			
-			//TODO
+//			String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
+//			Long idApplicazione = this.getParameter(uriInfo, applicazioneId, Long.class);
+//
 //			if(idApplicazione != null && idApplicazione > 0){
-//				List<Long> idFlussi = frBD.getIdFlussi(idApplicazione);
-//				filter.setIdFlussi(idFlussi);
-//				eseguiRicerca = eseguiRicerca && !Utils.isEmpty(idFlussi);
+//				filter.setIdApplicazione(idApplicazione);
 //			}
 
-			long count = eseguiRicerca ? frBD.count(filter) : 0;
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
+
+			if(idDominio != null && idDominio > 0){
+				Dominio dominio = AnagraficaManager.getDominio(bd, idDominio);
+				filter.setCodDominio(Arrays.asList(dominio.getCodDominio())); 
+			}
+
+			String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+			String stato = this.getParameter(uriInfo, statoId, String.class);
+
+			if(StringUtils.isNotEmpty(stato)){
+				filter.setStato(stato);
+			}
+
+			String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+			String trn = this.getParameter(uriInfo, trnId, String.class);
+
+			if(StringUtils.isNotEmpty(trn))
+				filter.setTnr(trn);
+
+
+			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
+			String nascondiAltriIntermediariS = this.getParameter(uriInfo, nascondiAltriIntermediariId, String.class);
+
+			Boolean nascondiAltriIntermediari = false;
+			if(StringUtils.isNotEmpty(nascondiAltriIntermediariS)){
+				try{
+					nascondiAltriIntermediari = Boolean.parseBoolean(nascondiAltriIntermediariS);}catch(Exception e){
+						nascondiAltriIntermediari = false;
+					}
+			}
+
+			filter.setNascondiSeSoloDiAltriIntermediari(nascondiAltriIntermediari);
+
+
+			long count = eseguiRicerca ? frBD.countExt(filter) : 0;
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
@@ -134,7 +170,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
 
-			List<Fr> findAll = eseguiRicerca ? frBD.findAll(filter) : new ArrayList<Fr>(); 
+			List<Fr> findAll = eseguiRicerca ? frBD.findAllExt(filter) : new ArrayList<Fr>(); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (Fr entry : findAll) {
@@ -158,8 +194,12 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
 
-		String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
+//		String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
+		String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 		String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+		String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+		String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
+		String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
 
 		if(infoRicercaMap == null){
 			this.initInfoRicerca(uriInfo, bd);
@@ -167,36 +207,89 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 		Sezione sezioneRoot = infoRicerca.getSezioneRoot();
 
-		InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
-		codFlusso.setDefaultValue(null);
-		sezioneRoot.addField(codFlusso);
+		// stato
+		List<Voce<String>> stati = new ArrayList<Voce<String>>();
+		SelectList<String> stato = (SelectList<String>) infoRicercaMap.get(statoId);
+		stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+		stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoFr.ACCETTATA), StatoFr.ACCETTATA.toString()));
+		stati.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoFr.ANOMALA), StatoFr.ANOMALA.toString()));
+		stato.setDefaultValue("");
+		stato.setValues(stati); 
+		sezioneRoot.addField(stato);
 
 		// idDominio
-		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+		List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 
-		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-		ApplicazioneFilter filter;
+		DominiBD dominiBD = new DominiBD(bd);
+		DominioFilter filter;
 		try {
-			filter = applicazioniBD.newFilter();
+			filter = dominiBD.newFilter();
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			List<Applicazione> findAll = applicazioniBD.findAll(filter );
+			List<Dominio> findAll = dominiBD.findAll(filter );
 
-			applicazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+			domini.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+
+			Domini dominiDars = new Domini();
+			DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+
 			if(findAll != null && findAll.size() > 0){
-				for (Applicazione applicazione : findAll) {
-					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));  
+				for (Dominio dominio : findAll) {
+					domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
 				}
 			}
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		SelectList<Long> idApplicazione = (SelectList<Long>) infoRicercaMap.get(idApplicazioneId);
-		idApplicazione.setDefaultValue(-1L);
-		idApplicazione.setValues(applicazioni); 
-		sezioneRoot.addField(idApplicazione);
+		SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+		idDominio.setDefaultValue(-1L);
+		idDominio.setValues(domini); 
+		sezioneRoot.addField(idDominio);
+
+		// codFlusso
+		InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
+		codFlusso.setDefaultValue(null);
+		sezioneRoot.addField(codFlusso);
+
+
+		// trn
+		InputText trn = (InputText) infoRicercaMap.get(trnId);
+		trn.setDefaultValue(null);
+		sezioneRoot.addField(trn);
+
+//		// idApplicazioni
+//		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+//
+//		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
+//		ApplicazioneFilter appFilter;
+//		try {
+//			appFilter = applicazioniBD.newFilter();
+//			FilterSortWrapper fsw = new FilterSortWrapper();
+//			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
+//			fsw.setSortOrder(SortOrder.ASC);
+//			appFilter.getFilterSortList().add(fsw);
+//			List<Applicazione> findAll = applicazioniBD.findAll(appFilter );
+//
+//			applicazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+//			if(findAll != null && findAll.size() > 0){
+//				for (Applicazione applicazione : findAll) {
+//					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));  
+//				}
+//			}
+//		} catch (ServiceException e) {
+//			throw new ConsoleException(e);
+//		}
+//		SelectList<Long> idApplicazione = (SelectList<Long>) infoRicercaMap.get(idApplicazioneId);
+//		idApplicazione.setDefaultValue(-1L);
+//		idApplicazione.setValues(applicazioni); 
+//		sezioneRoot.addField(idApplicazione);
+
+		// nascondi altri intermediari
+		CheckButton nascondiAltriIntermediari = (CheckButton) infoRicercaMap.get(nascondiAltriIntermediariId);
+		nascondiAltriIntermediari.setDefaultValue(false);
+		sezioneRoot.addField(nascondiAltriIntermediari);
 
 		return infoRicerca;
 	}
@@ -205,20 +298,46 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		if(infoRicercaMap == null){
 			infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-			String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
+//			String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
+			String idDominioId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String codFlussoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
+			String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
 
 			// codFlusso
 			String codFlussoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label");
 			InputText codFlusso = new InputText(codFlussoId, codFlussoLabel, null, false, false, true, 0, 35);
 			infoRicercaMap.put(codFlussoId, codFlusso);
 
-			List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-			// idApplicazione
-			String idApplicazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.label");
-			SelectList<Long> idApplicazione = new SelectList<Long>(idApplicazioneId, idApplicazioneLabel, null, false, false, true, applicazioni);
-			infoRicercaMap.put(idApplicazioneId, idApplicazione);
+			// trn
+			String trnLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.label");
+			InputText trn = new InputText(trnId, trnLabel, null, false, false, true, 0, 35);
+			infoRicercaMap.put(trnId, trn);
 
+//			List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
+//			// idApplicazione
+//			String idApplicazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.label");
+//			SelectList<Long> idApplicazione = new SelectList<Long>(idApplicazioneId, idApplicazioneLabel, null, false, false, true, applicazioni);
+//			infoRicercaMap.put(idApplicazioneId, idApplicazione);
+
+			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+			// idDominio
+			String idDominioLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
+			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
+			infoRicercaMap.put(idDominioId, idDominio);
+
+
+			List<Voce<String>> stati = new ArrayList<Voce<String>>();
+			// stato
+			String statoLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.label");
+			SelectList<String> stato = new SelectList<String>(statoId, statoLabel, null, false, false, true, stati);
+			infoRicercaMap.put(statoId, stato);
+
+			// nascondiAltriIntermediari
+			String nascondiAltriIntermediariLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.label");
+			CheckButton nascondiAltriIntermediari = new CheckButton(nascondiAltriIntermediariId, nascondiAltriIntermediariLabel, false, false, false, true);
+			infoRicercaMap.put(nascondiAltriIntermediariId, nascondiAltriIntermediari);
 		}
 	}
 
@@ -240,7 +359,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			// recupero oggetto
 			FrBD frBD = new FrBD(bd);
-			Fr fr = frBD.getFr(id);
+			Fr fr = frBD.getFrExt(id);
 
 			InfoForm infoModifica = null;
 			URI cancellazione = null;
@@ -288,11 +407,17 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
 				
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniOk.label"), fr.getNumOk() + "");
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAnomale.label"), fr.getNumAnomale() + "");
+				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAltroIntermediario.label"), fr.getNumAltroIntermediario() +"");
+				
+				
+
 				Pagamenti pagamentiDars = new Pagamenti();
 				String etichettaPagamenti = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
 				String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFr.id");
 				UriBuilder uriBuilderPagamenti = BaseRsService.checkDarsURI(uriInfo).path(pagamentiDars.getPathServizio()).queryParam(idFrApplicazioneId, fr.getId());
-				
+
 				dettaglio.addElementoCorrelato(etichettaPagamenti, uriBuilderPagamenti.build()); 
 			}
 
@@ -335,19 +460,19 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 							numeroPagamenti,(importoTotalePagamenti + "€")));
 			break;
 			//TODO
-//		case RIFIUTATA:
-//		default:
-//			sb.append(
-//					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
-//					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
-//							)
-//					);
-//			break;
+			//		case RIFIUTATA:
+			//		default:
+			//			sb.append(
+			//					Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rifiutata",
+			//					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.RIFIUTATA")
+			//							)
+			//					);
+			//			break;
 		}
 
 		return sb.toString();
 	} 
-	
+
 	@Override
 	public List<String> getValori(Fr entry, BasicBD bd) throws ConsoleException {
 		return null;
@@ -415,8 +540,8 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 			Fr fr = frBD.getFr(idToExport);			
 
 			String fileName = "Rendicontazione_" + fr.getIur()+".zip";
-			
-			
+
+
 			ZipEntry frXml = new ZipEntry("fr.xml");
 			zout.putNextEntry(frXml);
 			zout.write(fr.getXml());
@@ -457,7 +582,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException { return null; }
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

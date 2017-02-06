@@ -19,22 +19,29 @@
  */
 package it.govpay.bd.pagamento;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.IFilter;
+import it.govpay.bd.model.Fr;
+import it.govpay.bd.model.converter.FrConverter;
+import it.govpay.bd.nativequeries.NativeQueries;
+import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.model.Fr.StatoFr;
+import it.govpay.orm.FR;
+import it.govpay.orm.IdFr;
+import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.IFilter;
-import it.govpay.bd.model.converter.FrConverter;
-import it.govpay.bd.pagamento.filters.FrFilter;
-import it.govpay.bd.model.Fr;
-import it.govpay.orm.FR;
-import it.govpay.orm.IdFr;
-import it.govpay.orm.dao.jdbc.JDBCFRServiceSearch;
 
 public class FrBD extends BasicBD {
 
@@ -60,6 +67,29 @@ public class FrBD extends BasicBD {
 		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		} 
+	}
+
+	/**
+	 * Recupera l'Fr identificato dalla chiave fisica
+	 * 
+	 * @param idFr
+	 * @return
+	 * @throws NotFoundException
+	 * @throws MultipleResultException
+	 * @throws ServiceException
+	 */
+	public Fr getFrExt(long idFr) throws ServiceException {
+		try {
+			FrFilter filter = newFilter();
+			filter.setIdFr(Arrays.asList(idFr));
+			List<Fr> lstFrExt = this.findAllExt(filter);
+			if(lstFrExt.isEmpty()) {
+				throw new NotFoundException("id ["+idFr+"]");
+			}
+			return lstFrExt.get(0);
+		} catch (NotFoundException e) {
 			throw new ServiceException(e);
 		} 
 	}
@@ -120,6 +150,98 @@ public class FrBD extends BasicBD {
 	public FrFilter newFilter() throws ServiceException {
 		return new FrFilter(this.getFrService());
 	}
+	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
+
+	public long countExt(FrFilter filter) throws ServiceException {
+		try {
+			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+			lstReturnType.add(Long.class);
+			String nativeCount = NativeQueries.getInstance().getFrCountQuery();
+			log.info("NATIVE: "+ nativeCount);
+			
+			String sqlFilterString = filter.getSQLFilterString(nativeCount);
+			log.info("NATIVE filtered: "+ sqlFilterString);
+			Object[] fields = filter.getFields(true).toArray(new Object[]{});
+			List<List<Object>> count = this.getFrService().nativeQuery(sqlFilterString, lstReturnType, fields);
+			
+			if(count.size() > 0) {
+				return ((Long) count.get(0).get(0)).longValue();
+			}
+			
+			return 0;
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			return 0;
+		}
+
+	}
+
+	public List<Fr> findAllExt(FrFilter filter) throws ServiceException {
+		try {
+			List<Class<?>> lstReturnType = new ArrayList<Class<?>>();
+
+			lstReturnType.add(FR.model().COD_FLUSSO.getFieldType());
+			lstReturnType.add(FR.model().STATO.getFieldType());
+			lstReturnType.add(FR.model().DESCRIZIONE_STATO.getFieldType());
+			lstReturnType.add(FR.model().IUR.getFieldType());
+			lstReturnType.add(FR.model().DATA_ORA_FLUSSO.getFieldType());
+			lstReturnType.add(FR.model().DATA_REGOLAMENTO.getFieldType());
+			lstReturnType.add(FR.model().DATA_ACQUISIZIONE.getFieldType());
+			lstReturnType.add(FR.model().NUMERO_PAGAMENTI.getFieldType());
+			lstReturnType.add(FR.model().IMPORTO_TOTALE_PAGAMENTI.getFieldType());
+			lstReturnType.add(FR.model().COD_BIC_RIVERSAMENTO.getFieldType());
+			lstReturnType.add(FR.model().XML.getFieldType());
+			lstReturnType.add(Long.class); //id
+			lstReturnType.add(FR.model().COD_PSP.getFieldType());
+			lstReturnType.add(FR.model().COD_DOMINIO.getFieldType());
+			lstReturnType.add(Long.class); //count rendicontazioni ok
+			lstReturnType.add(Long.class); //count rendicontazioni anomale
+			lstReturnType.add(Long.class); //count rendicontazioni altro intermediario
+
+
+			String initialNativeQuery = NativeQueries.getInstance().getFrQuery();
+			String nativeQueryString = filter.getSQLFilterString(initialNativeQuery);
+
+			Object[] array = filter.getFields(false).toArray(new Object[]{});
+			List<List<Object>> lstRecords = this.getRendicontazionePagamentoServiceSearch().nativeQuery(nativeQueryString, lstReturnType, array);
+			List<Fr> lstFr = new ArrayList<Fr>();
+
+			for(List<Object> record: lstRecords) {
+				lstFr.add(getFr(record));
+			}
+			return lstFr;
+		} catch (NotImplementedException e) {
+		throw new ServiceException(e);
+	} catch (NotFoundException e) {
+		return new ArrayList<Fr>();
+	}
+	}
+
+	private Fr getFr(List<Object> record) {
+		int i =0;
+		Fr fr = new Fr();
+		fr.setCodFlusso((String)record.get(i++));
+		fr.setStato(StatoFr.valueOf((String)record.get(i++)));
+		fr.setDescrizioneStato((String)record.get(i++));
+		fr.setIur((String)record.get(i++));
+		fr.setDataFlusso((Date)record.get(i++));
+		fr.setDataRegolamento((Date)record.get(i++));
+		fr.setDataAcquisizione((Date)record.get(i++));
+		fr.setNumeroPagamenti((Long)record.get(i++));
+		fr.setImportoTotalePagamenti(new BigDecimal((Double)record.get(i++)));
+		fr.setCodBicRiversamento((String)record.get(i++));
+		fr.setXml((byte[])record.get(i++));
+		fr.setId((Long)record.get(i++));
+		fr.setCodPsp((String)record.get(i++));
+		fr.setCodDominio((String)record.get(i++));
+		fr.setNumOk((Long)record.get(i++));
+		fr.setNumAnomale((Long)record.get(i++));
+		fr.setNumAltroIntermediario((Long)record.get(i++));
+		return fr;
+	}
+	
 
 	public long count(IFilter filter) throws ServiceException {
 		try {

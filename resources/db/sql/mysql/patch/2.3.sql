@@ -63,7 +63,7 @@ CREATE TABLE rendicontazioni
 
 
 INSERT INTO RENDICONTAZIONI (iuv, iur, importo_pagato, esito, data, stato, anomalie, id_fr, id_pagamento)
-SELECT iuv, pagamenti.iur, importo_pagato, rendicontazione_esito, rendicontazione_data, 'REGOLARE', null, fr_applicazioni.id_fr, pagamenti.id from pagamenti, fr_applicazioni where pagamenti.id_fr_applicazione=fr_applicazioni.id; 
+SELECT iuv, pagamenti.iur, importo_pagato, rendicontazione_esito, rendicontazione_data, 'OK', null, fr_applicazioni.id_fr, pagamenti.id from pagamenti, fr_applicazioni where pagamenti.id_fr_applicazione=fr_applicazioni.id; 
 
 ALTER TABLE pagamenti DROP COLUMN rendicontazione_esito;
 ALTER TABLE pagamenti DROP COLUMN rendicontazione_data;
