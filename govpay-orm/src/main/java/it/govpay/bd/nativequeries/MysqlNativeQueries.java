@@ -36,7 +36,7 @@ public class MysqlNativeQueries extends NativeQueries {
 				" FROM pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento and id_rr is not null " +
 				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and r.esito=3 $PLACEHOLDER_IN$ " +
 				" ) ) as s1 " +
-				" join fr on fr.id = s1.r_id_fr join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ order by fr.cod_flusso, s1.p_data_pagamento $PLACEHOLDER_OFFSET_LIMIT$";
+				" left join fr on fr.id = s1.r_id_fr left join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ order by fr.cod_flusso, s1.p_data_pagamento $PLACEHOLDER_OFFSET_LIMIT$";
 	}
 
 	@Override
@@ -54,7 +54,30 @@ public class MysqlNativeQueries extends NativeQueries {
 				" FROM pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento and id_rr is not null " +
 				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and r.esito=3 $PLACEHOLDER_IN$ " +
 				" ) ) as s1 " +
-				" join fr on fr.id = s1.r_id_fr join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ ";
+				" left join fr on fr.id = s1.r_id_fr left join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ ";
+	}
+
+
+	@Override
+	public String getFrQuery() {
+		return "select fr.cod_flusso,fr.stato,fr.descrizione_stato,fr.iur,fr.data_ora_flusso,fr.data_regolamento,fr.data_acquisizione,fr.numero_pagamenti,fr.importo_totale_pagamenti,fr.cod_bic_riversamento,fr.xml,fr.id,fr.cod_psp,fr.cod_dominio, ok, anomale, altro_intermediario " +
+				" from (select  fr.cod_flusso,fr.stato,fr.descrizione_stato,fr.iur,fr.data_ora_flusso,fr.data_regolamento,fr.data_acquisizione,fr.numero_pagamenti,fr.importo_totale_pagamenti,fr.cod_bic_riversamento,fr.xml,fr.id,fr.cod_psp,fr.cod_dominio, " +
+				" sum(CASE WHEN r.stato='OK' THEN 1 ELSE 0 END) as ok, " +
+				" sum(CASE WHEN r.stato='ANOMALA' THEN 1 ELSE 0 END) as ANOMALE, " +
+				" sum(CASE WHEN r.stato='ALTRO_INTERMEDIARIO' THEN 1 ELSE 0 END) as ALTRO_INTERMEDIARIO " +
+				" from fr left join rendicontazioni r on fr.id=r.id_fr $PLACEHOLDER_JOIN$ $PLACEHOLDER_WHERE_IN$ " +
+				" group by fr.id) as fr $PLACEHOLDER_WHERE_OUT$  order by fr.cod_flusso $PLACEHOLDER_OFFSET_LIMIT$";
+	}
+
+	@Override
+	public String getFrCountQuery() {
+		return "select count(*) " +
+				" from (select  fr.id, " +
+				" sum(CASE WHEN r.stato='OK' THEN 1 ELSE 0 END) as ok, " +
+				" sum(CASE WHEN r.stato='ANOMALA' THEN 1 ELSE 0 END) as ANOMALE, " +
+				" sum(CASE WHEN r.stato='ALTRO_INTERMEDIARIO' THEN 1 ELSE 0 END) as ALTRO_INTERMEDIARIO " +
+				" from fr left join rendicontazioni r on fr.id=r.id_fr $PLACEHOLDER_JOIN$ $PLACEHOLDER_WHERE_IN$ " +
+				" group by fr.id) as fr $PLACEHOLDER_WHERE_OUT$";
 	}
 
 
