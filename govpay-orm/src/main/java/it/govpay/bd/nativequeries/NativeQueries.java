@@ -12,6 +12,9 @@ public abstract class NativeQueries {
 	public abstract String getRendicontazionePagamentoQuery();
 	public abstract String getRendicontazionePagamentoCountQuery();
 	
+	public abstract String getFrQuery();
+	public abstract String getFrCountQuery();
+	
 	public static NativeQueries getInstance() throws ServiceException {
 		
 		if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {

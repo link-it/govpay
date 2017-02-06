@@ -41,7 +41,7 @@ public class OracleNativeQueries extends NativeQueries {
 				" FROM pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento and id_rr is not null " +
 				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and r.esito=3 $PLACEHOLDER_IN$ " +
 				" ) ) as s1 " +
-				" join fr on fr.id = s1.r_id_fr join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$) $PLACEHOLDER_OFFSET_LIMIT$ order by fr.cod_flusso, p_data_pagamento";
+				" left join fr on fr.id = s1.r_id_fr left join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$) $PLACEHOLDER_OFFSET_LIMIT$ order by fr.cod_flusso, p_data_pagamento";
 	}
 	
 	@Override
@@ -59,7 +59,19 @@ public class OracleNativeQueries extends NativeQueries {
 				" FROM pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento and id_rr is not null " +
 				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and r.esito=3 $PLACEHOLDER_IN$ " +
 				" ) ) as s1 " +
-				" join fr on fr.id = s1.r_id_fr join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ ";
+				" left join fr on fr.id = s1.r_id_fr left join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ ";
+	}
+
+	@Override
+	public String getFrQuery() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getFrCountQuery() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
