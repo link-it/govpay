@@ -37,6 +37,7 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
@@ -60,6 +61,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -113,13 +115,6 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 				filter.setCodFlusso(codFlusso); 
 
 			boolean eseguiRicerca = true;
-//			String applicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
-//			Long idApplicazione = this.getParameter(uriInfo, applicazioneId, Long.class);
-//
-//			if(idApplicazione != null && idApplicazione > 0){
-//				filter.setIdApplicazione(idApplicazione);
-//			}
-
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 
@@ -162,6 +157,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
@@ -170,7 +166,9 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 			if(findAll != null && findAll.size() > 0){
 				for (Fr entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
+					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elemento.setFormatter(formatter); 
+					elenco.getElenco().add(elemento);
 				}
 			}
 
@@ -201,7 +199,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 				this.initInfoRicerca(uriInfo, bd);
 			}
 			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
-				
+
 			// stato
 			List<Voce<String>> stati = new ArrayList<Voce<String>>();
 			SelectList<String> stato = (SelectList<String>) infoRicercaMap.get(statoId);
@@ -211,10 +209,10 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 			stato.setDefaultValue("");
 			stato.setValues(stati); 
 			sezioneRoot.addField(stato);
-	
+
 			// idDominio
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
-	
+
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter;
 			try {
@@ -224,67 +222,40 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 				fsw.setSortOrder(SortOrder.ASC);
 				filter.getFilterSortList().add(fsw);
 				List<Dominio> findAll = dominiBD.findAll(filter );
-	
+
 				domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-	
+
 				Domini dominiDars = new Domini();
 				DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
-	
+
 				if(findAll != null && findAll.size() > 0){
 					for (Dominio dominio : findAll) {
 						domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
 					}
 				}
-		} catch (ServiceException e) {
-			throw new ConsoleException(e);
-		}
-		SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
-		idDominio.setDefaultValue(-1L);
-		idDominio.setValues(domini); 
-		sezioneRoot.addField(idDominio);
+			} catch (ServiceException e) {
+				throw new ConsoleException(e);
+			}
+			SelectList<Long> idDominio = (SelectList<Long>) infoRicercaMap.get(idDominioId);
+			idDominio.setDefaultValue(-1L);
+			idDominio.setValues(domini); 
+			sezioneRoot.addField(idDominio);
 
-		// codFlusso
-		InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
-		codFlusso.setDefaultValue(null);
-		sezioneRoot.addField(codFlusso);
+			// codFlusso
+			InputText codFlusso = (InputText) infoRicercaMap.get(codFlussoId);
+			codFlusso.setDefaultValue(null);
+			sezioneRoot.addField(codFlusso);
 
 
-		// trn
-		InputText trn = (InputText) infoRicercaMap.get(trnId);
-		trn.setDefaultValue(null);
-		sezioneRoot.addField(trn);
+			// trn
+			InputText trn = (InputText) infoRicercaMap.get(trnId);
+			trn.setDefaultValue(null);
+			sezioneRoot.addField(trn);
 
-//		// idApplicazioni
-//		List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-//
-//		ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-//		ApplicazioneFilter appFilter;
-//		try {
-//			appFilter = applicazioniBD.newFilter();
-//			FilterSortWrapper fsw = new FilterSortWrapper();
-//			fsw.setField(it.govpay.orm.Applicazione.model().COD_APPLICAZIONE);
-//			fsw.setSortOrder(SortOrder.ASC);
-//			appFilter.getFilterSortList().add(fsw);
-//			List<Applicazione> findAll = applicazioniBD.findAll(appFilter );
-//
-//			applicazioni.add(new Voce<Long>(Utils.getInstance().getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
-//			if(findAll != null && findAll.size() > 0){
-//				for (Applicazione applicazione : findAll) {
-//					applicazioni.add(new Voce<Long>(applicazione.getCodApplicazione(), applicazione.getId()));  
-//				}
-//			}
-//		} catch (ServiceException e) {
-//			throw new ConsoleException(e);
-//		}
-//		SelectList<Long> idApplicazione = (SelectList<Long>) infoRicercaMap.get(idApplicazioneId);
-//		idApplicazione.setDefaultValue(-1L);
-//		idApplicazione.setValues(applicazioni); 
-//		sezioneRoot.addField(idApplicazione);
-
-		// nascondi altri intermediari
-		CheckButton nascondiAltriIntermediari = (CheckButton) infoRicercaMap.get(nascondiAltriIntermediariId);
-		nascondiAltriIntermediari.setDefaultValue(false);
-		sezioneRoot.addField(nascondiAltriIntermediari);
+			// nascondi altri intermediari
+			CheckButton nascondiAltriIntermediari = (CheckButton) infoRicercaMap.get(nascondiAltriIntermediariId);
+			nascondiAltriIntermediari.setDefaultValue(false);
+			sezioneRoot.addField(nascondiAltriIntermediari);
 
 		}
 		return infoRicerca;
@@ -294,7 +265,6 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 		if(this.infoRicercaMap == null){
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
 
-//			String idApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.id");
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
@@ -310,12 +280,6 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 			String trnLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.label");
 			InputText trn = new InputText(trnId, trnLabel, null, false, false, true, 0, 35);
 			infoRicercaMap.put(trnId, trn);
-
-//			List<Voce<Long>> applicazioni = new ArrayList<Voce<Long>>();
-//			// idApplicazione
-//			String idApplicazioneLabel = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.label");
-//			SelectList<Long> idApplicazione = new SelectList<Long>(idApplicazioneId, idApplicazioneLabel, null, false, false, true, applicazioni);
-//			infoRicercaMap.put(idApplicazioneId, idApplicazione);
 
 			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
 			// idDominio
@@ -414,17 +378,17 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 
 				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) 
 					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
-				
+
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniOk.label"), fr.getNumOk() + "");
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAnomale.label"), fr.getNumAnomale() + "");
 				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAltroIntermediario.label"), fr.getNumAltroIntermediario() +"");
-				
-				
+
+
 
 				Pagamenti pagamentiDars = new Pagamenti();
 				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
 				String idFrApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idFr.id");
-				
+
 				Map<String, String> params = new HashMap<String, String>();
 				params.put(idFrApplicazioneId, fr.getId()+ "");
 				URI eventoDettaglio = Utils.creaUriConParametri(pagamentiDars.getPathServizio(), params );
@@ -487,9 +451,29 @@ public class RendicontazioniHandler extends BaseDarsHandler<Fr> implements IDars
 	public List<String> getValori(Fr entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
-	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { 
+		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
+
+		try{		
+			// voci disponibili logo1, logo2, id flusso, dominio, psp, trn, numero pagamenti, numero pagamenti anomali , numero pagamenti altri intermediari
+			try{
+				if(entry.getDominio(bd) != null){
+
+				}
+			} catch (NotFoundException e) {
+				// dominio non disponibile
+			}
+
+
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
+		}
+
+		return voci; 
+
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
