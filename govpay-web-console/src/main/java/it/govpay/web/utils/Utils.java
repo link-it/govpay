@@ -134,6 +134,16 @@ public class Utils {
 		return lst;
 	}
 
+	public Map<String, Map<String, String>> getMapLingue(){
+		Map<String, Map<String, String>> map = new HashMap<String, Map<String,String>>();
+		for (Locale locale : Utils.getListaLingueDisponibili()) {
+			Map<String, String> etichetteLingua = this.getEtichetteLingua(locale);
+			map.put(locale.getLanguage(), etichetteLingua);
+		}
+
+		return map;
+	}
+	
 	public List<Lingua> getLingue(){
 		List<Lingua> lst = new ArrayList<Lingua>();
 		for (Locale locale : Utils.getListaLingueDisponibili()) {
@@ -144,14 +154,19 @@ public class Utils {
 	}
 
 	public Lingua getLabelLingua(Locale locale) {
+		Map<String, String> etichette = getEtichetteLingua(locale);
+
+		Lingua lingua = new Lingua(locale.getLanguage(), etichette );
+		return lingua;
+	}
+
+	private Map<String, String> getEtichetteLingua(Locale locale) {
 		Map<String, String> etichette = new HashMap<String, String>();
 		for (String key : this.getElencoKeyLabelConsole()) {
 			String etichetta = this.getConsoleLabel(key, locale);
 			etichette.put(key,etichetta);
 		}
-
-		Lingua lingua = new Lingua(locale.getLanguage(), etichette );
-		return lingua;
+		return etichette;
 	}
 
 	public List<String> getElencoKeyLabelConsole(){

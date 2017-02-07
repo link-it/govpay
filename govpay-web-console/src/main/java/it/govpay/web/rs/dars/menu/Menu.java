@@ -221,7 +221,7 @@ public class Menu extends BaseRsService {
 			console.setMenu(menu);
 			
 			// caricamento della sezione lingua
-			console.setLingue(Utils.getInstance().getLingue()); 
+			console.setLingue(Utils.getInstance().getMapLingue()); 
 			
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);

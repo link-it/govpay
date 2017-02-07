@@ -21,8 +21,7 @@
 package it.govpay.web.rs.dars.model;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class Console {
 	
@@ -30,12 +29,11 @@ public class Console {
 	private Menu menu;
 	private About about;
 	private URI logout;
-	private List<Lingua> lingue;
+	private Map<String, Map<String, String>> lingue;
 	
 	public Console(String titolo, URI logout) {
 		this.titolo = titolo;
 		this.logout = logout;
-		this.lingue = new ArrayList<Lingua>();
 	}
 	
 	public String getTitolo() {
@@ -62,10 +60,10 @@ public class Console {
 	public void setLogout(URI logout) {
 		this.logout = logout;
 	}
-	public List<Lingua> getLingue() {
+	public Map<String, Map<String, String>> getLingue() {
 		return lingue;
 	}
-	public void setLingue(List<Lingua> lingue) {
+	public void setLingue(Map<String, Map<String, String>> lingue) {
 		this.lingue = lingue;
 	}
 }
