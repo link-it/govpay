@@ -525,28 +525,28 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	@Override
 	public void checkEntry(IbanAccredito entry, IbanAccredito oldEntry) throws ValidationException {
 		if(entry.getCodIban() == null) {
-			throw new ValidationException("Codice Iban Accredito nullo");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreIbanAccreditoObbligatorio"));
 		}
 
 		if(entry.getCodIban().length() < 5 || entry.getCodIban().length() > 34) {
-			throw new ValidationException("La lunghezza dell'Iban Accredito deve essere compresa tra 5 e 34 caratteri, trovati " + entry.getCodIban().length() + ".");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.lunghezzaIbanAccreditoErrata",entry.getCodIban().length()));
 		}
 
 		Pattern ibanPattern= Pattern.compile(patternIBAN);
 		Matcher matcher = ibanPattern.matcher(entry.getCodIban());
 
 		if(!matcher.matches()) {
-			throw new ValidationException("Il formato dell'Iban Accredito e' errato.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.formatoIbanAccreditoErrato"));
 		} 
 
 		if(StringUtils.isNotEmpty(entry.getCodIbanAppoggio())){
 			if(entry.getCodIbanAppoggio().length() < 5 || entry.getCodIbanAppoggio().length() > 34) {
-				throw new ValidationException("La lunghezza dell'Iban Appoggio deve essere compresa tra 5 e 34 caratteri, trovati " + entry.getCodIbanAppoggio().length() + ".");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.lunghezzaIbanAppoggioErrata", entry.getCodIbanAppoggio().length()));
 			}
 
 			matcher = ibanPattern.matcher(entry.getCodIbanAppoggio());
 			if(!matcher.matches()) {
-				throw new ValidationException("Il formato dell'Iban Appoggio e' errato.");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.formatoIbanAppoggioErrato"));
 			}
 		}
 		
@@ -555,30 +555,31 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		
 		if(StringUtils.isNotEmpty(entry.getCodBicAccredito())){
 			if(entry.getCodBicAccredito().length() < 8 || entry.getCodBicAccredito().length() > 11) {
-				throw new ValidationException("La lunghezza dell'Bic Accredito deve essere compresa tra 8 e 11 caratteri, trovati " + entry.getCodBicAccredito().length() + ".");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.lunghezzaBicAccreditoErrata", entry.getCodBicAccredito().length()));
 			}
 
 			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAccredito());
 			if(!bicMtcher.matches()) {
-				throw new ValidationException("Il formato del Bic Accredito e' errato.");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.formatoBicAccreditoErrato"));
 			}
 		}
 		
 		if(StringUtils.isNotEmpty(entry.getCodBicAppoggio())){
 			if(entry.getCodBicAppoggio().length() < 8 || entry.getCodBicAppoggio().length() > 11) {
-				throw new ValidationException("La lunghezza dell'Bic Appoggio deve essere compresa tra 8 e 11 caratteri, trovati " + entry.getCodBicAppoggio().length() + ".");
+				throw new ValidationException(
+						Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.lunghezzaBicAppoggioErrata", entry.getCodBicAppoggio().length()));
 			}
 
 			Matcher bicMtcher = bicPattern.matcher(entry.getCodBicAppoggio());
 			if(!bicMtcher.matches()) {
-				throw new ValidationException("Il formato del Bic Appoggio e' errato.");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.formatoBicAppoggioErrato"));
 			}
 		}
 
 		// update
 		if(oldEntry != null){
 			if(!entry.getCodIban().equals(oldEntry.getCodIban())) {
-				throw new ValidationException("Non e' consentito modificare l'Iban Accredito");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreIbanAccreditoNonCoincide",oldEntry.getCodIban(),entry.getCodIban()));
 			}
 		}
 

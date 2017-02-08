@@ -12,6 +12,7 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 
 public class RendicontazioneFilter extends AbstractFilter{
 	
@@ -22,6 +23,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	private StatoRendicontazione stato;
 	private Long idFr;
 	private Long idPagamento;
+	private String tipo;
 	
 	// Esterni alla tabella
 	private String codDominio; // fr 
@@ -37,7 +39,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 			IExpression exp = this.newExpression();
 			
 			if(this.iuv != null) {
-				exp.equals(Rendicontazione.model().IUV, this.iuv);
+				exp.ilike(Rendicontazione.model().IUV, this.iuv,LikeMode.ANYWHERE);
 			}
 
 			if(this.iur != null) {
@@ -147,6 +149,14 @@ public class RendicontazioneFilter extends AbstractFilter{
 
 	public void setIdApplicazione(Long idApplicazione) {
 		this.idApplicazione = idApplicazione;
+	}
+
+	public String getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
 	}
 	
 }

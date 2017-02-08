@@ -19,12 +19,6 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import it.govpay.orm.IdRendicontazione;
-import it.govpay.orm.Rendicontazione;
-import it.govpay.orm.SingoloVersamento;
-import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.RendicontazioneFetch;
-
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +46,11 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+
+import it.govpay.orm.IdRendicontazione;
+import it.govpay.orm.Rendicontazione;
+import it.govpay.orm.dao.jdbc.converter.RendicontazioneFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.RendicontazioneFetch;
 
 /**     
  * JDBCRendicontazioneServiceSearchImpl
@@ -504,85 +503,23 @@ public class JDBCRendicontazioneServiceSearchImpl implements IJDBCServiceSearchW
 	
 	private Rendicontazione _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		IField idField = new CustomField("id", Long.class, "id", this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()));
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
+		expression.equals(idField, tableId);
+		expression.offset(0);
+		expression.limit(2); //per verificare la multiple results
+		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
+		List<Rendicontazione> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
 				
-		Rendicontazione rendicontazione = new Rendicontazione();
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 		
 
-		// Object rendicontazione
-		ISQLQueryObject sqlQueryObjectGet_rendicontazione = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_rendicontazione.setANDLogicOperator(true);
-		sqlQueryObjectGet_rendicontazione.addFromTable(this.getRendicontazioneFieldConverter().toTable(Rendicontazione.model()));
-		sqlQueryObjectGet_rendicontazione.addSelectField("id");
-		sqlQueryObjectGet_rendicontazione.addSelectField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IUV,true));
-		sqlQueryObjectGet_rendicontazione.addSelectField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IUR,true));
-		sqlQueryObjectGet_rendicontazione.addSelectField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().IMPORTO_PAGATO,true));
-		sqlQueryObjectGet_rendicontazione.addSelectField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ESITO,true));
-		sqlQueryObjectGet_rendicontazione.addSelectField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().DATA,true));
-		sqlQueryObjectGet_rendicontazione.addSelectField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().STATO,true));
-		sqlQueryObjectGet_rendicontazione.addSelectField(this.getRendicontazioneFieldConverter().toColumn(Rendicontazione.model().ANOMALIE,true));
-		sqlQueryObjectGet_rendicontazione.addWhereCondition("id=?");
-
-		// Get rendicontazione
-		rendicontazione = (Rendicontazione) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_rendicontazione.createSQLQuery(), jdbcProperties.isShowSql(), Rendicontazione.model(), this.getRendicontazioneFetch(),
-			new JDBCObject(tableId,Long.class));
-
-
-		if(idMappingResolutionBehaviour==null ||
-			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-		){
-			// Object _rendicontazione_fr (recupero id)
-			ISQLQueryObject sqlQueryObjectGet_rendicontazione_fr_readFkId = sqlQueryObjectGet.newSQLQueryObject();
-			sqlQueryObjectGet_rendicontazione_fr_readFkId.addFromTable(this.getRendicontazioneFieldConverter().toTable(it.govpay.orm.Rendicontazione.model()));
-			sqlQueryObjectGet_rendicontazione_fr_readFkId.addSelectField("id_fr");
-			sqlQueryObjectGet_rendicontazione_fr_readFkId.addWhereCondition("id=?");
-			sqlQueryObjectGet_rendicontazione_fr_readFkId.setANDLogicOperator(true);
-			Long idFK_rendicontazione_fr = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_rendicontazione_fr_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
-					new JDBCObject(rendicontazione.getId(),Long.class));
-			
-			it.govpay.orm.IdFr id_rendicontazione_fr = null;
-			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-				id_rendicontazione_fr = ((JDBCFRServiceSearch)(this.getServiceManager().getFRServiceSearch())).findId(idFK_rendicontazione_fr, false);
-			}else{
-				id_rendicontazione_fr = new it.govpay.orm.IdFr();
-			}
-			id_rendicontazione_fr.setId(idFK_rendicontazione_fr);
-			rendicontazione.setIdFR(id_rendicontazione_fr);
-		}
-
-		if(idMappingResolutionBehaviour==null ||
-			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-		){
-			// Object _rendicontazione_pagamento (recupero id)
-			ISQLQueryObject sqlQueryObjectGet_rendicontazione_pagamento_readFkId = sqlQueryObjectGet.newSQLQueryObject();
-			sqlQueryObjectGet_rendicontazione_pagamento_readFkId.addFromTable(this.getRendicontazioneFieldConverter().toTable(it.govpay.orm.Rendicontazione.model()));
-			sqlQueryObjectGet_rendicontazione_pagamento_readFkId.addSelectField("id_pagamento");
-			sqlQueryObjectGet_rendicontazione_pagamento_readFkId.addWhereCondition("id=?");
-			sqlQueryObjectGet_rendicontazione_pagamento_readFkId.setANDLogicOperator(true);
-			Long idFK_rendicontazione_pagamento = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_rendicontazione_pagamento_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
-					new JDBCObject(rendicontazione.getId(),Long.class));
-			
-			it.govpay.orm.IdPagamento id_rendicontazione_pagamento = null;
-			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-				id_rendicontazione_pagamento = ((JDBCPagamentoServiceSearch)(this.getServiceManager().getPagamentoServiceSearch())).findId(idFK_rendicontazione_pagamento, false);
-			}else{
-				id_rendicontazione_pagamento = new it.govpay.orm.IdPagamento();
-			}
-			id_rendicontazione_pagamento.setId(idFK_rendicontazione_pagamento);
-			rendicontazione.setIdPagamento(id_rendicontazione_pagamento);
-		}
-
-
-        return rendicontazione;  
-	
+		return lst.get(0);
 	} 
 	
 	@Override

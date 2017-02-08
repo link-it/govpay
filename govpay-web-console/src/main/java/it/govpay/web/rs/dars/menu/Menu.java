@@ -53,7 +53,7 @@ import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.SezioneMenu;
 import it.govpay.web.rs.dars.model.VoceMenu;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
-import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Rendicontazioni;
+import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Fr;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.rs.dars.reportistica.pagamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
@@ -159,11 +159,11 @@ public class Menu extends BaseRsService {
 
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
 
-				Rendicontazioni rendicontazioniDars = new Rendicontazioni();
-				URI rendicontazioniURI = new URI(rendicontazioniDars.getPathServizio());
-				VoceMenu voceMenuRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(rendicontazioniDars.getNomeServizio() + ".titolo"),	rendicontazioniURI, false);
+				Fr frDars = new Fr();
+				URI frURI = new URI(frDars.getPathServizio());
+				VoceMenu voceMenuFlussiRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(frDars.getNomeServizio() + ".titolo"),	frURI, false);
 
-				monitoraggio.getVociMenu().add(voceMenuRendicontazioni);
+				monitoraggio.getVociMenu().add(voceMenuFlussiRendicontazioni);
 			}else {
 				
 				// TODO GIULIANO

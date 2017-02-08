@@ -453,26 +453,26 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	@Override
 	public void checkEntry(UnitaOperativa entry, UnitaOperativa oldEntry) throws ValidationException {
 		if(entry == null || entry.getCodUo() == null || entry.getCodUo().isEmpty()) {
-			throw new ValidationException("Il campo Codice Unit\u00E0 Operativa e' obbligatorio");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodUoObbligatorio"));
 		}
 
 		Anagrafica anagrafica = entry.getAnagrafica();
 		if(anagrafica != null && anagrafica.getRagioneSociale() != null && anagrafica.getRagioneSociale().length() > 255) {
-			throw new ValidationException("Il campo Ragione Sociale non puo' essere piu' lungo di 255 caratteri.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreLunghezzaRagioneSocialeErrata"));
 		} 
 
 		if(anagrafica == null || anagrafica.getCodUnivoco() == null || anagrafica.getCodUnivoco().isEmpty()) {
-			throw new ValidationException("Il campo Cod Univoco e' obbligatorio");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodUnivocoObbligatorio"));
 		}
 		if(entry.getIdDominio() == 0) {
-			throw new ValidationException("Il campo Dominio e' obbligatorio");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDominioObbligatorio"));
 		}
 		if(oldEntry != null) {
 			if(!entry.getCodUo().equals(oldEntry.getCodUo())) {
-				throw new ValidationException("Il campo Codice Unit\u00E0 Operativa non e' modificabile");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodUoNonCoincide",oldEntry.getCodUo(),entry.getCodUo()));
 			}
 			if(entry.getIdDominio() != oldEntry.getIdDominio()) {
-				throw new ValidationException("Il campo Dominio non e' modificabile");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreDominioNonCoincide"));
 			}
 		}
 	}

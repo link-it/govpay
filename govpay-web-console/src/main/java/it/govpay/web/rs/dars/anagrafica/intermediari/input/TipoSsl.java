@@ -69,11 +69,11 @@ public class TipoSsl extends SelectList<String> {
 		Connettore c = null;
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && !tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
-			return null;
+			return "";
 		}
 		
 		if(StringUtils.isEmpty(idOwner)){
-			return null;
+			return "";
 		}
 		
 		BasicBD bd = (BasicBD) objects[0];
@@ -90,7 +90,7 @@ public class TipoSsl extends SelectList<String> {
 			}
 		}
 		
-		return null;
+		return "";
 	}
 
 	@Override

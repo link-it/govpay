@@ -36,7 +36,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.Password;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.SslKsLocation;
@@ -488,67 +487,76 @@ public class ConnettoreHandler {
 
 	public void valida(Connettore connettore,boolean isConnettoreApplicazione) throws ValidationException {
 		if(connettore == null) {
-			throw new ValidationException(this.nomeConnettore + " nullo");
+			throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.connettoreObbligatorio", this.nomeConnettore));
 		}
 		if(!isConnettoreApplicazione){
 			if(StringUtils.isEmpty(connettore.getUrl())) {
-				throw new ValidationException("URL "+this.nomeConnettore+" nullo");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.urlObbligatioria", this.nomeConnettore));
 			}
 
 			try {
 				new URL(connettore.getUrl());
 			} catch (MalformedURLException e) {
-				throw new ValidationException("URL "+this.nomeConnettore+" non valida");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.urlNonValida", this.nomeConnettore));
 			}
 		} else {
 			if(StringUtils.isNotEmpty(connettore.getUrl())){
 				try {
 					new URL(connettore.getUrl());
 				} catch (MalformedURLException e) {
-					throw new ValidationException("URL "+this.nomeConnettore+" non valida");
+					throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.urlNonValida", this.nomeConnettore));
 				}
 			}
 		}
 
 		if(connettore.getTipoAutenticazione() == null) {
-			throw new ValidationException("Tipo Autenticazione "+this.nomeConnettore+" non puo' essere nullo");
+			throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.tipoAutenticazioneVuoto", this.nomeConnettore));
 		}
 
 		switch(connettore.getTipoAutenticazione()) {
 		case HTTPBasic:
 			if(connettore.getHttpUser() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere HttpUser nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".username.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertyHTTPBasicNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			if(connettore.getHttpPassw() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere HttpPassw nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".password.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertyHTTPBasicNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			break;
 		case NONE:
 			break;
 		case SSL:
 			if(connettore.getSslKsType() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere SslKsType nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslKsType.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertySSLNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			if(connettore.getSslKsLocation() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere SslKsLocation nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslKsLocation.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertySSLNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			if(connettore.getSslKsPasswd() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere SslKsPasswd nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslKsPasswd.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertySSLNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			if(connettore.getSslTsType() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere SslTsType nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslTsType.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertySSLNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			if(connettore.getSslTsLocation() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere SslTsLocation nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslTsLocation.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertySSLNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			if(connettore.getSslTsPasswd() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere SslTsPasswd nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslTsPasswd.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertySSLNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			if(connettore.getSslPKeyPasswd() == null) {
-				throw new ValidationException(this.nomeConnettore + " con TipoAutorizzazione ["+connettore.getTipoAutenticazione()+"] non deve avere SslPKeyPasswd nullo");
+				String prop = Utils.getInstance(this.locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".sslPKeyPasswd.label");
+				throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.propertySSLNonValida", this.nomeConnettore,connettore.getTipoAutenticazione(),prop));
 			}
 			break;
-		default:throw new ValidationException("TipoAutenticazione "+this.nomeConnettore+" ["+connettore.getTipoAutenticazione()+"] non valido");
+		default:throw new ValidationException(Utils.getInstance(this.locale).getMessageWithParamsFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".creazione.tipoAutenticazioneNonValido",connettore.getTipoAutenticazione(), this.nomeConnettore));
 
 		}
 	}

@@ -187,7 +187,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String intermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio, this.getLanguage());
 		List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd,false);
@@ -212,10 +211,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(null);
 		sezioneRoot.addField(principal);
-
-		InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
-		segregationCode.setDefaultValue(null); 
-		sezioneRoot.addField(segregationCode);
 
 		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(true); 
@@ -256,7 +251,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String denominazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".denominazione.id");
 			String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 
 			// codIntermediario
 			String codIntermediarioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label");
@@ -282,14 +276,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			CheckButton abiliato = new CheckButton(abilitatoId, abilitatoLabel, true, false, false, true);
 			this.infoCreazioneMap.put(abilitatoId, abiliato);
 
-			// segregationCode
-			String segregationCodeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label");
-			InputText segregationCode = new InputText(segregationCodeId, segregationCodeLabel, null, false, false, true, 2, 2);
-			//segregationCode.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.suggestion"));
-			segregationCode.setValidation("[0-9]{2}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.errorMessage"));
-			segregationCode.setAvanzata(true); 
-			this.infoCreazioneMap.put(segregationCodeId, segregationCode);
-
 			ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio, this.getLanguage());
 			List<ParamField<?>> infoCreazioneConnettore = connettoreHandler.getInfoCreazione(uriInfo, bd,false);
 
@@ -309,7 +295,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		String abilitatoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.id");
 		String intermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD,this.nomeServizio,this.pathServizio, this.getLanguage());
 		List<ParamField<?>> infoModificaConnettore = connettoreHandler.getInfoModifica(uriInfo, bd, entry.getConnettorePdd(),entry.getId(),false);
@@ -335,13 +320,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		principal.setDefaultValue(entry.getConnettorePdd() == null ? null : entry.getConnettorePdd().getPrincipal());
 		sezioneRoot.addField(principal);
 		
-		// TODO GIULIANO
-		// Il segregation code e' nel dominio
-		InputText segregationCode = (InputText) infoCreazioneMap.get(segregationCodeId);
-		String segCode = null;
-		segregationCode.setDefaultValue(segCode); 
-		sezioneRoot.addField(segregationCode);
-
 		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
@@ -412,11 +390,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			if(connettore != null && StringUtils.isNotEmpty(connettore.getPrincipal())) {
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), connettore.getPrincipal());
 			}
-			// TODO GIULIANO
-//			if(intermediario.getSegregationCode() != null){
-//				String segCode = intermediario.getSegregationCode() < 10 ? "0"+intermediario.getSegregationCode() : intermediario.getSegregationCode()+"";
-//				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label"), segCode);
-//			}
+
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(intermediario.isAbilitato()));
 
 			// sezione connettore
@@ -493,7 +467,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		Intermediario entry = null;
 		String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
 		String tipoSslId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + CONNETTORE_PDD + ".tipoSsl.id");
-		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -510,17 +483,14 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			String principal = jsonObjectIntermediario.getString(principalId);
 			jsonObjectIntermediario.remove(principalId);
-
-			String segregationCode = jsonObjectIntermediario.getString(segregationCodeId);
-			jsonObjectIntermediario.remove(segregationCodeId);
-
-			jsonConfig.setRootClass(Intermediario.class);
-			entry = (Intermediario) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
-
+			
 			String tipoSsl = jsonObjectIntermediario.containsKey(tipoSslId) ? jsonObjectIntermediario.getString(tipoSslId) : null;
 			if(tipoSsl != null) {
 				jsonObjectIntermediario.remove(tipoSslId);
 			}
+
+			jsonConfig.setRootClass(Intermediario.class);
+			entry = (Intermediario) JSONObject.toBean( jsonObjectIntermediario, jsonConfig );
 
 			//jsonObjectIntermediario = JSONObject.fromObject( baos.toString() );  
 			jsonConfig.setRootClass(Connettore.class);
@@ -533,11 +503,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			c.setPrincipal(principal);
 			entry.setConnettorePdd(c); 
 			
-			//TODO GIULIANO
-//			if(StringUtils.isNotEmpty(segregationCode)){
-//				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
-//			}
-
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -547,27 +512,29 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		}
 	}
 
+	
 
 	@Override
 	public void checkEntry(Intermediario entry, Intermediario oldEntry) throws ValidationException {
 		if(entry == null || entry.getCodIntermediario() == null || entry.getCodIntermediario().length() != 11) {
 			int codIntSize = (entry != null && entry.getCodIntermediario() != null) ? entry.getCodIntermediario().length() : 0;
-			throw new ValidationException("Lunghezza del IdIntermediario errata. Richieste 11 cifre, trovate "+codIntSize);
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreLunghezzaIdintermediarioErrata", codIntSize));
 		}
 		try { 
 			Long.parseLong(entry.getCodIntermediario());
 		} catch (NumberFormatException e) {
-			throw new ValidationException("Formato CodIntermediario errato. Richieste 11 cifre, trovato "+entry.getCodIntermediario());
+			throw new ValidationException(
+					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreIdintermediarioErrato", entry.getCodIntermediario()));
 		}
 
 		if(entry.getDenominazione() == null || entry.getDenominazione().isEmpty()) {
-			throw new ValidationException("Il campo Denominazione deve essere valorizzato.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreDenominazioneObbligatoria"));
 		}
 
 		Connettore connettore = entry.getConnettorePdd();
 
 		if(connettore.getPrincipal() == null || connettore.getPrincipal().isEmpty()) {
-			throw new ValidationException("Il campo Principal deve essere valorizzato.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.errorePrincipalObbligatorio"));
 		}
 
 		ConnettoreHandler connettoreHandler = new ConnettoreHandler(CONNETTORE_PDD, this.titoloServizio, this.pathServizio, this.getLanguage());
@@ -575,7 +542,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 		if(oldEntry != null) { //caso update
 			if(!oldEntry.getCodIntermediario().equals(entry.getCodIntermediario())) {
-				throw new ValidationException("CodIntermediario non deve cambiare in update. Atteso ["+oldEntry.getCodIntermediario()+"] trovato ["+entry.getCodIntermediario()+"]");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreIdintermediarioNonCoincide",oldEntry.getCodIntermediario(),entry.getCodIntermediario()));
 			}
 		}
 	}

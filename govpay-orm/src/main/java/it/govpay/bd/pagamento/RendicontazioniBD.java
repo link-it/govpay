@@ -19,15 +19,18 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.MultipleResultException;
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.converter.RendicontazioneConverter;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
-
-import java.util.List;
-
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
+import it.govpay.orm.IdRendicontazione;
 
 public class RendicontazioniBD extends BasicBD {
 
@@ -57,6 +60,32 @@ public class RendicontazioniBD extends BasicBD {
 							filter.toPaginatedExpression());
 			return RendicontazioneConverter.toDTO(rendicontazioneVOLst);
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public long count(RendicontazioneFilter filter) throws ServiceException {
+		try {
+			return this.getRendicontazioneService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	/**
+	 * Recupera la rendicontazione identificata dalla chiave fisica
+	 */
+	public Rendicontazione getRendicontazione(long id) throws ServiceException {
+		try {
+			IdRendicontazione idRendicontazione = new IdRendicontazione();
+			idRendicontazione.setId(id);
+			it.govpay.orm.Rendicontazione rendicontazione = this.getRendicontazioneService().get(idRendicontazione);
+			return RendicontazioneConverter.toDTO(rendicontazione);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}

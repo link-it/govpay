@@ -951,16 +951,16 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	@Override
 	public void checkEntry(Portale entry, Portale oldEntry) throws ValidationException {
 		if(entry == null || StringUtils.isEmpty(entry.getCodPortale())) {
-			throw new ValidationException("il campo Cod Portale deve essere valorizzato.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodPortaleObbligatorio"));
 		}
 
 		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) {
-			throw new ValidationException("Il campo Principal deve essere valorizzato.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.errorePrincipalObbligatorio"));
 		}
 
 		if(oldEntry != null) { //caso update
 			if(!oldEntry.getCodPortale().equals(entry.getCodPortale())) {
-				throw new ValidationException("Cod Portale non deve cambiare in update. Atteso ["+oldEntry.getCodPortale()+"] trovato ["+entry.getCodPortale()+"]");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodPortaleNonCoincide",oldEntry.getCodPortale(),entry.getCodPortale()));
 			}
 		}
 	}

@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,7 +43,6 @@ import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Stazione;
 import it.govpay.model.Intermediario;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -405,28 +403,28 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		String codIntermediario2 = entry.getCodStazione().substring(0, entry.getCodStazione().indexOf("_"));
 		
 		if(StringUtils.isEmpty(codIntermediario2) || !this.codIntermediario.equals(codIntermediario2)){
-			throw new ValidationException("Id Stazione non coerente rispetto all'IdIntermediario. Atteso [" + this.codIntermediario + "_" + "], fornito [" + codIntermediario2 + "]");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreIdintermediarioNonCoincide", this.codIntermediario + "_",codIntermediario2));
 		}
 		
 		String applicationCodeAsString = entry.getCodStazione().substring(entry.getCodStazione().indexOf("_") + 1);
 
 		if(StringUtils.isEmpty(applicationCodeAsString))
-			throw new ValidationException("Valore di Application Code non calcolabile. Consentiti valori fino a 99.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.valoreApplicationCodeErrato"));
 
 		try{
 			entry.setApplicationCode(Integer.parseInt(applicationCodeAsString));   
 		}catch(Exception e){
-			throw new ValidationException("Formato di Application Code non calcolabile. Consentiti valori fino a 99.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.formatoApplicationCodeErrato"));
 		}
 
-		if(entry.getCodStazione() == null)  throw new ValidationException("Id Stazione nullo");
-		if(entry.getApplicationCode() > 99)  throw new ValidationException("Valore di Application Code non ammesso. Consentiti valori fino a 99.");
+		if(entry.getCodStazione() == null)  throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.codStazioneVuoto"));
+		if(entry.getApplicationCode() > 99)  throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.valoreApplicationCodeErrato"));
 		//		if(applicationCodes.contains(entry.getApplicationCode())) throw new ValidationException("Non sono consentite stazioni Application Code [" + entry.getApplicationCode() + "].");
 		//		applicationCodes.add(entry.getApplicationCode());
 		if(!entry.getCodStazione().equals(this.codIntermediario + "_" + String.format("%02d", entry.getApplicationCode()))) 
-			throw new ValidationException("Id Stazione non coerente rispetto agli IdIntermediario ed ApplicationCode. Atteso [" + this.codIntermediario + "_" + String.format("%02d", entry.getApplicationCode()) + "], fornito [" + entry.getCodStazione() + "]");
-		if(entry.getPassword() == null || entry.getPassword().isEmpty())   throw new ValidationException("E' necessario valorizzare il campo Password");
-		if(entry.getPassword().contains(" ")) throw new ValidationException("Password non valida. Caratteri blank non ammessi");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.idStazioneNonCoerente",  this.codIntermediario + "_" + String.format("%02d", entry.getApplicationCode()), entry.getCodStazione()));
+		if(entry.getPassword() == null || entry.getPassword().isEmpty())   throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.passwordObbligatoria"));
+		if(entry.getPassword().contains(" ")) throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.passwordNoSpazi"));
 
 	}
 

@@ -1025,11 +1025,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	@Override
 	public void checkEntry(Applicazione entry, Applicazione oldEntry) throws ValidationException {
 		if(entry == null || StringUtils.isEmpty(entry.getCodApplicazione())) {
-			throw new ValidationException("il campo Cod Applicazione deve essere valorizzato.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreCodApplicazioneObbligatorio"));
 		}
 
 		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) {
-			throw new ValidationException("Il campo Principal deve essere valorizzato.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.errorePrincipalObbligatorio"));
 		}
 
 		Connettore connettoreNotifica = entry.getConnettoreNotifica();
@@ -1042,7 +1042,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		if(oldEntry != null) { //caso update
 			if(!oldEntry.getCodApplicazione().equals(entry.getCodApplicazione())) {
-				throw new ValidationException("Cod Applicazione non deve cambiare in update. Atteso ["+oldEntry.getCodApplicazione()+"] trovato ["+entry.getCodApplicazione()+"]");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.erroreCodApplicazioneNonCoincide",oldEntry.getCodApplicazione(),entry.getCodApplicazione()));
 			}
 		}
 	}

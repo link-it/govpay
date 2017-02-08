@@ -667,23 +667,23 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	@Override
 	public void checkEntry(Operatore entry, Operatore oldEntry) throws ValidationException {
 		if(entry.getPrincipal() == null || entry.getPrincipal().isEmpty()) {
-			throw new ValidationException("E' necessario valorizzare il campo Principal");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.errorePrincipalObbligatorio"));
 		}
 		if(entry.getPrincipal().contains(" ")) {
-			throw new ValidationException("Principal non valida. Caratteri blank non ammessi");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.errorePrincipalNoSpazi"));
 		}
 
 		if(entry != null && entry.getPrincipal() != null && entry.getPrincipal().length() > 255) {
-			throw new ValidationException("Il campo Principal non puo' essere piu' lungo di 255 caratteri.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreLunghezzaPrincipal"));
 		} 
 
 		if(entry != null && entry.getNome() != null && entry.getNome().length() > 255) {
-			throw new ValidationException("Il campo Nome non puo' essere piu' lungo di 255 caratteri.");
+			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".creazione.erroreLunghezzaNome"));
 		} 
 
 		if(oldEntry != null) {
 			if(!entry.getPrincipal().equals(oldEntry.getPrincipal())) {
-				throw new ValidationException("Il campo Principal non e' modificabile");
+				throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".aggiornamento.errorePrincipalNonCoincide",oldEntry.getPrincipal(),entry.getPrincipal()));
 			}
 		}
 	}
