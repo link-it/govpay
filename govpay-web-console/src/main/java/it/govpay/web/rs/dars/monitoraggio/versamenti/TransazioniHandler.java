@@ -13,7 +13,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
@@ -43,7 +42,6 @@ import it.govpay.model.Portale;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
