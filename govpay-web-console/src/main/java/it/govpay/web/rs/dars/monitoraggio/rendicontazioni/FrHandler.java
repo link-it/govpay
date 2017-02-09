@@ -469,7 +469,20 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	@Override
 	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
-
+		
+		
+		// [TODO] decidere come gestire i loghi inseriti nel mockup
+		boolean mostraLoghi = true;
+		if(mostraLoghi){
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoEnte.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoEnte.label"),
+							"E"));
+			
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoBanca.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoBanca.label"),
+							"B"));
+		}
+		
 		if(StringUtils.isNotEmpty(entry.getCodFlusso())){
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"),

@@ -642,6 +642,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public Map<String, Voce<String>> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 		try {
+			
+			
+			
 			// voci da inserire nella visualizzazione personalizzata 
 			// logo, codversamentoente, iuv, piva/cf, importo, scadenza, stato
 			if(StringUtils.isNotEmpty(entry.getCodVersamentoEnte())) {
@@ -664,13 +667,16 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			UnitaOperativa uo = entry.getUo(bd);
 			if(uo != null){
 				Dominio dominio = uo.getDominio(bd);
+				Domini dominiDars = new Domini();
+				String dominioTitolo = ((DominiHandler)dominiDars.getDarsHandler()).getTitolo(dominio, bd);
 				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id"),
-						new Voce<String>(dominio.getCodDominio(),
-								Utils.getSigla(dominio.getRagioneSociale()))); 
-
-				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSocialeDominio.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSocialeDominio.label"),
-								dominio.getRagioneSociale())); 
+						new Voce<String>(dominioTitolo,dominio.getCodDominio())); 
+				
+				// [TODO] decidere come gestire i loghi inseriti nel mockup
+				boolean mostraLoghi = true;
+				if(mostraLoghi)
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoDominio.id"),
+						new Voce<String>(dominioTitolo,Utils.getSigla(dominio.getRagioneSociale())));
 			}
 
 			if(entry.getStatoVersamento() != null) {
