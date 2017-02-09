@@ -33131,7 +33131,7 @@ It will also ensure that focus remains in the dialog.
               temp[obj]=newValue;
             }
           }
-          console.log(temp);
+          //console.log(temp);
           this.$.editResource.url = this.editUrl;
           this.$.editResource.method = this.method;
           this.$.editResource.contentType="application/json";
@@ -35919,7 +35919,7 @@ event and do your own custom submission:
       build: function(data){
         if (data){
           this.data = data;
-          this.searchUrl = REST_URL + data.uri + app.appendLangParameter(data.uri);
+          this.searchUrl = REST_URL + data.uri ;
           this.buildForm(data, this.$.searchForm);
           if (this.auto){
             this.search();
@@ -35959,7 +35959,7 @@ event and do your own custom submission:
         if (offset!=0){
           query.push('offset='+this.offset);
         }
-        this.$.searchResource.url = this.searchUrl;
+        this.$.searchResource.url = this.searchUrl + app.appendLangParameter(this.searchUrl);
         if (query.length>0){
           var pp = this.$.searchResource.url.indexOf('?') > -1 ? '&' : '?';
           this.$.searchResource.url += pp +query.join('&');
