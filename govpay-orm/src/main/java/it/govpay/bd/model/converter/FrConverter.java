@@ -42,6 +42,7 @@ public class FrConverter {
 
 	public static Fr toDTO(it.govpay.orm.FR vo) throws ServiceException {
 		Fr dto = new Fr();
+		dto.setStato(StatoFr.valueOf(vo.getStato()));
 		dto.setCodBicRiversamento(vo.getCodBicRiversamento());
 		dto.setCodFlusso(vo.getCodFlusso());
 		dto.setCodDominio(vo.getCodDominio());
@@ -54,13 +55,13 @@ public class FrConverter {
 		dto.setImportoTotalePagamenti(BigDecimal.valueOf(vo.getImportoTotalePagamenti()));
 		dto.setIur(vo.getIur());
 		dto.setNumeroPagamenti(vo.getNumeroPagamenti());
-		dto.setStato(StatoFr.valueOf(vo.getStato()));
 		dto.setXml(vo.getXml());
 		return dto;
 	}
 
 	public static it.govpay.orm.FR toVO(Fr dto) {
 		it.govpay.orm.FR vo = new it.govpay.orm.FR();
+		vo.setStato(dto.getStato().toString());
 		vo.setCodBicRiversamento(dto.getCodBicRiversamento());
 		vo.setCodFlusso(dto.getCodFlusso());
 		vo.setCodDominio(dto.getCodDominio());
@@ -73,7 +74,7 @@ public class FrConverter {
 		vo.setImportoTotalePagamenti(dto.getImportoTotalePagamenti().doubleValue());
 		vo.setIur(dto.getIur());
 		vo.setNumeroPagamenti(dto.getNumeroPagamenti());
-		vo.setStato(dto.getStato().toString());
+		
 		vo.setXml(dto.getXml());
 		return vo;
 	}

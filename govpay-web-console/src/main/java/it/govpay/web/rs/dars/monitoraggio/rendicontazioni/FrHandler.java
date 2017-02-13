@@ -43,6 +43,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
@@ -51,8 +52,12 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
+import it.govpay.model.Acl;
+import it.govpay.model.Operatore;
+import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -90,7 +95,9 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
 			// Operazione consentita agli utenti registrati
-			this.darsService.checkOperatoreAdmin(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -114,13 +121,18 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			if(StringUtils.isNotEmpty(codFlusso))
 				filter.setCodFlusso(codFlusso); 
 
+			List<String> listaCodDomini =  new ArrayList<String>();
+			AclBD aclBD = new AclBD(bd);
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			
 			boolean eseguiRicerca = true;
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 
 			if(idDominio != null && idDominio > 0){
 				Dominio dominio = AnagraficaManager.getDominio(bd, idDominio);
-				filter.setCodDominio(Arrays.asList(dominio.getCodDominio())); 
+				listaCodDomini = Arrays.asList(dominio.getCodDominio());
+				filter.setCodDominio(listaCodDomini); 
 			}
 
 			String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
@@ -149,6 +161,28 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			}
 
 			filter.setNascondiSeSoloDiAltriIntermediari(nascondiAltriIntermediari);
+			
+			if(!isAdmin && listaCodDomini.isEmpty()){
+				boolean vediTuttiDomini = false;
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							listaCodDomini.add(acl.getCodDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(listaCodDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setCodDominio(listaCodDomini);
+					}
+				}
+			}
 
 
 			long count = eseguiRicerca ? frBD.countExt(filter) : 0;
@@ -471,17 +505,9 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 		
 		
-		// [TODO] decidere come gestire i loghi inseriti nel mockup
-		boolean mostraLoghi = true;
-		if(mostraLoghi){
-			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoEnte.id"),
-					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoEnte.label"),
-							"E"));
-			
-			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoBanca.id"),
-					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoBanca.label"),
-							"B"));
-		}
+		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+entry.getStato().name()),
+						entry.getStato().name()));
 		
 		if(StringUtils.isNotEmpty(entry.getCodFlusso())){
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id"),

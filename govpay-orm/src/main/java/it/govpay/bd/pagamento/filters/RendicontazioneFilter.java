@@ -46,6 +46,10 @@ public class RendicontazioneFilter extends AbstractFilter{
 				exp.equals(Rendicontazione.model().IUR, this.iur);
 			}
 			
+			if(this.tipo!= null) {
+				exp.equals(Rendicontazione.model().ESITO, EsitoRendicontazione.valueOf(this.tipo).getCodifica());
+			}
+			
 			if(this.esito!= null) {
 				exp.equals(Rendicontazione.model().ESITO, this.esito.getCodifica());
 			}

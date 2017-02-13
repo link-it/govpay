@@ -48,6 +48,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
+import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
@@ -79,7 +80,7 @@ import it.govpay.web.utils.Utils;
 public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> implements IDarsHandler<Rendicontazione>{
 
 	private Map<String, ParamField<?>> infoRicercaMap = null;
-	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
+	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); //  HH:mm  
 	//private SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 
 
@@ -204,10 +205,10 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			// tipo
 			List<Voce<String>> tipi = new ArrayList<Voce<String>>();
 			SelectList<String> tipo = (SelectList<String>) infoRicercaMap.get(tipoId);
-			//			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-			//			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoRendicontazione.OK), StatoRendicontazione.OK.toString()));
-			//			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoRendicontazione.ANOMALA), StatoRendicontazione.ANOMALA.toString()));
-			//			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoRendicontazione.ALTRO_INTERMEDIARIO), StatoRendicontazione.ALTRO_INTERMEDIARIO.toString()));
+			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
+			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito."+EsitoRendicontazione.ESEGUITO), EsitoRendicontazione.ESEGUITO.toString()));
+			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito."+EsitoRendicontazione.ESEGUITO_SENZA_RPT), EsitoRendicontazione.ESEGUITO_SENZA_RPT.toString()));
+			tipi.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito."+EsitoRendicontazione.REVOCATO), EsitoRendicontazione.REVOCATO.toString()));
 			tipo.setDefaultValue("");
 			tipo.setValues(tipi); 
 			sezioneRoot.addField(tipo);
@@ -299,25 +300,20 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 						root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), elemento.getTitolo(),elemento.getUri());
 					}catch(NotFoundException e){}
 				}
-				
+
 				// iur
 				if(StringUtils.isNotEmpty(rendicontazione.getIur())) {
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"), rendicontazione.getIur());
 				}
-				
+
 				if(StringUtils.isNotEmpty(rendicontazione.getIuv())) {
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"), rendicontazione.getIuv());
 				}
-				
-				// [TODO] chiedere nardi
-				if(StringUtils.isNotEmpty(rendicontazione.getIuv())) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"), rendicontazione.getIuv());
-				}
-				
+
 				if(rendicontazione.getData() != null) {
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.label"), this.sdf.format(rendicontazione.getData()));
 				}
-				
+
 				BigDecimal importoPagato = rendicontazione.getImportoPagato() != null ? rendicontazione.getImportoPagato() : BigDecimal.ZERO;  
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), importoPagato.doubleValue()+ "€");
 
@@ -326,18 +322,22 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
 							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name()));
 				}
-				
+
 				EsitoRendicontazione esito = rendicontazione.getEsito();
 				if(esito!= null) {
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.label"),
 							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito."+esito.name()));
 				}
-				
+
 				if(pagamento != null) {
 					Pagamenti pagamentiDars = new Pagamenti();
 					PagamentiHandler pagamentiDarsHandler = (PagamentiHandler) pagamentiDars.getDarsHandler();
-					Elemento elemento = pagamentiDarsHandler.getElemento(pagamento, pagamento.getId(), pagamentiDars.getPathServizio(), bd);
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPagamento.label"), elemento.getTitolo(),elemento.getUri());
+
+					SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+					if(singoloVersamento != null){
+						Elemento elemento = pagamentiDarsHandler.getElemento(pagamento, pagamento.getId(), pagamentiDars.getPathServizio(), bd);
+						root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idPagamento.label"), singoloVersamento.getCodSingoloVersamentoEnte(),elemento.getUri());
+					}
 				}
 
 				if(rendicontazione.getAnomalie()!= null && rendicontazione.getAnomalie().size() > 0) {
@@ -378,34 +378,12 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	public String getSottotitolo(Rendicontazione entry,BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
 		StatoRendicontazione stato = entry.getStato();
-		BigDecimal importoPagato = entry.getImportoPagato() != null ? entry.getImportoPagato() : BigDecimal.ZERO;  
-		double importoTotalePagamenti = importoPagato.doubleValue();
-
-		boolean storno = importoTotalePagamenti < 0;
+		EsitoRendicontazione esito = entry.getEsito();
 		
-		String label = storno ? "storno" : "sottotitolo";
-		switch (stato) {
-		case OK:
-			sb.append(
-					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label." + label + ".ok",
-							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.OK"),
-							(importoTotalePagamenti + "€")));
-			break;
-		case ALTRO_INTERMEDIARIO:
-			sb.append(
-					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label." + label + ".altroIntermediario",
-							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ALTRO_INTERMEDIARIO"),
-							(importoTotalePagamenti + "€")));
-			break;
-		case ANOMALA:
-		default:
-			sb.append(
-					Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label." + label + ".anomala",
-							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ANOMALA"),
-							(importoTotalePagamenti + "€")));
-			break;
-		}
-
+		sb.append(
+				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.label."+esito.name()),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name())));
 		return sb.toString();
 	} 
 
@@ -417,12 +395,6 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	@Override
 	public Map<String, Voce<String>> getVoci(Rendicontazione entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
-
-
-		// [TODO] chiedere nardi
-		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id"),
-				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),
-						""));
 
 		if(StringUtils.isNotEmpty(entry.getIuv())){
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
@@ -441,6 +413,12 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 					new Voce<String>(this.getSottotitolo(entry, bd),
 							stato.name()));
+		}
+		
+		EsitoRendicontazione esito = entry.getEsito();
+		if(stato!= null) {
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.id"),
+					new Voce<String>(esito.name(),esito.getCodifica()+""));
 		}
 
 		if(entry.getData() != null) {
@@ -470,6 +448,13 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			String codDominio = null;
 			if(pagamento != null) {
 				codDominio = pagamento.getCodDominio();
+
+				SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+				if(singoloVersamento != null){
+					voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamento.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamento.label"),
+									singoloVersamento.getCodSingoloVersamentoEnte()));
+				}
 
 			} else {
 				Fr fr = entry.getFr(bd);
