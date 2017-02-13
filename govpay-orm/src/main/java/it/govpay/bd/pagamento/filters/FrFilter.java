@@ -87,11 +87,11 @@ public class FrFilter extends AbstractFilter {
 		}
 
 		if(this.codFlusso!= null){
-			obj.add("%" + this.codFlusso + "%");
+			obj.add("%" + this.codFlusso.toLowerCase() + "%");
 		}
 
 		if(this.tnr!= null){
-			obj.add(this.tnr);
+			obj.add("%" + this.tnr.toLowerCase() + "%");
 		}
 
 		if(this.getOffset() != null && this.getLimit() != null && !count) {
@@ -192,7 +192,11 @@ public class FrFilter extends AbstractFilter {
 				} else {
 					placeholderWhereIn += " WHERE ";
 				}
-				placeholderWhereIn += "fr."+this.getColumn(FR.model().COD_FLUSSO)+" like ?";
+				String field = "fr."+this.getColumn(FR.model().COD_FLUSSO);
+
+				String iLikefield = ilike(field);		
+				
+				placeholderWhereIn += iLikefield +" like ?";
 			}
 
 			if(this.tnr!= null){
@@ -201,7 +205,12 @@ public class FrFilter extends AbstractFilter {
 				} else {
 					placeholderWhereIn += " WHERE ";
 				}
-				placeholderWhereIn += "fr."+this.getColumn(FR.model().IUR)+" = ?";
+				String field = "fr."+this.getColumn(FR.model().IUR);
+
+				String iLikefield = ilike(field);		
+				
+				placeholderWhereIn += iLikefield +" like ?";
+
 			}
 			
 			if(this.nascondiSeSoloDiAltriIntermediari) {
@@ -228,6 +237,20 @@ public class FrFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+
+	private String ilike(String field) throws ServiceException {
+		if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {
+			return "lower("+field+")";
+		}
+		if(GovpayConfig.getInstance().getDatabaseType().equals("mysql")) {
+			return "LOWER("+field+")";
+		}
+		if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
+			return "LOWER("+field+")";
+		}
+		
+		throw new ServiceException("Database " + GovpayConfig.getInstance().getDatabaseType() + " non supportato");
 	}
 
 	@Override
