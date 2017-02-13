@@ -101,7 +101,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			FrBD frBD = new FrBD(bd);
 			FrFilter filter = frBD.newFilter();
-			filter.setOffset(offset);
+			filter.setOffset((offset != null) ? offset: 0);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.FR.model().DATA_ORA_FLUSSO);

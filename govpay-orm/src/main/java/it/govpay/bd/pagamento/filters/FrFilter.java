@@ -113,6 +113,7 @@ public class FrFilter extends AbstractFilter {
 			String placeholderWhereOut = "";
 			String placeholderJoin = "";
 			String placeholderOffsetLimit = "";
+			
 			if(this.idApplicazione != null){
 				if(placeholderWhereIn.length() > 0) {
 					placeholderWhereIn += " AND ";

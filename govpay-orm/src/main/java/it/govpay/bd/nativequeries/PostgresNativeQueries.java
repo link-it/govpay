@@ -64,7 +64,7 @@ public class PostgresNativeQueries extends NativeQueries {
 				" sum(CASE WHEN r.stato='ANOMALA' THEN 1 ELSE 0 END) as ANOMALE, " +
 				" sum(CASE WHEN r.stato='ALTRO_INTERMEDIARIO' THEN 1 ELSE 0 END) as ALTRO_INTERMEDIARIO " +
 				" from fr left join rendicontazioni r on fr.id=r.id_fr $PLACEHOLDER_JOIN$ $PLACEHOLDER_WHERE_IN$ " +
-				" group by fr.id) as fr $PLACEHOLDER_WHERE_OUT$  order by fr.cod_flusso $PLACEHOLDER_OFFSET_LIMIT$";
+				" group by fr.id) as fr $PLACEHOLDER_WHERE_OUT$  order by fr.data_ora_flusso DESC $PLACEHOLDER_OFFSET_LIMIT$";
 	}
 
 	@Override
