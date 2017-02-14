@@ -528,6 +528,9 @@
 				<xsd:restriction base="xsd:string">
 					<xsd:enumeration value="ACCETTATA" />
 					<xsd:enumeration value="ANOMALA" />
+					<xsd:enumeration value="RIFIUTATA">
+						<xsd:annotation><xsd:documentation>Presente per retrocompatibilita v2.x</xsd:documentation></xsd:annotation>
+					</xsd:enumeration>
 				</xsd:restriction>
 			</xsd:simpleType>
 			

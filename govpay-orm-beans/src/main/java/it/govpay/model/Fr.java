@@ -26,12 +26,13 @@ import java.util.List;
 
 public class Fr extends BasicModel{
 	private static final long serialVersionUID = 1L;
-	
+
 	public enum StatoFr {
 		ACCETTATA,
-		ANOMALA
+		ANOMALA,
+		RIFIUTATA // Per retrocompatibilita v2.2
 	}
-	
+
 	private Long id;
 	private String codPsp;
 	private String codDominio;
@@ -46,7 +47,7 @@ public class Fr extends BasicModel{
 	private BigDecimal importoTotalePagamenti;
 	private byte[] xml;
 	private List<Anomalia> anomalie;
-	
+
 	public Long getId() {
 		return id;
 	}
@@ -120,7 +121,7 @@ public class Fr extends BasicModel{
 	public void setXml(byte[] xml) {
 		this.xml = xml;
 	}
-	
+
 	public String getCodBicRiversamento() {
 		return codBicRiversamento;
 	}
@@ -133,61 +134,85 @@ public class Fr extends BasicModel{
 	public void setDataAcquisizione(Date dataAcquisizione) {
 		this.dataAcquisizione = dataAcquisizione;
 	}
-	
+
 	public class Anomalia {
 		String codAnomalia;
 		String descrizione;
-		
+
 		public String getCodice(){
 			return codAnomalia;
 		}
-		
+
 		public String getDescrizione(){
 			return descrizione;
 		}
 	}
-	
+
 	public List<Anomalia> getAnomalie() {
 		if(anomalie == null)
 			anomalie = new ArrayList<Anomalia>();
 		return anomalie;
 	}
-	
+
 	public void addAnomalia(String codAnomalia, String descrizione) {
 		Anomalia a = new Anomalia();
 		a.codAnomalia = codAnomalia;
 		a.descrizione = descrizione;
 		getAnomalie().add(a);
 	}
-	
+
 	private String marshall(List<Anomalia> anomalie) {
 		if(anomalie == null || anomalie.size() == 0) return null;
 		StringBuffer sb = new StringBuffer();
-		
-		for(Anomalia a : anomalie){
-			sb.append(a.codAnomalia);
-			sb.append("#");
-			sb.append(a.descrizione);
-			sb.append("|");
+
+		if(stato.equals(StatoFr.RIFIUTATA)) {
+			// Retrocompatibilita' vecchia versione senza anomalie.
+			for(Anomalia a : anomalie){
+				sb.append(a.descrizione);
+				sb.append("#");
+			}
+			// Elimino l'ultimo #
+			String txt = sb.toString();
+			return txt.substring(0, txt.length()-1);
+		} else {
+			for(Anomalia a : anomalie){
+				sb.append(a.codAnomalia);
+				sb.append("#");
+				sb.append(a.descrizione);
+				sb.append("|");
+			}
+			// Elimino l'ultimo pipe
+			String txt = sb.toString();
+			return txt.substring(0, txt.length()-1);
 		}
-		
-		// Elimino l'ultimo pipe
-		String txt = sb.toString();
-		return txt.substring(0, txt.length()-1);
 	}
-	
+
+
+
 	private List<Anomalia> unmarshall(String anomalie) {
 		List<Anomalia> list = new ArrayList<Anomalia>();
-		
+
 		if(anomalie == null || anomalie.isEmpty()) return list;
-		
-		String[] split = anomalie.split("\\|");
-		for(String s : split){
-			String[] split2 = s.split("#");
-			Anomalia a = new Anomalia();
-			a.codAnomalia = split2[0];
-			a.descrizione = split2[1];
-			list.add(a);
+
+		if(stato.equals(StatoFr.RIFIUTATA)) {
+			// Retrocompatibilita' vecchia versione senza anomalie.
+			String[] split = anomalie.split("#");
+			for(String s : split){
+				Anomalia a = new Anomalia();
+				a.codAnomalia = "000000";
+				a.descrizione = s;
+				list.add(a);
+			}
+			return list;
+		} else {
+			String[] split = anomalie.split("\\|");
+			for(String s : split){
+				String[] split2 = s.split("#");
+				Anomalia a = new Anomalia();
+				a.codAnomalia = split2[0];
+				a.descrizione = split2[1];
+				list.add(a);
+			}
 		}
 		return list;
 	}
