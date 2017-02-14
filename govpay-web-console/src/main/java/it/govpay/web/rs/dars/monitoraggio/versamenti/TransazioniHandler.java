@@ -18,10 +18,12 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.PortaliBD;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Psp;
@@ -35,10 +37,12 @@ import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Acl;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Portale;
+import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
@@ -84,20 +88,38 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
 			Map<String, String> params = new HashMap<String, String>();
-			
+
 			if(StringUtils.isNotEmpty(idVersamento)){
 				params.put(versamentoId, idVersamento);
 			}
-			
+
+			AclBD aclBD = new AclBD(bd);
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			List<Long> idDomini = new ArrayList<Long>();
 			boolean eseguiRicerca = true; // isAdmin;
-			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
-			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
+			// SE l'operatore non e' admin vede solo le transazioni dei versamenti associati ai suoi domini
 			if(!isAdmin){
-//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+				boolean vediTuttiDomini = false;
+
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-//				filter.setIdUo(operatore.getIdEnti()); 
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
 
 				FilterSortWrapper fsw = new FilterSortWrapper();
 				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
@@ -128,17 +150,22 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 			List<Rpt> rpt = eseguiRicerca ? rptBD.findAll(filter) : new ArrayList<Rpt>();
 
-			RrBD rrBD = new RrBD(bd);
-			FilterSortWrapper rrFsw = new FilterSortWrapper();
-			rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
-			rrFsw.setSortOrder(SortOrder.DESC);
-
-			Revoche revocheDars = new Revoche();
-			RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
-
 			if(rpt != null && rpt.size() > 0){
+				RrBD rrBD = new RrBD(bd);
+				FilterSortWrapper rrFsw = new FilterSortWrapper();
+				rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+				rrFsw.setSortOrder(SortOrder.DESC);
+
+				Revoche revocheDars = new Revoche();
+				RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
+
+				// Indico la visualizzazione custom
+				String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+
 				for (Rpt entry : rpt) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
+					Elemento elementoRpt = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elementoRpt.setFormatter(formatter);
+					elenco.getElenco().add(elementoRpt);
 
 					RrFilter rrFilter = rrBD.newFilter();
 					rrFilter.getFilterSortList().add(rrFsw);
@@ -146,8 +173,9 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 					List<Rr> findAll = rrBD.findAll(rrFilter);
 					if(findAll != null && findAll.size() > 0){
 						for (Rr rr : findAll) {
-							Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), revocheDars.getPathServizio(),bd);
-							elenco.getElenco().add(elemento);
+							Elemento elementoRr = revocheDarsHandler.getElemento(rr, rr.getId(), revocheDars.getPathServizio(),bd);
+							elementoRr.setFormatter(formatter);
+							elenco.getElenco().add(elementoRr);
 						}
 					}
 				}
@@ -273,7 +301,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codCarrello.label"),rpt.getCodCarrello());
 			if(StringUtils.isNotEmpty(rpt.getCodSessione()))
 				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSessione.label"),rpt.getCodSessione());
-	
+
 
 			// Singoli Rt 
 			String etichettaRt = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneRT.titolo");
@@ -319,12 +347,12 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			// Elementi correlati
 			String etichettaEventi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.eventi.titolo");
 			Eventi eventiDars = new Eventi();
-			
+
 			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".codDominio.id");
 			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".iuv.id");
 			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".ccp.id");
 			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".idTransazione.id");
-			
+
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(codDominioId, rpt.getCodDominio());
 			params.put(iuvId, rpt.getIuv());
@@ -397,14 +425,89 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Rpt entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
-	public Map<String, Voce<String>> getVoci(Rpt entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Rpt entry, BasicBD bd) throws ConsoleException {
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+
+		StatoRpt stato = entry.getStato();
+
+		String statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso");
+		switch(stato){
+		case RT_ACCETTATA_PA:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk");
+			break;
+		case RPT_RIFIUTATA_NODO:
+		case RPT_RIFIUTATA_PSP:
+		case RPT_ERRORE_INVIO_A_PSP:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo");
+			break;
+		case INTERNO_NODO:
+		case RPT_ACCETTATA_NODO:
+		case RPT_ACCETTATA_PSP:
+		case RPT_ATTIVATA:
+		case RPT_DECORSI_TERMINI:
+		case RPT_ERRORE_INVIO_A_NODO:
+		case RPT_INVIATA_A_PSP:
+		case RPT_RICEVUTA_NODO:
+		case RT_ACCETTATA_NODO:
+		case RT_ESITO_SCONOSCIUTO_PA:
+		case RT_RICEVUTA_NODO:
+		case RT_RIFIUTATA_NODO:
+		case RT_RIFIUTATA_PA:
+		default:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso");
+			break;
+		}
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()),
+						statoTransazione));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.pagamento.label"),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.pagamento.value")));
+
+		BigDecimal importoTotalePagato = entry.getImportoTotalePagato() != null ? entry.getImportoTotalePagato() : BigDecimal.ZERO;
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"),
+						importoTotalePagato.toString()+ "€"));
+
+		if(entry.getDataMsgRichiesta() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.label"),
+							this.sdf.format(entry.getDataMsgRichiesta())));	 
+		}
+
+		if(entry.getIuv() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),entry.getIuv()));
+		}
+
+		if(entry.getCcp() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),entry.getCcp()));
+		}
+		
+		Psp psp = null;
+		try {
+			psp = entry.getPsp(bd);
+			if(psp != null)
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp()));
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
+		}
+
+		return valori; 
+
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
@@ -505,7 +608,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 		InfoForm formRicerca = new InfoForm(ricerca);
 		return formRicerca;
 	}
-	
+
 	/* Operazioni non consentite */
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}

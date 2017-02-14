@@ -453,24 +453,23 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 			return "singoli_versamenti";
 		}
 		if(model.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO)){
-			return "id_versamento";
+			return "versamenti";
 		}
 		if(model.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.ID_APPLICAZIONE)){
-			return "id_applicazione";
+			return "applicazioni";
 		}
 		if(model.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO)){
-			return "id_tributo";
+			return "tributi";
 		}
 		if(model.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_DOMINIO)){
-			return "id_dominio";
+			return "domini";
 		}
 		if(model.equals(Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_TRIBUTO.ID_TIPO_TRIBUTO)){
-			return "id_tipo_tributo";
+			return "tipi_tributo";
 		}
 		if(model.equals(Pagamento.model().ID_RR)){
 			return "rr";
 		}
-
 
 		return super.toTable(model,returnAlias);
 		

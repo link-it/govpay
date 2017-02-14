@@ -21,6 +21,7 @@ package it.govpay.web.rs.dars.monitoraggio.versamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
+import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
@@ -458,7 +460,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id);
 
-			String titolo = versamento != null ? this.getTitolo(versamento,bd) : "";
+			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioVersamento") ;
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
@@ -514,20 +516,27 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				anagraficaHandler.fillSezioneAnagraficaUO(sezioneAnagrafica, anagrafica);
 
 				// Singoli Versamenti
-				String etichettaSingoliVersamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.singoliVersamenti.titolo");
-				it.govpay.web.rs.dars.model.Sezione sezioneSingoliVersamenti = dettaglio.addSezione(etichettaSingoliVersamenti);
-
 				List<SingoloVersamento> singoliVersamenti = versamento.getSingoliVersamenti(bd);
 				if(!Utils.isEmpty(singoliVersamenti)){
 					SingoliVersamenti svDars = new SingoliVersamenti();
-					SingoliVersamentiHandler svDarsHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
 					if(singoliVersamenti != null && singoliVersamenti.size() > 0){
 						for (SingoloVersamento entry : singoliVersamenti) {
-							Elemento elemento = svDarsHandler.getElemento(entry, entry.getId(), svDars.getPathServizio(),bd);
-							sezioneSingoliVersamenti.addVoce(elemento.getTitolo(), elemento.getSottotitolo());
+							String etichettaSingoliVersamenti = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(
+									this.nomeServizio + ".elementoCorrelato.singoloVersamento.titolo", entry.getCodSingoloVersamentoEnte());
+							it.govpay.web.rs.dars.model.Sezione sezioneSingoloVersamento = dettaglio.addSezione(etichettaSingoliVersamenti);
+							
+							BigDecimal importoSingoloVersamento = entry.getImportoSingoloVersamento() != null ? entry.getImportoSingoloVersamento() : BigDecimal.ZERO;
+							sezioneSingoloVersamento.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(svDars.getNomeServizio() + ".importoSingoloVersamento.label"), 
+									importoSingoloVersamento.doubleValue() + "€");
+							
+							Tributo tributo = entry.getTributo(bd);
+							if(tributo != null){
+								sezioneSingoloVersamento.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(svDars.getNomeServizio() + ".tributo.label"),
+										tributo.getDescrizione());
+							}
 						}
 					}
-				}
+				} 
 
 				Pagamenti pagamentiDars = new Pagamenti();
 				String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idVersamento.id");
@@ -670,13 +679,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				Domini dominiDars = new Domini();
 				String dominioTitolo = ((DominiHandler)dominiDars.getDarsHandler()).getTitolo(dominio, bd);
 				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id"),
-						new Voce<String>(dominioTitolo,dominio.getCodDominio())); 
-				
-				// [TODO] decidere come gestire i loghi inseriti nel mockup
-				boolean mostraLoghi = true;
-				if(mostraLoghi)
-				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".logoDominio.id"),
-						new Voce<String>(dominioTitolo,Utils.getSigla(dominio.getRagioneSociale())));
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"),dominioTitolo)); 
 			}
 
 			if(entry.getStatoVersamento() != null) {

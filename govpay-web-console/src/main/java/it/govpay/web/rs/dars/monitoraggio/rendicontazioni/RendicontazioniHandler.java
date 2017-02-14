@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -49,7 +48,6 @@ import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
 import it.govpay.model.Rendicontazione.Anomalia;
@@ -97,7 +95,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
+			URI esportazione = null; 
 			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -483,86 +481,13 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
-		StringBuffer sb = new StringBuffer();
-		if(idsToExport != null && idsToExport.size() > 0) {
-			for (Long long1 : idsToExport) {
-
-				if(sb.length() > 0) {
-					sb.append(", ");
-				}
-
-				sb.append(long1);
-			}
-		}
-
-		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
-
-		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
-		} 
-
-		String fileName = "Rendicontazioni.zip";
-		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
-
-			FrBD frBD = new FrBD(bd);
-
-			for (Long idVersamento : idsToExport) {
-				Fr fr = frBD.getFr(idVersamento);
-
-				String folderName = "Rendicontazione_" + fr.getIur();
-
-				ZipEntry frXml = new ZipEntry(folderName +"/fr.xml");
-				zout.putNextEntry(frXml);
-				zout.write(fr.getXml());
-				zout.closeEntry();
-			}
-			zout.flush();
-			zout.close();
-
-			this.log.info("Esecuzione " + methodName + " completata.");
-
-			return fileName;
-		}catch(WebApplicationException e){
-			throw e;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
+		return null;
 	}
 
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
-		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
-
-
-		try{
-			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
-
-			FrBD frBD = new FrBD(bd);
-			Fr fr = frBD.getFr(idToExport);			
-
-			String fileName = "Rendicontazione_" + fr.getIur()+".zip";
-
-
-			ZipEntry frXml = new ZipEntry("fr.xml");
-			zout.putNextEntry(frXml);
-			zout.write(fr.getXml());
-			zout.closeEntry();
-
-			zout.flush();
-			zout.close();
-
-			this.log.info("Esecuzione " + methodName + " completata.");
-
-			return fileName;
-		}catch(WebApplicationException e){
-			throw e;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
+		return null;
 	}
 
 	/* Creazione/Update non consentiti**/

@@ -199,7 +199,60 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 	
 	@Override
-	public Map<String, Voce<String>> getVoci(Rr entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Rr entry, BasicBD bd) throws ConsoleException { 
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+
+		StatoRr stato = entry.getStato();
+
+		String statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso");
+		switch(stato){
+		case ER_ACCETTATA_PA:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk");
+			break;
+		case RR_RIFIUTATA_NODO:
+		case ER_RIFIUTATA_PA:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo");
+			break;
+		case RR_ACCETTATA_NODO:
+		case RR_ATTIVATA:
+		case RR_ERRORE_INVIO_A_NODO:
+		default:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso");
+			break;
+		}
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()),
+						statoTransazione));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.rr.label"),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.rr.value")));
+
+		BigDecimal importoTotalePagato = entry.getImportoTotaleRevocato() != null ? entry.getImportoTotaleRevocato() : BigDecimal.ZERO;
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"),
+						importoTotalePagato.toString()+ "€"));
+
+		if(entry.getDataMsgRevoca()!= null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.label"),
+							this.sdf.format(entry.getDataMsgRevoca())));	 
+		}
+
+		if(entry.getIuv() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),entry.getIuv()));
+		}
+
+		if(entry.getCcp() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),entry.getCcp()));
+		}
+		
+		return valori; 
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
