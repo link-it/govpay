@@ -33,13 +33,13 @@ public class OracleNativeQueries extends NativeQueries {
 				" p.importo_pagato as p_importo_pagato,p.data_acquisizione as p_data_acquisizione,p.iur as p_iur,p.data_pagamento as p_data_pagamento,p.commissioni_psp as p_commissioni_psp,p.tipo_allegato as p_tipo_allegato,p.allegato as p_allegato,p.data_acquisizione_revoca as p_data_acquisizione_revoca,p.causale_revoca as p_causale_revoca,p.dati_revoca as p_dati_revoca,p.importo_revocato as p_importo_revocato,p.esito_revoca as p_esito_revoca,p.dati_esito_revoca as p_dati_esito_revoca,p.id as p_id,p.id_rpt as p_id_rpt,p.id_singolo_versamento as p_id_singolo_versamento,p.id_rr as p_id_rr,p.iban_accredito as p_iban_accredito,p.cod_dominio as p_cod_dominio,p.iuv as p_iuv, sv.cod_singolo_versamento_ente as sv_cod_singolo_versamento_ente,sv.stato_singolo_versamento as sv_stato_singolo_versamento,sv.importo_singolo_versamento as sv_importo_singolo_versamento,sv.tipo_bollo as sv_tipo_bollo,sv.hash_documento as sv_hash_documento,sv.provincia_residenza as sv_provincia_residenza,sv.tipo_contabilita as sv_tipo_contabilita,sv.codice_contabilita as sv_codice_contabilita,sv.note as sv_note,sv.id as sv_id,sv.id_versamento as sv_id_versamento,sv.id_tributo as sv_id_tributo,sv.id_iban_accredito as sv_id_iban_accredito " +
 				"  " +
 				" from pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento " +
-				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and (r.esito=0 or r.esito=9) $PLACEHOLDER_IN$ " +
+				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento where (r.esito=0 or r.esito=9) $PLACEHOLDER_IN$ " +
 				" ) " +
 				" UNION " +
 				" ( " +
 				" SELECT 'STORNO' as tipo, r.iuv as r_iuv,r.iur as r_iur,r.importo_pagato as r_importo_pagato,r.esito as r_esito,r.data as r_data,r.stato as r_stato,r.anomalie as r_anomalie,r.id as r_id,r.id_fr as r_id_fr,r.id_pagamento as r_id_pagamento, p.importo_pagato as p_importo_pagato,p.data_acquisizione as p_data_acquisizione,p.iur as p_iur,p.data_pagamento as p_data_pagamento,p.commissioni_psp as p_commissioni_psp,p.tipo_allegato as p_tipo_allegato,p.allegato as p_allegato,p.data_acquisizione_revoca as p_data_acquisizione_revoca,p.causale_revoca as p_causale_revoca,p.dati_revoca as p_dati_revoca,p.importo_revocato as p_importo_revocato,p.esito_revoca as p_esito_revoca,p.dati_esito_revoca as p_dati_esito_revoca,p.id as p_id,p.id_rpt as p_id_rpt,p.id_singolo_versamento as p_id_singolo_versamento,p.id_rr as p_id_rr,p.iban_accredito as p_iban_accredito,p.cod_dominio as p_cod_dominio,p.iuv as p_iuv, sv.cod_singolo_versamento_ente as sv_cod_singolo_versamento_ente,sv.stato_singolo_versamento as sv_stato_singolo_versamento,sv.importo_singolo_versamento as sv_importo_singolo_versamento,sv.tipo_bollo as sv_tipo_bollo,sv.hash_documento as sv_hash_documento,sv.provincia_residenza as sv_provincia_residenza,sv.tipo_contabilita as sv_tipo_contabilita,sv.codice_contabilita as sv_codice_contabilita,sv.note as sv_note,sv.id as sv_id,sv.id_versamento as sv_id_versamento,sv.id_tributo as sv_id_tributo,sv.id_iban_accredito as sv_id_iban_accredito " +
 				" FROM pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento and id_rr is not null " +
-				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and r.esito=3 $PLACEHOLDER_IN$ " +
+				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento where r.esito=3 $PLACEHOLDER_IN$ " +
 				" ) ) as s1 " +
 				" left join fr on fr.id = s1.r_id_fr left join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$) $PLACEHOLDER_OFFSET_LIMIT$ order by fr.cod_flusso, p_data_pagamento";
 	}
@@ -51,13 +51,13 @@ public class OracleNativeQueries extends NativeQueries {
 				" (( " +
 				" SELECT r.id_fr as r_id_fr, sv.id_versamento as sv_id_versamento " +
 				" from pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento " +
-				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and (r.esito=0 or r.esito=9) $PLACEHOLDER_IN$ " +
+				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento where (r.esito=0 or r.esito=9) $PLACEHOLDER_IN$ " +
 				" ) " +
 				" UNION " +
 				" ( " +
 				" SELECT r.id_fr as r_id_fr, sv.id_versamento as sv_id_versamento " +
 				" FROM pagamenti p join singoli_versamenti sv on sv.id= p.id_singolo_versamento and id_rr is not null " +
-				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento and r.esito=3 $PLACEHOLDER_IN$ " +
+				" RIGHT JOIN rendicontazioni r on p.id = r.id_pagamento where r.esito=3 $PLACEHOLDER_IN$ " +
 				" ) ) as s1 " +
 				" left join fr on fr.id = s1.r_id_fr left join versamenti on versamenti.id = s1.sv_id_versamento $PLACEHOLDER_OUT$ ";
 	}

@@ -134,27 +134,15 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 			String placeholderOut = "";
 			String placeholderOffsetLimit = "";
 			if(this.dataPagamentoMin != null){
-				if(placeholderIn.length() > 0) {
-					placeholderIn += " AND ";
-				} else {
-					placeholderIn += " WHERE ";
-				}
+				placeholderIn += " AND ";
 				placeholderIn += "p." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " > ?";
 			}
 			if(this.dataPagamentoMax != null){
-				if(placeholderIn.length() > 0) {
-					placeholderIn += " AND ";
-				} else {
-					placeholderIn += " WHERE ";
-				}
+				placeholderIn += " AND ";
 				placeholderIn += "p." + this.getColumn(RendicontazionePagamento.model().PAGAMENTO.DATA_PAGAMENTO) + " <  ?";
 			}
 			if(this.idSingoloVersamento != null && !this.idSingoloVersamento.isEmpty()){
-				if(placeholderIn.length() > 0) {
-					placeholderIn += " AND ";
-				} else {
-					placeholderIn += " WHERE ";
-				}
+				placeholderIn += " AND ";
 				String idSingoliVersamenti = "";
 				for(@SuppressWarnings("unused") Long idPagamento: this.idSingoloVersamento) {
 					if(idSingoliVersamenti.length() > 0) {
