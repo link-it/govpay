@@ -113,7 +113,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
 
-			String titolo = this.getTitolo(rr,bd);
+			String titolo =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioRevoca");
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			// Sezione RR
@@ -160,13 +160,13 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 
 	@Override
 	public String getTitolo(Rr entry,BasicBD bd) {
-		Date dataMsgRevoca = entry.getDataMsgRevoca();
-		String iuv = entry.getIuv();
-		String ccp = entry.getCcp();
+//		Date dataMsgRevoca = entry.getDataMsgRevoca();
+//		String iuv = entry.getIuv();
+//		String ccp = entry.getCcp();
 		StringBuilder sb = new StringBuilder();
-
-		String statoString = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", iuv , ccp, this.sdf.format(dataMsgRevoca)); 
-		sb.append(statoString);	
+//
+//		String statoString = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", iuv , ccp, this.sdf.format(dataMsgRevoca)); 
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".label.titolo"));	
 		return sb.toString();
 	}
 

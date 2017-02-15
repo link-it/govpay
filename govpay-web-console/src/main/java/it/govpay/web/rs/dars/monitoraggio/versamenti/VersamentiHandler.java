@@ -476,7 +476,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 					Dominio dominio = uo.getDominio(bd);
 					Domini dominiDars = new Domini();
 					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo(),elemento.getUri()); 
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo()); 
 				}
 
 				// Applicazione

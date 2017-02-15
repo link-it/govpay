@@ -208,7 +208,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, rptBD, id);
 
-			String titolo = this.getTitolo(rpt,bd);
+			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioTransazione");
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			// Sezione Rpt
