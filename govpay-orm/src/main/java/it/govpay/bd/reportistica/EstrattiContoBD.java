@@ -27,7 +27,7 @@ public class EstrattiContoBD extends BasicBD{
 	public EstrattoContoFilter newFilter() throws ServiceException {
 		return new EstrattoContoFilter(this.getPagamentoService());
 	}
-	
+
 	public EstrattoContoFilter newFilter(boolean ignoraStatoVersamento) throws ServiceException {
 		return new EstrattoContoFilter(this.getPagamentoService(),ignoraStatoVersamento);
 	}
@@ -46,10 +46,9 @@ public class EstrattiContoBD extends BasicBD{
 		renfilter.setLimit(filter.getLimit() != null ? filter.getLimit() : LIMIT); 
 		return renfilter;
 	}
-	
+
 	private EstrattoConto toEstrattoConto(RendicontazionePagamento rp) throws ServiceException {
 		EstrattoConto estrattoConto= new EstrattoConto();
-		
 
 		estrattoConto.setIdPagamento(rp.getPagamento().getId()); //id_pagamento oppure id_rsr
 		estrattoConto.setIdSingoloVersamento(rp.getSingoloVersamento().getId()); // id singoloVersamento
@@ -59,45 +58,52 @@ public class EstrattiContoBD extends BasicBD{
 		estrattoConto.setImportoPagato(rp.getPagamento().getImportoPagato().doubleValue()); // importo pagato
 		estrattoConto.setIuv(rp.getPagamento().getIuv());// iuv
 		estrattoConto.setIur(rp.getPagamento().getIur()); // iur1
-		estrattoConto.setIdRegolamento(rp.getFr().getIur()); // iur 2
-		estrattoConto.setCodFlussoRendicontazione(rp.getFr().getCodFlusso()); // cod_flusso_rendicontazione
-		estrattoConto.setCodBicRiversamento(rp.getFr().getCodBicRiversamento()); //  codice_bic_riversamento
-		estrattoConto.setCodVersamentoEnte(rp.getVersamento().getCodVersamentoEnte()); // cod_versamento_ente
-		estrattoConto.setStatoVersamento(rp.getVersamento().getStatoVersamento()); // stato_versamento
-		estrattoConto.setCodSingoloVersamentoEnte(rp.getSingoloVersamento().getCodSingoloVersamentoEnte()); // cod_singolo_versamento_ente
-		estrattoConto.setStatoSingoloVersamento(rp.getSingoloVersamento().getStatoSingoloVersamento()); // stato_singolo_versamento
 		estrattoConto.setIbanAccredito(rp.getPagamento().getIbanAccredito()); // iban_accredito
-		estrattoConto.setDebitoreIdentificativo(rp.getVersamento().getAnagraficaDebitore().getCodUnivoco()); // cf_debitore
-		estrattoConto.setNote(rp.getSingoloVersamento().getNote()); // note
-		try {
-			estrattoConto.setCausale(rp.getVersamento().getCausaleVersamento() != null ? rp.getVersamento().getCausaleVersamento().getSimple() : null);
-		} catch (UnsupportedEncodingException e) {
-			throw new ServiceException(e);
-		} // causale
+		if(rp.getFr() != null){
+			estrattoConto.setIdRegolamento(rp.getFr().getIur()); // iur 2
+			estrattoConto.setCodFlussoRendicontazione(rp.getFr().getCodFlusso()); // cod_flusso_rendicontazione
+			estrattoConto.setCodBicRiversamento(rp.getFr().getCodBicRiversamento()); //  codice_bic_riversamento
+		}
+		if(rp.getVersamento() != null){
+			estrattoConto.setCodVersamentoEnte(rp.getVersamento().getCodVersamentoEnte()); // cod_versamento_ente
+			estrattoConto.setStatoVersamento(rp.getVersamento().getStatoVersamento()); // stato_versamento
+			estrattoConto.setDebitoreIdentificativo(rp.getVersamento().getAnagraficaDebitore().getCodUnivoco()); // cf_debitore
+			try {
+				estrattoConto.setCausale(rp.getVersamento().getCausaleVersamento() != null ? rp.getVersamento().getCausaleVersamento().getSimple() : null);
+			} catch (UnsupportedEncodingException e) {
+				throw new ServiceException(e);
+			} // causale
+		}
+		if(rp.getSingoloVersamento() != null){
+			estrattoConto.setCodSingoloVersamentoEnte(rp.getSingoloVersamento().getCodSingoloVersamentoEnte()); // cod_singolo_versamento_ente
+			estrattoConto.setStatoSingoloVersamento(rp.getSingoloVersamento().getStatoSingoloVersamento()); // stato_singolo_versamento
+			estrattoConto.setNote(rp.getSingoloVersamento().getNote()); // note
+		}
+
 		return estrattoConto;
 	}
-	
-	
+
+
 	public List<EstrattoConto> findAll(EstrattoContoFilter filter) throws ServiceException {
 		PagamentoRendicontazioneBD rpBd = new PagamentoRendicontazioneBD(this);
 		RendicontazionePagamentoFilter filter2 = toFilter(filter, rpBd);
-		
+
 		List<RendicontazionePagamento> listRp = rpBd.findAll(filter2);
-		
+
 		List<EstrattoConto> listaPagamenti = new ArrayList<EstrattoConto>();
-		
+
 		for(RendicontazionePagamento rp: listRp) {
 			listaPagamenti.add(toEstrattoConto(rp));
 		}
-		
+
 		return listaPagamenti;
 	}
 
 	public long count(EstrattoContoFilter filter) throws ServiceException {
-		
+
 		PagamentoRendicontazioneBD rpBd = new PagamentoRendicontazioneBD(this);
 		RendicontazionePagamentoFilter filter2 = toFilter(filter, rpBd);
-		
+
 		return rpBd.count(filter2);
 	}
 
@@ -108,7 +114,7 @@ public class EstrattiContoBD extends BasicBD{
 		filter.setLimit(limit);
 		return findAll(filter);
 	}
-	
+
 	public List<EstrattoConto>  estrattoContoFromIdVersamenti(List<Long> idVersamenti, Integer offset, Integer limit)throws ServiceException {
 		EstrattoContoFilter filter = newFilter();
 		filter.setIdVersamento(idVersamenti);
@@ -138,7 +144,7 @@ public class EstrattiContoBD extends BasicBD{
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public List<EstrattoConto> estrattoContoFromIdVersamenti(EstrattoContoFilter filter) throws ServiceException {
 		try {
 			int offset = 0;
@@ -191,7 +197,7 @@ public class EstrattiContoBD extends BasicBD{
 		filter.setLimit(limit);
 		return findAll(filter);
 	}
-	
+
 	public  List<EstrattoConto> estrattoContoFromCodDominioIdSingoliVersamenti(String codDominio, List<Long> idSingoliVersamenti, Integer offset, Integer limit)throws ServiceException {
 		EstrattoContoFilter filter = newFilter();
 		filter.setIdDomini(Arrays.asList(codDominio));

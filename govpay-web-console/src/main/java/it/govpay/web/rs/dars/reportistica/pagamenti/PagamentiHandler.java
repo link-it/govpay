@@ -187,39 +187,19 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
-			/*
-
-    Cod versamento
-    IUV
-    C.F. Debitore
-    Importo dovuto
-    Importo pagato
-    Data pagamento
-    Stato
-
-			 * */ 
-
-			List<String> valori = new ArrayList<String>();
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codiceFiscaleDebitore.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoDovuto.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.label"));
-
-			Elemento intestazione = new Elemento(-1, valori , null);
-
-
+			// Indico la visualizzazione custom
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+					
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
-					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione,true,intestazione ); 
+					this.getInfoCreazione(uriInfo, bd),	count, esportazione, cancellazione); 
 
 			List<EstrattoConto> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>(); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (EstrattoConto entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getIdSingoloVersamento(), this.pathServizio,bd));
+					Elemento elemento = this.getElemento(entry, entry.getIdSingoloVersamento(), this.pathServizio,bd);
+					elemento.setFormatter(formatter);
+					elenco.getElenco().add(elemento);
 				}
 			}
 
@@ -530,30 +510,41 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 	} 
 
 	@Override
-	public List<String> getValori(EstrattoConto entry, BasicBD bd) throws ConsoleException {
-
-		List<String> valori = new ArrayList<String>();
-		String codVersamentoEnte = entry.getCodSingoloVersamentoEnte();
-		String iuv = entry.getIuv() != null ? entry.getIuv() : "--";
-		String cfDebitore = entry.getDebitoreIdentificativo();
-		StatoVersamento statoVersamento = entry.getStatoVersamento();
-		Date dataPagamento = entry.getDataPagamento();
-		String importoPagato = entry.getImportoPagato()  != null ? entry.getImportoPagato().toString()+ "€" : "";
-		String importoDovuto = entry.getImportoDovuto() != null ? entry.getImportoDovuto().toString()+ "€" : "";
-
-		valori.add(codVersamentoEnte);
-		valori.add(iuv);
-		valori.add(cfDebitore);
-		valori.add(importoDovuto);
-		valori.add(importoPagato);
-		valori.add(this.sdf.format(dataPagamento));
-		valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+ statoVersamento.name()));
-
-		return valori; 
-	}
+	public List<String> getValori(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
 	
 	@Override
-	public Map<String, Voce<String>> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { 
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+		Date dataPagamento = entry.getDataPagamento();
+		String statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.ok");
+		Double importo = entry.getImportoPagato() != null ? entry.getImportoPagato() : 0D;
+		String statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.ok", this.sdf.format(dataPagamento));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.id"),
+				new Voce<String>(statoPagamentoLabel,statoPagamento));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),
+						importo.toString()+ "€"));
+
+		if(dataPagamento!= null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),
+							this.sdf.format(dataPagamento)));	 
+		}
+
+		if(entry.getIur() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),entry.getIur()));
+		}
+
+			if(entry.getCodSingoloVersamentoEnte() != null){
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),entry.getCodSingoloVersamentoEnte()));
+			}
+		return valori; 
+	
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
