@@ -3,6 +3,7 @@ package it.govpay.bd.reportistica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.RendicontazionePagamento;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
+import it.govpay.bd.wrapper.PagamentoRendicontazioneBD;
 import it.govpay.bd.wrapper.RendicontazionePagamentoBD;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
 import it.govpay.model.EstrattoConto;
@@ -31,7 +32,7 @@ public class EstrattiContoBD extends BasicBD{
 		return new EstrattoContoFilter(this.getPagamentoService(),ignoraStatoVersamento);
 	}
 
-	private RendicontazionePagamentoFilter toFilter(EstrattoContoFilter filter, RendicontazionePagamentoBD bd) throws ServiceException {
+	private RendicontazionePagamentoFilter toFilter(EstrattoContoFilter filter, PagamentoRendicontazioneBD bd) throws ServiceException {
 		RendicontazionePagamentoFilter renfilter = new RendicontazionePagamentoFilter(bd.getRendicontazionePagamentoServiceSearch());
 		renfilter.setIgnoraStatoVersamento(filter.isIgnoraStatoVersamento());
 		renfilter.setStatoVersamento(filter.getStatoVersamento());
@@ -78,7 +79,7 @@ public class EstrattiContoBD extends BasicBD{
 	
 	
 	public List<EstrattoConto> findAll(EstrattoContoFilter filter) throws ServiceException {
-		RendicontazionePagamentoBD rpBd = new RendicontazionePagamentoBD(this);
+		PagamentoRendicontazioneBD rpBd = new PagamentoRendicontazioneBD(this);
 		RendicontazionePagamentoFilter filter2 = toFilter(filter, rpBd);
 		
 		List<RendicontazionePagamento> listRp = rpBd.findAll(filter2);
@@ -94,7 +95,7 @@ public class EstrattiContoBD extends BasicBD{
 
 	public long count(EstrattoContoFilter filter) throws ServiceException {
 		
-		RendicontazionePagamentoBD rpBd = new RendicontazionePagamentoBD(this);
+		PagamentoRendicontazioneBD rpBd = new PagamentoRendicontazioneBD(this);
 		RendicontazionePagamentoFilter filter2 = toFilter(filter, rpBd);
 		
 		return rpBd.count(filter2);

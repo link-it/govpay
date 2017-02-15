@@ -33358,7 +33358,7 @@ It will also ensure that focus remains in the dialog.
           <div class="infoResults">
             <div class="resultsBar" hidden$="[[noResults(results.length)]]">
               <div class="center-vertical">
-                [[resultText(numResults)]]
+                [[localize('risultatiTrovati', 'numero', numResults)]]
               </div>
               <span class="space"></span>
               <div>
@@ -33568,18 +33568,6 @@ It will also ensure that focus remains in the dialog.
 
       showSpaceBetween: function(numResults, obj){
         return numResults!=0 && this._hideSearch(obj);
-      },
-
-      resultText: function(numResults){
-        return this.localize('risultatiTrovati', 'numero', numResults);
-        /*if (numResults>0){
-          if (numResults>1){
-            return 'Trovati '+numResults+' risultati';
-          } else {
-            return 'Trovato un solo risultato';
-          }
-        }
-        return '';*/
       },
 
       export: function(event){
@@ -38932,6 +38920,9 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
           <paper-checkbox on-change="setAdvanced" id="cbAdvanced" checked$="[[advanced]]">[[localize('modalitaAvanzata')]]</paper-checkbox>
         </paper-item>
         <paper-item on-tap="showAbout">[[localize('info')]]</paper-item>
+        <template is="dom-repeat" items="[[languages]]">
+          <paper-item on-tap="_changeCurrentLanguage" disabled="[[item.selected]]">[[item.lingua]]</paper-item>
+        </template>
         <paper-item on-tap="logout">[[localize('esci')]]</paper-item>
       </div>
     </paper-menu-button>
@@ -38954,6 +38945,10 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
     Polymer({
       is: 'link-user-action',
 
+      ready: function(){
+        this.listen(document, 'change-language', '_getLanguages');
+      },
+
       behaviors: [
         LinkLocalizeBehavior
       ],
@@ -38975,6 +38970,10 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
         aboutInfo: {
           type: Object,
           value: null
+        },
+        languages: {
+          type: Array,
+          value: []
         }
       },
 
@@ -39018,6 +39017,18 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
           window.location = app.getSessioneScadutaURL();
         else
           window.location = app.getLoginURL();
+      },
+
+      _getLanguages: function(event){
+        this.languages = [];
+        for (var lingua in app.RESOURCES){
+          this.push('languages', {lingua: lingua, selected: lingua == app.LANGUAGE});
+        }
+      },
+
+      _changeCurrentLanguage: function(event){
+        app.LANGUAGE = event.model.item.lingua;
+        document.dispatchEvent(new CustomEvent('change-language'));
       }
     });
   })();
