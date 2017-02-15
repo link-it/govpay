@@ -1,13 +1,5 @@
 package it.govpay.bd.reportistica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.RendicontazionePagamento;
-import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
-import it.govpay.bd.wrapper.PagamentoRendicontazioneBD;
-import it.govpay.bd.wrapper.RendicontazionePagamentoBD;
-import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
-import it.govpay.model.EstrattoConto;
-
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +7,13 @@ import java.util.Date;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.RendicontazionePagamento;
+import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
+import it.govpay.bd.wrapper.PagamentoRendicontazioneBD;
+import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
+import it.govpay.model.EstrattoConto;
 
 public class EstrattiContoBD extends BasicBD{
 
@@ -39,7 +38,7 @@ public class EstrattiContoBD extends BasicBD{
 		renfilter.setDataPagamentoMax(filter.getDataFine());
 		renfilter.setDataPagamentoMin(filter.getDataInizio());
 		renfilter.setCodDomini(filter.getIdDomini());
-		renfilter.setIdSingoloVersamento(filter.getIdPagamento());
+		//renfilter.setIdPagamento(filter.getIdPagamento());
 		renfilter.setIdVersamento(filter.getIdVersamento());
 		renfilter.setIdSingoloVersamento(filter.getIdSingoloVersamento());
 		renfilter.setOffset(filter.getOffset() != null ? filter.getOffset() : 0);
@@ -51,20 +50,20 @@ public class EstrattiContoBD extends BasicBD{
 		EstrattoConto estrattoConto= new EstrattoConto();
 
 		estrattoConto.setIdPagamento(rp.getPagamento().getId()); //id_pagamento oppure id_rsr
-		estrattoConto.setIdSingoloVersamento(rp.getSingoloVersamento().getId()); // id singoloVersamento
-		estrattoConto.setIdVersamento(rp.getVersamento().getId()); // id_versamento
 		estrattoConto.setDataPagamento(rp.getPagamento().getDataPagamento()); // data_pagamento
 		estrattoConto.setImportoDovuto(rp.getVersamento().getImportoTotale().doubleValue()); // importo dovuto
 		estrattoConto.setImportoPagato(rp.getPagamento().getImportoPagato().doubleValue()); // importo pagato
 		estrattoConto.setIuv(rp.getPagamento().getIuv());// iuv
 		estrattoConto.setIur(rp.getPagamento().getIur()); // iur1
 		estrattoConto.setIbanAccredito(rp.getPagamento().getIbanAccredito()); // iban_accredito
+		
 		if(rp.getFr() != null){
 			estrattoConto.setIdRegolamento(rp.getFr().getIur()); // iur 2
 			estrattoConto.setCodFlussoRendicontazione(rp.getFr().getCodFlusso()); // cod_flusso_rendicontazione
 			estrattoConto.setCodBicRiversamento(rp.getFr().getCodBicRiversamento()); //  codice_bic_riversamento
 		}
 		if(rp.getVersamento() != null){
+			estrattoConto.setIdVersamento(rp.getVersamento().getId()); // id_versamento
 			estrattoConto.setCodVersamentoEnte(rp.getVersamento().getCodVersamentoEnte()); // cod_versamento_ente
 			estrattoConto.setStatoVersamento(rp.getVersamento().getStatoVersamento()); // stato_versamento
 			estrattoConto.setDebitoreIdentificativo(rp.getVersamento().getAnagraficaDebitore().getCodUnivoco()); // cf_debitore
@@ -75,6 +74,7 @@ public class EstrattiContoBD extends BasicBD{
 			} // causale
 		}
 		if(rp.getSingoloVersamento() != null){
+			estrattoConto.setIdSingoloVersamento(rp.getSingoloVersamento().getId()); // id singoloVersamento
 			estrattoConto.setCodSingoloVersamentoEnte(rp.getSingoloVersamento().getCodSingoloVersamentoEnte()); // cod_singolo_versamento_ente
 			estrattoConto.setStatoSingoloVersamento(rp.getSingoloVersamento().getStatoSingoloVersamento()); // stato_singolo_versamento
 			estrattoConto.setNote(rp.getSingoloVersamento().getNote()); // note
@@ -128,13 +128,13 @@ public class EstrattiContoBD extends BasicBD{
 		try {
 			int offset = 0;
 			List<EstrattoConto> lstRet = new ArrayList<EstrattoConto>();
-			List<EstrattoConto> lst = this.estrattoContoFromIdSingoliVersamenti(filter.getIdPagamento(), offset, LIMIT);
+			List<EstrattoConto> lst = this.estrattoContoFromIdSingoliVersamenti(filter.getIdSingoloVersamento(), offset, LIMIT);
 
 			while(lst != null && !lst.isEmpty()) {
 				lstRet.addAll(lst);
 
 				offset += lst.size();
-				lst = this.estrattoContoFromIdSingoliVersamenti(filter.getIdPagamento(), offset, LIMIT);
+				lst = this.estrattoContoFromIdSingoliVersamenti(filter.getIdSingoloVersamento(), offset, LIMIT);
 			}
 
 			return lstRet;

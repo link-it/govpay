@@ -157,7 +157,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 			if(findAll != null && findAll.size() > 0){
 				for (Rendicontazione entry : findAll) {
-					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					Elemento elemento = this.getElemento(entry, entry.getId(), null,bd);
 					elemento.setFormatter(formatter); 
 					elenco.getElenco().add(elemento);
 				}

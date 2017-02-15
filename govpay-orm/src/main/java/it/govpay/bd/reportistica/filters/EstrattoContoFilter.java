@@ -16,7 +16,7 @@ import it.govpay.model.Operatore;
 public class EstrattoContoFilter extends AbstractFilter {
 	
 	private List<String> idDomini;
-	private List<Long> idPagamento;
+//	private List<Long> idPagamento;
 	private List<Long> idVersamento;
 	private List<Long> idSingoloVersamento;
 	private Operatore operatore;
@@ -65,13 +65,13 @@ public class EstrattoContoFilter extends AbstractFilter {
 		this.operatore = operatore;
 	}
 
-	public List<Long> getIdPagamento() {
-		return idPagamento;
-	}
+//	public List<Long> getIdPagamento() {
+//		return idPagamento;
+//	}
 
-	public void setIdPagamento(List<Long> idPagamento) {
-		this.idPagamento = idPagamento;
-	}
+//	public void setIdPagamento(List<Long> idPagamento) {
+//		this.idPagamento = idPagamento;
+//	}
 
 	public List<Long> getIdVersamento() {
 		return idVersamento;

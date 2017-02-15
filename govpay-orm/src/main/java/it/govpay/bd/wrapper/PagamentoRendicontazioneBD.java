@@ -1,5 +1,15 @@
 package it.govpay.bd.wrapper;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
+import org.openspcoop2.generic_project.exception.ServiceException;
+
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.RendicontazionePagamento;
@@ -19,17 +29,6 @@ import it.govpay.orm.Pagamento;
 import it.govpay.orm.Rendicontazione;
 import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.Versamento;
-
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.log4j.Logger;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.NotImplementedException;
-import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class PagamentoRendicontazioneBD extends BasicBD {
 

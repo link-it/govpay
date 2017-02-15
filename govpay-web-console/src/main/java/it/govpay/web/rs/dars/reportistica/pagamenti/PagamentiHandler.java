@@ -143,6 +143,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			String statoVersamento = this.getParameter(uriInfo, statoVersamentoId, String.class);
 			if(StringUtils.isNotEmpty(statoVersamento)){
 				filter.setStatoVersamento(statoVersamento);
+				filter.setIgnoraStatoVersamento(false); 
 			}
 
 
@@ -412,12 +413,12 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
 				if(eseguiRicerca){
-					filter.setIdPagamento(ids);
+					filter.setIdSingoloVersamento(ids);
 					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
 				}
 			}
 			// recupero oggetto
-			filter.setIdPagamento(ids);
+			filter.setIdSingoloVersamento(ids);
 			List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>();
 			EstrattoConto pagamento = findAll.size() > 0 ? findAll.get(0) : null;
 
@@ -434,7 +435,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 				// codVersamentoEnte
 				if(StringUtils.isNotEmpty(pagamento.getCodVersamentoEnte())){
 					Versamenti versamentiDars = new Versamenti();
-					URI uriVersamento = Utils.creaUriConPath(versamentiDars.getPathServizio(),  id + "");
+					URI uriVersamento = Utils.creaUriConPath(versamentiDars.getPathServizio(),  pagamento.getIdVersamento()+ "");
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamentoEnte.label"), pagamento.getCodVersamentoEnte(), uriVersamento);
 				}
 				// IUV
@@ -610,7 +611,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
 				if(eseguiRicerca){
-					filter.setIdPagamento(ids);
+					filter.setIdSingoloVersamento(ids);
 					eseguiRicerca = eseguiRicerca && estrattiContoBD.count(filter) > 0;
 				}
 			}
@@ -619,7 +620,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 				Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
 				Map<String, Dominio> mappaInputDomini = new HashMap<String, Dominio>();
 				// recupero oggetto
-				filter.setIdPagamento(ids);
+				filter.setIdSingoloVersamento(ids);
 				List<EstrattoConto> findAll = eseguiRicerca ?  estrattiContoBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
 
 				if(findAll != null && findAll.size() > 0){
@@ -764,14 +765,14 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
 				if(eseguiRicerca){
-					filter.setIdPagamento(ids);
+					filter.setIdSingoloVersamento(ids);
 					eseguiRicerca = eseguiRicerca && pagamentiBD.count(filter) > 0;
 				}
 			}
 
 			if(eseguiRicerca ){
 				// recupero oggetto
-				filter.setIdPagamento(ids);
+				filter.setIdSingoloVersamento(ids);
 				List<EstrattoConto> findAll = eseguiRicerca ?  pagamentiBD.estrattoContoFromIdSingoliVersamenti(filter) : new ArrayList<EstrattoConto>();
 
 				if(findAll != null && findAll.size() > 0){
