@@ -12,6 +12,9 @@ public abstract class NativeQueries {
 	public abstract String getRendicontazionePagamentoQuery();
 	public abstract String getRendicontazionePagamentoCountQuery();
 	
+	public abstract String getPagamentoRendicontazioneQuery();
+	public abstract String getPagamentoRendicontazioneCountQuery();
+	
 	public abstract String getFrQuery();
 	public abstract String getFrCountQuery();
 	
