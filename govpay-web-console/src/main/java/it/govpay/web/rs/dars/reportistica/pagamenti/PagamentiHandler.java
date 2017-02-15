@@ -190,7 +190,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 			// Indico la visualizzazione custom
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
-					
+
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),	count, esportazione, cancellazione); 
 
@@ -512,17 +512,25 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 	@Override
 	public List<String> getValori(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 		Date dataPagamento = entry.getDataPagamento();
 		String statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.ok");
 		Double importo = entry.getImportoPagato() != null ? entry.getImportoPagato() : 0D;
-		String statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.ok", this.sdf.format(dataPagamento));
-
+		
+		//String statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.ok", this.sdf.format(dataPagamento));
+		// Stato
+		if(entry.getIdRr() != null) {
+			statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.revocato");
+		}
+		
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.id"),
-				new Voce<String>(statoPagamentoLabel,statoPagamento));
+				new Voce<String>(statoPagamento,statoPagamento));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+entry.getStatoVersamento().name()),entry.getStatoVersamento().name()));
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),
@@ -539,12 +547,12 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),entry.getIur()));
 		}
 
-			if(entry.getCodSingoloVersamentoEnte() != null){
-				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),entry.getCodSingoloVersamentoEnte()));
-			}
+		if(entry.getCodSingoloVersamentoEnte() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),entry.getCodSingoloVersamentoEnte()));
+		}
 		return valori; 
-	
+
 	}
 
 	@Override

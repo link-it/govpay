@@ -56,6 +56,7 @@ public class EstrattiContoBD extends BasicBD{
 		estrattoConto.setIuv(rp.getPagamento().getIuv());// iuv
 		estrattoConto.setIur(rp.getPagamento().getIur()); // iur1
 		estrattoConto.setIbanAccredito(rp.getPagamento().getIbanAccredito()); // iban_accredito
+		estrattoConto.setIdPagamento(rp.getPagamento().getIdRr()); //id_rr
 		
 		if(rp.getFr() != null){
 			estrattoConto.setIdRegolamento(rp.getFr().getIur()); // iur 2

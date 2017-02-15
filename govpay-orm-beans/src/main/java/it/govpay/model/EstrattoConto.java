@@ -32,6 +32,7 @@ public class EstrattoConto extends BasicModel {
 	private Long idPagamento;
 	private Long idSingoloVersamento;
 	private Long idVersamento;
+	private Long idRr;
 	
 	private String debitoreIdentificativo;
 	
@@ -149,6 +150,10 @@ public class EstrattoConto extends BasicModel {
 	public void setIdVersamento(Long idVersamento) {
 		this.idVersamento = idVersamento;
 	}
-	
-	
+	public Long getIdRr() {
+		return idRr;
+	}
+	public void setIdRr(Long idRr) {
+		this.idRr = idRr;
+	}
 }
