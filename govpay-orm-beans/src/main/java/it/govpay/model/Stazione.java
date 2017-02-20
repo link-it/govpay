@@ -29,6 +29,9 @@ public class Stazione extends BasicModel {
 	private String password;
 	private boolean abilitato;
 	private int applicationCode;
+	private int ndpStato;
+	private String ndpOperazione;
+	private String ndpDescrizione;
 
 	public Stazione() {
 	}
@@ -80,6 +83,30 @@ public class Stazione extends BasicModel {
 
 	public void setApplicationCode(int applicationCode) {
 		this.applicationCode = applicationCode;
+	}
+	
+	public int getNdpStato() {
+		return ndpStato;
+	}
+
+	public void setNdpStato(int ndpStato) {
+		this.ndpStato = ndpStato;
+	}
+
+	public String getNdpOperazione() {
+		return ndpOperazione;
+	}
+
+	public void setNdpOperazione(String ndpOperazione) {
+		this.ndpOperazione = ndpOperazione;
+	}
+
+	public String getNdpDescrizione() {
+		return ndpDescrizione;
+	}
+
+	public void setNdpDescrizione(String ndpDescrizione) {
+		this.ndpDescrizione = ndpDescrizione;
 	}
 
 }

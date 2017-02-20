@@ -39,6 +39,10 @@ public class Dominio extends BasicModel {
 	private int auxDigit;
 	private Integer segregationCode;
 	
+	private int ndpStato;
+	private String ndpOperazione;
+	private String ndpDescrizione;
+	
 	private String iuvPrefix;
 	private boolean iuvPrefixStrict;
 	
@@ -161,6 +165,30 @@ public class Dominio extends BasicModel {
 	public void setSegregationCode(Integer segregationCode) {
 		this.segregationCode = segregationCode;
 	}
+	public int getNdpStato() {
+		return ndpStato;
+	}
+
+	public void setNdpStato(int ndpStato) {
+		this.ndpStato = ndpStato;
+	}
+
+	public String getNdpOperazione() {
+		return ndpOperazione;
+	}
+
+	public void setNdpOperazione(String ndpOperazione) {
+		this.ndpOperazione = ndpOperazione;
+	}
+
+	public String getNdpDescrizione() {
+		return ndpDescrizione;
+	}
+
+	public void setNdpDescrizione(String ndpDescrizione) {
+		this.ndpDescrizione = ndpDescrizione;
+	}
+
 
 }
 

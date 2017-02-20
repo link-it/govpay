@@ -490,6 +490,10 @@
 			<xsd:element name="iuvPrefix" type="String255" minOccurs="0"/>
 			<xsd:element name="iuvPrefixStrict" type="xsd:boolean" default="false" />
 			<xsd:element name="segregationCode" type="Int2" minOccurs="0" />
+
+			<xsd:element name="ndpStato" type="Int1" minOccurs="0"/>
+			<xsd:element name="ndpOperazione" type="String256" minOccurs="0"/>
+			<xsd:element name="ndpDescrizione" type="String1024" minOccurs="0"/>
 			
 		</xsd:sequence>
 	</xsd:complexType>
@@ -722,6 +726,11 @@
 			<xsd:element name="password" type="String35" />
 			<xsd:element name="abilitato" type="xsd:boolean" />
 			<xsd:element name="applicationCode" type="TwoDigitsDecimal" />
+						
+			<xsd:element name="ndpStato" type="Int1" minOccurs="0"/>
+			<xsd:element name="ndpOperazione" type="String256" minOccurs="0"/>
+			<xsd:element name="ndpDescrizione" type="String1024" minOccurs="0"/>
+			
 		</xsd:sequence>
 	</xsd:complexType>
 	

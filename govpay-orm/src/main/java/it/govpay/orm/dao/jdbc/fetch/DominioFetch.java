@@ -78,6 +78,12 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "iuv_prefix_strict", Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
 				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
+				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Dominio.model().NDP_STATO.getFieldType()));
+				setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Dominio.model().NDP_OPERAZIONE.getFieldType()));
+				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -124,6 +130,12 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"iuvPrefixStrict"));
 				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"segregationCode"));
+				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
+					this.getObjectFromMap(map,"ndpStato"));
+				setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpOperazione"));
+				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpDescrizione"));
 				return object;
 			}
 			

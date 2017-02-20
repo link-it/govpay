@@ -49,6 +49,9 @@ import java.io.Serializable;
  * 			&lt;element name="iuvPrefix" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iuvPrefixStrict" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1" default="false"/>
  * 			&lt;element name="segregationCode" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ndpStato" type="{http://www.govpay.it/orm}int" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -76,7 +79,10 @@ import java.io.Serializable;
   	"_decimalWrapper_auxDigit",
   	"iuvPrefix",
   	"iuvPrefixStrict",
-  	"_decimalWrapper_segregationCode"
+  	"_decimalWrapper_segregationCode",
+  	"_decimalWrapper_ndpStato",
+  	"ndpOperazione",
+  	"ndpDescrizione"
   }
 )
 
@@ -234,6 +240,30 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 	}
   }
 
+  public int getNdpStato() {
+    return (java.lang.Integer) this._decimalWrapper_ndpStato.getObject(java.lang.Integer.class);
+  }
+
+  public void setNdpStato(int ndpStato) {
+    this._decimalWrapper_ndpStato = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,ndpStato);
+  }
+
+  public java.lang.String getNdpOperazione() {
+    return this.ndpOperazione;
+  }
+
+  public void setNdpOperazione(java.lang.String ndpOperazione) {
+    this.ndpOperazione = ndpOperazione;
+  }
+
+  public java.lang.String getNdpDescrizione() {
+    return this.ndpDescrizione;
+  }
+
+  public void setNdpDescrizione(java.lang.String ndpDescrizione) {
+    this.ndpDescrizione = ndpDescrizione;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -314,5 +344,21 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   @XmlTransient
   protected java.lang.Integer segregationCode;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @XmlElement(name="ndpStato",required=false,nillable=false)
+  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_ndpStato = null;
+
+  @XmlTransient
+  protected int ndpStato;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ndpOperazione",required=false,nillable=false)
+  protected java.lang.String ndpOperazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="ndpDescrizione",required=false,nillable=false)
+  protected java.lang.String ndpDescrizione;
 
 }

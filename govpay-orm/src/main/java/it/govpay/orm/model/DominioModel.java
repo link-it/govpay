@@ -55,6 +55,9 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.IUV_PREFIX = new Field("iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX_STRICT = new Field("iuvPrefixStrict",boolean.class,"Dominio",Dominio.class);
 		this.SEGREGATION_CODE = new Field("segregationCode",java.lang.Integer.class,"Dominio",Dominio.class);
+		this.NDP_STATO = new Field("ndpStato",int.class,"Dominio",Dominio.class);
+		this.NDP_OPERAZIONE = new Field("ndpOperazione",java.lang.String.class,"Dominio",Dominio.class);
+		this.NDP_DESCRIZIONE = new Field("ndpDescrizione",java.lang.String.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -76,6 +79,9 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.IUV_PREFIX = new ComplexField(father,"iuvPrefix",java.lang.String.class,"Dominio",Dominio.class);
 		this.IUV_PREFIX_STRICT = new ComplexField(father,"iuvPrefixStrict",boolean.class,"Dominio",Dominio.class);
 		this.SEGREGATION_CODE = new ComplexField(father,"segregationCode",java.lang.Integer.class,"Dominio",Dominio.class);
+		this.NDP_STATO = new ComplexField(father,"ndpStato",int.class,"Dominio",Dominio.class);
+		this.NDP_OPERAZIONE = new ComplexField(father,"ndpOperazione",java.lang.String.class,"Dominio",Dominio.class);
+		this.NDP_DESCRIZIONE = new ComplexField(father,"ndpDescrizione",java.lang.String.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -108,6 +114,12 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField IUV_PREFIX_STRICT = null;
 	 
 	public IField SEGREGATION_CODE = null;
+	 
+	public IField NDP_STATO = null;
+	 
+	public IField NDP_OPERAZIONE = null;
+	 
+	public IField NDP_DESCRIZIONE = null;
 	 
 
 	@Override

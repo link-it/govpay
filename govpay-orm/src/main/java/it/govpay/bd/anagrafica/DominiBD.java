@@ -22,17 +22,24 @@ package it.govpay.bd.anagrafica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.IFilter;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.converter.DominioConverter;
 import it.govpay.bd.model.converter.IbanAccreditoConverter;
-import it.govpay.bd.model.Dominio;
+import it.govpay.bd.wrapper.StatoNdP;
 import it.govpay.model.IbanAccredito;
 import it.govpay.orm.IdDominio;
+import it.govpay.orm.dao.jdbc.JDBCDominioService;
 import it.govpay.orm.dao.jdbc.JDBCDominioServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -140,6 +147,62 @@ public class DominiBD extends BasicBD {
 		}
 
 	}
+	
+	public void setStatoNdp(long idDominio, StatoNdP statoNdp) throws NotFoundException, ServiceException{
+		this.setStatoNdp(idDominio, statoNdp.getCodice(), statoNdp.getOperazione(), statoNdp.getDescrizione());
+	}
+	
+	public void setStatoNdp(long idDominio, Integer codice, String operazione, String descrizione) throws NotFoundException, ServiceException{
+		try {
+			
+			List<UpdateField> lst = new ArrayList<UpdateField>();
+			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_STATO, codice));
+			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_OPERAZIONE, operazione));
+			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE, descrizione));
+			
+			((JDBCDominioService)this.getDominioService()).updateFields(idDominio, lst.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public StatoNdP getStatoNdp(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
+		try {
+			
+			List<IField> lst = new ArrayList<IField>();
+			lst.add(it.govpay.orm.Dominio.model().NDP_STATO);
+			lst.add(it.govpay.orm.Dominio.model().NDP_OPERAZIONE);
+			lst.add(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE);
+
+			IPaginatedExpression expr = this.getDominioService().newPaginatedExpression();
+			DominioFieldConverter converter = new DominioFieldConverter(this.getJdbcProperties().getDatabase());
+			expr.equals(new CustomField("id",  Long.class, "id", converter.toTable(it.govpay.orm.Dominio.model())), idDominio);
+			List<Map<String,Object>> select = this.getDominioService().select(expr, lst.toArray(new IField[]{}));
+			if(select == null || select.size() <= 0) {
+				throw new NotFoundException("Id dominio ["+idDominio+"]");
+			}
+			
+			if(select.size() > 1) {
+				throw new MultipleResultException("Id dominio ["+idDominio+"]");
+			}
+			
+			StatoNdP stato = new StatoNdP();
+			
+			stato.setCodice((Integer)select.get(0).get(it.govpay.orm.Dominio.model().NDP_STATO));
+			stato.setDescrizione((String)select.get(0).get(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE));
+			stato.setOperazione((String)select.get(0).get(it.govpay.orm.Dominio.model().NDP_OPERAZIONE));
+			
+			return stato;
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+
 	
 	/**
 	 * Recupera gli ibanAccredito per un idDominio (join tra dominio, ente, tributo, ibanAccredito)

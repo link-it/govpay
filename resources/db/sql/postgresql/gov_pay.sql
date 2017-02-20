@@ -72,6 +72,9 @@ CREATE TABLE stazioni
 	password VARCHAR(35) NOT NULL,
 	abilitato BOOLEAN NOT NULL,
 	application_code INT NOT NULL,
+	ndp_stato INT,
+	ndp_operazione VARCHAR(256),
+	ndp_descrizione VARCHAR(1024),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_stazioni') NOT NULL,
 	id_intermediario BIGINT NOT NULL,
@@ -126,6 +129,9 @@ CREATE TABLE domini
 	iuv_prefix VARCHAR(255),
 	iuv_prefix_strict BOOLEAN NOT NULL DEFAULT false,
 	segregation_code INT,
+	ndp_stato INT,
+	ndp_operazione VARCHAR(256),
+	ndp_descrizione VARCHAR(1024),
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,

@@ -62,6 +62,12 @@ public class StazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Stazione.model().ABILITATO.getFieldType()));
 				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
+				setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Stazione.model().NDP_STATO.getFieldType()));
+				setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Stazione.model().NDP_OPERAZIONE.getFieldType()));
+				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -92,6 +98,12 @@ public class StazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"applicationCode"));
+				setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
+					this.getObjectFromMap(map,"ndpStato"));
+				setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpOperazione"));
+				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpDescrizione"));
 				return object;
 			}
 			

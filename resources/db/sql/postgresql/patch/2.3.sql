@@ -94,3 +94,13 @@ DROP SEQUENCE seq_fr_applicazioni;
 ALTER TABLE fr DROP COLUMN anno_riferimento;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso);
 ALTER TABLE iuv ADD COLUMN aux_digit INT NOT NULL DEFAULT 0;
+
+-- GP-479
+ALTER TABLE domini ADD COLUMN ndp_stato NUMBER;
+ALTER TABLE domini ADD COLUMN ndp_operazione VARCHAR(256);
+ALTER TABLE domini ADD COLUMN ndp_descrizione VARCHAR(1024);
+
+ALTER TABLE stazioni ADD COLUMN ndp_stato NUMBER;
+ALTER TABLE stazioni ADD COLUMN ndp_operazione VARCHAR(256);
+ALTER TABLE stazioni ADD COLUMN ndp_descrizione VARCHAR(1024);
+

@@ -105,6 +105,9 @@ CREATE TABLE stazioni
 	password VARCHAR2(35 CHAR) NOT NULL,
 	abilitato NUMBER NOT NULL,
 	application_code NUMBER NOT NULL,
+	ndp_stato NUMBER,
+	ndp_operazione VARCHAR(256),
+	ndp_descrizione VARCHAR(1024),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_intermediario NUMBER NOT NULL,
@@ -184,6 +187,9 @@ CREATE TABLE domini
 	iuv_prefix VARCHAR2(255 CHAR),
 	iuv_prefix_strict NUMBER NOT NULL,
 	segregation_code NUMBER,
+	ndp_stato NUMBER,
+	ndp_operazione VARCHAR(256),
+	ndp_descrizione VARCHAR(1024),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,

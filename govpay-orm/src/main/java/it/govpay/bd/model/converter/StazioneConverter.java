@@ -45,6 +45,9 @@ public class StazioneConverter {
 		dto.setIdIntermediario(vo.getIdIntermediario().getId());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setApplicationCode(vo.getApplicationCode());
+		dto.setNdpStato(vo.getNdpStato());
+		dto.setNdpOperazione(vo.getNdpOperazione());
+		dto.setNdpDescrizione(vo.getNdpDescrizione());
 
 		return dto;
 	}
@@ -59,7 +62,9 @@ public class StazioneConverter {
 		vo.setIdIntermediario(idInterm);
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setApplicationCode(dto.getApplicationCode());
-		
+		vo.setNdpStato(dto.getNdpStato());
+		vo.setNdpOperazione(dto.getNdpOperazione());
+		vo.setNdpDescrizione(dto.getNdpDescrizione());
 		return vo;
 	}
 

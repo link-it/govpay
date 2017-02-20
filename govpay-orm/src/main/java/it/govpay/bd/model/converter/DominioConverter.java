@@ -59,6 +59,9 @@ public class DominioConverter {
 		dto.setIuvPrefix(vo.getIuvPrefix());
 		dto.setIuvPrefixStrict(vo.isIuvPrefixStrict());
 		dto.setSegregationCode(vo.getSegregationCode());
+		dto.setNdpStato(vo.getNdpStato());
+		dto.setNdpOperazione(vo.getNdpOperazione());
+		dto.setNdpDescrizione(vo.getNdpDescrizione());
 		return dto;
 	}
 
@@ -85,6 +88,9 @@ public class DominioConverter {
 		idStazione.setId(dto.getIdStazione());
 		vo.setIdStazione(idStazione);
 		vo.setSegregationCode(dto.getSegregationCode());
+		vo.setNdpStato(dto.getNdpStato());
+		vo.setNdpOperazione(dto.getNdpOperazione());
+		vo.setNdpDescrizione(dto.getNdpDescrizione());
 		return vo;
 	}
 
