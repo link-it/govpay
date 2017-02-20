@@ -40,7 +40,7 @@ import java.io.Serializable;
  * 			&lt;element name="password" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="applicationCode" type="{http://www.govpay.it/orm}integer" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="ndpStato" type="{http://www.govpay.it/orm}int" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ndpStato" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
@@ -62,7 +62,7 @@ import java.io.Serializable;
   	"password",
   	"abilitato",
   	"_decimalWrapper_applicationCode",
-  	"_decimalWrapper_ndpStato",
+  	"ndpStato",
   	"ndpOperazione",
   	"ndpDescrizione"
   }
@@ -138,12 +138,12 @@ public class Stazione extends org.openspcoop2.utils.beans.BaseBean implements Se
 	}
   }
 
-  public int getNdpStato() {
-    return (java.lang.Integer) this._decimalWrapper_ndpStato.getObject(java.lang.Integer.class);
+  public java.lang.Integer getNdpStato() {
+    return this.ndpStato;
   }
 
-  public void setNdpStato(int ndpStato) {
-    this._decimalWrapper_ndpStato = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,ndpStato);
+  public void setNdpStato(java.lang.Integer ndpStato) {
+    this.ndpStato = ndpStato;
   }
 
   public java.lang.String getNdpOperazione() {
@@ -204,13 +204,9 @@ public class Stazione extends org.openspcoop2.utils.beans.BaseBean implements Se
   @XmlTransient
   protected java.lang.Integer applicationCode;
 
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @javax.xml.bind.annotation.XmlSchemaType(name="positiveInteger")
   @XmlElement(name="ndpStato",required=false,nillable=false)
-  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_ndpStato = null;
-
-  @XmlTransient
-  protected int ndpStato;
+  protected java.lang.Integer ndpStato;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ndpOperazione",required=false,nillable=false)
