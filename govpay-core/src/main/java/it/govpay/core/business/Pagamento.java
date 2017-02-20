@@ -788,9 +788,6 @@ public class Pagamento extends BasicBD {
 			RptBD rptBD = new RptBD(this);
 			rpt = rptBD.getRpt(gpAvviaRichiestaStorno.getCodDominio(), gpAvviaRichiestaStorno.getIuv(), gpAvviaRichiestaStorno.getCcp());
 
-			if(!rpt.getIdPortale().equals(portale.getId()))
-				throw new GovPayException(EsitoOperazione.PRT_004, gpAvviaRichiestaStorno.getCodPortale());
-
 			if(gpAvviaRichiestaStorno.getPagamento() == null || gpAvviaRichiestaStorno.getPagamento().isEmpty()) {
 				for(it.govpay.bd.model.Pagamento pagamento : rpt.getPagamenti(this)) {
 					if(pagamento.getImportoRevocato() != null) continue;
@@ -892,7 +889,7 @@ public class Pagamento extends BasicBD {
 		RrBD rrBD = new RrBD(this);
 		try {
 			Rr rr = rrBD.getRr(codRichiestaStorno);
-			if(!portaleAutenticato.getId().equals(rr.getRpt(this).getIdPortale())) {
+			if(rr.getRpt(this).getIdPortale() != null && !portaleAutenticato.getId().equals(rr.getRpt(this).getIdPortale())) {
 				throw new GovPayException(EsitoOperazione.PRT_004);
 			}
 			return rr;

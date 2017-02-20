@@ -233,6 +233,10 @@ public class RrUtils extends NdpValidationUtils {
 	}
 	
 	public static it.govpay.core.business.model.Risposta inviaRr(Rr rr, Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException {
+		// Chiamate per acquisire dati prima di chiudere la connessione
+		rpt.getIntermediario(bd);
+		rpt.getStazione(bd);
+		
 		if(bd != null) bd.closeConnection();
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
