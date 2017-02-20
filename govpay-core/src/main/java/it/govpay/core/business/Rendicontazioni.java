@@ -285,7 +285,7 @@ public class Rendicontazioni extends BasicBD {
 
 									// Verifico l'importo
 									if(rendicontazione.getEsito().equals(EsitoRendicontazione.REVOCATO)) {
-										if(pagamento.getImportoRevocato().compareTo(importoRendicontato) != 0) {
+										if(pagamento.getImportoRevocato().compareTo(importoRendicontato.abs()) != 0) {
 											GpThreadLocal.get().log("rendicontazioni.importoStornoErrato", iuv, iur);
 											log.info("Revoca [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
 											rendicontazione.addAnomalia("007112", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");

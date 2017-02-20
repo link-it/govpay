@@ -933,6 +933,19 @@
 		</xsd:restriction>
 	</xsd:simpleType>
 
+	<xsd:simpleType name="stImportoRendicontazione">
+		<xsd:annotation> 
+	        <xsd:appinfo>
+	            <jxb:javaType name="java.math.BigDecimal"
+					parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseImporto"
+					printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printImporto" />
+	        </xsd:appinfo>
+	    </xsd:annotation> 
+		<xsd:restriction base="xsd:decimal">
+			<xsd:fractionDigits value="2"/>
+			<xsd:totalDigits value="12"/>
+		</xsd:restriction>
+	</xsd:simpleType>
 	<!-- **** END: tipi semplici **** -->
 
 	<!-- **** BEGIN: tipi complessi **** -->
@@ -994,7 +1007,7 @@
 					<xsd:documentation>Indice dell’occorrenza del pagamento all’interno della struttura datiSingoloPagamento della Ricevuta Telematica. </xsd:documentation>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="singoloImportoPagato" type="pay_i:stImporto" minOccurs="1">
+			<xsd:element name="singoloImportoPagato" type="pay_i:stImportoRendicontazione" minOccurs="1">
 				<xsd:annotation>
 					<xsd:documentation>Campo numerico indicante l’importo relativo alla	somma pagata. Deve essere diverso da 0</xsd:documentation>
 					<xsd:documentation>Qualora il singolo importo pagato è riferito ad un pagamento revocato (dato codiceEsitoPagamento = 3) deve assumere un valore negativo.</xsd:documentation>
