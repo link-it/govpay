@@ -337,16 +337,10 @@ public class BasicClient {
 				} catch (IOException e) {
 					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 				} finally {
-					log.error("Errore nell'invocazione del Nodo dei Pagamenti: [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+					log.error("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 				}
 				
-				String txt = new String(msg);
-				
-				if(txt.length() > 300) {
-					throw new ClientException("Ricevuto [HTTP " + responseCode + "]\nRisposta: " + txt.substring(0, 300) + "[--omissis--]");
-				} else {
-					throw new ClientException("Ricevuto [HTTP " + responseCode + "]\nRisposta: " + txt);
-				}
+				throw new ClientException("Ricevuto [HTTP " + responseCode + "]");
 			}
 		} finally {
 			if(responseMsg != null)
