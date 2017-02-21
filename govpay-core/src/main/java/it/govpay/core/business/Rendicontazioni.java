@@ -111,7 +111,7 @@ public class Rendicontazioni extends BasicBD {
 
 				setupConnection(GpThreadLocal.get().getTransactionId());
 				Intermediario intermediario = stazione.getIntermediario(this);
-				NodoClient client = new NodoClient(intermediario);
+				NodoClient client = new NodoClient(intermediario, this);
 				closeConnection();
 
 				if(deep) {
@@ -135,6 +135,7 @@ public class Rendicontazioni extends BasicBD {
 
 				// Scarto i flussi gia acquisiti
 				setupConnection(GpThreadLocal.get().getTransactionId());
+				
 				FrBD frBD = new FrBD(this);
 				for(TipoIdRendicontazione idRendicontazione : flussiDaAcquisire) {
 					if(frBD.exists(idRendicontazione.getIdentificativoFlusso()))
@@ -271,7 +272,7 @@ public class Rendicontazioni extends BasicBD {
 								rendicontazione.setData(dsp.getDataEsitoSingoloPagamento());
 								rendicontazione.setIur(dsp.getIdentificativoUnivocoRiscossione());
 								rendicontazione.setIuv(dsp.getIdentificativoUnivocoVersamento());
-								rendicontazione.setImportoPagato(dsp.getSingoloImportoPagato());
+								rendicontazione.setImporto(dsp.getSingoloImportoPagato());
 
 								totaleImportiRendicontati = totaleImportiRendicontati.add(importoRendicontato);
 
@@ -379,7 +380,7 @@ public class Rendicontazioni extends BasicBD {
 											pagamento.setCodDominio(codDominio);
 											pagamento.setDataAcquisizione(rendicontazione.getData());
 											pagamento.setDataPagamento(rendicontazione.getData());
-											pagamento.setImportoPagato(rendicontazione.getImportoPagato());
+											pagamento.setImportoPagato(rendicontazione.getImporto());
 											pagamento.setIur(rendicontazione.getIur());
 											pagamento.setIuv(rendicontazione.getIuv());
 											pagamento.setCodDominio(fr.getCodDominio());

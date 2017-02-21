@@ -566,7 +566,7 @@ public class Pagamento extends BasicBD {
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
 
-				NodoClient client = new NodoClient(intermediario);
+				NodoClient client = new NodoClient(intermediario, this);
 
 				// Le pendenze per specifica durano 60 giorni.
 				int finestra = 60;

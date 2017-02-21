@@ -141,9 +141,9 @@ public class Psp extends BasicBD {
 				richiesta.setPassword(stazione.getPassword());
 
 				try {
-
+					NodoClient client = null;
 					try { 
-						NodoClient client = new NodoClient(intermediario);
+						client = new NodoClient(intermediario, this);
 
 						NodoChiediInformativaPSPRisposta risposta = client.nodoChiediInformativaPSP(richiesta, intermediario.getDenominazione());
 

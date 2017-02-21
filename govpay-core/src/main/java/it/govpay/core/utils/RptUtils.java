@@ -304,7 +304,7 @@ public class RptUtils {
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd));
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
 			inviaRPT.setIdentificativoCanale(rpt.getCanale(bd).getCodCanale());
 			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCanale(bd).getCodIntermediario());
@@ -346,7 +346,7 @@ public class RptUtils {
 			Evento evento = new Evento();
 			it.govpay.core.business.model.Risposta risposta = null;
 			try {
-				NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario);
+				NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
 				NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
 				inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCanale(bd).getCodCanale());
 				inviaCarrelloRpt.setIdentificativoIntermediarioPSP(rpts.get(0).getCanale(bd).getCodIntermediario());
@@ -411,7 +411,7 @@ public class RptUtils {
 
 	public static NodoChiediStatoRPTRisposta chiediStatoRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, BasicBD bd) throws GovPayException, ClientException {
 
-		NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario);
+		NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
 
 		NodoChiediStatoRPT nodoChiediStatoRPT = new NodoChiediStatoRPT();
 		nodoChiediStatoRPT.setCodiceContestoPagamento(rpt.getCcp());

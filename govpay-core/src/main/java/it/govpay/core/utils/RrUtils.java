@@ -241,7 +241,7 @@ public class RrUtils extends NdpValidationUtils {
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd));
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
 			NodoInviaRichiestaStorno inviaRR = new NodoInviaRichiestaStorno();
 			inviaRR.setCodiceContestoPagamento(rr.getCcp());
 			inviaRR.setIdentificativoDominio(rr.getCodDominio());

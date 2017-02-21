@@ -190,7 +190,7 @@ public class Gp21Utils {
 		if(rend.getSingoloVersamento() != null)
 			p.setCodSingoloVersamentoEnte(rend.getSingoloVersamento().getCodSingoloVersamentoEnte());
 		
-		p.setImportoRendicontato(rend.getRendicontazione().getImportoPagato());
+		p.setImportoRendicontato(rend.getRendicontazione().getImporto().abs());
 		p.setIur(rend.getRendicontazione().getIur());
 		p.setEsitoRendicontazione(TipoRendicontazione.valueOf(rend.getRendicontazione().getEsito().toString()));
 		p.setDataRendicontazione(rend.getRendicontazione().getData());
