@@ -22,7 +22,6 @@ package it.govpay.orm.dao.jdbc;
 import it.govpay.orm.IUV;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdIuv;
-import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.IUVFetch;
 

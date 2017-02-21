@@ -52,6 +52,7 @@ public class Wisp extends BasicBD {
 	public SceltaWISP chiediScelta(Portale portaleAutenticato, Dominio dominio, String codKeyPA, String codKeyWISP) throws ServiceException, GovPayException {
 		String idTransaction = null;
 		GpContext ctx = GpThreadLocal.get();
+		NodoClient client = null;
 		try {
 			idTransaction = ctx.openTransaction();
 			ctx.setupNodoClient(dominio.getStazione(this).getCodStazione(), dominio.getCodDominio(), Azione.nodoChiediSceltaWISP);
@@ -64,7 +65,7 @@ public class Wisp extends BasicBD {
 			Stazione stazione = AnagraficaManager.getStazione(this, dominio.getIdStazione());
 			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
 			closeConnection();
-			NodoClient client = new NodoClient(intermediario);
+			client = new NodoClient(intermediario, this);
 			NodoChiediSceltaWISP nodoChiediSceltaWISP = new NodoChiediSceltaWISP();
 			nodoChiediSceltaWISP.setIdentificativoDominio(dominio.getCodDominio());
 			nodoChiediSceltaWISP.setIdentificativoIntermediarioPA(intermediario.getCodIntermediario());

@@ -271,7 +271,7 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			it.govpay.bd.model.Rendicontazione rendicontazione = new it.govpay.bd.model.Rendicontazione();
 			rendicontazione.setIuv((String) record.get(i++));
 			rendicontazione.setIur((String) record.get(i++));
-			rendicontazione.setImportoPagato(new BigDecimal((Double) record.get(i++)));
+			rendicontazione.setImporto(new BigDecimal((Double) record.get(i++)));
 			rendicontazione.setEsito(EsitoRendicontazione.toEnum((Integer) record.get(i++)));
 			rendicontazione.setData((Date) record.get(i++));
 			rendicontazione.setStato(StatoRendicontazione.valueOf((String) record.get(i++)));

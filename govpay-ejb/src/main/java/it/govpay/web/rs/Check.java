@@ -23,18 +23,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.UUID;
 
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSP;
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.client.NodoClient;
-import it.govpay.bd.model.Dominio;
-import it.govpay.model.Intermediario;
-import it.govpay.bd.model.Stazione;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -46,11 +34,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Server;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.wrapper.StatoNdP;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 
 @Path("/check")
 public class Check {
@@ -125,7 +125,6 @@ public class Check {
 	public Response verificaDominio(@PathParam(value = "codDominio") String codDominio) {
 		BasicBD bd = null;
 		GpContext ctx = null;
-		Logger log = LogManager.getLogger();
 		try {
 			ctx = new GpContext();
 			Service service = new Service();
@@ -146,44 +145,42 @@ public class Check {
 			to.setType(GpContext.TIPO_SOGGETTO_GOVPAY);
 			ctx.getTransaction().setTo(to);
 			
-//			HttpServletRequest servletRequest = (HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST);
-//			Client client = new Client();
-//			client.setInvocationEndpoint(servletRequest.getRequestURI());
-//			client.setInterfaceName(((QName) msgCtx.get(MessageContext.WSDL_INTERFACE)).getLocalPart());
-//			if(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal() != null)
-//				client.setPrincipal(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal().getName());
-//			transaction.setClient(client);
-			
 			ThreadContext.put("op", ctx.getTransactionId());
 			GpThreadLocal.set(ctx);
 			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			DominiBD dominiBD = new DominiBD(bd);
-			Dominio d = null;
+			
 			
 			try {
-				d = dominiBD.getDominio(codDominio);
-				log.debug("Dominio ["+ codDominio +"] identificato");
-				Stazione s = d.getStazione(bd);
-				Intermediario i = s.getIntermediario(bd);
-				NodoClient c = new NodoClient(i);
-				NodoChiediInformativaPSP richiesta = new NodoChiediInformativaPSP();
-				richiesta.setIdentificativoDominio(d.getCodDominio());
-				richiesta.setIdentificativoIntermediarioPA(i.getCodIntermediario());
-				richiesta.setIdentificativoStazioneIntermediarioPA(s.getCodStazione());
-				richiesta.setPassword(s.getPassword());
-				log.debug("Richiesta alla stazione " + s.getCodStazione() + " in corso...");
-				c.nodoChiediInformativaPSP(richiesta, "");
+				DominiBD dominiBD = new DominiBD(bd);
+				StazioniBD stazioniBD = new StazioniBD(bd);
+				
+				Dominio d = AnagraficaManager.getDominio(bd, codDominio);
+				Stazione stazione = d.getStazione(bd);
+				
+				StatoNdP statoDominioNdp = dominiBD.getStatoNdp(d.getId());
+				StatoNdP statoStazioneNdp = stazioniBD.getStatoNdp(stazione.getId());
+				
+				if(statoDominioNdp.getCodice() == null)
+					return Response.ok().entity("STATO NON VERIFICATO").build();
+				
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice() == null)
+					return Response.ok().entity("DOMINIO OK").build();
+				
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() == 0)
+					return Response.ok().entity("DOMINIO OK").build();
+				
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() != 0)
+					return Response.status(500).entity("STAZIONE KO (" + statoStazioneNdp.getOperazione() + "): " + statoStazioneNdp.getDescrizione()).build();
+				
+				if(statoDominioNdp.getCodice().intValue() != 0)
+					return Response.status(500).entity("DOMINIO KO (" + statoDominioNdp.getOperazione() + "): " + statoDominioNdp.getDescrizione()).build();
+
 			} catch(NotFoundException e) {
-				throw new Exception("Dominio [" + codDominio + "] non censito in anagrafica.");
-			} catch(GovPayException e) {
-				throw new Exception(e.getCodEsito().toString() + ": " + e.getMessage());
-			} catch(Exception e) {
-				log.error("Errore nel check del dominio", e);
-				throw new Exception("Impossibile invocare il Nodo dei Pagamenti: " + e.getMessage(), e);
-			}
+				return Response.status(404).build();
+			} 
 			return Response.ok().build();
-		} catch (Exception e) {
+		} catch (ServiceException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		} finally {
 			if(bd!= null) bd.closeConnection();

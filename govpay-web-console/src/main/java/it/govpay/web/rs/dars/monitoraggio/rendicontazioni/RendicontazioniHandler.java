@@ -312,7 +312,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.label"), this.sdf.format(rendicontazione.getData()));
 				}
 
-				BigDecimal importoPagato = rendicontazione.getImportoPagato() != null ? rendicontazione.getImportoPagato() : BigDecimal.ZERO;  
+				BigDecimal importoPagato = rendicontazione.getImporto() != null ? rendicontazione.getImporto() : BigDecimal.ZERO;  
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), importoPagato.doubleValue()+ "€");
 
 				StatoRendicontazione stato = rendicontazione.getStato();
@@ -425,7 +425,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 							this.sdf.format(entry.getData())));
 		}
 
-		BigDecimal importoPagato = entry.getImportoPagato() != null ? entry.getImportoPagato() : BigDecimal.ZERO;  
+		BigDecimal importoPagato = entry.getImporto() != null ? entry.getImporto() : BigDecimal.ZERO;  
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"),
 						importoPagato.doubleValue()+ "€"));
