@@ -36,6 +36,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
@@ -59,6 +60,7 @@ import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Applicazione;
 import it.govpay.model.IbanAccredito;
+import it.govpay.model.Intermediario;
 import it.govpay.model.TipoTributo;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -72,6 +74,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -147,6 +150,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 
+			// Indico la visualizzazione custom
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
@@ -155,7 +160,9 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			if(findAll != null && findAll.size() > 0){
 				for (Dominio entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
+					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elemento.setFormatter(formatter);
+					elenco.getElenco().add(elemento);
 				}
 			}
 
@@ -717,6 +724,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 
+			boolean mostraAnomalia = false;
 			// recupero oggetto
 			DominiBD dominiBD = new DominiBD(bd);
 			Dominio dominio = dominiBD.getDominio(id);
@@ -743,7 +751,25 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazioneDefault.label"), Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.nessuna"),true);
 			}
 
-
+			String statoValue = null;
+			if(!dominio.isAbilitato()){
+				statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato.label");
+			} else {
+				if(dominio.getNdpStato() == null){
+					statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato.label");
+				} else {
+					if(dominio.getNdpStato().intValue() == 0){
+						statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok.label");
+					} else {
+						statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label");
+						mostraAnomalia = true;
+					}
+				}
+			}
+			
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"), statoValue);
+			if(StringUtils.isNotEmpty(dominio.getNdpOperazione()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ndpOperazione.label"), dominio.getNdpOperazione());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(dominio.isAbilitato()));
 
 			// Sezione iuv
@@ -797,6 +823,15 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			//			it.govpay.web.rs.dars.model.Sezione sezioneTabellaControparti = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "tabellaControparti.titolo"));
 			//			UriBuilder uriTabellaContropartiBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("informativa");
 			//			sezioneTabellaControparti.addVoce("Tabella Controparti", "scarica", uriTabellaContropartiBuilder.build(dominio.getId()));
+			
+			
+			// sezione anomalie
+			if(mostraAnomalia){
+				// Sezione iuv
+				it.govpay.web.rs.dars.model.Sezione sezioneAnomalia = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneAnomalia"));
+				sezioneAnomalia.addVoce(dominio.getNdpDescrizione() , "");
+			}
+			
 
 			// Elementi correlati
 			String etichettaUnitaOperative = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.unitaOperative.titolo");
@@ -1132,7 +1167,64 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 	
 	@Override
-	public Map<String, Voce<String>> getVoci(Dominio entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Dominio entry, BasicBD bd) throws ConsoleException { 
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id"),
+				new Voce<String>(entry.getRagioneSociale(),entry.getRagioneSociale()));
+		
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"),entry.getCodDominio()));
+		
+		try {
+			Stazione stazione = entry.getStazione(bd);
+			
+			if(stazione != null){
+				Intermediario intermediario = stazione.getIntermediario(bd);
+				if(intermediario != null) {
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label"),intermediario.getCodIntermediario()));
+				}
+			}
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
+		}
+		
+		// stato del dominio
+		// 
+		if(!entry.isAbilitato()) {
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato")));
+		} else {
+			if(entry.getNdpStato() == null){
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato.label"),
+								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato")));
+			} else {
+				if(entry.getNdpStato().intValue() == 0){
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok.label"),
+									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok")));
+				} else {
+					String statoErrore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label");
+					
+					if(StringUtils.isNotEmpty(entry.getNdpDescrizione())){
+						statoErrore = entry.getNdpDescrizione();
+					}
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+							new Voce<String>(statoErrore,
+									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore")));
+					
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.label"),statoErrore));
+				}
+			}
+		}
+		
+		
+		return valori;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

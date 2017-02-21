@@ -157,23 +157,11 @@ public class Menu extends BaseRsService {
 
 			monitoraggio.getVociMenu().add(voceMenuVersamenti);
 
-			if(profilo.equals(ProfiloOperatore.ADMIN)){
+			Fr frDars = new Fr();
+			URI frURI = new URI(frDars.getPathServizio());
+			VoceMenu voceMenuFlussiRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(frDars.getNomeServizio() + ".titolo"),	frURI, false);
 
-				Fr frDars = new Fr();
-				URI frURI = new URI(frDars.getPathServizio());
-				VoceMenu voceMenuFlussiRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(frDars.getNomeServizio() + ".titolo"),	frURI, false);
-
-				monitoraggio.getVociMenu().add(voceMenuFlussiRendicontazioni);
-			}else {
-				
-				// TODO GIULIANO
-				
-//				FrApplicazioni frApplicazioniDars = new FrApplicazioni();
-//				URI frApplicazioniURI = new URI(frApplicazioniDars.getPathServizio());
-//				VoceMenu voceMenuFrApplicazioni = console.new VoceMenu(Utils.getInstance().getMessageFromResourceBundle(frApplicazioniDars.getNomeServizio() + ".titolo"),	frApplicazioniURI, false);
-//
-//				monitoraggio.getVociMenu().add(voceMenuFrApplicazioni);
-			}
+			monitoraggio.getVociMenu().add(voceMenuFlussiRendicontazioni);
 
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
 
@@ -217,7 +205,7 @@ public class Menu extends BaseRsService {
 			console.setMenu(menu);
 			
 			// caricamento della sezione lingua
-			console.setLingue(Utils.getInstance().getMapLingue()); 
+			console.setLingue(Utils.getInstance(this.getLanguage()).getMapLingue()); 
 			
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
