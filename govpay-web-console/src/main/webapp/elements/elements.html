@@ -32138,7 +32138,7 @@ Polymer.AppLocalizeBehavior = {
       }
       fileInput.nodrop = true;
       if(data.target) {
-        fileInput.target = data.target;
+        fileInput.target = REST_URL + data.target + app.appendLangParameter(data.target);
       }
       fileInput.addEventListener('file-reject', function(event){
         console.log(event.detail);
