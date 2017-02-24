@@ -19,6 +19,7 @@ import it.govpay.orm.Pagamento;
 import it.govpay.orm.Rendicontazione;
 import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.Versamento;
+import it.govpay.orm.dao.jdbc.JDBCServiceManager;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -167,7 +169,13 @@ public class RendicontazionePagamentoBD extends BasicBD {
 			String initialNativeQuery = NativeQueries.getInstance().getRendicontazionePagamentoQuery();
 			String nativeQueryString = filter.getSQLFilterString(initialNativeQuery);
 			
+			Logger.getLogger(JDBCServiceManager.class).debug(nativeQueryString);
 			Object[] array = filter.getFields(false).toArray(new Object[]{});
+			Logger.getLogger(JDBCServiceManager.class).debug("Params: ");
+			for(Object obj: array) {
+				Logger.getLogger(JDBCServiceManager.class).debug(obj);
+			}
+
 			List<List<Object>> lstRecords = this.getRendicontazionePagamentoServiceSearch().nativeQuery(nativeQueryString, lstReturnType, array);
 			List<RendicontazionePagamento> lstNonFiltrata = new ArrayList<RendicontazionePagamento>();
 
