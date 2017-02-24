@@ -29,7 +29,7 @@ public class Stazione extends BasicModel {
 	private String password;
 	private boolean abilitato;
 	private int applicationCode;
-	private int ndpStato;
+	private Integer ndpStato;
 	private String ndpOperazione;
 	private String ndpDescrizione;
 
@@ -85,11 +85,11 @@ public class Stazione extends BasicModel {
 		this.applicationCode = applicationCode;
 	}
 	
-	public int getNdpStato() {
+	public Integer getNdpStato() {
 		return ndpStato;
 	}
 
-	public void setNdpStato(int ndpStato) {
+	public void setNdpStato(Integer ndpStato) {
 		this.ndpStato = ndpStato;
 	}
 

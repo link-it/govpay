@@ -41,7 +41,7 @@ public class Gp23Utils {
 		Rendicontazione rendicontazione = new Rendicontazione();
 		rendicontazione.setData(rend.getRendicontazione().getData());
 		rendicontazione.setEsito(EsitoRendicontazione.valueOf(rend.getRendicontazione().getEsito().toString()));
-		rendicontazione.setImportoRendicontato(rend.getRendicontazione().getImportoPagato());
+		rendicontazione.setImportoRendicontato(rend.getRendicontazione().getImporto());
 		rendicontazione.setIur(rend.getRendicontazione().getIur());
 		rendicontazione.setIuv(rend.getRendicontazione().getIuv());
 		rendicontazione.setStato(StatoRendicontazione.valueOf(rend.getRendicontazione().getStato().toString()));

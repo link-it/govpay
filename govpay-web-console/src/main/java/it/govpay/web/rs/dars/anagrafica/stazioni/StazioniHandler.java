@@ -51,6 +51,7 @@ import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -99,10 +100,11 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			filter.setOffset(offset);
 
 			long count = stazioniBD.count(filter);
-			
+
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(codIntermediarioId, this.codIntermediario);
-
+			// Indico la visualizzazione custom
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
@@ -111,7 +113,9 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			if(findAll != null && findAll.size() > 0){
 				for (Stazione entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
+					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elemento.setFormatter(formatter); 
+					elenco.getElenco().add(elemento);
 				}
 			}
 
@@ -291,6 +295,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			boolean mostraAnomalia = false;
 
 			// recupero oggetto
 			StazioniBD stazioniBD = new StazioniBD(bd);
@@ -307,7 +312,34 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			// dati dell'intermediario
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.label"), stazione.getCodStazione());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".password.label"), stazione.getPassword());
+
+			String statoValue = null;
+			if(!stazione.isAbilitato()){
+				statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato.label");
+			} else {
+				if(stazione.getNdpStato() == null){
+					statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato.label");
+				} else {
+					if(stazione.getNdpStato().intValue() == 0){
+						statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok.label");
+					} else {
+						statoValue = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label");
+						mostraAnomalia = true;
+					}
+				}
+			}
+
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"), statoValue);
+			if(StringUtils.isNotEmpty(stazione.getNdpOperazione()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ndpOperazione.label"), stazione.getNdpOperazione());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(stazione.isAbilitato()));
+
+			// sezione anomalie
+			if(mostraAnomalia){
+				// Sezione iuv
+				it.govpay.web.rs.dars.model.Sezione sezioneAnomalia = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneAnomalia"));
+				sezioneAnomalia.addVoce(stazione.getNdpDescrizione() , "");
+			}
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -401,11 +433,11 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 		//		List<Integer> applicationCodes = new ArrayList<Integer>();
 
 		String codIntermediario2 = entry.getCodStazione().substring(0, entry.getCodStazione().indexOf("_"));
-		
+
 		if(StringUtils.isEmpty(codIntermediario2) || !this.codIntermediario.equals(codIntermediario2)){
 			throw new ValidationException(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".creazione.erroreIdintermediarioNonCoincide", this.codIntermediario + "_",codIntermediario2));
 		}
-		
+
 		String applicationCodeAsString = entry.getCodStazione().substring(entry.getCodStazione().indexOf("_") + 1);
 
 		if(StringUtils.isEmpty(applicationCodeAsString))
@@ -438,10 +470,10 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			this.darsService.checkOperatoreAdmin(bd);
 
 			Stazione entry = this.creaEntry(is, uriInfo, bd);
-			
+
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			IntermediariBD intermediari = new IntermediariBD(bd);
-			
+
 			Stazione oldEntry = stazioniBD.getStazione(entry.getCodStazione());
 
 			this.checkEntry(entry, oldEntry); 
@@ -478,14 +510,54 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	public String getSottotitolo(Stazione entry, BasicBD bd) {
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
 	}
-	
+
 	@Override
 	public List<String> getValori(Stazione entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
-	public Map<String, Voce<String>> getVoci(Stazione entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Stazione entry, BasicBD bd) throws ConsoleException { 
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codStazione.id"),
+				new Voce<String>(entry.getCodStazione(),entry.getCodStazione()));
+		
+		// stato della stazione
+		// 
+		if(!entry.isAbilitato()) {
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato")));
+		} else {
+			if(entry.getNdpStato() == null){
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato.label"),
+								Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.nonVerificato")));
+			} else {
+				if(entry.getNdpStato().intValue() == 0){
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok.label"),
+									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok")));
+				} else {
+					String statoErrore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label");
+					
+					if(StringUtils.isNotEmpty(entry.getNdpDescrizione())){
+						statoErrore = entry.getNdpDescrizione();
+					}
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+							new Voce<String>(statoErrore,
+									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore")));
+					
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.label"),statoErrore));
+				}
+			}
+		}
+		
+		
+		return valori; 
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)

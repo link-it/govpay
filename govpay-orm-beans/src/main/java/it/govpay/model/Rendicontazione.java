@@ -64,7 +64,7 @@ public class Rendicontazione extends BasicModel {
 	private String iuv;
 	private String iur;
 	
-	private BigDecimal importoPagato;
+	private BigDecimal importo;
 	private Date data;
 	private EsitoRendicontazione esito;
 	private StatoRendicontazione stato;
@@ -89,11 +89,11 @@ public class Rendicontazione extends BasicModel {
 	public void setIur(String iur) {
 		this.iur = iur;
 	}
-	public BigDecimal getImportoPagato() {
-		return importoPagato;
+	public BigDecimal getImporto() {
+		return importo;
 	}
-	public void setImportoPagato(BigDecimal importoPagato) {
-		this.importoPagato = importoPagato;
+	public void setImporto(BigDecimal importo) {
+		this.importo = importo;
 	}
 	public EsitoRendicontazione getEsito() {
 		return esito;

@@ -18628,6 +18628,11 @@ context. You should place this element as a child of `<body>` whenever possible.
   font-size: 14px;
 }
 
+.vers_valore_16 {
+  color: var(--primary-text-color);
+  font-size: 16px;
+}
+
 @media (min-width: 601px) {
   .vers_colonna {
     display: inline-block;
@@ -32133,7 +32138,7 @@ Polymer.AppLocalizeBehavior = {
       }
       fileInput.nodrop = true;
       if(data.target) {
-        fileInput.target = data.target;
+        fileInput.target = REST_URL + data.target + app.appendLangParameter(data.target);
       }
       fileInput.addEventListener('file-reject', function(event){
         console.log(event.detail);
@@ -35097,7 +35102,7 @@ It will also ensure that focus remains in the dialog.
 
       iron-pages {
         padding: 0;
-        @apply(--layout-fullbleed);
+       /* @apply(--layout-fullbleed);*/
       }
 
       .infoResults {

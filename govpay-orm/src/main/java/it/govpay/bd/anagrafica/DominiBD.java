@@ -148,11 +148,11 @@ public class DominiBD extends BasicBD {
 
 	}
 	
-	public void setStatoNdp(long idDominio, StatoNdP statoNdp) throws NotFoundException, ServiceException{
+	public void setStatoNdp(long idDominio, StatoNdP statoNdp) throws ServiceException{
 		this.setStatoNdp(idDominio, statoNdp.getCodice(), statoNdp.getOperazione(), statoNdp.getDescrizione());
 	}
 	
-	public void setStatoNdp(long idDominio, Integer codice, String operazione, String descrizione) throws NotFoundException, ServiceException{
+	public void setStatoNdp(long idDominio, Integer codice, String operazione, String descrizione) throws ServiceException{
 		try {
 			
 			List<UpdateField> lst = new ArrayList<UpdateField>();
@@ -163,10 +163,12 @@ public class DominiBD extends BasicBD {
 			((JDBCDominioService)this.getDominioService()).updateFields(idDominio, lst.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
 		}
 	}
 	
-	public StatoNdP getStatoNdp(long idDominio) throws NotFoundException, MultipleResultException, ServiceException {
+	public StatoNdP getStatoNdp(long idDominio) throws NotFoundException, ServiceException {
 		try {
 			
 			List<IField> lst = new ArrayList<IField>();
@@ -199,6 +201,8 @@ public class DominiBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}

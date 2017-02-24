@@ -106,7 +106,7 @@ public class StazioniBD extends BasicBD {
 		}
 	}
 	
-	public StatoNdP getStatoNdp(long idStazione) throws NotFoundException, MultipleResultException, ServiceException {
+	public StatoNdP getStatoNdp(long idStazione) throws NotFoundException, ServiceException {
 		try {
 			
 			List<IField> lst = new ArrayList<IField>();
@@ -139,6 +139,8 @@ public class StazioniBD extends BasicBD {
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
