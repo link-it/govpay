@@ -267,8 +267,8 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 	private AliasField getAliasField(IField field) throws ExpressionException {
 		String toColumnFalse = this.getFieldConverter().toColumn(field,false);
 		String toTable = this.getFieldConverter().toTable(field);
-		String toColumnTrue = this.getFieldConverter().toColumn(field,true);
-		IField customField = new CustomField(toColumnTrue, field.getFieldType(), toColumnFalse, toTable);
+//		String toColumnTrue = this.getFieldConverter().toColumn(field,true);
+		IField customField = new CustomField("tipoTributo." + field.getFieldName(), field.getFieldType(), toColumnFalse, toTable);
 		return new AliasField(customField, toTable + "_" + toColumnFalse);
 	}
 	
