@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -175,13 +176,16 @@ public class Gp21Utils {
 		fr.setCodPsp(frModel.getCodPsp());
 		fr.setDataFlusso(frModel.getDataFlusso());
 		fr.setDataRegolamento(frModel.getDataRegolamento());
-		fr.setImportoTotale(frModel.getImportoTotalePagamenti());
-		fr.setNumeroPagamenti(frModel.getNumeroPagamenti());
+		fr.setImportoTotale(BigDecimal.ZERO);
+		fr.setNumeroPagamenti(0l);
 		fr.setIur(frModel.getIur());
 		
 		for(RendicontazionePagamento rend : rends) {
+			fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
+			fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
 			fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend, versione, bd));
 		}
+		
 		return fr;
 	}
 
