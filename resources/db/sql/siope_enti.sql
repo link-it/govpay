@@ -63,7 +63,7 @@ INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, cod_tr
 -- CONTRIBUTI E TRASFERIMENTI CORRENTI DALLA REGIONE PER FUNZIONI DELEGATE
 
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, cod_tributo_iuv, descrizione) VALUES ('SIOPE_E_2301','2','2301','2301','Trasferimenti correnti dalla Regione/Provincia autonoma per funzioni di amministrazione, gestione e controllo');
-INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, cod_tributo_iuv, descrizione) VALUES ('SIOPE_E_2302','2','2302','2302','rasferimenti correnti dalla Regione/Provincia autonoma per funzioni in materia di istruzione pubblica');
+INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, cod_tributo_iuv, descrizione) VALUES ('SIOPE_E_2302','2','2302','2302','Trasferimenti correnti dalla Regione/Provincia autonoma per funzioni in materia di istruzione pubblica');
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, cod_tributo_iuv, descrizione) VALUES ('SIOPE_E_2303','2','2303','2303','Trasferimenti correnti dalla Regione/provincia autonoma  per funzioni in materia cultura e beni culturali');
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, cod_tributo_iuv, descrizione) VALUES ('SIOPE_E_2304','2','2304','2304','Trasferimenti correnti dalla Regione/Provincia autonoma per funzioni in materia sociale');
 INSERT INTO tipi_tributo (cod_tributo, tipo_contabilita, cod_contabilita, cod_tributo_iuv, descrizione) VALUES ('SIOPE_E_2305','2','2305','2305','Trasferimenti correnti dalla Regione/Provincia autonoma per funzioni nel campo dello sviluppo economico');
