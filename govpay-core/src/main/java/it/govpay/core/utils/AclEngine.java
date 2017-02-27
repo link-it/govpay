@@ -99,5 +99,21 @@ public class AclEngine {
 		}
 		return domini;
 	}
+	
+	/** 
+	 * Ritorna la lista dei domini autorizzati al servizio Rendicontazione per l'applicazione indicata
+	 * 
+	 * @param applicazione
+	 * @param servizio
+	 * @return
+	 */
+	public static Set<Long> getAuthorizedPagamenti(Portale portale) {
+		Set<Long> domini = new HashSet<Long>();
+		for(Acl acl : portale.getAcls()) {
+			if(acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA))
+				domini.add(acl.getIdDominio());
+		}
+		return domini;
+	}
 
 }
