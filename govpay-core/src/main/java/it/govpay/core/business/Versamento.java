@@ -19,6 +19,7 @@
  */
 package it.govpay.core.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -331,6 +332,10 @@ public class Versamento extends BasicBD {
 		filter.setCodUnivocoDebitore(codUnivocoDebitore);
 		filter.setStatiPagamento(statiVersamento);
 		filter.addSortField(filterSortList);
+		List<Long> domini = new ArrayList<Long>();
+		domini.addAll(AclEngine.getAuthorizedPagamenti(portaleAutenticato));
+		filter.setIdDomini(domini);
+		
 		List<it.govpay.bd.model.Versamento> versamenti = versamentiBD.findAll(filter);
 		for(it.govpay.bd.model.Versamento versamento : versamenti)
 			try {
