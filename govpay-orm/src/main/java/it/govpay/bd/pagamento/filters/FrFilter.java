@@ -225,7 +225,7 @@ public class FrFilter extends AbstractFilter {
 					placeholderOffsetLimit = "LIMIT ?,?";
 				}
 				if(GovpayConfig.getInstance().getDatabaseType().equals("oracle")) {
-					placeholderOffsetLimit = "WHERE ( rowNumber > ? AND rowNumber <= ? )";
+					placeholderOffsetLimit = "WHERE (  rowNumber > ? AND  rowNumber <= ? )";
 				}
 			}
 			nativeQuery = nativeQuery.replaceAll("\\$PLACEHOLDER_WHERE_IN\\$", placeholderWhereIn);
