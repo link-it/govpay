@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE installer PUBLIC "-//tp23 //DTD Ant Installer Config//EN" "http://antinstaller.sf.net/dtd/antinstall-config-0.8.dtd">
+<<<<<<< HEAD
 <installer name="GovPay vPRODUCT_VERSION Installer" defaultImageResource="/logoSetup.png"
     windowIcon="/iconaSetup.png" wide="550:275">
     
