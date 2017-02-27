@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -70,21 +69,15 @@ public class ModelFactory {
 	
 	public static RRModel RR = new RRModel();
 	
+	public static RendicontazioneModel RENDICONTAZIONE = new RendicontazioneModel();
+	
 	public static PagamentoModel PAGAMENTO = new PagamentoModel();
 	
 	public static NotificaModel NOTIFICA = new NotificaModel();
 	
 	public static FRModel FR = new FRModel();
 	
-	public static FrApplicazioneModel FR_APPLICAZIONE = new FrApplicazioneModel();
-	
-	public static RendicontazioneSenzaRPTModel RENDICONTAZIONE_SENZA_RPT = new RendicontazioneSenzaRPTModel();
-	
 	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
-	
-	public static RendicontazionePagamentoSenzaRPTModel RENDICONTAZIONE_PAGAMENTO_SENZA_RPT = new RendicontazionePagamentoSenzaRPTModel();
-	
-	public static FrFiltroAppModel FR_FILTRO_APP = new FrFiltroAppModel();
 	
 
 }

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -49,6 +48,7 @@ import it.govpay.servizi.gpprt.GpChiediListaPspResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.NdpUtils;
 import it.govpay.core.utils.PspUtils;
 import it.govpay.core.utils.client.NodoClient;
 import it.govpay.core.utils.client.NodoClient.Azione;
@@ -141,14 +141,14 @@ public class Psp extends BasicBD {
 				richiesta.setPassword(stazione.getPassword());
 
 				try {
-
+					NodoClient client = null;
 					try { 
-						NodoClient client = new NodoClient(intermediario);
+						client = new NodoClient(intermediario, this);
 
 						NodoChiediInformativaPSPRisposta risposta = client.nodoChiediInformativaPSP(richiesta, intermediario.getDenominazione());
 
 						if(risposta.getFault() != null) {
-							throw new GovPayException(EsitoOperazione.NDP_001, risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString());
+							throw new GovPayException(NdpUtils.toCausaString(risposta.getFault()), EsitoOperazione.NDP_001, "Ricevuto errore dal Nodo dei Pagamenti durante l'acquisizione della Informativa Psp per la stazione " + stazione.getCodStazione());
 						}
 
 						DataHandler dh= risposta.getXmlInformativa();
@@ -162,9 +162,9 @@ public class Psp extends BasicBD {
 					}
 
 					if(informativePsp == null) {
-						log.warn("Catalogo dei psp non acquisito. Impossibile aggiornare il registro.");
-						ctx.log("psp.aggiornamentoPspRichiestaKo", "Catalogo dei psp vuoto.");
-						throw new GovPayException(EsitoOperazione.INTERNAL, "Catalogo dei psp non acquisito. Impossibile aggiornare il registro.");
+						log.error("Catalogo dei psp non acquisito. Impossibile aggiornare il registro.");
+						ctx.log("psp.aggiornamentoPspRichiestaKo", "Ricevuta Informativa PSP vuota.");
+						throw new GovPayException("Ricevuta Informativa PSP vuota.", EsitoOperazione.INTERNAL, "Impossibile aggiornare la lista dei Psp.");
 					}
 
 					log.info("Ricevuto catalogo dei dati Informativi con " + informativePsp.getInformativaPSPs().size() + " informative.");
@@ -267,7 +267,6 @@ public class Psp extends BasicBD {
 				}
 			}
 
-
 			if(acquisizioneOk) {
 				ctx.log("psp.aggiornamentoPspOk");
 				if(response.isEmpty()) {
@@ -279,10 +278,10 @@ public class Psp extends BasicBD {
 				ctx.log("psp.aggiornamentoPspKo", lastError);
 				return "Acquisizione fallita#Riscontrato errore:" + lastError;
 			}
-		} catch (Exception se) {
+		} catch (Throwable se) {
 			rollback();
 			ctx.log("psp.aggiornamentoPspKo", se.getMessage());
-			throw new GovPayException(EsitoOperazione.INTERNAL, se, "Non è stato possibile acquisire il Catalogo dei Psp dal Nodo dei Pagamenti: " + se.getMessage());
+			throw new GovPayException(se, "Impossibile aggiornare la lista dei Psp.");
 		} finally {
 			closeConnection();
 			ctx.closeTransaction(transactionId);

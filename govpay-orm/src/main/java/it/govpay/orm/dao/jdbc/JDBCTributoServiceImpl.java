@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -123,11 +122,13 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			}
 		}
 
+
 		// Object tributo
 		sqlQueryObjectInsert.addInsertTable(this.getTributoFieldConverter().toTable(Tributo.model()));
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().ABILITATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().TIPO_CONTABILITA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_dominio","?");
 		sqlQueryObjectInsert.addInsertField("id_iban_accredito","?");
 		sqlQueryObjectInsert.addInsertField("id_tipo_tributo","?");
@@ -138,6 +139,7 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getAbilitato(),Tributo.model().ABILITATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getTipoContabilita(),Tributo.model().TIPO_CONTABILITA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodiceContabilita(),Tributo.model().CODICE_CONTABILITA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tributo.getCodTributoIuv(),Tributo.model().COD_TRIBUTO_IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_dominio,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_ibanAccredito,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tipoTributo,Long.class)
@@ -264,6 +266,8 @@ public class JDBCTributoServiceImpl extends JDBCTributoServiceSearchImpl
 		lstObjects_tributo.add(new JDBCObject(tributo.getTipoContabilita(), Tributo.model().TIPO_CONTABILITA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().CODICE_CONTABILITA,false), "?");
 		lstObjects_tributo.add(new JDBCObject(tributo.getCodiceContabilita(), Tributo.model().CODICE_CONTABILITA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTributoFieldConverter().toColumn(Tributo.model().COD_TRIBUTO_IUV,false), "?");
+		lstObjects_tributo.add(new JDBCObject(tributo.getCodTributoIuv(), Tributo.model().COD_TRIBUTO_IUV.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_dominio","?");
 		}

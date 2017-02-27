@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -56,8 +55,9 @@ public class Tributo extends TipoTributo {
 	private long idDominio;
 	private Long idIbanAccredito;
 	private boolean abilitato;
-	private TipoContabilta tipoContabilita;
-	private String codContabilita;
+	private TipoContabilta tipoContabilitaCustom;
+	private String codContabilitaCustom;
+	private String codTributoIuvCustom;
 	
 	public Long getIdIbanAccredito() {
 		return idIbanAccredito;
@@ -70,18 +70,6 @@ public class Tributo extends TipoTributo {
 	}
 	public void setAbilitato(boolean abilitato) {
 		this.abilitato = abilitato;
-	}
-	public TipoContabilta getTipoContabilita() {
-		return tipoContabilita;
-	}
-	public void setTipoContabilita(TipoContabilta tipoContabilita) {
-		this.tipoContabilita = tipoContabilita;
-	}
-	public String getCodContabilita() {
-		return codContabilita;
-	}
-	public void setCodContabilita(String codContabilita) {
-		this.codContabilita = codContabilita;
 	}
 	public long getIdDominio() {
 		return idDominio;
@@ -96,6 +84,22 @@ public class Tributo extends TipoTributo {
 	public void setIdTipoTributo(long idTipoTributo) {
 		this.idTipoTributo = idTipoTributo;
 	}
-
-	
+	public TipoContabilta getTipoContabilitaCustom() {
+		return tipoContabilitaCustom;
+	}
+	public void setTipoContabilitaCustom(TipoContabilta tipoContabilitaCustom) {
+		this.tipoContabilitaCustom = tipoContabilitaCustom;
+	}
+	public String getCodContabilitaCustom() {
+		return codContabilitaCustom;
+	}
+	public void setCodContabilitaCustom(String codContabilitaCustom) {
+		this.codContabilitaCustom = codContabilitaCustom;
+	}
+	public String getCodTributoIuvCustom() {
+		return codTributoIuvCustom;
+	}
+	public void setCodTributoIuvCustom(String codTributoIuv) {
+		this.codTributoIuvCustom = codTributoIuv;
+	}
 }

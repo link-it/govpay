@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -31,7 +30,6 @@ import it.govpay.orm.dao.IDBConnettoreService;
 import it.govpay.orm.dao.IDBDominioService;
 import it.govpay.orm.dao.IDBEventoService;
 import it.govpay.orm.dao.IDBFRService;
-import it.govpay.orm.dao.IDBFrApplicazioneService;
 import it.govpay.orm.dao.IDBIUVService;
 import it.govpay.orm.dao.IDBIbanAccreditoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
@@ -42,7 +40,7 @@ import it.govpay.orm.dao.IDBPortaleService;
 import it.govpay.orm.dao.IDBPspService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
-import it.govpay.orm.dao.IDBRendicontazioneSenzaRPTService;
+import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
@@ -52,8 +50,6 @@ import it.govpay.orm.dao.IDBVersamentoService;
 import it.govpay.orm.dao.IDominioService;
 import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IFRService;
-import it.govpay.orm.dao.IFrApplicazioneService;
-import it.govpay.orm.dao.IFrFiltroAppServiceSearch;
 import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIbanAccreditoService;
 import it.govpay.orm.dao.IIntermediarioService;
@@ -64,9 +60,8 @@ import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPspService;
 import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
-import it.govpay.orm.dao.IRendicontazionePagamentoSenzaRPTServiceSearch;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
-import it.govpay.orm.dao.IRendicontazioneSenzaRPTService;
+import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
@@ -95,8 +90,6 @@ public class BasicBD {
 	private IDominioService dominioService;
 	private IEventoService eventoService;
 	private IFRService frService;
-	private IFrFiltroAppServiceSearch frFiltroAppService;
-	private IFrApplicazioneService frApplicazioneService;
 	private IIbanAccreditoService ibanAccreditoService;
 	private IIntermediarioService intermediarioService;
 	private IIUVService iuvService;
@@ -105,9 +98,8 @@ public class BasicBD {
 	private IPagamentoService pagamentoService;
 	private IPortaleService portaleService;
 	private IPspService pspService;
-	private IRendicontazioneSenzaRPTService rendicontazioneSenzaRPTService;
 	private IRendicontazionePagamentoServiceSearch rendicontazionePagamentoServiceSearch;
-	private IRendicontazionePagamentoSenzaRPTServiceSearch rendicontazionePagamentoSenzaRPTServiceSearch;
+	private IRendicontazioneService rendicontazioneService;
 	private IRPTService rptService;
 	private IRRService rrService;
 	private ISingoloVersamentoService singoloVersamentoService;
@@ -164,8 +156,6 @@ public class BasicBD {
 				this.dominioService = this.serviceManager.getDominioService();
 				this.eventoService = this.serviceManager.getEventoService();
 				this.frService = this.serviceManager.getFRService();
-				this.frFiltroAppService = this.serviceManager.getFrFiltroAppServiceSearch();
-				this.frApplicazioneService = this.serviceManager.getFrApplicazioneService();
 				this.ibanAccreditoService = this.serviceManager.getIbanAccreditoService();
 				this.intermediarioService = this.serviceManager.getIntermediarioService();
 				this.iuvService = this.serviceManager.getIUVService();
@@ -174,9 +164,8 @@ public class BasicBD {
 				this.portaleService = this.serviceManager.getPortaleService();
 				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.pspService = this.serviceManager.getPspService();
-				this.rendicontazioneSenzaRPTService = this.serviceManager.getRendicontazioneSenzaRPTService();
 				this.rendicontazionePagamentoServiceSearch = this.serviceManager.getRendicontazionePagamentoServiceSearch();
-				this.rendicontazionePagamentoSenzaRPTServiceSearch = this.serviceManager.getRendicontazionePagamentoSenzaRPTServiceSearch();
+				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
 				this.rptService = this.serviceManager.getRPTService();
 				this.rrService = this.serviceManager.getRRService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
@@ -206,7 +195,6 @@ public class BasicBD {
 			((IDBDominioService)this.dominioService).enableSelectForUpdate();
 			((IDBEventoService)this.eventoService).enableSelectForUpdate();
 			((IDBFRService)this.frService).enableSelectForUpdate();
-			((IDBFrApplicazioneService)this.frApplicazioneService).enableSelectForUpdate();
 			((IDBIbanAccreditoService)this.ibanAccreditoService).enableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).enableSelectForUpdate();
 			((IDBIUVService)this.iuvService).enableSelectForUpdate();
@@ -215,10 +203,10 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
 			((IDBPspService)this.pspService).enableSelectForUpdate();
-			((IDBRendicontazioneSenzaRPTService)this.rendicontazioneSenzaRPTService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBRRService)this.rrService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
+			((IDBRendicontazioneService)this.rendicontazioneService).enableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).enableSelectForUpdate();
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
@@ -242,7 +230,6 @@ public class BasicBD {
 			((IDBDominioService)this.dominioService).disableSelectForUpdate();
 			((IDBEventoService)this.eventoService).disableSelectForUpdate();
 			((IDBFRService)this.frService).disableSelectForUpdate();
-			((IDBFrApplicazioneService)this.frApplicazioneService).disableSelectForUpdate();
 			((IDBIbanAccreditoService)this.ibanAccreditoService).disableSelectForUpdate();
 			((IDBIntermediarioService)this.intermediarioService).disableSelectForUpdate();
 			((IDBIUVService)this.iuvService).disableSelectForUpdate();
@@ -251,10 +238,10 @@ public class BasicBD {
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
 			((IDBPspService)this.pspService).disableSelectForUpdate();
-			((IDBRendicontazioneSenzaRPTService)this.rendicontazioneSenzaRPTService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBRRService)this.rrService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
+			((IDBRendicontazioneService)this.rendicontazioneService).disableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).disableSelectForUpdate();
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
@@ -322,20 +309,6 @@ public class BasicBD {
 		return frService;
 	}
 
-	public IFrFiltroAppServiceSearch getFrFiltroAppService() {
-		if(father != null) {
-			return father.getFrFiltroAppService();
-		}
-		return frFiltroAppService;
-	}
-
-	public IFrApplicazioneService getFrApplicazioneService() {
-		if(father != null) {
-			return father.getFrApplicazioneService();
-		}
-		return frApplicazioneService;
-	}
-
 	public IIbanAccreditoService getIbanAccreditoService() {
 		if(father != null) {
 			return father.getIbanAccreditoService();
@@ -393,13 +366,6 @@ public class BasicBD {
 		return pspService;
 	}
 	
-	public IRendicontazioneSenzaRPTService getRendicontazioneSenzaRPTService() {
-		if(father != null) {
-			return father.getRendicontazioneSenzaRPTService();
-		}
-		return rendicontazioneSenzaRPTService;
-	}
-
 	public IRendicontazionePagamentoServiceSearch getRendicontazionePagamentoServiceSearch() {
 		if(father != null) {
 			return father.getRendicontazionePagamentoServiceSearch();
@@ -407,13 +373,13 @@ public class BasicBD {
 		return rendicontazionePagamentoServiceSearch;
 	}
 	
-	public IRendicontazionePagamentoSenzaRPTServiceSearch getRendicontazionePagamentoSenzaRPTServiceSearch() {
+	public IRendicontazioneService getRendicontazioneService() {
 		if(father != null) {
-			return father.getRendicontazionePagamentoSenzaRPTServiceSearch();
+			return father.getRendicontazioneService();
 		}
-		return rendicontazionePagamentoSenzaRPTServiceSearch;
+		return rendicontazioneService;
 	}
-
+	
 	public IRPTService getRptService() {
 		if(father != null) {
 			return father.getRptService();

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,6 +47,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new Field("codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.TIPO_TRIBUTO = new it.govpay.orm.model.TipoTributoModel(new Field("tipoTributo",it.govpay.orm.TipoTributo.class,"Tributo",Tributo.class));
+		this.COD_TRIBUTO_IUV = new Field("codTributoIuv",java.lang.String.class,"Tributo",Tributo.class);
 	
 	}
 	
@@ -61,6 +61,7 @@ public class TributoModel extends AbstractModel<Tributo> {
 		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.CODICE_CONTABILITA = new ComplexField(father,"codiceContabilita",java.lang.String.class,"Tributo",Tributo.class);
 		this.TIPO_TRIBUTO = new it.govpay.orm.model.TipoTributoModel(new ComplexField(father,"tipoTributo",it.govpay.orm.TipoTributo.class,"Tributo",Tributo.class));
+		this.COD_TRIBUTO_IUV = new ComplexField(father,"codTributoIuv",java.lang.String.class,"Tributo",Tributo.class);
 	
 	}
 	
@@ -77,6 +78,8 @@ public class TributoModel extends AbstractModel<Tributo> {
 	public IField CODICE_CONTABILITA = null;
 	 
 	public it.govpay.orm.model.TipoTributoModel TIPO_TRIBUTO = null;
+	 
+	public IField COD_TRIBUTO_IUV = null;
 	 
 
 	@Override

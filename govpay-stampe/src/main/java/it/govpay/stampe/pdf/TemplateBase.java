@@ -1,27 +1,45 @@
 package it.govpay.stampe.pdf;
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.cmp;
+import static net.sf.dynamicreports.report.builder.DynamicReports.col;
+import static net.sf.dynamicreports.report.builder.DynamicReports.field;
+import static net.sf.dynamicreports.report.builder.DynamicReports.report;
 import static net.sf.dynamicreports.report.builder.DynamicReports.stl;
 import static net.sf.dynamicreports.report.builder.DynamicReports.tableOfContentsCustomizer;
 import static net.sf.dynamicreports.report.builder.DynamicReports.template;
 
 import java.awt.Color;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.Logger;
+
+import it.govpay.model.Anagrafica;
+import it.govpay.model.Dominio;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter;
+import net.sf.dynamicreports.report.builder.FieldBuilder;
 import net.sf.dynamicreports.report.builder.ReportTemplateBuilder;
+import net.sf.dynamicreports.report.builder.column.ColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder;
 import net.sf.dynamicreports.report.builder.component.HorizontalListBuilder;
+import net.sf.dynamicreports.report.builder.component.SubreportBuilder;
 import net.sf.dynamicreports.report.builder.component.TextFieldBuilder;
+import net.sf.dynamicreports.report.builder.component.VerticalListBuilder;
 import net.sf.dynamicreports.report.builder.datatype.BigDecimalType;
 import net.sf.dynamicreports.report.builder.style.FontBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.tableofcontents.TableOfContentsCustomizerBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalImageAlignment;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.constant.Markup;
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 
 public class TemplateBase {
@@ -53,7 +71,9 @@ public class TemplateBase {
 	public static final StyleBuilder bold18LeftStyle;
 	public static final StyleBuilder bold22LeftStyle;
 	public static final StyleBuilder columnStyle;
+	public static final StyleBuilder columnBorderStyle;
 	public static final StyleBuilder columnTitleStyle;
+	public static final StyleBuilder tableColumnTitleStyle;
 	public static final StyleBuilder groupStyle;
 	public static final StyleBuilder subtotalStyle;
 	public static final StyleBuilder centeredStyle;
@@ -61,6 +81,7 @@ public class TemplateBase {
 	public static final FontBuilder rootFont;
 
 	public static final ReportTemplateBuilder reportTemplate;
+	public static final ReportTemplateBuilder tableTemplate;
 	public static final CurrencyType currencyType;
 	public static final ComponentBuilder<?, ?> footerComponent;
 
@@ -105,6 +126,7 @@ public class TemplateBase {
 		bold22LeftStyle = stl.style(boldLeftStyle)
 				.setFontSize(20);
 		columnStyle = stl.style(fontStyle9).setVerticalTextAlignment(VerticalTextAlignment.MIDDLE);
+		columnBorderStyle = stl.style(fontStyle9).setVerticalTextAlignment(VerticalTextAlignment.MIDDLE).setHorizontalTextAlignment(HorizontalTextAlignment.LEFT).setBorder(stl.pen1Point());
 		columnTitleStyle = stl.style(rootStyle)
 				.setBorder(stl.pen1Point())
 				.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
@@ -114,6 +136,12 @@ public class TemplateBase {
 				.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT);
 		subtotalStyle       = stl.style(boldStyle)
 				.setTopBorder(stl.pen1Point());
+
+		tableColumnTitleStyle= stl.style(rootStyle)
+				.setBorder(stl.pen1Point()).setLeftPadding(2)
+				.setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
+				.setBackgroundColor(Color.LIGHT_GRAY)
+				.bold();
 
 		StyleBuilder crosstabGroupStyle      = stl.style(columnTitleStyle);
 		StyleBuilder crosstabGroupTotalStyle = stl.style(columnTitleStyle)
@@ -140,6 +168,13 @@ public class TemplateBase {
 				.setCrosstabGrandTotalStyle(crosstabGrandTotalStyle)
 				.setCrosstabCellStyle(crosstabCellStyle)
 				.setTableOfContentsCustomizer(tableOfContentsCustomizer);
+
+		tableTemplate = template()
+				.setLocale(Locale.ITALIAN)
+				.setColumnStyle(columnStyle)
+				.setColumnTitleStyle(tableColumnTitleStyle)
+				.setHighlightDetailEvenRows(false)
+				.setCrosstabHighlightEvenRows(false);
 
 		currencyType = new CurrencyType();
 
@@ -214,4 +249,194 @@ public class TemplateBase {
 		}
 	}
 
+	public static void creaElementoListaNomeValore(HorizontalListBuilder list, String label, String value) {
+		if (value != null) {
+			list.add(cmp.text(label + ":").setFixedColumns(20).setStyle(TemplateBase.boldStyle), cmp.text(value)).newRow();
+		}
+	}
+
+	public static void addElementoContenutoStaticoLista(HorizontalListBuilder list, String value, boolean newRow, boolean bold,HorizontalTextAlignment align) {
+		if (value != null) {
+			String v = value;
+
+			TextFieldBuilder<String> text = cmp.text(v).setMarkup(Markup.HTML).setHorizontalTextAlignment(align);
+
+			if(bold)
+				text.setStyle(TemplateBase.boldStyle);
+
+			if(newRow)
+				list.add(text).newRow();
+			else
+				list.add(text);
+
+		}
+	}
+
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica, Logger log) {
+		try{
+			HorizontalTextAlignment horizontalTextAlignment = HorizontalTextAlignment.CENTER;
+			HorizontalImageAlignment horizontalImageAlignment = HorizontalImageAlignment.CENTER;
+			StyleBuilder style = stl.style(TemplateBase.fontStyle12); 
+			StyleBuilder headerStyle = stl.style(TemplateBase.bold18LeftStyle); 
+			
+			VerticalListBuilder listDominio = cmp.verticalList().setStyle(style.setLeftPadding(10)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setHorizontalImageAlignment(horizontalImageAlignment)); 
+			
+			return createDatiDominio(dominio, anagrafica, listDominio,horizontalTextAlignment,headerStyle, style, log);
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+	
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 * @param verticalTextAlignment 
+	 */
+	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica, HorizontalTextAlignment horizontalTextAlignment,VerticalTextAlignment verticalTextAlignment,
+			StyleBuilder headerStyle, StyleBuilder style, Logger log ) {
+		try{
+			VerticalListBuilder listDominio = cmp.verticalList().setStyle(style.setLeftPadding(10)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(verticalTextAlignment));  
+			
+			return createDatiDominio(dominio, anagrafica, listDominio,horizontalTextAlignment,headerStyle, style, log);
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+	
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static ComponentBuilder<?, ?> createDatiDominio(Dominio dominio, Anagrafica anagrafica,VerticalListBuilder listDominio,
+			HorizontalTextAlignment horizontalTextAlignment, StyleBuilder headerStyle, StyleBuilder style, Logger log) {
+		try{
+			
+
+			String denominazioneDominio = dominio.getRagioneSociale();
+			String pIvaDominio = MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, dominio.getCodDominio());
+
+			String indirizzoCivico = null,capCitta =null;
+
+			if(anagrafica != null) {
+				String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
+				String civico = StringUtils.isNotEmpty(anagrafica.getCivico()) ? anagrafica.getCivico() : "";
+				String cap = StringUtils.isNotEmpty(anagrafica.getCap()) ? anagrafica.getCap() : "";
+				String localita = StringUtils.isNotEmpty(anagrafica.getLocalita()) ? anagrafica.getLocalita() : "";
+				String provincia = StringUtils.isNotEmpty(anagrafica.getProvincia()) ? (" (" +anagrafica.getProvincia() +")" ) : "";
+				indirizzoCivico = indirizzo + " " + civico;
+				capCitta = cap + " " + localita + provincia      ;
+			}
+
+			listDominio.add(cmp.text(denominazioneDominio).setStyle(headerStyle).setHorizontalTextAlignment(horizontalTextAlignment));//.newRow();
+			listDominio.add(cmp.text(pIvaDominio).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
+			if(StringUtils.isNotEmpty(indirizzoCivico))
+				listDominio.add(cmp.text(indirizzoCivico).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
+			if(StringUtils.isNotEmpty(capCitta))
+				listDominio.add(cmp.text(capCitta).setStyle(style).setHorizontalTextAlignment(horizontalTextAlignment));
+
+			return listDominio;
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static ComponentBuilder<?, ?> createDatiDebitore(Anagrafica anagrafica, boolean includeCF, boolean bold, StyleBuilder fontstyleBase , HorizontalTextAlignment horizontalTextAlignment, Logger log) {
+		try{
+			VerticalListBuilder listDebitore = cmp.verticalList().setStyle(stl.style(fontstyleBase).setLeftPadding(10)
+					.setHorizontalTextAlignment(horizontalTextAlignment).setVerticalTextAlignment(VerticalTextAlignment.TOP)); 
+
+			createDatiDebitore(listDebitore, anagrafica, includeCF, bold, fontstyleBase, horizontalTextAlignment, log); 
+
+			return listDebitore;
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+		return null;
+	}
+
+	/**
+	 * Creates custom component which is possible to add to any report band component
+	 */
+	public static void createDatiDebitore(VerticalListBuilder listDebitore, Anagrafica anagrafica, boolean includeCF, boolean bold, StyleBuilder fontstyleBase , HorizontalTextAlignment horizontalTextAlignment, Logger log) {
+		try{
+			String denominazioneDebitore = anagrafica.getRagioneSociale();
+			String cfDebitore = anagrafica.getCodUnivoco() ; //MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE, Costanti.LABEL_P_IVA, anagrafica.getCodUnivoco());
+
+			StyleBuilder headerStyle = bold ? TemplateBase.boldStyle12 : fontstyleBase;
+			listDebitore.add(cmp.text(denominazioneDebitore.toUpperCase()).setStyle(headerStyle).setHorizontalTextAlignment(horizontalTextAlignment));//.newRow();
+			if(includeCF)
+				listDebitore.add(cmp.text(cfDebitore.toUpperCase()).setStyle(headerStyle).setHorizontalTextAlignment(horizontalTextAlignment));
+
+			String indirizzo = StringUtils.isNotEmpty(anagrafica.getIndirizzo()) ? anagrafica.getIndirizzo() : "";
+			String[] indirizzoSplit = indirizzo.split("\\|");
+			if(indirizzoSplit != null && indirizzoSplit.length > 0){
+				for (int i = 0; i < indirizzoSplit.length; i++) {
+					String indirizzoI = indirizzoSplit[i];
+					if(StringUtils.isNotEmpty(indirizzoI))
+						listDebitore.add(cmp.text(indirizzoI.toUpperCase()).setStyle(fontstyleBase).setHorizontalTextAlignment(horizontalTextAlignment));
+				}
+			}
+		}catch(Exception e){
+			log.error(e.getMessage(),e);
+		}
+	}
+
+	public static SubreportBuilder getTabella(String title, List<String> values, List<String> errList,Integer width,StyleBuilder columnStyle, HorizontalTextAlignment horizontalTextAlignment, Logger log) throws Exception{
+		String sezione = "Tabella titolo["+title+"]";
+		try{
+			boolean showColumnTitle = StringUtils.isNotEmpty(title);
+			// Scittura Intestazione
+			List<ColumnBuilder<?, ?>> colonne = new ArrayList<ColumnBuilder<?, ?>>();
+
+			TextFieldBuilder<String> componentText = cmp.text(new TemplateBase().new ColonnaUnoExpression())
+					.setMarkup(Markup.HTML).setStyle(columnStyle).setHorizontalTextAlignment(horizontalTextAlignment); 
+
+			ComponentColumnBuilder columnOne = col.componentColumn(title, componentText).setWidth(width);
+
+			colonne.add(columnOne);
+
+			List<FieldBuilder<String>> fields = new ArrayList<FieldBuilder<String>>();
+
+			fields.add(field(Costanti.COL_UNO, String.class));
+
+			List<String> header = new ArrayList<String>();
+			header.add(Costanti.COL_UNO);
+
+			DRDataSource dataSource = new DRDataSource(header.toArray(new String[header.size()]));
+			for (String value : values) {
+				List<String> oneLine = new ArrayList<String>();
+				oneLine.add(value);
+				dataSource.add(oneLine.toArray(new Object[oneLine.size()]));	
+			}
+
+			return cmp.subreport(
+					report().setShowColumnTitle(showColumnTitle)
+					.setTemplate(TemplateBase.tableTemplate)
+					.fields(fields.toArray(new FieldBuilder[fields.size()])) 
+					.columns(colonne.toArray(new ColumnBuilder[colonne.size()]))
+					.setDataSource(dataSource));
+
+		}catch(Exception e){
+			log.error("Impossibile completare la costruzione della " + sezione +": "+ e.getMessage(),e);
+			errList.add(0,"Impossibile completare la costruzione della " + sezione +": "+ e.getMessage());
+		}
+		return null;
+	}
+
+	public class ColonnaUnoExpression extends AbstractSimpleExpression<String> {
+		private static final long serialVersionUID = 1L;
+		@Override
+		public String evaluate(ReportParameters reportParameters) {
+			return reportParameters.getValue(Costanti.COL_UNO);
+		}
+	}
 }

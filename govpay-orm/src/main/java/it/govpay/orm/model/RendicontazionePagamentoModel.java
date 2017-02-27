@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -43,11 +42,10 @@ public class RendicontazionePagamentoModel extends AbstractModel<Rendicontazione
 		super();
 	
 		this.FR = new it.govpay.orm.model.FRModel(new Field("FR",it.govpay.orm.FR.class,"RendicontazionePagamento",RendicontazionePagamento.class));
-		this.FR_APPLICAZIONE = new it.govpay.orm.model.FrApplicazioneModel(new Field("FrApplicazione",it.govpay.orm.FrApplicazione.class,"RendicontazionePagamento",RendicontazionePagamento.class));
+		this.RENDICONTAZIONE = new it.govpay.orm.model.RendicontazioneModel(new Field("Rendicontazione",it.govpay.orm.Rendicontazione.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.PAGAMENTO = new it.govpay.orm.model.PagamentoModel(new Field("Pagamento",it.govpay.orm.Pagamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.SINGOLO_VERSAMENTO = new it.govpay.orm.model.SingoloVersamentoModel(new Field("SingoloVersamento",it.govpay.orm.SingoloVersamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.VERSAMENTO = new it.govpay.orm.model.VersamentoModel(new Field("Versamento",it.govpay.orm.Versamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
-		this.RPT = new it.govpay.orm.model.RPTModel(new Field("RPT",it.govpay.orm.RPT.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 	
 	}
 	
@@ -56,11 +54,10 @@ public class RendicontazionePagamentoModel extends AbstractModel<Rendicontazione
 		super(father);
 	
 		this.FR = new it.govpay.orm.model.FRModel(new ComplexField(father,"FR",it.govpay.orm.FR.class,"RendicontazionePagamento",RendicontazionePagamento.class));
-		this.FR_APPLICAZIONE = new it.govpay.orm.model.FrApplicazioneModel(new ComplexField(father,"FrApplicazione",it.govpay.orm.FrApplicazione.class,"RendicontazionePagamento",RendicontazionePagamento.class));
+		this.RENDICONTAZIONE = new it.govpay.orm.model.RendicontazioneModel(new ComplexField(father,"Rendicontazione",it.govpay.orm.Rendicontazione.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.PAGAMENTO = new it.govpay.orm.model.PagamentoModel(new ComplexField(father,"Pagamento",it.govpay.orm.Pagamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.SINGOLO_VERSAMENTO = new it.govpay.orm.model.SingoloVersamentoModel(new ComplexField(father,"SingoloVersamento",it.govpay.orm.SingoloVersamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 		this.VERSAMENTO = new it.govpay.orm.model.VersamentoModel(new ComplexField(father,"Versamento",it.govpay.orm.Versamento.class,"RendicontazionePagamento",RendicontazionePagamento.class));
-		this.RPT = new it.govpay.orm.model.RPTModel(new ComplexField(father,"RPT",it.govpay.orm.RPT.class,"RendicontazionePagamento",RendicontazionePagamento.class));
 	
 	}
 	
@@ -68,15 +65,13 @@ public class RendicontazionePagamentoModel extends AbstractModel<Rendicontazione
 
 	public it.govpay.orm.model.FRModel FR = null;
 	 
-	public it.govpay.orm.model.FrApplicazioneModel FR_APPLICAZIONE = null;
+	public it.govpay.orm.model.RendicontazioneModel RENDICONTAZIONE = null;
 	 
 	public it.govpay.orm.model.PagamentoModel PAGAMENTO = null;
 	 
 	public it.govpay.orm.model.SingoloVersamentoModel SINGOLO_VERSAMENTO = null;
 	 
 	public it.govpay.orm.model.VersamentoModel VERSAMENTO = null;
-	 
-	public it.govpay.orm.model.RPTModel RPT = null;
 	 
 
 	@Override

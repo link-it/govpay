@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -138,6 +137,62 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Dominio.model().AUX_DIGIT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".aux_digit";
+			}else{
+				return "aux_digit";
+			}
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_prefix";
+			}else{
+				return "iuv_prefix";
+			}
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX_STRICT)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv_prefix_strict";
+			}else{
+				return "iuv_prefix_strict";
+			}
+		}
+		if(field.equals(Dominio.model().SEGREGATION_CODE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".segregation_code";
+			}else{
+				return "segregation_code";
+			}
+		}
+		if(field.equals(Dominio.model().NDP_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_stato";
+			}else{
+				return "ndp_stato";
+			}
+		}
+		if(field.equals(Dominio.model().NDP_OPERAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_operazione";
+			}else{
+				return "ndp_operazione";
+			}
+		}
+		if(field.equals(Dominio.model().NDP_DESCRIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_descrizione";
+			}else{
+				return "ndp_descrizione";
+			}
+		}
+		if(field.equals(Dominio.model().NDP_DATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_data";
+			}else{
+				return "ndp_data";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -180,6 +235,30 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Dominio.model().ID_APPLICAZIONE_DEFAULT.COD_APPLICAZIONE)){
 			return this.toTable(Dominio.model().ID_APPLICAZIONE_DEFAULT, returnAlias);
+		}
+		if(field.equals(Dominio.model().AUX_DIGIT)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().IUV_PREFIX_STRICT)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().SEGREGATION_CODE)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().NDP_STATO)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().NDP_OPERAZIONE)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().NDP_DESCRIZIONE)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().NDP_DATA)){
+			return this.toTable(Dominio.model(), returnAlias);
 		}
 
 

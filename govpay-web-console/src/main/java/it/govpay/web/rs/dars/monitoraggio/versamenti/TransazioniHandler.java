@@ -6,42 +6,46 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.PortaliBD;
+import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Psp;
+import it.govpay.bd.model.Rpt;
+import it.govpay.bd.model.Rr;
+import it.govpay.bd.model.Stazione;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
-import it.govpay.bd.model.Canale;
+import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Acl;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Operatore;
-import it.govpay.model.Portale;
-import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Rr;
-import it.govpay.bd.model.Stazione;
-import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Operatore.ProfiloOperatore;
+import it.govpay.model.Portale;
+import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -53,6 +57,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.utils.Utils;
 
@@ -79,18 +84,42 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
 			Versamenti versamentiDars = new  Versamenti();
-			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".idVersamento.id");
+			String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
+			Map<String, String> params = new HashMap<String, String>();
+
+			if(StringUtils.isNotEmpty(idVersamento)){
+				params.put(versamentoId, idVersamento);
+			}
+
+			AclBD aclBD = new AclBD(bd);
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			List<Long> idDomini = new ArrayList<Long>();
 			boolean eseguiRicerca = true; // isAdmin;
-			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
-			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
+			// SE l'operatore non e' admin vede solo le transazioni dei versamenti associati ai suoi domini
 			if(!isAdmin){
-//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+				boolean vediTuttiDomini = false;
+
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-//				filter.setIdUo(operatore.getIdEnti()); 
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
 
 				FilterSortWrapper fsw = new FilterSortWrapper();
 				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
@@ -115,27 +144,28 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 			long count = eseguiRicerca ? rptBD.count(filter) : 0;
 
-
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			List<Rpt> rpt = eseguiRicerca ? rptBD.findAll(filter) : new ArrayList<Rpt>();
 
-			RrBD rrBD = new RrBD(bd);
-			FilterSortWrapper rrFsw = new FilterSortWrapper();
-			rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
-			rrFsw.setSortOrder(SortOrder.DESC);
-
-			Revoche revocheDars = new Revoche();
-			RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
-			UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
-
 			if(rpt != null && rpt.size() > 0){
+				RrBD rrBD = new RrBD(bd);
+				FilterSortWrapper rrFsw = new FilterSortWrapper();
+				rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+				rrFsw.setSortOrder(SortOrder.DESC);
+
+				Revoche revocheDars = new Revoche();
+				RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
+
+				// Indico la visualizzazione custom
+				String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+
 				for (Rpt entry : rpt) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
+					Elemento elementoRpt = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elementoRpt.setFormatter(formatter);
+					elenco.getElenco().add(elementoRpt);
 
 					RrFilter rrFilter = rrBD.newFilter();
 					rrFilter.getFilterSortList().add(rrFsw);
@@ -143,8 +173,9 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 					List<Rr> findAll = rrBD.findAll(rrFilter);
 					if(findAll != null && findAll.size() > 0){
 						for (Rr rr : findAll) {
-							Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder,bd);
-							elenco.getElenco().add(elemento);
+							Elemento elementoRr = revocheDarsHandler.getElemento(rr, rr.getId(), revocheDars.getPathServizio(),bd);
+							elementoRr.setFormatter(formatter);
+							elenco.getElenco().add(elementoRr);
 						}
 					}
 				}
@@ -177,48 +208,48 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			URI cancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, rptBD, id);
 
-			String titolo = this.getTitolo(rpt,bd);
+			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioTransazione");
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
 
 			// Sezione Rpt
 			it.govpay.web.rs.dars.model.Sezione sezioneRpt = dettaglio.getSezioneRoot();
-			String etichettaRpt = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneRPT.titolo");
+			String etichettaRpt = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneRPT.titolo");
 			sezioneRpt.setEtichetta(etichettaRpt); 
 
 			StatoRpt stato = rpt.getStato(); 
-			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
-					Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()));
+			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
+					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()));
 			if(StringUtils.isNotEmpty(rpt.getDescrizioneStato()))
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rpt.getDescrizioneStato());
-			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),rpt.getIuv());
-			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),rpt.getCcp());
-			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codMsgRichiesta.label"),rpt.getCodMsgRichiesta());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rpt.getDescrizioneStato());
+			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),rpt.getIuv());
+			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),rpt.getCcp());
+			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codMsgRichiesta.label"),rpt.getCodMsgRichiesta());
 			if(rpt.getDataMsgRicevuta() != null)
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRichiesta.label"),this.sdf.format(rpt.getDataMsgRichiesta()));
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRichiesta.label"),this.sdf.format(rpt.getDataMsgRichiesta()));
 			if(rpt.getDataAggiornamento() != null)
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataAggiornamento.label"),this.sdf.format(rpt.getDataAggiornamento()));
-			sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"),rpt.getCodDominio());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataAggiornamento.label"),this.sdf.format(rpt.getDataAggiornamento()));
+			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"),rpt.getCodDominio());
 			Intermediario intermediario = rpt.getIntermediario(bd);
 			if(intermediario != null)
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".intermediario.label"),intermediario.getCodIntermediario());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".intermediario.label"),intermediario.getCodIntermediario());
 
 			Stazione stazione = rpt.getStazione(bd);
 			if(stazione!= null)
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stazione.label"),	stazione.getCodStazione());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stazione.label"),	stazione.getCodStazione());
 
 			Psp psp = rpt.getPsp(bd);
 			if(psp != null)
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
 
 			Canale canale = rpt.getCanale(bd);
 			if(canale != null)
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".canale.label"),canale.getCodCanale());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".canale.label"),canale.getCodCanale());
 
 			Long idPortale = rpt.getIdPortale();
 			if(idPortale != null){
 				PortaliBD portaliBD = new PortaliBD(bd);
 				Portale portale = portaliBD.getPortale(idPortale);
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".portale.label"),	portale.getCodPortale());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".portale.label"),	portale.getCodPortale());
 			}
 
 
@@ -227,21 +258,21 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 				String modelloPagamentoString = null;
 				switch (modelloPagamento) {
 				case ATTIVATO_PRESSO_PSP:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.ATTIVATO_PRESSO_PSP");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.ATTIVATO_PRESSO_PSP");
 					break;
 				case DIFFERITO:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.DIFFERITO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.DIFFERITO");
 					break;
 				case IMMEDIATO:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO");
 					break;
 				case IMMEDIATO_MULTIBENEFICIARIO:
 				default:
-					modelloPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
+					modelloPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.IMMEDIATO_MULTIBENEFICIARIO");
 					break;
 				}
 
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
 			}
 			FirmaRichiesta firmaRichiesta = rpt.getFirmaRichiesta();
 			if(firmaRichiesta != null){
@@ -249,87 +280,86 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 				switch (firmaRichiesta) {
 				case AVANZATA:
-					firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata");
+					firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.avanzata");
 					break;
 				case CA_DES: 
-					firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des");
+					firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.ca_des");
 					break;
 				case XA_DES :
-					firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des");
+					firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.xa_des");
 					break;
 				case NESSUNA: 
 				default:
-					firmaRichiestaAsString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna");
+					firmaRichiestaAsString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.nessuna");
 					break;
 				}
 
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"),firmaRichiestaAsString);
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".firmaRichiesta.label"),firmaRichiestaAsString);
 			}
 
 			if(StringUtils.isNotEmpty(rpt.getCodCarrello()))
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codCarrello.label"),rpt.getCodCarrello());
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codCarrello.label"),rpt.getCodCarrello());
 			if(StringUtils.isNotEmpty(rpt.getCodSessione()))
-				sezioneRpt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSessione.label"),rpt.getCodSessione());
-	
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSessione.label"),rpt.getCodSessione());
+
 
 			// Singoli Rt 
-			String etichettaRt = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneRT.titolo");
+			String etichettaRt = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneRT.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneRt = dettaglio.addSezione(etichettaRt);
 			if(rpt.getDataMsgRicevuta()!= null){
-				sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRicevuta.label"), this.sdf.format(rpt.getDataMsgRicevuta()));
+				sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRicevuta.label"), this.sdf.format(rpt.getDataMsgRicevuta()));
 
 				EsitoPagamento esitoPagamento = rpt.getEsitoPagamento();
 
 				switch (esitoPagamento) {		
 				case DECORRENZA_TERMINI:
-					sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI")); 
+					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI")); 
 					break;
 				case DECORRENZA_TERMINI_PARZIALE:
-					sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI_PARZIALE"));
+					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI_PARZIALE"));
 					break;
 				case PAGAMENTO_ESEGUITO:
-					sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_ESEGUITO"));
+					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_ESEGUITO"));
 					break;
 				case PAGAMENTO_NON_ESEGUITO:
-					sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_NON_ESEGUITO"));
+					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_NON_ESEGUITO"));
 					break;
 				case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 				default:
-					sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO"));
+					sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO"));
 					break;
 				}
 
-				sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codMsgRicevuta.label"), rpt.getCodMsgRicevuta());
-				sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagato.label"), rpt.getImportoTotalePagato() + "€");
+				sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codMsgRicevuta.label"), rpt.getCodMsgRicevuta());
+				sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotalePagato.label"), rpt.getImportoTotalePagato() + "€");
 			}
 			else	{
-				sezioneRt.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rtAssente"), null);
+				sezioneRt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rtAssente"), null);
 			}
 
 
 			//Eventi correlati
 			// Elementi correlati
-			String etichettaEventi = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.eventi.titolo");
+			String etichettaEventi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.eventi.titolo");
 			Eventi eventiDars = new Eventi();
-			
-			String codDominioId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".codDominio.id");
-			String iuvId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".iuv.id");
-			String ccpId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".ccp.id");
-			String idTransazioneId = Utils.getInstance().getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".idTransazione.id");
 
-		
-			UriBuilder uriBuilder = BaseRsService.checkDarsURI(uriInfo).path(eventiDars.getPathServizio())
-					.queryParam(codDominioId, rpt.getCodDominio())
-					.queryParam(iuvId, rpt.getIuv())
-					.queryParam(ccpId, rpt.getCcp())
-					.queryParam(idTransazioneId, rpt.getId());
-			
-			dettaglio.addElementoCorrelato(etichettaEventi, uriBuilder.build());
+			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".codDominio.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".iuv.id");
+			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".ccp.id");
+			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".idTransazione.id");
+
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(codDominioId, rpt.getCodDominio());
+			params.put(iuvId, rpt.getIuv());
+			params.put(ccpId, rpt.getCcp());
+			params.put(idTransazioneId, rpt.getId()+"");
+			URI eventoDettaglio = Utils.creaUriConParametri(eventiDars.getPathServizio(), params );
+			dettaglio.addElementoCorrelato(etichettaEventi, eventoDettaglio);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -348,7 +378,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 		String ccp = entry.getCcp();
 		StringBuilder sb = new StringBuilder();
 
-		String statoString = Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", iuv , ccp, this.sdf.format(dataMsgRichiesta)); 
+		String statoString = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", iuv , ccp, this.sdf.format(dataMsgRichiesta)); 
 		sb.append(statoString);	
 		return sb.toString();
 	}
@@ -362,20 +392,20 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			String esitoPagamentoString = null;
 			switch (esitoPagamento) {		
 			case DECORRENZA_TERMINI:
-				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI"); 
+				esitoPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI"); 
 				break;
 			case DECORRENZA_TERMINI_PARZIALE:
-				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI_PARZIALE");
+				esitoPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.DECORRENZA_TERMINI_PARZIALE");
 				break;
 			case PAGAMENTO_ESEGUITO:
-				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_ESEGUITO");
+				esitoPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_ESEGUITO");
 				break;
 			case PAGAMENTO_NON_ESEGUITO:
-				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_NON_ESEGUITO");
+				esitoPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_NON_ESEGUITO");
 				break;
 			case PAGAMENTO_PARZIALMENTE_ESEGUITO:
 			default:
-				esitoPagamentoString = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO");
+				esitoPagamentoString = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoPagamento.PAGAMENTO_PARZIALMENTE_ESEGUITO");
 				break;
 			}
 
@@ -383,22 +413,100 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			BigDecimal importoTotalePagato = entry.getImportoTotalePagato();
 			int compareTo = importoTotalePagato.compareTo(BigDecimal.ZERO);
 			if(compareTo > 0){
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente.importoPositivo",esitoPagamentoString, ( entry.getImportoTotalePagato() + "€")));
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente.importoPositivo",esitoPagamentoString, ( entry.getImportoTotalePagato() + "€")));
 			} else{
-				sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente",esitoPagamentoString));
+				sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtPresente",esitoPagamentoString));
 			}
 
 		} else {
 			StatoRpt stato = entry.getStato();
-			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtAssente", Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name())));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.rtAssente", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name())));
 		}
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Rpt entry, BasicBD bd) throws ConsoleException {
 		return null;
+	}
+
+	@Override
+	public Map<String, Voce<String>> getVoci(Rpt entry, BasicBD bd) throws ConsoleException {
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+
+		StatoRpt stato = entry.getStato();
+
+		String statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso");
+		switch(stato){
+		case RT_ACCETTATA_PA:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleOk");
+			break;
+		case RPT_RIFIUTATA_NODO:
+		case RPT_RIFIUTATA_PSP:
+		case RPT_ERRORE_INVIO_A_PSP:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.finaleKo");
+			break;
+		case INTERNO_NODO:
+		case RPT_ACCETTATA_NODO:
+		case RPT_ACCETTATA_PSP:
+		case RPT_ATTIVATA:
+		case RPT_DECORSI_TERMINI:
+		case RPT_ERRORE_INVIO_A_NODO:
+		case RPT_INVIATA_A_PSP:
+		case RPT_RICEVUTA_NODO:
+		case RT_ACCETTATA_NODO:
+		case RT_ESITO_SCONOSCIUTO_PA:
+		case RT_RICEVUTA_NODO:
+		case RT_RIFIUTATA_NODO:
+		case RT_RIFIUTATA_PA:
+		default:
+			statoTransazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.inCorso");
+			break;
+		}
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTransazione.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()),
+						statoTransazione));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.pagamento.label"),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.pagamento.value")));
+
+		BigDecimal importoTotalePagato = entry.getImportoTotalePagato() != null ? entry.getImportoTotalePagato() : BigDecimal.ZERO;
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"),
+						importoTotalePagato.toString()+ "€"));
+
+		if(entry.getDataMsgRichiesta() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.label"),
+							this.sdf.format(entry.getDataMsgRichiesta())));	 
+		}
+
+		if(entry.getIuv() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),entry.getIuv()));
+		}
+
+		if(entry.getCcp() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),entry.getCcp()));
+		}
+		
+		Psp psp = null;
+		try {
+			psp = entry.getPsp(bd);
+			if(psp != null)
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp()));
+		} catch (ServiceException e) {
+			throw new ConsoleException(e);
+		}
+
+		return valori; 
+
 	}
 
 	@Override
@@ -493,11 +601,15 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			throw new ConsoleException(e);
 		}
 	}
-	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 	return null;	}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm formRicerca = new InfoForm(ricerca);
+		return formRicerca;
+	}
 
+	/* Operazioni non consentite */
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 

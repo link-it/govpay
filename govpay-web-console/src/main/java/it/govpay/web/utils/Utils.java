@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,28 +22,36 @@ package it.govpay.web.utils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.ws.rs.core.MultivaluedMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.ApplicazioniBD;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.model.Acl;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Intermediario;
-import it.govpay.model.Acl.Servizio;
-import it.govpay.model.Acl.Tipo;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
+import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.model.Lingua;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 
@@ -58,21 +65,133 @@ public class Utils {
 
 	public static final String MISSING_RESOURCE_END_PLACEHOLDER = " not found ??";
 	public static final String MISSING_RESOURCE_START_PLACEHOLDER = "?? key ";
+	public static final String PREFIX_LABEL_CONSOLE = "console.label.";
+	public static final String LIST_LABEL_CONSOLE = "console.label.list";
 
-	private static Utils instance = null;
+	private static Map<String, Utils> instance = null;
+
+	public Utils() {
+		this.locale = Locale.ITALIAN;
+	}
+
+	public Utils(Locale locale) {
+		this.locale = locale;
+	}
+
+	private Locale locale = null;
 
 	public static Utils getInstance(){
+		if(Utils.instance == null)
+			init();
+		return Utils.instance.get(Locale.ITALIAN.getLanguage()); 
+	}
 
+	public static Utils getInstance(Locale locale){
 		if(Utils.instance == null)
 			init();
 
+		if(locale == null)
+			locale = Locale.ITALIAN;
 
-		return Utils.instance;
+		Utils utils = Utils.instance.get(locale.getLanguage());
+
+		return utils != null ? utils : getInstance(); 
+	}
+	
+	public static Utils getInstance(String locale){
+		if(Utils.instance == null)
+			init();
+
+		if(locale == null)
+			locale = Locale.ITALIAN.getLanguage();
+
+		Utils utils = Utils.instance.get(locale);
+
+		return utils != null ? utils : getInstance(); 
 	}
 
 	private synchronized static void init(){
-		if(Utils.instance == null)
-			Utils.instance = new Utils();
+		if(Utils.instance == null){
+			List<Locale> listaLingueDisponibili = Utils.getListaLingueDisponibili();
+			Utils.instance = new HashMap<String, Utils>();
+			if(listaLingueDisponibili != null && listaLingueDisponibili.size() > 0) {
+				for (int i = 0 ; i < listaLingueDisponibili.size() ; i++) {
+					Locale locale = listaLingueDisponibili.get(i);
+					Utils.instance.put(locale.getLanguage(),new Utils(locale));
+				} 
+			}else {
+				// italiano sempre presente
+				Utils.instance.put(Locale.ITALIAN.getLanguage(),new Utils(Locale.ITALIAN));
+			}
+		}
+	}
+
+	public static List<Locale> getListaLingueDisponibili(){
+		List<Locale> lst = new ArrayList<Locale>();
+		lst.add(Locale.ITALY);
+		lst.add(Locale.UK);
+		return lst;
+	}
+
+	public Map<String, Map<String, String>> getMapLingue(){
+		Map<String, Map<String, String>> map = new HashMap<String, Map<String,String>>();
+		for (Locale locale : Utils.getListaLingueDisponibili()) {
+			Map<String, String> etichetteLingua = this.getEtichetteLingua(locale);
+			map.put(locale.getLanguage(), etichetteLingua);
+		}
+
+		return map;
+	}
+	
+	public List<Lingua> getLingue(){
+		List<Lingua> lst = new ArrayList<Lingua>();
+		for (Locale locale : Utils.getListaLingueDisponibili()) {
+			lst.add(this.getLabelLingua(locale));
+		}
+
+		return lst;
+	}
+
+	public Lingua getLabelLingua(Locale locale) {
+		Map<String, String> etichette = getEtichetteLingua(locale);
+
+		Lingua lingua = new Lingua(locale.getLanguage(), etichette );
+		return lingua;
+	}
+
+	private Map<String, String> getEtichetteLingua(Locale locale) {
+		Map<String, String> etichette = new HashMap<String, String>();
+		for (String key : this.getElencoKeyLabelConsole()) {
+			String etichetta = this.getConsoleLabel(key, locale);
+			etichette.put(key,etichetta);
+		}
+		return etichette;
+	}
+
+	public List<String> getElencoKeyLabelConsole(){
+		List<String> list = new ArrayList<String>();
+
+		String listL = this.getMessageFromResourceBundle(LIST_LABEL_CONSOLE);
+
+		if(listL != null){
+			String[] split = listL.split(",");
+			if(split != null && split.length > 0){
+				for (String string : split) {
+					list.add(string);
+				}
+			}
+		}
+
+		return list;
+	}
+
+	public String getConsoleLabel(String key){
+		Locale locale = this.getLocale();
+		return getConsoleLabel(key, locale); 
+	}
+
+	public String getConsoleLabel(String key, Locale locale){
+		return getMessageFromResourceBundle(PREFIX_LABEL_CONSOLE + key, locale);
 	}
 
 	public   String getMessageFromResourceBundle(String key) {
@@ -155,6 +274,26 @@ public class Utils {
 		}
 	}
 
+	public static void copy2(Reader in, Writer out) 
+			throws IOException {
+
+		// do not allow other threads to read from the
+		// input or write to the output while copying is
+		// taking place
+
+		synchronized (in) {
+			synchronized (out) {
+
+				char[] buffer = new char[256];
+				while (true) {
+					int bytesRead = in.read(buffer);
+					if (bytesRead == -1) break;
+					out.write(buffer, 0, bytesRead);
+				}
+			}
+		}
+	}
+
 	public static String getProperty(Properties reader, String name,boolean required) throws Exception{
 		String tmp = null;
 
@@ -194,9 +333,7 @@ public class Utils {
 	}
 
 	public Locale getLocale() {
-		Locale locale = Locale.ITALY;
-
-		return locale;
+		return this.locale;
 	}
 
 	public static String getAbilitatoAsLabel(boolean abilitato){
@@ -264,16 +401,16 @@ public class Utils {
 		}
 		return lst;
 	}
-	
+
 	public static String getFileName(MultivaluedMap<String, String> header) {
 
 		String[] contentDisposition = header.getFirst("Content-Disposition").split(";");
-		
+
 		for (String filename : contentDisposition) {
 			if ((filename.trim().startsWith("filename"))) {
 
 				String[] name = filename.split("=");
-				
+
 				String finalFileName = name[1].trim().replaceAll("\"", "");
 				return finalFileName;
 			}
@@ -311,5 +448,85 @@ public class Utils {
 		}
 
 		return c;
+	}
+	
+	public static String getSigla(String nome){
+		StringBuffer sb = new StringBuffer();
+		
+		int init = 0;
+		if(StringUtils.isNotBlank(nome)){
+			String[] split = nome.split(" ");
+			
+			if(split != null && split.length > 0){
+				for (String string : split) {
+					sb.append(string.charAt(0));
+					init++;
+				}
+			} else {
+				sb.append(nome.charAt(0));
+				init++;
+			}
+		}
+		
+		return sb.toString().substring(0, Math.min(2, init));  
+	}
+	
+	public static URI creaUriConParametri(String pathServizio, Map<String, String> parameters)
+			throws ConsoleException {
+		try{
+			URI uri = null;
+			if(parameters != null && parameters.size() > 0){
+				try{
+					StringBuffer sb = new StringBuffer();
+
+					sb.append(pathServizio);
+					int  i=0;
+					for(String parameterId : parameters.keySet()) {
+						if(i == 0) sb.append("?"); else sb.append("&"); 
+						sb.append(parameterId).append("=").append(parameters.get(parameterId));
+						i++;
+					}
+
+					uri = new URI(sb.toString());
+				}catch(Exception e ){
+					throw new ConsoleException(e);
+				}
+			}else {
+				uri = new URI(pathServizio);
+			}
+
+			return uri;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
+	
+	public static URI creaUriConPath(String pathServizio, String ... paths)	throws ConsoleException {
+		try{
+			URI ricerca = null;
+			if(paths != null && paths.length > 0){
+				try{
+					StringBuffer sb = new StringBuffer();
+
+					sb.append(pathServizio);
+					for(String parameterId : paths) {
+						if(sb.toString().endsWith("/"))
+							sb.append(parameterId);
+						else
+							sb.append("/").append(parameterId);
+					}
+
+					ricerca = new URI(sb.toString());
+				}catch(Exception e ){
+					throw new ConsoleException(e);
+				}
+			}else {
+				ricerca = new URI(pathServizio);
+			}
+
+			return ricerca;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 	}
 }

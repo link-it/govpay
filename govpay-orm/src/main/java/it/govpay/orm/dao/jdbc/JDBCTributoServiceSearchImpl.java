@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,6 +47,7 @@ import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
+import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -186,6 +186,7 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 		
 	}
 	
+	
 	@Override
 	public List<Tributo> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
@@ -201,10 +202,18 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 			fields.add(Tributo.model().ABILITATO);
 			fields.add(Tributo.model().TIPO_CONTABILITA);
 			fields.add(Tributo.model().CODICE_CONTABILITA);
+			fields.add(Tributo.model().COD_TRIBUTO_IUV);
 			AliasField tipoTributoId = new AliasField(new CustomField("tipoTributo.id", Long.class, "id", this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)), this.getTributoFieldConverter().toTable(Tributo.model().TIPO_TRIBUTO)+"_id");
 			fields.add(tipoTributoId);
+			AliasField tipoContabilitaAlias = getAliasField(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA);
+			fields.add(tipoContabilitaAlias);
+			AliasField codiceContabilitaAlias = getAliasField(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA);
+			fields.add(codiceContabilitaAlias);
+			AliasField codiceTributoIuvAlias = getAliasField(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV);
+			fields.add(codiceTributoIuvAlias);
 			fields.add(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO);
 			fields.add(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE);
+
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getTributoFieldConverter().toTable(Tributo.model())));
 			fields.add(new CustomField("id_iban_accredito", Long.class, "id_iban_accredito", this.getTributoFieldConverter().toTable(Tributo.model())));
 
@@ -254,6 +263,13 @@ public class JDBCTributoServiceSearchImpl implements IJDBCServiceSearchWithId<Tr
 
         return list;      
 		
+	}
+	private AliasField getAliasField(IField field) throws ExpressionException {
+		String toColumnFalse = this.getFieldConverter().toColumn(field,false);
+		String toTable = this.getFieldConverter().toTable(field);
+//		String toColumnTrue = this.getFieldConverter().toColumn(field,true);
+		IField customField = new CustomField("tipoTributo." + field.getFieldName(), field.getFieldType(), toColumnFalse, toTable);
+		return new AliasField(customField, toTable + "_" + toColumnFalse);
 	}
 	
 	@Override

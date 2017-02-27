@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,13 +35,12 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="FR">
  * 		&lt;sequence>
- * 			&lt;element name="idPsp" type="{http://www.govpay.it/orm}id-psp" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codPsp" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="codFlusso" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="descrizioneStato" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataOraFlusso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataRegolamento" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
@@ -50,6 +48,7 @@ import java.io.Serializable;
  * 			&lt;element name="importoTotalePagamenti" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codBicRiversamento" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="xml" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idPagamento" type="{http://www.govpay.it/orm}id-pagamento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -64,20 +63,20 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FR", 
   propOrder = {
-  	"idPsp",
-  	"idDominio",
+  	"codPsp",
+  	"codDominio",
   	"codFlusso",
   	"stato",
   	"descrizioneStato",
   	"iur",
-  	"annoRiferimento",
   	"dataOraFlusso",
   	"dataRegolamento",
   	"dataAcquisizione",
   	"numeroPagamenti",
   	"importoTotalePagamenti",
   	"codBicRiversamento",
-  	"xml"
+  	"xml",
+  	"idPagamento"
   }
 )
 
@@ -101,20 +100,20 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 		this.id=new Long(-1);
   }
 
-  public IdPsp getIdPsp() {
-    return this.idPsp;
+  public java.lang.String getCodPsp() {
+    return this.codPsp;
   }
 
-  public void setIdPsp(IdPsp idPsp) {
-    this.idPsp = idPsp;
+  public void setCodPsp(java.lang.String codPsp) {
+    this.codPsp = codPsp;
   }
 
-  public IdDominio getIdDominio() {
-    return this.idDominio;
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
   }
 
-  public void setIdDominio(IdDominio idDominio) {
-    this.idDominio = idDominio;
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
   }
 
   public java.lang.String getCodFlusso() {
@@ -147,14 +146,6 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
 
   public void setIur(java.lang.String iur) {
     this.iur = iur;
-  }
-
-  public int getAnnoRiferimento() {
-    return this.annoRiferimento;
-  }
-
-  public void setAnnoRiferimento(int annoRiferimento) {
-    this.annoRiferimento = annoRiferimento;
   }
 
   public java.util.Date getDataOraFlusso() {
@@ -213,6 +204,14 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
     this.xml = xml;
   }
 
+  public IdPagamento getIdPagamento() {
+    return this.idPagamento;
+  }
+
+  public void setIdPagamento(IdPagamento idPagamento) {
+    this.idPagamento = idPagamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -232,11 +231,13 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   }
 
 
-  @XmlElement(name="idPsp",required=true,nillable=false)
-  protected IdPsp idPsp;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codPsp",required=true,nillable=false)
+  protected java.lang.String codPsp;
 
-  @XmlElement(name="idDominio",required=true,nillable=false)
-  protected IdDominio idDominio;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=true,nillable=false)
+  protected java.lang.String codDominio;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codFlusso",required=true,nillable=false)
@@ -253,10 +254,6 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="iur",required=true,nillable=false)
   protected java.lang.String iur;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
-  @XmlElement(name="annoRiferimento",required=true,nillable=false)
-  protected int annoRiferimento;
 
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
@@ -288,5 +285,8 @@ public class FR extends org.openspcoop2.utils.beans.BaseBean implements Serializ
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
   @XmlElement(name="xml",required=true,nillable=false)
   protected byte[] xml;
+
+  @XmlElement(name="idPagamento",required=false,nillable=false)
+  protected IdPagamento idPagamento;
 
 }

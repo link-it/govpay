@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,7 +19,6 @@
  */
 package it.govpay.web.ws;
 
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.List;
 
@@ -39,12 +37,9 @@ import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.RendicontazionePagamento;
-import it.govpay.bd.model.RendicontazionePagamentoSenzaRpt;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.wrapper.RendicontazionePagamentoBD;
-import it.govpay.bd.wrapper.RendicontazionePagamentoSenzaRptBD;
 import it.govpay.bd.wrapper.filters.RendicontazionePagamentoFilter;
-import it.govpay.bd.wrapper.filters.RendicontazionePagamentoSenzaRptFilter;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.Gp21Utils;
@@ -52,11 +47,9 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Fr;
-import it.govpay.bd.model.FrApplicazione;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.servizi.PagamentiTelematiciGPRnd;
 import it.govpay.servizi.commons.EsitoOperazione;
-import it.govpay.servizi.commons.FlussoRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazione;
 import it.govpay.servizi.gprnd.GpChiediFlussoRendicontazioneResponse;
 import it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazione;
@@ -97,20 +90,10 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			fine.set(Calendar.SECOND, 59);
 			fine.set(Calendar.MILLISECOND, 999);
 			List<Fr> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazione, bodyrichiesta.getCodDominio(), bodyrichiesta.getCodApplicazione(), bodyrichiesta.getDataInizio(), fine.getTime());
-			response.setCodEsitoOperazione(EsitoOperazione.OK);
-			
 			for(Fr frModel : rendicontazioni) {
-				GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione efr = new GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione();
-				efr.setAnnoRiferimento(frModel.getAnnoRiferimento());
-				efr.setCodBicRiversamento(frModel.getCodBicRiversamento());
-				efr.setCodDominio(frModel.getDominio(bd).getCodDominio());
-				efr.setCodFlusso(frModel.getCodFlusso());
-				efr.setCodPsp(frModel.getPsp(bd).getCodPsp());
-				efr.setDataFlusso(frModel.getDataFlusso());
-				efr.setDataRegolamento(frModel.getDataRegolamento());
-				efr.setIur(frModel.getIur());
-				response.getFlussoRendicontazione().add(efr);
+				response.getFlussoRendicontazione().add(Gp21Utils.toFr(frModel, applicazione.getVersione(), bd));
 			}
+			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
@@ -150,7 +133,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			ctx.log("gprnd.ricevutaRichiesta");
 
 			//Autorizzazione alla richiesta: controllo che il dominio sia tra quelli abilitati per l'applicazione
-			Fr frModel = new FrBD(bd).getFr(bodyrichiesta.getAnnoRiferimento(), bodyrichiesta.getCodFlusso());
+			Fr frModel = new FrBD(bd).getFr(bodyrichiesta.getCodFlusso());
 			
 			if(!AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, frModel.getDominio(bd).getCodDominio(), null)) {
 				throw new GovPayException(EsitoOperazione.RND_001);
@@ -158,62 +141,18 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			
 			RendicontazionePagamentoBD rendicontazionePagamentoBD = new RendicontazionePagamentoBD(bd); 
 			RendicontazionePagamentoFilter filter = rendicontazionePagamentoBD.newFilter();
-			filter.setAnnoRiferimento(bodyrichiesta.getAnnoRiferimento());
 			filter.setCodFlusso(bodyrichiesta.getCodFlusso());
-			filter.setCodApplicazione(bodyrichiesta.getCodApplicazione());
+			
+			if(bodyrichiesta.getCodApplicazione() != null) {
+				try {
+					Long idApplicazione = AnagraficaManager.getApplicazione(bd, bodyrichiesta.getCodApplicazione()).getId();
+					filter.setCodApplicazione(idApplicazione);
+				} catch (NotFoundException e) {
+					throw new GovPayException(EsitoOperazione.APP_000, bodyrichiesta.getCodApplicazione());
+				}
+			}
 			List<RendicontazionePagamento> rends = rendicontazionePagamentoBD.findAll(filter);
-			
-			FlussoRendicontazione fr = new FlussoRendicontazione();
-			fr.setImportoTotale(BigDecimal.ZERO);
-			fr.setNumeroPagamenti(0l);
-			
-			if(rends.size() > 0) {
-				FrApplicazione frApplicazione = rends.get(0).getFrApplicazione();
-				
-				fr.setAnnoRiferimento(frModel.getAnnoRiferimento());
-				fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
-				fr.setCodFlusso(frModel.getCodFlusso());
-				fr.setCodPsp(frModel.getPsp(bd).getCodPsp());
-				fr.setDataFlusso(frModel.getDataFlusso());
-				fr.setDataRegolamento(frModel.getDataRegolamento());
-				fr.setIur(frApplicazione.getFr(bd).getIur());
-				
-				for(RendicontazionePagamento rend : rends) {
-					fr.setImportoTotale(rend.getPagamento().getImportoPagato().add(fr.getImportoTotale()));
-					fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend, applicazione.getVersione(), bd));
-				}
-				response.setFlussoRendicontazione(fr);
-			}
-			
-			
-			RendicontazionePagamentoSenzaRptBD rendicontazionePagamentoSenzaRptBD = new RendicontazionePagamentoSenzaRptBD(bd); 
-			RendicontazionePagamentoSenzaRptFilter filter2 = rendicontazionePagamentoSenzaRptBD.newFilter();
-			filter2.setAnnoRiferimento(bodyrichiesta.getAnnoRiferimento());
-			filter2.setCodFlusso(bodyrichiesta.getCodFlusso());
-			filter2.setCodApplicazione(bodyrichiesta.getCodApplicazione());
-			List<RendicontazionePagamentoSenzaRpt> rendsSenzaRpt= rendicontazionePagamentoSenzaRptBD.findAll(filter2);
-			
-			if(rendsSenzaRpt.size() > 0) {
-				FrApplicazione frApplicazione = rendsSenzaRpt.get(0).getFrApplicazione();
-				
-				fr.setAnnoRiferimento(frModel.getAnnoRiferimento());
-				fr.setCodBicRiversamento(frModel.getCodBicRiversamento());
-				fr.setCodFlusso(frModel.getCodFlusso());
-				fr.setCodPsp(frModel.getPsp(bd).getCodPsp());
-				fr.setDataFlusso(frModel.getDataFlusso());
-				fr.setDataRegolamento(frModel.getDataRegolamento());
-				fr.setIur(frApplicazione.getFr(bd).getIur());
-				
-				for(RendicontazionePagamentoSenzaRpt rend : rendsSenzaRpt) {
-					fr.setImportoTotale(rend.getRendicontazioneSenzaRpt().getImportoPagato().add(fr.getImportoTotale()));
-					fr.setNumeroPagamenti(fr.getNumeroPagamenti() + 1);
-					fr.getPagamento().add(Gp21Utils.toRendicontazionePagamento(rend.getRendicontazioneSenzaRpt(), applicazione.getVersione(), bd));
-				}
-				response.setFlussoRendicontazione(fr);
-			}
-			
-			
+			response.setFlussoRendicontazione(Gp21Utils.toFr(frModel, rends, applicazione.getVersione(), bd));
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gprnd.ricevutaRichiestaOk");
 		} catch (GovPayException e) {

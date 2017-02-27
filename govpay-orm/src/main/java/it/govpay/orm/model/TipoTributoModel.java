@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,6 +43,9 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 	
 		this.COD_TRIBUTO = new Field("codTributo",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.DESCRIZIONE = new Field("descrizione",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.TIPO_CONTABILITA = new Field("tipoContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_CONTABILITA = new Field("codContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_TRIBUTO_IUV = new Field("codTributoIuv",java.lang.String.class,"TipoTributo",TipoTributo.class);
 	
 	}
 	
@@ -53,6 +55,9 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 	
 		this.COD_TRIBUTO = new ComplexField(father,"codTributo",java.lang.String.class,"TipoTributo",TipoTributo.class);
 		this.DESCRIZIONE = new ComplexField(father,"descrizione",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.TIPO_CONTABILITA = new ComplexField(father,"tipoContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_CONTABILITA = new ComplexField(father,"codContabilita",java.lang.String.class,"TipoTributo",TipoTributo.class);
+		this.COD_TRIBUTO_IUV = new ComplexField(father,"codTributoIuv",java.lang.String.class,"TipoTributo",TipoTributo.class);
 	
 	}
 	
@@ -61,6 +66,12 @@ public class TipoTributoModel extends AbstractModel<TipoTributo> {
 	public IField COD_TRIBUTO = null;
 	 
 	public IField DESCRIZIONE = null;
+	 
+	public IField TIPO_CONTABILITA = null;
+	 
+	public IField COD_CONTABILITA = null;
+	 
+	public IField COD_TRIBUTO_IUV = null;
 	 
 
 	@Override

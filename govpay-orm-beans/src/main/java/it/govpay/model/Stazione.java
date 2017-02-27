@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,6 +20,8 @@
 
 package it.govpay.model;
 
+import java.util.Date;
+
 public class Stazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
@@ -30,6 +31,10 @@ public class Stazione extends BasicModel {
 	private String password;
 	private boolean abilitato;
 	private int applicationCode;
+	private Integer ndpStato;
+	private String ndpOperazione;
+	private String ndpDescrizione;
+	private Date ndpData;
 
 	public Stazione() {
 	}
@@ -81,6 +86,38 @@ public class Stazione extends BasicModel {
 
 	public void setApplicationCode(int applicationCode) {
 		this.applicationCode = applicationCode;
+	}
+	
+	public Integer getNdpStato() {
+		return ndpStato;
+	}
+
+	public void setNdpStato(Integer ndpStato) {
+		this.ndpStato = ndpStato;
+	}
+
+	public String getNdpOperazione() {
+		return ndpOperazione;
+	}
+
+	public void setNdpOperazione(String ndpOperazione) {
+		this.ndpOperazione = ndpOperazione;
+	}
+
+	public String getNdpDescrizione() {
+		return ndpDescrizione;
+	}
+
+	public void setNdpDescrizione(String ndpDescrizione) {
+		this.ndpDescrizione = ndpDescrizione;
+	}
+
+	public Date getNdpData() {
+		return ndpData;
+	}
+
+	public void setNdpData(Date ndpData) {
+		this.ndpData = ndpData;
 	}
 
 }

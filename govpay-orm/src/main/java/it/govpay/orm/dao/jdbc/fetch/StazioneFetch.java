@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -63,6 +62,14 @@ public class StazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "abilitato", Stazione.model().ABILITATO.getFieldType()));
 				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
+				setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Stazione.model().NDP_STATO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Stazione.model().NDP_OPERAZIONE.getFieldType()));
+				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType()));
+				setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_data", Stazione.model().NDP_DATA.getFieldType()));
 				return object;
 			}
 			
@@ -93,6 +100,14 @@ public class StazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"abilitato"));
 				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					this.getObjectFromMap(map,"applicationCode"));
+				setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
+					this.getObjectFromMap(map,"ndpStato"));
+				setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpOperazione"));
+				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpDescrizione"));
+				setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
+					this.getObjectFromMap(map,"ndpData"));
 				return object;
 			}
 			

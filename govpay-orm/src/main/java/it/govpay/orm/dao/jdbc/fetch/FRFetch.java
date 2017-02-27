@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,6 +54,10 @@ public class FRFetch extends AbstractJDBCFetch {
 				FR object = new FR();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setCodPsp", FR.model().COD_PSP.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_psp", FR.model().COD_PSP.getFieldType()));
+				setParameter(object, "setCodDominio", FR.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", FR.model().COD_DOMINIO.getFieldType()));
 				setParameter(object, "setCodFlusso", FR.model().COD_FLUSSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_flusso", FR.model().COD_FLUSSO.getFieldType()));
 				setParameter(object, "setStato", FR.model().STATO.getFieldType(),
@@ -63,8 +66,6 @@ public class FRFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "descrizione_stato", FR.model().DESCRIZIONE_STATO.getFieldType()));
 				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "iur", FR.model().IUR.getFieldType()));
-				setParameter(object, "setAnnoRiferimento", FR.model().ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", FR.model().ANNO_RIFERIMENTO.getFieldType()));
 				setParameter(object, "setDataOraFlusso", FR.model().DATA_ORA_FLUSSO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_ora_flusso", FR.model().DATA_ORA_FLUSSO.getFieldType()));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),
@@ -101,6 +102,10 @@ public class FRFetch extends AbstractJDBCFetch {
 				FR object = new FR();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
+				setParameter(object, "setCodPsp", FR.model().COD_PSP.getFieldType(),
+					this.getObjectFromMap(map,"codPsp"));
+				setParameter(object, "setCodDominio", FR.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
 				setParameter(object, "setCodFlusso", FR.model().COD_FLUSSO.getFieldType(),
 					this.getObjectFromMap(map,"codFlusso"));
 				setParameter(object, "setStato", FR.model().STATO.getFieldType(),
@@ -109,8 +114,6 @@ public class FRFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"descrizioneStato"));
 				setParameter(object, "setIur", FR.model().IUR.getFieldType(),
 					this.getObjectFromMap(map,"iur"));
-				setParameter(object, "setAnnoRiferimento", FR.model().ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"annoRiferimento"));
 				setParameter(object, "setDataOraFlusso", FR.model().DATA_ORA_FLUSSO.getFieldType(),
 					this.getObjectFromMap(map,"dataOraFlusso"));
 				setParameter(object, "setDataRegolamento", FR.model().DATA_REGOLAMENTO.getFieldType(),

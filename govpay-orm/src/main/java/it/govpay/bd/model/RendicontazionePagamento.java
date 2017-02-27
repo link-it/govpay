@@ -1,29 +1,24 @@
 package it.govpay.bd.model;
 
 import it.govpay.model.BasicModel;
+import it.govpay.model.Rendicontazione;
 
 public class RendicontazionePagamento extends BasicModel {
 
 	private static final long serialVersionUID = 1L;
 	
 	private Fr fr;
-	private FrApplicazione frApplicazione;
+	private Rendicontazione rendicontazione;
 	private Pagamento pagamento;
 	private Versamento versamento;
 	private SingoloVersamento singoloVersamento;
-	private Rpt rpt;
+	private String tipo;
 	
 	public Fr getFr() {
 		return fr;
 	}
 	public void setFr(Fr fr) {
 		this.fr = fr;
-	}
-	public FrApplicazione getFrApplicazione() {
-		return frApplicazione;
-	}
-	public void setFrApplicazione(FrApplicazione frApplicazione) {
-		this.frApplicazione = frApplicazione;
 	}
 	public Pagamento getPagamento() {
 		return pagamento;
@@ -43,12 +38,16 @@ public class RendicontazionePagamento extends BasicModel {
 	public void setSingoloVersamento(SingoloVersamento singoloVersamento) {
 		this.singoloVersamento = singoloVersamento;
 	}
-	public Rpt getRpt() {
-		return rpt;
+	public Rendicontazione getRendicontazione() {
+		return rendicontazione;
 	}
-	public void setRpt(Rpt rpt) {
-		this.rpt = rpt;
+	public void setRendicontazione(Rendicontazione rendicontazione) {
+		this.rendicontazione = rendicontazione;
 	}
-	
-
+	public String getTipo() {
+		return tipo;
+	}
+	public void setTipo(String tipo) {
+		this.tipo = tipo;
+	}
 }

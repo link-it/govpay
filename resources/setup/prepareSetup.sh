@@ -1,4 +1,4 @@
-VERSION=2.2.6-SNAPSHOT
+VERSION=2.3.0
 
 # Directory
 COPYING_FILE=../../COPYING
@@ -11,7 +11,8 @@ GOVPAY_CONSOLE=../../govpay-web-console/target/govpayConsole.war
 # Template
 rm -rf core.template
 cp -r core core.template
-find core.template/installer/setup/antinstall-config.xml -type f -exec perl -pi -e "s#PRODUCT_VERSION#${VERSION}#g" {} \;
+#find core.template/installer/setup/antinstall-config.xml -type f -exec perl -pi -e "s#PRODUCT_VERSION#${VERSION}#g" {} \;
+perl -pi -e "s#PRODUCT_VERSION#${VERSION}#g" core.template/installer/setup/antinstall-config.xml
 
 # Prepare SQL
 echo "Prepare sql script ..."

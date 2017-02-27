@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -70,11 +69,12 @@ public class GovpayConfig {
 	private Severity mLogLevel;
 	private TipiDatabase mLogDBType;
 	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
-
-	private boolean batchEstrattoConto;
+	private boolean batchOn;
+	
+	private boolean batchEstrattoConto, batchEstrattoContoPdf;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
-	private boolean batchEstrattoContoPdf;
+	
 	private Properties[] props;
 
 	public GovpayConfig() throws Exception {
@@ -96,8 +96,9 @@ public class GovpayConfig {
 		this.mLogDS = null;
 		this.batchEstrattoConto = false;
 		this.batchEstrattoContoPdf = false;
+		this.batchOn=true;
 		this.pddAuthEnable = true;
-
+		
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -112,7 +113,7 @@ public class GovpayConfig {
 			// Se e' configurata, la uso come prioritaria
 
 			try {
-				this.resourceDir = getProperty("it.govpay.resource.path", props1, false, null);
+				this.resourceDir = getProperty("it.govpay.resource.path", props1, false, true, null);
 
 				if(this.resourceDir != null) {
 					File resourceDirFile = new File(this.resourceDir);
@@ -290,11 +291,11 @@ public class GovpayConfig {
 				}
 
 			}
-
+			
 			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", props, false, log);
 			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
 				this.pddAuthEnable = false;
-
+			
 			String listaHandlers = getProperty("it.govpay.integration.client.out", props, false, log);
 
 			this.outHandlers = new ArrayList<String>();
@@ -317,6 +318,10 @@ public class GovpayConfig {
 				}
 			}
 			
+			String batchOnString = getProperty("it.govpay.batchOn", props, false, log);
+			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
+				this.batchOn = false;
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -327,13 +332,16 @@ public class GovpayConfig {
 		return urlPddVerifica;
 	}
 
-	private static String getProperty(String name, Properties props, boolean required, Logger log) throws Exception {
+	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws Exception {
 		String value = System.getProperty(name);
-
+		
 		if(value != null && value.trim().isEmpty()) {
 			value = null;
 		}
-
+		String logString = "";
+		if(fromInternalConfig) logString = "da file interno ";
+		else logString = "da file esterno ";
+		
 		if(value == null) {
 			if(props != null) {
 				value = props.getProperty(name);
@@ -346,7 +354,7 @@ public class GovpayConfig {
 					throw new Exception("Proprieta ["+name+"] non trovata");
 				else return null;
 			} else {
-				if(log != null) log.info("Letta proprieta di configurazione " + name + ": " + value);
+				if(log != null) log.info("Letta proprieta di configurazione " + logString + name + ": " + value);
 			}
 		} else {
 			if(log != null) log.info("Letta proprieta di sistema " + name + ": " + value);
@@ -357,8 +365,8 @@ public class GovpayConfig {
 
 	private static String getProperty(String name, Properties[] props, boolean required, Logger log) throws Exception {
 		String value = null;
-		for(Properties p : props) {
-			try { value = getProperty(name, p, required, log); } catch (Exception e) { }
+		for(int i=0; i<props.length; i++) {
+			try { value = getProperty(name, props[i], required, i==1, log); } catch (Exception e) { }
 			if(value != null && !value.trim().isEmpty()) {
 				return value;
 			}
@@ -443,7 +451,7 @@ public class GovpayConfig {
 	public String getPathEstrattoConto() {
 		return pathEstrattoConto;
 	}
-
+	
 	public boolean isPddAuthEnable() {
 		return pddAuthEnable;
 	}
@@ -466,5 +474,9 @@ public class GovpayConfig {
 
 	public boolean isBatchEstrattoContoPdf() {
 		return batchEstrattoContoPdf;
+	}
+
+	public boolean isBatchOn() {
+		return batchOn;
 	}
 }

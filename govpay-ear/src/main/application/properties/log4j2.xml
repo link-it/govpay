@@ -72,6 +72,16 @@
 			<DefaultRolloverStrategy max="5" />
 		</RollingFile>
 		
+		<RollingFile name="govpay_gw" fileName="${it.govpay.log.folder}/govpay_diagnostic_gw.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic_gw-%d{yyyy-MM-dd}-%i.log.gz">
+			<PatternLayout>
+				<Pattern>%m %n %n</Pattern>
+			</PatternLayout>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="50 MB" />
+			</Policies>
+			<DefaultRolloverStrategy max="5" />
+		</RollingFile>
+		
 		<RollingFile name="govpay_rendicontazione" fileName="${it.govpay.log.folder}/govpay_diagnostic_rendicontazione.log" filePattern="${it.govpay.log.folder}/$${date:yyyy-MM}/govpay_diagnostic_rendicontazione-%d{yyyy-MM-dd}-%i.log.gz">
 			<PatternLayout>
 				<Pattern>%m %n %n</Pattern>
@@ -139,6 +149,10 @@
 
 		<Logger name="diagnostic.rendicontazioni" level="ALL" additivity="false">
 			<AppenderRef ref="govpay_rendicontazione" />
+		</Logger>
+		
+		<Logger name="diagnostic.gw" level="ALL" additivity="false">
+			<AppenderRef ref="govpay_gw" />
 		</Logger>
 
 		<Logger name="dump" level="ALL" additivity="false">

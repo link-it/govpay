@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,6 +22,7 @@ package it.govpay.web.rs.dars.anagrafica.intermediari.input;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -45,19 +45,20 @@ public class TipoSsl extends SelectList<String> {
 	private String tipoAutenticazioneId= null;
 	private String idOwnerId = null;
 	
-	public TipoSsl(String nomeConnettore,String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> rawvalues, BasicBD bd) {
+	public TipoSsl(String nomeConnettore,String nomeServizio,String id, String label, URI refreshUri, List<RawParamValue> rawvalues, BasicBD bd,Locale locale) {
 		super(id, label, refreshUri, rawvalues, bd);
 		this.nomeServizio = nomeServizio;
 		this.nomeConnettore = nomeConnettore;
-		this.tipoAutenticazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
-		this.idOwnerId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".id.id");
+		this.tipoAutenticazioneId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoAutenticazione.id");
+		this.idOwnerId = Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + ".id.id");
 	}
 
 	@Override
 	protected List<Voce<String>> getValues(List<RawParamValue> paramValues, Object ... objects) throws ServiceException {
 		List<Voce<String>> voci = new ArrayList<Voce<String>>();
-		voci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.client.label"), TIPO_SSL_VALUE_CLIENT));
-		voci.add(new Voce<String>(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.server.label"), TIPO_SSL_VALUE_SERVER));
+		Locale locale = objects[1] != null ? (Locale) objects[1] : null;
+		voci.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.client.label"), TIPO_SSL_VALUE_CLIENT));
+		voci.add(new Voce<String>(Utils.getInstance(locale).getMessageFromResourceBundle(this.nomeServizio + "." + this.nomeConnettore + ".tipoSsl.server.label"), TIPO_SSL_VALUE_SERVER));
 		
 		return voci; 
 	}
@@ -68,11 +69,11 @@ public class TipoSsl extends SelectList<String> {
 		Connettore c = null;
 		
 		if(StringUtils.isNotEmpty(tipoAutenticazioneValue) && !tipoAutenticazioneValue.equals(ConnettoreHandler.TIPO_AUTENTICAZIONE_VALUE_SSL)){
-			return null;
+			return "";
 		}
 		
 		if(StringUtils.isEmpty(idOwner)){
-			return null;
+			return "";
 		}
 		
 		BasicBD bd = (BasicBD) objects[0];
@@ -89,7 +90,7 @@ public class TipoSsl extends SelectList<String> {
 			}
 		}
 		
-		return null;
+		return "";
 	}
 
 	@Override

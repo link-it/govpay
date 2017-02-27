@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -21,11 +20,10 @@
 package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.GovpayCustomConfig;
 import it.govpay.bd.model.converter.IuvConverter;
 import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Applicazione;
-import it.govpay.model.Dominio;
+import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.orm.IUV;
@@ -59,22 +57,69 @@ public class IuvBD extends BasicBD {
 		super(basicBD);
 	}
 
-	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, int auxDigit, int applicationCode, TipoIUV type) throws ServiceException {
-		long prg = getNextPrgIuv(dominio.getCodDominio(), type);
+	public Iuv generaIuv(Applicazione applicazione, Dominio dominio, String codVersamentoEnte, TipoIUV type, String prefix) throws ServiceException {
+		
+		long prg = getNextPrgIuv(dominio.getCodDominio() + prefix, type);
+		
 		String iuv = null;
+		
 		switch (type) {
 		case ISO11694:
-			String reference = String.format("%015d", prg);
-			String check = IuvUtils.getCheckDigit(reference);
-			iuv = "RF" + check + reference;
-			break;
-		case NUMERICO:
-			if(dominio.isCustomIuv()) {
-				iuv = GovpayCustomConfig.getInstance().getDefaultCustomIuvGenerator().buildIuvNumerico(applicazione, dominio, prg, auxDigit, applicationCode);
-			} else {
-				iuv = IuvUtils.buildIuvNumerico(prg, auxDigit, applicationCode);
+			{
+				String reference, check;
+				
+				switch (dominio.getAuxDigit()) {
+				case 0: 
+					reference = prefix + String.format("%0" + (21 - prefix.length()) + "d", prg);
+					if(reference.length() > 21) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					check = IuvUtils.getCheckDigit(reference);
+					iuv = "RF" + check + reference;
+				break;
+				case 3: 
+					if(dominio.getSegregationCode() == null)
+						throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
+
+					reference = prefix + String.format("%0" + (19 - prefix.length()) + "d", prg);
+					if(reference.length() > 19) 
+						throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+					
+					reference = String.format("%02d", dominio.getSegregationCode()) + reference;
+					check = IuvUtils.getCheckDigit(reference);
+					
+					iuv = "RF" + check + reference;
+				break;
+				default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
+				}
 			}
-			break;
+		break;
+		case NUMERICO:
+			{
+				String reference = prefix + String.format("%0" + (13 - prefix.length()) + "d", prg);
+				
+				if(reference.length() > 15) 
+					throw new ServiceException("Superato il numero massimo di IUV generabili [Dominio:"+dominio.getCodDominio()+" Prefisso:"+prefix+"]" );
+				
+				String check = "";
+				// Vedo se utilizzare l'application code o il segregation code
+				switch (dominio.getAuxDigit()) {
+					case 0: 
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getStazione(this).getApplicationCode()); 
+						iuv = reference + check;
+					break;
+					case 3: 
+						if(dominio.getSegregationCode() == null)
+							throw new ServiceException("Dominio configurato per IUV segregati privo di codice di segregazione [Dominio:"+dominio.getCodDominio()+"]" ); 
+						
+						check = IuvUtils.getCheckDigit93(reference, dominio.getAuxDigit(), dominio.getSegregationCode()); 
+						iuv = String.format("%02d", dominio.getSegregationCode()) + reference + check;
+					break;
+					default: throw new ServiceException("Codice AUX non supportato [Dominio:"+dominio.getCodDominio()+" AuxDigit:"+dominio.getAuxDigit()+"]" ); 
+				}
+				
+				
+				break;
+			}
 		}
 
 		Iuv iuvDTO = new Iuv();
@@ -85,7 +130,9 @@ public class IuvBD extends BasicBD {
 		iuvDTO.setIdApplicazione(applicazione.getId());
 		iuvDTO.setTipo(type);
 		iuvDTO.setCodVersamentoEnte(codVersamentoEnte);
-		iuvDTO.setApplicationCode(applicationCode);
+		iuvDTO.setAuxDigit(dominio.getAuxDigit());
+		iuvDTO.setApplicationCode(dominio.getStazione(this).getApplicationCode());
+		
 		return insertIuv(iuvDTO);
 	}
 

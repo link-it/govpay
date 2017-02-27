@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -25,6 +24,7 @@ import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.client.BasicClient.ClientException;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Pagamento;
 import it.govpay.model.Notifica.StatoSpedizione;
 import it.govpay.model.Notifica.TipoNotifica;
 import it.govpay.core.utils.GpContext;
@@ -33,6 +33,7 @@ import it.govpay.core.utils.client.NotificaClient;
 
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -54,14 +55,22 @@ public class InviaNotificaThread implements Runnable {
 			this.notifica.getRpt(bd).getVersamento(bd);
 			this.notifica.getRpt(bd).getCanale(bd);
 			this.notifica.getRpt(bd).getPsp(bd);
-			this.notifica.getRpt(bd).getPagamenti(bd);
+			List<Pagamento> pagamenti = this.notifica.getRpt(bd).getPagamenti(bd);
+			if(pagamenti != null) {
+				for(Pagamento pagamento : pagamenti)
+					pagamento.getSingoloVersamento(bd);
+			}
 		} else {
 			this.notifica.getRr(bd);
 			this.notifica.getRr(bd).getRpt(bd);
 			this.notifica.getRr(bd).getRpt(bd).getVersamento(bd);
 			this.notifica.getRr(bd).getRpt(bd).getCanale(bd);
 			this.notifica.getRr(bd).getRpt(bd).getPsp(bd);
-			this.notifica.getRr(bd).getRpt(bd).getPagamenti(bd);
+			List<Pagamento> pagamenti = this.notifica.getRr(bd).getRpt(bd).getPagamenti(bd);
+			if(pagamenti != null) {
+				for(Pagamento pagamento : pagamenti)
+					pagamento.getSingoloVersamento(bd);
+			}
 		}
 	}
 

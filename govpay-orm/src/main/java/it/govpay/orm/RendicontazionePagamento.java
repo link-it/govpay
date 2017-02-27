@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,11 +36,10 @@ import java.io.Serializable;
  * &lt;complexType name="RendicontazionePagamento">
  * 		&lt;sequence>
  * 			&lt;element name="FR" type="{http://www.govpay.it/orm}FR" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="FrApplicazione" type="{http://www.govpay.it/orm}FrApplicazione" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="Rendicontazione" type="{http://www.govpay.it/orm}Rendicontazione" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="Pagamento" type="{http://www.govpay.it/orm}Pagamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="SingoloVersamento" type="{http://www.govpay.it/orm}SingoloVersamento" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="Versamento" type="{http://www.govpay.it/orm}Versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="RPT" type="{http://www.govpay.it/orm}RPT" minOccurs="1" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -57,11 +55,10 @@ import java.io.Serializable;
 @XmlType(name = "RendicontazionePagamento", 
   propOrder = {
   	"fr",
-  	"frApplicazione",
+  	"rendicontazione",
   	"pagamento",
   	"singoloVersamento",
-  	"versamento",
-  	"rpt"
+  	"versamento"
   }
 )
 
@@ -93,12 +90,12 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
     this.fr = fr;
   }
 
-  public FrApplicazione getFrApplicazione() {
-    return this.frApplicazione;
+  public Rendicontazione getRendicontazione() {
+    return this.rendicontazione;
   }
 
-  public void setFrApplicazione(FrApplicazione frApplicazione) {
-    this.frApplicazione = frApplicazione;
+  public void setRendicontazione(Rendicontazione rendicontazione) {
+    this.rendicontazione = rendicontazione;
   }
 
   public Pagamento getPagamento() {
@@ -125,14 +122,6 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
     this.versamento = versamento;
   }
 
-  public RPT getRpt() {
-    return this.rpt;
-  }
-
-  public void setRpt(RPT rpt) {
-    this.rpt = rpt;
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -155,8 +144,8 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
   @XmlElement(name="FR",required=true,nillable=false)
   protected FR fr;
 
-  @XmlElement(name="FrApplicazione",required=true,nillable=false)
-  protected FrApplicazione frApplicazione;
+  @XmlElement(name="Rendicontazione",required=true,nillable=false)
+  protected Rendicontazione rendicontazione;
 
   @XmlElement(name="Pagamento",required=true,nillable=false)
   protected Pagamento pagamento;
@@ -166,8 +155,5 @@ public class RendicontazionePagamento extends org.openspcoop2.utils.beans.BaseBe
 
   @XmlElement(name="Versamento",required=true,nillable=false)
   protected Versamento versamento;
-
-  @XmlElement(name="RPT",required=true,nillable=false)
-  protected RPT rpt;
 
 }

@@ -9,10 +9,29 @@
 	
 	<target name="govpay_properties_settings">
 
+
+                <condition property="endWithSlash">
+                  <matches pattern="^.+/$" string="${antinstaller_work_folder}" />
+                </condition>
+                <if>
+                  <equals arg1="${endWithSlash}" arg2="true" />
+                  <then>
+                         <propertyregex property="noendslash"
+                              input="${antinstaller_work_folder}"
+                              regexp="^(.+)/$"
+                              select="\1"
+                              casesensitive="false" />
+                  </then>
+                  <else>
+                        <property name="noendslash" value="${antinstaller_work_folder}"/>
+                  </else>
+                </if>
+
+
                 <antcall target="replace_token">
                         <param name="file" value="${file}"/>
-                        <param name="token" value="/var/govpay/"/>
-                        <param name="value" value="${antinstaller_work_folder}"/>
+                        <param name="token" value="/var/govpay"/>
+                        <param name="value" value="${noendslash}"/>
                 </antcall>
 
 		<antcall target="set_property">
@@ -27,13 +46,6 @@
                         <param name="value" value="${antinstaller_pddcheck}"/>
                 </antcall>
 
-
-
-	</target>
-
-	<target name="govpay_orm_properties_settings">
-
-		<!-- Database -->
 		<antcall target="set_property">
 			<param name="file" value="${file}"/>
 			<param name="token" value="it.govpay.orm.databaseType"/>
@@ -93,41 +105,79 @@
                         <param name="token" value="ALL"/>
                         <param name="value" value="${antinstaller_log_level}"/>
                 </antcall>
+		
+		<!-- Cotrollo che i path non terminino con il carattere '/'-->
+                <condition property="endWithSlash">
+                  <matches pattern="^.+/$" string="${antinstaller_log_folder}" />
+                </condition>
+                <if>
+                  <equals arg1="${endWithSlash}" arg2="true" />
+                  <then>
+                         <propertyregex property="noendslash"
+                              input="${antinstaller_log_folder}"
+                              regexp="^(.+)/$"
+                              select="\1"
+                              casesensitive="false" />
+                  </then>
+                  <else>
+                        <property name="noendslash" value="${antinstaller_log_folder}"/>
+                  </else>
+                </if>
+
 		<antcall target="replace_token">
 			<param name="file" value="${file}"/>
 			<param name="token" value="/var/log/govpay"/>
-			<param name="value" value="${antinstaller_log_folder}"/>
+			<param name="value" value="${noendslash}"/>
 		</antcall>
 	</target>
 
 	<target name="govpay_console_properties_settings">
-		<condition property="pubhost_endWithSlash">
-	          <matches pattern="^https?://.+/$" string="${antinstaller_pubhost}" />
-        	</condition>
-        	<if>
-	          <equals arg1="${pubhost_endWithSlash}" arg2="true" />
-        	  <then>
-                	<echo>Correggo URL che termina con '/' </echo>
-	                 <propertyregex property="pubhost_noendslash"
-        	              input="${antinstaller_pubhost}"
-                	      regexp="^(https?://.+)/$"
-	                      select="\1"
-        	              casesensitive="false" />
-	          </then>
-        	  <else>
-	                <property name="pubhost_noendslash" value="${antinstaller_pubhost}"/>
-        	  </else>
-	        </if>
-                <antcall target="replace_token">
+
+                <antcall target="set_property">
                         <param name="file" value="${file}"/>
-                        <param name="token" value="http://localhost:8080"/>
-                        <param name="value" value="${pubhost_noendslash}"/>
+                        <param name="token" value="it.govpay.orm.databaseType"/>
+                        <param name="value" value="${antinstaller_tipo_database}"/>
                 </antcall>
+                <antcall target="set_property">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="it.govpay.orm.showSql"/>
+                        <param name="value" value="false"/>
+                </antcall>
+                <antcall target="set_property">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="it.govpay.orm.dataSourceJNDIName"/>
+                        <param name="value" value="govpay"/>
+                </antcall>
+
+
+                <antcall target="set_property">
+                        <param name="file" value="${file}"/>
+                        <param name="token" value="it.govpay.console.operazioni.jmx.as"/>
+                        <param name="value" value="${antinstaller_as}"/>
+                </antcall>
+
+                <!-- Cotrollo che i path non terminino con il carattere '/'-->
+                <condition property="endWithSlash">
+                  <matches pattern="^.+/$" string="${antinstaller_console_work_folder}" />
+                </condition>
+                <if>
+                  <equals arg1="${endWithSlash}" arg2="true" />
+                  <then>
+                         <propertyregex property="noendslash"
+                              input="${antinstaller_console_work_folder}"
+                              regexp="^(.+)/$"
+                              select="\1"
+                              casesensitive="false" />
+                  </then>
+                  <else>
+                        <property name="noendslash" value="${antinstaller_console_work_folder}"/>
+                  </else>
+                </if>
 
 		<antcall target="replace_token">
                         <param name="file" value="${file}"/>
                         <param name="token" value="/var/govpay/console"/>
-                        <param name="value" value="${antinstaller_console_work_folder}"/>
+                        <param name="value" value="${noendslash}"/>
                 </antcall>
 	</target>
         <target name="wildfly_govpay_securitydomain">

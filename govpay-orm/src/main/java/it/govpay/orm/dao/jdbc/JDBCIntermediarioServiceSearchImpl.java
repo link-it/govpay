@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,17 +22,18 @@ package it.govpay.orm.dao.jdbc;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+
 import java.sql.Connection;
 
 import org.apache.log4j.Logger;
+
 import org.openspcoop2.utils.sql.ISQLQueryObject;
+
 import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
 import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-
 import it.govpay.orm.IdIntermediario;
-
 import org.openspcoop2.generic_project.utils.UtilsTemplate;
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.beans.InUse;
@@ -49,11 +49,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import it.govpay.orm.dao.jdbc.converter.IntermediarioFieldConverter;
 import it.govpay.orm.dao.jdbc.fetch.IntermediarioFetch;
 import it.govpay.orm.dao.jdbc.JDBCServiceManager;
+
 import it.govpay.orm.Intermediario;
 
 /**     

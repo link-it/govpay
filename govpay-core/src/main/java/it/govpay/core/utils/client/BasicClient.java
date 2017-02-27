@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -264,9 +263,8 @@ public class BasicClient {
 				Base64 base = new Base64();
 				String encoding = new String(base.encode((httpBasicUser + ":" + httpBasicPassword).getBytes()));
 				connection.setRequestProperty("Authorization", "Basic " + encoding);
+				requestMsg.addHeader(new Property("Authorization", "Basic " + encoding));
 			}
-			
-			
 			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			if(soap) {
@@ -339,16 +337,10 @@ public class BasicClient {
 				} catch (IOException e) {
 					msg = ("Impossibile serializzare l'ErrorStream della risposta: " + e).getBytes() ;
 				} finally {
-					log.error("Errore nell'invocazione del Nodo dei Pagamenti: [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
+					log.error("Errore nell'invocazione del Nodo dei Pagamenti [HTTP Response Code " + responseCode + "]\nRisposta: " + new String(msg));
 				}
 				
-				String txt = new String(msg);
-				
-				if(txt.length() > 300) {
-					throw new ClientException("Ricevuto [HTTP " + responseCode + "]\nRisposta: " + txt.substring(0, 300) + "[--omissis--]");
-				} else {
-					throw new ClientException("Ricevuto [HTTP " + responseCode + "]\nRisposta: " + txt);
-				}
+				throw new ClientException("Ricevuto [HTTP " + responseCode + "]");
 			}
 		} finally {
 			if(responseMsg != null)

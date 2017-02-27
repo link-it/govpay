@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,6 +54,10 @@ import java.io.Serializable;
  * 			&lt;element name="debitoreLocalita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreProvincia" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="debitoreNazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreEmail" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreTelefono" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreCellulare" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="debitoreFax" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codVersamentoLotto" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codAnnoTributario" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -92,6 +95,10 @@ import java.io.Serializable;
   	"debitoreLocalita",
   	"debitoreProvincia",
   	"debitoreNazione",
+  	"debitoreEmail",
+  	"debitoreTelefono",
+  	"debitoreCellulare",
+  	"debitoreFax",
   	"codLotto",
   	"codVersamentoLotto",
   	"codAnnoTributario",
@@ -275,6 +282,38 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
     this.debitoreNazione = debitoreNazione;
   }
 
+  public java.lang.String getDebitoreEmail() {
+    return this.debitoreEmail;
+  }
+
+  public void setDebitoreEmail(java.lang.String debitoreEmail) {
+    this.debitoreEmail = debitoreEmail;
+  }
+
+  public java.lang.String getDebitoreTelefono() {
+    return this.debitoreTelefono;
+  }
+
+  public void setDebitoreTelefono(java.lang.String debitoreTelefono) {
+    this.debitoreTelefono = debitoreTelefono;
+  }
+
+  public java.lang.String getDebitoreCellulare() {
+    return this.debitoreCellulare;
+  }
+
+  public void setDebitoreCellulare(java.lang.String debitoreCellulare) {
+    this.debitoreCellulare = debitoreCellulare;
+  }
+
+  public java.lang.String getDebitoreFax() {
+    return this.debitoreFax;
+  }
+
+  public void setDebitoreFax(java.lang.String debitoreFax) {
+    this.debitoreFax = debitoreFax;
+  }
+
   public java.lang.String getCodLotto() {
     return this.codLotto;
   }
@@ -402,6 +441,22 @@ public class Versamento extends org.openspcoop2.utils.beans.BaseBean implements 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="debitoreNazione",required=false,nillable=false)
   protected java.lang.String debitoreNazione;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreEmail",required=false,nillable=false)
+  protected java.lang.String debitoreEmail;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreTelefono",required=false,nillable=false)
+  protected java.lang.String debitoreTelefono;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreCellulare",required=false,nillable=false)
+  protected java.lang.String debitoreCellulare;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="debitoreFax",required=false,nillable=false)
+  protected java.lang.String debitoreFax;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codLotto",required=false,nillable=false)

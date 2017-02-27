@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -36,6 +35,7 @@ import it.govpay.core.utils.VersamentoUtils;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv;
 import it.govpay.model.Portale;
+import it.govpay.model.Versionabile.Versione;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Versamento;
@@ -43,7 +43,9 @@ import it.govpay.servizi.PagamentiTelematiciGPPrt;
 import it.govpay.servizi.commons.Canale;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.commons.IuvGenerato;
+import it.govpay.servizi.commons.MetaInfo;
 import it.govpay.servizi.commons.StatoVersamento;
+import it.govpay.servizi.commons.TipoContabilita;
 import it.govpay.servizi.commons.TipoVersamento;
 import it.govpay.servizi.commons.TipoSceltaWisp;
 import it.govpay.servizi.gpprt.GpAvviaRichiestaStorno;
@@ -133,9 +135,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 	}
 	
 	@Override
-	public GpAvviaTransazionePagamentoResponse gpAvviaTransazionePagamento(GpAvviaTransazionePagamento bodyrichiesta) {
+	public GpAvviaTransazionePagamentoResponse gpAvviaTransazionePagamento(GpAvviaTransazionePagamento bodyrichiesta, MetaInfo metaInfo) {
 		GpAvviaTransazionePagamentoResponse response = new GpAvviaTransazionePagamentoResponse();
 		GpContext ctx = GpThreadLocal.get();
+		Utils.loadMetaInfo(ctx, metaInfo);
 		BasicBD bd = null;
 		try {
 			log.info("Richiesta operazione gpAvviaTransazionePagamento");
@@ -176,7 +179,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			} else {
 				
 				Object v = bodyrichiesta.getVersamentoOrVersamentoRef().get(0);
-				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null;
+				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
 				
 				if(v instanceof it.govpay.servizi.commons.Versamento) {
 					it.govpay.servizi.commons.Versamento versamento = (it.govpay.servizi.commons.Versamento) v;
@@ -196,6 +199,9 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 						
 						if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
 							bundlekey = element.getValue();
+						}
+						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
+							codUnivocoDebitore = element.getValue();
 						}
 						if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
 							codApplicazione = element.getValue();
@@ -222,7 +228,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 						}
 					}
 					
-					if(codApplicazione != null && iuv != null) {
+					if(codDominio != null && iuv != null) {
 						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 						ctx.getContext().getRequest().addGenericProperty(new Property("iuv", iuv));
 						ctx.setCorrelationId(codDominio + iuv);
@@ -236,7 +242,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 					if(codApplicazione != null && bundlekey != null) {
 						ctx.getContext().getRequest().addGenericProperty(new Property("codApplicazione", codApplicazione));
 						ctx.getContext().getRequest().addGenericProperty(new Property("bundleKey", bundlekey));
-						ctx.setCorrelationId(codApplicazione + bundlekey);
+						ctx.getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio != null ? codDominio : GpContext.NOT_SET));
+						ctx.getContext().getRequest().addGenericProperty(new Property("codUnivocoDebitore", codUnivocoDebitore != null ? codUnivocoDebitore : GpContext.NOT_SET));
+						
+						ctx.setCorrelationId(codApplicazione + bundlekey + (codUnivocoDebitore != null ? codUnivocoDebitore : "") + (codDominio != null ? codDominio : ""));
 						if(bodyrichiesta.getCanale() != null) {
 							ctx.log("pagamento.avviaTransazioneRefBundle");
 						} else {
@@ -596,18 +605,7 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 		
 			it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 			
-			Versamento versamento = null;
-			
-			if(bodyrichiesta.getIuv() != null) {
-				log.info("Richiesta operazione gpChiediStatoVersamento per lo iuv (" + bodyrichiesta.getIuv() + ") del dominio (" +  bodyrichiesta.getCodDominio()+")");
-				versamento = versamentoBusiness.chiediVersamentoByIuv(portaleAutenticato, bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv());
-			} else if(bodyrichiesta.getBundleKey() != null) {
-				log.info("Richiesta operazione gpChiediStatoVersamento per la bundleKey (" + bodyrichiesta.getBundleKey() + ")");
-				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getBundleKey());
-			} else {
-				log.info("Richiesta operazione gpChiediStatoVersamento per il versamento (" + bodyrichiesta.getCodVersamentoEnte() + ") dell'applicazione (" +  bodyrichiesta.getCodApplicazione()+")");
-				versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte());
-			}
+			Versamento versamento = versamentoBusiness.chiediVersamento(portaleAutenticato, bodyrichiesta.getCodApplicazione(), bodyrichiesta.getCodVersamentoEnte(), bodyrichiesta.getBundleKey(), bodyrichiesta.getCodUnivocoDebitore(), bodyrichiesta.getCodDominio(), bodyrichiesta.getIuv());
 			
 			if(bodyrichiesta.getCodUnivocoDebitore() != null && !bodyrichiesta.getCodUnivocoDebitore().equalsIgnoreCase(versamento.getAnagraficaDebitore().getCodUnivoco())) {
 				throw new GovPayException(EsitoOperazione.PRT_005);
@@ -620,9 +618,16 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			response.setDataScadenza(versamento.getDataScadenza());
 			if(versamento.getSingoliVersamenti(bd).size() == 1) {
 				response.setIbanAccredito(versamento.getSingoliVersamenti(bd).get(0).getIbanAccredito(bd).getCodIban());
+				if(portaleAutenticato.getVersione().compareTo(Versione.GP_02_03_00) >= 0) {
+					if(versamento.getSingoliVersamenti(bd).get(0).getTributo(bd) != null)
+						response.setCodTributo(versamento.getSingoliVersamenti(bd).get(0).getTributo(bd).getCodTributo());
+					response.setCodContabilita(versamento.getSingoliVersamenti(bd).get(0).getCodContabilita(bd));
+					response.setTipoContabilita(TipoContabilita.valueOf(versamento.getSingoliVersamenti(bd).get(0).getTipoContabilita(bd).name()));
+				}
 			}
 			response.setImportoTotale(versamento.getImportoTotale());
 			response.setStato(StatoVersamento.valueOf(versamento.getStatoVersamento().toString()));
+			
 			
 			if(versamento.getCausaleVersamento() instanceof Versamento.CausaleSemplice)
 				response.setCausale(((Versamento.CausaleSemplice) versamento.getCausaleVersamento()).getCausale());
@@ -640,8 +645,10 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			
 			Iuv iuv = versamento.getIuv(bd);
 			if(iuv != null) {
-				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(versamento.getApplicazione(bd), versamento.getUo(bd).getDominio(bd), iuv, versamento.getImportoTotale());
+				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(versamento.getApplicazione(bd), versamento.getUo(bd).getDominio(bd), iuv, versamento.getImportoTotale(), portaleAutenticato.getVersione());
 				response.setIuv(iuv.getIuv());
+				if(portaleAutenticato.getVersione().compareTo(Versione.GP_02_03_00) >= 0)
+					response.setNumeroAvviso(iuvGenerato.getNumeroAvviso());
 				response.setBarCode(iuvGenerato.getBarCode());
 				response.setQrCode(iuvGenerato.getQrCode());
 			}
@@ -650,17 +657,17 @@ public class PagamentiTelematiciGPPrtImpl implements PagamentiTelematiciGPPrt {
 			for(Rpt rpt : rpts) {
 				response.getTransazione().add(Gp21Utils.toTransazione(portaleAutenticato.getVersione(), rpt, bd));
 			}
-			ctx.log("gpapp.ricevutaRichiestaOk");
+			ctx.log("ws.ricevutaRichiestaOk");
 		} catch (GovPayException e) {
 			response.setCodEsitoOperazione(e.getCodEsito());
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			e.log(log);
-			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} catch (Exception e) {
 			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 			response.setDescrizioneEsitoOperazione(e.getMessage());
 			new GovPayException(e).log(log);
-			ctx.log("gpapp.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			ctx.log("ws.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);

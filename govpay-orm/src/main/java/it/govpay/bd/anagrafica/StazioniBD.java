@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,15 +21,22 @@ package it.govpay.bd.anagrafica;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
-import it.govpay.bd.model.converter.StazioneConverter;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.converter.StazioneConverter;
+import it.govpay.bd.wrapper.StatoNdP;
 import it.govpay.orm.IdStazione;
+import it.govpay.orm.dao.jdbc.JDBCStazioneService;
 import it.govpay.orm.dao.jdbc.JDBCStazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.StazioneFieldConverter;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.UpdateField;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -78,6 +84,66 @@ public class StazioniBD extends BasicBD {
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		} catch (UtilsException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	
+	public void setStatoNdp(long idStazione, StatoNdP statoNdp) throws NotFoundException, ServiceException{
+		this.setStatoNdp(idStazione, statoNdp.getCodice(), statoNdp.getOperazione(), statoNdp.getDescrizione());
+	}
+	
+	public void setStatoNdp(long idStazione, Integer codice, String operazione, String descrizione) throws NotFoundException, ServiceException{
+		try {
+			
+			List<UpdateField> lst = new ArrayList<UpdateField>();
+			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_STATO, codice));
+			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_OPERAZIONE, operazione));
+			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE, descrizione));
+			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_DATA, new Date()));
+			
+			((JDBCStazioneService)this.getStazioneService()).updateFields(idStazione, lst.toArray(new UpdateField[]{}));
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public StatoNdP getStatoNdp(long idStazione) throws NotFoundException, ServiceException {
+		try {
+			
+			List<IField> lst = new ArrayList<IField>();
+			lst.add(it.govpay.orm.Stazione.model().NDP_STATO);
+			lst.add(it.govpay.orm.Stazione.model().NDP_OPERAZIONE);
+			lst.add(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE);
+			lst.add(it.govpay.orm.Stazione.model().NDP_DATA);
+
+			IPaginatedExpression expr = this.getStazioneService().newPaginatedExpression();
+			StazioneFieldConverter converter = new StazioneFieldConverter(this.getJdbcProperties().getDatabase());
+			expr.equals(new CustomField("id",  Long.class, "id", converter.toTable(it.govpay.orm.Stazione.model())), idStazione);
+			List<Map<String,Object>> select = this.getStazioneService().select(expr, lst.toArray(new IField[]{}));
+			if(select == null || select.size() <= 0) {
+				throw new NotFoundException("Id Stazione ["+idStazione+"]");
+			}
+			
+			if(select.size() > 1) {
+				throw new MultipleResultException("Id Stazione ["+idStazione+"]");
+			}
+			
+			StatoNdP stato = new StatoNdP();
+			
+			stato.setCodice((Integer)select.get(0).get(it.govpay.orm.Stazione.model().NDP_STATO));
+			stato.setDescrizione((String)select.get(0).get(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE));
+			stato.setOperazione((String)select.get(0).get(it.govpay.orm.Stazione.model().NDP_OPERAZIONE));
+			stato.setData((Date)select.get(0).get(it.govpay.orm.Stazione.model().NDP_DATA)) ;
+			return stato;
+			
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}

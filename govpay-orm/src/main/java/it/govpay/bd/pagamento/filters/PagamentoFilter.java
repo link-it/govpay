@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -41,14 +40,10 @@ import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 public class PagamentoFilter extends AbstractFilter {
 	
 	private Long idRr;
-	private Long idFrApplicazione;
-	private Long idFrApplicazioneRevoca;
-	private List<Long> idFrApplicazioneOrIdFrApplicazioneRevoca;
-	
+	private Long idRpt;
 	private String codDominio;
 	private Date dataInizio;
 	private Date dataFine;
-	
 	private List<Long> idVersamenti;
 	
 	public enum SortFields {
@@ -71,47 +66,16 @@ public class PagamentoFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(new CustomField("id_rr", Long.class, "id_rr", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), getIdRr());
+				newExpression.equals(new CustomField("id_rr", Long.class, "id_rr", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRr());
 				addAnd = true;
 			}
 			
-			if(this.getIdFrApplicazione() != null) {
+			if(this.getIdRpt() != null) {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.equals(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazione);
+				newExpression.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
 				addAnd = true;
-			}
-			
-
-			if(this.getIdFrApplicazioneRevoca() != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneRevoca);
-				addAnd = true;
-			}
-			
-			if(this.idFrApplicazioneOrIdFrApplicazioneRevoca != null){
-				if(addAnd)
-					newExpression.and();
-				
-				IExpression orExpr = this.newExpression();
-				IExpression revocaExpr = this.newExpression();
-				
-				orExpr.in(new CustomField("id_fr_applicazione", Long.class, "id_fr_applicazione", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca);
-				orExpr.or();
-				
-				// id fr applicazione revoca non null
-				revocaExpr.in(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), idFrApplicazioneOrIdFrApplicazioneRevoca)
-				.and().isNotNull(new CustomField("id_fr_applicazione_revoca", Long.class, "id_fr_applicazione_revoca", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())));
-				
-				orExpr.or(revocaExpr);
-				
-				newExpression.and(orExpr);
-				
-				addAnd = true;
-				
 			}
 			
 			if(this.dataInizio != null && this.dataFine != null) {
@@ -168,30 +132,6 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idRr = idRr;
 	}
 
-	public Long getIdFrApplicazione() {
-		return idFrApplicazione;
-	}
-
-	public void setIdFrApplicazione(Long idFrApplicazione) {
-		this.idFrApplicazione = idFrApplicazione;
-	}
-
-	public Long getIdFrApplicazioneRevoca() {
-		return idFrApplicazioneRevoca;
-	}
-
-	public void setIdFrApplicazioneRevoca(Long idFrApplicazioneRevoca) {
-		this.idFrApplicazioneRevoca = idFrApplicazioneRevoca;
-	}
-
-	public List<Long> getIdFrApplicazioneOrIdFrApplicazioneRevoca() {
-		return idFrApplicazioneOrIdFrApplicazioneRevoca;
-	}
-
-	public void setIdFrApplicazioneOrIdFrApplicazioneRevoca(List<Long> idFrApplicazioneOrIdFrApplicazioneRevoca) {
-		this.idFrApplicazioneOrIdFrApplicazioneRevoca = idFrApplicazioneOrIdFrApplicazioneRevoca;
-	}
-
 	public String getCodDominio() {
 		return codDominio;
 	}
@@ -223,6 +163,12 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idVersamenti = idVersamenti;
 	}
 
- 
+	public Long getIdRpt() {
+		return idRpt;
+	}
+
+	public void setIdRpt(Long idRpt) {
+		this.idRpt = idRpt;
+	}
 	
 }

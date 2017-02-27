@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -22,19 +21,8 @@ package it.govpay.web.rs;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.UUID;
-
-import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediInformativaPSP;
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.core.exceptions.GovPayException;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.client.NodoClient;
-import it.govpay.bd.model.Dominio;
-import it.govpay.model.Intermediario;
-import it.govpay.bd.model.Stazione;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -47,11 +35,23 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.proxy.Actor;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Server;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.wrapper.StatoNdP;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
 
 @Path("/check")
 public class Check {
@@ -120,13 +120,50 @@ public class Check {
 		} 
 	}
 	
+	public class EsitoVerifica {
+		private Date ultimo_aggiornamento;
+		private Integer codice_stato;
+		private String operazione_eseguita;
+		private String errore_rilevato;
+		public Integer getCodice_stato() {
+			return codice_stato;
+		}
+		public void setCodice_stato(Integer codice_stato) {
+			this.codice_stato = codice_stato;
+		}
+		public String getOperazione_eseguita() {
+			return operazione_eseguita;
+		}
+		public void setOperazione_eseguita(String operazione_eseguita) {
+			this.operazione_eseguita = operazione_eseguita;
+		}
+		public String getErrore_rilevato() {
+			return errore_rilevato;
+		}
+		public void setErrore_rilevato(String errore_rilevato) {
+			this.errore_rilevato = errore_rilevato;
+		}
+		public Date getUltimo_aggiornamento() {
+			return ultimo_aggiornamento;
+		}
+		public void setUltimo_aggiornamento(Date ultimo_aggiornamento) {
+			this.ultimo_aggiornamento = ultimo_aggiornamento;
+		}
+		
+		@Override
+		public String toString() {
+			if(codice_stato == 0) return "OK";
+			if(codice_stato == 1) return "WARN: STATO NON VERIFICATO";
+			if(codice_stato == 2) return "FAIL: [" + operazione_eseguita + "] " + errore_rilevato;
+			return "ERRORE!!";
+		}
+	}
 	
 	@GET
 	@Path("/{codDominio}")
-	public Response verificaDominio(@PathParam(value = "codDominio") String codDominio) {
+	public Response verificaDominioJson(@PathParam(value = "codDominio") String codDominio) {
 		BasicBD bd = null;
 		GpContext ctx = null;
-		Logger log = LogManager.getLogger();
 		try {
 			ctx = new GpContext();
 			Service service = new Service();
@@ -147,44 +184,58 @@ public class Check {
 			to.setType(GpContext.TIPO_SOGGETTO_GOVPAY);
 			ctx.getTransaction().setTo(to);
 			
-//			HttpServletRequest servletRequest = (HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST);
-//			Client client = new Client();
-//			client.setInvocationEndpoint(servletRequest.getRequestURI());
-//			client.setInterfaceName(((QName) msgCtx.get(MessageContext.WSDL_INTERFACE)).getLocalPart());
-//			if(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal() != null)
-//				client.setPrincipal(((HttpServletRequest) msgCtx.get(MessageContext.SERVLET_REQUEST)).getUserPrincipal().getName());
-//			transaction.setClient(client);
-			
 			ThreadContext.put("op", ctx.getTransactionId());
 			GpThreadLocal.set(ctx);
 			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			DominiBD dominiBD = new DominiBD(bd);
-			Dominio d = null;
 			
+			EsitoVerifica esito = new EsitoVerifica();
 			try {
-				d = dominiBD.getDominio(codDominio);
-				log.debug("Dominio ["+ codDominio +"] identificato");
-				Stazione s = d.getStazione(bd);
-				Intermediario i = s.getIntermediario(bd);
-				NodoClient c = new NodoClient(i);
-				NodoChiediInformativaPSP richiesta = new NodoChiediInformativaPSP();
-				richiesta.setIdentificativoDominio(d.getCodDominio());
-				richiesta.setIdentificativoIntermediarioPA(i.getCodIntermediario());
-				richiesta.setIdentificativoStazioneIntermediarioPA(s.getCodStazione());
-				richiesta.setPassword(s.getPassword());
-				log.debug("Richiesta alla stazione " + s.getCodStazione() + " in corso...");
-				c.nodoChiediInformativaPSP(richiesta, "");
+				DominiBD dominiBD = new DominiBD(bd);
+				StazioniBD stazioniBD = new StazioniBD(bd);
+				
+				Dominio d = AnagraficaManager.getDominio(bd, codDominio);
+				Stazione stazione = d.getStazione(bd);
+				
+				StatoNdP statoDominioNdp = dominiBD.getStatoNdp(d.getId());
+				StatoNdP statoStazioneNdp = stazioniBD.getStatoNdp(stazione.getId());
+				
+				if(statoDominioNdp.getCodice() == null) {
+					esito.setCodice_stato(1);
+					esito.setErrore_rilevato("STATO NON VERIFICATO");
+					return Response.ok().entity(esito).build();
+				}
+				
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice() == null) {
+					esito.setCodice_stato(0);
+					return Response.ok().entity(esito).build();
+				}
+				
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() == 0) {
+					esito.setCodice_stato(0);
+					return Response.ok().entity(esito).build();
+				}
+				
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() != 0) {
+					esito.setCodice_stato(2);
+					esito.setUltimo_aggiornamento(statoStazioneNdp.getData());
+					esito.setOperazione_eseguita(statoStazioneNdp.getOperazione());
+					esito.setErrore_rilevato(statoStazioneNdp.getDescrizione());
+					return Response.status(500).entity(esito).build();
+				}
+				if(statoDominioNdp.getCodice().intValue() != 0){ 
+					esito.setCodice_stato(2);
+					esito.setUltimo_aggiornamento(statoDominioNdp.getData());
+					esito.setOperazione_eseguita(statoDominioNdp.getOperazione());
+					esito.setErrore_rilevato(statoDominioNdp.getDescrizione());
+					return Response.status(500).entity(esito).build();
+				}
+
 			} catch(NotFoundException e) {
-				throw new Exception("Dominio [" + codDominio + "] non censito in anagrafica.");
-			} catch(GovPayException e) {
-				throw new Exception(e.getCodEsito().toString() + ": " + e.getMessage());
-			} catch(Exception e) {
-				log.error("Errore nel check del dominio", e);
-				throw new Exception("Impossibile invocare il Nodo dei Pagamenti: " + e.getMessage(), e);
-			}
+				return Response.status(404).build();
+			} 
 			return Response.ok().build();
-		} catch (Exception e) {
+		} catch (ServiceException e) {
 			return Response.status(500).entity(e.getMessage()).build();
 		} finally {
 			if(bd!= null) bd.closeConnection();

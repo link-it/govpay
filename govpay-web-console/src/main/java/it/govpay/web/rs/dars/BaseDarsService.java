@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,7 +60,7 @@ public abstract class BaseDarsService extends BaseRsService {
 	public static final String PATH_ESPORTA = "esporta";
 	public static final String PATH_CANCELLA = "cancella";
 	public static final String PATH_UPLOAD = "upload";
-	
+
 	protected Logger log = LogManager.getLogger();
 
 	public BaseDarsService() {
@@ -82,7 +81,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		try{
 			bd = BasicBD.newInstance(this.codOperazione);
 			Elenco elenco = this.getDarsHandler().getElenco(uriInfo,bd);
-
+			
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(elenco);
 		}catch(WebApplicationException e){
@@ -94,7 +93,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".elenco.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".elenco.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -122,7 +121,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			// Field richiesto non valido
 			if(field == null){
 				darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-				darsResponse.setDettaglioEsito(Utils.getInstance().getMessageWithParamsFromResourceBundle("field.fieldNonPresente", id,this.getNomeServizio()));
+				darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.fieldNonPresente", id,this.getNomeServizio()));
 				return darsResponse;
 			}
 
@@ -137,7 +136,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -176,7 +175,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".dettaglio.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".dettaglio.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -221,7 +220,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".cancella.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".cancella.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -229,16 +228,16 @@ public abstract class BaseDarsService extends BaseRsService {
 		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
 	}
-	
+
 	@POST
 	@Path("/esporta")
-	@Produces({MediaType.APPLICATION_OCTET_STREAM})
+	@Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
 	public Response esporta(List<Long> idsToExport, @Context UriInfo uriInfo) throws Exception{
 		StringBuffer sb = new StringBuffer();
 
 		if(idsToExport != null && idsToExport.size() > 0)
 			for (Long long1 : idsToExport) {
-				
+
 				if(sb.length() > 0)
 					sb.append(", ");
 
@@ -253,13 +252,20 @@ public abstract class BaseDarsService extends BaseRsService {
 		darsResponse.setCodOperazione(this.codOperazione);
 
 		try {
-			bd = BasicBD.newInstance(this.codOperazione);
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ZipOutputStream zout = new ZipOutputStream(baos);
-			
-			String fileName = this.getDarsHandler().esporta(idsToExport, uriInfo, bd, zout);
-			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
-			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
+			if(idsToExport != null && idsToExport.size() > 0){
+				bd = BasicBD.newInstance(this.codOperazione);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				ZipOutputStream zout = new ZipOutputStream(baos);
+
+				String fileName = this.getDarsHandler().esporta(idsToExport, uriInfo, bd, zout);
+				this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
+				return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
+			}else{
+				this.log.error("Riscontrato errore di input durante l'esecuzione del metodo "+methodName+": La selezione degli elementi da esportare e' vuota.");
+				darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
+				darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".esporta.erroreSelezioneVuota"));
+				return Response.ok(darsResponse,MediaType.APPLICATION_JSON).build();
+			}
 		} catch(WebApplicationException e){
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
@@ -273,9 +279,9 @@ public abstract class BaseDarsService extends BaseRsService {
 			this.response.setHeader("Access-Control-Expose-Headers", "content-disposition");
 			if(bd != null) bd.closeConnection();
 		}
-		
+
 	}
-	
+
 	@GET
 	@Path("/{id}/esporta")
 	@Produces({MediaType.APPLICATION_OCTET_STREAM})
@@ -292,7 +298,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			bd = BasicBD.newInstance(this.codOperazione);
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ZipOutputStream zout = new ZipOutputStream(baos);
-			
+
 			String fileName = this.getDarsHandler().esporta(id, uriInfo, bd, zout);
 			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
 			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
@@ -309,7 +315,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			this.response.setHeader("Access-Control-Expose-Headers", "content-disposition");
 			if(bd != null) bd.closeConnection();
 		}
-		
+
 	}
 
 	@POST
@@ -331,11 +337,11 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			darsResponse.setResponse(dettaglio);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.ok")); 
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".creazione.ok")); 
 		} catch(ValidationException e){
 			this.log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreValidazione")+ " " + e.getMessage());
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreValidazione")+ " " + e.getMessage());
 			return darsResponse;
 		} catch(DuplicatedEntryException e){
 			this.log.error("Riscontrata errore di entry duplicata durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
@@ -352,7 +358,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".creazione.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -360,7 +366,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
-	
+
 	@PUT
 	@Path("/")
 	@Consumes({MediaType.APPLICATION_JSON})
@@ -379,11 +385,11 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			darsResponse.setResponse(dettaglio);
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.ok")); 
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.ok")); 
 		} catch(ValidationException e){
 			this.log.error("Riscontrato errore di validazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreValidazione")+ " " + e.getMessage());
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreValidazione")+ " " + e.getMessage());
 			return darsResponse;
 		} catch(WebApplicationException e){
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
@@ -395,7 +401,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".aggiornamento.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -403,7 +409,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
-	
+
 	@POST
 	@Path("/upload")
 	@Consumes({MediaType.MULTIPART_FORM_DATA})
@@ -419,10 +425,11 @@ public abstract class BaseDarsService extends BaseRsService {
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
 			
-			this.getDarsHandler().uplaod(input, uriInfo, bd);
+			Object res = this.getDarsHandler().uplaod(input, uriInfo, bd);
 			
+			darsResponse.setResponse(res); 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".upload.ok")); 
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".upload.ok")); 
 		} catch(WebApplicationException e){
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
@@ -433,7 +440,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				bd.rollback();
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance().getMessageFromResourceBundle(this.getNomeServizio()+".upload.erroreGenerico"));
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".upload.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();

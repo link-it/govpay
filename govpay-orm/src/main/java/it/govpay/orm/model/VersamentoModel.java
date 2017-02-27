@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,6 +60,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_LOCALITA = new Field("debitoreLocalita",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_PROVINCIA = new Field("debitoreProvincia",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_NAZIONE = new Field("debitoreNazione",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_EMAIL = new Field("debitoreEmail",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_TELEFONO = new Field("debitoreTelefono",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_CELLULARE = new Field("debitoreCellulare",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_FAX = new Field("debitoreFax",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_LOTTO = new Field("codLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_VERSAMENTO_LOTTO = new Field("codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new Field("codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
@@ -91,6 +94,10 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 		this.DEBITORE_LOCALITA = new ComplexField(father,"debitoreLocalita",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_PROVINCIA = new ComplexField(father,"debitoreProvincia",java.lang.String.class,"Versamento",Versamento.class);
 		this.DEBITORE_NAZIONE = new ComplexField(father,"debitoreNazione",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_EMAIL = new ComplexField(father,"debitoreEmail",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_TELEFONO = new ComplexField(father,"debitoreTelefono",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_CELLULARE = new ComplexField(father,"debitoreCellulare",java.lang.String.class,"Versamento",Versamento.class);
+		this.DEBITORE_FAX = new ComplexField(father,"debitoreFax",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_LOTTO = new ComplexField(father,"codLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_VERSAMENTO_LOTTO = new ComplexField(father,"codVersamentoLotto",java.lang.String.class,"Versamento",Versamento.class);
 		this.COD_ANNO_TRIBUTARIO = new ComplexField(father,"codAnnoTributario",java.lang.String.class,"Versamento",Versamento.class);
@@ -137,6 +144,14 @@ public class VersamentoModel extends AbstractModel<Versamento> {
 	public IField DEBITORE_PROVINCIA = null;
 	 
 	public IField DEBITORE_NAZIONE = null;
+	 
+	public IField DEBITORE_EMAIL = null;
+	 
+	public IField DEBITORE_TELEFONO = null;
+	 
+	public IField DEBITORE_CELLULARE = null;
+	 
+	public IField DEBITORE_FAX = null;
 	 
 	public IField COD_LOTTO = null;
 	 

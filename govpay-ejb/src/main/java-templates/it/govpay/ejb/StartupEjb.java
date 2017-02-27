@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -70,7 +69,7 @@ public class StartupEjb {
 		GovpayConfig gpConfig = null;
 		try {
 			gpConfig = GovpayConfig.newInstance();
-			it.govpay.bd.GovpayConfig.newInstance();
+			it.govpay.bd.GovpayConfig.newInstance("/govpay.properties");
 			it.govpay.bd.GovpayCustomConfig.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);
@@ -141,7 +140,7 @@ public class StartupEjb {
 			ThreadContext.put("op", ctx.getTransactionId());
 			Service service = new Service();
 			service.setName("Inizializzazione");
-			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_BATCH);
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
 			ctx.getTransaction().setService(service);
 			Operation opt = new Operation();
 			opt.setName("Init");

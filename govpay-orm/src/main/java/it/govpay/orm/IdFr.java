@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,7 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-fr">
  * 		&lt;sequence>
  * 			&lt;element name="codFlusso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="annoRiferimento" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -53,7 +52,7 @@ import java.io.Serializable;
 @XmlType(name = "id-fr", 
   propOrder = {
   	"codFlusso",
-  	"annoRiferimento"
+  	"codDominio"
   }
 )
 
@@ -85,12 +84,12 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
     this.codFlusso = codFlusso;
   }
 
-  public int getAnnoRiferimento() {
-    return this.annoRiferimento;
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
   }
 
-  public void setAnnoRiferimento(int annoRiferimento) {
-    this.annoRiferimento = annoRiferimento;
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
   }
 
   private static final long serialVersionUID = 1L;
@@ -104,8 +103,8 @@ public class IdFr extends org.openspcoop2.utils.beans.BaseBean implements Serial
   @XmlElement(name="codFlusso",required=true,nillable=false)
   protected java.lang.String codFlusso;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="int")
-  @XmlElement(name="annoRiferimento",required=true,nillable=false)
-  protected int annoRiferimento;
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codDominio",required=false,nillable=false)
+  protected java.lang.String codDominio;
 
 }

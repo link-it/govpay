@@ -4,3 +4,5 @@
 /.gitignore
 /target/
 /bin/
+/.classpath
+/.settings/

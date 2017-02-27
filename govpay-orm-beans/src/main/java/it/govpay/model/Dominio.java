@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,6 +19,8 @@
  */
 
 package it.govpay.model;
+
+import java.util.Date;
 
 public class Dominio extends BasicModel {
 	private static final long serialVersionUID = 1L;
@@ -37,6 +38,16 @@ public class Dominio extends BasicModel {
 	private boolean abilitato;
 	private byte[] contiAccredito;
 	private byte[] tabellaControparti;
+	private int auxDigit;
+	private Integer segregationCode;
+	
+	private Integer ndpStato;
+	private String ndpOperazione;
+	private String ndpDescrizione;
+	private Date ndpData;
+	
+	private String iuvPrefix;
+	private boolean iuvPrefixStrict;
 	
 	public Long getId() {
 		return id;
@@ -125,5 +136,70 @@ public class Dominio extends BasicModel {
 	public void setCustomIuv(boolean customIuv) {
 		this.customIuv = customIuv;
 	}
+
+	public int getAuxDigit() {
+		return auxDigit;
+	}
+
+	public void setAuxDigit(int auxDigit) {
+		this.auxDigit = auxDigit;
+	}
+
+	public String getIuvPrefix() {
+		return iuvPrefix;
+	}
+
+	public void setIuvPrefix(String iuvPrefix) {
+		this.iuvPrefix = iuvPrefix;
+	}
+
+	public boolean isIuvPrefixStrict() {
+		return iuvPrefixStrict;
+	}
+
+	public void setIuvPrefixStrict(boolean iuvPrefixStrict) {
+		this.iuvPrefixStrict = iuvPrefixStrict;
+	}
+
+	public Integer getSegregationCode() {
+		return segregationCode;
+	}
+
+	public void setSegregationCode(Integer segregationCode) {
+		this.segregationCode = segregationCode;
+	}
+	public Integer getNdpStato() {
+		return ndpStato;
+	}
+
+	public void setNdpStato(Integer ndpStato) {
+		this.ndpStato = ndpStato;
+	}
+
+	public String getNdpOperazione() {
+		return ndpOperazione;
+	}
+
+	public void setNdpOperazione(String ndpOperazione) {
+		this.ndpOperazione = ndpOperazione;
+	}
+
+	public String getNdpDescrizione() {
+		return ndpDescrizione;
+	}
+
+	public void setNdpDescrizione(String ndpDescrizione) {
+		this.ndpDescrizione = ndpDescrizione;
+	}
+
+	public Date getNdpData() {
+		return ndpData;
+	}
+
+	public void setNdpData(Date ndpData) {
+		this.ndpData = ndpData;
+	}
+
+
 }
 

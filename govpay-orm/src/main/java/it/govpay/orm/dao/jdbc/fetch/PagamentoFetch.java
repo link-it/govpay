@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,8 +54,10 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 				Pagamento object = new Pagamento();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodSingoloVersamentoEnte", Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_singolo_versamento_ente", Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
+				setParameter(object, "setCodDominio", Pagamento.model().COD_DOMINIO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_dominio", Pagamento.model().COD_DOMINIO.getFieldType()));
+				setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv", Pagamento.model().IUV.getFieldType()));
 				setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo_pagato", Pagamento.model().IMPORTO_PAGATO.getFieldType()));
 				setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
@@ -73,16 +74,6 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "tipo_allegato", Pagamento.model().TIPO_ALLEGATO.getFieldType()));
 				setParameter(object, "setAllegato", Pagamento.model().ALLEGATO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "allegato", Pagamento.model().ALLEGATO.getFieldType()));
-				setParameter(object, "setRendicontazioneEsito", Pagamento.model().RENDICONTAZIONE_ESITO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rendicontazione_esito", Pagamento.model().RENDICONTAZIONE_ESITO.getFieldType()));
-				setParameter(object, "setRendicontazioneData", Pagamento.model().RENDICONTAZIONE_DATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rendicontazione_data", Pagamento.model().RENDICONTAZIONE_DATA.getFieldType()));
-				setParameter(object, "setCodflussoRendicontazione", Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "codflusso_rendicontazione", Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType()));
-				setParameter(object, "setAnnoRiferimento", Pagamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento", Pagamento.model().ANNO_RIFERIMENTO.getFieldType()));
-				setParameter(object, "setIndiceSingoloPagamento", Pagamento.model().INDICE_SINGOLO_PAGAMENTO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "indice_singolo_pagamento", Pagamento.model().INDICE_SINGOLO_PAGAMENTO.getFieldType()));
 				setParameter(object, "setDataAcquisizioneRevoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_acquisizione_revoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
 				setParameter(object, "setCausaleRevoca", Pagamento.model().CAUSALE_REVOCA.getFieldType(),
@@ -95,16 +86,6 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "esito_revoca", Pagamento.model().ESITO_REVOCA.getFieldType()));
 				setParameter(object, "setDatiEsitoRevoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_esito_revoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType()));
-				setParameter(object, "setRendicontazioneEsitoRevoca", Pagamento.model().RENDICONTAZIONE_ESITO_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rendicontazione_esito_revoca", Pagamento.model().RENDICONTAZIONE_ESITO_REVOCA.getFieldType()));
-				setParameter(object, "setRendicontazioneDataRevoca", Pagamento.model().RENDICONTAZIONE_DATA_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "rendicontazione_data_revoca", Pagamento.model().RENDICONTAZIONE_DATA_REVOCA.getFieldType()));
-				setParameter(object, "setCodFlussoRendicontazioneRevoca", Pagamento.model().COD_FLUSSO_RENDICONTAZIONE_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_flusso_rendicontaz_revoca", Pagamento.model().COD_FLUSSO_RENDICONTAZIONE_REVOCA.getFieldType()));
-				setParameter(object, "setAnnoRiferimentoRevoca", Pagamento.model().ANNO_RIFERIMENTO_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "anno_riferimento_revoca", Pagamento.model().ANNO_RIFERIMENTO_REVOCA.getFieldType()));
-				setParameter(object, "setIndiceSingoloPagamentoRevoca", Pagamento.model().INDICE_SINGOLO_PAGAMENTO_REVOCA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ind_singolo_pagamento_revoca", Pagamento.model().INDICE_SINGOLO_PAGAMENTO_REVOCA.getFieldType()));
 				return object;
 			}
 			
@@ -127,8 +108,10 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 				Pagamento object = new Pagamento();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodSingoloVersamentoEnte", Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType(),
-					this.getObjectFromMap(map,"codSingoloVersamentoEnte"));
+				setParameter(object, "setCodDominio", Pagamento.model().COD_DOMINIO.getFieldType(),
+					this.getObjectFromMap(map,"codDominio"));
+				setParameter(object, "setIuv", Pagamento.model().IUV.getFieldType(),
+					this.getObjectFromMap(map,"iuv"));
 				setParameter(object, "setImportoPagato", Pagamento.model().IMPORTO_PAGATO.getFieldType(),
 					this.getObjectFromMap(map,"importoPagato"));
 				setParameter(object, "setDataAcquisizione", Pagamento.model().DATA_ACQUISIZIONE.getFieldType(),
@@ -145,16 +128,6 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"tipoAllegato"));
 				setParameter(object, "setAllegato", Pagamento.model().ALLEGATO.getFieldType(),
 					this.getObjectFromMap(map,"allegato"));
-				setParameter(object, "setRendicontazioneEsito", Pagamento.model().RENDICONTAZIONE_ESITO.getFieldType(),
-					this.getObjectFromMap(map,"rendicontazioneEsito"));
-				setParameter(object, "setRendicontazioneData", Pagamento.model().RENDICONTAZIONE_DATA.getFieldType(),
-					this.getObjectFromMap(map,"rendicontazioneData"));
-				setParameter(object, "setCodflussoRendicontazione", Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"codflussoRendicontazione"));
-				setParameter(object, "setAnnoRiferimento", Pagamento.model().ANNO_RIFERIMENTO.getFieldType(),
-					this.getObjectFromMap(map,"annoRiferimento"));
-				setParameter(object, "setIndiceSingoloPagamento", Pagamento.model().INDICE_SINGOLO_PAGAMENTO.getFieldType(),
-					this.getObjectFromMap(map,"indiceSingoloPagamento"));
 				setParameter(object, "setDataAcquisizioneRevoca", Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"dataAcquisizioneRevoca"));
 				setParameter(object, "setCausaleRevoca", Pagamento.model().CAUSALE_REVOCA.getFieldType(),
@@ -167,16 +140,6 @@ public class PagamentoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"esitoRevoca"));
 				setParameter(object, "setDatiEsitoRevoca", Pagamento.model().DATI_ESITO_REVOCA.getFieldType(),
 					this.getObjectFromMap(map,"datiEsitoRevoca"));
-				setParameter(object, "setRendicontazioneEsitoRevoca", Pagamento.model().RENDICONTAZIONE_ESITO_REVOCA.getFieldType(),
-					this.getObjectFromMap(map,"rendicontazioneEsitoRevoca"));
-				setParameter(object, "setRendicontazioneDataRevoca", Pagamento.model().RENDICONTAZIONE_DATA_REVOCA.getFieldType(),
-					this.getObjectFromMap(map,"rendicontazioneDataRevoca"));
-				setParameter(object, "setCodFlussoRendicontazioneRevoca", Pagamento.model().COD_FLUSSO_RENDICONTAZIONE_REVOCA.getFieldType(),
-					this.getObjectFromMap(map,"codFlussoRendicontazioneRevoca"));
-				setParameter(object, "setAnnoRiferimentoRevoca", Pagamento.model().ANNO_RIFERIMENTO_REVOCA.getFieldType(),
-					this.getObjectFromMap(map,"annoRiferimentoRevoca"));
-				setParameter(object, "setIndiceSingoloPagamentoRevoca", Pagamento.model().INDICE_SINGOLO_PAGAMENTO_REVOCA.getFieldType(),
-					this.getObjectFromMap(map,"indiceSingoloPagamentoRevoca"));
 				return object;
 			}
 			

@@ -19,6 +19,10 @@
 		<jxb:javaType name="java.lang.Integer" xmlType="xs:gYear"
 			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseYear"
 			printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printYear" />
+					
+		<jxb:javaType name="java.math.BigDecimal" xmlType="xs:decimal"
+			parseMethod="it.govpay.core.utils.adapter.DataTypeAdapter.parseImporto"
+			printMethod="it.govpay.core.utils.adapter.DataTypeAdapter.printImporto" />
 			
 	</jxb:globalBindings>
 	

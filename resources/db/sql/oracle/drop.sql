@@ -1,9 +1,8 @@
 -- Gli indici vengono eliminati automaticamente una volta eliminata la tabella
 -- DROP INDEX index_iuv_1 CASCADE;
-DROP TRIGGER trg_rendicontazioni_senza_rpt CASCADE;
+DROP TRIGGER trg_rendicontazioni CASCADE;
 DROP TRIGGER trg_eventi CASCADE;
 DROP TRIGGER trg_pagamenti CASCADE;
-DROP TRIGGER trg_fr_applicazioni CASCADE;
 DROP TRIGGER trg_fr CASCADE;
 DROP TRIGGER trg_iuv CASCADE;
 DROP TRIGGER trg_notifiche CASCADE;
@@ -26,10 +25,9 @@ DROP TRIGGER trg_intermediari CASCADE;
 DROP TRIGGER trg_canali CASCADE;
 DROP TRIGGER trg_psp CASCADE;
 DROP TABLE ID_MESSAGGIO_RELATIVO CASCADE;
-DROP TABLE rendicontazioni_senza_rpt CASCADE;
+DROP TABLE rendicontazioni CASCADE;
 DROP TABLE eventi CASCADE;
 DROP TABLE pagamenti CASCADE;
-DROP TABLE fr_applicazioni CASCADE;
 DROP TABLE fr CASCADE;
 DROP TABLE iuv CASCADE;
 DROP TABLE notifiche CASCADE;

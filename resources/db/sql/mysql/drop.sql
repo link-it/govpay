@@ -23,10 +23,9 @@
 -- DROP INDEX index_canali_1 ON canali  CASCADE;
 -- DROP INDEX index_psp_1 ON psp  CASCADE;
 DROP TABLE ID_MESSAGGIO_RELATIVO CASCADE;
-DROP TABLE rendicontazioni_senza_rpt CASCADE;
+DROP TABLE rendicontazioni CASCADE;
 DROP TABLE eventi CASCADE;
 DROP TABLE pagamenti CASCADE;
-DROP TABLE fr_applicazioni CASCADE;
 DROP TABLE fr CASCADE;
 DROP TABLE iuv CASCADE;
 DROP TABLE notifiche CASCADE;

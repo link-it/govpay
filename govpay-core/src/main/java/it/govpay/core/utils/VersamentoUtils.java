@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -61,9 +60,10 @@ public class VersamentoUtils {
 	
     public final static QName _VersamentoKeyCodApplicazione_QNAME = new QName("", "codApplicazione");
     public final static QName _VersamentoKeyCodVersamentoEnte_QNAME = new QName("", "codVersamentoEnte");
-    public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
     public final static QName _VersamentoKeyCodDominio_QNAME = new QName("", "codDominio");
+    public final static QName _VersamentoKeyCodUnivocoDebitore_QNAME = new QName("", "codUnivocoDebitore");
     public final static QName _VersamentoKeyBundlekey_QNAME = new QName("", "bundlekey");
+    public final static QName _VersamentoKeyIuv_QNAME = new QName("", "iuv");
 
 	public static void validazioneSemantica(Versamento versamento, boolean generaIuv, BasicBD bd) throws GovPayException, ServiceException {
 		if(generaIuv && versamento.getSingoliVersamenti(bd).size() != 1) {
@@ -270,7 +270,7 @@ public class VersamentoUtils {
 		// Controllo se la data di scadenza e' indicata ed e' decorsa
 		if(versamento.getDataScadenza() != null && versamento.getDataScadenza().before(new Date())) {
 			if(versamento.isAggiornabile() && versamento.getApplicazione(bd).getConnettoreVerifica() != null) {
-				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), null, null, bd);
+				versamento = acquisisciVersamento(versamento.getApplicazione(bd), versamento.getCodVersamentoEnte(), versamento.getCodBundlekey(), versamento.getAnagraficaDebitore().getCodUnivoco(), versamento.getUo(bd).getDominio(bd).getCodDominio(), null, bd);
 			} else {
 				throw new VersamentoScadutoException(versamento.getDataScadenza());
 			}
@@ -278,14 +278,42 @@ public class VersamentoUtils {
 		return versamento;
 	}
 
-	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+	public static Versamento acquisisciVersamento(Applicazione applicazione, String codVersamentoEnte, String bundlekey, String debitore, String dominio, String iuv, BasicBD bd) throws VersamentoScadutoException, VersamentoAnnullatoException, VersamentoDuplicatoException, VersamentoSconosciutoException, ServiceException, ClientException, GovPayException {
+		
+		String codVersamentoEnteD = codVersamentoEnte != null ? codVersamentoEnte : "-";
+		String bundlekeyD = bundlekey != null ? bundlekey : "-";
+		String debitoreD = debitore != null ? debitore : "-";
+		String dominioD = dominio != null ? dominio : "-";
+		String iuvD = iuv != null ? iuv : "-";
+		
 		GpContext ctx = GpThreadLocal.get();
+		ctx.log("verifica.avvio", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
 		if(applicazione.getConnettoreVerifica() == null) {
 			ctx.log("verifica.nonConfigurata");
 			throw new VersamentoSconosciutoException();
 		}
 		VerificaClient verificaClient = new VerificaClient(applicazione);
-		Versamento versamento = verificaClient.invoke(codVersamentoEnte, dominio, iuv, bd);
+		Versamento versamento = null;
+		try {
+			versamento = verificaClient.invoke(codVersamentoEnte, bundlekey, debitore, dominio, iuv, bd);
+			ctx.log("verifica.Ok", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+		} catch (ClientException e){
+			ctx.log("verifica.Fail", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD, e.getMessage());
+			throw e;
+		} catch (VersamentoScadutoException e) {
+			ctx.log("verifica.Scaduto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+			throw e;
+		} catch (VersamentoAnnullatoException e) {
+			ctx.log("verifica.Annullato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+			throw e;
+		} catch (VersamentoDuplicatoException e) {
+			ctx.log("verifica.Duplicato", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+			throw e;
+		} catch (VersamentoSconosciutoException e) {
+			ctx.log("verifica.Sconosciuto", applicazione.getCodApplicazione(), codVersamentoEnteD, bundlekeyD, debitoreD, dominioD, iuvD);
+			throw e;
+		} 
+		
 		it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(bd);
 		versamentoBusiness.caricaVersamento(applicazione, versamento, false, true);
 		return versamento;

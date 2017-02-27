@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -124,6 +123,34 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione";
 			}
 		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_contabilita";
+			}else{
+				return "tipo_contabilita";
+			}
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_contabilita";
+			}else{
+				return "cod_contabilita";
+			}
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tributo_iuv";
+			}else{
+				return "cod_tributo_iuv";
+			}
+		}
+		if(field.equals(Tributo.model().COD_TRIBUTO_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tributo_iuv";
+			}else{
+				return "cod_tributo_iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -161,6 +188,18 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tributo.model().TIPO_TRIBUTO.DESCRIZIONE)){
 			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
 		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.TIPO_CONTABILITA)){
+			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_CONTABILITA)){
+			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Tributo.model().TIPO_TRIBUTO.COD_TRIBUTO_IUV)){
+			return this.toTable(Tributo.model().TIPO_TRIBUTO, returnAlias);
+		}
+		if(field.equals(Tributo.model().COD_TRIBUTO_IUV)){
+			return this.toTable(Tributo.model(), returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -184,7 +223,7 @@ public class TributoFieldConverter extends AbstractSQLFieldConverter {
 			return "iban_accredito";
 		}
 		if(model.equals(Tributo.model().ID_IBAN_ACCREDITO.ID_DOMINIO)){
-			return "domini";
+			return "id_dominio";
 		}
 		if(model.equals(Tributo.model().TIPO_TRIBUTO)){
 			return "tipi_tributo";

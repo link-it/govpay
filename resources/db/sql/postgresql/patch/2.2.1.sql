@@ -18,3 +18,4 @@ ALTER TABLE iuv DROP CONSTRAINT fk_iuv_1;
 ALTER TABLE iuv DROP CONSTRAINT fk_iuv_2;
 
 CREATE INDEX index_iuv_1 ON iuv (cod_versamento_ente,tipo_iuv,id_applicazione);
+

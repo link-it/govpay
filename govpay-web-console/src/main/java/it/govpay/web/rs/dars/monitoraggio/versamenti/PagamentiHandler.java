@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -26,40 +25,36 @@ import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
-import it.govpay.bd.model.FrApplicazione;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.SingoloVersamento;
-import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.VersamentiBD;
-import it.govpay.bd.pagamento.filters.FrApplicazioneFilter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.model.Pagamento.EsitoRendicontazione;
 import it.govpay.model.Pagamento.TipoAllegato;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -71,8 +66,7 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
-import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRpt;
-import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.RendicontazioniSenzaRptHandler;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.Utils;
 
 public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
@@ -98,14 +92,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
-			String versamentoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
+			String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
-			String idFrApplicazioneId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.id");
-			String idFrApplicazione = this.getParameter(uriInfo, idFrApplicazioneId, String.class);
+			String idRptId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRpt.id");
+			String idRpt = this.getParameter(uriInfo, idRptId, String.class);
 
-			String idFrId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFr.id");
-			String idFr= this.getParameter(uriInfo, idFrId, String.class);
+			String idRrId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRr.id");
+			String idRr= this.getParameter(uriInfo, idRrId, String.class);
 
 			boolean eseguiRicerca = true;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -121,9 +115,12 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			filter.getFilterSortList().add(fsw);
 
 			long count = 0;
+			Map<String, String> params = new HashMap<String, String>();
 
 			// elemento correlato al versamento.
 			if(StringUtils.isNotEmpty(idVersamento)){
+				params.put(versamentoId, idVersamento);
+
 				VersamentoFilter versamentoFilter = versamentiBD.newFilter();
 				// SE l'operatore non e' admin vede solo i versamenti associati ai suoi domini
 				if(!isAdmin && idDomini.isEmpty()){
@@ -157,117 +154,37 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 				// Ricerca pagamenti associati 
 				filter.setIdVersamenti(idVersamentoL);
-				count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
-				eseguiRicerca = eseguiRicerca && count > 0;
-
-
 			}
 
-			long countRendicontazioniSenzaRpt = 0;
-			List<Long> idFrApplicazioni = new ArrayList<Long>();
-			if(StringUtils.isNotEmpty(idFrApplicazione)){
-				FrBD frBD = new FrBD(bd);
-				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
-
-				if(!isAdmin && idDomini.isEmpty()){
-					boolean vediTuttiDomini = false;
-
-					for(Acl acl: aclOperatore) {
-						if(Tipo.DOMINIO.equals(acl.getTipo())) {
-							if(acl.getIdDominio() == null) {
-								vediTuttiDomini = true;
-								break;
-							} else {
-								idDomini.add(acl.getIdDominio());
-							}
-						}
-					}
-					if(!vediTuttiDomini) {
-						if(idDomini.isEmpty()) {
-							eseguiRicerca = false;
-						} else {
-							frApplicazioneFilter.setIdDomini(idDomini);
-						}
-					}
-				}
-
-				frApplicazioneFilter.setIdFrApplicazione(Long.parseLong(idFrApplicazione));
-
-				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
-				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
-
-
-				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
-				if(eseguiRicerca){
-					// Ricerca Pagamenti uso idFrApplicazione per filtrare
-					idFrApplicazioni.add(Long.parseLong(idFrApplicazione));
-					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
-					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
-
-					// Rendicontazioni 
-					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
-					count += countRendicontazioniSenzaRpt;
-
-				}
+			if(StringUtils.isNotEmpty(idRpt)){
+				params.put(idRptId, idRpt);
+				filter.setIdRpt(Long.parseLong(idRpt)); 
 			}
 
-			if(StringUtils.isNotEmpty(idFr)){
-				FrBD frBD = new FrBD(bd);
-				FrApplicazioneFilter frApplicazioneFilter = frBD.newFrApplicazioneFilter();
-				List<Long> idFlussi = new ArrayList<Long>();
-				idFlussi.add(Long.parseLong(idFr));
-				frApplicazioneFilter.setIdFlussi(idFlussi);
-
-				long countFrApplicazione = eseguiRicerca ? frBD.countFrApplicazione(frApplicazioneFilter) : 0;
-				eseguiRicerca = eseguiRicerca && countFrApplicazione > 0;
-
-				// Eseguo la ricerca utilizzando l'idFrApplicazione per ricercare i pagamenti, pagamenti revocati e rndicontazioni senzwa RPT.
-				if(eseguiRicerca){
-					//prendere gli id_fr_applicazione
-					idFrApplicazioni = new ArrayList<Long>();
-					List<FrApplicazione> findAllFrApplicazione = frBD.findAllFrApplicazione(frApplicazioneFilter);
-					for (FrApplicazione frApplicazione : findAllFrApplicazione) {
-						idFrApplicazioni.add(frApplicazione.getId());
-					}
-
-					// Ricerca Pagamenti uso idFrApplicazione per filtrare
-					filter.setIdFrApplicazioneOrIdFrApplicazioneRevoca(idFrApplicazioni);
-					count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
-
-					// Rendicontazioni 
-					countRendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.countRendicontazioniSenzaRpt(idFrApplicazioni) : 0;
-					count += countRendicontazioniSenzaRpt;
-
-				}
+			if(StringUtils.isNotEmpty(idRr)){
+				params.put(idRrId, idRr);
+				filter.setIdRpt(Long.parseLong(idRr)); 
 			}
 
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+			count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+			eseguiRicerca = eseguiRicerca && count > 0;
 
-
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
-
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
 			List<Pagamento> pagamenti = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
 
 			if(pagamenti != null && pagamenti.size() > 0){
 				for (Pagamento entry : pagamenti) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), uriDettaglioBuilder,bd));
-				}
-			}
-
-			// tmp poi fare il merge
-			if(countRendicontazioniSenzaRpt > 0){
-				RendicontazioniSenzaRpt rendicontazioniSenzaRptDars = new RendicontazioniSenzaRpt();
-				RendicontazioniSenzaRptHandler rendicontazioniSenzaRptDarsHandler = (RendicontazioniSenzaRptHandler) rendicontazioniSenzaRptDars.getDarsHandler();
-				UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(rendicontazioniSenzaRptDars.getPathServizio()).path("{id}");
-
-				List<RendicontazioneSenzaRpt> rendicontazioniSenzaRpt = eseguiRicerca ? pagamentiBD.getRendicontazioniSenzaRpt(idFrApplicazioni) : new ArrayList<RendicontazioneSenzaRpt>();
-
-				if(rendicontazioniSenzaRpt != null && rendicontazioniSenzaRpt.size() > 0){
-					for (RendicontazioneSenzaRpt entry : rendicontazioniSenzaRpt) {
-						Elemento elemento = rendicontazioniSenzaRptDarsHandler.getElemento(entry, entry.getId(), uriDettaglioRRBuilder,bd);
-						elenco.getElenco().add(elemento);
-
+					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elemento.setFormatter(formatter);
+					elenco.getElenco().add(elemento);
+					
+					// aggiungo una copia per la revoca
+					if(entry.getIdRr() != null){
+						Elemento elementoRevoca = this.getElementoRevoca(entry, entry.getId(), this.pathServizio,bd);
+						elementoRevoca.setFormatter(formatter);
+						elenco.getElenco().add(elementoRevoca);	
 					}
 				}
 			}
@@ -305,103 +222,61 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			// Sezione root coi dati del pagamento
 			it.govpay.web.rs.dars.model.Sezione sezioneRoot = dettaglio.getSezioneRoot();
 
-
-
-
 			SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
 			if(singoloVersamento != null){
 				SingoliVersamenti svDars = new SingoliVersamenti();
 				SingoliVersamentiHandler svHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
-				UriBuilder uriSVBuilder = BaseRsService.checkDarsURI(uriInfo).path(svDars.getPathServizio()).path("{id}");
-				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), uriSVBuilder,bd); 
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
+				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), svDars.getPathServizio(),bd); 
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
 			}
-			if(StringUtils.isNotEmpty(pagamento.getCodSingoloVersamentoEnte()))
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),pagamento.getCodSingoloVersamentoEnte());
-
 			if(pagamento.getImportoPagato() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),(pagamento.getImportoPagato().toString() + "€"));
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),(pagamento.getImportoPagato().toString() + "€"));
 			if(pagamento.getCommissioniPsp() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".commissioniPsp.label"),(pagamento.getCommissioniPsp().toString() + "€"));
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".commissioniPsp.label"),(pagamento.getCommissioniPsp().toString() + "€"));
 			if(StringUtils.isNotEmpty(pagamento.getIur()))
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),pagamento.getIur()); 
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),pagamento.getIur()); 
 			if(pagamento.getDataPagamento() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),this.sdf.format(pagamento.getDataPagamento())); 
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),this.sdf.format(pagamento.getDataPagamento())); 
 			TipoAllegato tipoAllegato = pagamento.getTipoAllegato();
 			if(tipoAllegato!= null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato.label"),
-						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato."+tipoAllegato.name()));
-
-			//			Long idFrApplicazione = pagamento.getIdFrApplicazione();
-			//			if(idFrApplicazione != null){
-			//				ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-			//				Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
-			//				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazione.label"),applicazione.getCodApplicazione());
-			//			}
-			EsitoRendicontazione esitoRendicontazione = pagamento.getEsitoRendicontazione();
-			if(esitoRendicontazione != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione.label"),
-						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazione."+esitoRendicontazione.name()));
-			if(pagamento.getDataRendicontazione() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazione.label"),this.sdf.format(pagamento.getDataRendicontazione()));
-			if(pagamento.getAnnoRiferimento()!= null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"),pagamento.getAnnoRiferimento() + ""); 
-			if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazione()))
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazione.label"),pagamento.getCodFlussoRendicontazione());
-			if(pagamento.getIndice() != null)
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indice.label"),pagamento.getIndice() + ""); 
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato.label"),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato."+tipoAllegato.name()));
 
 			Rpt rpt = pagamento.getRpt(bd);
 			if(rpt!= null){
 				Transazioni transazioniDars = new Transazioni();
 				TransazioniHandler transazioniDarsHandler = (TransazioniHandler) transazioniDars.getDarsHandler();
-				UriBuilder uriRptBuilder = BaseRsService.checkDarsURI(uriInfo).path(transazioniDars.getPathServizio()).path("{id}");
-				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), uriRptBuilder,bd);
-				sezioneRoot.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rpt.label"),elemento.getTitolo(),elemento.getUri());
+				Elemento elemento = transazioniDarsHandler.getElemento(rpt, rpt.getId(), transazioniDars.getPathServizio(),bd);
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rpt.label"),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.visualizza"),elemento.getUri());
 			}
 
 			if(pagamento.getIdRr() != null){
-				String etichettaRevoca = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".sezioneRevoca.titolo");
+				String etichettaRevoca = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneRevoca.titolo");
 				it.govpay.web.rs.dars.model.Sezione sezioneRevoca = dettaglio.addSezione(etichettaRevoca);
 
+				if(pagamento.getDataAcquisizioneRevoca()!= null)
+					sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataAcquisizioneRevoca.label"),this.sdf.format(pagamento.getDataAcquisizioneRevoca())); 
+				
 				if(StringUtils.isNotEmpty(pagamento.getCausaleRevoca()))
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".causaleRevoca.label"),pagamento.getCausaleRevoca());
+					sezioneRevoca.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".causaleRevoca.label"),pagamento.getCausaleRevoca());
 				if(StringUtils.isNotEmpty(pagamento.getDatiRevoca()))
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".datiRevoca.label"),pagamento.getDatiRevoca());
+					sezioneRevoca.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".datiRevoca.label"),pagamento.getDatiRevoca());
 				if(StringUtils.isNotEmpty(pagamento.getEsitoRevoca()))
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRevoca.label"),pagamento.getEsitoRevoca());
+					sezioneRevoca.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esitoRevoca.label"),pagamento.getEsitoRevoca());
 				if(StringUtils.isNotEmpty(pagamento.getDatiEsitoRevoca()))
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".datiEsitoRevoca.label"),pagamento.getDatiEsitoRevoca());
+					sezioneRevoca.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".datiEsitoRevoca.label"),pagamento.getDatiEsitoRevoca());
 
 				if(pagamento.getImportoRevocato() != null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".importoRevocato.label"),(pagamento.getImportoRevocato().toString() + "€"));
-
-				//				Long idFrApplicazioneRevoca = pagamento.getIdFrApplicazioneRevoca();
-				//				if(idFrApplicazioneRevoca != null){
-				//					ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
-				//					Applicazione applicazione = applicazioniBD.getApplicazione(idFrApplicazione);
-				//					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".idFrApplicazioneRevoca.label"),applicazione.getCodApplicazione());
-				//				}
-				EsitoRendicontazione esitoRendicontazioneRevoca = pagamento.getEsitoRendicontazioneRevoca();
-				if(esitoRendicontazioneRevoca != null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca.label"),
-							Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".esitoRendicontazioneRevoca."+esitoRendicontazioneRevoca.name()));
-				if(pagamento.getDataRendicontazioneRevoca() != null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".dataRendicontazioneRevoca.label"),this.sdf.format(pagamento.getDataRendicontazioneRevoca()));
-				if(pagamento.getAnnoRiferimentoRevoca()!= null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimentoRevoca.label"),pagamento.getAnnoRiferimentoRevoca() + ""); 
-				if(StringUtils.isNotEmpty(pagamento.getCodFlussoRendicontazioneRevoca()))
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".codFlussoRendicontazioneRevoca.label"),pagamento.getCodFlussoRendicontazioneRevoca());
-				if(pagamento.getIndiceRevoca() != null)
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".indiceRevoca.label"),pagamento.getIndiceRevoca() + ""); 
+					sezioneRevoca.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoRevocato.label"),(pagamento.getImportoRevocato().toString() + "€"));
 
 				Rr rr = pagamento.getRr(bd);
 				if(rr != null){
 					Revoche revocheDars = new Revoche();
 					RevocheHandler revocheDarsHandler = (RevocheHandler) revocheDars.getDarsHandler();
-					UriBuilder uriDettaglioRRBuilder = BaseRsService.checkDarsURI(uriInfo).path(revocheDars.getPathServizio()).path("{id}");
-					Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), uriDettaglioRRBuilder,bd);
-					sezioneRevoca.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".rr.label"),elemento.getTitolo(),elemento.getUri());
+					Elemento elemento = revocheDarsHandler.getElemento(rr, rr.getId(), revocheDars.getPathServizio(),bd);
+					sezioneRevoca.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".rr.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.visualizza"),elemento.getUri());
 				}
 			}
 
@@ -414,6 +289,18 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			throw new ConsoleException(e);
 		}
 	}
+	
+	public Elemento getElementoRevoca(Pagamento entry, Long id, String uriDettaglio, BasicBD bd) throws ConsoleException{
+		try{
+			String titolo = this.getTitolo(entry,bd);
+			String sottotitolo = this.getSottotitolo(entry,bd);
+			URI urlDettaglio = (id != null && uriDettaglio != null) ? Utils.creaUriConPath(uriDettaglio , id+"") : null;
+			Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
+			elemento.setValori(this.getValori(entry, bd)); 
+			elemento.setVoci(this.getVociRevoca(entry, bd)); 
+			return elemento;
+		}catch(Exception e) {throw new ConsoleException(e);}
+	}
 
 	@Override
 	public String getTitolo(Pagamento entry,BasicBD bd) {
@@ -422,7 +309,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		StringBuilder sb = new StringBuilder();
 
 		String pagamentoString = 
-				Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", (importoPagato.toString() + "€") , this.sdf.format(dataPagamento)); 
+				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", (importoPagato.toString() + "€") , this.sdf.format(dataPagamento)); 
 		sb.append(pagamentoString);	
 		return sb.toString();
 	}
@@ -433,15 +320,97 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 		if(entry.getIdRr() != null){
 			Date dataRevoca = entry.getDataPagamento();
-			sb.append(Utils.getInstance().getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.revocato", this.sdf.format(dataRevoca)));
+			sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.revocato", this.sdf.format(dataRevoca)));
 		}
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Pagamento entry, BasicBD bd) throws ConsoleException {
 		return null;
+	}
+
+	@Override
+	public Map<String, Voce<String>> getVoci(Pagamento entry, BasicBD bd) throws ConsoleException { 
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+		Date dataPagamento = entry.getDataPagamento();
+		String statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.ok");
+		BigDecimal importo = entry.getImportoPagato() != null ? entry.getImportoPagato() : BigDecimal.ZERO;
+		String statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.ok", this.sdf.format(dataPagamento));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.id"),
+				new Voce<String>(statoPagamentoLabel,statoPagamento));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),
+						importo.toString()+ "€"));
+
+		if(dataPagamento!= null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),
+							this.sdf.format(dataPagamento)));	 
+		}
+
+		if(entry.getIur() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),entry.getIur()));
+		}
+
+		try{
+			SingoloVersamento singoloVersamento = entry.getSingoloVersamento(bd);
+			if(singoloVersamento != null){
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),singoloVersamento.getCodSingoloVersamentoEnte()));
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return valori; 
+	}
+	
+	public Map<String, Voce<String>> getVociRevoca(Pagamento entry, BasicBD bd) throws ConsoleException { 
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+
+		String statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.ok");
+		String statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.ok");
+		BigDecimal importo = entry.getImportoRevocato() != null ? entry.getImportoRevocato() : BigDecimal.ZERO;
+
+		Date dataAcquisizioneRevoca  = entry.getDataAcquisizioneRevoca();
+		String dataRevocaFormat = dataAcquisizioneRevoca != null ? this.sdf.format(dataAcquisizioneRevoca) : "--";
+		if(entry.getIdRr() != null){
+			statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.revocato");
+			statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.revocato", dataRevocaFormat);
+		} 
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.id"),
+				new Voce<String>(statoPagamentoLabel,statoPagamento));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoRevocato.label"),
+						importo.toString()+ "€"));
+
+		if(dataAcquisizioneRevoca!= null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataAcquisizioneRevoca.label"),
+							dataRevocaFormat));	 
+		}
+
+		if(entry.getIur() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),entry.getIur()));
+		}
+
+		try{
+			SingoloVersamento singoloVersamento = entry.getSingoloVersamento(bd);
+			if(singoloVersamento != null){
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),singoloVersamento.getCodSingoloVersamentoEnte()));
+			}
+		}catch(ServiceException e){
+			throw new ConsoleException(e);
+		}
+		return valori; 
 	}
 
 	@Override
@@ -452,10 +421,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 	return null;	}
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
+		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
+		InfoForm formRicerca = new InfoForm(ricerca);
+		return formRicerca;
+	}
+	/* Operazioni non consentite */
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
@@ -480,7 +453,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException {		return null;	}
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

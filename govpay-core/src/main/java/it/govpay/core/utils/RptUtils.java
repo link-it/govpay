@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -219,7 +218,7 @@ public class RptUtils {
 		} catch (NotFoundException e) {
 		}
 
-		if(uo.getAnagrafica() != null) {
+		if(!uo.getCodUo().equals(Dominio.EC) && uo.getAnagrafica() != null) {
 			if(uo.getAnagrafica().getCodUnivoco() != null && uo.getAnagrafica().getCodUnivoco().trim().length()>0)
 				enteBeneficiario.setCodiceUnitOperBeneficiario(uo.getAnagrafica().getCodUnivoco());
 			if(uo.getAnagrafica().getRagioneSociale() != null && uo.getAnagrafica().getRagioneSociale().trim().length()>0)
@@ -305,7 +304,7 @@ public class RptUtils {
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd));
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
 			NodoInviaRPT inviaRPT = new NodoInviaRPT();
 			inviaRPT.setIdentificativoCanale(rpt.getCanale(bd).getCodCanale());
 			inviaRPT.setIdentificativoIntermediarioPSP(rpt.getCanale(bd).getCodIntermediario());
@@ -347,7 +346,7 @@ public class RptUtils {
 			Evento evento = new Evento();
 			it.govpay.core.business.model.Risposta risposta = null;
 			try {
-				NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario);
+				NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
 				NodoInviaCarrelloRPT inviaCarrelloRpt = new NodoInviaCarrelloRPT();
 				inviaCarrelloRpt.setIdentificativoCanale(rpts.get(0).getCanale(bd).getCodCanale());
 				inviaCarrelloRpt.setIdentificativoIntermediarioPSP(rpts.get(0).getCanale(bd).getCodIntermediario());
@@ -412,7 +411,7 @@ public class RptUtils {
 
 	public static NodoChiediStatoRPTRisposta chiediStatoRPT(Intermediario intermediario, Stazione stazione, Rpt rpt, BasicBD bd) throws GovPayException, ClientException {
 
-		NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario);
+		NodoClient client = new it.govpay.core.utils.client.NodoClient(intermediario, bd);
 
 		NodoChiediStatoRPT nodoChiediStatoRPT = new NodoChiediStatoRPT();
 		nodoChiediStatoRPT.setCodiceContestoPagamento(rpt.getCcp());

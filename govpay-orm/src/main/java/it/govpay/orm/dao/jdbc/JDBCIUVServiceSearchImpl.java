@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -167,6 +166,7 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 			fields.add(IUV.model().TIPO_IUV);
 			fields.add(IUV.model().COD_VERSAMENTO_ENTE);
 			fields.add(IUV.model().APPLICATION_CODE);
+			fields.add(IUV.model().AUX_DIGIT);
 
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getIUVFieldConverter().toTable(IUV.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getIUVFieldConverter().toTable(IUV.model())));
@@ -496,84 +496,26 @@ public class JDBCIUVServiceSearchImpl implements IJDBCServiceSearchWithId<IUV, I
 	
 	private IUV _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
 		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(IUV.model()));
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
+		
+		expression.equals(idField, tableId);
+		expression.offset(0);
+		expression.limit(2); //per verificare la multiple results
+		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
+		List<IUV> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
+		
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
 				
-		IUV iuv = new IUV();
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 		
 
-		// Object iuv
-		ISQLQueryObject sqlQueryObjectGet_iuv = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_iuv.setANDLogicOperator(true);
-		sqlQueryObjectGet_iuv.addFromTable(this.getIUVFieldConverter().toTable(IUV.model()));
-		sqlQueryObjectGet_iuv.addSelectField("id");
-		sqlQueryObjectGet_iuv.addSelectField(this.getIUVFieldConverter().toColumn(IUV.model().PRG,true));
-		sqlQueryObjectGet_iuv.addSelectField(this.getIUVFieldConverter().toColumn(IUV.model().IUV,true));
-		sqlQueryObjectGet_iuv.addSelectField(this.getIUVFieldConverter().toColumn(IUV.model().APPLICATION_CODE,true));
-		sqlQueryObjectGet_iuv.addSelectField(this.getIUVFieldConverter().toColumn(IUV.model().DATA_GENERAZIONE,true));
-		sqlQueryObjectGet_iuv.addSelectField(this.getIUVFieldConverter().toColumn(IUV.model().TIPO_IUV,true));
-		sqlQueryObjectGet_iuv.addSelectField(this.getIUVFieldConverter().toColumn(IUV.model().COD_VERSAMENTO_ENTE,true));
-		sqlQueryObjectGet_iuv.addWhereCondition("id=?");
+		return lst.get(0);
 
-		// Get iuv
-		iuv = (IUV) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_iuv.createSQLQuery(), jdbcProperties.isShowSql(), IUV.model(), this.getIUVFetch(),
-			new JDBCObject(tableId,Long.class));
-
-
-		if(idMappingResolutionBehaviour==null ||
-			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-		){
-			// Object _iuv_applicazione (recupero id)
-			ISQLQueryObject sqlQueryObjectGet_iuv_applicazione_readFkId = sqlQueryObjectGet.newSQLQueryObject();
-			sqlQueryObjectGet_iuv_applicazione_readFkId.addFromTable(this.getIUVFieldConverter().toTable(it.govpay.orm.IUV.model()));
-			sqlQueryObjectGet_iuv_applicazione_readFkId.addSelectField("id_applicazione");
-			sqlQueryObjectGet_iuv_applicazione_readFkId.addWhereCondition("id=?");
-			sqlQueryObjectGet_iuv_applicazione_readFkId.setANDLogicOperator(true);
-			Long idFK_iuv_applicazione = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_iuv_applicazione_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
-					new JDBCObject(iuv.getId(),Long.class));
-			
-			it.govpay.orm.IdApplicazione id_iuv_applicazione = null;
-			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-				id_iuv_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_iuv_applicazione, false);
-			}else{
-				id_iuv_applicazione = new it.govpay.orm.IdApplicazione();
-			}
-			id_iuv_applicazione.setId(idFK_iuv_applicazione);
-			iuv.setIdApplicazione(id_iuv_applicazione);
-		}
-
-		if(idMappingResolutionBehaviour==null ||
-			(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
-		){
-			// Object _iuv_dominio (recupero id)
-			ISQLQueryObject sqlQueryObjectGet_iuv_dominio_readFkId = sqlQueryObjectGet.newSQLQueryObject();
-			sqlQueryObjectGet_iuv_dominio_readFkId.addFromTable(this.getIUVFieldConverter().toTable(it.govpay.orm.IUV.model()));
-			sqlQueryObjectGet_iuv_dominio_readFkId.addSelectField("id_dominio");
-			sqlQueryObjectGet_iuv_dominio_readFkId.addWhereCondition("id=?");
-			sqlQueryObjectGet_iuv_dominio_readFkId.setANDLogicOperator(true);
-			Long idFK_iuv_dominio = (Long) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_iuv_dominio_readFkId.createSQLQuery(), jdbcProperties.isShowSql(),Long.class,
-					new JDBCObject(iuv.getId(),Long.class));
-			
-			it.govpay.orm.IdDominio id_iuv_dominio = null;
-			if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
-				id_iuv_dominio = ((JDBCDominioServiceSearch)(this.getServiceManager().getDominioServiceSearch())).findId(idFK_iuv_dominio, false);
-			}else{
-				id_iuv_dominio = new it.govpay.orm.IdDominio();
-			}
-			id_iuv_dominio.setId(idFK_iuv_dominio);
-			iuv.setIdDominio(id_iuv_dominio);
-		}
-
-
-        return iuv;  
-	
 	} 
 	
 	@Override

@@ -38,9 +38,14 @@
         height: 100%;
       }
 
+      /*#mainContainer {
+        top: 0;
+      }*/
+
       paper-menu {
-      --paper-menu-selected-item: {
-         color: var(--primary-color);
+        --paper-menu-selected-item: {
+          color: var(--primary-color);
+        }
       }
 
       --paper-menu-focused-item-after: {
@@ -75,11 +80,6 @@
 
       paper-tabs {
         --paper-tabs-selection-bar-color: var(--accent-color);
-      }
-
-      /* Height of the scroll area */
-      .content {
-        height: 900px;
       }
 
       section[data-route="home"] paper-material {
@@ -145,6 +145,11 @@
         color: #fff;
       }
 
+      vaadin-combo-box-overlay::content #selector .item {
+        white-space: normal !important;
+        color: red;
+      }
+
       /*#spinner {
         position: absolute;
         left: 50%;
@@ -201,4 +206,4 @@
           font-size: 24px!important;
         }
       }
-    </style></template></dom-module>
+    </style><style include="elenco-custom"></style></template></dom-module>

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -52,7 +51,6 @@ import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.bd.model.Pagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.bd.model.Psp;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Stazione;
 import it.govpay.bd.model.Versamento;
@@ -157,7 +155,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
 			String principal = getPrincipal();
-			if(principal == null && GovpayConfig.getInstance().isPddAuthEnable()) {
+			if(GovpayConfig.getInstance().isPddAuthEnable() && principal == null) {
 				ctx.log("ccp.erroreNoAutorizzazione");
 				throw new NotAuthorizedException("Autorizzazione fallita: principal non fornito");
 			}
@@ -223,18 +221,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						if(versamento.getStatoVersamento().equals(StatoVersamento.ANOMALO))
 							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.");
 						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
-							PagamentiBD pagamentiBD = new PagamentiBD(bd);
-							List<RendicontazioneSenzaRpt> pagamenti = pagamentiBD.getRendicontazioniSenzaRptBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
-							if(pagamenti.isEmpty())
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
-							else {
-								RendicontazioneSenzaRpt pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataRendicontazione()) + " [Psp:" + pagamento.getFrApplicazione(bd).getFr(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
-							}
-						}
-						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
 							PagamentiBD pagamentiBD = new PagamentiBD(bd);
 							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
 							if(pagamenti.isEmpty())
@@ -243,17 +230,21 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 								Pagamento pagamento = pagamenti.get(0);
 								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
 							}
-								
 						}
 					}
-
 				} catch (NotFoundException e) {
 					// Versamento non trovato, devo interrogare l'applicazione.
-					if(iuvModel != null)
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), codDominio, iuv, bd);
-					else {
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()), null, codDominio, iuv, bd);
+					
+					if(iuvModel != null) {
+						ctx.log("ccp.versamentoNonPresente", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), null, null, codDominio, iuv, bd);
+						ctx.log("ccp.versamentoNonPresenteOk", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
+					} else {
+						ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
+						String codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd));
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
 						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
+						ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 					}
 				}
 			} catch (VersamentoScadutoException e1) {
@@ -478,8 +469,8 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 				iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
 				ctx.log("ccp.iuvPresente", iuvModel.getCodVersamentoEnte());
 			} catch (NotFoundException e) {
-				// iuv non trovato... se non ho una applicazione di default il pagamento e' sconosciuto.
-				if(dominio.getIdApplicazioneDefault() == null) {
+				// iuv non trovato... se non ho una applicazione riconducibile il pagamento e' sconosciuto.
+				if(it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd)) == null) {
 					ctx.log("ccp.iuvNonPresenteNoAppDefault");
 					throw new NdpException(FaultPa.PAA_PAGAMENTO_SCONOSCIUTO, codDominio);
 				}
@@ -506,25 +497,14 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 						if(versamento.getStatoVersamento().equals(StatoVersamento.ANOMALO))
 							throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato, ma si riscontrano anomalie negli importi. Per maggiori informazioni contattare il supporto clienti.");
 						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
-							PagamentiBD pagamentiBD = new PagamentiBD(bd);
-							List<RendicontazioneSenzaRpt> pagamenti = pagamentiBD.getRendicontazioniSenzaRptBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
-							if(pagamenti.isEmpty())
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
-							else {
-								RendicontazioneSenzaRpt pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataRendicontazione()) + " [Psp:" + pagamento.getFrApplicazione(bd).getFr(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
-							}
-						}
-						
-						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO)) {
+						if(versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO) || versamento.getStatoVersamento().equals(StatoVersamento.ESEGUITO_SENZA_RPT)) {
 							PagamentiBD pagamentiBD = new PagamentiBD(bd);
 							List<Pagamento> pagamenti = pagamentiBD.getPagamentiBySingoloVersamento(versamento.getSingoliVersamenti(bd).get(0).getId());
 							if(pagamenti.isEmpty())
 								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio);
 							else {
 								Pagamento pagamento = pagamenti.get(0);
-								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Psp:" + pagamento.getRpt(bd).getPsp(bd).getCodPsp() + " Iur:" + pagamento.getIur() + "]");
+								throw new NdpException(FaultPa.PAA_PAGAMENTO_DUPLICATO, codDominio, "Il pagamento risulta gi\u00E0 effettuato in data " + sdf.format(pagamento.getDataPagamento()) + " [Iur:" + pagamento.getIur() + "]");
 							}
 								
 						}
@@ -535,11 +515,12 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 					
 					if(iuvModel != null) {
 						ctx.log("ccp.versamentoNonPresente", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), codDominio, iuv, bd);
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()), iuvModel.getCodVersamentoEnte(), null, null, codDominio, iuv, bd);
 						ctx.log("ccp.versamentoNonPresenteOk", AnagraficaManager.getApplicazione(bd, iuvModel.getIdApplicazione()).getCodApplicazione(), iuvModel.getCodVersamentoEnte());
 					} else {
 						ctx.log("ccp.versamentoIuvNonPresente", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
-						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()), null, codDominio, iuv, bd);
+						String codApplicazione = it.govpay.bd.GovpayConfig.getInstance().getDefaultCustomIuvGenerator().getCodApplicazione(dominio, iuv, dominio.getApplicazioneDefault(bd));
+						versamento = VersamentoUtils.acquisisciVersamento(AnagraficaManager.getApplicazione(bd, codApplicazione), null, null, null, codDominio, iuv, bd);
 						iuvModel = new it.govpay.core.business.Iuv(bd).caricaIUV(versamento.getApplicazione(bd), dominio, iuv, TipoIUV.NUMERICO, versamento.getCodVersamentoEnte());
 						ctx.log("ccp.versamentoIuvNonPresenteOk", AnagraficaManager.getApplicazione(bd, dominio.getIdApplicazioneDefault()).getCodApplicazione(), dominio.getCodDominio(), iuv);
 					}

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -208,6 +207,34 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "debitore_nazione";
 			}
 		}
+		if(field.equals(Versamento.model().DEBITORE_EMAIL)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_email";
+			}else{
+				return "debitore_email";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_TELEFONO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_telefono";
+			}else{
+				return "debitore_telefono";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_CELLULARE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_cellulare";
+			}else{
+				return "debitore_cellulare";
+			}
+		}
+		if(field.equals(Versamento.model().DEBITORE_FAX)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".debitore_fax";
+			}else{
+				return "debitore_fax";
+			}
+		}
 		if(field.equals(Versamento.model().COD_LOTTO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_lotto";
@@ -307,6 +334,18 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().DEBITORE_NAZIONE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_EMAIL)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_TELEFONO)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_CELLULARE)){
+			return this.toTable(Versamento.model(), returnAlias);
+		}
+		if(field.equals(Versamento.model().DEBITORE_FAX)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
 		if(field.equals(Versamento.model().COD_LOTTO)){

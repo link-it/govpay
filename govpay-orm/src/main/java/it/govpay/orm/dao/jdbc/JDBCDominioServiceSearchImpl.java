@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -174,6 +173,14 @@ public class JDBCDominioServiceSearchImpl implements IJDBCServiceSearchWithId<Do
 			fields.add(Dominio.model().ABILITATO);
 			fields.add(Dominio.model().RIUSO_IUV);
 			fields.add(Dominio.model().CUSTOM_IUV);
+			fields.add(Dominio.model().AUX_DIGIT);
+			fields.add(Dominio.model().IUV_PREFIX);
+			fields.add(Dominio.model().IUV_PREFIX_STRICT);
+			fields.add(Dominio.model().SEGREGATION_CODE);
+			fields.add(Dominio.model().NDP_STATO);
+			fields.add(Dominio.model().NDP_OPERAZIONE);
+			fields.add(Dominio.model().NDP_DESCRIZIONE);
+			fields.add(Dominio.model().NDP_DATA);
 
 
 			fields.add(new CustomField("id_stazione", Long.class, "id_stazione", this.getDominioFieldConverter().toTable(Dominio.model())));

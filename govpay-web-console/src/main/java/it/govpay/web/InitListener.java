@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,6 +22,7 @@ package it.govpay.web;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoProperties;
 import it.govpay.web.utils.ConsoleProperties;
 
 import java.net.URI;
@@ -56,7 +56,8 @@ public class InitListener implements ServletContextListener {
 				LogManager.getLogger().warn("Errore durante la configurazione del Logger: " + e);
 			}
 			
-			GovpayConfig.newInstance();
+			GovpayConfig.newInstance("/govpayConsole.properties");
+			RicevutaPagamentoProperties.newInstance(ConsoleProperties.getInstance().getResourceDir());
 			AnagraficaManager.newInstance(false);
 			ConnectionManager.initialize();
 		} catch(Exception e){

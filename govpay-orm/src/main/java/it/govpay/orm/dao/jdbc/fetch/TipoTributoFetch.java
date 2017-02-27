@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -59,6 +58,12 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "cod_tributo", TipoTributo.model().COD_TRIBUTO.getFieldType()));
 				setParameter(object, "setDescrizione", TipoTributo.model().DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "descrizione", TipoTributo.model().DESCRIZIONE.getFieldType()));
+				setParameter(object, "setTipoContabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_contabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType()));
+				setParameter(object, "setCodContabilita", TipoTributo.model().COD_CONTABILITA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_contabilita", TipoTributo.model().COD_CONTABILITA.getFieldType()));
+				setParameter(object, "setCodTributoIuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_tributo_iuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType()));
 				return object;
 			}
 			
@@ -85,6 +90,12 @@ public class TipoTributoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"codTributo"));
 				setParameter(object, "setDescrizione", TipoTributo.model().DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"descrizione"));
+				setParameter(object, "setTipoContabilita", TipoTributo.model().TIPO_CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"tipoContabilita"));
+				setParameter(object, "setCodContabilita", TipoTributo.model().COD_CONTABILITA.getFieldType(),
+					this.getObjectFromMap(map,"codContabilita"));
+				setParameter(object, "setCodTributoIuv", TipoTributo.model().COD_TRIBUTO_IUV.getFieldType(),
+					this.getObjectFromMap(map,"codTributoIuv"));
 				return object;
 			}
 			

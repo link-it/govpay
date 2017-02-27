@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -55,7 +54,6 @@ import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.PagamentiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
-import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.core.business.model.Risposta;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.NdpException;
@@ -77,7 +75,6 @@ import it.govpay.core.utils.client.NodoClient.Azione;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Canale;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Intermediario;
@@ -115,7 +112,6 @@ public class Pagamento extends BasicBD {
 
 		GpContext ctx = GpThreadLocal.get();
 		List<Versamento> versamenti = new ArrayList<Versamento>();
-		VersamentiBD versamentiBD = new VersamentiBD(this);
 
 		for(Object v : gpAvviaTransazionePagamento.getVersamentoOrVersamentoRef()) {
 			Versamento versamentoModel = null;
@@ -128,7 +124,7 @@ public class Pagamento extends BasicBD {
 			} else {
 				it.govpay.servizi.commons.VersamentoKey versamento = (it.govpay.servizi.commons.VersamentoKey) v;
 
-				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null;
+				String codDominio = null, codApplicazione = null, codVersamentoEnte = null, iuv = null, bundlekey = null, codUnivocoDebitore = null;
 
 				Iterator<JAXBElement<String>> iterator = versamento.getContent().iterator();
 				while(iterator.hasNext()){
@@ -136,6 +132,9 @@ public class Pagamento extends BasicBD {
 
 					if(element.getName().equals(VersamentoUtils._VersamentoKeyBundlekey_QNAME)) {
 						bundlekey = element.getValue();
+					}
+					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodUnivocoDebitore_QNAME)) {
+						codUnivocoDebitore = element.getValue();
 					}
 					if(element.getName().equals(VersamentoUtils._VersamentoKeyCodApplicazione_QNAME)) {
 						codApplicazione = element.getValue();
@@ -151,63 +150,16 @@ public class Pagamento extends BasicBD {
 					}
 				}
 
-				// Versamento per riferimento codApplicazione/codVersamentoEnte
-
-				if(codApplicazione != null && codVersamentoEnte != null) {
-					ctx.log("rpt.acquisizioneVersamentoRef", codApplicazione, codVersamentoEnte);
-					Applicazione applicazione = null;
-					try {
-						applicazione = AnagraficaManager.getApplicazione(this, codApplicazione);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.APP_000, codApplicazione);
-					}
-
-					try {
-						versamentoModel = versamentiBD.getVersamento(applicazione.getId(), codVersamentoEnte);
-						versamentoModel.setIuvProposto(iuv);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.VER_008, codApplicazione, codVersamentoEnte);
-					}
-				}
-
-
-				// Versamento per riferimento codDominio/iuv
-				if(codDominio != null && iuv != null) {
-					ctx.log("rpt.acquisizioneVersamentoRefIuv", codDominio, iuv);
-
-					Dominio dominio = null;
-					try {
-						dominio = AnagraficaManager.getDominio(this, codDominio);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.DOM_000, codDominio);
-					}
-
-					IuvBD iuvBD = new IuvBD(this);
-					it.govpay.model.Iuv iuvModel = null;
-					try {
-						iuvModel = iuvBD.getIuv(dominio.getId(), iuv);
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.VER_008);
-					}
-
-					Applicazione applicazione = AnagraficaManager.getApplicazione(this, iuvModel.getIdApplicazione());
-
-					try {
-						versamentoModel = versamentiBD.getVersamento(applicazione.getId(), iuvModel.getCodVersamentoEnte());
-					} catch (NotFoundException e) {
-						throw new GovPayException(EsitoOperazione.VER_008, applicazione.getCodApplicazione(), iuvModel.getCodVersamentoEnte());
-					}
-				}
-
-				// Versamento per riferimento codDominio/iuv
-				if(codApplicazione != null && bundlekey != null) {
-					ctx.log("rpt.acquisizioneVersamentoRefBundle", codApplicazione, bundlekey);
-					throw new RuntimeException("Not supported yet");
-				}
+				it.govpay.core.business.Versamento versamentoBusiness = new it.govpay.core.business.Versamento(this);
+				versamentoModel = versamentoBusiness.chiediVersamento(codApplicazione, codVersamentoEnte, bundlekey, codUnivocoDebitore, codDominio, iuv);
 			}
 			
-			if(!versamentoModel.getApplicazione(this).isAbilitato()) {
-				ctx.log("pagamento.applicazioneDisabilitata", versamentoModel.getApplicazione(this).getCodApplicazione(), versamentoModel.getCodVersamentoEnte());
+			if(!versamentoModel.getUo(this).isAbilitato()) {
+				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad una unita' operativa disabilitata [Uo:"+versamentoModel.getUo(this).getCodUo()+"].", EsitoOperazione.UOP_001, versamentoModel.getUo(this).getCodUo());
+			}
+			
+			if(!versamentoModel.getUo(this).getDominio(this).isAbilitato()) {
+				throw new GovPayException("Il pagamento non puo' essere avviato poiche' uno dei versamenti risulta associato ad un dominio disabilitato [Dominio:"+versamentoModel.getUo(this).getDominio(this).getCodDominio()+"].", EsitoOperazione.DOM_001, versamentoModel.getUo(this).getDominio(this).getCodDominio());
 			}
 			
 			versamenti.add(versamentoModel);
@@ -350,6 +302,7 @@ public class Pagamento extends BasicBD {
 
 			Intermediario intermediario = AnagraficaManager.getIntermediario(this, stazione.getIdIntermediario());
 
+			Iuv iuvBusiness = new Iuv(this);
 			IuvBD iuvBD = new IuvBD(this);
 			RptBD rptBD = new RptBD(this);
 			it.govpay.core.business.Versamento versamentiBusiness = new it.govpay.core.business.Versamento(this);
@@ -366,8 +319,9 @@ public class Pagamento extends BasicBD {
 
 				// Verifico se ha uno IUV suggerito ed in caso lo assegno
 				if(versamento.getIuvProposto() != null) {
-					Iuv iuvBusiness = new Iuv(this);
-					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), TipoIUV.ISO11694, versamento.getCodVersamentoEnte());
+					TipoIUV tipoIuv = iuvBusiness.getTipoIUV(versamento.getIuvProposto());
+					iuvBusiness.checkIUV(versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv);
+					iuv = iuvBusiness.caricaIUV(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getIuvProposto(), tipoIuv, versamento.getCodVersamentoEnte());
 					ccp = IuvUtils.buildCCP();
 					ctx.log("iuv.assegnazioneIUVCustom", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), versamento.getIuvProposto(), ccp);
 				} else {
@@ -384,12 +338,12 @@ public class Pagamento extends BasicBD {
 							ccp = IuvUtils.buildCCP();
 							ctx.log("iuv.assegnazioneIUVRiuso", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						} catch (NotFoundException e) {
-							iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.ISO11694);
+							iuv = iuvBusiness.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
 							ccp = Rpt.CCP_NA;
 							ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 						}
 					} else {
-						iuv = iuvBD.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.AUX_DIGIT, stazione.getApplicationCode(), it.govpay.model.Iuv.TipoIUV.ISO11694);
+						iuv = iuvBusiness.generaIuv(versamento.getApplicazione(this), versamento.getUo(this).getDominio(this), versamento.getCodVersamentoEnte(), it.govpay.model.Iuv.TipoIUV.ISO11694);
 						ccp = Rpt.CCP_NA;
 						ctx.log("iuv.assegnazioneIUVGenerato", versamento.getApplicazione(this).getCodApplicazione(), versamento.getCodVersamentoEnte(), versamento.getUo(this).getDominio(this).getCodDominio(), iuv.getIuv(), ccp);
 					}
@@ -612,7 +566,7 @@ public class Pagamento extends BasicBD {
 				// Costruisco una mappa di tutti i pagamenti pendenti sul nodo
 				// La chiave di lettura e' iuv@ccp
 
-				NodoClient client = new NodoClient(intermediario);
+				NodoClient client = new NodoClient(intermediario, this);
 
 				// Le pendenze per specifica durano 60 giorni.
 				int finestra = 60;
@@ -834,9 +788,6 @@ public class Pagamento extends BasicBD {
 			RptBD rptBD = new RptBD(this);
 			rpt = rptBD.getRpt(gpAvviaRichiestaStorno.getCodDominio(), gpAvviaRichiestaStorno.getIuv(), gpAvviaRichiestaStorno.getCcp());
 
-			if(!rpt.getIdPortale().equals(portale.getId()))
-				throw new GovPayException(EsitoOperazione.PRT_004, gpAvviaRichiestaStorno.getCodPortale());
-
 			if(gpAvviaRichiestaStorno.getPagamento() == null || gpAvviaRichiestaStorno.getPagamento().isEmpty()) {
 				for(it.govpay.bd.model.Pagamento pagamento : rpt.getPagamenti(this)) {
 					if(pagamento.getImportoRevocato() != null) continue;
@@ -938,7 +889,7 @@ public class Pagamento extends BasicBD {
 		RrBD rrBD = new RrBD(this);
 		try {
 			Rr rr = rrBD.getRr(codRichiestaStorno);
-			if(!portaleAutenticato.getId().equals(rr.getRpt(this).getIdPortale())) {
+			if(rr.getRpt(this).getIdPortale() != null && !portaleAutenticato.getId().equals(rr.getRpt(this).getIdPortale())) {
 				throw new GovPayException(EsitoOperazione.PRT_004);
 			}
 			return rr;

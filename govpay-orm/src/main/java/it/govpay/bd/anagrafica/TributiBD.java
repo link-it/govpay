@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,29 +19,36 @@
  */
 package it.govpay.bd.anagrafica;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.UtilsException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
-import it.govpay.bd.model.converter.TributoConverter;
 import it.govpay.bd.model.Tributo;
+import it.govpay.bd.model.converter.TributoConverter;
 import it.govpay.orm.IdDominio;
 import it.govpay.orm.IdTipoTributo;
 import it.govpay.orm.IdTributo;
 import it.govpay.orm.dao.jdbc.JDBCTributoServiceSearch;
+import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
 
 public class TributiBD extends BasicBD {
 
 	public TributiBD(BasicBD basicBD) {
 		super(basicBD);
 	}
-	
+
 	/**
 	 * Recupera il tributo identificato dalla chiave fisica
 	 * 
@@ -56,7 +62,7 @@ public class TributiBD extends BasicBD {
 		if(idTributo == null) {
 			throw new ServiceException("Parameter 'id' cannot be NULL");
 		}
-		
+
 		long id = idTributo.longValue();
 		try {
 			return TributoConverter.toDTO(((JDBCTributoServiceSearch)this.getTributoService()).get(id));
@@ -64,8 +70,8 @@ public class TributiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
-  	/**
+
+	/**
 	 * Recupera il tributo identificato dalla chiave logica
 	 * 
 	 * @param idApplicazione
@@ -79,7 +85,7 @@ public class TributiBD extends BasicBD {
 		if(idDominio == null) {
 			throw new ServiceException("Parameter 'idDominio' cannot be NULL");
 		}
-		
+
 		try {
 			IdTributo idTributo = new IdTributo();
 			IdDominio idDominioOrm = new IdDominio();
@@ -93,7 +99,7 @@ public class TributiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	/**
 	 * Aggiorna il tributo
 	 * 
@@ -120,8 +126,8 @@ public class TributiBD extends BasicBD {
 		}
 
 	}
-	
-	
+
+
 	/**
 	 * Crea un nuovo tributo
 	 * @param ente
@@ -137,7 +143,7 @@ public class TributiBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
-	
+
 	public TributoFilter newFilter() throws ServiceException {
 		return new TributoFilter(this.getTributoService());
 	}
@@ -156,5 +162,38 @@ public class TributiBD extends BasicBD {
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
+	}
+
+	public List<Long> getIdTipiTributiDefinitiPerDominio(Long idDominio) throws ServiceException {
+		List<Long> lstIdTipiTributi = new ArrayList<Long>();
+
+		try {
+			IPaginatedExpression pagExpr = this.getTributoService().newPaginatedExpression();
+
+			TributoFieldConverter converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			CustomField cfIdDominio = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(it.govpay.orm.Tributo.model()));
+			pagExpr.equals(cfIdDominio, idDominio);
+
+			CustomField cfIdTipoTributo = new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", converter.toTable(it.govpay.orm.Tributo.model()));
+			List<Object> select = this.getTributoService().select(pagExpr, true, cfIdTipoTributo);
+
+			if(select != null && select.size() > 0)
+				for (Object object : select) {
+					if(object instanceof Long){
+						lstIdTipiTributi.add((Long) object); 
+					}
+				}
+		}catch(ServiceException e){
+			throw e;
+		} catch (NotFoundException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		}
+		return lstIdTipiTributi;
 	}
 }

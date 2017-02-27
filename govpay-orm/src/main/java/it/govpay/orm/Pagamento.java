@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,8 +36,9 @@ import java.io.Serializable;
  * &lt;complexType name="Pagamento">
  * 		&lt;sequence>
  * 			&lt;element name="idRPT" type="{http://www.govpay.it/orm}id-rpt" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codSingoloVersamentoEnte" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idSingoloVersamento" type="{http://www.govpay.it/orm}id-singolo-versamento" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="iuv" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importoPagato" type="{http://www.w3.org/2001/XMLSchema}double" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataAcquisizione" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="iur" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
@@ -47,12 +47,6 @@ import java.io.Serializable;
  * 			&lt;element name="commissioniPsp" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoAllegato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="allegato" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idFrApplicazione" type="{http://www.govpay.it/orm}id-fr-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="rendicontazioneEsito" type="{http://www.w3.org/2001/XMLSchema}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="rendicontazioneData" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codflussoRendicontazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="annoRiferimento" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="indiceSingoloPagamento" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idRr" type="{http://www.govpay.it/orm}id-rr" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataAcquisizioneRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="causaleRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
@@ -60,12 +54,6 @@ import java.io.Serializable;
  * 			&lt;element name="importoRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="esitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="idFrApplicazioneRevoca" type="{http://www.govpay.it/orm}id-fr-applicazione" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="rendicontazioneEsitoRevoca" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="rendicontazioneDataRevoca" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="codFlussoRendicontazioneRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="annoRiferimentoRevoca" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="indiceSingoloPagamentoRevoca" type="{http://www.govpay.it/orm}integer" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -82,7 +70,8 @@ import java.io.Serializable;
   propOrder = {
   	"idRPT",
   	"idSingoloVersamento",
-  	"codSingoloVersamentoEnte",
+  	"codDominio",
+  	"iuv",
   	"importoPagato",
   	"dataAcquisizione",
   	"iur",
@@ -91,25 +80,13 @@ import java.io.Serializable;
   	"commissioniPsp",
   	"tipoAllegato",
   	"allegato",
-  	"idFrApplicazione",
-  	"rendicontazioneEsito",
-  	"rendicontazioneData",
-  	"codflussoRendicontazione",
-  	"_decimalWrapper_annoRiferimento",
-  	"_decimalWrapper_indiceSingoloPagamento",
   	"idRr",
   	"dataAcquisizioneRevoca",
   	"causaleRevoca",
   	"datiRevoca",
   	"importoRevocato",
   	"esitoRevoca",
-  	"datiEsitoRevoca",
-  	"idFrApplicazioneRevoca",
-  	"_decimalWrapper_rendicontazioneEsitoRevoca",
-  	"rendicontazioneDataRevoca",
-  	"codFlussoRendicontazioneRevoca",
-  	"_decimalWrapper_annoRiferimentoRevoca",
-  	"_decimalWrapper_indiceSingoloPagamentoRevoca"
+  	"datiEsitoRevoca"
   }
 )
 
@@ -149,12 +126,20 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
     this.idSingoloVersamento = idSingoloVersamento;
   }
 
-  public java.lang.String getCodSingoloVersamentoEnte() {
-    return this.codSingoloVersamentoEnte;
+  public java.lang.String getCodDominio() {
+    return this.codDominio;
   }
 
-  public void setCodSingoloVersamentoEnte(java.lang.String codSingoloVersamentoEnte) {
-    this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
+  public void setCodDominio(java.lang.String codDominio) {
+    this.codDominio = codDominio;
+  }
+
+  public java.lang.String getIuv() {
+    return this.iuv;
+  }
+
+  public void setIuv(java.lang.String iuv) {
+    this.iuv = iuv;
   }
 
   public double getImportoPagato() {
@@ -221,66 +206,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
     this.allegato = allegato;
   }
 
-  public IdFrApplicazione getIdFrApplicazione() {
-    return this.idFrApplicazione;
-  }
-
-  public void setIdFrApplicazione(IdFrApplicazione idFrApplicazione) {
-    this.idFrApplicazione = idFrApplicazione;
-  }
-
-  public java.lang.Integer getRendicontazioneEsito() {
-    return this.rendicontazioneEsito;
-  }
-
-  public void setRendicontazioneEsito(java.lang.Integer rendicontazioneEsito) {
-    this.rendicontazioneEsito = rendicontazioneEsito;
-  }
-
-  public java.util.Date getRendicontazioneData() {
-    return this.rendicontazioneData;
-  }
-
-  public void setRendicontazioneData(java.util.Date rendicontazioneData) {
-    this.rendicontazioneData = rendicontazioneData;
-  }
-
-  public java.lang.String getCodflussoRendicontazione() {
-    return this.codflussoRendicontazione;
-  }
-
-  public void setCodflussoRendicontazione(java.lang.String codflussoRendicontazione) {
-    this.codflussoRendicontazione = codflussoRendicontazione;
-  }
-
-  public java.lang.Integer getAnnoRiferimento() {
-    if(this._decimalWrapper_annoRiferimento!=null){
-		return (java.lang.Integer) this._decimalWrapper_annoRiferimento.getObject(java.lang.Integer.class);
-	}else{
-		return this.annoRiferimento;
-	}
-  }
-
-  public void setAnnoRiferimento(java.lang.Integer annoRiferimento) {
-    if(annoRiferimento!=null){
-		this._decimalWrapper_annoRiferimento = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,4,annoRiferimento);
-	}
-  }
-
-  public java.lang.Integer getIndiceSingoloPagamento() {
-    if(this._decimalWrapper_indiceSingoloPagamento!=null){
-		return (java.lang.Integer) this._decimalWrapper_indiceSingoloPagamento.getObject(java.lang.Integer.class);
-	}else{
-		return this.indiceSingoloPagamento;
-	}
-  }
-
-  public void setIndiceSingoloPagamento(java.lang.Integer indiceSingoloPagamento) {
-    if(indiceSingoloPagamento!=null){
-		this._decimalWrapper_indiceSingoloPagamento = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,indiceSingoloPagamento);
-	}
-  }
-
   public IdRr getIdRr() {
     return this.idRr;
   }
@@ -337,72 +262,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
     this.datiEsitoRevoca = datiEsitoRevoca;
   }
 
-  public IdFrApplicazione getIdFrApplicazioneRevoca() {
-    return this.idFrApplicazioneRevoca;
-  }
-
-  public void setIdFrApplicazioneRevoca(IdFrApplicazione idFrApplicazioneRevoca) {
-    this.idFrApplicazioneRevoca = idFrApplicazioneRevoca;
-  }
-
-  public java.lang.Integer getRendicontazioneEsitoRevoca() {
-    if(this._decimalWrapper_rendicontazioneEsitoRevoca!=null){
-		return (java.lang.Integer) this._decimalWrapper_rendicontazioneEsitoRevoca.getObject(java.lang.Integer.class);
-	}else{
-		return this.rendicontazioneEsitoRevoca;
-	}
-  }
-
-  public void setRendicontazioneEsitoRevoca(java.lang.Integer rendicontazioneEsitoRevoca) {
-    if(rendicontazioneEsitoRevoca!=null){
-		this._decimalWrapper_rendicontazioneEsitoRevoca = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,rendicontazioneEsitoRevoca);
-	}
-  }
-
-  public java.util.Date getRendicontazioneDataRevoca() {
-    return this.rendicontazioneDataRevoca;
-  }
-
-  public void setRendicontazioneDataRevoca(java.util.Date rendicontazioneDataRevoca) {
-    this.rendicontazioneDataRevoca = rendicontazioneDataRevoca;
-  }
-
-  public java.lang.String getCodFlussoRendicontazioneRevoca() {
-    return this.codFlussoRendicontazioneRevoca;
-  }
-
-  public void setCodFlussoRendicontazioneRevoca(java.lang.String codFlussoRendicontazioneRevoca) {
-    this.codFlussoRendicontazioneRevoca = codFlussoRendicontazioneRevoca;
-  }
-
-  public java.lang.Integer getAnnoRiferimentoRevoca() {
-    if(this._decimalWrapper_annoRiferimentoRevoca!=null){
-		return (java.lang.Integer) this._decimalWrapper_annoRiferimentoRevoca.getObject(java.lang.Integer.class);
-	}else{
-		return this.annoRiferimentoRevoca;
-	}
-  }
-
-  public void setAnnoRiferimentoRevoca(java.lang.Integer annoRiferimentoRevoca) {
-    if(annoRiferimentoRevoca!=null){
-		this._decimalWrapper_annoRiferimentoRevoca = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,4,annoRiferimentoRevoca);
-	}
-  }
-
-  public java.lang.Integer getIndiceSingoloPagamentoRevoca() {
-    if(this._decimalWrapper_indiceSingoloPagamentoRevoca!=null){
-		return (java.lang.Integer) this._decimalWrapper_indiceSingoloPagamentoRevoca.getObject(java.lang.Integer.class);
-	}else{
-		return this.indiceSingoloPagamentoRevoca;
-	}
-  }
-
-  public void setIndiceSingoloPagamentoRevoca(java.lang.Integer indiceSingoloPagamentoRevoca) {
-    if(indiceSingoloPagamentoRevoca!=null){
-		this._decimalWrapper_indiceSingoloPagamentoRevoca = new org.openspcoop2.utils.jaxb.DecimalWrapper(1,1,indiceSingoloPagamentoRevoca);
-	}
-  }
-
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -425,12 +284,16 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="idRPT",required=false,nillable=false)
   protected IdRpt idRPT;
 
-  @XmlElement(name="idSingoloVersamento",required=true,nillable=false)
+  @XmlElement(name="idSingoloVersamento",required=false,nillable=false)
   protected IdSingoloVersamento idSingoloVersamento;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codSingoloVersamentoEnte",required=true,nillable=false)
-  protected java.lang.String codSingoloVersamentoEnte;
+  @XmlElement(name="codDominio",required=true,nillable=false)
+  protected java.lang.String codDominio;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="iuv",required=true,nillable=false)
+  protected java.lang.String iuv;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="double")
   @XmlElement(name="importoPagato",required=true,nillable=false)
@@ -466,38 +329,6 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @XmlElement(name="allegato",required=false,nillable=false)
   protected byte[] allegato;
 
-  @XmlElement(name="idFrApplicazione",required=false,nillable=false)
-  protected IdFrApplicazione idFrApplicazione;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
-  @XmlElement(name="rendicontazioneEsito",required=false,nillable=false)
-  protected java.lang.Integer rendicontazioneEsito;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="rendicontazioneData",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date rendicontazioneData;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codflussoRendicontazione",required=false,nillable=false)
-  protected java.lang.String codflussoRendicontazione;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
-  @XmlElement(name="annoRiferimento",required=false,nillable=false)
-  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_annoRiferimento = null;
-
-  @XmlTransient
-  protected java.lang.Integer annoRiferimento;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
-  @XmlElement(name="indiceSingoloPagamento",required=false,nillable=false)
-  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_indiceSingoloPagamento = null;
-
-  @XmlTransient
-  protected java.lang.Integer indiceSingoloPagamento;
-
   @XmlElement(name="idRr",required=false,nillable=false)
   protected IdRr idRr;
 
@@ -525,41 +356,5 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="datiEsitoRevoca",required=false,nillable=false)
   protected java.lang.String datiEsitoRevoca;
-
-  @XmlElement(name="idFrApplicazioneRevoca",required=false,nillable=false)
-  protected IdFrApplicazione idFrApplicazioneRevoca;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
-  @XmlElement(name="rendicontazioneEsitoRevoca",required=false,nillable=false)
-  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_rendicontazioneEsitoRevoca = null;
-
-  @XmlTransient
-  protected java.lang.Integer rendicontazioneEsitoRevoca;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
-  @XmlElement(name="rendicontazioneDataRevoca",required=false,nillable=false,type=java.lang.String.class)
-  protected java.util.Date rendicontazioneDataRevoca;
-
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codFlussoRendicontazioneRevoca",required=false,nillable=false)
-  protected java.lang.String codFlussoRendicontazioneRevoca;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
-  @XmlElement(name="annoRiferimentoRevoca",required=false,nillable=false)
-  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_annoRiferimentoRevoca = null;
-
-  @XmlTransient
-  protected java.lang.Integer annoRiferimentoRevoca;
-
-  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Decimal2String.class)
-  @javax.xml.bind.annotation.XmlSchemaType(name="integer")
-  @XmlElement(name="indiceSingoloPagamentoRevoca",required=false,nillable=false)
-  org.openspcoop2.utils.jaxb.DecimalWrapper _decimalWrapper_indiceSingoloPagamentoRevoca = null;
-
-  @XmlTransient
-  protected java.lang.Integer indiceSingoloPagamentoRevoca;
 
 }

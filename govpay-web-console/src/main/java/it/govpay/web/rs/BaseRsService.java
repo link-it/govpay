@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,11 +19,10 @@
  */
 package it.govpay.web.rs;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,8 +34,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateFormatUtils;
@@ -52,13 +48,12 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.web.utils.ConsoleProperties;
+import it.govpay.web.utils.Utils;
 
 @Path("/")
 public abstract class BaseRsService {
 
 	public static List<String> datePatterns = null;
-
 	static {
 
 		datePatterns = new ArrayList<String>();
@@ -69,6 +64,7 @@ public abstract class BaseRsService {
 	}
 
 	public static final String ERRORE_INTERNO = "Errore Interno";
+	public static final String PARAMETER_LINGUA = "lang";
 
 	@Context protected HttpServletRequest request;
 	@Context protected HttpServletResponse response;
@@ -176,28 +172,20 @@ public abstract class BaseRsService {
 			log.info("Invalidate Session completata.");
 	}
 
-	public static UriBuilder checkDarsURI(UriInfo uriInfo) throws MalformedURLException{
-		String urlDarsString = ConsoleProperties.getInstance().getUrlDARS();
-		if(urlDarsString != null){
-			try {
-				URL urlDARS = new URL(urlDarsString);
-				return uriInfo.getBaseUriBuilder()
-						.scheme(urlDARS.getProtocol())
-						.host(urlDARS.getHost())
-						.port(urlDARS.getPort());
-			} catch (MalformedURLException e) {
-				throw e;
-			}
-		}
-
-		return uriInfo.getBaseUriBuilder();
-	}
-
 	public static Date convertJsonStringToDate(String dateJson) throws Exception{
 		if(StringUtils.isNotEmpty(dateJson)){
 			String []datPat = datePatterns.toArray(new String[datePatterns.size()]);
 			return DateUtils.parseDate(dateJson, datPat);
 		}
 		return null;
+	}
+	
+	public Locale getLanguage(){
+		Locale locale = null;
+		
+		String lingua =  this.request != null ? this.request.getParameter(BaseRsService.PARAMETER_LINGUA) : null;
+		locale = Utils.getInstance(lingua).getLocale();
+				
+		return locale;
 	}
 }

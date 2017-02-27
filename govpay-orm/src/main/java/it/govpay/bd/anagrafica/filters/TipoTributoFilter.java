@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -41,7 +40,11 @@ import it.govpay.orm.dao.jdbc.converter.TipoTributoFieldConverter;
 public class TipoTributoFilter extends AbstractFilter {
 	
 	private String codTributo = null;
+	private String codContabilita = null;
+	private String codificaTipoContabilita = null;
+	private String descrizione = null;
 	private List<Long> listaIdTributi = null;
+	private List<Long> listaIdTributiDaEscludere = null;
 	private CustomField cf;
 	
 	public enum SortFields { }
@@ -69,11 +72,42 @@ public class TipoTributoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.codContabilita != null && StringUtils.isNotEmpty(this.codContabilita)){
+				if(addAnd)
+					newExpression.and();
+				newExpression.ilike(it.govpay.orm.TipoTributo.model().COD_CONTABILITA, this.codContabilita,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.codificaTipoContabilita != null && StringUtils.isNotEmpty(this.codificaTipoContabilita)){
+				if(addAnd)
+					newExpression.and();
+				newExpression.equals(it.govpay.orm.TipoTributo.model().TIPO_CONTABILITA, this.codificaTipoContabilita);
+				addAnd = true;
+			}
+			
+			if(this.descrizione != null && StringUtils.isNotEmpty(this.descrizione)){
+				if(addAnd)
+					newExpression.and();
+				newExpression.ilike(it.govpay.orm.TipoTributo.model().DESCRIZIONE, this.descrizione,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
 			if(this.listaIdTributi != null && this.listaIdTributi.size() > 0){
 				if(addAnd)
 					newExpression.and();
 				newExpression.in(cf, listaIdTributi);
 				
+				addAnd = true;
+			}
+			
+			if(this.listaIdTributiDaEscludere != null && this.listaIdTributiDaEscludere.size() > 0){
+				if(addAnd)
+					newExpression.and();
+				
+				IExpression notExpression = this.newExpression();
+				notExpression.not().in(cf, listaIdTributiDaEscludere);
+				newExpression.and(notExpression);
 				addAnd = true;
 			}
 
@@ -108,4 +142,37 @@ public class TipoTributoFilter extends AbstractFilter {
 	public void setCodTributo(String codTributo) {
 		this.codTributo = codTributo;
 	}
+
+	public String getCodContabilita() {
+		return codContabilita;
+	}
+
+	public void setCodContabilita(String codContabilita) {
+		this.codContabilita = codContabilita;
+	}
+
+	public String getCodificaTipoContabilita() {
+		return codificaTipoContabilita;
+	}
+
+	public void setCodificaTipoContabilita(String codificaTipoContabilita) {
+		this.codificaTipoContabilita = codificaTipoContabilita;
+	}
+
+	public String getDescrizione() {
+		return descrizione;
+	}
+
+	public void setDescrizione(String descrizione) {
+		this.descrizione = descrizione;
+	}
+
+	public List<Long> getListaIdTributiDaEscludere() {
+		return listaIdTributiDaEscludere;
+	}
+
+	public void setListaIdTributiDaEscludere(List<Long> listaIdTributiDaEscludere) {
+		this.listaIdTributiDaEscludere = listaIdTributiDaEscludere;
+	}
+	
 }

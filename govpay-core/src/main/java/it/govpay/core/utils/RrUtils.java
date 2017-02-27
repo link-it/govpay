@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -234,11 +233,15 @@ public class RrUtils extends NdpValidationUtils {
 	}
 	
 	public static it.govpay.core.business.model.Risposta inviaRr(Rr rr, Rpt rpt, BasicBD bd) throws GovPayException, ClientException, ServiceException {
+		// Chiamate per acquisire dati prima di chiudere la connessione
+		rpt.getIntermediario(bd);
+		rpt.getStazione(bd);
+		
 		if(bd != null) bd.closeConnection();
 		Evento evento = new Evento();
 		it.govpay.core.business.model.Risposta risposta = null;
 		try {
-			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd));
+			NodoClient client = new it.govpay.core.utils.client.NodoClient(rpt.getIntermediario(bd), bd);
 			NodoInviaRichiestaStorno inviaRR = new NodoInviaRichiestaStorno();
 			inviaRR.setCodiceContestoPagamento(rr.getCcp());
 			inviaRR.setIdentificativoDominio(rr.getCodDominio());
@@ -362,7 +365,7 @@ public class RrUtils extends NdpValidationUtils {
 			for(Pagamento pagamento : pagamenti) {
 				
 				if(pagamento.getImportoRevocato().compareTo(BigDecimal.ZERO) == 0){ 
-					ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
+					ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), pagamento.getSingoloVersamento(bd).getStatoSingoloVersamento().toString());
 					continue;
 				}
 					
@@ -370,7 +373,7 @@ public class RrUtils extends NdpValidationUtils {
 				
 				sv = pagamento.getSingoloVersamento(bd);
 				versamentiBD.updateStatoSingoloVersamento(sv.getId(), StatoSingoloVersamento.ANOMALO);
-				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
+				ctx.log("er.acquisizioneRevoca", pagamento.getIur(), pagamento.getImportoRevocato().toString(), pagamento.getSingoloVersamento(bd).getCodSingoloVersamentoEnte(), StatoSingoloVersamento.ANOMALO.toString());
 			}
 			versamentiBD.updateStatoVersamento(sv.getIdVersamento(), StatoVersamento.ANOMALO, "Pagamenti stornati");
 			v.setStatoVersamento(StatoVersamento.ANOMALO);

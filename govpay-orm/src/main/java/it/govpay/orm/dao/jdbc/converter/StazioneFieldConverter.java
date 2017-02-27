@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -103,6 +102,34 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "application_code";
 			}
 		}
+		if(field.equals(Stazione.model().NDP_STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_stato";
+			}else{
+				return "ndp_stato";
+			}
+		}
+		if(field.equals(Stazione.model().NDP_OPERAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_operazione";
+			}else{
+				return "ndp_operazione";
+			}
+		}
+		if(field.equals(Stazione.model().NDP_DESCRIZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_descrizione";
+			}else{
+				return "ndp_descrizione";
+			}
+		}
+		if(field.equals(Stazione.model().NDP_DATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_data";
+			}else{
+				return "ndp_data";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -129,6 +156,18 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 		if(field.equals(Stazione.model().APPLICATION_CODE)){
+			return this.toTable(Stazione.model(), returnAlias);
+		}
+		if(field.equals(Stazione.model().NDP_STATO)){
+			return this.toTable(Stazione.model(), returnAlias);
+		}
+		if(field.equals(Stazione.model().NDP_OPERAZIONE)){
+			return this.toTable(Stazione.model(), returnAlias);
+		}
+		if(field.equals(Stazione.model().NDP_DESCRIZIONE)){
+			return this.toTable(Stazione.model(), returnAlias);
+		}
+		if(field.equals(Stazione.model().NDP_DATA)){
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 

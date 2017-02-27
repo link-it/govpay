@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,6 +36,7 @@ import java.io.Serializable;
  * &lt;complexType name="id-pagamento">
  * 		&lt;sequence>
  * 			&lt;element name="idPagamento" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idVersamento" type="{http://www.govpay.it/orm}id-versamento" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -51,7 +51,8 @@ import java.io.Serializable;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "id-pagamento", 
   propOrder = {
-  	"idPagamento"
+  	"idPagamento",
+  	"idVersamento"
   }
 )
 
@@ -83,6 +84,14 @@ public class IdPagamento extends org.openspcoop2.utils.beans.BaseBean implements
     this.idPagamento = idPagamento;
   }
 
+  public IdVersamento getIdVersamento() {
+    return this.idVersamento;
+  }
+
+  public void setIdVersamento(IdVersamento idVersamento) {
+    this.idVersamento = idVersamento;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -93,5 +102,8 @@ public class IdPagamento extends org.openspcoop2.utils.beans.BaseBean implements
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="idPagamento",required=true,nillable=false)
   protected long idPagamento;
+
+  @XmlElement(name="idVersamento",required=false,nillable=false)
+  protected IdVersamento idVersamento;
 
 }

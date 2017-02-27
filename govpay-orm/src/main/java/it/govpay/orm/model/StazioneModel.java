@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -47,6 +46,10 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.PASSWORD = new Field("password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new Field("abilitato",boolean.class,"Stazione",Stazione.class);
 		this.APPLICATION_CODE = new Field("applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.NDP_STATO = new Field("ndpStato",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.NDP_OPERAZIONE = new Field("ndpOperazione",java.lang.String.class,"Stazione",Stazione.class);
+		this.NDP_DESCRIZIONE = new Field("ndpDescrizione",java.lang.String.class,"Stazione",Stazione.class);
+		this.NDP_DATA = new Field("ndpData",java.util.Date.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -59,6 +62,10 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.PASSWORD = new ComplexField(father,"password",java.lang.String.class,"Stazione",Stazione.class);
 		this.ABILITATO = new ComplexField(father,"abilitato",boolean.class,"Stazione",Stazione.class);
 		this.APPLICATION_CODE = new ComplexField(father,"applicationCode",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.NDP_STATO = new ComplexField(father,"ndpStato",java.lang.Integer.class,"Stazione",Stazione.class);
+		this.NDP_OPERAZIONE = new ComplexField(father,"ndpOperazione",java.lang.String.class,"Stazione",Stazione.class);
+		this.NDP_DESCRIZIONE = new ComplexField(father,"ndpDescrizione",java.lang.String.class,"Stazione",Stazione.class);
+		this.NDP_DATA = new ComplexField(father,"ndpData",java.util.Date.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -73,6 +80,14 @@ public class StazioneModel extends AbstractModel<Stazione> {
 	public IField ABILITATO = null;
 	 
 	public IField APPLICATION_CODE = null;
+	 
+	public IField NDP_STATO = null;
+	 
+	public IField NDP_OPERAZIONE = null;
+	 
+	public IField NDP_DESCRIZIONE = null;
+	 
+	public IField NDP_DATA = null;
 	 
 
 	@Override

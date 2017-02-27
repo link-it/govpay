@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -23,7 +22,6 @@ package it.govpay.bd.pagamento;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
@@ -35,19 +33,19 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Pagamento;
-import it.govpay.bd.model.RendicontazioneSenzaRpt;
 import it.govpay.bd.model.converter.PagamentoConverter;
-import it.govpay.bd.model.converter.RendicontazioneSenzaRptConverter;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.orm.IdPagamento;
-import it.govpay.orm.dao.jdbc.JDBCRendicontazioneSenzaRPTService;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.RendicontazioneSenzaRPTFieldConverter;
 
 public class PagamentiBD extends BasicBD {
 	
 	public PagamentiBD(BasicBD basicBD) {
 		super(basicBD);
+	}
+	
+	public PagamentoFilter newFilter() throws ServiceException {
+		return new PagamentoFilter(this.getPagamentoService());
 	}
 
 	/**
@@ -66,6 +64,29 @@ public class PagamentiBD extends BasicBD {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
+		}
+	}
+	
+	/**
+	 * Recupera il pagamento identificato dalla chiave logica
+	 */
+	public Pagamento getPagamento(String codDominio, String iuv, String iur)
+			throws ServiceException, NotFoundException, MultipleResultException {
+		try {
+			IExpression exp = this.getPagamentoService().newExpression();
+			exp.equals(it.govpay.orm.Pagamento.model().IUR, iur);
+			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO,
+					codDominio);
+			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
+			it.govpay.orm.Pagamento pagamentoVO = this.getPagamentoService()
+					.find(exp);
+			return PagamentoConverter.toDTO(pagamentoVO);
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
 		}
 	}
 
@@ -138,189 +159,10 @@ public class PagamentiBD extends BasicBD {
 		}
 	}
 
-	public Pagamento getPagamento(String codDominio, String iuv, String iur)
-			throws ServiceException, NotFoundException, MultipleResultException {
-		try {
-			IExpression exp = this.getPagamentoService().newExpression();
-			exp.equals(it.govpay.orm.Pagamento.model().IUR, iur);
-			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO,
-					codDominio);
-			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
-			it.govpay.orm.Pagamento pagamentoVO = this.getPagamentoService()
-					.find(exp);
-			return PagamentoConverter.toDTO(pagamentoVO);
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
-	}
-
-	public List<Pagamento> getPagamentiByFrApplicazione(Long idFrApplicazione)
-			throws ServiceException {
-		PagamentoFilter filter = newFilter();
-		filter.setIdFrApplicazione(idFrApplicazione);
-		return findAll(filter);
-	}
-
-	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRptBySingoloVersamento(
-			Long idSingoloVersamento) throws ServiceException {
-		try {
-			IPaginatedExpression exp = this.getRendicontazioneSenzaRPTService()
-					.newPaginatedExpression();
-			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(
-					this.getJdbcProperties().getDatabaseType());
-			exp.equals(
-					new CustomField(
-							"id_singolo_versamento",
-							Long.class,
-							"id_singolo_versamento",
-							fieldConverter
-									.toTable(it.govpay.orm.RendicontazioneSenzaRPT
-											.model())), idSingoloVersamento);
-			List<it.govpay.orm.RendicontazioneSenzaRPT> rendicontazioniSenzaRpt = this
-					.getRendicontazioneSenzaRPTService().findAll(exp);
-			return RendicontazioneSenzaRptConverter
-					.toDTO(rendicontazioniSenzaRpt);
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
-	}
-	
-	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(
-			Long idFrApplicazione) throws ServiceException {
-		try {
-			IPaginatedExpression exp = this.getRendicontazioneSenzaRPTService()
-					.newPaginatedExpression();
-			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(
-					this.getJdbcProperties().getDatabaseType());
-			exp.equals(
-					new CustomField(
-							"id_fr_applicazione",
-							Long.class,
-							"id_fr_applicazione",
-							fieldConverter
-									.toTable(it.govpay.orm.RendicontazioneSenzaRPT
-											.model())), idFrApplicazione);
-			List<it.govpay.orm.RendicontazioneSenzaRPT> rendicontazioniSenzaRpt = this
-					.getRendicontazioneSenzaRPTService().findAll(exp);
-			return RendicontazioneSenzaRptConverter
-					.toDTO(rendicontazioniSenzaRpt);
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
-	}
-
-	public long countRendicontazioniSenzaRpt(Long idFrApplicazione)
-			throws ServiceException {
-		try {
-			IExpression exp = this.getRendicontazioneSenzaRPTService()
-					.newExpression();
-			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(
-					this.getJdbcProperties().getDatabaseType());
-			exp.equals(
-					new CustomField(
-							"id_fr_applicazione",
-							Long.class,
-							"id_fr_applicazione",
-							fieldConverter
-									.toTable(it.govpay.orm.RendicontazioneSenzaRPT
-											.model())), idFrApplicazione);
-			NonNegativeNumber count = this.getRendicontazioneSenzaRPTService()
-					.count(exp);
-
-			return count != null ? count.longValue() : 0;
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
-	}
-
-	public List<RendicontazioneSenzaRpt> getRendicontazioniSenzaRpt(
-			List<Long> idFrApplicazione) throws ServiceException {
-		try {
-			IPaginatedExpression exp = this.getRendicontazioneSenzaRPTService()
-					.newPaginatedExpression();
-			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(
-					this.getJdbcProperties().getDatabaseType());
-			exp.in(new CustomField("id_fr_applicazione", Long.class,
-					"id_fr_applicazione", fieldConverter
-							.toTable(it.govpay.orm.RendicontazioneSenzaRPT
-									.model())), idFrApplicazione);
-			List<it.govpay.orm.RendicontazioneSenzaRPT> rendicontazioniSenzaRpt = this
-					.getRendicontazioneSenzaRPTService().findAll(exp);
-			return RendicontazioneSenzaRptConverter
-					.toDTO(rendicontazioniSenzaRpt);
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
-	}
-
-	public long countRendicontazioniSenzaRpt(List<Long> idFrApplicazione)
-			throws ServiceException {
-		try {
-			IExpression exp = this.getRendicontazioneSenzaRPTService()
-					.newExpression();
-			RendicontazioneSenzaRPTFieldConverter fieldConverter = new RendicontazioneSenzaRPTFieldConverter(
-					this.getJdbcProperties().getDatabaseType());
-			exp.in(new CustomField("id_fr_applicazione", Long.class,
-					"id_fr_applicazione", fieldConverter
-							.toTable(it.govpay.orm.RendicontazioneSenzaRPT
-									.model())), idFrApplicazione);
-			NonNegativeNumber count = this.getRendicontazioneSenzaRPTService()
-					.count(exp);
-
-			return count != null ? count.longValue() : 0;
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException();
-		} catch (ExpressionException e) {
-			throw new ServiceException();
-		}
-	}
-
-	public RendicontazioneSenzaRpt getRendicontazioneSenzaRpt(
-			Long idRendicontazioneSenzaRpt) throws ServiceException {
-		try {
-			return RendicontazioneSenzaRptConverter
-					.toDTO(((JDBCRendicontazioneSenzaRPTService) this
-							.getRendicontazioneSenzaRPTService())
-							.get(idRendicontazioneSenzaRpt));
-		} catch (NotImplementedException e) {
-			throw new ServiceException();
-		} catch (NotFoundException e) {
-			throw new ServiceException();
-		} catch (MultipleResultException e) {
-			throw new ServiceException();
-		}
-	}
-
 	public List<Pagamento> getPagamentiByRr(Long idRr) throws ServiceException {
 		PagamentoFilter filter = newFilter();
 		filter.setIdRr(idRr);
 		return findAll(filter);
-	}
-
-	public PagamentoFilter newFilter() throws ServiceException {
-		return new PagamentoFilter(this.getPagamentoService());
 	}
 
 	public List<Pagamento> findAll(PagamentoFilter filter)

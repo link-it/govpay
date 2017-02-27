@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -105,23 +104,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			}
 		}
 
-		// Object _frApplicazione
-		Long id_frApplicazione = null;
-		it.govpay.orm.IdFrApplicazione idLogic_frApplicazione = null;
-		idLogic_frApplicazione = pagamento.getIdFrApplicazione();
-		if(idLogic_frApplicazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_frApplicazione = ((JDBCFrApplicazioneServiceSearch)(this.getServiceManager().getFrApplicazioneServiceSearch())).findTableId(idLogic_frApplicazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_frApplicazione = idLogic_frApplicazione.getId();
-				if(id_frApplicazione==null || id_frApplicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 		// Object _rr
 		Long id_rr = null;
 		it.govpay.orm.IdRr idLogic_rr = null;
@@ -139,27 +121,10 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			}
 		}
 
-		// Object _frApplicazioneInstance2
-		Long id_frApplicazioneInstance2 = null;
-		it.govpay.orm.IdFrApplicazione idLogic_frApplicazioneInstance2 = null;
-		idLogic_frApplicazioneInstance2 = pagamento.getIdFrApplicazioneRevoca();
-		if(idLogic_frApplicazioneInstance2!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_frApplicazioneInstance2 = ((JDBCFrApplicazioneServiceSearch)(this.getServiceManager().getFrApplicazioneServiceSearch())).findTableId(idLogic_frApplicazioneInstance2, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_frApplicazioneInstance2 = idLogic_frApplicazioneInstance2.getId();
-				if(id_frApplicazioneInstance2==null || id_frApplicazioneInstance2<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
-
 		// Object pagamento
 		sqlQueryObjectInsert.addInsertTable(this.getPagamentoFieldConverter().toTable(Pagamento.model()));
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_DOMINIO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUV,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_PAGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUR,false),"?");
@@ -168,32 +133,21 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COMMISSIONI_PSP,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().TIPO_ALLEGATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ALLEGATO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_ESITO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_DATA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().CODFLUSSO_RENDICONTAZIONE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ANNO_RIFERIMENTO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_SINGOLO_PAGAMENTO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().CAUSALE_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATI_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_REVOCATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ESITO_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATI_ESITO_REVOCA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_ESITO_REVOCA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_DATA_REVOCA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_FLUSSO_RENDICONTAZIONE_REVOCA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ANNO_RIFERIMENTO_REVOCA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_SINGOLO_PAGAMENTO_REVOCA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_rpt","?");
 		sqlQueryObjectInsert.addInsertField("id_singolo_versamento","?");
-		sqlQueryObjectInsert.addInsertField("id_fr_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_rr","?");
-		sqlQueryObjectInsert.addInsertField("id_fr_applicazione_revoca","?");
 
 		// Insert pagamento
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getPagamentoFetch().getKeyGeneratorObject(Pagamento.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCodSingoloVersamentoEnte(),Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCodDominio(),Pagamento.model().COD_DOMINIO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIuv(),Pagamento.model().IUV.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getImportoPagato(),Pagamento.model().IMPORTO_PAGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataAcquisizione(),Pagamento.model().DATA_ACQUISIZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIur(),Pagamento.model().IUR.getFieldType()),
@@ -202,27 +156,15 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCommissioniPsp(),Pagamento.model().COMMISSIONI_PSP.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getTipoAllegato(),Pagamento.model().TIPO_ALLEGATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getAllegato(),Pagamento.model().ALLEGATO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getRendicontazioneEsito(),Pagamento.model().RENDICONTAZIONE_ESITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getRendicontazioneData(),Pagamento.model().RENDICONTAZIONE_DATA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCodflussoRendicontazione(),Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getAnnoRiferimento(),Pagamento.model().ANNO_RIFERIMENTO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIndiceSingoloPagamento(),Pagamento.model().INDICE_SINGOLO_PAGAMENTO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDataAcquisizioneRevoca(),Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCausaleRevoca(),Pagamento.model().CAUSALE_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDatiRevoca(),Pagamento.model().DATI_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getImportoRevocato(),Pagamento.model().IMPORTO_REVOCATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getEsitoRevoca(),Pagamento.model().ESITO_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getDatiEsitoRevoca(),Pagamento.model().DATI_ESITO_REVOCA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getRendicontazioneEsitoRevoca(),Pagamento.model().RENDICONTAZIONE_ESITO_REVOCA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getRendicontazioneDataRevoca(),Pagamento.model().RENDICONTAZIONE_DATA_REVOCA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getCodFlussoRendicontazioneRevoca(),Pagamento.model().COD_FLUSSO_RENDICONTAZIONE_REVOCA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getAnnoRiferimentoRevoca(),Pagamento.model().ANNO_RIFERIMENTO_REVOCA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(pagamento.getIndiceSingoloPagamentoRevoca(),Pagamento.model().INDICE_SINGOLO_PAGAMENTO_REVOCA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rpt,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_singoloVersamento,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_frApplicazione,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rr,Long.class),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_frApplicazioneInstance2,Long.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_rr,Long.class)
 		);
 		pagamento.setId(id);
 
@@ -304,23 +246,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			}
 		}
 
-		// Object _pagamento_frApplicazione
-		Long id_pagamento_frApplicazione = null;
-		it.govpay.orm.IdFrApplicazione idLogic_pagamento_frApplicazione = null;
-		idLogic_pagamento_frApplicazione = pagamento.getIdFrApplicazione();
-		if(idLogic_pagamento_frApplicazione!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_pagamento_frApplicazione = ((JDBCFrApplicazioneServiceSearch)(this.getServiceManager().getFrApplicazioneServiceSearch())).findTableId(idLogic_pagamento_frApplicazione, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_pagamento_frApplicazione = idLogic_pagamento_frApplicazione.getId();
-				if(id_pagamento_frApplicazione==null || id_pagamento_frApplicazione<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 		// Object _pagamento_rr
 		Long id_pagamento_rr = null;
 		it.govpay.orm.IdRr idLogic_pagamento_rr = null;
@@ -338,31 +263,16 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			}
 		}
 
-		// Object _pagamento_frApplicazioneInstance2
-		Long id_pagamento_frApplicazioneInstance2 = null;
-		it.govpay.orm.IdFrApplicazione idLogic_pagamento_frApplicazioneInstance2 = null;
-		idLogic_pagamento_frApplicazioneInstance2 = pagamento.getIdFrApplicazioneRevoca();
-		if(idLogic_pagamento_frApplicazioneInstance2!=null){
-			if(idMappingResolutionBehaviour==null ||
-				(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour))){
-				id_pagamento_frApplicazioneInstance2 = ((JDBCFrApplicazioneServiceSearch)(this.getServiceManager().getFrApplicazioneServiceSearch())).findTableId(idLogic_pagamento_frApplicazioneInstance2, false);
-			}
-			else if(org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour)){
-				id_pagamento_frApplicazioneInstance2 = idLogic_pagamento_frApplicazioneInstance2.getId();
-				if(id_pagamento_frApplicazioneInstance2==null || id_pagamento_frApplicazioneInstance2<=0){
-					throw new Exception("Logic id not contains table id");
-				}
-			}
-		}
-
 
 		// Object pagamento
 		sqlQueryObjectUpdate.setANDLogicOperator(true);
 		sqlQueryObjectUpdate.addUpdateTable(this.getPagamentoFieldConverter().toTable(Pagamento.model()));
 		boolean isUpdate_pagamento = true;
 		java.util.List<JDBCObject> lstObjects_pagamento = new java.util.ArrayList<JDBCObject>();
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodSingoloVersamentoEnte(), Pagamento.model().COD_SINGOLO_VERSAMENTO_ENTE.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_DOMINIO,false), "?");
+		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodDominio(), Pagamento.model().COD_DOMINIO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IUV,false), "?");
+		lstObjects_pagamento.add(new JDBCObject(pagamento.getIuv(), Pagamento.model().IUV.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().IMPORTO_PAGATO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getImportoPagato(), Pagamento.model().IMPORTO_PAGATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE,false), "?");
@@ -379,16 +289,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getTipoAllegato(), Pagamento.model().TIPO_ALLEGATO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ALLEGATO,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getAllegato(), Pagamento.model().ALLEGATO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_ESITO,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getRendicontazioneEsito(), Pagamento.model().RENDICONTAZIONE_ESITO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_DATA,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getRendicontazioneData(), Pagamento.model().RENDICONTAZIONE_DATA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().CODFLUSSO_RENDICONTAZIONE,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodflussoRendicontazione(), Pagamento.model().CODFLUSSO_RENDICONTAZIONE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ANNO_RIFERIMENTO,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getAnnoRiferimento(), Pagamento.model().ANNO_RIFERIMENTO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_SINGOLO_PAGAMENTO,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getIndiceSingoloPagamento(), Pagamento.model().INDICE_SINGOLO_PAGAMENTO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATA_ACQUISIZIONE_REVOCA,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getDataAcquisizioneRevoca(), Pagamento.model().DATA_ACQUISIZIONE_REVOCA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().CAUSALE_REVOCA,false), "?");
@@ -401,16 +301,6 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getEsitoRevoca(), Pagamento.model().ESITO_REVOCA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().DATI_ESITO_REVOCA,false), "?");
 		lstObjects_pagamento.add(new JDBCObject(pagamento.getDatiEsitoRevoca(), Pagamento.model().DATI_ESITO_REVOCA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_ESITO_REVOCA,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getRendicontazioneEsitoRevoca(), Pagamento.model().RENDICONTAZIONE_ESITO_REVOCA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().RENDICONTAZIONE_DATA_REVOCA,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getRendicontazioneDataRevoca(), Pagamento.model().RENDICONTAZIONE_DATA_REVOCA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().COD_FLUSSO_RENDICONTAZIONE_REVOCA,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getCodFlussoRendicontazioneRevoca(), Pagamento.model().COD_FLUSSO_RENDICONTAZIONE_REVOCA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().ANNO_RIFERIMENTO_REVOCA,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getAnnoRiferimentoRevoca(), Pagamento.model().ANNO_RIFERIMENTO_REVOCA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getPagamentoFieldConverter().toColumn(Pagamento.model().INDICE_SINGOLO_PAGAMENTO_REVOCA,false), "?");
-		lstObjects_pagamento.add(new JDBCObject(pagamento.getIndiceSingoloPagamentoRevoca(), Pagamento.model().INDICE_SINGOLO_PAGAMENTO_REVOCA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_rpt","?");
 		}
@@ -418,13 +308,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			sqlQueryObjectUpdate.addUpdateField("id_singolo_versamento","?");
 		}
 		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_fr_applicazione","?");
-		}
-		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_rr","?");
-		}
-		if(setIdMappingResolutionBehaviour){
-			sqlQueryObjectUpdate.addUpdateField("id_fr_applicazione_revoca","?");
 		}
 		if(setIdMappingResolutionBehaviour){
 			lstObjects_pagamento.add(new JDBCObject(id_pagamento_rpt, Long.class));
@@ -433,13 +317,7 @@ public class JDBCPagamentoServiceImpl extends JDBCPagamentoServiceSearchImpl
 			lstObjects_pagamento.add(new JDBCObject(id_pagamento_singoloVersamento, Long.class));
 		}
 		if(setIdMappingResolutionBehaviour){
-			lstObjects_pagamento.add(new JDBCObject(id_pagamento_frApplicazione, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
 			lstObjects_pagamento.add(new JDBCObject(id_pagamento_rr, Long.class));
-		}
-		if(setIdMappingResolutionBehaviour){
-			lstObjects_pagamento.add(new JDBCObject(id_pagamento_frApplicazioneInstance2, Long.class));
 		}
 		sqlQueryObjectUpdate.addWhereCondition("id=?");
 		lstObjects_pagamento.add(new JDBCObject(tableId, Long.class));

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -152,20 +151,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RendicontazionePagamentoSenzaRPT }
-     */
-    public RendicontazionePagamentoSenzaRPT createRendicontazionePagamentoSenzaRPT() {
-        return new RendicontazionePagamentoSenzaRPT();
-    }
-
-    /**
-     * Create an instance of {@link IdFrApplicazione }
-     */
-    public IdFrApplicazione createIdFrApplicazione() {
-        return new IdFrApplicazione();
-    }
-
-    /**
      * Create an instance of {@link IdTipoTributo }
      */
     public IdTipoTributo createIdTipoTributo() {
@@ -292,6 +277,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdRendicontazione }
+     */
+    public IdRendicontazione createIdRendicontazione() {
+        return new IdRendicontazione();
+    }
+
+    /**
      * Create an instance of {@link IdIbanAccredito }
      */
     public IdIbanAccredito createIdIbanAccredito() {
@@ -341,13 +333,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FrFiltroApp }
-     */
-    public FrFiltroApp createFrFiltroApp() {
-        return new FrFiltroApp();
-    }
-
-    /**
      * Create an instance of {@link Tributo }
      */
     public Tributo createTributo() {
@@ -359,6 +344,13 @@ public class ObjectFactory {
      */
     public IdEr createIdEr() {
         return new IdEr();
+    }
+
+    /**
+     * Create an instance of {@link Rendicontazione }
+     */
+    public Rendicontazione createRendicontazione() {
+        return new Rendicontazione();
     }
 
     /**
@@ -422,20 +414,6 @@ public class ObjectFactory {
      */
     public IUV createIUV() {
         return new IUV();
-    }
-
-    /**
-     * Create an instance of {@link FrApplicazione }
-     */
-    public FrApplicazione createFrApplicazione() {
-        return new FrApplicazione();
-    }
-
-    /**
-     * Create an instance of {@link RendicontazioneSenzaRPT }
-     */
-    public RendicontazioneSenzaRPT createRendicontazioneSenzaRPT() {
-        return new RendicontazioneSenzaRPT();
     }
 
     /**

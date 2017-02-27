@@ -1,23 +1,45 @@
 package it.govpay.bd.pagamento.util;
 
+import java.util.Map;
+
+import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.model.Applicazione;
 import it.govpay.model.Dominio;
 
-public abstract class CustomIuv {
-	
-	public abstract long buildIuvNumerico(Applicazione applicazione, Dominio dominio, long prg) throws ServiceException;
-	
-	public String buildIuvNumerico(Applicazione applicazione, Dominio dominio, long prg, int auxDigit, int applicationCode) throws ServiceException {
-		
-		long newprg = buildIuvNumerico(applicazione, dominio, prg);
-		
-		if(newprg > 9999999999999l) {
-			throw new ServiceException("Il generatore IUV custom ha prodotto uno IUV superiore alle 13 cifre consentite [" + newprg + "]"); 
+public class CustomIuv {
+
+	public final String getCodApplicazione(Dominio dominio, String iuv, Applicazione applicazioneDefault) throws ServiceException {
+		try {
+			return getCodApplicazione(dominio.getCodDominio(), iuv);
+		} catch (NotImplementedException e){
+			return applicazioneDefault != null ? applicazioneDefault.getCodApplicazione() : null;
 		}
-		
-		return IuvUtils.buildIuvNumerico(newprg, auxDigit, applicationCode);
 	}
-	
+
+	protected String getCodApplicazione(String dominio, String iuv) throws ServiceException, NotImplementedException {
+		throw new NotImplementedException();
+	}
+
+	public String buildPrefix(Applicazione applicazione, Dominio dominio, Map<String, String> values) throws ServiceException, NotImplementedException {
+		String prefix = dominio.getIuvPrefix();
+
+		if(prefix == null) return "";
+		
+		StrSubstitutor sub = new StrSubstitutor(values, "%(", ")");
+		String result = sub.replace(prefix);
+		
+
+		// il prefix risultante deve essere numerico
+		try {
+			Long.parseLong(result);
+		} catch (NumberFormatException e) {
+			// Non e' un prefisso valido. Se la generazione e' strict, lancio una eccezione, altrimenti un warning.
+			throw new ServiceException("Il prefisso generato [" + result + "] non e' numerico.");
+		}
+
+		return result;
+	}
 }

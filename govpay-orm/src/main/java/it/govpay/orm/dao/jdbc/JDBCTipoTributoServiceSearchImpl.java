@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -162,6 +161,9 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 			fields.add(new CustomField("id", Long.class, "id", this.getTipoTributoFieldConverter().toTable(TipoTributo.model())));
 			fields.add(TipoTributo.model().COD_TRIBUTO);
 			fields.add(TipoTributo.model().DESCRIZIONE);
+			fields.add(TipoTributo.model().TIPO_CONTABILITA);
+			fields.add(TipoTributo.model().COD_CONTABILITA);
+			fields.add(TipoTributo.model().COD_TRIBUTO_IUV);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -479,6 +481,9 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 		sqlQueryObjectGet_tipoTributo.addSelectField("id");
 		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO,true));
 		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().DESCRIZIONE,true));
+		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().TIPO_CONTABILITA,true));
+		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_CONTABILITA,true));
+		sqlQueryObjectGet_tipoTributo.addSelectField(this.getTipoTributoFieldConverter().toColumn(TipoTributo.model().COD_TRIBUTO_IUV,true));
 		sqlQueryObjectGet_tipoTributo.addWhereCondition("id=?");
 
 		// Get tipoTributo
@@ -610,17 +615,6 @@ public class JDBCTipoTributoServiceSearchImpl implements IJDBCServiceSearchWithI
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
-		
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the method
-
         return inUse;
 
 	}

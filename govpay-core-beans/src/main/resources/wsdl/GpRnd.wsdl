@@ -61,7 +61,11 @@
 							<xsd:element name="pagamento" maxOccurs="unbounded" minOccurs="0">
 								<xsd:complexType>
 									<xsd:sequence>
-										<xsd:element name="codApplicazione" type="com:cod35" />
+										<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>Presente dalla versione 2.2</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
 										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
 										<xsd:element name="codDominio" type="com:cod35" minOccurs="0">
 											<xsd:annotation>
@@ -84,6 +88,53 @@
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>
+			
+			<xsd:complexType name="estremiFlussoRendicontazione_2.3">
+				<xsd:sequence>
+					<xsd:element name="codFlusso" type="com:cod35" />
+					<xsd:element name="dataFlusso" type="xsd:dateTime" />
+					<xsd:element name="trn" type="com:string35" />
+					<xsd:element name="dataRegolamento" type="xsd:date" />
+					<xsd:element name="codPsp" type="com:cod35"/>
+					<xsd:element name="codBicRiversamento" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="codDominio" type="com:cod35"/>
+					<xsd:element name="numeroPagamenti" type="xsd:long" />
+					<xsd:element name="importoTotale" type="com:importo18" />
+					<xsd:element name="stato" type="com:statoFr" />
+					<xsd:element name="anomalia" type="com:anomalia" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="flussoRendicontazione_2.3">
+				<xsd:complexContent>
+					<xsd:extension base="com:estremiFlussoRendicontazione_2.3">
+						<xsd:sequence>
+							<xsd:element name="rendicontazione" maxOccurs="unbounded" minOccurs="0">
+								<xsd:complexType>
+									<xsd:sequence>
+									<xsd:element name="iuv" type="com:cod35" />
+										<xsd:element name="iur" type="com:cod35" />
+										<xsd:element name="importoRendicontato" type="com:importo" />
+										<xsd:element name="esito" type="com:esitoRendicontazione" />
+										<xsd:element name="data" type="xsd:dateTime" />
+										<xsd:element name="stato" type="com:statoRendicontazione" />
+										<xsd:element name="anomalia" type="com:anomalia" minOccurs="0" maxOccurs="unbounded" />
+										<xsd:element name="pagamento" minOccurs="0">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="codApplicazione" type="com:cod35" />
+													<xsd:element name="codVersamentoEnte" type="com:cod35" />
+													<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
 		
 			<xsd:complexType name="iuvGenerato">
 				<xsd:sequence>
@@ -91,6 +142,11 @@
 					<xsd:element name="codVersamentoEnte" type="com:cod35" />
 					<xsd:element name="codDominio" type="com:cod35" />
 					<xsd:element name="iuv" type="com:cod35" />
+					<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="qrCode" type="xsd:base64Binary" />
 					<xsd:element name="barCode" type="xsd:base64Binary" />
 				</xsd:sequence>
@@ -161,7 +217,11 @@
 						<xsd:element name="codApplicazione" type="com:cod35" />
 						<xsd:choice>
 							<xsd:element name="codVersamentoEnte" type="com:cod35" />
-							<xsd:element name="bundlekey" type="com:string256" />
+							<xsd:sequence>
+								<xsd:element name="codDominio" type="com:cod35" minOccurs="0"/>
+								<xsd:element name="codUnivocoDebitore" type="com:string35" minOccurs="0"/>
+								<xsd:element name="bundlekey" type="com:string256" />
+							</xsd:sequence>
 						</xsd:choice>
 						<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
 					</xsd:sequence>
@@ -235,6 +295,14 @@
 						</xsd:complexType>
 					</xsd:element>
 				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="anomalia">
+				<xsd:simpleContent>
+					<xsd:extension base="xsd:string">
+						<xsd:attribute name="codice" type="xsd:string" />
+					</xsd:extension>
+				</xsd:simpleContent>
 			</xsd:complexType>
 			
 			<xsd:simpleType name="uuid">
@@ -502,6 +570,47 @@
 				</xsd:sequence>
 			</xsd:complexType>
 			
+			<xsd:simpleType name="statoFr">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ACCETTATA" />
+					<xsd:enumeration value="ANOMALA" />
+					<xsd:enumeration value="RIFIUTATA">
+						<xsd:annotation><xsd:documentation>Presente per retrocompatibilita v2.x</xsd:documentation></xsd:annotation>
+					</xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="statoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="OK" />
+					<xsd:enumeration value="ANOMALA" />
+					<xsd:enumeration value="ALTRO_INTERMEDIARIO" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="esitoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ESEGUITO" />
+					<xsd:enumeration value="REVOCATO" />
+					<xsd:enumeration value="ESEGUITO_SENZA_RPT" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:element name="metaInfo" nillable="true">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="iuvProp" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:extension base="xsd:string">
+										<xsd:attribute name="nome" type="xsd:string" />
+									</xsd:extension>
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
 			
 			<xsd:simpleType name="esitoOperazione">
 				<xsd:restriction base="xsd:string">

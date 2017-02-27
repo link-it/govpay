@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,6 +43,7 @@ import java.io.Serializable;
  * 			&lt;element name="codConnettoreVerifica" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="versione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1" default="2.1"/>
  * 			&lt;element name="trusted" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codApplicazioneIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -65,7 +65,8 @@ import java.io.Serializable;
   	"codConnettoreEsito",
   	"codConnettoreVerifica",
   	"versione",
-  	"trusted"
+  	"trusted",
+  	"codApplicazioneIuv"
   }
 )
 
@@ -161,6 +162,14 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
     this.trusted = trusted;
   }
 
+  public java.lang.String getCodApplicazioneIuv() {
+    return this.codApplicazioneIuv;
+  }
+
+  public void setCodApplicazioneIuv(java.lang.String codApplicazioneIuv) {
+    this.codApplicazioneIuv = codApplicazioneIuv;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -211,5 +220,9 @@ public class Applicazione extends org.openspcoop2.utils.beans.BaseBean implement
   @javax.xml.bind.annotation.XmlSchemaType(name="boolean")
   @XmlElement(name="trusted",required=true,nillable=false)
   protected boolean trusted;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codApplicazioneIuv",required=false,nillable=false)
+  protected java.lang.String codApplicazioneIuv;
 
 }

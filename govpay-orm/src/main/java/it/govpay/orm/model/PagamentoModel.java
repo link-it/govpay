@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -44,7 +43,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new Field("idRPT",it.govpay.orm.IdRpt.class,"Pagamento",Pagamento.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new Field("idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Pagamento",Pagamento.class));
-		this.COD_SINGOLO_VERSAMENTO_ENTE = new Field("codSingoloVersamentoEnte",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.IUV = new Field("iuv",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_PAGATO = new Field("importoPagato",double.class,"Pagamento",Pagamento.class);
 		this.DATA_ACQUISIZIONE = new Field("dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new Field("iur",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -53,12 +53,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.COMMISSIONI_PSP = new Field("commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.TIPO_ALLEGATO = new Field("tipoAllegato",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.ALLEGATO = new Field("allegato",byte[].class,"Pagamento",Pagamento.class);
-		this.ID_FR_APPLICAZIONE = new it.govpay.orm.model.IdFrApplicazioneModel(new Field("idFrApplicazione",it.govpay.orm.IdFrApplicazione.class,"Pagamento",Pagamento.class));
-		this.RENDICONTAZIONE_ESITO = new Field("rendicontazioneEsito",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.RENDICONTAZIONE_DATA = new Field("rendicontazioneData",java.util.Date.class,"Pagamento",Pagamento.class);
-		this.CODFLUSSO_RENDICONTAZIONE = new Field("codflussoRendicontazione",java.lang.String.class,"Pagamento",Pagamento.class);
-		this.ANNO_RIFERIMENTO = new Field("annoRiferimento",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.INDICE_SINGOLO_PAGAMENTO = new Field("indiceSingoloPagamento",java.lang.Integer.class,"Pagamento",Pagamento.class);
 		this.ID_RR = new it.govpay.orm.model.IdRrModel(new Field("idRr",it.govpay.orm.IdRr.class,"Pagamento",Pagamento.class));
 		this.DATA_ACQUISIZIONE_REVOCA = new Field("dataAcquisizioneRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.CAUSALE_REVOCA = new Field("causaleRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -66,12 +60,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.IMPORTO_REVOCATO = new Field("importoRevocato",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.ESITO_REVOCA = new Field("esitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_ESITO_REVOCA = new Field("datiEsitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
-		this.ID_FR_APPLICAZIONE_REVOCA = new it.govpay.orm.model.IdFrApplicazioneModel(new Field("idFrApplicazioneRevoca",it.govpay.orm.IdFrApplicazione.class,"Pagamento",Pagamento.class));
-		this.RENDICONTAZIONE_ESITO_REVOCA = new Field("rendicontazioneEsitoRevoca",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.RENDICONTAZIONE_DATA_REVOCA = new Field("rendicontazioneDataRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
-		this.COD_FLUSSO_RENDICONTAZIONE_REVOCA = new Field("codFlussoRendicontazioneRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
-		this.ANNO_RIFERIMENTO_REVOCA = new Field("annoRiferimentoRevoca",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.INDICE_SINGOLO_PAGAMENTO_REVOCA = new Field("indiceSingoloPagamentoRevoca",java.lang.Integer.class,"Pagamento",Pagamento.class);
 	
 	}
 	
@@ -81,7 +69,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	
 		this.ID_RPT = new it.govpay.orm.model.IdRptModel(new ComplexField(father,"idRPT",it.govpay.orm.IdRpt.class,"Pagamento",Pagamento.class));
 		this.ID_SINGOLO_VERSAMENTO = new it.govpay.orm.model.IdSingoloVersamentoModel(new ComplexField(father,"idSingoloVersamento",it.govpay.orm.IdSingoloVersamento.class,"Pagamento",Pagamento.class));
-		this.COD_SINGOLO_VERSAMENTO_ENTE = new ComplexField(father,"codSingoloVersamentoEnte",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.IUV = new ComplexField(father,"iuv",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.IMPORTO_PAGATO = new ComplexField(father,"importoPagato",double.class,"Pagamento",Pagamento.class);
 		this.DATA_ACQUISIZIONE = new ComplexField(father,"dataAcquisizione",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.IUR = new ComplexField(father,"iur",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -90,12 +79,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.COMMISSIONI_PSP = new ComplexField(father,"commissioniPsp",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.TIPO_ALLEGATO = new ComplexField(father,"tipoAllegato",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.ALLEGATO = new ComplexField(father,"allegato",byte[].class,"Pagamento",Pagamento.class);
-		this.ID_FR_APPLICAZIONE = new it.govpay.orm.model.IdFrApplicazioneModel(new ComplexField(father,"idFrApplicazione",it.govpay.orm.IdFrApplicazione.class,"Pagamento",Pagamento.class));
-		this.RENDICONTAZIONE_ESITO = new ComplexField(father,"rendicontazioneEsito",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.RENDICONTAZIONE_DATA = new ComplexField(father,"rendicontazioneData",java.util.Date.class,"Pagamento",Pagamento.class);
-		this.CODFLUSSO_RENDICONTAZIONE = new ComplexField(father,"codflussoRendicontazione",java.lang.String.class,"Pagamento",Pagamento.class);
-		this.ANNO_RIFERIMENTO = new ComplexField(father,"annoRiferimento",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.INDICE_SINGOLO_PAGAMENTO = new ComplexField(father,"indiceSingoloPagamento",java.lang.Integer.class,"Pagamento",Pagamento.class);
 		this.ID_RR = new it.govpay.orm.model.IdRrModel(new ComplexField(father,"idRr",it.govpay.orm.IdRr.class,"Pagamento",Pagamento.class));
 		this.DATA_ACQUISIZIONE_REVOCA = new ComplexField(father,"dataAcquisizioneRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
 		this.CAUSALE_REVOCA = new ComplexField(father,"causaleRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
@@ -103,12 +86,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.IMPORTO_REVOCATO = new ComplexField(father,"importoRevocato",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.ESITO_REVOCA = new ComplexField(father,"esitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_ESITO_REVOCA = new ComplexField(father,"datiEsitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
-		this.ID_FR_APPLICAZIONE_REVOCA = new it.govpay.orm.model.IdFrApplicazioneModel(new ComplexField(father,"idFrApplicazioneRevoca",it.govpay.orm.IdFrApplicazione.class,"Pagamento",Pagamento.class));
-		this.RENDICONTAZIONE_ESITO_REVOCA = new ComplexField(father,"rendicontazioneEsitoRevoca",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.RENDICONTAZIONE_DATA_REVOCA = new ComplexField(father,"rendicontazioneDataRevoca",java.util.Date.class,"Pagamento",Pagamento.class);
-		this.COD_FLUSSO_RENDICONTAZIONE_REVOCA = new ComplexField(father,"codFlussoRendicontazioneRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
-		this.ANNO_RIFERIMENTO_REVOCA = new ComplexField(father,"annoRiferimentoRevoca",java.lang.Integer.class,"Pagamento",Pagamento.class);
-		this.INDICE_SINGOLO_PAGAMENTO_REVOCA = new ComplexField(father,"indiceSingoloPagamentoRevoca",java.lang.Integer.class,"Pagamento",Pagamento.class);
 	
 	}
 	
@@ -118,7 +95,9 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	 
 	public it.govpay.orm.model.IdSingoloVersamentoModel ID_SINGOLO_VERSAMENTO = null;
 	 
-	public IField COD_SINGOLO_VERSAMENTO_ENTE = null;
+	public IField COD_DOMINIO = null;
+	 
+	public IField IUV = null;
 	 
 	public IField IMPORTO_PAGATO = null;
 	 
@@ -136,18 +115,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	 
 	public IField ALLEGATO = null;
 	 
-	public it.govpay.orm.model.IdFrApplicazioneModel ID_FR_APPLICAZIONE = null;
-	 
-	public IField RENDICONTAZIONE_ESITO = null;
-	 
-	public IField RENDICONTAZIONE_DATA = null;
-	 
-	public IField CODFLUSSO_RENDICONTAZIONE = null;
-	 
-	public IField ANNO_RIFERIMENTO = null;
-	 
-	public IField INDICE_SINGOLO_PAGAMENTO = null;
-	 
 	public it.govpay.orm.model.IdRrModel ID_RR = null;
 	 
 	public IField DATA_ACQUISIZIONE_REVOCA = null;
@@ -161,18 +128,6 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	public IField ESITO_REVOCA = null;
 	 
 	public IField DATI_ESITO_REVOCA = null;
-	 
-	public it.govpay.orm.model.IdFrApplicazioneModel ID_FR_APPLICAZIONE_REVOCA = null;
-	 
-	public IField RENDICONTAZIONE_ESITO_REVOCA = null;
-	 
-	public IField RENDICONTAZIONE_DATA_REVOCA = null;
-	 
-	public IField COD_FLUSSO_RENDICONTAZIONE_REVOCA = null;
-	 
-	public IField ANNO_RIFERIMENTO_REVOCA = null;
-	 
-	public IField INDICE_SINGOLO_PAGAMENTO_REVOCA = null;
 	 
 
 	@Override

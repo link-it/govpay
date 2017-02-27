@@ -63,7 +63,11 @@
 							<xsd:element name="pagamento" maxOccurs="unbounded" minOccurs="0">
 								<xsd:complexType>
 									<xsd:sequence>
-										<xsd:element name="codApplicazione" type="com:cod35" />
+										<xsd:element name="codApplicazione" type="com:cod35" minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>Presente dalla versione 2.2</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
 										<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
 										<xsd:element name="codDominio" type="com:cod35" minOccurs="0">
 											<xsd:annotation>
@@ -86,13 +90,18 @@
 					</xsd:extension>
 				</xsd:complexContent>
 			</xsd:complexType>
-		
+			
 			<xsd:complexType name="iuvGenerato">
 				<xsd:sequence>
 					<xsd:element name="codApplicazione" type="com:cod35" />
 					<xsd:element name="codVersamentoEnte" type="com:cod35" />
 					<xsd:element name="codDominio" type="com:cod35" />
 					<xsd:element name="iuv" type="com:cod35" />
+					<xsd:element name="numeroAvviso" type="com:cod35" minOccurs="0">
+						<xsd:annotation>
+							<xsd:documentation>Presente dalla versione 2.2.2</xsd:documentation>
+						</xsd:annotation>
+					</xsd:element>
 					<xsd:element name="qrCode" type="xsd:base64Binary" />
 					<xsd:element name="barCode" type="xsd:base64Binary" />
 				</xsd:sequence>
@@ -163,7 +172,11 @@
 						<xsd:element name="codApplicazione" type="com:cod35" />
 						<xsd:choice>
 							<xsd:element name="codVersamentoEnte" type="com:cod35" />
-							<xsd:element name="bundlekey" type="com:string256" />
+							<xsd:sequence>
+								<xsd:element name="codDominio" type="com:cod35" minOccurs="0"/>
+								<xsd:element name="codUnivocoDebitore" type="com:string35" minOccurs="0"/>
+								<xsd:element name="bundlekey" type="com:string256" />
+							</xsd:sequence>
 						</xsd:choice>
 						<xsd:element name="iuv" type="com:cod35" minOccurs="0"/>
 					</xsd:sequence>
@@ -237,6 +250,14 @@
 						</xsd:complexType>
 					</xsd:element>
 				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:complexType name="anomalia">
+				<xsd:simpleContent>
+					<xsd:extension base="xsd:string">
+						<xsd:attribute name="codice" type="xsd:string" />
+					</xsd:extension>
+				</xsd:simpleContent>
 			</xsd:complexType>
 			
 			<xsd:simpleType name="uuid">
@@ -504,6 +525,47 @@
 				</xsd:sequence>
 			</xsd:complexType>
 			
+			<xsd:simpleType name="statoFr">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ACCETTATA" />
+					<xsd:enumeration value="ANOMALA" />
+					<xsd:enumeration value="RIFIUTATA">
+						<xsd:annotation><xsd:documentation>Presente per retrocompatibilita v2.x</xsd:documentation></xsd:annotation>
+					</xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="statoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="OK" />
+					<xsd:enumeration value="ANOMALA" />
+					<xsd:enumeration value="ALTRO_INTERMEDIARIO" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:simpleType name="esitoRendicontazione">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="ESEGUITO" />
+					<xsd:enumeration value="REVOCATO" />
+					<xsd:enumeration value="ESEGUITO_SENZA_RPT" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:element name="metaInfo" nillable="true">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="iuvProp" maxOccurs="unbounded">
+							<xsd:complexType>
+								<xsd:simpleContent>
+									<xsd:extension base="xsd:string">
+										<xsd:attribute name="nome" type="xsd:string" />
+									</xsd:extension>
+								</xsd:simpleContent>
+							</xsd:complexType>
+						</xsd:element>
+					</xsd:sequence>
+				</xsd:complexType>
+			</xsd:element>
 			
 			<xsd:simpleType name="esitoOperazione">
 				<xsd:restriction base="xsd:string">
@@ -759,6 +821,7 @@
 	
 	<wsdl:message name="gpGeneraIuv">
 		<wsdl:part name="bodyrichiesta" element="app:gpGeneraIuv" />
+		<wsdl:part name="metaInfo" element="com:metaInfo" />
 	</wsdl:message>
 	
 	<wsdl:message name="gpGeneraIuvResponse">
@@ -775,6 +838,7 @@
 	 
 	<wsdl:message name="gpCaricaVersamento">
 		<wsdl:part name="bodyrichiesta" element="app:gpCaricaVersamento" />
+		<wsdl:part name="metaInfo" element="com:metaInfo" />
 	</wsdl:message>
 
 	<wsdl:message name="gpCaricaVersamentoResponse">
@@ -872,7 +936,10 @@
 		<soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
 		<wsdl:operation name="gpGeneraIuv">
 			<soap:operation soapAction="gpGeneraIuv" />
-			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:input>
+				<soap:header message="tns:gpGeneraIuv" part="metaInfo" use="literal" />
+				<soap:body use="literal" />
+			</wsdl:input>
 			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
 		
@@ -884,7 +951,10 @@
 
 		<wsdl:operation name="gpCaricaVersamento">
 			<soap:operation soapAction="gpCaricaVersamento" />
-			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:input>
+				<soap:header message="tns:gpCaricaVersamento" part="metaInfo" use="literal" />
+				<soap:body use="literal" />
+			</wsdl:input>
 			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
 		

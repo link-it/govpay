@@ -48,6 +48,7 @@ public class Costanti {
 	public static final String ID_REGOLAMENTO_COL = "idRegolamento";
 	public static final String IBAN_ACCREDITO_COL = "ibanAccredito";
 	public static final String IUV_COL = "iuv";
+	public static final String COL_UNO = "colUno";
 	
 	public static final String PAGAMENTI_SENZA_RPT_KEY = "PagamentiSenzaRpt";
 	public static final String LABEL_PAGAMENTI_SENZA_RPT = "Pagamenti Senza Rpt";
@@ -57,13 +58,15 @@ public class Costanti {
 	
 	/** LABEL PDF RT */
 	
+	public static final String LABEL_RICEVUTA_PAGAMENTO_UPPER_CASE = "RICEVUTA DI PAGAMENTO N°";
+	
 	public static final String LABEL_CF_PIVA = "Codice Fiscale/P.IVA";
 	public static final String LABEL_RICEVUTA_PAGAMENTO = "RICEVUTA DI PAGAMENTO";
 	public static final String LABEL_DETTAGLIO_PAGAMENTO = "DETTAGLIO DEL PAGAMENTO";
 	public static final String LABEL_CF_PIVA_DEBITORE = "Codice Fiscale/P.IVA del debitore";
 //	public static final String LABEL_DATA_PAGAMENTO = "Data di pagamento";
 //	public static final String LABEL_IUV = "IUV";
-//	public static final String LABEL_IMPORTO = "Importo";
+	public static final String LABEL_IMPORTO_DOVUTO = "Importo Dovuto";
 	public static final String LABEL_IUR = "Identificativo della riscossione";
 	public static final String LABEL_ISTITUTO_ATTESTANTE = "Istituto attestante";
 	
@@ -102,4 +105,25 @@ public class Costanti {
 	public static final String LABEL_DATA_REVOCA = "Data Revoca";
 	public static final String LABEL_ESITO_REVOCA = "RICEVUTA DI REVOCA";
 	public static final String LABEL_IMPORTO_REVOCA = "Importo Revocato";
+	
+	public static final String LABEL_CCP = "Ccp";
+	public static final String LABEL_ID_RISCOSSIONE = "Id Riscossione";
+	public static final String LABEL_PSP = "Psp";
+	
+	
+	/** LABEL AVVISO PAGAMENTO **/
+	public static final String LABEL_RIFERIMENTI = "Riferimenti";
+	public static final String LABEL_COMUNICAZIONI = "Comunicazioni";
+	public static final String LABEL_DATA_SCADENZA = "Data Scadenza";
+	public static final String LABEL_IMPORTO = "Importo";
+	public static final String LABEL_IMPORTO_DA_PAGARE = "Importo da Pagare";
+	public static final String LABEL_SCADENZA_DEL_PAGAMENTO = "Scadenze di Pagamento";
+	public static final String LABEL_CODICE_FISCALE_CREDITORE = "Codice Fiscale/P.IVA Ente Creditore";
+	public static final String LABEL_CODICE_AVVISO_PAGAMENTO = "Avviso di Pagamento N°";
+	public static final String LABEL_CODICE_AVVISO = "Codice Avviso";
+	public static final String LABEL_CODICE_VERSAMENTO = "Codice Versamento";
+	public static final String LABEL_CODICE_AVVISO_PAGAMENTO_UPPER_CASE = "AVVISO DI PAGAMENTO N°";
+	public static final String LABEL_INTESTATO_A = "Intestato a:";
+	public static final String LABEL_ESTREMI_DI_PAGAMENTO = "Estremi di Pagamento";
+	
 }

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -71,6 +70,22 @@ public class DominioFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "riuso_iuv", Dominio.model().RIUSO_IUV.getFieldType()));
 				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "custom_iuv", Dominio.model().CUSTOM_IUV.getFieldType()));
+				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "aux_digit", Dominio.model().AUX_DIGIT.getFieldType()));
+				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_prefix", Dominio.model().IUV_PREFIX.getFieldType()));
+				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "iuv_prefix_strict", Dominio.model().IUV_PREFIX_STRICT.getFieldType()));
+				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
+				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Dominio.model().NDP_STATO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
+				setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Dominio.model().NDP_OPERAZIONE.getFieldType()));
+				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType()));
+				setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_data", Dominio.model().NDP_DATA.getFieldType()));
 				return object;
 			}
 			
@@ -109,6 +124,22 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"riusoIUV"));
 				setParameter(object, "setCustomIUV", Dominio.model().CUSTOM_IUV.getFieldType(),
 					this.getObjectFromMap(map,"customIUV"));
+				setParameter(object, "setAuxDigit", Dominio.model().AUX_DIGIT.getFieldType(),
+					this.getObjectFromMap(map,"auxDigit"));
+				setParameter(object, "setIuvPrefix", Dominio.model().IUV_PREFIX.getFieldType(),
+					this.getObjectFromMap(map,"iuvPrefix"));
+				setParameter(object, "setIuvPrefixStrict", Dominio.model().IUV_PREFIX_STRICT.getFieldType(),
+					this.getObjectFromMap(map,"iuvPrefixStrict"));
+				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
+					this.getObjectFromMap(map,"segregationCode"));
+				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
+					this.getObjectFromMap(map,"ndpStato"));
+				setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpOperazione"));
+				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"ndpDescrizione"));
+				setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
+					this.getObjectFromMap(map,"ndpData"));
 				return object;
 			}
 			

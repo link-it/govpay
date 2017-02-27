@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -39,9 +38,10 @@ import java.io.Serializable;
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="abilitato" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idIbanAccredito" type="{http://www.govpay.it/orm}id-iban-accredito" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoContabilita" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codiceContabilita" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="tipoTributo" type="{http://www.govpay.it/orm}TipoTributo" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="codTributoIuv" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -61,7 +61,8 @@ import java.io.Serializable;
   	"idIbanAccredito",
   	"tipoContabilita",
   	"codiceContabilita",
-  	"tipoTributo"
+  	"tipoTributo",
+  	"codTributoIuv"
   }
 )
 
@@ -137,6 +138,14 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.tipoTributo = tipoTributo;
   }
 
+  public java.lang.String getCodTributoIuv() {
+    return this.codTributoIuv;
+  }
+
+  public void setCodTributoIuv(java.lang.String codTributoIuv) {
+    this.codTributoIuv = codTributoIuv;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -167,14 +176,18 @@ public class Tributo extends org.openspcoop2.utils.beans.BaseBean implements Ser
   protected IdIbanAccredito idIbanAccredito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="tipoContabilita",required=true,nillable=false)
+  @XmlElement(name="tipoContabilita",required=false,nillable=false)
   protected java.lang.String tipoContabilita;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codiceContabilita",required=true,nillable=false)
+  @XmlElement(name="codiceContabilita",required=false,nillable=false)
   protected java.lang.String codiceContabilita;
 
   @XmlElement(name="tipoTributo",required=true,nillable=false)
   protected TipoTributo tipoTributo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="codTributoIuv",required=false,nillable=false)
+  protected java.lang.String codTributoIuv;
 
 }

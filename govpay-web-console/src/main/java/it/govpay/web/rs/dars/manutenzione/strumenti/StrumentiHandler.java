@@ -3,10 +3,10 @@ package it.govpay.web.rs.dars.manutenzione.strumenti;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
@@ -14,7 +14,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.utils.resources.GestoreRisorseJMX;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -26,20 +25,14 @@ import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
+import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHandler<Object> {
 
-	private static GestoreRisorseJMX gestoreJMX;
-
 	public StrumentiHandler(Logger log, BaseDarsService darsService) {
 		super(log, darsService);
-		try {
-			gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
-		} catch (Exception e) {
-			log.error("Errore nella inizializzazione del gestore JMX", e);
-		}
 	}
 
 	@Override
@@ -55,16 +48,14 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),	this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
 
-			UriBuilder uriDettaglioBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}");
-
 			String[] listaOperazioni =  ConsoleProperties.getInstance().getOperazioniJMXDisponibili(); 
 
 			for (int i = 0; i < listaOperazioni.length; i++) {
 				String operazione = listaOperazioni[i];
 				long idOperazione = i;
-				String titoloOperazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".titolo");
-				String sottotitoloOperazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".sottotitolo");
-				URI urlDettaglio = uriDettaglioBuilder.build(idOperazione);
+				String titoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".titolo");
+				String sottotitoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "."+operazione+".sottotitolo");
+				URI urlDettaglio = Utils.creaUriConPath(this.pathServizio, idOperazione+"");
 				Elemento elemento = new Elemento(idOperazione, titoloOperazione, sottotitoloOperazione, urlDettaglio);
 				elenco.getElenco().add(elemento);
 			}
@@ -88,9 +79,9 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			String[] listaOperazioni =  ConsoleProperties.getInstance().getOperazioniJMXDisponibili(); 
 			String operazione = listaOperazioni[(int) id];
 
-			String titoloOperazione = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".titolo");
+			String titoloOperazione = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".titolo");
 			methodName = this.titoloServizio + "Esecuzione dell'operazione con id: "+ id +", CodiceOperazione: [" + titoloOperazione +"]";
-			String nomeMetodo = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".nomeMetodo");
+			String nomeMetodo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "." + operazione + ".nomeMetodo");
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -103,38 +94,69 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
 			String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
 			String nomeRisorsa = ConsoleProperties.getInstance().getNomeRisorsaOperazioniJMX();
+			String as = ConsoleProperties.getInstance().getAsJMX();
+			String factory = ConsoleProperties.getInstance().getFactoryJMX();
+			String username = ConsoleProperties.getInstance().getUsernameJMX();
+			String password = ConsoleProperties.getInstance().getPasswordJMX();
 
 			Dettaglio dettaglio = new Dettaglio(titoloOperazione, esportazione, cancellazione, infoModifica);
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			Object invoke = null;
+			log.debug("Invocazione operazione ["+nomeMetodo +"] in corso..."); 
 
-			try{
-				log.debug("Invocazione operazione ["+nomeMetodo +"] in corso..."); 
-				invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
-				log.debug("Invocazione operazione ["+nomeMetodo +"] completata, ricevuta risposta ["+invoke+"]"); 
-				
-				if(invoke != null && invoke instanceof String){
-					String esito = (String) invoke;
-					String[] voci = esito.split("\\|");
-					
-					for (String string : voci) {
-						String[] voce = string.split("#");
-						if(voce.length == 2)
-							root.addVoce(voce[0],voce[1]);
-						else
-							if(voce.length == 1)
-								root.addVoce(voce[0],null);
+			/*
+			 * Se l'operazione e' un reset cache lo eseguo su tutti i nodi
+			 * Altrimenti mi fermo al primo che ha successo
+			 */
+			Map<String, String> urlJMX = ConsoleProperties.getInstance().getUrlJMX();
+			for(String nodo : urlJMX.keySet()) {
+
+				String url = urlJMX.get(nodo);
+
+				try{
+					GestoreRisorseJMX gestoreJMX = null;
+
+					if(url.equals("locale"))
+						gestoreJMX = new GestoreRisorseJMX(org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
+					else
+						gestoreJMX = new GestoreRisorseJMX(as, factory, url, username, password, org.apache.log4j.Logger.getLogger(StrumentiHandler.class));
+
+					invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
+
+					if(id==3) {
+						root.addVoce("Esito operazione sul nodo " + nodo,"Reset cache completata con successo.");
+					} else {
+						root.addVoce("Operazione completata sul nodo",nodo);
+
+						if(invoke != null && invoke instanceof String){
+							String esito = (String) invoke;
+							String[] voci = esito.split("\\|");
+
+							for (String string : voci) {
+								String[] voce = string.split("#");
+								if(voce.length == 2)
+									root.addVoce(voce[0],voce[1]);
+								else
+									if(voce.length == 1)
+										root.addVoce(voce[0],null);
+							}
+						}
 					}
 
+					if(id!=3) {
+						break;
+					}
+				} catch(Exception e) {
+					log.error("si e' verificato un errore durante l'esecuzione dell'operazione ["+nomeMetodo+"]: " + e.getMessage(),e); 
+					Throwable t = e;
+					while(t.getCause() != null) {
+						t = t.getCause();
+					}
+					root.addVoce("Esito operazione sul nodo " + nodo, "Errore: " + t.getMessage());
 				}
-			}catch(Exception e){
-				log.error("si e' verificato un errore durante l'esecuzione dell'operazione ["+nomeMetodo+"]: " + e.getMessage(),e); 
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito"),
-						Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.ko"));
-				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".operazione.esito.dettaglio"),
-						e.getMessage());
 			}
+
 
 			this.log.info("Esecuzione " + methodName + " completata.");
 
@@ -149,7 +171,11 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException {	return null; }
+	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {	
+		URI ricerca = this.getUriRicerca(uriInfo, bd);
+		InfoForm infoRicerca = new InfoForm(ricerca);
+		return infoRicerca;
+	}
 
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {	return null;	}
@@ -180,9 +206,12 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 
 	@Override
 	public String getSottotitolo(Object entry,BasicBD bd) { return null; }
-	
+
 	@Override
 	public List<String> getValori(Object entry, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public Map<String, Voce<String>> getVoci(Object entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException { return null; }

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -35,7 +34,6 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 
 @Path("/pub")
@@ -58,6 +56,7 @@ public class GestioneRedirectGw {
 
 		try {
 			gpContext = new GpContext();
+			gpContext.log("gw.redirect", codDominio, codSessione);
 			bd = BasicBD.newInstance(gpContext.getTransactionId());
 			RptBD rptBD = new RptBD(bd);
 			rpt = rptBD.getRptByCodSessione(codDominio, codSessione);
@@ -67,6 +66,7 @@ public class GestioneRedirectGw {
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
+				gpContext.log("gw.redirectCustom", codDominio, codSessione, ub.build().toString());
 				log.info("Gw custom [Dominio:"+codDominio+" Sessione:"+codSessione+"] > [Url:"+ub.build().toString()+"]");
 				return Response.seeOther(ub.build()).build();
 			} else {
@@ -74,17 +74,17 @@ public class GestioneRedirectGw {
 				if(codDominio != null) ub.queryParam("idDominio", codDominio);
 				ub.queryParam("idSession", codSessione);
 				ub.queryParam("esito", esito);
+				gpContext.log("gw.redirectDefault", codDominio, codSessione, ub.build().toString());
 				log.info("Gw standard [Dominio:"+codDominio+" Sessione:"+codSessione+"] > [Url:"+ub.build().toString()+"]");
 				return Response.seeOther(ub.build()).build();
 			}
 		} catch (NotFoundException e) {
 			log.debug("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Not found");
+			if(gpContext != null) gpContext.log("gw.redirectNotFound", codDominio, codSessione);
 			return Response.status(Response.Status.NOT_FOUND).build();
-		} catch (MultipleResultException e) {
-			log.error("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Multiple Result");
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} catch (Exception e) {
 			log.error("Gw [Dominio:"+codDominio+" Sessione:"+codSessione+"] > Internal", e);
+			if(gpContext != null) gpContext.log("gw.redirectFail", codDominio, codSessione, e.getMessage());
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd!= null) bd.closeConnection();

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -46,7 +45,10 @@ public class StazioneConverter {
 		dto.setIdIntermediario(vo.getIdIntermediario().getId());
 		dto.setAbilitato(vo.isAbilitato());
 		dto.setApplicationCode(vo.getApplicationCode());
-
+		dto.setNdpStato(vo.getNdpStato());
+		dto.setNdpOperazione(vo.getNdpOperazione());
+		dto.setNdpDescrizione(vo.getNdpDescrizione());
+		dto.setNdpData(vo.getNdpData());
 		return dto;
 	}
 
@@ -60,7 +62,10 @@ public class StazioneConverter {
 		vo.setIdIntermediario(idInterm);
 		vo.setAbilitato(dto.isAbilitato());
 		vo.setApplicationCode(dto.getApplicationCode());
-		
+		vo.setNdpStato(dto.getNdpStato());
+		vo.setNdpOperazione(dto.getNdpOperazione());
+		vo.setNdpDescrizione(dto.getNdpDescrizione());
+		vo.setNdpData(dto.getNdpData());
 		return vo;
 	}
 

@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -82,6 +81,27 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 				return "descrizione";
 			}
 		}
+		if(field.equals(TipoTributo.model().TIPO_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_contabilita";
+			}else{
+				return "tipo_contabilita";
+			}
+		}
+		if(field.equals(TipoTributo.model().COD_CONTABILITA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_contabilita";
+			}else{
+				return "cod_contabilita";
+			}
+		}
+		if(field.equals(TipoTributo.model().COD_TRIBUTO_IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_tributo_iuv";
+			}else{
+				return "cod_tributo_iuv";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -99,6 +119,15 @@ public class TipoTributoFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
 		if(field.equals(TipoTributo.model().DESCRIZIONE)){
+			return this.toTable(TipoTributo.model(), returnAlias);
+		}
+		if(field.equals(TipoTributo.model().TIPO_CONTABILITA)){
+			return this.toTable(TipoTributo.model(), returnAlias);
+		}
+		if(field.equals(TipoTributo.model().COD_CONTABILITA)){
+			return this.toTable(TipoTributo.model(), returnAlias);
+		}
+		if(field.equals(TipoTributo.model().COD_TRIBUTO_IUV)){
 			return this.toTable(TipoTributo.model(), returnAlias);
 		}
 

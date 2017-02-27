@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -31,15 +30,37 @@ public class GovPayException extends Exception {
 	private EsitoOperazione codEsito;
 	private String causa;
 	
+	public GovPayException(String causa, EsitoOperazione codEsito, String ... params) {
+		this.params = params;
+		this.setCodEsito(codEsito);
+		this.setCausa(causa);
+	}
+	
+	public GovPayException(String causa, EsitoOperazione codEsito, Throwable e, String ... params) {
+		super(e);
+		this.params = params;
+		this.setCodEsito(codEsito);
+		this.setCausa(causa);
+	}
+	
+	public GovPayException(Throwable e, String descrizione) {
+		super(e);
+		this.params = new String[1];
+		this.params[0] = descrizione;
+		this.setCodEsito(EsitoOperazione.INTERNAL);
+		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
+	}
+	
 	public GovPayException(EsitoOperazione codEsito, String ... params) {
 		this.params = params;
 		this.setCodEsito(codEsito);
 	}
 	
-	public GovPayException(EsitoOperazione codEsito, Exception e, String ... params) {
+	public GovPayException(EsitoOperazione codEsito, Throwable e, String ... params) {
 		super(e);
 		this.params = params;
 		this.setCodEsito(codEsito);
+		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 	}
 	
 	public GovPayException(Exception e) {
@@ -103,8 +124,8 @@ public class GovPayException extends Exception {
 		case PAG_003: return "Il canale indicato non supporta il pagamento di Marca da Bollo Telematica";
 		case PAG_004: return "Il tipo di pagamento Addebito Diretto richiede di specificare un Iban di Addebito";
 		case PAG_005: return "Il tipo di pagamento On-line Banking e-Payment (OBEP) consente il pagamento di versamenti con al piu' un singolo versamento";
-		case PAG_006: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' in uno stato che non consente il pagamento (" + params[2] + ")";
-		case PAG_007: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' scaduto";
+		case PAG_006: return "Il versamento e' in uno stato che non consente il pagamento";
+		case PAG_007: return "Il versamento e' scaduto";
 		case PAG_008: return "Transazione di pagamento inesistente"; 
 		case PAG_009: return "Pagamento con Identificativo Univoco di Riscossione (" + params[0] + ") e' gia' stato stornato."; 
 		case PAG_010: return "Richiesta di storno inesistente."; 
@@ -134,11 +155,11 @@ public class GovPayException extends Exception {
 		case VER_007: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha il singolo versamento con codSingoloVersamentoEnte (" + params[2] + ") inviato ha un tipo tributo (" + params[3] + ") diverso dall'originale (" + params[4] + ")";
 		case VER_008: return "Il versamento non esiste.";
 		case VER_009: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' in uno stato che non consente l'annullamento (" + params[2] + ")";
-		case VER_010: return "La verifica del versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha dato esito PAA_PAGAMENTO_SCADUTO";
-		case VER_011: return "La verifica del versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha dato esito PAA_PAGAMENTO_SCONOSCIUTO";
-		case VER_012: return "La verifica del versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha dato esito PAA_PAGAMENTO_ANNULLATO";
-		case VER_013: return "La verifica del versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") ha dato esito PAA_PAGAMENTO_DUPLICATO";
-		case VER_014: return "La verifica del versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' fallita";
+		case VER_010: return "La verifica del versamento ha dato esito PAA_PAGAMENTO_SCADUTO";
+		case VER_011: return "La verifica del versamento ha dato esito PAA_PAGAMENTO_SCONOSCIUTO";
+		case VER_012: return "La verifica del versamento ha dato esito PAA_PAGAMENTO_DUPLICATO";
+		case VER_013: return "La verifica del versamento ha dato esito PAA_PAGAMENTO_ANNULLATO";
+		case VER_014: return "La verifica del versamento e' fallita";
 		case VER_015: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") esistente e non aggiornabile se AggiornaSeEsiste impostato a false";
 		case VER_016: return "Il versamento (" + params[1] + ") dell'applicazione (" + params[0] + ") e' in uno stato che non consente la notifica di pagamento (" + params[2] + ")";
 		case VER_017: return "Lo IUV (" + params[0] + ") non e' conforme alle specifiche agid";

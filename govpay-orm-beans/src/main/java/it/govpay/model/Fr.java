@@ -2,12 +2,11 @@
  * GovPay - Porta di Accesso al Nodo dei Pagamenti SPC 
  * http://www.gov4j.it/govpay
  * 
- * Copyright (c) 2014-2016 Link.it srl (http://www.link.it).
+ * Copyright (c) 2014-2017 Link.it srl (http://www.link.it).
  * 
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * it under the terms of the GNU General Public License version 3, as published by
+ * the Free Software Foundation.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -20,49 +19,52 @@
  */
 package it.govpay.model;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class Fr extends BasicModel{
 	private static final long serialVersionUID = 1L;
-	
+
 	public enum StatoFr {
 		ACCETTATA,
-		RIFIUTATA
+		ANOMALA,
+		RIFIUTATA // Per retrocompatibilita v2.2
 	}
-	
+
 	private Long id;
-	private long idPsp;
-	private long idDominio;
+	private String codPsp;
+	private String codDominio;
 	private String codFlusso;
 	private StatoFr stato;
-	private String descrizioneStato;
 	private String iur;
 	private String codBicRiversamento;
-	private int annoRiferimento;
 	private Date dataFlusso;
 	private Date dataRegolamento;
 	private Date dataAcquisizione;
 	private long numeroPagamenti;
-	private double importoTotalePagamenti;
+	private BigDecimal importoTotalePagamenti;
 	private byte[] xml;
-	
+	private List<Anomalia> anomalie;
+
 	public Long getId() {
 		return id;
 	}
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public long getIdPsp() {
-		return idPsp;
+	public String getCodPsp() {
+		return codPsp;
 	}
-	public void setIdPsp(long idPsp) {
-		this.idPsp = idPsp;
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
 	}
-	public long getIdDominio() {
-		return idDominio;
+	public String getCodDominio() {
+		return codDominio;
 	}
-	public void setIdDominio(long idDominio) {
-		this.idDominio = idDominio;
+	public void setCodDominio(String codDominio) {
+		this.codDominio = codDominio;
 	}
 	public String getCodFlusso() {
 		return codFlusso;
@@ -77,22 +79,17 @@ public class Fr extends BasicModel{
 		this.stato = stato;
 	}
 	public String getDescrizioneStato() {
-		return descrizioneStato;
+		return marshall(getAnomalie());
 	}
 	public void setDescrizioneStato(String descrizioneStato) {
-		this.descrizioneStato = descrizioneStato;
+		if(descrizioneStato != null)
+			this.anomalie = unmarshall(descrizioneStato);
 	}
 	public String getIur() {
 		return iur;
 	}
 	public void setIur(String iur) {
 		this.iur = iur;
-	}
-	public int getAnnoRiferimento() {
-		return annoRiferimento;
-	}
-	public void setAnnoRiferimento(int annoRiferimento) {
-		this.annoRiferimento = annoRiferimento;
 	}
 	public Date getDataFlusso() {
 		return dataFlusso;
@@ -112,10 +109,10 @@ public class Fr extends BasicModel{
 	public void setNumeroPagamenti(long numeroPagamenti) {
 		this.numeroPagamenti = numeroPagamenti;
 	}
-	public double getImportoTotalePagamenti() {
+	public BigDecimal getImportoTotalePagamenti() {
 		return importoTotalePagamenti;
 	}
-	public void setImportoTotalePagamenti(double importoTotalePagamenti) {
+	public void setImportoTotalePagamenti(BigDecimal importoTotalePagamenti) {
 		this.importoTotalePagamenti = importoTotalePagamenti;
 	}
 	public byte[] getXml() {
@@ -124,7 +121,7 @@ public class Fr extends BasicModel{
 	public void setXml(byte[] xml) {
 		this.xml = xml;
 	}
-	
+
 	public String getCodBicRiversamento() {
 		return codBicRiversamento;
 	}
@@ -136,5 +133,87 @@ public class Fr extends BasicModel{
 	}
 	public void setDataAcquisizione(Date dataAcquisizione) {
 		this.dataAcquisizione = dataAcquisizione;
+	}
+
+	public class Anomalia {
+		String codAnomalia;
+		String descrizione;
+
+		public String getCodice(){
+			return codAnomalia;
+		}
+
+		public String getDescrizione(){
+			return descrizione;
+		}
+	}
+
+	public List<Anomalia> getAnomalie() {
+		if(anomalie == null)
+			anomalie = new ArrayList<Anomalia>();
+		return anomalie;
+	}
+
+	public void addAnomalia(String codAnomalia, String descrizione) {
+		Anomalia a = new Anomalia();
+		a.codAnomalia = codAnomalia;
+		a.descrizione = descrizione;
+		getAnomalie().add(a);
+	}
+
+	private String marshall(List<Anomalia> anomalie) {
+		if(anomalie == null || anomalie.size() == 0) return null;
+		StringBuffer sb = new StringBuffer();
+
+		if(stato.equals(StatoFr.RIFIUTATA)) {
+			// Retrocompatibilita' vecchia versione senza anomalie.
+			for(Anomalia a : anomalie){
+				sb.append(a.descrizione);
+				sb.append("#");
+			}
+			// Elimino l'ultimo #
+			String txt = sb.toString();
+			return txt.substring(0, txt.length()-1);
+		} else {
+			for(Anomalia a : anomalie){
+				sb.append(a.codAnomalia);
+				sb.append("#");
+				sb.append(a.descrizione);
+				sb.append("|");
+			}
+			// Elimino l'ultimo pipe
+			String txt = sb.toString();
+			return txt.substring(0, txt.length()-1);
+		}
+	}
+
+
+
+	private List<Anomalia> unmarshall(String anomalie) {
+		List<Anomalia> list = new ArrayList<Anomalia>();
+
+		if(anomalie == null || anomalie.isEmpty()) return list;
+
+		if(stato.equals(StatoFr.RIFIUTATA)) {
+			// Retrocompatibilita' vecchia versione senza anomalie.
+			String[] split = anomalie.split("#");
+			for(String s : split){
+				Anomalia a = new Anomalia();
+				a.codAnomalia = "000000";
+				a.descrizione = s;
+				list.add(a);
+			}
+			return list;
+		} else {
+			String[] split = anomalie.split("\\|");
+			for(String s : split){
+				String[] split2 = s.split("#");
+				Anomalia a = new Anomalia();
+				a.codAnomalia = split2[0];
+				a.descrizione = split2[1];
+				list.add(a);
+			}
+		}
+		return list;
 	}
 }
