@@ -62,9 +62,6 @@
 		<antcall target="govpay_logger_properties_settings">
 			<param name="file" value="${tmp_dir}/govpayConsole/WEB-INF/classes/log4j2.xml"/>
 		</antcall>
-		<antcall target="govpay_console_properties_settings">
-                        <param name="file" value="${tmp_dir}/govpayConsole/scripts/app.js"/>
-                </antcall>
                 <antcall target="govpay_console_properties_settings">
                         <param name="file" value="${tmp_dir}/govpayConsole/WEB-INF/classes/govpayConsole.properties"/>
                 </antcall>
