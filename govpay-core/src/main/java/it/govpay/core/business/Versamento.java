@@ -343,6 +343,6 @@ public class Versamento extends BasicBD {
 			} catch (Exception e) {
 				// Aggiornamento andato male. risultera' scaduto.
 			} 
-		return versamentiBD.findAll(filter);
+		return versamenti;
 	}
 }
