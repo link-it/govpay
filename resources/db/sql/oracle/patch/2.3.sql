@@ -1,10 +1,10 @@
 --GP-393
 ALTER TABLE applicazioni ADD cod_applicazione_iuv VARCHAR2(3 CHAR);
-ALTER TABLE domini ADD aux_digit NUMBER NOT NULL;
+ALTER TABLE domini ADD aux_digit NUMBER DEFAULT 0;
+ALTER TABLE domini MODIFY (aux_digit NOT NULL);
 ALTER TABLE domini ADD iuv_prefix VARCHAR2(255 CHAR);
-ALTER TABLE domini ADD iuv_prefix_strict NUMBER NOT NULL;
-ALTER TABLE domini MODIFY aux_digit DEFAULT 0;
-ALTER TABLE domini MODIFY iuv_prefix_strict DEFAULT 0;
+ALTER TABLE domini ADD iuv_prefix_strict NUMBER DEFAULT 0;
+ALTER TABLE domini MODIFY (iuv_prefix_strict NOT NULL);
 ALTER TABLE tipi_tributo ADD tipo_contabilita VARCHAR2(1 CHAR);
 ALTER TABLE tipi_tributo ADD cod_contabilita VARCHAR2(255 CHAR);
 ALTER TABLE tipi_tributo ADD cod_tributo_iuv VARCHAR2(4 CHAR);
@@ -88,7 +88,6 @@ ALTER TABLE pagamenti DROP COLUMN rendicontazione_data_revoca;
 ALTER TABLE pagamenti DROP COLUMN cod_flusso_rendicontaz_revoca;
 ALTER TABLE pagamenti DROP COLUMN anno_riferimento_revoca;
 ALTER TABLE pagamenti DROP COLUMN ind_singolo_pagamento_revoca;
-ALTER TABLE pagamenti DROP COLUMN ind_singolo_pagamento_revoca;
 ALTER TABLE pagamenti DROP COLUMN id_fr_applicazione;
 ALTER TABLE pagamenti DROP COLUMN id_fr_applicazione_revoca;
 
@@ -101,10 +100,13 @@ DROP SEQUENCE sequence_fr_applicazioni;
 DROP TRIGGER trigger_fr_applicazioni;
 DROP TABLE fr_applicazioni;
 
+
+ALTER TABLE fr DROP CONSTRAINT unique_fr_1;
 ALTER TABLE fr DROP COLUMN anno_riferimento;
 ALTER TABLE fr ADD CONSTRAINT unique_fr_1 UNIQUE (cod_flusso);
-ALTER TABLE iuv ADD aux_digit NUMBER NOT NULL;
-ALTER TABLE iuv MODIFY aux_digit DEFAULT 0;
+ALTER TABLE iuv ADD aux_digit NUMBER DEFAULT 0;
+ALTER TABLE iuv MODIFY (aux_digit NOT NULL);
+
 
 -- GP-479
 ALTER TABLE domini ADD ndp_stato INT;
