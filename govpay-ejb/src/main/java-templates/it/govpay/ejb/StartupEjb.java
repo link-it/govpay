@@ -69,7 +69,7 @@ public class StartupEjb {
 		GovpayConfig gpConfig = null;
 		try {
 			gpConfig = GovpayConfig.newInstance();
-			it.govpay.bd.GovpayConfig.newInstance("/govpay.properties");
+			it.govpay.bd.GovpayConfig.newInstance4GovPay();
 			it.govpay.bd.GovpayCustomConfig.newInstance();
 		} catch (Exception e) {
 			throw new RuntimeException("Inizializzazione di GovPay fallita: " + e, e);

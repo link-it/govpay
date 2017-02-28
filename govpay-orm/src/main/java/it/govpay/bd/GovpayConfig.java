@@ -37,8 +37,19 @@ public class GovpayConfig {
 		return instance;
 	}
 
-	public static GovpayConfig newInstance(String propertyFileName) throws Exception {
-		instance = new GovpayConfig(propertyFileName);
+	public static GovpayConfig newInstance4GovPay() throws Exception {
+		instance = new GovpayConfig("/govpay.properties", "it.govpay.resource.path", false);
+		return instance;
+	}
+	
+	public static GovpayConfig newInstance4GovPayConsole() throws Exception {
+		instance = new GovpayConfig("/govpayConsole.properties", "it.govpay.console.resource.path", true);
+		
+		return instance;
+	}
+	
+	public static GovpayConfig newInstance(String propertiesFileName, String propertyResourcePathName, boolean dataonly) throws Exception {
+		instance = new GovpayConfig(propertiesFileName, propertyResourcePathName, dataonly);
 		return instance;
 	}
 
@@ -49,8 +60,10 @@ public class GovpayConfig {
 	private Properties[] props;
 	private String resourceDir;
 	private CustomIuv defaultCustomIuvGenerator;
+	
+	
 
-	public GovpayConfig(String propertyFileName) throws Exception {
+	public GovpayConfig(String propertyFileName, String resourcePathProperty, boolean dataonly) throws Exception {
 
 		Logger log = LogManager.getLogger("boot");
 
@@ -66,7 +79,8 @@ public class GovpayConfig {
 		// Se e' configurata, la uso come prioritaria
 
 		try {
-			this.resourceDir = getProperty("it.govpay.resource.path", props1, false, true);
+			if(resourcePathProperty != null)
+				this.resourceDir = getProperty(resourcePathProperty, props1, false, true);
 
 			if(this.resourceDir != null) {
 				File resourceDirFile = new File(this.resourceDir);
@@ -94,6 +108,8 @@ public class GovpayConfig {
 		this.dataSourceJNDIName = getProperty("it.govpay.orm.dataSourceJNDIName", props, true);
 		this.dataSourceAppName = getProperty("it.govpay.orm.dataSourceAppName", props, true);
 
+		if(dataonly) return;
+		
 		String defaultCustomIuvGeneratorClass = getProperty("it.govpay.defaultCustomIuvGenerator.class", props, false);
 		if(defaultCustomIuvGeneratorClass != null && !defaultCustomIuvGeneratorClass.isEmpty()) {
 			Class<?> c = null;
@@ -141,7 +157,7 @@ public class GovpayConfig {
 				log.info("Letta proprieta di configurazione " + logString + name + ": " + value);
 			}
 		} else {
-			log.info("Letta proprieta di configurazione " + name + ": " + value);
+			log.info("Letta proprieta di sistema " + name + ": " + value);
 		}
 
 		return value.trim();
