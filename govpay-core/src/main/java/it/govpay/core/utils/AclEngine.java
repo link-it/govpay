@@ -103,6 +103,8 @@ public class AclEngine {
 	/** 
 	 * Ritorna la lista dei domini autorizzati al servizio Rendicontazione per l'applicazione indicata
 	 * 
+	 * Se ritorna NULL indica che tutti i domini sono autorizzati
+	 * 
 	 * @param applicazione
 	 * @param servizio
 	 * @return
@@ -110,8 +112,12 @@ public class AclEngine {
 	public static Set<Long> getAuthorizedPagamenti(Portale portale) {
 		Set<Long> domini = new HashSet<Long>();
 		for(Acl acl : portale.getAcls()) {
-			if(acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA))
-				domini.add(acl.getIdDominio());
+			if(acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA)) {
+				if(acl.getIdDominio() != null)
+					domini.add(acl.getIdDominio());
+				else 
+					return null;
+			}
 		}
 		return domini;
 	}

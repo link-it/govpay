@@ -214,6 +214,9 @@ public class VersamentiBD extends BasicBD {
 	public List<Versamento> findAll(VersamentoFilter filter) throws ServiceException {
 		try {
 			List<Versamento> versamentoLst = new ArrayList<Versamento>();
+			
+			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return versamentoLst;
+			
 			List<it.govpay.orm.Versamento> versamentoVOLst = this.getVersamentoService().findAll(filter.toPaginatedExpression()); 
 			for(it.govpay.orm.Versamento versamentoVO: versamentoVOLst) {
 				versamentoLst.add(VersamentoConverter.toDTO(versamentoVO));
