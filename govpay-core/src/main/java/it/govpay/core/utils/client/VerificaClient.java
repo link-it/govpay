@@ -81,7 +81,6 @@ public class VerificaClient extends BasicClient {
 		
 		log.debug("Richiedo la verifica per il versamento [Applicazione:" + codApplicazione + " Versamento:" + codVersamentoEnteD + " BundleKey:" + bundlekeyD + " Debitore:" + codUnivocoDebitore + " Dominio:" + codDominioD + " Iuv:" + iuvD + "] in versione (" + versione.toString() + ") alla URL ("+url+")");
 		
-		log.debug("Richiedo la verifica per il versamento [Applicazione:" + codApplicazione + " Versamento:" + codVersamentoEnteD + " Dominio:" + codDominioD + " Iuv:" + iuvD + "] in versione (" + versione.toString() + ") alla URL ("+url+")");		
 		GpContext ctx = GpThreadLocal.get();
 		String idTransaction = ctx.openTransaction();
 		
