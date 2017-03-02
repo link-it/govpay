@@ -34,6 +34,7 @@ import it.govpay.orm.dao.jdbc.converter.DominioFieldConverter;
 import it.govpay.orm.dao.jdbc.converter.IbanAccreditoFieldConverter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -159,6 +160,7 @@ public class DominiBD extends BasicBD {
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_STATO, codice));
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_OPERAZIONE, operazione));
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE, descrizione));
+			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_DATA, new Date()));
 			
 			((JDBCDominioService)this.getDominioService()).updateFields(idDominio, lst.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -175,7 +177,8 @@ public class DominiBD extends BasicBD {
 			lst.add(it.govpay.orm.Dominio.model().NDP_STATO);
 			lst.add(it.govpay.orm.Dominio.model().NDP_OPERAZIONE);
 			lst.add(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE);
-
+			lst.add(it.govpay.orm.Dominio.model().NDP_DATA);
+			
 			IPaginatedExpression expr = this.getDominioService().newPaginatedExpression();
 			DominioFieldConverter converter = new DominioFieldConverter(this.getJdbcProperties().getDatabase());
 			expr.equals(new CustomField("id",  Long.class, "id", converter.toTable(it.govpay.orm.Dominio.model())), idDominio);
@@ -193,7 +196,7 @@ public class DominiBD extends BasicBD {
 			stato.setCodice((Integer)select.get(0).get(it.govpay.orm.Dominio.model().NDP_STATO));
 			stato.setDescrizione((String)select.get(0).get(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE));
 			stato.setOperazione((String)select.get(0).get(it.govpay.orm.Dominio.model().NDP_OPERAZIONE));
-			
+			stato.setData((Date)select.get(0).get(it.govpay.orm.Dominio.model().NDP_DATA)) ;
 			return stato;
 			
 		} catch (NotImplementedException e) {

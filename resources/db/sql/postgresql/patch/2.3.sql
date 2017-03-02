@@ -104,3 +104,6 @@ ALTER TABLE stazioni ADD COLUMN ndp_stato INT;
 ALTER TABLE stazioni ADD COLUMN ndp_operazione VARCHAR(256);
 ALTER TABLE stazioni ADD COLUMN ndp_descrizione VARCHAR(1024);
 
+--GP-484
+ALTER TABLE domini ADD COLUMN ndp_data TIMESTAMP;
+ALTER TABLE stazioni ADD COLUMN ndp_data TIMESTAMP;

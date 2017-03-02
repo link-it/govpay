@@ -108,6 +108,7 @@ CREATE TABLE stazioni
 	ndp_stato NUMBER,
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
+	ndp_data TIMESTAMP,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_intermediario NUMBER NOT NULL,
@@ -190,6 +191,7 @@ CREATE TABLE domini
 	ndp_stato NUMBER,
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
+	ndp_data TIMESTAMP,
 	-- fk/pk columns
 	id NUMBER NOT NULL,
 	id_stazione NUMBER NOT NULL,

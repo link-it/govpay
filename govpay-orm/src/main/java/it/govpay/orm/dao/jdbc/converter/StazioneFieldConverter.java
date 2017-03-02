@@ -123,6 +123,13 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "ndp_descrizione";
 			}
 		}
+		if(field.equals(Stazione.model().NDP_DATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_data";
+			}else{
+				return "ndp_data";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -158,6 +165,9 @@ public class StazioneFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 		if(field.equals(Stazione.model().NDP_DESCRIZIONE)){
+			return this.toTable(Stazione.model(), returnAlias);
+		}
+		if(field.equals(Stazione.model().NDP_DATA)){
 			return this.toTable(Stazione.model(), returnAlias);
 		}
 

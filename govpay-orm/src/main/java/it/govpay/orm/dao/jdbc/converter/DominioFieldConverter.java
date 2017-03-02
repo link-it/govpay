@@ -186,6 +186,13 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 				return "ndp_descrizione";
 			}
 		}
+		if(field.equals(Dominio.model().NDP_DATA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".ndp_data";
+			}else{
+				return "ndp_data";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -248,6 +255,9 @@ public class DominioFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 		if(field.equals(Dominio.model().NDP_DESCRIZIONE)){
+			return this.toTable(Dominio.model(), returnAlias);
+		}
+		if(field.equals(Dominio.model().NDP_DATA)){
 			return this.toTable(Dominio.model(), returnAlias);
 		}
 

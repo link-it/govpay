@@ -30,6 +30,7 @@ import it.govpay.orm.dao.jdbc.JDBCStazioneServiceSearch;
 import it.govpay.orm.dao.jdbc.converter.StazioneFieldConverter;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +100,7 @@ public class StazioniBD extends BasicBD {
 			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_STATO, codice));
 			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_OPERAZIONE, operazione));
 			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE, descrizione));
+			lst.add(new UpdateField(it.govpay.orm.Stazione.model().NDP_DATA, new Date()));
 			
 			((JDBCStazioneService)this.getStazioneService()).updateFields(idStazione, lst.toArray(new UpdateField[]{}));
 		} catch (NotImplementedException e) {
@@ -113,11 +115,12 @@ public class StazioniBD extends BasicBD {
 			lst.add(it.govpay.orm.Stazione.model().NDP_STATO);
 			lst.add(it.govpay.orm.Stazione.model().NDP_OPERAZIONE);
 			lst.add(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE);
+			lst.add(it.govpay.orm.Stazione.model().NDP_DATA);
 
-			IPaginatedExpression expr = this.getDominioService().newPaginatedExpression();
+			IPaginatedExpression expr = this.getStazioneService().newPaginatedExpression();
 			StazioneFieldConverter converter = new StazioneFieldConverter(this.getJdbcProperties().getDatabase());
 			expr.equals(new CustomField("id",  Long.class, "id", converter.toTable(it.govpay.orm.Stazione.model())), idStazione);
-			List<Map<String,Object>> select = this.getDominioService().select(expr, lst.toArray(new IField[]{}));
+			List<Map<String,Object>> select = this.getStazioneService().select(expr, lst.toArray(new IField[]{}));
 			if(select == null || select.size() <= 0) {
 				throw new NotFoundException("Id Stazione ["+idStazione+"]");
 			}
@@ -131,7 +134,7 @@ public class StazioniBD extends BasicBD {
 			stato.setCodice((Integer)select.get(0).get(it.govpay.orm.Stazione.model().NDP_STATO));
 			stato.setDescrizione((String)select.get(0).get(it.govpay.orm.Stazione.model().NDP_DESCRIZIONE));
 			stato.setOperazione((String)select.get(0).get(it.govpay.orm.Stazione.model().NDP_OPERAZIONE));
-			
+			stato.setData((Date)select.get(0).get(it.govpay.orm.Stazione.model().NDP_DATA)) ;
 			return stato;
 			
 		} catch (NotImplementedException e) {

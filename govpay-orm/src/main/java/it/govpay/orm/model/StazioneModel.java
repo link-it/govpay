@@ -49,6 +49,7 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.NDP_STATO = new Field("ndpStato",java.lang.Integer.class,"Stazione",Stazione.class);
 		this.NDP_OPERAZIONE = new Field("ndpOperazione",java.lang.String.class,"Stazione",Stazione.class);
 		this.NDP_DESCRIZIONE = new Field("ndpDescrizione",java.lang.String.class,"Stazione",Stazione.class);
+		this.NDP_DATA = new Field("ndpData",java.util.Date.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -64,6 +65,7 @@ public class StazioneModel extends AbstractModel<Stazione> {
 		this.NDP_STATO = new ComplexField(father,"ndpStato",java.lang.Integer.class,"Stazione",Stazione.class);
 		this.NDP_OPERAZIONE = new ComplexField(father,"ndpOperazione",java.lang.String.class,"Stazione",Stazione.class);
 		this.NDP_DESCRIZIONE = new ComplexField(father,"ndpDescrizione",java.lang.String.class,"Stazione",Stazione.class);
+		this.NDP_DATA = new ComplexField(father,"ndpData",java.util.Date.class,"Stazione",Stazione.class);
 	
 	}
 	
@@ -84,6 +86,8 @@ public class StazioneModel extends AbstractModel<Stazione> {
 	public IField NDP_OPERAZIONE = null;
 	 
 	public IField NDP_DESCRIZIONE = null;
+	 
+	public IField NDP_DATA = null;
 	 
 
 	@Override

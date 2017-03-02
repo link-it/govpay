@@ -63,11 +63,13 @@ public class StazioneFetch extends AbstractJDBCFetch {
 				setParameter(object, "setApplicationCode", Stazione.model().APPLICATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "application_code", Stazione.model().APPLICATION_CODE.getFieldType()));
 				setParameter(object, "setNdpStato", Stazione.model().NDP_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Stazione.model().NDP_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Stazione.model().NDP_STATO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setNdpOperazione", Stazione.model().NDP_OPERAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Stazione.model().NDP_OPERAZIONE.getFieldType()));
 				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType()));
+				setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_data", Stazione.model().NDP_DATA.getFieldType()));
 				return object;
 			}
 			
@@ -104,6 +106,8 @@ public class StazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"ndpOperazione"));
 				setParameter(object, "setNdpDescrizione", Stazione.model().NDP_DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"ndpDescrizione"));
+				setParameter(object, "setNdpData", Stazione.model().NDP_DATA.getFieldType(),
+					this.getObjectFromMap(map,"ndpData"));
 				return object;
 			}
 			

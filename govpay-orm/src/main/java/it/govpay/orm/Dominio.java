@@ -52,6 +52,7 @@ import java.io.Serializable;
  * 			&lt;element name="ndpStato" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpOperazione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="ndpDescrizione" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="ndpData" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -82,7 +83,8 @@ import java.io.Serializable;
   	"_decimalWrapper_segregationCode",
   	"ndpStato",
   	"ndpOperazione",
-  	"ndpDescrizione"
+  	"ndpDescrizione",
+  	"ndpData"
   }
 )
 
@@ -264,6 +266,14 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.ndpDescrizione = ndpDescrizione;
   }
 
+  public java.util.Date getNdpData() {
+    return this.ndpData;
+  }
+
+  public void setNdpData(java.util.Date ndpData) {
+    this.ndpData = ndpData;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -356,5 +366,10 @@ public class Dominio extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="ndpDescrizione",required=false,nillable=false)
   protected java.lang.String ndpDescrizione;
+
+  @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.DateTime2String.class)
+  @javax.xml.bind.annotation.XmlSchemaType(name="dateTime")
+  @XmlElement(name="ndpData",required=false,nillable=false,type=java.lang.String.class)
+  protected java.util.Date ndpData;
 
 }

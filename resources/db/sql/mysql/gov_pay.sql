@@ -73,6 +73,7 @@ CREATE TABLE stazioni
 	ndp_stato INT,
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
+	ndp_data TIMESTAMP(3),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_intermediario BIGINT NOT NULL,
@@ -131,6 +132,7 @@ CREATE TABLE domini
 	ndp_stato INT,
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
+	ndp_data TIMESTAMP(3),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_stazione BIGINT NOT NULL,

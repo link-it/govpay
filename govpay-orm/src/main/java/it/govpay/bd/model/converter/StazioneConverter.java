@@ -48,7 +48,7 @@ public class StazioneConverter {
 		dto.setNdpStato(vo.getNdpStato());
 		dto.setNdpOperazione(vo.getNdpOperazione());
 		dto.setNdpDescrizione(vo.getNdpDescrizione());
-
+		dto.setNdpData(vo.getNdpData());
 		return dto;
 	}
 
@@ -65,6 +65,7 @@ public class StazioneConverter {
 		vo.setNdpStato(dto.getNdpStato());
 		vo.setNdpOperazione(dto.getNdpOperazione());
 		vo.setNdpDescrizione(dto.getNdpDescrizione());
+		vo.setNdpData(dto.getNdpData());
 		return vo;
 	}
 

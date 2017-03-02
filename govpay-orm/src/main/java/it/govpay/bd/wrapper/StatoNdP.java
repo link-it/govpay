@@ -1,10 +1,14 @@
 package it.govpay.bd.wrapper;
 
+import java.util.Date;
+
 public class StatoNdP {
 	
 	private Integer codice;
 	private String operazione;
 	private String descrizione;
+	private Date data;
+	
 	public Integer getCodice() {
 		return codice;
 	}
@@ -22,5 +26,11 @@ public class StatoNdP {
 	}
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
+	}
+	public Date getData() {
+		return data;
+	}
+	public void setData(Date data) {
+		this.data = data;
 	}
 }

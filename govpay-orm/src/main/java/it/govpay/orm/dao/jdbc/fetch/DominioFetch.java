@@ -79,11 +79,13 @@ public class DominioFetch extends AbstractJDBCFetch {
 				setParameter(object, "setSegregationCode", Dominio.model().SEGREGATION_CODE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "segregation_code", Dominio.model().SEGREGATION_CODE.getFieldType()));
 				setParameter(object, "setNdpStato", Dominio.model().NDP_STATO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Dominio.model().NDP_STATO.getFieldType()));
+					jdbcParameterUtilities.readParameter(rs, "ndp_stato", Dominio.model().NDP_STATO.getFieldType(), org.openspcoop2.generic_project.dao.jdbc.utils.JDBCDefaultForXSDType.FORCE_ZERO_AS_NULL));
 				setParameter(object, "setNdpOperazione", Dominio.model().NDP_OPERAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_operazione", Dominio.model().NDP_OPERAZIONE.getFieldType()));
 				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "ndp_descrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType()));
+				setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "ndp_data", Dominio.model().NDP_DATA.getFieldType()));
 				return object;
 			}
 			
@@ -136,6 +138,8 @@ public class DominioFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"ndpOperazione"));
 				setParameter(object, "setNdpDescrizione", Dominio.model().NDP_DESCRIZIONE.getFieldType(),
 					this.getObjectFromMap(map,"ndpDescrizione"));
+				setParameter(object, "setNdpData", Dominio.model().NDP_DATA.getFieldType(),
+					this.getObjectFromMap(map,"ndpData"));
 				return object;
 			}
 			

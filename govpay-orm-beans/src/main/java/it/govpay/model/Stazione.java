@@ -20,6 +20,8 @@
 
 package it.govpay.model;
 
+import java.util.Date;
+
 public class Stazione extends BasicModel {
 	private static final long serialVersionUID = 1L;
 
@@ -32,6 +34,7 @@ public class Stazione extends BasicModel {
 	private Integer ndpStato;
 	private String ndpOperazione;
 	private String ndpDescrizione;
+	private Date ndpData;
 
 	public Stazione() {
 	}
@@ -107,6 +110,14 @@ public class Stazione extends BasicModel {
 
 	public void setNdpDescrizione(String ndpDescrizione) {
 		this.ndpDescrizione = ndpDescrizione;
+	}
+
+	public Date getNdpData() {
+		return ndpData;
+	}
+
+	public void setNdpData(Date ndpData) {
+		this.ndpData = ndpData;
 	}
 
 }

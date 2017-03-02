@@ -75,6 +75,7 @@ CREATE TABLE stazioni
 	ndp_stato INT,
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
+	ndp_data TIMESTAMP,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_stazioni') NOT NULL,
 	id_intermediario BIGINT NOT NULL,
@@ -132,6 +133,7 @@ CREATE TABLE domini
 	ndp_stato INT,
 	ndp_operazione VARCHAR(256),
 	ndp_descrizione VARCHAR(1024),
+	ndp_data TIMESTAMP,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_domini') NOT NULL,
 	id_stazione BIGINT NOT NULL,

@@ -58,6 +58,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.NDP_STATO = new Field("ndpStato",java.lang.Integer.class,"Dominio",Dominio.class);
 		this.NDP_OPERAZIONE = new Field("ndpOperazione",java.lang.String.class,"Dominio",Dominio.class);
 		this.NDP_DESCRIZIONE = new Field("ndpDescrizione",java.lang.String.class,"Dominio",Dominio.class);
+		this.NDP_DATA = new Field("ndpData",java.util.Date.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -82,6 +83,7 @@ public class DominioModel extends AbstractModel<Dominio> {
 		this.NDP_STATO = new ComplexField(father,"ndpStato",java.lang.Integer.class,"Dominio",Dominio.class);
 		this.NDP_OPERAZIONE = new ComplexField(father,"ndpOperazione",java.lang.String.class,"Dominio",Dominio.class);
 		this.NDP_DESCRIZIONE = new ComplexField(father,"ndpDescrizione",java.lang.String.class,"Dominio",Dominio.class);
+		this.NDP_DATA = new ComplexField(father,"ndpData",java.util.Date.class,"Dominio",Dominio.class);
 	
 	}
 	
@@ -120,6 +122,8 @@ public class DominioModel extends AbstractModel<Dominio> {
 	public IField NDP_OPERAZIONE = null;
 	 
 	public IField NDP_DESCRIZIONE = null;
+	 
+	public IField NDP_DATA = null;
 	 
 
 	@Override
