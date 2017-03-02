@@ -21,6 +21,7 @@ package it.govpay.web.rs;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.ws.rs.GET;
@@ -119,10 +120,48 @@ public class Check {
 		} 
 	}
 	
+	public class EsitoVerifica {
+		private Date ultimo_aggiornamento;
+		private Integer codice_stato;
+		private String operazione_eseguita;
+		private String errore_rilevato;
+		public Integer getCodice_stato() {
+			return codice_stato;
+		}
+		public void setCodice_stato(Integer codice_stato) {
+			this.codice_stato = codice_stato;
+		}
+		public String getOperazione_eseguita() {
+			return operazione_eseguita;
+		}
+		public void setOperazione_eseguita(String operazione_eseguita) {
+			this.operazione_eseguita = operazione_eseguita;
+		}
+		public String getErrore_rilevato() {
+			return errore_rilevato;
+		}
+		public void setErrore_rilevato(String errore_rilevato) {
+			this.errore_rilevato = errore_rilevato;
+		}
+		public Date getUltimo_aggiornamento() {
+			return ultimo_aggiornamento;
+		}
+		public void setUltimo_aggiornamento(Date ultimo_aggiornamento) {
+			this.ultimo_aggiornamento = ultimo_aggiornamento;
+		}
+		
+		@Override
+		public String toString() {
+			if(codice_stato == 0) return "OK";
+			if(codice_stato == 1) return "WARN: STATO NON VERIFICATO";
+			if(codice_stato == 2) return "FAIL: [" + operazione_eseguita + "] " + errore_rilevato;
+			return "ERRORE!!";
+		}
+	}
 	
 	@GET
 	@Path("/{codDominio}")
-	public Response verificaDominio(@PathParam(value = "codDominio") String codDominio) {
+	public Response verificaDominioJson(@PathParam(value = "codDominio") String codDominio) {
 		BasicBD bd = null;
 		GpContext ctx = null;
 		try {
@@ -150,7 +189,7 @@ public class Check {
 			
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			
-			
+			EsitoVerifica esito = new EsitoVerifica();
 			try {
 				DominiBD dominiBD = new DominiBD(bd);
 				StazioniBD stazioniBD = new StazioniBD(bd);
@@ -161,20 +200,36 @@ public class Check {
 				StatoNdP statoDominioNdp = dominiBD.getStatoNdp(d.getId());
 				StatoNdP statoStazioneNdp = stazioniBD.getStatoNdp(stazione.getId());
 				
-				if(statoDominioNdp.getCodice() == null)
-					return Response.ok().entity("STATO NON VERIFICATO").build();
+				if(statoDominioNdp.getCodice() == null) {
+					esito.setCodice_stato(1);
+					esito.setErrore_rilevato("STATO NON VERIFICATO");
+					return Response.ok().entity(esito).build();
+				}
 				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice() == null)
-					return Response.ok().entity("DOMINIO OK").build();
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice() == null) {
+					esito.setCodice_stato(0);
+					return Response.ok().entity(esito).build();
+				}
 				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() == 0)
-					return Response.ok().entity("DOMINIO OK").build();
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() == 0) {
+					esito.setCodice_stato(0);
+					return Response.ok().entity(esito).build();
+				}
 				
-				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() != 0)
-					return Response.status(500).entity("STAZIONE KO (" + statoStazioneNdp.getOperazione() + "): " + statoStazioneNdp.getDescrizione()).build();
-				
-				if(statoDominioNdp.getCodice().intValue() != 0)
-					return Response.status(500).entity("DOMINIO KO (" + statoDominioNdp.getOperazione() + "): " + statoDominioNdp.getDescrizione()).build();
+				if(statoDominioNdp.getCodice().intValue() == 0 && statoStazioneNdp.getCodice().intValue() != 0) {
+					esito.setCodice_stato(2);
+					esito.setUltimo_aggiornamento(statoStazioneNdp.getData());
+					esito.setOperazione_eseguita(statoStazioneNdp.getOperazione());
+					esito.setErrore_rilevato(statoStazioneNdp.getDescrizione());
+					return Response.status(500).entity(esito).build();
+				}
+				if(statoDominioNdp.getCodice().intValue() != 0){ 
+					esito.setCodice_stato(2);
+					esito.setUltimo_aggiornamento(statoDominioNdp.getData());
+					esito.setOperazione_eseguita(statoDominioNdp.getOperazione());
+					esito.setErrore_rilevato(statoDominioNdp.getDescrizione());
+					return Response.status(500).entity(esito).build();
+				}
 
 			} catch(NotFoundException e) {
 				return Response.status(404).build();
