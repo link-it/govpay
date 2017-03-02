@@ -193,10 +193,22 @@ public class DominiBD extends BasicBD {
 			
 			StatoNdP stato = new StatoNdP();
 			
-			stato.setCodice((Integer)select.get(0).get(it.govpay.orm.Dominio.model().NDP_STATO));
-			stato.setDescrizione((String)select.get(0).get(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE));
-			stato.setOperazione((String)select.get(0).get(it.govpay.orm.Dominio.model().NDP_OPERAZIONE));
-			stato.setData((Date)select.get(0).get(it.govpay.orm.Dominio.model().NDP_DATA)) ;
+			Object oStato = select.get(0).get(it.govpay.orm.Dominio.model().NDP_STATO.getFieldName());
+			if(oStato instanceof Integer)
+				stato.setCodice((Integer) oStato);
+			
+			Object oDescrizione = select.get(0).get(it.govpay.orm.Dominio.model().NDP_DESCRIZIONE.getFieldName());
+			if(oDescrizione instanceof String)
+				stato.setDescrizione((String) oDescrizione);
+			
+			Object oOperazione = select.get(0).get(it.govpay.orm.Dominio.model().NDP_OPERAZIONE.getFieldName());
+			if(oOperazione instanceof String)
+				stato.setOperazione((String) oOperazione);
+			
+			Object oData = (Date)select.get(0).get(it.govpay.orm.Dominio.model().NDP_DATA.getFieldName());
+			if(oData instanceof Date)
+				stato.setData((Date) oData);
+			
 			return stato;
 			
 		} catch (NotImplementedException e) {
