@@ -218,7 +218,7 @@ public class NodoClient extends BasicClient {
 				DominiBD dominiBD = new DominiBD(bd);
 				Dominio dominio = AnagraficaManager.getDominio(bd, this.dominio);
 				if(errore == null) {
-					dominiBD.setStatoNdp(dominio.getId(), 0, null, null);
+					dominiBD.setStatoNdp(dominio.getId(), 0, azione, null);
 				} else {
 					dominiBD.setStatoNdp(dominio.getId(), 1, azione, errore);
 				}
@@ -228,7 +228,7 @@ public class NodoClient extends BasicClient {
 				StazioniBD stazioniBD = new StazioniBD(bd);
 				Stazione stazione = AnagraficaManager.getStazione(bd, this.stazione);
 				if(errore == null) {
-					stazioniBD.setStatoNdp(stazione.getId(), 0, null, null);
+					stazioniBD.setStatoNdp(stazione.getId(), 0, azione, null);
 				} else if(this.dominio == null) { // Aggiorno in errore solo se e' un'operazione di stazione
 					stazioniBD.setStatoNdp(stazione.getId(), 1, azione, errore);
 				}
