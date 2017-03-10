@@ -641,7 +641,7 @@
 				<xsd:complexType>
 					<xsd:complexContent>
 						<xsd:extension base="com:gpResponse">
-							<xsd:sequence>
+							<xsd:sequence minOccurs="0">
 								<xsd:element name="psp" minOccurs="0" maxOccurs="unbounded">
 									<xsd:complexType>
 										<xsd:sequence>
@@ -732,7 +732,7 @@
 				<xsd:complexType>
 					<xsd:complexContent>
 						<xsd:extension base="com:gpResponse">
-							<xsd:sequence>
+							<xsd:sequence minOccurs="0">
 								<xsd:element name="urlRedirect" type="xsd:anyURI" minOccurs="0" />
 								<xsd:element name="pspSessionId" type="xsd:string" minOccurs="0" />
 								<xsd:element name="rifTransazione" minOccurs="0" maxOccurs="unbounded">

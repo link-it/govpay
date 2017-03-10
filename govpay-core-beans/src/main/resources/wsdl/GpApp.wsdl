@@ -762,7 +762,7 @@
 				<xsd:complexType>
 					<xsd:complexContent>
 						<xsd:extension base="com:gpResponse">
-							<xsd:sequence>
+							<xsd:sequence minOccurs="0">
 								<xsd:element name="codApplicazione" type="com:cod35" />
 								<xsd:element name="codVersamentoEnte" type="com:cod35" />
 								<xsd:element name="stato" type="com:statoVersamento" />
