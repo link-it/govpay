@@ -22,6 +22,7 @@ package it.govpay.core.exceptions;
 import org.apache.logging.log4j.Logger;
 
 import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
+import it.govpay.core.exceptions.NdpException.FaultNodo;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.v2_3.commons.GpResponse;
@@ -38,8 +39,20 @@ public class GovPayException extends Exception {
 	
 	public GovPayException(FaultBean faultBean) {
 		super();
-		this.setCodEsitoOperazione(EsitoOperazione.NDP_001);
 		this.faultBean = faultBean;
+		
+		FaultNodo fault = FaultNodo.valueOf(faultBean.getFaultCode());
+		switch (fault) {
+		case PPT_WISP_SESSIONE_SCONOSCIUTA:
+			this.setCodEsitoOperazione(EsitoOperazione.WISP_000);
+			break;
+		case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
+			this.setCodEsitoOperazione(EsitoOperazione.WISP_001);
+			break;
+		default:
+			this.setCodEsitoOperazione(EsitoOperazione.NDP_001);
+			break;
+		}
 	}
 	
 	public GovPayException(String causa, EsitoOperazione codEsito, String ... params) {
