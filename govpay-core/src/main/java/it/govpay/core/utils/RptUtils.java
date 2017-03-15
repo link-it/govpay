@@ -471,7 +471,7 @@ public class RptUtils {
 						rptBD.updateRpt(rpt.getId(), StatoRpt.RPT_ERRORE_INVIO_A_NODO, null, null, null);
 						return true;
 					}
-					throw new GovPayException(EsitoOperazione.NDP_001, risposta.getFault().getFaultCode() + ": " + risposta.getFault().getFaultString() != null ? risposta.getFault().getFaultString() : "");
+					throw new GovPayException(risposta.getFault());
 				} else {
 					StatoRpt nuovoStato = Rpt.StatoRpt.toEnum(risposta.getEsito().getStato());
 					log.info("Acquisito stato della RPT: " + nuovoStato + ".");

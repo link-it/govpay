@@ -80,13 +80,13 @@ public class Wisp extends BasicBD {
 				switch (fault) {
 				case PPT_WISP_SESSIONE_SCONOSCIUTA:
 					ctx.log("wisp.risoluzioneWispKoSconosciuta");
-					throw new GovPayException(EsitoOperazione.WISP_000);
+					throw new GovPayException(risposta.getFault());
 				case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
 					ctx.log("wisp.risoluzioneWispKoTimeout");
-					throw new GovPayException(EsitoOperazione.WISP_001);
+					throw new GovPayException(risposta.getFault());
 				default:
 					ctx.log("wisp.risoluzioneWispKo", risposta.getFault().getFaultCode());
-					throw new GovPayException(EsitoOperazione.NDP_001, risposta.getFault().getFaultCode());
+					throw new GovPayException(risposta.getFault());
 				}
 			} else {
 				SceltaWISP scelta = new SceltaWISP();

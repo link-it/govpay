@@ -112,7 +112,7 @@ public class AclEngine {
 	public static Set<Long> getAuthorizedPagamenti(Portale portale) {
 		Set<Long> domini = new HashSet<Long>();
 		for(Acl acl : portale.getAcls()) {
-			if(acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA)) {
+			if(acl.getTipo().equals(Tipo.DOMINIO) && (acl.getServizio().equals(Servizio.PAGAMENTI_ONLINE) || acl.getServizio().equals(Servizio.PAGAMENTI_ATTESA))) {
 				if(acl.getIdDominio() != null)
 					domini.add(acl.getIdDominio());
 				else 

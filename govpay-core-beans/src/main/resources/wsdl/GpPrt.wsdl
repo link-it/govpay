@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet type="text/xsl" href="wsdl-viewer.xsl"?>
-<wsdl:definitions xmlns:xformat="http://cxf.apache.org/bindings/xformat" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.govpay.it/servizi/" xmlns:com="http://www.govpay.it/servizi/commons/" xmlns:pa="http://www.govpay.it/servizi/pa/" xmlns:app="http://www.govpay.it/servizi/gpApp/" xmlns:prt="http://www.govpay.it/servizi/gpPrt/" targetNamespace="http://www.govpay.it/servizi/" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" name="GP" jaxb:version="2.0">
+<wsdl:definitions 
+	xmlns:xformat="http://cxf.apache.org/bindings/xformat" 
+	xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" 
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+	xmlns:tns="http://www.govpay.it/servizi/" 
+	xmlns:com="http://www.govpay.it/servizi/commons/" 
+	xmlns:pa="http://www.govpay.it/servizi/pa/" 
+	xmlns:app="http://www.govpay.it/servizi/gpApp/" 
+	xmlns:prt="http://www.govpay.it/servizi/gpPrt/" 
+	targetNamespace="http://www.govpay.it/servizi/" 
+	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" 
+	name="GP" jaxb:version="2.0">
 	<wsdl:types>
 
 		<xsd:schema targetNamespace="http://www.govpay.it/servizi/commons/">
@@ -856,8 +869,6 @@
 						<xsd:element name="codPortale" type="com:cod35" />
 						<xsd:element name="codUnivocoDebitore" type="com:cod35" />
 						<xsd:element name="stato" type="com:statoVersamento" minOccurs="0" maxOccurs="4" />
-						<xsd:element name="dataInizio" type="xsd:date" minOccurs="0" />
-						<xsd:element name="dataFine" type="xsd:date" minOccurs="0" />
 						<xsd:element name="ordinamento">
 							<xsd:simpleType>
 								<xsd:restriction base="xsd:string">
@@ -867,14 +878,6 @@
 									<xsd:enumeration value="DATA_CARICAMENTO_DES"></xsd:enumeration>
 									<xsd:enumeration value="DATA_AGGIORNAMENTO_ASC"></xsd:enumeration>
 									<xsd:enumeration value="DATA_AGGIORNAMENTO_DES"></xsd:enumeration>
-								</xsd:restriction>
-							</xsd:simpleType>
-						</xsd:element>
-						<xsd:element name="offset" type="xsd:long" default="0" minOccurs="0"/>
-						<xsd:element name="limit" default="25" minOccurs="0">
-							<xsd:simpleType>
-								<xsd:restriction base="xsd:int">
-									<xsd:maxInclusive value="50" />
 								</xsd:restriction>
 							</xsd:simpleType>
 						</xsd:element>
@@ -977,22 +980,6 @@
 										</xsd:complexType>
 									</xsd:element>
 								</xsd:choice>
-								<xsd:element name="ibanAccredito" type="com:cod35" minOccurs="0" />
-								<xsd:element name="codTributo" type="com:cod35" minOccurs="0">
-									<xsd:annotation>
-										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
-								<xsd:element name="tipoContabilita" type="com:tipoContabilita" minOccurs="0">
-									<xsd:annotation>
-										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
-								<xsd:element name="codContabilita" type="xsd:string" minOccurs="0">
-									<xsd:annotation>
-										<xsd:documentation>Presente dalla versione 2.3</xsd:documentation>
-									</xsd:annotation>
-								</xsd:element>
 								<xsd:element name="dataScadenza" type="xsd:dateTime" minOccurs="0" />
 								<xsd:element name="transazione" type="com:transazione" minOccurs="0" maxOccurs="unbounded" />
 							</xsd:sequence>

@@ -184,7 +184,7 @@ public class Rendicontazioni extends BasicBD {
 								tracciato = output.toByteArray();
 							} catch (IOException e) {
 								response.add(idRendicontazione.getIdentificativoFlusso() + "#Lettura del flusso fallita: " + e + ".");
-								log.error("Errore durante la lettura del flusso di rendicontazione: " + e);
+								log.error("Errore durante la lettura del flusso di rendicontazione", e);
 								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Lettura del flusso fallita: " + e);
 								errori = true;
 								continue;
@@ -195,7 +195,7 @@ public class Rendicontazioni extends BasicBD {
 								flussoRendicontazione = JaxbUtils.toFR(tracciato);
 							} catch (Exception e) {
 								response.add(idRendicontazione.getIdentificativoFlusso() + "#Parsing del flusso fallita: " + e + ".");
-								log.error("Errore durante il parsing del flusso di rendicontazione: " + e);
+								log.error("Errore durante il parsing del flusso di rendicontazione", e);
 								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoFail", "Errore durante il parsing del flusso di rendicontazione: " + e);
 								errori = true;
 								continue;
@@ -354,7 +354,7 @@ public class Rendicontazioni extends BasicBD {
 											erroreVerifica = "Versamento non acquisito dall'applicazione gestrice perche' SCONOSCIUTO.";
 										} catch (ClientException ce) {
 											response.add(idRendicontazione.getIdentificativoFlusso() + "#Acquisizione flusso fallita. Riscontrato errore nell'acquisizione del versamento dall'applicazione gestrice [Transazione: " + idTransaction2 + "].");
-											log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: impossibile acquisire i dati del versamento. Flusso non acquisito.");
+											log.error("Errore durante il processamento del flusso di Rendicontazione [Flusso:" + idRendicontazione.getIdentificativoFlusso() + "]: impossibile acquisire i dati del versamento [Dominio:" + codDominio+ " Iuv:" + iuv + "]. Flusso non acquisito.");
 											GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoKo", idRendicontazione.getIdentificativoFlusso(), "Impossibile acquisire i dati di un versamento dall'applicativo gestore [Applicazione:" + codApplicazione + " Dominio:" + codDominio+ " Iuv:" + iuv + "].  Flusso non acquisito.");
 											throw new GovPayException(ce);
 										}

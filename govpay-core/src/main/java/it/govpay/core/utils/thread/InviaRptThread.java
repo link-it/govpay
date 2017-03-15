@@ -107,7 +107,7 @@ public class InviaRptThread implements Runnable {
 			}
 		} catch (Exception e) {
 			// ERRORE DI RETE. Non so se la RPT e' stata effettivamente consegnata.
-			log.error("Errore di rete nella spedizione della RPT: " + e);
+			log.warn("Errore di rete nella spedizione della RPT: " + e);
 			ctx.log("pagamento.invioRptAttivataFail", e.getMessage());
 			if(bd != null) bd.rollback();
 			return;

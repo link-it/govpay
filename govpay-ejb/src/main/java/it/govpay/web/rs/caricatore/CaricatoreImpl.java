@@ -2,14 +2,13 @@ package it.govpay.web.rs.caricatore;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.pagamento.IuvBD;
+import it.govpay.core.business.model.Iuv;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.model.Versionabile.Versione;
-import it.govpay.servizi.commons.IuvGenerato;
 import it.govpay.web.rs.converter.VersamentoConverter;
 import it.govpay.web.rs.model.Versamento;
 import it.govpay.web.rs.model.VersamentoResponse;
@@ -72,7 +71,7 @@ public class CaricatoreImpl implements ICaricatore {
 			if(iuv != null) {
 				Double importoVersamento = request.getImporto();
 				BigDecimal importoVersamentoAsBigDecimal  = new BigDecimal(importoVersamento.doubleValue());
-				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(versamentoModel.getApplicazione(bd), versamentoModel.getUo(bd).getDominio(bd), iuv, importoVersamentoAsBigDecimal, Versione.GP_02_03_00);
+				Iuv iuvGenerato = IuvUtils.toIuv(versamentoModel.getApplicazione(bd), versamentoModel.getUo(bd).getDominio(bd), iuv, importoVersamentoAsBigDecimal);
 				versamentoResponse.setBarCode(new String(iuvGenerato.getBarCode()));
 				versamentoResponse.setQrCode(new String(iuvGenerato.getQrCode()));
 				versamentoResponse.setIuv(iuvGenerato.getIuv());
