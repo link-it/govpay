@@ -19,36 +19,39 @@
  */
 package it.govpay.core.business;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Notifica;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.thread.InviaNotificaThread;
+import it.govpay.core.utils.thread.ThreadExecutorManager;
+
+import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.pagamento.NotificheBD;
-import it.govpay.core.business.EstrattoConto;
-import it.govpay.core.business.Pagamento;
-import it.govpay.core.business.Psp;
-import it.govpay.core.business.Rendicontazioni;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.core.utils.thread.InviaNotificaThread;
-import it.govpay.core.utils.thread.ThreadExecutorManager;
-import it.govpay.bd.model.Notifica;
+import org.openspcoop2.utils.sonde.Sonda;
+import org.openspcoop2.utils.sonde.SondaException;
+import org.openspcoop2.utils.sonde.SondaFactory;
+import org.openspcoop2.utils.sonde.impl.SondaBatch;
 
 public class Operazioni{
 
 	private static Logger log = LogManager.getLogger();
 
 	public static String acquisizioneRendicontazioni(String serviceName){
-		
+
 		BasicBD bd = null;
 		GpContext ctx = null;
 		try {
@@ -65,13 +68,43 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			String response = new Rendicontazioni(bd).downloadRendicontazioni(false);
+			aggiornaSondaOK("update-rnd", bd);
 			return response;
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
+			try {aggiornaSondaKO("update-rnd", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
+		}
+	}
+
+	private static void aggiornaSondaOK(String nome, BasicBD bd) throws SondaException, ServiceException {
+		BasicBD bd1 = null;
+		try {
+			bd1 = BasicBD.newInstance(bd.getIdTransaction());
+			Connection con = bd1.getConnection();
+
+			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
+			((SondaBatch)sonda).aggiornaStatoSonda(true, new Date(), null, con, bd.getJdbcProperties().getDatabase());
+		} finally {
+			if(bd1 != null) bd1.closeConnection();
+		}
+	}
+
+	private static void aggiornaSondaKO(String nome, String descrizioneErrore, BasicBD bd) throws SondaException, ServiceException {
+		BasicBD bd1 = null;
+		try {
+			bd1 = BasicBD.newInstance(bd.getIdTransaction());
+			Connection con = bd1.getConnection();
+
+			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
+			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), descrizioneErrore, con, bd.getJdbcProperties().getDatabase());
+		} finally {
+			if(bd1 != null) bd1.closeConnection();
 		}
 	}
 
@@ -92,9 +125,12 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			String response = new Psp(bd).aggiornaRegistro();
+
+			aggiornaSondaOK("update-psp", bd);
 			return response;
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
+			try {aggiornaSondaKO("update-psp", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -118,9 +154,12 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return new Pagamento(bd).verificaTransazioniPendenti();
+			String verificaTransazioniPendenti = new Pagamento(bd).verificaTransazioniPendenti();
+			aggiornaSondaOK("update-pnd", bd);
+			return verificaTransazioniPendenti;
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
+			try {aggiornaSondaKO("update-pnd", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -161,13 +200,16 @@ public class Operazioni{
 			}
 
 			log.info("Processi di spedizione avviati.");
+
+			aggiornaSondaOK("update-ntfy", bd);
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
+			try {aggiornaSondaKO("update-ntfy", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 		}
-		
+
 		// Aspetto che abbiano finito tutti
 		while(true){
 			try {
@@ -198,11 +240,11 @@ public class Operazioni{
 			return "Reset Cache Anagrafica#fallita.";
 		} 
 	}
-	
+
 	public static String estrattoConto(String serviceName){
 		if(!GovpayConfig.getInstance().isBatchEstrattoConto())
 			return "Servizio estratto conto non configurato";
-		
+
 		BasicBD bd = null;
 		GpContext ctx = null;
 		try {
@@ -218,9 +260,12 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			return new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
+			String creaEstrattiContoSuFileSystem = new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
+			aggiornaSondaOK("update-conto", bd);
+			return creaEstrattiContoSuFileSystem;
 		} catch (Exception e) {
 			log.error("Estratto Conto fallito", e);
+			try {aggiornaSondaKO("update-conto", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Estratto Conto#" + e.getMessage();
 		} finally {
 			if(bd != null) bd.closeConnection();
