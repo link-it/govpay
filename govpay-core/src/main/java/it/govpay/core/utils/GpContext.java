@@ -316,6 +316,19 @@ public class GpContext {
 		}
 	}
 	
+	public void setResult(it.govpay.servizi.v2_3.commons.GpResponse response) {
+		if(response == null || response.getCodEsito() == null) {
+			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+			return;
+		}
+		if(response.getCodEsito().equals("OK")) 
+			getContext().getTransaction().setResult(Result.SUCCESS);
+		else if(response.getCodEsito().equals("INTERNAL"))
+			getContext().getTransaction().setResult(Result.INTERNAL_ERROR);
+		else
+			getContext().getTransaction().setResult(Result.PROCESSING_ERROR);
+	}
+	
 	public void setResult(String faultCode) {
 		if(faultCode == null) {
 			getContext().getTransaction().setResult(Result.SUCCESS);

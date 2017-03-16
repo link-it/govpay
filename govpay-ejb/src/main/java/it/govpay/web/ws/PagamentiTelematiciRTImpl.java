@@ -339,7 +339,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR))
 				log.error("Rifiutata RT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
 			else
-				log.error("Rifiutata RT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata RT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 
 			PaaInviaRTRisposta risposta = (PaaInviaRTRisposta) r;
 			EsitoPaaInviaRT esito = new EsitoPaaInviaRT();
@@ -357,7 +357,7 @@ public class PagamentiTelematiciRTImpl implements PagamentiTelematiciRT {
 			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR))
 				log.error("Rifiutata ER con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""), e);
 			else
-				log.error("Rifiutata ER con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+				log.warn("Rifiutata ER con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
 
 			TipoInviaEsitoStornoRisposta risposta = (TipoInviaEsitoStornoRisposta) r;
 			risposta.setEsito("KO");

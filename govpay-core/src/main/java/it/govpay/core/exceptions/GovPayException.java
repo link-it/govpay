@@ -21,7 +21,12 @@ package it.govpay.core.exceptions;
 
 import org.apache.logging.log4j.Logger;
 
+import it.gov.digitpa.schemas._2011.ws.paa.FaultBean;
+import it.govpay.core.exceptions.NdpException.FaultNodo;
+import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.servizi.commons.EsitoOperazione;
+import it.govpay.servizi.v2_3.commons.GpResponse;
+import it.govpay.servizi.v2_3.commons.Mittente;
 
 public class GovPayException extends Exception {
 
@@ -29,17 +34,37 @@ public class GovPayException extends Exception {
 	private String[] params;
 	private EsitoOperazione codEsito;
 	private String causa;
+	private FaultBean faultBean;
+	
+	
+	public GovPayException(FaultBean faultBean) {
+		super();
+		this.faultBean = faultBean;
+		
+		FaultNodo fault = FaultNodo.valueOf(faultBean.getFaultCode());
+		switch (fault) {
+		case PPT_WISP_SESSIONE_SCONOSCIUTA:
+			this.setCodEsitoOperazione(EsitoOperazione.WISP_000);
+			break;
+		case PPT_WISP_TIMEOUT_RECUPERO_SCELTA:
+			this.setCodEsitoOperazione(EsitoOperazione.WISP_001);
+			break;
+		default:
+			this.setCodEsitoOperazione(EsitoOperazione.NDP_001);
+			break;
+		}
+	}
 	
 	public GovPayException(String causa, EsitoOperazione codEsito, String ... params) {
 		this.params = params;
-		this.setCodEsito(codEsito);
+		this.setCodEsitoOperazione(codEsito);
 		this.setCausa(causa);
 	}
 	
 	public GovPayException(String causa, EsitoOperazione codEsito, Throwable e, String ... params) {
 		super(e);
 		this.params = params;
-		this.setCodEsito(codEsito);
+		this.setCodEsitoOperazione(codEsito);
 		this.setCausa(causa);
 	}
 	
@@ -47,25 +72,25 @@ public class GovPayException extends Exception {
 		super(e);
 		this.params = new String[1];
 		this.params[0] = descrizione;
-		this.setCodEsito(EsitoOperazione.INTERNAL);
+		this.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 	}
 	
 	public GovPayException(EsitoOperazione codEsito, String ... params) {
 		this.params = params;
-		this.setCodEsito(codEsito);
+		this.setCodEsitoOperazione(codEsito);
 	}
 	
 	public GovPayException(EsitoOperazione codEsito, Throwable e, String ... params) {
 		super(e);
 		this.params = params;
-		this.setCodEsito(codEsito);
+		this.setCodEsitoOperazione(codEsito);
 		this.setCausa(org.apache.commons.lang.exception.ExceptionUtils.getStackTrace(e));
 	}
 	
 	public GovPayException(Exception e) {
 		super(e);
-		this.setCodEsito(EsitoOperazione.INTERNAL);
+		this.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
 	}
 
 	public String[] getParams() {
@@ -80,17 +105,17 @@ public class GovPayException extends Exception {
 		return codEsito;
 	}
 
-	public void setCodEsito(EsitoOperazione codEsito) {
+	public void setCodEsitoOperazione(EsitoOperazione codEsito) {
 		this.codEsito = codEsito;
 	}
 	
 	public void log(Logger log){
 		switch (codEsito) {
 		case INTERNAL:
-			log.error("[" + codEsito + "] " + getMessage(), this);
+			log.error("[" + codEsito + "] " + getMessage() + (getCausa() != null ? "\n" + getCausa() : ""), this);
 		break;
 		default:
-			log.error("[" + codEsito + "] " + getMessage());
+			log.warn("[" + codEsito + "] " + getMessage() +  (getCausa() != null ? "\n" + getCausa() : ""), this);
 			break;
 		}
 	}
@@ -117,7 +142,7 @@ public class GovPayException extends Exception {
 		case DOM_002: return "Dominio (" + params[0] + ") configurato per la generazione custom degli iuv. Nella richiesta deve essere indicato lo IUV da assegnare.";	
 		case DOM_003: return "Dominio (" + params[0] + ") configurato per la generazione centralizzata degli iuv. Nella richiesta non deve essere indicato lo IUV da assegnare.";
 		case NDP_000: return (params != null && params.length > 0) ? params[0] : null;
-		case NDP_001: return "Richiesta di Pagamento rifiutata dal Nodo dei Pagamenti" + ((params.length > 0) ? ": " + params[0] : "");
+		case NDP_001: return "Richiesta rifiutata dal Nodo dei Pagamenti [" + faultBean.getFaultCode() + "] " + faultBean.getFaultString() + (faultBean.getDescription() != null ? ": " + faultBean.getDescription() : "");
 		case PAG_000: return "I versamenti di una richiesta di pagamento devono afferire alla stessa stazione";	
 		case PAG_001: return "Il canale indicato non supporta il pagamento di piu' versamenti";	
 		case PAG_002: return "Il canale indicato non puo' eseguire pagamenti ad iniziativa Ente";
@@ -185,5 +210,112 @@ public class GovPayException extends Exception {
 
 	public void setCausa(String causa) {
 		this.causa = causa;
+	}
+
+	public FaultBean getFaultBean() {
+		return faultBean;
+	}
+
+	public void setFaultBean(FaultBean faultBean) {
+		this.faultBean = faultBean;
+	}
+	
+	
+	public String getDescrizioneEsito() {
+		switch (codEsito) {
+		case OK: return "Operazione completata con successo";
+		case INTERNAL: return "Errore interno";
+		case APP_000: return "Richiesta non valida";	
+		case APP_001: return "Richiesta non valida";
+		case APP_002: return "Richiesta non valida";
+		case AUT_000: return "Operazione non autorizzata";	
+		case AUT_001: return "Operazione non autorizzata";
+		case AUT_002: return "Operazione non autorizzata";
+		case DOM_000: return "Richiesta non valida";	
+		case DOM_001: return "Richiesta non valida";
+		case DOM_002: return "Richiesta non valida";	
+		case DOM_003: return "Richiesta non valida";
+		case NDP_000: return "Errore di invocazione del Nodo dei Pagamenti";
+		case NDP_001: return "Richiesta rifiutata dal Nodo dei Pagamenti";
+		case PAG_000: return "Richiesta non valida";	
+		case PAG_001: return "Richiesta non valida";	
+		case PAG_002: return "Richiesta non valida";
+		case PAG_003: return "Richiesta non valida";
+		case PAG_004: return "Richiesta non valida";
+		case PAG_005: return "Richiesta non valida";
+		case PAG_006: return "Richiesta non valida";
+		case PAG_007: return "Richiesta non valida";
+		case PAG_008: return "Richiesta non valida"; 
+		case PAG_009: return "Richiesta non valida"; 
+		case PAG_010: return "Richiesta non valida"; 
+		case PAG_011: return "Richiesta non valida"; 
+		case PRT_000: return "Richiesta non valida";	
+		case PRT_001: return "Richiesta non valida";
+		case PRT_002: return "Richiesta non valida";
+		case PRT_003: return "Richiesta non valida";
+		case PRT_004: return "Richiesta non valida"; 
+		case PRT_005: return "Richiesta non valida";
+		case PSP_000: return "Richiesta non valida";
+		case PSP_001: return "Richiesta non valida";
+		case RND_000: return "Richiesta non valida";
+		case RND_001: return "Richiesta non valida";
+		case STA_000: return "Richiesta non valida";	
+		case STA_001: return "Richiesta non valida";
+		case TRB_000: return "Richiesta non valida";
+		case UOP_000: return "Richiesta non valida";
+		case UOP_001: return "Richiesta non valida";
+		case VER_000: return "Richiesta non valida";
+		case VER_001: return "Richiesta non valida";
+		case VER_002: return "Richiesta non valida";
+		case VER_003: return "Richiesta non valida";
+		case VER_004: return "Richiesta non valida";
+		case VER_005: return "Richiesta non valida";
+		case VER_006: return "Richiesta non valida";
+		case VER_007: return "Richiesta non valida";
+		case VER_008: return "Richiesta non valida";
+		case VER_009: return "Richiesta non valida";
+		case VER_010: return "Richiesta non valida";
+		case VER_011: return "Richiesta non valida";
+		case VER_012: return "Richiesta non valida";
+		case VER_013: return "Richiesta non valida";
+		case VER_014: return "Richiesta non valida";
+		case VER_015: return "Richiesta non valida";
+		case VER_016: return "Richiesta non valida";
+		case VER_017: return "Richiesta non valida";
+		case VER_018: return "Richiesta non valida";
+		case VER_019: return "Richiesta non valida";
+		case VER_020: return "Richiesta non valida";
+		case VER_021: return "Richiesta non valida";
+		case VER_022: return "Richiesta non valida";
+		case VER_023: return "Richiesta non valida";
+		case WISP_000: return "Errore WISP";
+		case WISP_001: return "Errore WISP";
+		case WISP_002: return "Errore WISP";
+		case WISP_003: return "Errore WISP";
+		case WISP_004: return "Errore WISP";
+		}
+		
+		return "";
+	}
+
+	public GpResponse getWsResponse(GpResponse response, String codMsgDiagnostico, Logger log) {
+		if(getFaultBean() == null) {
+			response.setMittente(Mittente.GOV_PAY);
+			response.setCodEsito(this.getCodEsito().toString());
+			response.setDescrizioneEsito(this.getDescrizioneEsito());
+			response.setDettaglioEsito(this.getMessage());
+			log(log);
+			GpThreadLocal.get().log(codMsgDiagnostico, response.getCodEsito().toString(), response.getDescrizioneEsito(), response.getDettaglioEsito());
+			
+		} else {
+			if(faultBean.getId().contains("NodoDeiPagamentiSPC")) 
+				response.setMittente(Mittente.NODO_DEI_PAGAMENTI_SPC);
+			else 
+				response.setMittente(Mittente.PSP);
+			response.setCodEsito(faultBean.getFaultCode());
+			response.setDescrizioneEsito(faultBean.getFaultString());
+			response.setDettaglioEsito(faultBean.getDescription());
+		}
+		return response;
 	}
 }

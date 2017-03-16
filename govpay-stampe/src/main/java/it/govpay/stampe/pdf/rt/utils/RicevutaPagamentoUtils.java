@@ -97,7 +97,6 @@ public class RicevutaPagamentoUtils {
 		
 		ricevuta.setDominioCreditore(dominioCreditore);
 		ricevuta.setCodDominio(dominioCreditore.getCodDominio());
-		ricevuta.setCodTributo(chiediStatoVersamentoResponse.getCodTributo()); 
 		ricevuta.setAnagraficaCreditore(anagraficaCreditore);
 		
 		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
@@ -135,9 +134,8 @@ public class RicevutaPagamentoUtils {
 		try{
 			// 1. Prelevo le properties
 			String codDominio = ricevuta.getDominioCreditore().getCodDominio();
-			String codTributo = ricevuta.getCodTributo();
 			RicevutaPagamentoProperties ricevutaPagamentoProperties = RicevutaPagamentoProperties.getInstance();
-			Properties propertiesAvvisoPagamentoDominioTributo = getRicevutaPagamentoPropertiesPerDominioTributo(ricevutaPagamentoProperties, codDominio, codTributo, log);
+			Properties propertiesAvvisoPagamentoDominioTributo = getRicevutaPagamentoPropertiesPerDominioTributo(ricevutaPagamentoProperties, codDominio, log);
 
 			IRicevutaPagamento ricevutaPagamentoBuilder = RicevutaPagamentoFactory.getRicevutaPagamentoBuilder(propertiesAvvisoPagamentoDominioTributo.getProperty(RicevutaPagamentoProperties.RICEVUTA_PAGAMENTO_CLASSNAME_PROP_KEY), log);
 
@@ -150,20 +148,10 @@ public class RicevutaPagamentoUtils {
 		}
 	}
 
-	public static Properties getRicevutaPagamentoPropertiesPerDominioTributo(RicevutaPagamentoProperties ricevutaPagamentoProperties,String codDominio,String codTributo,Logger log) throws Exception {
+	public static Properties getRicevutaPagamentoPropertiesPerDominioTributo(RicevutaPagamentoProperties ricevutaPagamentoProperties,String codDominio,Logger log) throws Exception {
 		Properties p = null;
 		String key = null;
-		// 1. ricerca delle properties per la chiave "codDominio.codTributo";
-		if(StringUtils.isNotBlank(codDominio) && StringUtils.isNotBlank(codTributo)){
-			key = codDominio + "." + codTributo;
-			try{
-				log.debug("Ricerca delle properties per la chiave ["+key+"]");
-				p = ricevutaPagamentoProperties.getProperties(key);
-			}catch(Exception e){
-				log.debug("Non sono state trovate properties per la chiave ["+key+"]: " + e.getMessage()); 
-			}
-		}
-		// 2 . ricerca per codDominio
+		// Ricerca per codDominio
 		if(p == null && StringUtils.isNotBlank(codDominio)){
 			key = codDominio;
 			try{

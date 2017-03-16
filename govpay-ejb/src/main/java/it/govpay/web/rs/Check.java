@@ -19,15 +19,34 @@
  */
 package it.govpay.web.rs;
 
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
+import it.govpay.bd.anagrafica.StazioniBD;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Stazione;
+import it.govpay.bd.pagamento.NotificheBD;
+import it.govpay.bd.wrapper.StatoNdP;
+import it.govpay.core.utils.GovpayConfig;
+import it.govpay.core.utils.GpContext;
+import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.web.rs.sonde.CheckSonda;
+import it.govpay.web.rs.sonde.DettaglioSonda;
+import it.govpay.web.rs.sonde.ElencoSonde;
+import it.govpay.web.rs.sonde.SommarioSonda;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.io.IOUtils;
@@ -41,25 +60,123 @@ import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Server;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.logger.constants.proxy.FlowMode;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.bd.anagrafica.DominiBD;
-import it.govpay.bd.anagrafica.StazioniBD;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Stazione;
-import it.govpay.bd.wrapper.StatoNdP;
-import it.govpay.core.utils.GovpayConfig;
-import it.govpay.core.utils.GpContext;
-import it.govpay.core.utils.GpThreadLocal;
+import org.openspcoop2.utils.sonde.ParametriSonda;
+import org.openspcoop2.utils.sonde.Sonda;
+import org.openspcoop2.utils.sonde.Sonda.StatoSonda;
+import org.openspcoop2.utils.sonde.SondaException;
+import org.openspcoop2.utils.sonde.SondaFactory;
+import org.openspcoop2.utils.sonde.impl.SondaCoda;
 
 @Path("/check")
 public class Check {
 
 	@GET
-	@Path("/")
-	public Response verifica(
-			@QueryParam(value = "matchString") String matchString) {
+	@Path("/sonda")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response verificaSonde() {
+		BasicBD bd = null;
+		Logger log = LogManager.getLogger();
+		try {
+			try {
+				bd = BasicBD.newInstance(UUID.randomUUID().toString());
+				
+				List<CheckSonda> listaCheckSonda = CheckSonda.getListaCheckSonda();
+				ElencoSonde elenco = new ElencoSonde();
+				for(CheckSonda checkSonda: listaCheckSonda) {
+					Sonda sonda = getSonda(bd, checkSonda);
+					elenco.getItems().add(buildSommario(sonda));
+				}
+				return Response.ok(elenco).build();
+			} catch(Exception e) {
+				log.error("Errore durante la verifica delle sonde", e);
+				throw new Exception("Errore durante la verifica delle sonde");
+			} finally {
+				if(bd!= null) bd.closeConnection();
+			}
+		} catch (Exception e) {
+			return Response.status(500).entity(e.getMessage()).build();
+		} 
+	}
+	
+	private Sonda getSonda(BasicBD bd, CheckSonda checkSonda) throws SondaException, ServiceException, NotFoundException {
+		Sonda sonda = SondaFactory.get(checkSonda.getName(), bd.getConnection(), bd.getJdbcProperties().getDatabase());
+		if(sonda == null)
+			throw new NotFoundException("Sonda con nome ["+checkSonda.getName()+"] non configurata");
+		if(checkSonda.isCoda()) {
+			long num = -1;
+			if("check-ntfy".equals(checkSonda.getName())) {
+				NotificheBD notBD = new NotificheBD(bd);
+				num = notBD.countNotificheDaSpedire();
+			}
+			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
+				
+		}
+		return sonda;
+	}
+	
+	@GET
+	@Path("/sonda/{nome}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public Response verificaSonda(@PathParam(value = "nome") String nome) {
+		BasicBD bd = null;
+		Logger log = LogManager.getLogger();
+		try {
+			try {
+				bd = BasicBD.newInstance(UUID.randomUUID().toString());
+				CheckSonda checkSonda = CheckSonda.getCheckSonda(nome);
+				
+				if(checkSonda == null)
+					return Response.status(404).entity("Sonda con nome ["+nome+"] non configurata").build();
+				
+				Sonda sonda = getSonda(bd, checkSonda);
+				return Response.ok(buildDettaglioSonda(sonda)).build();
+			} catch(Exception e) {
+				log.error("Errore durante la verifica della sonda " + nome, e);
+				throw new Exception("Errore durante la verifica della sonda " + nome);
+			} finally {
+				if(bd!= null) bd.closeConnection();
+			}
+		} catch (Exception e) {
+			return Response.status(500).entity(e.getMessage()).build();
+		} 
+	}
+
+	private DettaglioSonda buildDettaglioSonda(Sonda sonda) {
+		DettaglioSonda dettaglioSonda = new DettaglioSonda(sonda.getClass());
+		ParametriSonda param = sonda.getParam();
+		dettaglioSonda.setNome(param.getNome());
+		
+		StatoSonda statoSonda = sonda.getStatoSonda();
+		dettaglioSonda.setStato(statoSonda.getStato());
+		dettaglioSonda.setDescrizioneStato(statoSonda.getDescrizione());
+		
+		if(statoSonda.getStato() == 0) dettaglioSonda.setDurataStato(null);
+		if(statoSonda.getStato() == 1) dettaglioSonda.setDurataStato(param.getDataWarn());
+		if(statoSonda.getStato() == 2) dettaglioSonda.setDurataStato(param.getDataError());
+		
+		dettaglioSonda.setDataUltimoCheck(param.getDataUltimoCheck());
+		dettaglioSonda.setSogliaError(param.getSogliaError());
+		dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
+		
+		return dettaglioSonda;
+	}
+
+	private SommarioSonda buildSommario(Sonda sonda) {
+		SommarioSonda sommarioSonda = new SommarioSonda();
+		
+		sommarioSonda.setNome(sonda.getParam().getNome());
+		
+		StatoSonda statoSonda = sonda.getStatoSonda();
+		
+		sommarioSonda.setStato(statoSonda.getStato());
+		sommarioSonda.setDescrizioneStato(statoSonda.getDescrizione());
+		
+		return sommarioSonda;
+	}
+
+	@GET
+	@Path("/db")
+	public Response verificaDB() {
 		BasicBD bd = null;
 		Logger log = LogManager.getLogger();
 		try {
@@ -74,7 +191,19 @@ public class Check {
 			} finally {
 				if(bd!= null) bd.closeConnection();
 			}
+			return Response.ok().build();
 
+		} catch (Exception e) {
+			return Response.status(500).entity(e.getMessage()).build();
+		} 
+	}
+	
+	@GET
+	@Path("/pdd")
+	public Response verificaPDD(
+			@QueryParam(value = "matchString") String matchString) {
+		Logger log = LogManager.getLogger();
+		try {
 			try {
 				URL url = GovpayConfig.getInstance().getUrlPddVerifica();
 				HttpURLConnection conn = (HttpURLConnection) url.openConnection();

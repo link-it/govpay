@@ -49,6 +49,7 @@ import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Fr;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.servizi.v2_3.PagamentiTelematiciGPRnd;
+import it.govpay.servizi.v2_3.commons.Mittente;
 import it.govpay.servizi.commons.EsitoOperazione;
 import it.govpay.servizi.v2_3.gprnd.GpChiediFlussoRendicontazione;
 import it.govpay.servizi.v2_3.gprnd.GpChiediFlussoRendicontazioneResponse;
@@ -92,22 +93,16 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			fine.set(Calendar.MILLISECOND, 999);
 			List<Fr> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazione, bodyrichiesta.getCodDominio(), bodyrichiesta.getCodApplicazione(), bodyrichiesta.getDataInizio(), fine.getTime());
 			for(Fr frModel : rendicontazioni) {
-				response.getFlussoRendicontazione().add(Gp23Utils.toFr(frModel, applicazione.getVersione(), bd));
+				response.getFlussoRendicontazione().add(Gp23Utils.toFr(frModel, bd));
 			}
-			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			response.setCodEsito(EsitoOperazione.OK.toString());
+			response.setDescrizioneEsito("Operazione completata con successo");
+			response.setMittente(Mittente.GOV_PAY);
 			ctx.log("gprnd.ricevutaRichiestaOk");
-		} catch (GovPayException e) {
-			response.setCodEsitoOperazione(e.getCodEsito());
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			response.getFlussoRendicontazione().clear();
-			e.log(log);
-			ctx.log("gprnd.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+		} catch (GovPayException gpe) {
+			response = (GpChiediListaFlussiRendicontazioneResponse) gpe.getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			response.getFlussoRendicontazione().clear();
-			new GovPayException(e).log(log);
-			ctx.log("gprnd.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			response = (GpChiediListaFlussiRendicontazioneResponse) new GovPayException(e).getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);
@@ -153,21 +148,15 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 				}
 			}
 			List<RendicontazionePagamento> rends = rendicontazionePagamentoBD.findAll(filter);
-			response.setFlussoRendicontazione(Gp23Utils.toFr(frModel, rends, applicazione.getVersione(), bd));
-			response.setCodEsitoOperazione(EsitoOperazione.OK);
+			response.setFlussoRendicontazione(Gp23Utils.toFr(frModel, rends, bd));
+			response.setCodEsito(EsitoOperazione.OK.toString());
+			response.setDescrizioneEsito("Operazione completata con successo");
+			response.setMittente(Mittente.GOV_PAY);
 			ctx.log("gprnd.ricevutaRichiestaOk");
-		} catch (GovPayException e) {
-			response.setCodEsitoOperazione(e.getCodEsito());
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			response.setFlussoRendicontazione(null);
-			e.log(log);
-			ctx.log("gprnd.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+		} catch (GovPayException gpe) {
+			response = (GpChiediFlussoRendicontazioneResponse) gpe.getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
 		} catch (Exception e) {
-			response.setCodEsitoOperazione(EsitoOperazione.INTERNAL);
-			response.setDescrizioneEsitoOperazione(e.getMessage());
-			response.setFlussoRendicontazione(null);
-			new GovPayException(e).log(log);
-			ctx.log("gprnd.ricevutaRichiestaKo", response.getCodEsitoOperazione().toString(), response.getDescrizioneEsitoOperazione());
+			response = (GpChiediFlussoRendicontazioneResponse) new GovPayException(e).getWsResponse(response, "gprnd.ricevutaRichiestaKo", log);
 		} finally {
 			if(ctx != null) {
 				ctx.setResult(response);

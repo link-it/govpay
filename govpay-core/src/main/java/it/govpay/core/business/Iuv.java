@@ -31,19 +31,18 @@ import it.govpay.bd.GovpayConfig;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.util.CustomIuv;
+import it.govpay.core.business.model.CaricaIuvDTO;
+import it.govpay.core.business.model.CaricaIuvDTOResponse;
+import it.govpay.core.business.model.GeneraIuvDTO;
+import it.govpay.core.business.model.GeneraIuvDTO.IuvRichiesto;
+import it.govpay.core.business.model.GeneraIuvDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.core.utils.IuvUtils;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.model.Versionabile.Versione;
 import it.govpay.servizi.commons.EsitoOperazione;
-import it.govpay.servizi.commons.IuvGenerato;
-import it.govpay.servizi.gpapp.GpCaricaIuv;
-import it.govpay.servizi.gpapp.GpCaricaIuvResponse;
-import it.govpay.servizi.gpapp.GpGeneraIuv;
-import it.govpay.servizi.gpapp.GpGeneraIuvResponse;
 
 public class Iuv extends BasicBD {
 	
@@ -62,30 +61,30 @@ public class Iuv extends BasicBD {
 	 * @throws ServiceException
 	 * @throws GovPayException
 	 */
-	public GpGeneraIuvResponse generaIUV(Applicazione applicazione, GpGeneraIuv gpGeneraIuv, Versione versione) throws GovPayException {
+	public GeneraIuvDTOResponse generaIUV(GeneraIuvDTO dto) throws GovPayException {
 		try {
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(this, gpGeneraIuv.getCodDominio());
+				dominio = AnagraficaManager.getDominio(this, dto.getCodDominio());
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.DOM_000, gpGeneraIuv.getCodDominio());
+				throw new GovPayException(EsitoOperazione.DOM_000, dto.getCodDominio());
 			}
 			
-			GpGeneraIuvResponse response = new GpGeneraIuvResponse();
+			GeneraIuvDTOResponse response = new GeneraIuvDTOResponse();
 			Exception e = null;
 			
 			IuvBD iuvBD = new IuvBD(this);
-			for(GpGeneraIuv.IuvRichiesto iuvRichiesto : gpGeneraIuv.getIuvRichiesto()) {
+			for(IuvRichiesto iuvRichiesto : dto.getIuvRichiesto()) {
 				
 				it.govpay.model.Iuv iuv = null;
 				try {
 					try {
-						iuv = iuvBD.getIuv(applicazione.getId(), iuvRichiesto.getCodVersamentoEnte(), TipoIUV.NUMERICO);
-						IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale(), versione);
+						iuv = iuvBD.getIuv(dto.getApplicazioneAutenticata().getId(), iuvRichiesto.getCodVersamentoEnte(), TipoIUV.NUMERICO);
+						it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(dto.getApplicazioneAutenticata(), dominio, iuv, iuvRichiesto.getImportoTotale());
 						response.getIuvGenerato().add(iuvGenerato);
 					} catch (NotFoundException nfe) {
-						iuv = generaIUV(applicazione, dominio, iuvRichiesto.getCodVersamentoEnte());
-						IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvRichiesto.getImportoTotale(), versione);
+						iuv = generaIUV(dto.getApplicazioneAutenticata(), dominio, iuvRichiesto.getCodVersamentoEnte());
+						it.govpay.core.business.model.Iuv iuvGenerato = IuvUtils.toIuv(dto.getApplicazioneAutenticata(), dominio, iuv, iuvRichiesto.getImportoTotale());
 						response.getIuvGenerato().add(iuvGenerato);
 					}
 				} catch (ServiceException se) {
@@ -154,34 +153,34 @@ public class Iuv extends BasicBD {
 	}	
 	
 
-	public GpCaricaIuvResponse caricaIUV(Applicazione applicazione, GpCaricaIuv gpCaricaIuv, Versione versione) throws GovPayException {
+	public CaricaIuvDTOResponse caricaIUV(CaricaIuvDTO dto) throws GovPayException {
 		try {
 			Dominio dominio = null;
 			try {
-				dominio = AnagraficaManager.getDominio(this, gpCaricaIuv.getCodDominio());
+				dominio = AnagraficaManager.getDominio(this, dto.getCodDominio());
 			} catch (NotFoundException e) {
-				throw new GovPayException(EsitoOperazione.DOM_000, gpCaricaIuv.getCodDominio());
+				throw new GovPayException(EsitoOperazione.DOM_000, dto.getCodDominio());
 			}
 			
 			if(!dominio.isCustomIuv()) {
-				throw new GovPayException("Il dominio [Dominio:" + gpCaricaIuv.getCodDominio() + "] risulta configurato per la gestione centralizzata degli IUV. Non e' quindi possibile caricare IUV generati esternamente.", EsitoOperazione.DOM_003, gpCaricaIuv.getCodDominio());
+				throw new GovPayException("Il dominio [Dominio:" + dto.getCodDominio() + "] risulta configurato per la gestione centralizzata degli IUV. Non e' quindi possibile caricare IUV generati esternamente.", EsitoOperazione.DOM_003, dto.getCodDominio());
 			}
 			
-			GpCaricaIuvResponse response = new GpCaricaIuvResponse();
+			CaricaIuvDTOResponse response = new CaricaIuvDTOResponse();
 			Exception e = null;
-			for(it.govpay.servizi.gpapp.GpCaricaIuv.IuvGenerato iuvProprietario : gpCaricaIuv.getIuvGenerato()) {
+			for(CaricaIuvDTO.Iuv iuvDaCaricare : dto.getIuvDaCaricare()) {
 				it.govpay.model.Iuv iuv = null;
 				try {
-					checkIUV(dominio, iuvProprietario.getIuv(), TipoIUV.NUMERICO);
-					iuv = caricaIUV(applicazione, dominio, iuvProprietario.getIuv(), TipoIUV.NUMERICO, iuvProprietario.getCodVersamentoEnte());
+					checkIUV(dominio, iuvDaCaricare.getIuv(), TipoIUV.NUMERICO);
+					iuv = caricaIUV(dto.getApplicazioneAutenticata(), dominio, iuvDaCaricare.getIuv(), TipoIUV.NUMERICO, iuvDaCaricare.getCodVersamentoEnte());
 				} catch (ServiceException se) {
 					e = se;
 					continue;
 				}
 				
 				log.info("Caricato IUV [CodDominio: " + dominio.getCodDominio() + "][CodIuv: " + iuv.getIuv() + "]");
-				IuvGenerato iuvGenerato = IuvUtils.toIuvGenerato(applicazione, dominio, iuv, iuvProprietario.getImportoTotale(), versione);
-				response.getIuvCaricato().add(iuvGenerato);
+				it.govpay.core.business.model.Iuv iuvCaricato = IuvUtils.toIuv(dto.getApplicazioneAutenticata(), dominio, iuv, iuvDaCaricare.getImportoTotale());
+				response.getIuvCaricato().add(iuvCaricato);
 			}
 			
 			// Se non ho generato nessun IUV per colpa di errori interni, 

@@ -26,7 +26,6 @@ public class RicevutaPagamento extends BasicModel{
 	private String canale;
 	private String idRiscossione;
 	private String codDominio;
-	private String codTributo;
 	
 	public Dominio getDominioCreditore() {
 		return dominioCreditore;
@@ -123,12 +122,6 @@ public class RicevutaPagamento extends BasicModel{
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
-	}
-	public String getCodTributo() {
-		return codTributo;
-	}
-	public void setCodTributo(String codTributo) {
-		this.codTributo = codTributo;
 	}
 	
 

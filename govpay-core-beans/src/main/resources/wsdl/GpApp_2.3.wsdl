@@ -6,12 +6,11 @@
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
-	xmlns:tns="http://www.govpay.it/servizi/"
+	xmlns:tns="http://www.govpay.it/servizi/v2_3"
 	xmlns:com="http://www.govpay.it/servizi/commons/"
-	xmlns:pa="http://www.govpay.it/servizi/pa/"
-	xmlns:app="http://www.govpay.it/servizi/gpApp/"
-	xmlns:prt="http://www.govpay.it/servizi/gpPrt/"
-	targetNamespace="http://www.govpay.it/servizi/" 
+	xmlns:com23="http://www.govpay.it/servizi/v2_3/commons/"
+	xmlns:app="http://www.govpay.it/servizi/v2_3/gpApp/"
+	targetNamespace="http://www.govpay.it/servizi/v2_3" 
 	xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
 	name="GP" jaxb:version="2.0">
 	<wsdl:types>
@@ -643,8 +642,92 @@
 			</xsd:simpleType>
 		</xsd:schema>
 		
-		<xsd:schema targetNamespace="http://www.govpay.it/servizi/gpApp/">
+		<xsd:schema targetNamespace="http://www.govpay.it/servizi/v2_3/commons/">
 			<xsd:import namespace="http://www.govpay.it/servizi/commons/"></xsd:import>
+			
+			<xsd:simpleType name="importo_rnd">
+				<xsd:restriction base="xsd:decimal">
+					<xsd:fractionDigits value="2"/>
+					<xsd:totalDigits value="12"/>
+				</xsd:restriction>
+			</xsd:simpleType>
+
+			<xsd:simpleType name="importo18_rnd">
+				<xsd:restriction base="xsd:decimal">
+					<xsd:fractionDigits value="2" />
+					<xsd:totalDigits value="18" />
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:complexType name="gpResponse">
+				<xsd:sequence>
+					<xsd:element name="codOperazione" type="com:uuid" />
+					<xsd:element name="mittente" type="com23:mittente" />
+					<xsd:element name="codEsito" type="xsd:string" />
+					<xsd:element name="descrizioneEsito" type="xsd:string" />
+					<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:simpleType name="mittente">
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="NodoDeiPagamentiSPC"></xsd:enumeration>
+					<xsd:enumeration value="PSP"></xsd:enumeration>
+					<xsd:enumeration value="GovPay"></xsd:enumeration>
+				</xsd:restriction>
+			</xsd:simpleType>
+			
+			<xsd:complexType name="estremiFlussoRendicontazione">
+				<xsd:sequence>
+					<xsd:element name="codFlusso" type="com:cod35" />
+					<xsd:element name="dataFlusso" type="xsd:dateTime" />
+					<xsd:element name="trn" type="com:string35" />
+					<xsd:element name="dataRegolamento" type="xsd:date" />
+					<xsd:element name="codPsp" type="com:cod35"/>
+					<xsd:element name="codBicRiversamento" type="xsd:string" minOccurs="0"/>
+					<xsd:element name="codDominio" type="com:cod35"/>
+					<xsd:element name="numeroPagamenti" type="xsd:long" />
+					<xsd:element name="importoTotale" type="com23:importo18_rnd" />
+					<xsd:element name="stato" type="com:statoFr" />
+					<xsd:element name="anomalia" type="com:anomalia" minOccurs="0" maxOccurs="unbounded" />
+				</xsd:sequence>
+			</xsd:complexType>
+			
+			<xsd:complexType name="flussoRendicontazione">
+				<xsd:complexContent>
+					<xsd:extension base="com23:estremiFlussoRendicontazione">
+						<xsd:sequence>
+							<xsd:element name="rendicontazione" maxOccurs="unbounded" minOccurs="0">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="iuv" type="com:cod35" />
+										<xsd:element name="iur" type="com:cod35" />
+										<xsd:element name="importoRendicontato" type="com23:importo_rnd" />
+										<xsd:element name="esito" type="com:esitoRendicontazione" />
+										<xsd:element name="data" type="xsd:dateTime" />
+										<xsd:element name="stato" type="com:statoRendicontazione" />
+										<xsd:element name="anomalia" type="com:anomalia" minOccurs="0" maxOccurs="unbounded" />
+										<xsd:element name="pagamento" minOccurs="0">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="codApplicazione" type="com:cod35" />
+													<xsd:element name="codVersamentoEnte" type="com:cod35" />
+													<xsd:element name="codSingoloVersamentoEnte" type="com:cod35" />
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:extension>
+				</xsd:complexContent>
+			</xsd:complexType>
+		</xsd:schema>
+		
+		<xsd:schema targetNamespace="http://www.govpay.it/servizi/v2_3/gpApp/">
+			<xsd:import namespace="http://www.govpay.it/servizi/commons/"></xsd:import>
+			<xsd:import namespace="http://www.govpay.it/servizi/v2_3/commons/"></xsd:import>
 		
 			<xsd:element name="gpCaricaVersamento">
 				<xsd:complexType>
@@ -659,7 +742,7 @@
 			<xsd:element name="gpCaricaVersamentoResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
-						<xsd:extension base="com:gpResponse">
+						<xsd:extension base="com23:gpResponse">
 							<xsd:sequence>
 								<xsd:element name="iuvGenerato" type="com:iuvGenerato" minOccurs="0"/>
 							</xsd:sequence>
@@ -677,7 +760,7 @@
 				</xsd:complexType>
 			</xsd:element>
 			
-			<xsd:element name="gpAnnullaVersamentoResponse" type="com:gpResponse" />
+			<xsd:element name="gpAnnullaVersamentoResponse" type="com23:gpResponse" />
 			
 			<xsd:element name="gpNotificaPagamento">
 				<xsd:complexType>
@@ -688,7 +771,7 @@
 				</xsd:complexType>
 			</xsd:element>
 			
-			<xsd:element name="gpNotificaPagamentoResponse" type="com:gpResponse" />
+			<xsd:element name="gpNotificaPagamentoResponse" type="com23:gpResponse" />
 			
 			<xsd:element name="gpGeneraIuv">
 				<xsd:complexType>
@@ -710,7 +793,7 @@
 			<xsd:element name="gpGeneraIuvResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
-						<xsd:extension base="com:gpResponse">
+						<xsd:extension base="com23:gpResponse">
 							<xsd:sequence>
 								<xsd:element name="iuvGenerato" type="com:iuvGenerato" minOccurs="0" maxOccurs="unbounded"/>
 							</xsd:sequence>
@@ -740,7 +823,7 @@
 			<xsd:element name="gpCaricaIuvResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
-						<xsd:extension base="com:gpResponse">
+						<xsd:extension base="com23:gpResponse">
 							<xsd:sequence>
 								<xsd:element name="iuvCaricato" type="com:iuvGenerato" minOccurs="0" maxOccurs="unbounded"/>
 							</xsd:sequence>
@@ -761,7 +844,7 @@
 			<xsd:element name="gpChiediStatoVersamentoResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
-						<xsd:extension base="com:gpResponse">
+						<xsd:extension base="com23:gpResponse">
 							<xsd:sequence minOccurs="0">
 								<xsd:element name="codApplicazione" type="com:cod35" />
 								<xsd:element name="codVersamentoEnte" type="com:cod35" />
@@ -776,7 +859,10 @@
 			<xsd:element name="gpChiediListaFlussiRendicontazione">
 				<xsd:complexType>
 					<xsd:sequence>
+						<xsd:element name="codDominio" type="com:cod35" minOccurs="0"/>
 						<xsd:element name="codApplicazione" type="com:cod35" />
+						<xsd:element name="dataInizio" type="xsd:date" minOccurs="0"/>
+						<xsd:element name="dataFine" type="xsd:date" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
@@ -784,10 +870,9 @@
 			<xsd:element name="gpChiediListaFlussiRendicontazioneResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
-						<xsd:extension base="com:gpResponse">
-							<xsd:sequence minOccurs="0">
-								<xsd:element name="codApplicazione" type="com:cod35" />
-								<xsd:element name="flussoRendicontazione" type="com:estremiFlussoRendicontazione" minOccurs="0" maxOccurs="unbounded"/>
+						<xsd:extension base="com23:gpResponse">
+							<xsd:sequence minOccurs="0" maxOccurs="unbounded">
+								<xsd:element name="flussoRendicontazione" type="com23:estremiFlussoRendicontazione" />
 							</xsd:sequence>
 						</xsd:extension>
 					</xsd:complexContent>
@@ -798,7 +883,6 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="codApplicazione" type="com:cod35" />
-						<xsd:element name="annoRiferimento" type="xsd:gYear" />
 						<xsd:element name="codFlusso" type="com:cod35" />
 					</xsd:sequence>
 				</xsd:complexType>
@@ -807,10 +891,9 @@
 			<xsd:element name="gpChiediFlussoRendicontazioneResponse">
 				<xsd:complexType>
 					<xsd:complexContent>
-						<xsd:extension base="com:gpResponse">
+						<xsd:extension base="com23:gpResponse">
 							<xsd:sequence minOccurs="0">
-								<xsd:element name="codApplicazione" type="com:cod35" />
-								<xsd:element name="flussoRendicontazione" type="com:flussoRendicontazione"/>
+								<xsd:element name="flussoRendicontazione" type="com23:flussoRendicontazione" />
 							</xsd:sequence>
 						</xsd:extension>
 					</xsd:complexContent>
