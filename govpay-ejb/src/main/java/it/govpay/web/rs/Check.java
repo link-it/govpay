@@ -97,6 +97,7 @@ public class Check {
 			return Response.status(500).entity(e.getMessage()).build();
 		} 
 	}
+	
 	private Sonda getSonda(BasicBD bd, CheckSonda checkSonda) throws SondaException, ServiceException, NotFoundException {
 		Sonda sonda = SondaFactory.get(checkSonda.getName(), bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		if(sonda == null)
@@ -112,6 +113,7 @@ public class Check {
 		}
 		return sonda;
 	}
+	
 	@GET
 	@Path("/sonda/{nome}")
 	@Produces({MediaType.APPLICATION_JSON})
@@ -122,8 +124,10 @@ public class Check {
 			try {
 				bd = BasicBD.newInstance(UUID.randomUUID().toString());
 				CheckSonda checkSonda = CheckSonda.getCheckSonda(nome);
+				
 				if(checkSonda == null)
-					throw new NotFoundException("Sonda con nome ["+nome+"] non configurata");
+					return Response.status(404).entity("Sonda con nome ["+nome+"] non configurata").build();
+				
 				Sonda sonda = getSonda(bd, checkSonda);
 				return Response.ok(buildDettaglioSonda(sonda)).build();
 			} catch(Exception e) {
@@ -138,20 +142,22 @@ public class Check {
 	}
 
 	private DettaglioSonda buildDettaglioSonda(Sonda sonda) {
-		DettaglioSonda dettaglioSonda = new DettaglioSonda();
+		DettaglioSonda dettaglioSonda = new DettaglioSonda(sonda.getClass());
 		ParametriSonda param = sonda.getParam();
 		dettaglioSonda.setNome(param.getNome());
-		dettaglioSonda.setDataError(param.getDataError());
-		dettaglioSonda.setDataWarn(param.getDataWarn());
-		dettaglioSonda.setDataOk(param.getDataOk());
-		dettaglioSonda.setDataUltimoCheck(param.getDataUltimoCheck());
-		dettaglioSonda.setDatiCheck(param.getDatiCheck());
-		dettaglioSonda.setSogliaError(param.getSogliaError());
-		dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
 		
 		StatoSonda statoSonda = sonda.getStatoSonda();
 		dettaglioSonda.setStato(statoSonda.getStato());
 		dettaglioSonda.setDescrizioneStato(statoSonda.getDescrizione());
+		
+		if(statoSonda.getStato() == 0) dettaglioSonda.setDurataStato(null);
+		if(statoSonda.getStato() == 1) dettaglioSonda.setDurataStato(param.getDataWarn());
+		if(statoSonda.getStato() == 2) dettaglioSonda.setDurataStato(param.getDataError());
+		
+		dettaglioSonda.setDataUltimoCheck(param.getDataUltimoCheck());
+		dettaglioSonda.setSogliaError(param.getSogliaError());
+		dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
+		
 		return dettaglioSonda;
 	}
 
