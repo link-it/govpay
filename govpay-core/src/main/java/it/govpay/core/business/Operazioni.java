@@ -72,7 +72,7 @@ public class Operazioni{
 			return response;
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
-			try {aggiornaSondaKO("update-rnd", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			try {aggiornaSondaKO("update-rnd", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -88,13 +88,13 @@ public class Operazioni{
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
-			((SondaBatch)sonda).aggiornaStatoSonda(true, new Date(), null, con, bd.getJdbcProperties().getDatabase());
+			((SondaBatch)sonda).aggiornaStatoSonda(true, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
 		} finally {
 			if(bd1 != null) bd1.closeConnection();
 		}
 	}
 
-	private static void aggiornaSondaKO(String nome, String descrizioneErrore, BasicBD bd) throws SondaException, ServiceException {
+	private static void aggiornaSondaKO(String nome, Exception e, BasicBD bd) throws SondaException, ServiceException {
 		BasicBD bd1 = null;
 		try {
 			bd1 = BasicBD.newInstance(bd.getIdTransaction());
@@ -102,7 +102,7 @@ public class Operazioni{
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
-			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), descrizioneErrore, con, bd.getJdbcProperties().getDatabase());
+			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
 		} finally {
 			if(bd1 != null) bd1.closeConnection();
 		}
@@ -130,7 +130,7 @@ public class Operazioni{
 			return response;
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
-			try {aggiornaSondaKO("update-psp", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			try {aggiornaSondaKO("update-psp", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -159,7 +159,7 @@ public class Operazioni{
 			return verificaTransazioniPendenti;
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
-			try {aggiornaSondaKO("update-pnd", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			try {aggiornaSondaKO("update-pnd", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -204,7 +204,7 @@ public class Operazioni{
 			aggiornaSondaOK("update-ntfy", bd);
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
-			try {aggiornaSondaKO("update-ntfy", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			try {aggiornaSondaKO("update-ntfy", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -265,7 +265,7 @@ public class Operazioni{
 			return creaEstrattiContoSuFileSystem;
 		} catch (Exception e) {
 			log.error("Estratto Conto fallito", e);
-			try {aggiornaSondaKO("update-conto", e.getMessage(), bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			try {aggiornaSondaKO("update-conto", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
 			return "Estratto Conto#" + e.getMessage();
 		} finally {
 			if(bd != null) bd.closeConnection();

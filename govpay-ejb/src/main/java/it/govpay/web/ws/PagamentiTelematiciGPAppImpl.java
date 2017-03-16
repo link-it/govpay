@@ -379,10 +379,10 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 				FlussoRendicontazione fr = new FlussoRendicontazione();
 				int annoFlusso = 0;
 				try {
-					annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(fr.getDataFlusso()));
+					annoFlusso = Integer.parseInt(Utils.simpleDateFormatAnno.format(frApplicazione.getDataFlusso()));
 					fr.setAnnoRiferimento(annoFlusso);
 				} catch(Exception e) {
-					log.error("Errore nell'estrazione dell'anno di riferimento dalla data flusso " + fr.getDataFlusso(), e);
+					log.error("Errore nell'estrazione dell'anno di riferimento dalla data flusso " + frApplicazione.getDataFlusso(), e);
 				}
 				
 				fr.setCodBicRiversamento(frApplicazione.getCodBicRiversamento());

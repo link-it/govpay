@@ -247,7 +247,7 @@ public class Gp21Utils {
 	}
 
 	public static SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
-	public static it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione toFr(Fr frModel, Versione versione, BasicBD bd) {
+	public static it.govpay.servizi.gprnd.GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione toFr(Fr frModel, BasicBD bd) {
 		GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione efr = new GpChiediListaFlussiRendicontazioneResponse.FlussoRendicontazione();
 		int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(frModel.getDataFlusso()));
 		efr.setAnnoRiferimento(annoFlusso);

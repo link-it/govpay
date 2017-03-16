@@ -91,7 +91,7 @@ public class PagamentiTelematiciGPRndImpl implements PagamentiTelematiciGPRnd {
 			fine.set(Calendar.MILLISECOND, 999);
 			List<Fr> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazione, bodyrichiesta.getCodDominio(), bodyrichiesta.getCodApplicazione(), bodyrichiesta.getDataInizio(), fine.getTime());
 			for(Fr frModel : rendicontazioni) {
-				response.getFlussoRendicontazione().add(Gp21Utils.toFr(frModel, applicazione.getVersione(), bd));
+				response.getFlussoRendicontazione().add(Gp21Utils.toFr(frModel, bd));
 			}
 			response.setCodEsitoOperazione(EsitoOperazione.OK);
 			ctx.log("gprnd.ricevutaRichiestaOk");

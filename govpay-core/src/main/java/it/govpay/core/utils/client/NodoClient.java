@@ -70,7 +70,7 @@ public class NodoClient extends BasicClient {
 	private static ObjectFactory objectFactory;
 	private boolean isAzioneInUrl;
 	private static Logger log = LogManager.getLogger();
-	private String azione, dominio, stazione, errore;
+	private String azione, dominio, stazione, errore, faultCode;
 	private BasicBD bd;
 
 	public NodoClient(Intermediario intermediario, BasicBD bd) throws ClientException {
@@ -98,7 +98,7 @@ public class NodoClient extends BasicClient {
 			JAXBElement<?> jaxbElement = SOAPUtils.toJaxb(response, null);
 			Risposta r = (Risposta) jaxbElement.getValue();
 			if(r.getFault() != null) {
-				String faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
+				faultCode = r.getFault().getFaultCode() != null ? r.getFault().getFaultCode() : "<Fault Code vuoto>";
 				String faultString = r.getFault().getFaultString() != null ? r.getFault().getFaultString() : "<Fault String vuoto>";
 				String faultDescription = r.getFault().getDescription() != null ? r.getFault().getDescription() : "<Fault Description vuoto>";
 				errore = "Errore applicativo " + faultCode + ": " + faultString;
@@ -217,7 +217,7 @@ public class NodoClient extends BasicClient {
 			if(this.dominio != null) {
 				DominiBD dominiBD = new DominiBD(bd);
 				Dominio dominio = AnagraficaManager.getDominio(bd, this.dominio);
-				if(errore == null) {
+				if(faultCode == null || !faultCode.startsWith("PPT")) {
 					dominiBD.setStatoNdp(dominio.getId(), 0, azione, null);
 				} else {
 					dominiBD.setStatoNdp(dominio.getId(), 1, azione, errore);
@@ -227,7 +227,7 @@ public class NodoClient extends BasicClient {
 			if(this.stazione != null) {
 				StazioniBD stazioniBD = new StazioniBD(bd);
 				Stazione stazione = AnagraficaManager.getStazione(bd, this.stazione);
-				if(errore == null) {
+				if(faultCode == null || !faultCode.startsWith("PPT")) {
 					stazioniBD.setStatoNdp(stazione.getId(), 0, azione, null);
 				} else if(this.dominio == null) { // Aggiorno in errore solo se e' un'operazione di stazione
 					stazioniBD.setStatoNdp(stazione.getId(), 1, azione, errore);
