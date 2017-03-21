@@ -125,7 +125,7 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			String response = new Psp(bd).aggiornaRegistro();
-
+			AnagraficaManager.cleanPspCache();
 			aggiornaSondaOK("update-psp", bd);
 			return response;
 		} catch (Exception e) {
