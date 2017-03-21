@@ -128,7 +128,7 @@ public class BasicClient {
 		}
 		sslContext = sslContexts.get(bundleKey);
 		
-		if(connettore.getTipoAutenticazione().equals(EnumAuthType.SSL)) {
+		if(connettore.getTipoAutenticazione() != null && connettore.getTipoAutenticazione().equals(EnumAuthType.SSL)) {
 			isSslEnabled = true;
 			if(sslContext == null) {
 				try {
@@ -139,7 +139,7 @@ public class BasicClient {
 					TrustManager[] tm = null;
 			
 					// Autenticazione CLIENT
-					if(connettore.getTipoSsl().equals(EnumSslType.CLIENT)){
+					if(connettore.getTipoSsl() != null && connettore.getTipoSsl().equals(EnumSslType.CLIENT)){
 						
 						if(connettore.getSslKsType() == null || 
 								connettore.getSslKsLocation() == null ||
@@ -179,7 +179,7 @@ public class BasicClient {
 			}
 		}
 		
-		if(connettore.getTipoAutenticazione().equals(EnumAuthType.HTTPBasic)) {
+		if(connettore.getTipoAutenticazione() != null && connettore.getTipoAutenticazione().equals(EnumAuthType.HTTPBasic)) {
 			ishttpBasicEnabled = true;
 			httpBasicUser = connettore.getHttpUser();
 			httpBasicPassword = connettore.getHttpPassw();
