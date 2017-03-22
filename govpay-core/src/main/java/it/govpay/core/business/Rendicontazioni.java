@@ -240,8 +240,10 @@ public class Rendicontazioni extends BasicBD {
 								GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", codDominio));
 								dominio = AnagraficaManager.getDominio(this, codDominio);	
 							} catch (Exception e) {
-								if(codDominio == null) 
+								if(codDominio == null) {
+									codDominio = "????";
 									GpThreadLocal.get().getContext().getRequest().addGenericProperty(new Property("codDominio", "null"));
+								}
 								GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussoDominioNonCensito");
 								fr.addAnomalia("007109", "L'indentificativo ricevente [" + codDominio + "] del flusso non riferisce un Dominio censito");
 							}
@@ -279,7 +281,7 @@ public class Rendicontazioni extends BasicBD {
 								// Cerco il pagamento riferito
 								it.govpay.bd.model.Pagamento pagamento = null;
 								try {
-									pagamento = pagamentiBD.getPagamento(dominio.getCodDominio(), iuv, iur); 
+									pagamento = pagamentiBD.getPagamento(codDominio, iuv, iur); 
 
 									// Pagamento trovato. Faccio i controlli semantici
 									rendicontazione.setIdPagamento(pagamento.getId());
@@ -288,28 +290,28 @@ public class Rendicontazioni extends BasicBD {
 									if(rendicontazione.getEsito().equals(EsitoRendicontazione.REVOCATO)) {
 										if(pagamento.getImportoRevocato().compareTo(importoRendicontato.abs()) != 0) {
 											GpThreadLocal.get().log("rendicontazioni.importoStornoErrato", iuv, iur);
-											log.info("Revoca [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
+											log.info("Revoca [Dominio:" + codDominio + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
 											rendicontazione.addAnomalia("007112", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto stornato [" + pagamento.getImportoRevocato().doubleValue() + "]");
 										}
 
 										// Verifico che il pagamento non sia gia' rendicontato
 										if(pagamento.isPagamentoRendicontato(this)) {
 											GpThreadLocal.get().log("rendicontazioni.giaStornato", iuv, iur);
-											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
+											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: storno gia' rendicontato da altri flussi");
 											rendicontazione.addAnomalia("007113", "Lo storno riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
 										}
 
 									} else {
 										if(pagamento.getImportoPagato().compareTo(importoRendicontato) != 0) {
 											GpThreadLocal.get().log("rendicontazioni.importoErrato", iuv, iur);
-											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
+											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: l'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
 											rendicontazione.addAnomalia("007104", "L'importo rendicontato ["+importoRendicontato.doubleValue()+"] non corrisponde a quanto pagato [" + pagamento.getImportoPagato().doubleValue() + "]");
 										}
 
 										// Verifico che il pagamento non sia gia' rendicontato
 										if(pagamento.isPagamentoRendicontato(this)) {
 											GpThreadLocal.get().log("rendicontazioni.giaRendicontato", iuv, iur);
-											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: pagamento gia' rendicontato da altri flussi");
+											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: pagamento gia' rendicontato da altri flussi");
 											rendicontazione.addAnomalia("007103", "Il pagamento riferito dalla rendicontazione risulta gia' rendicontato da altri flussi");
 										}
 									}
@@ -362,7 +364,7 @@ public class Rendicontazioni extends BasicBD {
 										if(versamento == null) {
 											// non ho trovato il versamento 
 											GpThreadLocal.get().log("rendicontazioni.senzaRptNoVersamento", iuv, iur);
-											log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
+											log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
 											rendicontazione.addAnomalia("007111", "Il versamento risulta sconosciuto: " + erroreVerifica);
 											continue;
 										} else {
@@ -370,7 +372,7 @@ public class Rendicontazioni extends BasicBD {
 											if(versamento.getSingoliVersamenti(this).size() != 1) {
 												// Un pagamento senza rpt DEVE riferire un pagamento tipo 3 con un solo singolo versamento
 												GpThreadLocal.get().log("rendicontazioni.senzaRptVersamentoMalformato", iuv, iur);
-												log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
+												log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: Pagamento senza RPT di versamento sconosciuto.");
 												rendicontazione.addAnomalia("007114", "Il versamento presenta piu' singoli versamenti");
 												continue;
 											}
@@ -393,13 +395,13 @@ public class Rendicontazioni extends BasicBD {
 									}
 
 									GpThreadLocal.get().log("rendicontazioni.noPagamento", iuv, iur);
-									log.info("Pagamento [Dominio:" + dominio.getCodDominio() + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: il pagamento non risulta presente in base dati.");
+									log.info("Pagamento [Dominio:" + codDominio + " Iuv:" + iuv + " Iur: " + iur + "] rendicontato con errore: il pagamento non risulta presente in base dati.");
 									rendicontazione.addAnomalia("007101", "Il pagamento riferito dalla rendicontazione non risulta presente in base dati.");
 									continue;
 								} catch (MultipleResultException e) {
 									// Individuati piu' pagamenti riferiti dalla rendicontazione
 									GpThreadLocal.get().log("rendicontazioni.poliPagamento", iuv, iur);
-									log.info("Pagamento rendicontato duplicato: [CodDominio: " + dominio.getCodDominio() + "] [Iuv: "+ iuv + "] [Iur: " + iur + "]");
+									log.info("Pagamento rendicontato duplicato: [CodDominio: " + codDominio + "] [Iuv: "+ iuv + "] [Iur: " + iur + "]");
 									rendicontazione.addAnomalia("007102", "La rendicontazione riferisce piu di un pagamento gestito.");
 								} finally {
 									if(!StatoRendicontazione.ALTRO_INTERMEDIARIO.equals(rendicontazione.getStato()) && rendicontazione.getAnomalie().isEmpty()) {
@@ -470,6 +472,7 @@ public class Rendicontazioni extends BasicBD {
 							}
 						}
 					} catch (GovPayException ce) {
+						log.error("Flusso di rendicontazione non acquisito", ce);
 						errori = true;
 					} finally {
 						GpThreadLocal.get().closeTransaction(idTransaction2);
