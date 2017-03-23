@@ -193,7 +193,7 @@ public class Psp extends BasicBD {
 
 								// Il psp e' nel catalogo, va aggiornato. 
 								// Rimuovo la versione aggiornata dal catalogo e lo mando in update
-								log.info("Aggiornamento [codPsp: " + psp.getCodPsp() + "]");
+								log.debug("Aggiornamento [codPsp: " + psp.getCodPsp() + "]");
 								ctx.log("psp.aggiornamentoPspAggiornatoPSP", psp.getCodPsp(), psp.getRagioneSociale());
 								response.add(psp.getRagioneSociale() + " (" + psp.getCodPsp() + ")#Acquisita versione aggiornata.");
 								pspBD.updatePsp(catalogoPsp.get(i));
