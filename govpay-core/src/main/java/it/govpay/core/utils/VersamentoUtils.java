@@ -243,7 +243,7 @@ public class VersamentoUtils {
 			}
 
 			if(!(letto.getIbanAccredito(bd) == null && nuovo.getIbanAccredito(bd) == null)) {
-				if(letto.getIbanAccredito(bd) == null || nuovo.getIbanAccredito(bd).getId() == null || letto.getIbanAccredito(bd).getId().equals(nuovo.getIbanAccredito(bd).getId())) {
+				if(letto.getIbanAccredito(bd) == null || nuovo.getIbanAccredito(bd).getId() == null || !letto.getIbanAccredito(bd).getId().equals(nuovo.getIbanAccredito(bd).getId())) {
 					throw new GovPayException(EsitoOperazione.VER_023, versamentoNuovo.getApplicazione(bd).getCodApplicazione(), versamentoNuovo.getCodVersamentoEnte(), letto.getCodSingoloVersamentoEnte());
 				}
 			}
