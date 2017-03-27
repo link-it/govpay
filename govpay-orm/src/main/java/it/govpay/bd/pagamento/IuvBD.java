@@ -21,15 +21,20 @@ package it.govpay.bd.pagamento;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.converter.IuvConverter;
+import it.govpay.bd.model.converter.RptConverter;
+import it.govpay.bd.pagamento.filters.IuvFilter;
+import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.util.IuvUtils;
 import it.govpay.model.Applicazione;
 import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.Rpt;
 import it.govpay.model.Iuv;
 import it.govpay.model.Iuv.TipoIUV;
 import it.govpay.orm.IUV;
 import it.govpay.orm.dao.jdbc.JDBCIUVService;
 import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -261,6 +266,31 @@ public class IuvBD extends BasicBD {
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	public IuvFilter newFilter() throws ServiceException {
+		return new IuvFilter(this.getIuvService());
+	}
+
+	public long count(IuvFilter filter) throws ServiceException {
+		try {
+			return this.getIuvService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<Iuv> findAll(IuvFilter filter) throws ServiceException {
+		try {
+			List<Iuv> iuvLst = new ArrayList<Iuv>();
+			List<it.govpay.orm.IUV> iuvVOLst = this.getIuvService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.IUV iuvVO: iuvVOLst) {
+				iuvLst.add(IuvConverter.toDTO(iuvVO));
+			}
+			return iuvLst;
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}

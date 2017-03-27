@@ -760,10 +760,14 @@ public class AnagraficaManager {
 		intermediariBDCacheWrapper.resetCache();
 		operatoriBDCacheWrapper.resetCache();
 		portaliBDCacheWrapper.resetCache();
-		pspBDCacheWrapper.resetCache();
 		stazioniBDCacheWrapper.resetCache();
 		tributiBDCacheWrapper.resetCache();
 		tipiTributoBDCacheWrapper.resetCache();
+		cleanPspCache();
+	}
+
+	public static void cleanPspCache() throws UtilsException {
+		pspBDCacheWrapper.resetCache();
 		canaliBDCacheWrapper.resetCache();
 	}
 }

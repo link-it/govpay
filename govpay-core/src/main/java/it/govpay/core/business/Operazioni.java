@@ -38,7 +38,6 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
-import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.sonde.Sonda;
@@ -72,39 +71,11 @@ public class Operazioni{
 			return response;
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
-			try {aggiornaSondaKO("update-rnd", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			aggiornaSondaKO("update-rnd", e, bd);
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
-		}
-	}
-
-	private static void aggiornaSondaOK(String nome, BasicBD bd) throws SondaException, ServiceException {
-		BasicBD bd1 = null;
-		try {
-			bd1 = BasicBD.newInstance(bd.getIdTransaction());
-			Connection con = bd1.getConnection();
-
-			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
-			((SondaBatch)sonda).aggiornaStatoSonda(true, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
-		} finally {
-			if(bd1 != null) bd1.closeConnection();
-		}
-	}
-
-	private static void aggiornaSondaKO(String nome, Exception e, BasicBD bd) throws SondaException, ServiceException {
-		BasicBD bd1 = null;
-		try {
-			bd1 = BasicBD.newInstance(bd.getIdTransaction());
-			Connection con = bd1.getConnection();
-
-			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
-			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
-			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
-		} finally {
-			if(bd1 != null) bd1.closeConnection();
 		}
 	}
 
@@ -125,12 +96,12 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			String response = new Psp(bd).aggiornaRegistro();
-
+			AnagraficaManager.cleanPspCache();
 			aggiornaSondaOK("update-psp", bd);
 			return response;
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
-			try {aggiornaSondaKO("update-psp", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			aggiornaSondaKO("update-psp", e, bd);
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -159,7 +130,7 @@ public class Operazioni{
 			return verificaTransazioniPendenti;
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
-			try {aggiornaSondaKO("update-pnd", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			aggiornaSondaKO("update-pnd", e, bd);
 			return "Acquisizione fallita#" + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -204,7 +175,7 @@ public class Operazioni{
 			aggiornaSondaOK("update-ntfy", bd);
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
-			try {aggiornaSondaKO("update-ntfy", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			aggiornaSondaKO("update-ntfy", e, bd); 
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -265,11 +236,44 @@ public class Operazioni{
 			return creaEstrattiContoSuFileSystem;
 		} catch (Exception e) {
 			log.error("Estratto Conto fallito", e);
-			try {aggiornaSondaKO("update-conto", e, bd);} catch(Exception ex) {log.error("Errore durante l'aggiornamento della sonda", ex);}
+			aggiornaSondaKO("update-conto", e, bd);
 			return "Estratto Conto#" + e.getMessage();
 		} finally {
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
+		}
+	}
+	
+	private static void aggiornaSondaOK(String nome, BasicBD bd) {
+		BasicBD bd1 = null;
+		try {
+			bd1 = BasicBD.newInstance(bd.getIdTransaction());
+			Connection con = bd1.getConnection();
+
+			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
+			((SondaBatch)sonda).aggiornaStatoSonda(true, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
+		} catch (Throwable t) {
+			log.warn("Errore nell'aggiornamento della sonda", t);
+		}
+		finally {
+			if(bd1 != null) bd1.closeConnection();
+		}
+	}
+
+	private static void aggiornaSondaKO(String nome, Exception e, BasicBD bd) {
+		BasicBD bd1 = null;
+		try {
+			bd1 = BasicBD.newInstance(bd.getIdTransaction());
+			Connection con = bd1.getConnection();
+
+			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
+			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
+			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
+		} catch (Throwable t) {
+			log.warn("Errore nell'aggiornamento della sonda", t);
+		} finally {
+			if(bd1 != null) bd1.closeConnection();
 		}
 	}
 }
