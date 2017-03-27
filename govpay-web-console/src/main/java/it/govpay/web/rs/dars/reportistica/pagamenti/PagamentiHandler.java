@@ -121,10 +121,10 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			EstrattoContoFilter filter = pagamentiBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
-			//			FilterSortWrapper fsw = new FilterSortWrapper();
-			//			fsw.setField(filter.getDataPagamentoAliasField());
-			//			fsw.setSortOrder(SortOrder.DESC);
-			//			filter.getFilterSortList().add(fsw);
+//						FilterSortWrapper fsw = new FilterSortWrapper();
+//						fsw.setField(filter.getDataPagamentoAliasField());
+//						fsw.setSortOrder(SortOrder.DESC);
+//						filter.getFilterSortList().add(fsw);
 
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);

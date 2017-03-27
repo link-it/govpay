@@ -154,10 +154,8 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			Boolean nascondiAltriIntermediari = false;
 			if(StringUtils.isNotEmpty(nascondiAltriIntermediariS)){
-				try{
-					nascondiAltriIntermediari = Boolean.parseBoolean(nascondiAltriIntermediariS);}catch(Exception e){
-						nascondiAltriIntermediari = false;
-					}
+				if(StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "on") || StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "yes"))
+					nascondiAltriIntermediari = true;
 			}
 
 			filter.setNascondiSeSoloDiAltriIntermediari(nascondiAltriIntermediari);
@@ -372,18 +370,33 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"), fr.getCodFlusso());
 				}
 
-				// Uo
-				Dominio dominio = fr.getDominio(bd);
+				// dominio
+				Dominio dominio = null;
+				try{
+					dominio = fr.getDominio(bd);
+				}catch (Exception e) {
+					// dominio non censito 
+				}
 				if(dominio != null) {
 					Domini dominiDars = new Domini();
 					DominiHandler dominiDarsHandler =  (DominiHandler) dominiDars.getDarsHandler();
 					Elemento elemento = dominiDarsHandler.getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), elemento.getTitolo(),elemento.getUri());
+				} else {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"), fr.getCodDominio());
 				}
 
-				Psp psp = fr.getPsp(bd);
+				Psp psp = null;
+				try{
+					psp =fr.getPsp(bd);
+				}catch (Exception e) {
+					// psp non censito 
+				}
+				
 				if(psp != null) {
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
+				} else {
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),fr.getCodPsp());
 				}
 
 				if(StringUtils.isNotEmpty(fr.getIur())) {
@@ -548,7 +561,10 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 									dominioTitolo));
 				}
 			} catch (NotFoundException e) {
-				// dominio non disponibile
+				// dominio non censito metto solo il coddominio
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),
+								entry.getCodDominio()));
 			}
 
 			try{
@@ -561,7 +577,10 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 									pspHandler.getTitolo(psp, bd)));
 				}
 			} catch (NotFoundException e) {
-				// psp non disponibile
+				// psp non censito metto solo il codice
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),
+								entry.getCodPsp()));
 			}
 
 		} catch (ServiceException e) {

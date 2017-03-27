@@ -22,6 +22,7 @@ package it.govpay.bd.pagamento.filters;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -49,7 +50,9 @@ public class VersamentoFilter extends AbstractFilter {
 	private Date dataFine;
 	private List<Long> idVersamento= null;
 	private String codVersamento = null;
-
+	private List<String> codVersamentoEnte = null;
+	private List<Long> idApplicazione = null;
+	
 	public enum SortFields {
 		STATO_ASC, STATO_DESC, SCADENZA_ASC, SCADENZA_DESC, AGGIORNAMENTO_ASC, AGGIORNAMENTO_DESC, CARICAMENTO_ASC, CARICAMENTO_DESC
 	}
@@ -108,6 +111,36 @@ public class VersamentoFilter extends AbstractFilter {
 				
 				newExpression.ilike(Versamento.model().COD_VERSAMENTO_ENTE, this.codVersamento, LikeMode.ANYWHERE);
 				addAnd = true;
+			}
+			
+			
+			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
+				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
+					if(addAnd)
+						newExpression.and();
+
+					IExpression orExpr = this.newExpression();
+					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
+					
+					VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
+					
+					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
+						String codV = this.codVersamentoEnte.get(i);
+						Long idApp = this.idApplicazione.get(i);
+						
+						IExpression vExpr = this.newExpression();
+						vExpr.equals(Versamento.model().COD_VERSAMENTO_ENTE, codV).and().equals(cf, idApp);
+						
+						lstOrExpr.add(vExpr);
+					}
+					
+					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
+					
+					newExpression.and(orExpr);
+					
+					addAnd = true;
+				}
 			}
 			
 
@@ -220,5 +253,23 @@ public class VersamentoFilter extends AbstractFilter {
 		this.statiVersamento = new ArrayList<StatoVersamento>();
 		this.statiVersamento.add(stato);
 	}
+
+	public List<String> getCodVersamentoEnte() {
+		return codVersamentoEnte;
+	}
+
+	public void setCodVersamentoEnte(List<String> codVersamentoEnte) {
+		this.codVersamentoEnte = codVersamentoEnte;
+	}
+
+	public List<Long> getIdApplicazione() {
+		return idApplicazione;
+	}
+
+	public void setIdApplicazione(List<Long> idApplicazione) {
+		this.idApplicazione = idApplicazione;
+	}
+	
+	
 
 }
