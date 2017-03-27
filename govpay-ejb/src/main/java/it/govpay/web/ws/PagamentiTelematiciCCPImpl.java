@@ -633,13 +633,16 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	}
 
 	private <T> T buildRisposta(Exception e, String codDominio, T risposta) {
-		log.error("Errore interno in verifica/attivazione RPT.", e);
 		return buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio), risposta);
 	}
 
 	private <T> T buildRisposta(NdpException e, T risposta) {
 		if(risposta instanceof PaaAttivaRPTRisposta) {
-			log.error("Rifiutata Attiva RPT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR)) {
+				log.error("Errore interno in Attiva RPT",e);
+			} else {
+				log.warn("Rifiutata Attiva RPT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			}
 			PaaAttivaRPTRisposta r = (PaaAttivaRPTRisposta) risposta;
 			EsitoAttivaRPT esito = new EsitoAttivaRPT();
 			esito.setEsito("KO");
@@ -653,7 +656,11 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		}
 
 		if(risposta instanceof PaaVerificaRPTRisposta) {
-			log.error("Rifiutata Verifica RPT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			if(e.getFault().equals(FaultPa.PAA_SYSTEM_ERROR)) {
+				log.error("Errore interno in Verifica RPT",e);
+			} else {
+				log.warn("Rifiutata Verifica RPT con Fault " + e.getFault().toString() + ( e.getDescrizione() != null ? (": " + e.getDescrizione()) : ""));
+			}
 			PaaVerificaRPTRisposta r = (PaaVerificaRPTRisposta) risposta;
 			EsitoVerificaRPT esito = new EsitoVerificaRPT();
 			esito.setEsito("KO");

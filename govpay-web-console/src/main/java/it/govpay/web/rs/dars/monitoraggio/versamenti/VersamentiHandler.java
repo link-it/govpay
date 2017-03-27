@@ -59,10 +59,12 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
+import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
+import it.govpay.bd.pagamento.filters.IuvFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
@@ -175,17 +177,23 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
 			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+			boolean iuvNonEsistente = false;
 			if(StringUtils.isNotEmpty(iuv)){
-				RptBD rptBD = new RptBD(bd);
-				RptFilter newFilter = rptBD.newFilter();
+				IuvBD iuvBd = new IuvBD(bd);
+				IuvFilter newFilter = iuvBd.newFilter();
 				newFilter.setIuv(iuv);
-				List<Rpt> findAll = rptBD.findAll(newFilter);
-				List<Long> idVersamentoL = new ArrayList<Long>();
-				for (Rpt rpt : findAll) {
-					idVersamentoL.add(rpt.getIdVersamento());
+				List<Iuv> findAll = iuvBd.findAll(newFilter);
+				List<Long> idApplicazioneL = new ArrayList<Long>();
+				List<String> codVersamentoEnte = new ArrayList<String>();
+				for (Iuv iuv2 : findAll) {
+					idApplicazioneL.add(iuv2.getIdApplicazione());
+					codVersamentoEnte.add(iuv2.getCodVersamentoEnte());
 				}
-
-				filter.setIdVersamento(idVersamentoL);  
+				// iuv inserito in pagina non corrisponde a nessun rpt
+				iuvNonEsistente = findAll.size() == 0;
+				
+				filter.setIdApplicazione(idApplicazioneL);
+				filter.setCodVersamentoEnte(codVersamentoEnte);
 			}
 
 			String statoVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
@@ -219,6 +227,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				}
 			}
 
+			eseguiRicerca = eseguiRicerca && !iuvNonEsistente;
+			
 			long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
 
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -666,6 +676,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataScadenza.label"), this.sdf.format(entry.getDataScadenza())));
 			}
 
+			
 			Iuv iuv  = entry.getIuv(bd);
 			if(iuv!= null && StringUtils.isNotEmpty(iuv.getIuv())) {
 				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
