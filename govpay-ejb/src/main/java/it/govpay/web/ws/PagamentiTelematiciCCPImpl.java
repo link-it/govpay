@@ -362,7 +362,6 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		} finally {
 			try{
 				if(bd != null) {
-
 					GiornaleEventi ge = new GiornaleEventi(bd);
 					evento.setEsito(response.getPaaAttivaRPTRisposta().getEsito());
 					evento.setDataRisposta(new Date());
@@ -422,7 +421,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 		evento.setCodDominio(codDominio);
 		evento.setIuv(iuv);
 		evento.setCcp(ccp);
-		evento.setTipoEvento(TipoEvento.paaAttivaRPT);
+		evento.setTipoEvento(TipoEvento.paaVerificaRPT);
 		evento.setCodPsp(psp);
 		evento.setTipoVersamento(TipoVersamento.ATTIVATO_PRESSO_PSP);
 		evento.setFruitore("NodoDeiPagamentiSPC");
