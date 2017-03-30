@@ -20,7 +20,6 @@
 
 package it.govpay.bd.pagamento.filters;
 
-import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -30,10 +29,7 @@ import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.IUV;
-import it.govpay.orm.RPT;
-import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
 
 public class IuvFilter extends AbstractFilter{
 

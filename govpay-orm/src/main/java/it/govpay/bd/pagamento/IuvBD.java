@@ -19,21 +19,6 @@
  */
 package it.govpay.bd.pagamento;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.converter.IuvConverter;
-import it.govpay.bd.model.converter.RptConverter;
-import it.govpay.bd.pagamento.filters.IuvFilter;
-import it.govpay.bd.pagamento.filters.RptFilter;
-import it.govpay.bd.pagamento.util.IuvUtils;
-import it.govpay.model.Applicazione;
-import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Rpt;
-import it.govpay.model.Iuv;
-import it.govpay.model.Iuv.TipoIUV;
-import it.govpay.orm.IUV;
-import it.govpay.orm.dao.jdbc.JDBCIUVService;
-import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -53,6 +38,18 @@ import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 import org.openspcoop2.utils.UtilsException;
 import org.openspcoop2.utils.id.serial.IDSerialGeneratorType;
 import org.openspcoop2.utils.id.serial.InfoStatistics;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.model.Dominio;
+import it.govpay.bd.model.converter.IuvConverter;
+import it.govpay.bd.pagamento.filters.IuvFilter;
+import it.govpay.bd.pagamento.util.IuvUtils;
+import it.govpay.model.Applicazione;
+import it.govpay.model.Iuv;
+import it.govpay.model.Iuv.TipoIUV;
+import it.govpay.orm.IUV;
+import it.govpay.orm.dao.jdbc.JDBCIUVService;
+import it.govpay.orm.dao.jdbc.converter.IUVFieldConverter;
 
 public class IuvBD extends BasicBD {
 
