@@ -83,11 +83,22 @@ public class Check {
 				List<CheckSonda> listaCheckSonda = CheckSonda.getListaCheckSonda();
 				ElencoSonde elenco = new ElencoSonde();
 				for(CheckSonda checkSonda: listaCheckSonda) {
-					Sonda sonda = getSonda(bd, checkSonda);
-					elenco.getItems().add(buildSommario(sonda));
+					SommarioSonda sommarioSonda = new SommarioSonda();
+					sommarioSonda.setNome(checkSonda.getName());
+					try {
+						Sonda sonda = getSonda(bd, checkSonda);
+						StatoSonda statoSonda = sonda.getStatoSonda();
+						sommarioSonda.setStato(statoSonda.getStato());
+						sommarioSonda.setDescrizioneStato(statoSonda.getDescrizione());
+					} catch(Throwable t) {
+						sommarioSonda.setStato(2);
+						sommarioSonda.setDescrizioneStato("Internal error: " + t);
+						log.error("Impossibile acquisire lo stato della sonda", t);
+					}
+					elenco.getItems().add(sommarioSonda);
 				}
 				return Response.ok(elenco).build();
-			} catch(Exception e) {
+			} catch(ServiceException e) {
 				log.error("Errore durante la verifica delle sonde", e);
 				throw new Exception("Errore durante la verifica delle sonde");
 			} finally {
@@ -109,7 +120,6 @@ public class Check {
 				num = notBD.countNotificheDaSpedire();
 			}
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
-				
 		}
 		return sonda;
 	}
@@ -150,7 +160,7 @@ public class Check {
 		dettaglioSonda.setStato(statoSonda.getStato());
 		dettaglioSonda.setDescrizioneStato(statoSonda.getDescrizione());
 		
-		if(statoSonda.getStato() == 0) dettaglioSonda.setDurataStato(null);
+		if(statoSonda.getStato() == 0) dettaglioSonda.setDurataStato(param.getDataOk());
 		if(statoSonda.getStato() == 1) dettaglioSonda.setDurataStato(param.getDataWarn());
 		if(statoSonda.getStato() == 2) dettaglioSonda.setDurataStato(param.getDataError());
 		
@@ -159,19 +169,6 @@ public class Check {
 		dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
 		
 		return dettaglioSonda;
-	}
-
-	private SommarioSonda buildSommario(Sonda sonda) {
-		SommarioSonda sommarioSonda = new SommarioSonda();
-		
-		sommarioSonda.setNome(sonda.getParam().getNome());
-		
-		StatoSonda statoSonda = sonda.getStatoSonda();
-		
-		sommarioSonda.setStato(statoSonda.getStato());
-		sommarioSonda.setDescrizioneStato(statoSonda.getDescrizione());
-		
-		return sommarioSonda;
 	}
 
 	@GET

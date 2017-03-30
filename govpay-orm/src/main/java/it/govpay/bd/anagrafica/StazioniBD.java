@@ -143,7 +143,7 @@ public class StazioniBD extends BasicBD {
 			if(oOperazione instanceof String)
 				stato.setOperazione((String) oOperazione);
 			
-			Object oData = (Date)select.get(0).get(it.govpay.orm.Stazione.model().NDP_DATA.getFieldName());
+			Object oData = select.get(0).get(it.govpay.orm.Stazione.model().NDP_DATA.getFieldName());
 			if(oData instanceof Date)
 				stato.setData((Date) oData);
 			
