@@ -119,14 +119,6 @@ public class OracleNativeQueries extends NativeQueries {
 			" from ( select fr.id, sum(CASE WHEN r.stato='OK' THEN 1 ELSE 0 END) as ok, sum(CASE WHEN r.stato='ANOMALA' THEN 1 ELSE 0 END) as ANOMALE, sum(CASE WHEN r.stato='ALTRO_INTERMEDIARIO' THEN 1 ELSE 0 END) as ALTRO_INTERMEDIARIO " +
 			" from fr left join rendicontazioni r on fr.id=r.id_fr $PLACEHOLDER_JOIN$ $PLACEHOLDER_WHERE_IN$ " +
 			" group by fr.id) conta join fr on conta.id=fr.id $PLACEHOLDER_WHERE_OUT$ order by fr.data_ora_flusso DESC) fr $PLACEHOLDER_OFFSET_LIMIT$"; 
-			   
-//		return "select fr.cod_flusso,fr.stato,fr.descrizione_stato,fr.iur,fr.data_ora_flusso,fr.data_regolamento,fr.data_acquisizione,fr.numero_pagamenti,fr.importo_totale_pagamenti,fr.cod_bic_riversamento,fr.xml,fr.id,fr.cod_psp,fr.cod_dominio, ok, anomale, altro_intermediario from (select fr.cod_flusso,fr.stato,fr.descrizione_stato,fr.iur,fr.data_ora_flusso,fr.data_regolamento,fr.data_acquisizione,fr.numero_pagamenti,fr.importo_totale_pagamenti,fr.cod_bic_riversamento,fr.xml,fr.id,fr.cod_psp,fr.cod_dominio, ok, anomale, altro_intermediario, ROW_NUMBER() OVER ( ORDER BY data_ora_flusso DESC) AS rowNumber" +
-//				" from (select  max(fr.cod_flusso) as cod_flusso,max(fr.stato) as stato,max(fr.descrizione_stato) as descrizione_stato,max(fr.iur) as iur,max(fr.data_ora_flusso) as data_ora_flusso,max(fr.data_regolamento) as data_regolamento,max(fr.data_acquisizione) as data_acquisizione,max(fr.numero_pagamenti) as numero_pagamenti,max(fr.importo_totale_pagamenti) as importo_totale_pagamenti,max(fr.cod_bic_riversamento) as cod_bic_riversamento,max(fr.xml) as xml,fr.id,max(fr.cod_psp) as cod_psp,max(fr.cod_dominio) as cod_dominio, " +
-//				" sum(CASE WHEN r.stato='OK' THEN 1 ELSE 0 END) as ok, " +
-//				" sum(CASE WHEN r.stato='ANOMALA' THEN 1 ELSE 0 END) as ANOMALE, " +
-//				" sum(CASE WHEN r.stato='ALTRO_INTERMEDIARIO' THEN 1 ELSE 0 END) as ALTRO_INTERMEDIARIO " +
-//				" from fr left join rendicontazioni r on fr.id=r.id_fr $PLACEHOLDER_JOIN$ $PLACEHOLDER_WHERE_IN$ " +
-//				" group by fr.id) fr $PLACEHOLDER_WHERE_OUT$  order by fr.data_ora_flusso DESC) $PLACEHOLDER_OFFSET_LIMIT$";
 	}
 
 	@Override
