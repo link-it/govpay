@@ -32,6 +32,7 @@ import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.web.rs.sonde.CheckSonda;
 import it.govpay.web.rs.sonde.DettaglioSonda;
+import it.govpay.web.rs.sonde.DettaglioSonda.TipoSonda;
 import it.govpay.web.rs.sonde.ElencoSonde;
 import it.govpay.web.rs.sonde.SommarioSonda;
 
@@ -92,7 +93,7 @@ public class Check {
 						sommarioSonda.setDescrizioneStato(statoSonda.getDescrizione());
 					} catch(Throwable t) {
 						sommarioSonda.setStato(2);
-						sommarioSonda.setDescrizioneStato("Internal error: " + t);
+						sommarioSonda.setDescrizioneStato("Impossibile acquisire lo stato della sonda: " + t);
 						log.error("Impossibile acquisire lo stato della sonda", t);
 					}
 					elenco.getItems().add(sommarioSonda);
@@ -138,8 +139,32 @@ public class Check {
 				if(checkSonda == null)
 					return Response.status(404).entity("Sonda con nome ["+nome+"] non configurata").build();
 				
-				Sonda sonda = getSonda(bd, checkSonda);
-				return Response.ok(buildDettaglioSonda(sonda)).build();
+				DettaglioSonda dettaglioSonda = null;
+				try {
+					Sonda sonda = getSonda(bd, checkSonda);
+					dettaglioSonda = new DettaglioSonda(sonda.getClass());
+					ParametriSonda param = sonda.getParam();
+					dettaglioSonda.setNome(param.getNome());
+					
+					StatoSonda statoSonda = sonda.getStatoSonda();
+					dettaglioSonda.setStato(statoSonda.getStato());
+					dettaglioSonda.setDescrizioneStato(statoSonda.getDescrizione());
+					
+					if(statoSonda.getStato() == 0) dettaglioSonda.setDurataStato(param.getDataOk());
+					if(statoSonda.getStato() == 1) dettaglioSonda.setDurataStato(param.getDataWarn());
+					if(statoSonda.getStato() == 2) dettaglioSonda.setDurataStato(param.getDataError());
+					
+					dettaglioSonda.setDataUltimoCheck(param.getDataUltimoCheck());
+					dettaglioSonda.setSogliaError(param.getSogliaError());
+					dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
+				} catch (Throwable t){
+					dettaglioSonda = new DettaglioSonda(TipoSonda.Sconosciuto);
+					dettaglioSonda.setNome(nome);
+					dettaglioSonda.setStato(2);
+					dettaglioSonda.setDescrizioneStato("Impossibile acquisire lo stato della sonda: " + t);
+					log.error("Impossibile acquisire lo stato della sonda", t);
+				}
+				return Response.ok(dettaglioSonda).build();
 			} catch(Exception e) {
 				log.error("Errore durante la verifica della sonda " + nome, e);
 				throw new Exception("Errore durante la verifica della sonda " + nome);
@@ -151,25 +176,6 @@ public class Check {
 		} 
 	}
 
-	private DettaglioSonda buildDettaglioSonda(Sonda sonda) {
-		DettaglioSonda dettaglioSonda = new DettaglioSonda(sonda.getClass());
-		ParametriSonda param = sonda.getParam();
-		dettaglioSonda.setNome(param.getNome());
-		
-		StatoSonda statoSonda = sonda.getStatoSonda();
-		dettaglioSonda.setStato(statoSonda.getStato());
-		dettaglioSonda.setDescrizioneStato(statoSonda.getDescrizione());
-		
-		if(statoSonda.getStato() == 0) dettaglioSonda.setDurataStato(param.getDataOk());
-		if(statoSonda.getStato() == 1) dettaglioSonda.setDurataStato(param.getDataWarn());
-		if(statoSonda.getStato() == 2) dettaglioSonda.setDurataStato(param.getDataError());
-		
-		dettaglioSonda.setDataUltimoCheck(param.getDataUltimoCheck());
-		dettaglioSonda.setSogliaError(param.getSogliaError());
-		dettaglioSonda.setSogliaWarn(param.getSogliaWarn());
-		
-		return dettaglioSonda;
-	}
 
 	@GET
 	@Path("/db")

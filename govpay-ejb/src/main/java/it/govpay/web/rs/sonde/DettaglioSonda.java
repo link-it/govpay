@@ -151,9 +151,7 @@ public class DettaglioSonda {
 		if(hour > 0) sb.append(hour + " h ");
 		if(minute > 0) sb.append(minute + " m ");
 		if(second > 0) sb.append(second + " s ");
-		if((millis % 1000) > 0) sb.append((millis % 1000) + " Value");
+		if((millis % 1000) > 0) sb.append((millis % 1000) + " millis");
 		return sb.toString();
 	}
-
-
 }
