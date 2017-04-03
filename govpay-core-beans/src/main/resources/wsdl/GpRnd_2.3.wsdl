@@ -201,9 +201,9 @@
 					<xsd:element name="annoTributario" type="xsd:int" minOccurs="0" />
 					<xsd:element name="bundlekey" type="com:string256" minOccurs="0" />
 					<xsd:choice>
-						<xsd:element name="causale" type="com:string140" minOccurs="0" />
-						<xsd:element name="spezzoneCausale" type="com:string35" minOccurs="0" maxOccurs="6" />
-						<xsd:element name="spezzoneCausaleStrutturata" minOccurs="0" maxOccurs="6">
+						<xsd:element name="causale" type="com:string140" />
+						<xsd:element name="spezzoneCausale" type="com:string35" maxOccurs="6" />
+						<xsd:element name="spezzoneCausaleStrutturata" maxOccurs="6">
 							<xsd:complexType>
 								<xsd:sequence>
 									<xsd:element name="causale" type="com:string20"></xsd:element>
