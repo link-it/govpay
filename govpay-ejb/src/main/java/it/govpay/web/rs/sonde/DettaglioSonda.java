@@ -141,17 +141,6 @@ public class DettaglioSonda {
 	}
 	
 	private String toString(long millis) {
-		long second = (millis / 1000) % 60;
-		long minute = (millis / (1000 * 60)) % 60;
-		long hour = (millis / (1000 * 60 * 60)) % 24;
-		long days = (millis / (1000 * 60 * 60)) / 24;
-
-		StringBuffer sb = new StringBuffer();
-		if(days > 0) sb.append(days + " gg ");
-		if(hour > 0) sb.append(hour + " h ");
-		if(minute > 0) sb.append(minute + " m ");
-		if(second > 0) sb.append(second + " s ");
-		if((millis % 1000) > 0) sb.append((millis % 1000) + " millis");
-		return sb.toString();
+		return org.openspcoop2.utils.Utilities.convertSystemTimeIntoString_millisecondi(millis, false);
 	}
 }
