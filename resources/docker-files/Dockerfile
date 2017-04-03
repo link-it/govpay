@@ -8,8 +8,7 @@ ENV JBOSS_USER gpadmin
 ENV JBOSS_PASSWORD secret
 
 # Set GovPay version
-ENV GP_VERSION_MAJOR 2.3.1
-ENV GP_VERSION_MINOR 0
+ENV GP_VERSION 2.3-SNAPSHOT
 
 # Set JDBC Driver version
 ENV JDBC_VERSION 42.0.0.jre7
@@ -33,9 +32,9 @@ ENV LAUNCH_JBOSS_IN_BACKGROUND true
 
 # Govpay download
 RUN cd /tmp/ \
-  && curl -L -O https://github.com/link-it/GovPay/releases/download/$GP_VERSION_MAJOR/govpay-installer-$GP_VERSION_MAJOR.$GP_VERSION_MINOR.tgz \
-  && tar xf govpay-installer-$GP_VERSION_MAJOR.$GP_VERSION_MINOR.tgz \
-  && mv govpay-installer-$GP_VERSION_MAJOR.$GP_VERSION_MINOR govpay
+  && curl -L -O https://github.com/link-it/GovPay/releases/download/$GP_VERSION_MAJOR/govpay-installer-$GP_VERSION.tgz \
+  && tar xf govpay-installer-$GP_VERSION.tgz \
+  && mv govpay-installer-$GP_VERSION govpay
   
 RUN sed -i -e 's/@PRINCIPAL@/'"$JBOSS_USER"'/g' -e 's/@RAGIONE_SOCIALE@/jboss_user/g' /tmp/govpay/installer/sql/init.sql
 
