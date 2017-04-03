@@ -20,6 +20,7 @@
 package it.govpay.web.ws.v2_3;
 
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import it.govpay.bd.BasicBD;
@@ -351,13 +352,30 @@ public class PagamentiTelematiciGPAppImpl implements PagamentiTelematiciGPApp {
 			verificaApplicazione(applicazione, bodyrichiesta.getCodApplicazione());
 			ctx.log("ws.ricevutaRichiesta");
 			it.govpay.core.business.Rendicontazioni rendicontazioneBusiness = new it.govpay.core.business.Rendicontazioni(bd);
-			Calendar fine = Calendar.getInstance();
-			fine.setTime(bodyrichiesta.getDataFine());
-			fine.set(Calendar.HOUR_OF_DAY, 23);
-			fine.set(Calendar.MINUTE, 59);
-			fine.set(Calendar.SECOND, 59);
-			fine.set(Calendar.MILLISECOND, 999);
-			List<Fr> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazione, bodyrichiesta.getCodDominio(), bodyrichiesta.getCodApplicazione(), bodyrichiesta.getDataInizio(), fine.getTime());
+			
+			Date da = null, a=null;
+			
+			if(bodyrichiesta.getDataInizio() != null) {
+				Calendar inizio = Calendar.getInstance();
+				inizio.setTime(bodyrichiesta.getDataInizio());
+				inizio.set(Calendar.HOUR_OF_DAY, 0);
+				inizio.set(Calendar.MINUTE, 0);
+				inizio.set(Calendar.SECOND, 0);
+				inizio.set(Calendar.MILLISECOND, 0);
+				da = inizio.getTime();
+			}
+			
+			if(bodyrichiesta.getDataFine() != null) {
+				Calendar fine = Calendar.getInstance();
+				fine.setTime(bodyrichiesta.getDataFine());
+				fine.set(Calendar.HOUR_OF_DAY, 23);
+				fine.set(Calendar.MINUTE, 59);
+				fine.set(Calendar.SECOND, 59);
+				fine.set(Calendar.MILLISECOND, 999);
+				a = fine.getTime();
+			}
+			
+			List<Fr> rendicontazioni = rendicontazioneBusiness.chiediListaRendicontazioni(applicazione, bodyrichiesta.getCodDominio(), bodyrichiesta.getCodApplicazione(), da, a);
 			for(Fr frModel : rendicontazioni) {
 				response.getFlussoRendicontazione().add(Gp23Utils.toFr(frModel, bd));
 			}
