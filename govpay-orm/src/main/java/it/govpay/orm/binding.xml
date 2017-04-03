@@ -179,6 +179,10 @@
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idEvento" field="idEvento" usage="required"/>
   </mapping>
+  <mapping name="id-batch" class="it.govpay.orm.IdBatch">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="batch" field="batch" usage="required"/>
+  </mapping>
   <mapping name="id-notifica" class="it.govpay.orm.IdNotifica">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="idNotifica" field="idNotifica" usage="required"/>
@@ -595,6 +599,13 @@
     <structure field="pagamento" usage="required" map-as="it.govpay.orm.Pagamento"/>
     <structure field="singoloVersamento" usage="required" map-as="it.govpay.orm.SingoloVersamento"/>
     <structure field="versamento" usage="required" map-as="it.govpay.orm.Versamento"/>
+  </mapping>
+  <mapping name="Batch" class="it.govpay.orm.Batch">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="codBatch" field="codBatch" usage="required"/>
+    <value name="nodo" field="nodo" usage="optional"/>
+    <value name="inizio" field="inizio" usage="optional"/>
+    <value name="aggiornamento" field="aggiornamento" usage="optional"/>
   </mapping>
   <mapping name="id-messaggio" class="it.govpay.orm.IdMessaggio">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

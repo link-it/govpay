@@ -21,10 +21,12 @@ package it.govpay.bd;
 
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
+import it.govpay.orm.dao.IBatchService;
 import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
+import it.govpay.orm.dao.IDBBatchService;
 import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IDBConnettoreService;
 import it.govpay.orm.dao.IDBDominioService;
@@ -85,6 +87,7 @@ public class BasicBD {
 	
 	private IApplicazioneService applicazioneService;
 	private IACLService aclService;
+	private IBatchService batchService;
 	private ICanaleService canaleService;
 	private IConnettoreService connettoreService;
 	private IDominioService dominioService;
@@ -151,6 +154,7 @@ public class BasicBD {
 			try {
 				this.applicazioneService = this.serviceManager.getApplicazioneService();
 				this.aclService = this.serviceManager.getACLService();
+				this.batchService = this.serviceManager.getBatchService();
 				this.canaleService = this.serviceManager.getCanaleService();
 				this.connettoreService = this.serviceManager.getConnettoreService();
 				this.dominioService = this.serviceManager.getDominioService();
@@ -190,6 +194,7 @@ public class BasicBD {
 		try {
 			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
 			((IDBACLService)this.aclService).enableSelectForUpdate();
+			((IDBBatchService)this.batchService).enableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
 			((IDBDominioService)this.dominioService).enableSelectForUpdate();
@@ -225,6 +230,7 @@ public class BasicBD {
 		try {
 			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
 			((IDBACLService)this.aclService).disableSelectForUpdate();
+			((IDBBatchService)this.batchService).disableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
 			((IDBDominioService)this.dominioService).disableSelectForUpdate();
@@ -272,6 +278,13 @@ public class BasicBD {
 			return father.getAclService();
 		}
 		return aclService;
+	}
+
+	public IBatchService getBatchService() {
+		if(father != null) {
+			return father.getBatchService();
+		}
+		return batchService;
 	}
 
 	public ICanaleService getCanaleService() {
