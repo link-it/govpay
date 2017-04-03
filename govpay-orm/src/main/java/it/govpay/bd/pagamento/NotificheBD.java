@@ -85,6 +85,20 @@ public class NotificheBD extends BasicBD {
 			throw new ServiceException(e);
 		}
 	}
+	
+	public long countNotificheInAttesa() throws ServiceException {
+		try {
+			IExpression exp = this.getNotificaService().newExpression();
+			exp.equals(it.govpay.orm.Notifica.model().STATO, Notifica.StatoSpedizione.DA_SPEDIRE.toString());
+			return this.getNotificaService().count(exp).longValue();
+		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
 
 	public void updateSpedito(long id) throws ServiceException {
 		update(id,  StatoSpedizione.SPEDITO, null, null, null);

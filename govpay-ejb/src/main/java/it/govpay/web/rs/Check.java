@@ -118,7 +118,7 @@ public class Check {
 			long num = -1;
 			if("check-ntfy".equals(checkSonda.getName())) {
 				NotificheBD notBD = new NotificheBD(bd);
-				num = notBD.countNotificheDaSpedire();
+				num = notBD.countNotificheInAttesa();
 			}
 			((SondaCoda)sonda).aggiornaStatoSonda(num, bd.getConnection(), bd.getJdbcProperties().getDatabase());
 		}
