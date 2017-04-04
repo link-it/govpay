@@ -44,24 +44,24 @@ public class BatchBD extends BasicBD {
 		}
 	}
 	
-	public void update(Batch batch) throws ServiceException {
+	public void update(Batch batch) throws ServiceException, NotFoundException {
 		try{
 			it.govpay.orm.Batch batchVO = BatchConverter.toVO(batch);
 			IdBatch id = this.getBatchService().convertToId(batchVO);
 			this.getBatchService().update(id, batchVO);
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (NotFoundException e) {
-			throw new ServiceException(e);
-		}
+		} 
 	}
 	
-	public Batch get(String codBatch) throws ServiceException, NotFoundException, MultipleResultException {
+	public Batch get(String codBatch) throws ServiceException, NotFoundException {
 		try{
 			IdBatch id = new IdBatch();
 			id.setCodBatch(codBatch);
 			return BatchConverter.toDTO(this.getBatchService().get(id));
 		} catch(NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (MultipleResultException e) {
 			throw new ServiceException(e);
 		}
 	}
