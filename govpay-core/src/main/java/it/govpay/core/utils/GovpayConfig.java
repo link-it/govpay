@@ -70,6 +70,8 @@ public class GovpayConfig {
 	private TipiDatabase mLogDBType;
 	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
 	private boolean batchOn;
+	private Integer clusterId;
+	private long timeoutBatch;
 	
 	private boolean batchEstrattoConto, batchEstrattoContoPdf;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
@@ -322,6 +324,23 @@ public class GovpayConfig {
 			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
 				this.batchOn = false;
 			
+			String clusterIdString = getProperty("it.govpay.clusterId", props, false, log);
+			if(clusterIdString != null) {
+				try{
+					this.clusterId = Integer.parseInt(clusterIdString);
+				} catch(NumberFormatException nfe) {
+					log.warn("La proprieta \"it.govpay.clusterId\" deve essere valorizzata con un numero. Proprieta ignorata");
+				}
+			}
+			
+			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", props, false, log);
+			try{
+				this.timeoutBatch = Integer.parseInt(timeoutBatchString) * 1000;
+			} catch(Throwable t) {
+				log.warn("La proprieta \"it.govpay.timeoutBatch\" deve essere valorizzata con i secondi del timeout. Impostato valore di default (5 minuti)");
+				this.timeoutBatch = 5 * 60 * 1000;
+			}
+			
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -478,5 +497,13 @@ public class GovpayConfig {
 
 	public boolean isBatchOn() {
 		return batchOn;
+	}
+	
+	public Integer getClusterId(){
+		return this.clusterId;
+	}
+	
+	public long getTimeoutBatch(){
+		return this.timeoutBatch;
 	}
 }
