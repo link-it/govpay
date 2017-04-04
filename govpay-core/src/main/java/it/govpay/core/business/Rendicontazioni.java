@@ -482,6 +482,12 @@ public class Rendicontazioni extends BasicBD {
 		} catch(Exception e) {
 			GpThreadLocal.get().log("rendicontazioni.acquisizioneFlussiFail", e.getMessage());
 			throw new GovPayException(e);
+		} finally {
+			try {
+				if(isClosed()) setupConnection(GpThreadLocal.get().getTransactionId());
+			} catch (Exception e) {
+				log.error("Errore nel ripristino della connessione", e);
+			}
 		}
 
 		GpThreadLocal.get().log("rendicontazioni.acquisizioneOk");

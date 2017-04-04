@@ -337,7 +337,7 @@ public class GovpayConfig {
 			try{
 				this.timeoutBatch = Integer.parseInt(timeoutBatchString) * 1000;
 			} catch(Throwable t) {
-				log.warn("La proprieta \"it.govpay.timeoutBatch\" deve essere valorizzata con i secondi del timeout. Impostato valore di default (5 minuti)");
+				log.info("Proprieta \"it.govpay.timeoutBatch\" impostata com valore di default (5 minuti)");
 				this.timeoutBatch = 5 * 60 * 1000;
 			}
 			

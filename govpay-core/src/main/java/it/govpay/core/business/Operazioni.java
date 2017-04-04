@@ -177,7 +177,7 @@ public class Operazioni{
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 
-			if(BatchManager.startEsecuzione(bd, pnd)) {
+			if(BatchManager.startEsecuzione(bd, ntfy)) {
 				log.trace("Spedizione notifiche non consegnate");
 				NotificheBD notificheBD = new NotificheBD(bd);
 				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
@@ -217,9 +217,8 @@ public class Operazioni{
 			if(completed) {
 				try {
 					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-					BatchManager.stopEsecuzione(bd, pnd);
+					BatchManager.stopEsecuzione(bd, ntfy);
 				} catch (ServiceException e) {
-					// Andata male... scattera' il timeout
 				} finally {
 					if(bd != null) bd.closeConnection();
 				}
@@ -260,14 +259,19 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			String creaEstrattiContoSuFileSystem = new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
-			aggiornaSondaOK(conto, bd);
-			return creaEstrattiContoSuFileSystem;
+			if(BatchManager.startEsecuzione(bd, conto)) {
+				String creaEstrattiContoSuFileSystem = new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
+				aggiornaSondaOK(conto, bd);
+				return creaEstrattiContoSuFileSystem;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
 		} catch (Exception e) {
 			log.error("Estratto Conto fallito", e);
 			aggiornaSondaKO(conto, e, bd);
 			return "Estratto Conto#" + e.getMessage();
 		} finally {
+			BatchManager.stopEsecuzione(bd, conto);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
