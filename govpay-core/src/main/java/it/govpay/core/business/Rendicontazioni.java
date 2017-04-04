@@ -70,6 +70,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 
@@ -654,14 +655,21 @@ public class Rendicontazioni extends BasicBD {
 	 * @throws NotFoundException
 	 */
 	public List<Fr> chiediListaRendicontazioni(Applicazione applicazione, String codDominio, String codApplicazione, Date da, Date a) throws GovPayException, ServiceException, NotFoundException {
+		
 		List<String> domini = new ArrayList<String>();
-
 		if(codDominio != null) {
 			AclEngine.isAuthorized(applicazione, Servizio.RENDICONTAZIONE, codDominio, null);
 			domini.add(codDominio);
 		} else {
-			domini.addAll(AclEngine.getAuthorizedRnd(applicazione));
+			Set<String> authorizedRnd = AclEngine.getAuthorizedRnd(applicazione);
+			if(authorizedRnd != null)
+				domini.addAll(authorizedRnd);
+			else 
+				domini = null;
 		}
+		
+		if(domini != null && domini.size() == 0)
+			return new ArrayList<Fr>();
 
 		FrBD frBD = new FrBD(this);
 		FrFilter newFilter = frBD.newFilter();
