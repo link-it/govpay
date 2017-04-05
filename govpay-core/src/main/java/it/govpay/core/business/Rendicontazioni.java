@@ -676,6 +676,7 @@ public class Rendicontazioni extends BasicBD {
 		newFilter.setCodDominio(domini);
 		newFilter.setDatainizio(da);
 		newFilter.setDataFine(a);
+		newFilter.setLimit(500);
 
 		if(codApplicazione != null) {
 			long idApplicazione = 0;
