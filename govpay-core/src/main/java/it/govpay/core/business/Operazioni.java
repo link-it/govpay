@@ -181,7 +181,10 @@ public class Operazioni{
 				log.trace("Spedizione notifiche non consegnate");
 				NotificheBD notificheBD = new NotificheBD(bd);
 				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
-				if(notifiche.size() == 0) return "Nessuna notifica da inviare.";
+				if(notifiche.size() == 0) {
+					BatchManager.stopEsecuzione(bd, ntfy);
+					return "Nessuna notifica da inviare.";
+				}
 
 				log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
 				for(Notifica notifica: notifiche) {

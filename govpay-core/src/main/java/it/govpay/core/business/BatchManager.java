@@ -60,10 +60,12 @@ public class BatchManager {
 				try {
 					batchBD.update(batch);
 					bd.commit();
+					log.info("Semaforo di concorrenza per il batch " + codBatch + " inserito.");
 					return true;
 				} catch (NotFoundException e) {
 					batchBD.insert(batch);
 					bd.commit();
+					log.info("Semaforo di concorrenza per il batch " + codBatch + " inserito.");
 					return true;
 				}
 			} else {
@@ -132,6 +134,7 @@ public class BatchManager {
 						batch.setAggiornamento(null); 
 						batchBD.update(batch);
 						bd.commit();
+						log.info("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
 					} else {
 						// blocco non mio. lo lascio fare
 						log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo di altro nodo");
