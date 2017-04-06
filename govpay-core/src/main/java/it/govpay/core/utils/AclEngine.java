@@ -94,8 +94,12 @@ public class AclEngine {
 	public static Set<String> getAuthorizedRnd(Applicazione applicazione) {
 		Set<String> domini = new HashSet<String>();
 		for(Acl acl : applicazione.getAcls()) {
-			if(acl.getServizio().equals(Servizio.RENDICONTAZIONE))
-				domini.add(acl.getCodDominio());
+			if(acl.getTipo().equals(Tipo.DOMINIO) && acl.getServizio().equals(Servizio.RENDICONTAZIONE)) {
+				if(acl.getIdDominio() != null)
+					domini.add(acl.getCodDominio());
+				else 
+					return null;
+			}
 		}
 		return domini;
 	}

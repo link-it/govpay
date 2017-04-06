@@ -70,6 +70,7 @@ import it.govpay.orm.IdNotifica;
 import it.govpay.orm.IdEr;
 import it.govpay.orm.IdSingolaRevoca;
 import it.govpay.orm.IdContoAccredito;
+import it.govpay.orm.IdBatch;
 import it.govpay.orm.Stazione;
 import it.govpay.orm.IdRilevamento;
 import it.govpay.orm.ACL;
@@ -79,6 +80,7 @@ import it.govpay.orm.Notifica;
 import it.govpay.orm.IUV;
 import it.govpay.orm.IdAnagrafica;
 import it.govpay.orm.IbanAccredito;
+import it.govpay.orm.Batch;
 import it.govpay.orm.Connettore;
 import it.govpay.orm.Tributo;
 import it.govpay.orm.IdConnettore;
@@ -3240,6 +3242,69 @@ public abstract class AbstractDeserializer {
 	
 	/*
 	 =================================================================================
+	 Object: id-batch
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IdBatch}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdBatch}
+	 * @return Object type {@link it.govpay.orm.IdBatch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdBatch readIdBatch(String fileName) throws DeserializerException {
+		return (IdBatch) this.xmlToObj(fileName, IdBatch.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IdBatch}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IdBatch}
+	 * @return Object type {@link it.govpay.orm.IdBatch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdBatch readIdBatch(File file) throws DeserializerException {
+		return (IdBatch) this.xmlToObj(file, IdBatch.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IdBatch}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IdBatch}
+	 * @return Object type {@link it.govpay.orm.IdBatch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdBatch readIdBatch(InputStream in) throws DeserializerException {
+		return (IdBatch) this.xmlToObj(in, IdBatch.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IdBatch}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IdBatch}
+	 * @return Object type {@link it.govpay.orm.IdBatch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdBatch readIdBatch(byte[] in) throws DeserializerException {
+		return (IdBatch) this.xmlToObj(in, IdBatch.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IdBatch}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IdBatch}
+	 * @return Object type {@link it.govpay.orm.IdBatch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IdBatch readIdBatchFromString(String in) throws DeserializerException {
+		return (IdBatch) this.xmlToObj(in.getBytes(), IdBatch.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
 	 Object: Stazione
 	 =================================================================================
 	*/
@@ -3801,6 +3866,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IbanAccredito readIbanAccreditoFromString(String in) throws DeserializerException {
 		return (IbanAccredito) this.xmlToObj(in.getBytes(), IbanAccredito.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: Batch
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.Batch}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Batch}
+	 * @return Object type {@link it.govpay.orm.Batch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Batch readBatch(String fileName) throws DeserializerException {
+		return (Batch) this.xmlToObj(fileName, Batch.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.Batch}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Batch}
+	 * @return Object type {@link it.govpay.orm.Batch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Batch readBatch(File file) throws DeserializerException {
+		return (Batch) this.xmlToObj(file, Batch.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.Batch}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.Batch}
+	 * @return Object type {@link it.govpay.orm.Batch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Batch readBatch(InputStream in) throws DeserializerException {
+		return (Batch) this.xmlToObj(in, Batch.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.Batch}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.Batch}
+	 * @return Object type {@link it.govpay.orm.Batch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Batch readBatch(byte[] in) throws DeserializerException {
+		return (Batch) this.xmlToObj(in, Batch.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.Batch}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.Batch}
+	 * @return Object type {@link it.govpay.orm.Batch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Batch readBatchFromString(String in) throws DeserializerException {
+		return (Batch) this.xmlToObj(in.getBytes(), Batch.class);
 	}	
 	
 	

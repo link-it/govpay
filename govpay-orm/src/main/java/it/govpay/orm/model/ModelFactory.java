@@ -79,5 +79,7 @@ public class ModelFactory {
 	
 	public static RendicontazionePagamentoModel RENDICONTAZIONE_PAGAMENTO = new RendicontazionePagamentoModel();
 	
+	public static BatchModel BATCH = new BatchModel();
+	
 
 }

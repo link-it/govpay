@@ -38,6 +38,7 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.ThreadContext;
+import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.logger.beans.proxy.Operation;
 import org.openspcoop2.utils.logger.beans.proxy.Service;
 import org.openspcoop2.utils.sonde.Sonda;
@@ -48,6 +49,11 @@ import org.openspcoop2.utils.sonde.impl.SondaBatch;
 public class Operazioni{
 
 	private static Logger log = LogManager.getLogger();
+	public static final String rnd = "update-rnd";
+	public static final String psp = "update-psp";
+	public static final String pnd = "update-pnd";
+	public static final String ntfy = "update-ntfy";
+	public static final String conto = "update-conto";
 
 	public static String acquisizioneRendicontazioni(String serviceName){
 
@@ -66,14 +72,19 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			String response = new Rendicontazioni(bd).downloadRendicontazioni(false);
-			aggiornaSondaOK("update-rnd", bd);
-			return response;
+			if(BatchManager.startEsecuzione(bd, rnd)) {
+				String response = new Rendicontazioni(bd).downloadRendicontazioni(false);
+				aggiornaSondaOK(rnd, bd);
+				return response;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
 		} catch (Exception e) {
 			log.error("Acquisizione rendicontazioni fallita", e);
-			aggiornaSondaKO("update-rnd", e, bd);
+			aggiornaSondaKO(rnd, e, bd);
 			return "Acquisizione fallita#" + e;
 		} finally {
+			BatchManager.stopEsecuzione(bd, rnd);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
@@ -95,15 +106,20 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			String response = new Psp(bd).aggiornaRegistro();
-			AnagraficaManager.cleanPspCache();
-			aggiornaSondaOK("update-psp", bd);
-			return response;
+			if(BatchManager.startEsecuzione(bd, psp)) {
+				String response = new Psp(bd).aggiornaRegistro();
+				AnagraficaManager.cleanPspCache();
+				aggiornaSondaOK(psp, bd);
+				return response;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
 		} catch (Exception e) {
 			log.error("Aggiornamento della lista dei PSP fallito", e);
-			aggiornaSondaKO("update-psp", e, bd);
+			aggiornaSondaKO(psp, e, bd);
 			return "Acquisizione fallita#" + e;
 		} finally {
+			BatchManager.stopEsecuzione(bd, psp);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
@@ -125,14 +141,19 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			String verificaTransazioniPendenti = new Pagamento(bd).verificaTransazioniPendenti();
-			aggiornaSondaOK("update-pnd", bd);
-			return verificaTransazioniPendenti;
+			if(BatchManager.startEsecuzione(bd, pnd)) {
+				String verificaTransazioniPendenti = new Pagamento(bd).verificaTransazioniPendenti();
+				aggiornaSondaOK(pnd, bd);
+				return verificaTransazioniPendenti;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
 		} catch (Exception e) {
 			log.error("Acquisizione Rpt pendenti fallita", e);
-			aggiornaSondaKO("update-pnd", e, bd);
+			aggiornaSondaKO(pnd, e, bd);
 			return "Acquisizione fallita#" + e;
 		} finally {
+			BatchManager.stopEsecuzione(bd, pnd);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
@@ -155,27 +176,29 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			log.trace("Spedizione notifiche non consegnate");
 
-			NotificheBD notificheBD = new NotificheBD(bd);
+			if(BatchManager.startEsecuzione(bd, ntfy)) {
+				log.trace("Spedizione notifiche non consegnate");
+				NotificheBD notificheBD = new NotificheBD(bd);
+				List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
+				if(notifiche.size() == 0) {
+					BatchManager.stopEsecuzione(bd, ntfy);
+					return "Nessuna notifica da inviare.";
+				}
 
-			List<Notifica> notifiche  = notificheBD.findNotificheDaSpedire();
-
-			if(notifiche.size() == 0) return "Nessuna notifica da inviare.";
-
-			log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
-
-			for(Notifica notifica: notifiche) {
-				InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
-				ThreadExecutorManager.getClientPoolExecutor().execute(sender);
+				log.info("Trovate ["+notifiche.size()+"] notifiche da spedire");
+				for(Notifica notifica: notifiche) {
+					InviaNotificaThread sender = new InviaNotificaThread(notifica, bd);
+					ThreadExecutorManager.getClientPoolExecutor().execute(sender);
+				}
+				log.info("Processi di spedizione avviati.");
+				aggiornaSondaOK(ntfy, bd);
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
-
-			log.info("Processi di spedizione avviati.");
-
-			aggiornaSondaOK("update-ntfy", bd);
 		} catch (Exception e) {
 			log.error("Non è stato possibile avviare la spedizione delle notifiche", e);
-			aggiornaSondaKO("update-ntfy", e, bd); 
+			aggiornaSondaKO(ntfy, e, bd); 
 			return "Non è stato possibile avviare la spedizione delle notifiche: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
@@ -195,6 +218,14 @@ public class Operazioni{
 			}
 
 			if(completed) {
+				try {
+					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					BatchManager.stopEsecuzione(bd, ntfy);
+				} catch (ServiceException e) {
+				} finally {
+					if(bd != null) bd.closeConnection();
+				}
+
 				return "Spedizione notifiche completata.";
 			}
 		}
@@ -231,19 +262,24 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-			String creaEstrattiContoSuFileSystem = new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
-			aggiornaSondaOK("update-conto", bd);
-			return creaEstrattiContoSuFileSystem;
+			if(BatchManager.startEsecuzione(bd, conto)) {
+				String creaEstrattiContoSuFileSystem = new EstrattoConto(bd).creaEstrattiContoSuFileSystem();
+				aggiornaSondaOK(conto, bd);
+				return creaEstrattiContoSuFileSystem;
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
 		} catch (Exception e) {
 			log.error("Estratto Conto fallito", e);
-			aggiornaSondaKO("update-conto", e, bd);
+			aggiornaSondaKO(conto, e, bd);
 			return "Estratto Conto#" + e.getMessage();
 		} finally {
+			BatchManager.stopEsecuzione(bd, conto);
 			if(bd != null) bd.closeConnection();
 			if(ctx != null) ctx.log();
 		}
 	}
-	
+
 	private static void aggiornaSondaOK(String nome, BasicBD bd) {
 		BasicBD bd1 = null;
 		try {

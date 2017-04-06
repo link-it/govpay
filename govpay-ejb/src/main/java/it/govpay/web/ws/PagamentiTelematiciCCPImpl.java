@@ -632,7 +632,7 @@ public class PagamentiTelematiciCCPImpl implements PagamentiTelematiciCCP {
 	}
 
 	private <T> T buildRisposta(Exception e, String codDominio, T risposta) {
-		return buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio), risposta);
+		return buildRisposta(new NdpException(FaultPa.PAA_SYSTEM_ERROR, codDominio, e.getMessage(), e), risposta);
 	}
 
 	private <T> T buildRisposta(NdpException e, T risposta) {

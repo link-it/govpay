@@ -74,7 +74,8 @@ import java.sql.Connection;
 import java.util.Properties;
 
 import javax.sql.DataSource;
-
+import it.govpay.orm.dao.IBatchServiceSearch;
+import it.govpay.orm.dao.IBatchService;
 import org.apache.log4j.Logger;
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
@@ -978,6 +979,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 		return new JDBCRendicontazionePagamentoServiceSearch(this);
 	}
 	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Batch type:Batch
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Batch}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Batch}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IBatchServiceSearch getBatchServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCBatchServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Batch}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Batch}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IBatchService getBatchService() throws ServiceException,NotImplementedException{
+		return new JDBCBatchService(this);
+	}
 	
 	
 	

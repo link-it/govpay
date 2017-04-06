@@ -361,6 +361,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Batch }
+     */
+    public Batch createBatch() {
+        return new Batch();
+    }
+
+    /**
      * Create an instance of {@link ACL }
      */
     public ACL createACL() {
@@ -449,6 +456,13 @@ public class ObjectFactory {
      */
     public IdUo createIdUo() {
         return new IdUo();
+    }
+
+    /**
+     * Create an instance of {@link IdBatch }
+     */
+    public IdBatch createIdBatch() {
+        return new IdBatch();
     }
 
     /**

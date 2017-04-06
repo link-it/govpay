@@ -70,11 +70,13 @@ public class GovpayConfig {
 	private TipiDatabase mLogDBType;
 	private boolean mLogOnLog4j, mLogOnDB, mLogSql, pddAuthEnable;
 	private boolean batchOn;
-	
+	private Integer clusterId;
+	private long timeoutBatch;
+
 	private boolean batchEstrattoConto, batchEstrattoContoPdf;
 	private int numeroMesiEstrattoConto, giornoEsecuzioneEstrattoConto;
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
-	
+
 	private Properties[] props;
 
 	public GovpayConfig() throws Exception {
@@ -98,7 +100,7 @@ public class GovpayConfig {
 		this.batchEstrattoContoPdf = false;
 		this.batchOn=true;
 		this.pddAuthEnable = true;
-		
+
 		try {
 
 			// Recupero il property all'interno dell'EAR
@@ -152,7 +154,7 @@ public class GovpayConfig {
 				this.logoDir = getProperty("it.govpay.psp.logo.path", props, false, log);
 				if(this.logoDir != null) {
 					File logoDirFile = new File(logoDir);
-					if(!logoDirFile.isDirectory())
+					if(!logoDirFile.isDirectory()) 
 						throw new Exception("Il path indicato nella property \"it.govpay.psp.logo.path\" (" + logoDir + ") non esiste o non e' un folder.");
 					File logoDirFile80 = new File(logoDir + "/80x40");
 					if(!logoDirFile80.isDirectory())
@@ -212,7 +214,7 @@ public class GovpayConfig {
 			if(mLogOnLog4jString != null && !Boolean.valueOf(mLogOnLog4jString))
 				this.mLogOnLog4j = false;
 
-			
+
 			String mLogOnLevelString = getProperty("it.govpay.mlog.level", props, false, log);
 			try {
 				this.mLogLevel = Severity.valueOf(mLogOnLevelString);
@@ -263,9 +265,13 @@ public class GovpayConfig {
 				this.pathEstrattoConto = getProperty("it.govpay.batch.estrattoConto.pathEsportazione", props, true, log);
 				if(this.pathEstrattoConto != null) {
 					File logoDirFile = new File(this.pathEstrattoConto);
-					if(!logoDirFile.isDirectory())
-						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pathEsportazione\" (" + pathEstrattoConto + ") non esiste o non e' un folder.");
-
+					if(!logoDirFile.isDirectory()) {
+						try {
+							if(!logoDirFile.mkdir()) throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pathEsportazione\" (" + pathEstrattoConto + ") non esiste e non puo' essere creato.");
+						} catch (Exception e) {
+							throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pathEsportazione\" (" + pathEstrattoConto + ") non esiste o non e' un folder.", e);
+						}
+					}
 				}
 			}
 
@@ -278,24 +284,33 @@ public class GovpayConfig {
 				this.pathEstrattoContoPdf = getProperty("it.govpay.batch.estrattoConto.pdf.pathEsportazione", props, true, log);
 				if(this.pathEstrattoContoPdf != null) {
 					File logoDirFile = new File(this.pathEstrattoContoPdf);
-					if(!logoDirFile.isDirectory())
-						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathEsportazione\" (" + pathEstrattoContoPdf + ") non esiste o non e' un folder.");
-
+					if(!logoDirFile.isDirectory()) {
+						try {
+							if(!logoDirFile.mkdir()) throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathEsportazione\" (" + pathEstrattoContoPdf + ") non esiste e non puo' essere creato.");
+						} catch (Exception e) {
+							throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathEsportazione\" (" + pathEstrattoContoPdf + ") non esiste o non e' un folder.", e);
+						}
+					}
 				}
 
 				this.pathEstrattoContoPdfLoghi = getProperty("it.govpay.batch.estrattoConto.pdf.pathLoghi", props, true, log);
 				if(this.pathEstrattoContoPdfLoghi != null) {
-					File loghiDirFile = new File(this.pathEstrattoContoPdfLoghi);
-					if(!loghiDirFile.isDirectory())
-						throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathLoghi\" (" + this.pathEstrattoContoPdfLoghi + ") non esiste o non e' un folder.");
+					File logoDirFile = new File(this.pathEstrattoContoPdfLoghi);
+					if(!logoDirFile.isDirectory()) {
+						try {
+							if(!logoDirFile.mkdir()) throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathLoghi\" (" + pathEstrattoContoPdfLoghi + ") non esiste e non puo' essere creato.");
+						} catch (Exception e) {
+							throw new Exception("Il path indicato nella property \"it.govpay.batch.estrattoConto.pdf.pathLoghi\" (" + this.pathEstrattoContoPdfLoghi + ") non esiste o non e' un folder.", e);
+						}
+					}
 				}
 
 			}
-			
+
 			String pddAuthEnableString = getProperty("it.govpay.pdd.auth", props, false, log);
 			if(pddAuthEnableString != null && pddAuthEnableString.equalsIgnoreCase("false"))
 				this.pddAuthEnable = false;
-			
+
 			String listaHandlers = getProperty("it.govpay.integration.client.out", props, false, log);
 
 			this.outHandlers = new ArrayList<String>();
@@ -317,11 +332,28 @@ public class GovpayConfig {
 					this.outHandlers.add(handlerClass);
 				}
 			}
-			
+
 			String batchOnString = getProperty("it.govpay.batchOn", props, false, log);
 			if(batchOnString != null && batchOnString.equalsIgnoreCase("false"))
 				this.batchOn = false;
-			
+
+			String clusterIdString = getProperty("it.govpay.clusterId", props, false, log);
+			if(clusterIdString != null) {
+				try{
+					this.clusterId = Integer.parseInt(clusterIdString);
+				} catch(NumberFormatException nfe) {
+					log.warn("La proprieta \"it.govpay.clusterId\" deve essere valorizzata con un numero. Proprieta ignorata");
+				}
+			}
+
+			String timeoutBatchString = getProperty("it.govpay.timeoutBatch", props, false, log);
+			try{
+				this.timeoutBatch = Integer.parseInt(timeoutBatchString) * 1000;
+			} catch(Throwable t) {
+				log.info("Proprieta \"it.govpay.timeoutBatch\" impostata com valore di default (5 minuti)");
+				this.timeoutBatch = 5 * 60 * 1000;
+			}
+
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
 			throw e;
@@ -334,14 +366,14 @@ public class GovpayConfig {
 
 	private static String getProperty(String name, Properties props, boolean required, boolean fromInternalConfig, Logger log) throws Exception {
 		String value = System.getProperty(name);
-		
+
 		if(value != null && value.trim().isEmpty()) {
 			value = null;
 		}
 		String logString = "";
 		if(fromInternalConfig) logString = "da file interno ";
 		else logString = "da file esterno ";
-		
+
 		if(value == null) {
 			if(props != null) {
 				value = props.getProperty(name);
@@ -451,7 +483,7 @@ public class GovpayConfig {
 	public String getPathEstrattoConto() {
 		return pathEstrattoConto;
 	}
-	
+
 	public boolean isPddAuthEnable() {
 		return pddAuthEnable;
 	}
@@ -478,5 +510,13 @@ public class GovpayConfig {
 
 	public boolean isBatchOn() {
 		return batchOn;
+	}
+
+	public Integer getClusterId(){
+		return this.clusterId;
+	}
+
+	public long getTimeoutBatch(){
+		return this.timeoutBatch;
 	}
 }

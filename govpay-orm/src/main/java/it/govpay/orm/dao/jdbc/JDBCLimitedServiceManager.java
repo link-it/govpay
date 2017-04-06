@@ -68,7 +68,8 @@ import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
-
+import it.govpay.orm.dao.IBatchServiceSearch;
+import it.govpay.orm.dao.IBatchService;
 import java.sql.Connection;
 
 import javax.sql.DataSource;
@@ -903,6 +904,38 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 		return new JDBCRendicontazionePagamentoServiceSearch(this.unlimitedJdbcServiceManager);
 	}
 	
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Batch type:Batch
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Batch}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Batch}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IBatchServiceSearch getBatchServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCBatchServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Batch}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Batch}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IBatchService getBatchService() throws ServiceException,NotImplementedException{
+		return new JDBCBatchService(this.unlimitedJdbcServiceManager);
+	}
 	
 	
 	

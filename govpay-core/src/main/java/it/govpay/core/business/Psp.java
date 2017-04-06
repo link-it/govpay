@@ -257,9 +257,7 @@ public class Psp extends BasicBD {
 			log.error("Impossibile aggiornare la lista dei Psp.", se);
 			throw new GovPayException(se, "Impossibile aggiornare la lista dei Psp.");
 		} finally {
-			closeConnection();
 			ctx.closeTransaction(transactionId);
 		}
 	}
-
 }
