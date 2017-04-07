@@ -673,8 +673,8 @@ CREATE TABLE batch
 (
 	cod_batch VARCHAR(255) NOT NULL,
 	nodo INT,
-	inizio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	aggiornamento TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	inizio TIMESTAMP,
+	aggiornamento TIMESTAMP,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_batch') NOT NULL,
 	-- unique constraints

@@ -256,7 +256,10 @@ public class PagamentoRendicontazioneBD extends BasicBD {
 			versamento.setAnagraficaDebitore(anagraficaDebitore);
 			versamento.setCodLotto((String) record.get(i++));
 			versamento.setCodVersamentoLotto((String) record.get(i++));
-			versamento.setCodAnnoTributario((Integer) record.get(i++));
+			Object codAnnoObj = record.get(i++);
+			if(codAnnoObj != null) {
+				versamento.setCodAnnoTributario(Integer.parseInt((String) codAnnoObj));
+			}
 			versamento.setCodBundlekey((String) record.get(i++));
 			versamento.setId((Long) record.get(i++));
 			versamento.setIdUo((Long) record.get(i++));
