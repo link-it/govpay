@@ -125,7 +125,7 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 					invoke = gestoreJMX.invoke(dominio,tipo,nomeRisorsa,nomeMetodo , null, null);
 
 					if(id==3) {
-						root.addVoce("Esito operazione sul nodo " + nodo,"Reset cache completata con successo.");
+						root.addVoce("Esito operazione sul nodo " + nodo, (String) invoke);
 					} else {
 						root.addVoce("Operazione completata sul nodo",nodo);
 
