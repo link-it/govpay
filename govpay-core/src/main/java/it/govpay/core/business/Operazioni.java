@@ -236,10 +236,10 @@ public class Operazioni{
 		ThreadContext.put("op", UUID.randomUUID().toString() );
 		try {
 			AnagraficaManager.cleanCache();
-			return "Reset Cache Anagrafica#eseguita con successo.";
+			return "Reset cache completata con successo.";
 		} catch (Exception e) {
 			log.error("Reset cache anagrafica fallita", e);
-			return "Reset Cache Anagrafica#fallita.";
+			return "Reset cache completata fallita: " + e;
 		} 
 	}
 
