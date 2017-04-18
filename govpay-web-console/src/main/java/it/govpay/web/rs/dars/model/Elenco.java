@@ -23,6 +23,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.govpay.web.utils.ConsoleProperties;
+
 public class Elenco {
 	
 	private List<Elemento> elenco;
@@ -35,12 +37,10 @@ public class Elenco {
 	private InfoForm infoCreazione;
 	private InfoForm infoRicerca;
 	private boolean filtro;
+	private boolean exportMassivo;
+	private int numeroMassimoElementiExport;
 	
 	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione) {
-		this(titolo, infoRicerca, infoCreazione, totaleRisultati, esportazione, cancellazione, false, null);
-	}
-	
-	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione,  boolean tabella, Elemento intestazione) {
 		this.totaleRisultati = totaleRisultati;
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
@@ -48,9 +48,9 @@ public class Elenco {
 		this.cancellazione = cancellazione;
 		this.esportazione = esportazione;
 		this.elenco = (new ArrayList<Elemento>());
-		this.intestazione = intestazione;
-		this.tabella = tabella;
 		this.setFiltro(false);
+		this.setExportMassivo(false);
+		this.numeroMassimoElementiExport = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 	}
 	
 	public InfoForm getInfoRicerca() {
@@ -90,10 +90,27 @@ public class Elenco {
 	}
 
 	public Elemento getIntestazione() {
-		return intestazione;
+		return this.intestazione;
 	}
 
 	public boolean isTabella() {
 		return tabella;
 	}
+
+	public boolean isExportMassivo() {
+		return this.exportMassivo;
+	}
+
+	public void setExportMassivo(boolean exportMassivo) {
+		this.exportMassivo = exportMassivo;
+	}
+
+	public int getNumeroMassimoElementiExport() {
+		return this.numeroMassimoElementiExport;
+	}
+
+	public void setNumeroMassimoElementiExport(int numeroMassimoElementiExport) {
+		this.numeroMassimoElementiExport = numeroMassimoElementiExport;
+	}
+	
 }

@@ -193,6 +193,10 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),	count, esportazione, cancellazione); 
+			
+			// export massivo on
+			elenco.setExportMassivo(true);
+			elenco.setNumeroMassimoElementiExport(10);
 
 			List<EstrattoConto> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>(); 
 

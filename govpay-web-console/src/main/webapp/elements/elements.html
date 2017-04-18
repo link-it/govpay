@@ -18536,201 +18536,314 @@ context. You should place this element as a child of `<body>` whenever possible.
 <dom-module id="elenco-custom" assetpath="../styles/">
   <template>
     <style>
-/* Classi css per le visualizzazioni custom */
+      /* Classi css per le visualizzazioni custom */
+
+      .custom_item_box {
+        display: inline-block;
+        position: relative;
+        min-width: 24px;
+        margin: initial;
+        vertical-align: middle;
+      }
+
+      /* Visualizzazione versamenti2 */
+
+      .avatar {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--toolbar-color);
+        /*margin-bottom: 16px;*/
+        color: white;
+        text-align: center;
+        padding: 8px;
+      }
+
+      .icon_div {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        /*margin-bottom: 16px;*/
+        color: transparent;
+        text-align: center;
+        padding: 4px;
+        border-color:var(--toolbar-color);
+        border: 2px solid var(--toolbar-color);
+      }
+
+      .icon_div_ok {
+        border-color: #4F8A10;
+        border: 2px solid #4F8A10;
+      }
+
+      .icon_div_ko {
+        border-color: #D8000C;
+        border: 2px solid #D8000C;
+      }
+
+      .icon_div_ai {
+        border-color: #5F6364;
+        border: 2px solid #5F6364;
+      }
+
+      .icon_div_warn {
+        border-color: #ffb74d;
+        border: 2px solid #ffb74d;
+      }
+
+      .div_no_border {
+        border-color: transparent;
+        border: none;
+      }
+
+      .icon_ok {
+        color: #4F8A10;
+      }
+
+      .icon_ko {
+        color: #D8000C;
+      }
+
+      .icon_ai {
+        color: #5F6364;
+      }
+
+      .icon_warn {
+        color: #ffb74d;
+      }
+
+      .vers_etichetta {
+        color: var(--secondary-text-color);
+        font-weight: 400;
+        font-size: 14px;
+      }
+
+      .vers_valore {
+        color: var(--primary-text-color);
+        font-size: 14px;
+      }
+
+      .vers_valore_16 {
+        color: var(--primary-text-color);
+        font-size: 16px;
+      }
+
+      @media (min-width: 601px) {
+        .vers_colonna {
+          display: inline-block;
+          padding-left: 16px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        .vers_colonna {
+          padding-left: 16px;
+        }
+      }
+
+      .vers_colonna-nopadding {
+        display: inline-block;
+      }
+
+      .vers_voce {
+        min-height: 24px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+      }
+
+      .vers_stato_ESEGUITO, .vers_stato_ESEGUITO_SENZA_RPT, .vers_stato_PARZIALMENTE_ESEGUITO{
+        display: inline-block;
+        border-radius: 5%;
+        background: #4F8A10;
+        color: white;
+        box-sizing: border-box;
+        padding-left: 5px;
+        padding-right: 5px;
+        text-transform: uppercase;
+      }
+
+      .vers_stato_NON_ESEGUITO{
+        display: inline-block;
+        border-radius: 5%;
+        background: #5F6364;
+        color: white;
+        box-sizing: border-box;
+        padding-left: 5px;
+        padding-right: 5px;
+        text-transform: uppercase;
+      }
+
+      .vers_stato_ANNULLATO, .vers_stato_ANOMALO{
+        display: inline-block;
+        border-radius: 5%;
+        background: #D8000C;
+        color: white;
+        box-sizing: border-box;
+        padding-left: 5px;
+        padding-right: 5px;
+        text-transform: uppercase;
+      }
+
+      .rend_badge {
+        display: inline-block;
+        box-sizing: border-box;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        /*margin-bottom: 16px;*/
+        text-align: center;
+        padding: 1px;
+      }
+
+      .rend_ok {
+        border-color: #4F8A10;
+        border: 2px solid #4F8A10;
+      }
+
+      .rend_ko {
+        border-color: #D8000C;
+        border: 2px solid #D8000C;
+      }
+
+      .rend_ai {
+        border-color: #5F6364;
+        border: 2px solid #5F6364;
+      }
+
+      .rend_warn {
+        border-color: #ffb74d;
+        border: 2px solid #ffb74d;
+      }
+
+      .rend_padding_left {
+        padding-left: 16px;
+      }
+
+      .valign_middle {
+        vertical-align: middle;
+      }
+
+      .min_width{
+        min-width: 350px;
+      }
 
 
-.custom_item_box {
-  display: inline-block;
-  position: relative;
-  min-width: 24px;
-  margin: initial;
-  vertical-align: middle;
-}
+/** Versamenti 2 (nuovo layout) **/
+  .v2-item-box {
+    @apply(--layout-horizontal);
+    @apply(--layout-flex);
+    @apply(--layout-center);
+  }
 
-/* Visualizzazione versamenti2 */
+  .layout-group {
+    width: 100%;
+    overflow: hidden;
+    display: inherit;
+  }
 
-.avatar {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--toolbar-color);
-  /*margin-bottom: 16px;*/
-  color: white;
-  text-align: center;
-  padding: 8px;
-}
+  .label-group {
+    display: block;
+    width: 50%;
+    padding: 0 10px;
+    overflow: hidden;
+  }
 
-.icon_div {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  /*margin-bottom: 16px;*/
-  color: transparent;
-  text-align: center;
-  padding: 4px;
-  border-color:var(--toolbar-color);
-  border: 2px solid var(--toolbar-color);
-}
+  .item-group {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.icon_div_ok {
-  border-color: #4F8A10;
-  border: 2px solid #4F8A10;
-}
+  .item-label {
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    font-size: 14px;
+  }
 
-.icon_div_ko {
-  border-color: #D8000C;
-  border: 2px solid #D8000C;
-}
+  .item-valore {
+    color: var(--primary-text-color);
+    font-size: 14px;
+  }
 
-.icon_div_ai {
-  border-color: #5F6364;
-  border: 2px solid #5F6364;
-}
+  .item-label:empty, .item-valore:empty {
+    display: none;
+  }
 
-.icon_div_warn {
-  border-color: #ffb74d;
-  border: 2px solid #ffb74d;
-}
-
-.div_no_border {
-  border-color: transparent;
-  border: none;
-}
-
-.icon_ok {
-  color: #4F8A10;
-}
-
-.icon_ko {
-  color: #D8000C;
-}
-
-.icon_ai {
-  color: #5F6364;
-}
-
-.icon_warn {
-  color: #ffb74d;
-}
-
-.vers_etichetta {
-  color: var(--secondary-text-color);
-  font-weight: 400;
-  font-size: 14px;
-}
-
-.vers_valore {
-  color: var(--primary-text-color);
-  font-size: 14px;
-}
-
-.vers_valore_16 {
-  color: var(--primary-text-color);
-  font-size: 16px;
-}
-
-@media (min-width: 601px) {
-  .vers_colonna {
+  .icon_v2 {
     display: inline-block;
-    padding-left: 16px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    color: transparent;
+    text-align: center;
+    padding: 4px;
+    border: 2px solid var(--toolbar-color);
   }
-}
 
-@media (max-width: 600px) {
-  .vers_colonna {
-    padding-left: 16px;
+  .icon_div_ok {
+    border: 2px solid #4F8A10;
+    margin-right: 8px;
   }
-}
 
-.vers_colonna-nopadding {
-  display: inline-block;
-}
+  .icon_div_ko {
+    border: 2px solid #D8000C;
+    margin-right: 8px;
+  }
 
-.vers_voce {
-  min-height: 24px;
-  padding-bottom: 4px;
-  padding-top: 4px;
-}
+  .icon_div_ai {
+    border: 2px solid #5F6364;
+    margin-right: 8px;
+  }
 
-.vers_stato_ESEGUITO, .vers_stato_ESEGUITO_SENZA_RPT, .vers_stato_PARZIALMENTE_ESEGUITO{
-  display: inline-block;
-  border-radius: 5%;
-  background: #4F8A10;
-  color: white;
-  box-sizing: border-box;
-  padding-left: 5px;
-  padding-right: 5px;
-  text-transform: uppercase;
-}
+  .icon_div_warn {
+    border: 2px solid #ffb74d;
+    margin-right: 8px;
+  }
 
-.vers_stato_NON_ESEGUITO{
-  display: inline-block;
-  border-radius: 5%;
-  background: #5F6364;
-  color: white;
-  box-sizing: border-box;
-  padding-left: 5px;
-  padding-right: 5px;
-  text-transform: uppercase;
-}
+  .icon_ok {
+    color: #4F8A10;
+  }
 
-.vers_stato_ANNULLATO, .vers_stato_ANOMALO{
-  display: inline-block;
-  border-radius: 5%;
-  background: #D8000C;
-  color: white;
-  box-sizing: border-box;
-  padding-left: 5px;
-  padding-right: 5px;
-  text-transform: uppercase;
-}
+  .icon_ko {
+    color: #D8000C;
+  }
 
-.rend_badge {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  /*margin-bottom: 16px;*/
-  text-align: center;
-  padding: 1px;
-}
+  .icon_ai {
+    color: #5F6364;
+  }
 
-.rend_ok {
-  border-color: #4F8A10;
-  border: 2px solid #4F8A10;
-}
+  .icon_warn {
+    color: #ffb74d;
+  }
 
-.rend_ko {
-  border-color: #D8000C;
-  border: 2px solid #D8000C;
-}
+  .vers_etichetta {
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    font-size: 14px;
+  }
 
-.rend_ai {
-  border-color: #5F6364;
-  border: 2px solid #5F6364;
-}
+  .vers_valore {
+    color: var(--primary-text-color);
+    font-size: 14px;
+  }
 
-.rend_warn {
-  border-color: #ffb74d;
-  border: 2px solid #ffb74d;
-}
 
-.rend_padding_left {
-  padding-left: 16px;
-}
 
-.valign_middle {
-  vertical-align: middle;
-}
+  @media (max-width: 600px) {
 
-.min_width{
-  min-width: 350px;
-}
+    .layout-group {
+      @apply(--layout-vertical);
+    }
+
+    .label-group {
+      width: auto;
+    }
+
+  }
+/** Fine Versamenti 2 (nuovo layout) **/
 
     </style>
   </template>
@@ -33352,6 +33465,11 @@ It will also ensure that focus remains in the dialog.
         bottom: 0;
       }
 
+      /* Link-Listbox: swipe gesture */
+      .over-hidden-x {
+        overflow-x: hidden;
+      }
+
     </style>
     <paper-scroll-header-panel id="headerPanelMain" class="main" main="" fixed="">
       
@@ -33364,17 +33482,13 @@ It will also ensure that focus remains in the dialog.
       </paper-toolbar>
       
       <iron-scroll-threshold id="scrollThreshold" lower-threshold="500" on-lower-threshold="loadMoreData">
-        <div class="content">
+        <div class="content over-hidden-x">
           <div class="infoResults">
             <div class="resultsBar" hidden$="[[noResults(results.length)]]">
               <div class="center-vertical">
                 [[localize('risultatiTrovati', 'numero', numResults)]]
               </div>
               <span class="space"></span>
-              <div>
-                <paper-icon-button icon="file-download" on-tap="export" hidden$="[[!esportazioneUrl]]" title="[[localize('scaricaZIP')]]"></paper-icon-button>
-                <paper-icon-button icon="remove" hidden$="[[!cancellazioneUrl]]" title="[[localize('eliminaElementi')]]"></paper-icon-button>
-              </div>
             </div>
           </div>
           <div class="mainContent">
@@ -33384,14 +33498,18 @@ It will also ensure that focus remains in the dialog.
               <link-vaadinlistbox id="vaadinResultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" intestazione="{{intestazione}}"></link-vaadinlistbox>
             </template>
             <template is="dom-if" if="{{!useVaadin}}">
-               <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
+               <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" massive="[[massive]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
             </template>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
           </div>
         </div>
       </iron-scroll-threshold>
     </paper-scroll-header-panel>
-    <paper-fab class="addFAB" icon="add" on-tap="addElemento" hidden$="[[hideAddFAB(creazioneUrl)]]"></paper-fab>
+    <link-fab-menu class="addFAB">
+      <paper-fab icon="remove" class="fab-item" mini="" hidden$="[[!cancellazioneUrl]]" title="[[localize('eliminaElementi')]]"></paper-fab>
+      <paper-fab icon="file-download" class="fab-item" mini="" hidden$="[[!esportazioneUrl]]" title="[[localize('scaricaZIP')]]" on-tap="export"></paper-fab>
+      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[hideAddFAB(creazioneUrl)]]"></paper-fab>
+    </link-fab-menu>
     <iron-ajax id="getResourceInfo" handle-as="json" on-response="getResourceInfo_responseHandler" on-error="getResourceInfo_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="esportaDati" url="[[esportazioneUrl]]" handle-as="blob" method="POST" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
@@ -33481,6 +33599,14 @@ It will also ensure that focus remains in the dialog.
           type: String,
           value: ''
         },
+        massive: {
+          type: Boolean,
+          value: false
+        },
+        maxSelections: {
+          type: Object,
+          value: { max: 0, total: 0}
+        },
         removable: {
           type: Boolean,
           value: false
@@ -33513,6 +33639,15 @@ It will also ensure that focus remains in the dialog.
       },
 
       setResponse: function(response){
+        if (response.exportMassivo) {
+            this.massive = response.exportMassivo;
+        }
+        if (response.numeroMassimoElementiExport) {
+            this.maxSelections.max = response.numeroMassimoElementiExport;
+        }
+        if (response.totaleRisultati) {
+            this.maxSelections.total = response.totaleRisultati;
+        }
         if (response.infoCreazione){
           this.creazioneUrl = REST_URL + response.infoCreazione.uri + app.appendLangParameter(response.infoCreazione.uri);
         } else {
@@ -33599,8 +33734,13 @@ It will also ensure that focus remains in the dialog.
             }
           }
         }
-        if(listaId.length > 0) {
+        if((listaId.length > 0 && !this.massive) || (listaId.length == 0 && this.massive)) {
+          this.$$('#resultsBox').resetSelection();
           this.$.esportaDati.body = listaId;
+          this.$.esportaDati.url +='&'+this.$.searchbox.lastQuery;
+          if(this.massive) {
+            this.$.esportaDati.url +='&exportMassivo=true';
+          }
           this.$.esportaDati.contentType = 'application/json';
           app.showSpinner();
           this.$.esportaDati.generateRequest();
@@ -35989,6 +36129,10 @@ event and do your own custom submission:
         data: {
           type: Object,
           value: null
+        },
+        lastQuery: {
+          type: String,
+          value: ''
         }
       },
 
@@ -36040,9 +36184,11 @@ event and do your own custom submission:
           query.push('offset='+this.offset);
         }
         this.$.searchResource.url = this.searchUrl + app.appendLangParameter(this.searchUrl);
+        this.lastQuery = '';
         if (query.length>0){
           var pp = this.$.searchResource.url.indexOf('?') > -1 ? '&' : '?';
           this.$.searchResource.url += pp +query.join('&');
+          this.lastQuery = query.join('&');
         }
         app.showSpinner();
         this.$.searchResource.generateRequest();
@@ -36230,37 +36376,69 @@ event and do your own custom submission:
 
       .oddRow {
         background-color: #fff;
-        border-top: 2px solid #eeeeee;
       }
 
       .evenRow {
         background-color: #fafafa;
-        border-top: 2px solid #eeeeee;
       }
 
       .header {
         padding: 0 24px;
       }
+
+      .bordered-row {
+      }
+
+      .icon-checkmark {
+        position: absolute;
+        padding-left: 20px;
+        width: 48px;
+        color: #fff;
+        height: 100%;
+      }
+
+      .icon-checkmark iron-icon {
+        height: 100%;
+      }
+
+      paper-item {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        display: block;
+        padding-left: 0;
+        padding-right: 0;
+        border-top: 2px solid #eeeeee;
+        background-color: var(--accent-color);
+      }
+
+      paper-item-body {
+        display: block;
+        padding: 10px 24px;
+        transition: transform .100s;
+        -webkit-transform: translate3d(0, 0, 0);
+      }
+
+      .v2-item-box-translate {
+        transform: translateX(64px);
+      }
+
     </style>
+
     <paper-material elevation="0">
       <paper-input hidden$="[[onlyOne(dataProvider.length)]]" class="header" label="filtra" bind-value="{{filtro}}" on-bind-value-changed="filtraRisultati"></paper-input>
-      <paper-item hidden="">
-      
-        <paper-checkbox id="sa" on-change="checkSelectAll"></paper-checkbox>
-        <paper-item-body class$="[[classForItem(selectable)]]">
-          <div>seleziona tutti</div>
-        </paper-item-body>
-      </paper-item>
       <template id="listTemplate" is="dom-repeat" items="[[dataProvider]]" filter="isVisible">
-        <paper-item class$="[[classFromIndex(index)]]" on-tap="nextLevel">
-          <paper-checkbox checked="{{item.checked}}" on-tap="singleCheck" hidden$="[[notSelectable(selectable)]]"></paper-checkbox>
-          <paper-item-body two-line="" class$="[[classForItem(selectable)]]">
+        <paper-item id="item_[[index]]" on-tap="nextLevel" on-track="_onswipe">
+          <div class="icon-checkmark"><iron-icon icon="check"></iron-icon></div>
+          <paper-item-body two-line="" class$="[[classFromIndex(index)]]">
             <template is="juicy-html" content$="[[_render(item)]]"></template>
           </paper-item-body>
         </paper-item>
       </template>
     </paper-material>
   </template>
+
   <script>
   (function() {
     'use strict';
@@ -36280,6 +36458,22 @@ event and do your own custom submission:
         selectable: {
           type: Boolean,
           value: false
+        },
+        massive: {
+          type: Boolean,
+          value: false
+        },
+        selections: {
+          type: Number,
+          value: 0
+        },
+        maxSelections: {
+          type: Object,
+          value: { max: 0, total: 0}
+        },
+        swipeVelocity: {
+          type: Number,
+          value: 0
         }
       },
 
@@ -36288,7 +36482,7 @@ event and do your own custom submission:
       ],
 
       _uncheckAll: function(numItems){
-        this.$.sa.checked=false;
+        //this.$.sa.checked=false;
       },
 
       classFromIndex: function(index){
@@ -36300,6 +36494,16 @@ event and do your own custom submission:
       },
 
       nextLevel: function(event){
+        //Cancel selection
+        var cib = event.currentTarget.querySelector('paper-item-body');
+        if(cib.className.indexOf('item-selected') != -1) {
+          this.toggleClass('item-selected', false, cib);
+          this.toggleClass('v2-item-box-translate', false, cib);
+          this.dataProvider[event.model.index].checked = false;
+          this.selections = (this.selections > 0)?this.selections - 1:0;
+          return;
+        }
+        //Enter detail
         if (event.model.item.uri){
           this.fire('view-detail', event.model.item.uri, true);
         }
@@ -36317,14 +36521,6 @@ event and do your own custom submission:
         this.dataProvider = this.dataProvider.slice(0);
       },
 
-      checkSelectAll: function(event){
-        if (event.currentTarget.checked){
-          this.selectAll(true);
-        } else {
-          this.selectAll(false);
-        }
-      },
-
       selectAll: function(value){
         for (var i = 0; i < this.dataProvider.length; i++) {
           var obj = this.dataProvider[i];
@@ -36337,27 +36533,49 @@ event and do your own custom submission:
         return (numresults<=1 || !this.filtrabile);
       },
 
-      notSelectable: function(selectable){
-        return !selectable;
-      },
-
-      classForItem: function(selectable){
-        if (selectable){
-          return 'with-checkbox';
-        }
-        return 'without-checkbox';
-      },
-
-      singleCheck: function(event){
-        event.stopImmediatePropagation();
-      },
-
       _render: function(item){
         var funzione = (item.formatter || 'defaultFormatter');
         if (funzione){
           return window[funzione](item);
         }
+      },
+
+      resetSelection: function() {
+        var selectedElements = this.querySelectorAll('.item-selected');
+        for(var i = 0; i < selectedElements.length; i++) {
+            var el = selectedElements[i];
+            this.toggleClass('item-selected', false, el);
+            this.toggleClass('v2-item-box-translate', false, el);
+        }
+        this.selectAll(false);
+        this.selections = 0;
+      },
+
+      _onswipe: function(e) {
+        if(this.selectable && !this.massive) {
+          if(this.selections < this.maxSelections.max) {
+            switch(e.detail.state) {
+              case 'start':
+                this.swipeVelocity = new Date().getTime();
+                break;
+              case 'track':
+                break;
+              case 'end':
+                var dt = (new Date()).getTime() - this.swipeVelocity;
+                if(e.detail.dx >= 100 && dt < 500) {
+                  var pib = e.currentTarget.querySelector('paper-item-body');
+                  if(pib.className.indexOf('item-selected') == -1) {
+                    pib.className += ' v2-item-box-translate item-selected';
+                    this.dataProvider[e.model.index].checked = true;
+                    this.selections = (this.selections < 0)?1:this.selections + 1;
+                  }
+                }
+                break;
+            }
+          }
+        }
       }
+
     });
   })();
   </script>
@@ -39040,6 +39258,88 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
         app.LANGUAGE = event.model.item.lingua;
         document.dispatchEvent(new CustomEvent('change-language'));
       }
+    });
+  })();
+  </script>
+</dom-module>
+<dom-module id="link-fab-menu" assetpath="link-fab-menu/">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin-left: 8px;
+        z-index: 9999999;
+      }
+
+      .fab-content ::content .fab-item {
+        position: absolute;
+      }
+
+      .fab-content ::content .fab-item.fab-open {
+        position: relative;
+        margin-bottom: 8px;
+      }
+
+
+      paper-fab {
+        margin-left: -8px;
+      }
+
+    </style>
+
+      <div class="overlay-fab"></div>
+      <div class="fab-content fab-list">
+        <content></content>
+      </div>
+      <paper-fab id="trigger" icon="more-vert" on-tap="_tap" on-blur="_blur"></paper-fab>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-fab-menu',
+
+      properties: {
+      },
+
+      ready: function() {
+        //this.listen(document, 'tap', '_outside');
+      },
+
+      detached: function() {
+      },
+
+      _blur: function() {
+        this.async(function() {
+          this._tap(true);
+        }, 200);
+      },
+
+      _tap: function(forceClose) {
+        var fabitems = this.querySelectorAll('.fab-item');
+        for(var i = 0; i<fabitems.length; i++) {
+            var fabitem = fabitems[i];
+            if(fabitem.className.indexOf('fab-open') != -1 || (forceClose === true)){
+              this.toggleClass('fab-open', false, fabitem);
+              this.forceClose = false;
+            }
+            else {
+              fabitem.className += ' fab-open';
+            }
+        }
+        this.updateStyles();
+
+      },
+
+      /*_outside: function(event){
+        var polyEvent = Polymer.dom(event);
+        if (polyEvent.path.indexOf(this.$.trigger) == -1) {
+          this._tap(true);
+        }
+      }*/
+
     });
   })();
   </script>
