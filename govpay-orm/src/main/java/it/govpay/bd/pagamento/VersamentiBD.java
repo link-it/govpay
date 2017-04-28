@@ -202,6 +202,10 @@ public class VersamentiBD extends BasicBD {
 	public VersamentoFilter newFilter() throws ServiceException {
 		return new VersamentoFilter(this.getVersamentoService());
 	}
+	
+	public VersamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new VersamentoFilter(this.getVersamentoService(),simpleSearch);
+	}
 
 	public long count(VersamentoFilter filter) throws ServiceException {
 		try {

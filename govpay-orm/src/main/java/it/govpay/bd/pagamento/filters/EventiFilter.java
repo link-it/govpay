@@ -16,6 +16,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Evento;
+import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 
 public class EventiFilter extends AbstractFilter{
@@ -29,6 +30,10 @@ public class EventiFilter extends AbstractFilter{
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
+	}
+	
+	public EventiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 	}
 
 	@Override

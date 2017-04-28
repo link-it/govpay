@@ -51,6 +51,10 @@ public class EventiBD extends BasicBD {
 	public EventiFilter newFilter() throws ServiceException {
 		return new EventiFilter(this.getEventoService());
 	}
+	
+	public EventiFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new EventiFilter(this.getEventoService(),simpleSearch);
+	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {

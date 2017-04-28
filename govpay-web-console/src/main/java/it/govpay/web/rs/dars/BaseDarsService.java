@@ -60,6 +60,8 @@ public abstract class BaseDarsService extends BaseRsService {
 	public static final String PATH_ESPORTA = "esporta";
 	public static final String PATH_CANCELLA = "cancella";
 	public static final String PATH_UPLOAD = "upload";
+	
+	public static final String SIMPLE_SEARCH_PARAMETER_ID = "simpleSearch";
 
 	protected Logger log = LogManager.getLogger();
 

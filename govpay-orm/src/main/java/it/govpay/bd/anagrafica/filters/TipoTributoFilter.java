@@ -50,7 +50,11 @@ public class TipoTributoFilter extends AbstractFilter {
 	public enum SortFields { }
 	
 	public TipoTributoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public TipoTributoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		
 		try{
 			TipoTributoFieldConverter converter = new TipoTributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 

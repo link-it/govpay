@@ -39,6 +39,10 @@ public class IuvFilter extends AbstractFilter{
 		super(expressionConstructor);
 	}
 	
+	public IuvFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
+	
 	@Override
 	public IExpression toExpression() throws ServiceException {
 		try {

@@ -118,7 +118,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+			fsw.setField(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 

@@ -49,8 +49,11 @@ public class DominioFilter extends AbstractFilter {
 	}
 	
 	public DominioFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
-		
+		this(expressionConstructor,false);
+	}
+	
+	public DominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		try{
 			DominioFieldConverter converter = new DominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Dominio.model()));

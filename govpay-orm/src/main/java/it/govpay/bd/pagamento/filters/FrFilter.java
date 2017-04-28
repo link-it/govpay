@@ -54,6 +54,10 @@ public class FrFilter extends AbstractFilter {
 	public FrFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public FrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
 		List<Object> obj = new ArrayList<Object>();
