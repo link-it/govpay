@@ -294,11 +294,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
 		String firmaRichiestaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label");
 		List<Voce<String>> valoriVersione = new ArrayList<Voce<String>>(); 
-		valoriVersione.add(new Voce<String>(Versione.GP_02_02_00.getLabel(), Versione.GP_02_02_00.getLabel()));
-		valoriVersione.add(new Voce<String>(Versione.GP_02_01_00.getLabel(), Versione.GP_02_01_00.getLabel()));
+		
+		Versione[] values = Versione.values();
+		for (Versione versione : values) {
+			valoriVersione.add(new Voce<String>(versione.getLabel(), versione.getLabel()));
+		}
 		SelectList<String> versione = new SelectList<String>(versioneId, firmaRichiestaLabel, null, true, false, true, valoriVersione);
 		versione.setAvanzata(true);
-		versione.setDefaultValue(Versione.GP_02_02_00.getLabel()); 
+		versione.setDefaultValue(Versione.getUltimaVersione().getLabel()); 
 
 		return versione;
 	}
