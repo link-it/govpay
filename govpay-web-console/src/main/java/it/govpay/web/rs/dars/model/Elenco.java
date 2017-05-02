@@ -33,7 +33,7 @@ public class Elenco {
 	private long totaleRisultati;
 	private String titolo;
 	private URI esportazione;
-	private URI cancellazione;
+	private InfoForm infoCancellazione;
 	private InfoForm infoCreazione;
 	private InfoForm infoRicerca;
 	private boolean filtro;
@@ -41,16 +41,16 @@ public class Elenco {
 	private int numeroMassimoElementiExport;
 	private String simpleSearchPlaceHolder;
 	
-	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione) {
-		this(titolo, infoRicerca, infoCreazione, totaleRisultati, esportazione, cancellazione, null);
+	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, InfoForm infoCancellazione) {
+		this(titolo, infoRicerca, infoCreazione, totaleRisultati, esportazione, infoCancellazione, null);
 	}
 	
-	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, URI cancellazione,String simpleSearchPlaceHolder) {
+	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, InfoForm infoCancellazione,String simpleSearchPlaceHolder) {
 		this.totaleRisultati = totaleRisultati;
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
 		this.infoCreazione = infoCreazione;
-		this.cancellazione = cancellazione;
+		this.infoCancellazione = infoCancellazione;
 		this.esportazione = esportazione;
 		this.elenco = (new ArrayList<Elemento>());
 		this.setFiltro(false);
@@ -79,8 +79,8 @@ public class Elenco {
 		return this.esportazione;
 	}
 	
-	public URI getCancellazione() {
-		return this.cancellazione;
+	public InfoForm getInfoCancellazione() {
+		return this.infoCancellazione;
 	}
 
 	public InfoForm getInfoCreazione() {

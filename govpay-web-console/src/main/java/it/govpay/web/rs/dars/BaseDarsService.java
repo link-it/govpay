@@ -21,6 +21,7 @@ package it.govpay.web.rs.dars;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
@@ -60,8 +61,9 @@ public abstract class BaseDarsService extends BaseRsService {
 	public static final String PATH_ESPORTA = "esporta";
 	public static final String PATH_CANCELLA = "cancella";
 	public static final String PATH_UPLOAD = "upload";
-	
+
 	public static final String SIMPLE_SEARCH_PARAMETER_ID = "simpleSearch";
+	public static final String IDS_TO_DELETE_PARAMETER_ID = "ids";
 
 	protected Logger log = LogManager.getLogger();
 
@@ -83,7 +85,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		try{
 			bd = BasicBD.newInstance(this.codOperazione);
 			Elenco elenco = this.getDarsHandler().getElenco(uriInfo,bd);
-			
+
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(elenco);
 		}catch(WebApplicationException e){
@@ -186,21 +188,12 @@ public abstract class BaseDarsService extends BaseRsService {
 		return darsResponse;
 	}
 
-	@GET
+	@POST
 	@Path("/cancella")
 	@Produces({MediaType.APPLICATION_JSON})
-	public DarsResponse cancella(List<Long> idsToDelete, @Context UriInfo uriInfo) throws Exception{
-		StringBuffer sb = new StringBuffer();
-
-		if(idsToDelete != null && idsToDelete.size() > 0)
-			for (Long long1 : idsToDelete) {
-				if(sb.length() > 0)
-					sb.append(", ");
-
-				sb.append(long1);
-			}
-
-		String methodName = "cancella " + this.getNomeServizio() + "[" + sb.toString() + "]";  
+	public DarsResponse cancella(List<RawParamValue> rawValues, @Context UriInfo uriInfo) throws Exception{
+		String idsAsString = Utils.getValue(rawValues, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(IDS_TO_DELETE_PARAMETER_ID));
+		String methodName = "cancella " + this.getNomeServizio() + "[" + idsAsString + "]";  
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
@@ -210,7 +203,15 @@ public abstract class BaseDarsService extends BaseRsService {
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
 
-			this.getDarsHandler().delete(idsToDelete, uriInfo, bd);
+			String[] split = idsAsString.split(",");
+
+			List<Long> idsToDelete = new ArrayList<Long>();
+			if(split != null && split.length > 0)
+				for (String id : split) {
+					idsToDelete.add(Long.parseLong(id)); 
+				}
+
+			this.getDarsHandler().delete(idsToDelete, rawValues, uriInfo, bd);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 		} catch(WebApplicationException e){
@@ -426,9 +427,9 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
-			
+
 			Object res = this.getDarsHandler().uplaod(input, uriInfo, bd);
-			
+
 			darsResponse.setResponse(res); 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".upload.ok")); 

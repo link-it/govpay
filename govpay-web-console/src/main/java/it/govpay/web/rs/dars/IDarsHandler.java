@@ -60,8 +60,10 @@ public interface IDarsHandler<T> {
 	public URI getUriModifica(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	
 	public URI getUriUpload(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd,T entry) throws ConsoleException;
 	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id) throws ConsoleException;
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,long id) throws ConsoleException;
 		
@@ -69,7 +71,7 @@ public interface IDarsHandler<T> {
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;
 	
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	
 	public T creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException,DuplicatedEntryException;

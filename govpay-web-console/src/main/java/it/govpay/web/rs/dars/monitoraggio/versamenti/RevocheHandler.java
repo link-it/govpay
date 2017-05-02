@@ -23,6 +23,7 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.filters.RrFilter;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -75,7 +76,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			params.put(rptId, idRpt);
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Rr> rr = rrBD.findAll(filter);
 
@@ -109,11 +110,11 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			Rr rr = rrBD.getRr(id);
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, rr);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
 
 			String titolo =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioRevoca");
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			// Sezione RR
 			it.govpay.web.rs.dars.model.Sezione sezioneRr = dettaglio.getSezioneRoot();
@@ -356,6 +357,16 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	/* Operazioni non consentite */
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rr entry) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 
 	@Override
@@ -365,7 +376,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
 
 	@Override
 	public Rr creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}

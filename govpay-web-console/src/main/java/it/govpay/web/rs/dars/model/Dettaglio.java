@@ -31,16 +31,16 @@ public class Dettaglio {
 	private List<Sezione> sezioni;
 	private List<ElementoCorrelato> elementiCorrelati;
 	private URI esportazione;
-	private URI cancellazione;
+	private InfoForm infoCancellazione;
 	private InfoForm infoModifica;
 	
-	public Dettaglio(String titolo, URI esportazione, URI cancellazione, InfoForm modifica) {
+	public Dettaglio(String titolo, URI esportazione, InfoForm infoCancellazione, InfoForm modifica) {
 		this.titolo = titolo;
 		this.sezioni = new ArrayList<Sezione>();
 		this.sezioni.add(new Sezione(null));
 		this.elementiCorrelati = new ArrayList<ElementoCorrelato>();
 		this.esportazione = esportazione;
-		this.cancellazione = cancellazione;
+		this.infoCancellazione = infoCancellazione;
 		this.infoModifica = modifica;
 	}
 	
@@ -77,8 +77,8 @@ public class Dettaglio {
 		return this.esportazione;
 	}
 
-	public URI getCancellazione() {
-		return this.cancellazione;
+	public InfoForm getInfoCancellazione() {
+		return this.infoCancellazione;
 	}
 
 	public InfoForm getInfoModifica() {

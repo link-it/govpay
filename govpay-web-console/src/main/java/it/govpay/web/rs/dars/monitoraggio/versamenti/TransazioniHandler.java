@@ -38,6 +38,7 @@ import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
@@ -146,7 +147,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Rpt> rpt = eseguiRicerca ? rptBD.findAll(filter) : new ArrayList<Rpt>();
 
@@ -205,11 +206,11 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			Rpt rpt = rptBD.getRpt(id);
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, rpt);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, rptBD, id);
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioTransazione");
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			// Sezione Rpt
 			it.govpay.web.rs.dars.model.Sezione sezioneRpt = dettaglio.getSezioneRoot();
@@ -610,6 +611,16 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	}
 
 	/* Operazioni non consentite */
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rpt entry) throws ConsoleException {
+		return null;
+	}
+	
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 
@@ -620,7 +631,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
 
 	@Override
 	public Rpt creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}

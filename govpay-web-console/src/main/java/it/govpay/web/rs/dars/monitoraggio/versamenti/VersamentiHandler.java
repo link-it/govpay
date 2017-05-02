@@ -252,7 +252,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione,simpleSearchPlaceholder); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Versamento> findAll = eseguiRicerca ? versamentiBD.findAll(filter) : new ArrayList<Versamento>(); 
 
@@ -480,11 +480,11 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			Versamento versamento = eseguiRicerca ? versamentiBD.getVersamento(id) : null;
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, versamento);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id);
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioVersamento") ;
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -1297,6 +1297,19 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		URI cancellazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoCancellazione = new InfoForm(cancellazione);
+		infoCancellazione.setTitolo(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.titolo")); 
+
+		return infoCancellazione;
+	}
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException {
+		return null;
+	}
 
 	/* Creazione/Update non consentiti**/
 
@@ -1307,7 +1320,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
 
 	@Override
 	public Versamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

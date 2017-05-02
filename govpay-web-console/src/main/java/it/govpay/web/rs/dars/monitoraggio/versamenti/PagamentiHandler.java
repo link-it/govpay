@@ -51,6 +51,7 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
@@ -170,7 +171,8 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
 			eseguiRicerca = eseguiRicerca && count > 0;
 
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
+					this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Pagamento> pagamenti = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
 
@@ -213,11 +215,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			Pagamento pagamento = pagamentiBD.getPagamento(id);
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, pagamento);
 			URI esportazione = null; 
 
 			String titolo = this.getTitolo(pagamento,bd);
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			// Sezione root coi dati del pagamento
 			it.govpay.web.rs.dars.model.Sezione sezioneRoot = dettaglio.getSezioneRoot();
@@ -430,6 +432,16 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	}
 	/* Operazioni non consentite */
 
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Pagamento entry) throws ConsoleException {
+		return null;
+	}
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 
@@ -440,7 +452,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
 
 	@Override
 	public Pagamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}

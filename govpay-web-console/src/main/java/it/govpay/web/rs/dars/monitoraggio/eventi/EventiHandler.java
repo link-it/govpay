@@ -49,6 +49,7 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.TipoEvento;
 import it.govpay.model.Operatore;
@@ -166,7 +167,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); //, true, intestazione ); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd));  
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
@@ -534,13 +535,21 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	/* Creazione/Update non consentiti**/
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Evento entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
 
 	@Override
 	public Evento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

@@ -13,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.model.Applicazione;
 import it.govpay.model.SingoloVersamento;
 import it.govpay.model.SingoloVersamento.StatoSingoloVersamento;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -111,13 +112,23 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	/* Creazione/Update non consentiti**/
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, SingoloVersamento entry) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, SingoloVersamento entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
 
 	@Override
 	public SingoloVersamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

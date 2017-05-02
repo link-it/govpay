@@ -42,6 +42,7 @@ import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Stazione;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Intermediario;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -107,7 +108,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Stazione> findAll = stazioniBD.findAll(filter);
 
@@ -281,6 +282,14 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 		return infoModifica;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Stazione entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
@@ -302,10 +311,10 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			Stazione stazione = stazioniBD.getStazione(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,stazione);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, stazione);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(stazione,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(stazione,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -497,7 +506,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 	}
 
 

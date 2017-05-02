@@ -53,6 +53,7 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Fr.Anomalia;
@@ -192,7 +193,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Fr> findAll = eseguiRicerca ? frBD.findAllExt(filter) : new ArrayList<Fr>(); 
 
@@ -354,11 +355,11 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			Fr fr = frBD.getFrExt(id);
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, fr);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
 
 			String titolo = fr != null ? this.getTitolo(fr,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -679,13 +680,22 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	/* Creazione/Update non consentiti**/
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Fr entry) throws ConsoleException {
+		return null;
+	}
+	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Fr entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
 
 	@Override
 	public Fr creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

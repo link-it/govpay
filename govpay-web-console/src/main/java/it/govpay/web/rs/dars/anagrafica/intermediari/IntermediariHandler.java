@@ -40,6 +40,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Intermediario;
@@ -86,7 +87,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -115,7 +115,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			//elenco.setFiltro(true);
 
@@ -334,6 +334,14 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Intermediario entry) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
@@ -375,10 +383,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			Intermediario intermediario = intermediariBD.getIntermediario(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,intermediario);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, intermediario);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(intermediario,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(intermediario,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -420,7 +428,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		// operazione non prevista
 	}
 

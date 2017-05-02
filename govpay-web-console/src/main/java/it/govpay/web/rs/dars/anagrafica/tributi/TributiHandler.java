@@ -47,6 +47,7 @@ import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.anagrafica.filters.TributoFilter;
 import it.govpay.bd.model.Tributo;
+import it.govpay.model.Applicazione;
 import it.govpay.model.IbanAccredito;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo.TipoContabilta;
@@ -127,7 +128,8 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
-			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, 
+					this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Tributo> findAll = tributiBD.findAll(filter);
 
@@ -523,6 +525,14 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		return infoModifica;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -563,10 +573,10 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			Tributo tributo = tributiBD.getTributo(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,tributo);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, tributo);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -779,7 +789,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		// operazione non prevista
 	}
 

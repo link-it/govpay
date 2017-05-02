@@ -34,6 +34,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Canale;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Canale.ModelloPagamento;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -67,9 +68,6 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			String codPsp = this.getParameter(uriInfo, codPspId, String.class);
 
 			URI esportazione = null;
-			URI cancellazione = null;
-
-
 
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
 			it.govpay.bd.model.Psp psp = pspBD.getPsp(codPsp);
@@ -81,7 +79,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
 
@@ -119,6 +117,14 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 		InfoForm infoModifica = null; 
 		return infoModifica;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Canale entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
@@ -139,10 +145,10 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			Canale canale = pspBD.getCanale(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,canale);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, canale);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -209,7 +215,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		// operazione non prevista
 	}
 

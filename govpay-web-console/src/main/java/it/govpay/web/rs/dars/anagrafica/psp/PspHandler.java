@@ -38,6 +38,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.filters.PspFilter;
 import it.govpay.bd.model.Psp;
+import it.govpay.model.Applicazione;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -84,7 +85,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<it.govpay.bd.model.Psp> findAll = pspBD.findAll(filter);
 
@@ -122,6 +123,14 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 		InfoForm infoModifica = null; 
 		return infoModifica;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Psp entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
@@ -141,10 +150,10 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			it.govpay.bd.model.Psp psp = pspBD.getPsp(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,psp);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, psp);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(psp,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(psp,bd), esportazione, infoCancellazione, infoModifica);
 			
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -197,7 +206,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	}
 	
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		// operazione non prevista
 	}
 

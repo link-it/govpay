@@ -28,9 +28,11 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
+import it.govpay.model.reportistica.EstrattoContoMetadata;
 import it.govpay.web.business.reportistica.EstrattiContoMetadata;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -139,7 +141,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.model.reportistica.EstrattoContoMetadata entry : findAll) {
@@ -276,6 +278,17 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, it.govpay.model.reportistica.EstrattoContoMetadata entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, EstrattoContoMetadata entry)
+			throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -295,10 +308,10 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			it.govpay.model.reportistica.EstrattoContoMetadata estrattoConto = estrattiContoBD.getEstrattoConto(id,operatore.getPrincipal()); 
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, estrattoConto);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(estrattoConto,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(estrattoConto,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -337,7 +350,7 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		// operazione non prevista
 	}
 

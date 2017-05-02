@@ -109,7 +109,6 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			URI cancellazione = null;
 			boolean visualizzaRicerca = true;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -138,7 +137,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Applicazione> findAll = applicazioniBD.findAll(filter);
 
@@ -574,6 +573,14 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		return infoModifica;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Applicazione entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -617,10 +624,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			Applicazione applicazione = applicazioniBD.getApplicazione(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,applicazione);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, applicazione);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(applicazione,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(applicazione,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -1078,7 +1085,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		// operazione non prevista
 	}
 
