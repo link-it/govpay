@@ -38,7 +38,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.filters.PspFilter;
 import it.govpay.bd.model.Psp;
-import it.govpay.model.Applicazione;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -66,7 +65,6 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
@@ -206,8 +204,8 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	}
 	
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 	@Override

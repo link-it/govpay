@@ -41,7 +41,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
-import it.govpay.model.Applicazione;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
@@ -86,7 +85,6 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -616,8 +614,8 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 	@Override

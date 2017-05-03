@@ -28,7 +28,6 @@ import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.model.Acl;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
@@ -72,7 +71,6 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd);
-			URI cancellazione = null;
 
 			List<String> idDomini = new ArrayList<String>();
 			AclBD aclBD = new AclBD(bd);
@@ -350,8 +348,8 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 	@Override

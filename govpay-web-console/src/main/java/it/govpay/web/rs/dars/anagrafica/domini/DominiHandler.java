@@ -877,8 +877,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 	@Override

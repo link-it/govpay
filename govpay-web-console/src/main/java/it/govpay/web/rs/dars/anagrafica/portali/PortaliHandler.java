@@ -47,7 +47,6 @@ import it.govpay.bd.anagrafica.filters.PortaleFilter;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.model.Acl;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Portale;
@@ -1004,8 +1003,8 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 	@Override

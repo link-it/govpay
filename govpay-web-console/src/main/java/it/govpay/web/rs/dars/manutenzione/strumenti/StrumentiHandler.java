@@ -43,7 +43,6 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
 			URI esportazione = null;
-			URI cancellazione = null;
 			long count = 0;
 
 			Elenco elenco = new Elenco(this.titoloServizio, 
@@ -196,7 +195,7 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {		return null;	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;}
 
 	@Override
 	public Object creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	return null;}

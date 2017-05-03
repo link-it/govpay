@@ -510,7 +510,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}
 
 	@Override
 	public Rendicontazione creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

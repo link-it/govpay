@@ -51,7 +51,6 @@ import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Acl;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
@@ -89,8 +88,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			URI esportazione = null; 
-			URI cancellazione = null;
-
+	
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
 			String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
@@ -452,7 +450,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException { return null;}
 
 	@Override
 	public Pagamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}

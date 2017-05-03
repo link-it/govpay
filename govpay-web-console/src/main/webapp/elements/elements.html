@@ -1,5 +1,13 @@
 <html><head><!--
 @license
+Copyright (c) 2015 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE
+The complete set of authors may be found at http://polymer.github.io/AUTHORS
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS
+--><!--
+@license
 Copyright (c) 2015 Vaadin Ltd.
 This program is available under Apache License Version 2.0, available at https://vaadin.com/license/
 --><!--
@@ -18237,6 +18245,602 @@ context. You should place this element as a child of `<body>` whenever possible.
 </dom-module>
 
 
+<script>
+
+  /**
+   * `Polymer.NeonAnimatableBehavior` is implemented by elements containing animations for use with
+   * elements implementing `Polymer.NeonAnimationRunnerBehavior`.
+   * @polymerBehavior
+   */
+  Polymer.NeonAnimatableBehavior = {
+
+    properties: {
+
+      /**
+       * Animation configuration. See README for more info.
+       */
+      animationConfig: {
+        type: Object
+      },
+
+      /**
+       * Convenience property for setting an 'entry' animation. Do not set `animationConfig.entry`
+       * manually if using this. The animated node is set to `this` if using this property.
+       */
+      entryAnimation: {
+        observer: '_entryAnimationChanged',
+        type: String
+      },
+
+      /**
+       * Convenience property for setting an 'exit' animation. Do not set `animationConfig.exit`
+       * manually if using this. The animated node is set to `this` if using this property.
+       */
+      exitAnimation: {
+        observer: '_exitAnimationChanged',
+        type: String
+      }
+
+    },
+
+    _entryAnimationChanged: function() {
+      this.animationConfig = this.animationConfig || {};
+      this.animationConfig['entry'] = [{
+        name: this.entryAnimation,
+        node: this
+      }];
+    },
+
+    _exitAnimationChanged: function() {
+      this.animationConfig = this.animationConfig || {};
+      this.animationConfig['exit'] = [{
+        name: this.exitAnimation,
+        node: this
+      }];
+    },
+
+    _copyProperties: function(config1, config2) {
+      // shallowly copy properties from config2 to config1
+      for (var property in config2) {
+        config1[property] = config2[property];
+      }
+    },
+
+    _cloneConfig: function(config) {
+      var clone = {
+        isClone: true
+      };
+      this._copyProperties(clone, config);
+      return clone;
+    },
+
+    _getAnimationConfigRecursive: function(type, map, allConfigs) {
+      if (!this.animationConfig) {
+        return;
+      }
+
+      if(this.animationConfig.value && typeof this.animationConfig.value === 'function') {
+      	this._warn(this._logf('playAnimation', "Please put 'animationConfig' inside of your components 'properties' object instead of outside of it."));
+      	return;
+      }
+
+      // type is optional
+      var thisConfig;
+      if (type) {
+        thisConfig = this.animationConfig[type];
+      } else {
+        thisConfig = this.animationConfig;
+      }
+
+      if (!Array.isArray(thisConfig)) {
+        thisConfig = [thisConfig];
+      }
+
+      // iterate animations and recurse to process configurations from child nodes
+      if (thisConfig) {
+        for (var config, index = 0; config = thisConfig[index]; index++) {
+          if (config.animatable) {
+            config.animatable._getAnimationConfigRecursive(config.type || type, map, allConfigs);
+          } else {
+            if (config.id) {
+              var cachedConfig = map[config.id];
+              if (cachedConfig) {
+                // merge configurations with the same id, making a clone lazily
+                if (!cachedConfig.isClone) {
+                  map[config.id] = this._cloneConfig(cachedConfig)
+                  cachedConfig = map[config.id];
+                }
+                this._copyProperties(cachedConfig, config);
+              } else {
+                // put any configs with an id into a map
+                map[config.id] = config;
+              }
+            } else {
+              allConfigs.push(config);
+            }
+          }
+        }
+      }
+    },
+
+    /**
+     * An element implementing `Polymer.NeonAnimationRunnerBehavior` calls this method to configure
+     * an animation with an optional type. Elements implementing `Polymer.NeonAnimatableBehavior`
+     * should define the property `animationConfig`, which is either a configuration object
+     * or a map of animation type to array of configuration objects.
+     */
+    getAnimationConfig: function(type) {
+      var map = {};
+      var allConfigs = [];
+      this._getAnimationConfigRecursive(type, map, allConfigs);
+      // append the configurations saved in the map to the array
+      for (var key in map) {
+        allConfigs.push(map[key]);
+      }
+      return allConfigs;
+    }
+
+  };
+
+</script><script>
+
+  /**
+   * `Polymer.NeonAnimationRunnerBehavior` adds a method to run animations.
+   *
+   * @polymerBehavior Polymer.NeonAnimationRunnerBehavior
+   */
+  Polymer.NeonAnimationRunnerBehaviorImpl = {
+
+    _configureAnimations: function(configs) {
+      var results = [];
+      if (configs.length > 0) {
+        for (var config, index = 0; config = configs[index]; index++) {
+          var neonAnimation = document.createElement(config.name);
+          // is this element actually a neon animation?
+          if (neonAnimation.isNeonAnimation) {
+            var result = null;
+            // configuration or play could fail if polyfills aren't loaded
+            try {
+              result = neonAnimation.configure(config);
+              // Check if we have an Effect rather than an Animation
+              if (typeof result.cancel != 'function') { 
+                result = document.timeline.play(result);
+              }
+            } catch (e) {
+              result = null;
+              console.warn('Couldnt play', '(', config.name, ').', e);
+            }
+            if (result) {
+              results.push({
+                neonAnimation: neonAnimation,
+                config: config,
+                animation: result,
+              });
+            }
+          } else {
+            console.warn(this.is + ':', config.name, 'not found!');
+          }
+        }
+      }
+      return results;
+    },
+
+    _shouldComplete: function(activeEntries) {
+      var finished = true;
+      for (var i = 0; i < activeEntries.length; i++) {
+        if (activeEntries[i].animation.playState != 'finished') {
+          finished = false;
+          break;
+        }
+      }
+      return finished;
+    },
+
+    _complete: function(activeEntries) {
+      for (var i = 0; i < activeEntries.length; i++) {
+        activeEntries[i].neonAnimation.complete(activeEntries[i].config);
+      }
+      for (var i = 0; i < activeEntries.length; i++) {
+        activeEntries[i].animation.cancel();
+      }
+    },
+
+    /**
+     * Plays an animation with an optional `type`.
+     * @param {string=} type
+     * @param {!Object=} cookie
+     */
+    playAnimation: function(type, cookie) {
+      var configs = this.getAnimationConfig(type);
+      if (!configs) {
+        return;
+      }
+      this._active = this._active || {};
+      if (this._active[type]) {
+        this._complete(this._active[type]);
+        delete this._active[type];
+      }
+
+      var activeEntries = this._configureAnimations(configs);
+
+      if (activeEntries.length == 0) {
+        this.fire('neon-animation-finish', cookie, {bubbles: false});
+        return;
+      }
+
+      this._active[type] = activeEntries;
+
+      for (var i = 0; i < activeEntries.length; i++) {
+        activeEntries[i].animation.onfinish = function() {
+          if (this._shouldComplete(activeEntries)) {
+            this._complete(activeEntries);
+            delete this._active[type];
+            this.fire('neon-animation-finish', cookie, {bubbles: false});
+          }
+        }.bind(this);
+      }
+    },
+
+    /**
+     * Cancels the currently running animations.
+     */
+    cancelAnimation: function() {
+      for (var k in this._animations) {
+        this._animations[k].cancel();
+      }
+      this._animations = {};
+    }
+  };
+
+  /** @polymerBehavior Polymer.NeonAnimationRunnerBehavior */
+  Polymer.NeonAnimationRunnerBehavior = [
+    Polymer.NeonAnimatableBehavior,
+    Polymer.NeonAnimationRunnerBehaviorImpl
+  ];
+</script><script>
+
+/**
+Use `Polymer.PaperDialogBehavior` and `paper-dialog-shared-styles.html` to implement a Material Design
+dialog.
+
+For example, if `<paper-dialog-impl>` implements this behavior:
+
+    <paper-dialog-impl>
+        <h2>Header</h2>
+        <div>Dialog body</div>
+        <div class="buttons">
+            <paper-button dialog-dismiss>Cancel</paper-button>
+            <paper-button dialog-confirm>Accept</paper-button>
+        </div>
+    </paper-dialog-impl>
+
+`paper-dialog-shared-styles.html` provide styles for a header, content area, and an action area for buttons.
+Use the `<h2>` tag for the header and the `buttons` class for the action area. You can use the
+`paper-dialog-scrollable` element (in its own repository) if you need a scrolling content area.
+
+Use the `dialog-dismiss` and `dialog-confirm` attributes on interactive controls to close the
+dialog. If the user dismisses the dialog with `dialog-confirm`, the `closingReason` will update
+to include `confirmed: true`.
+
+### Accessibility
+
+This element has `role="dialog"` by default. Depending on the context, it may be more appropriate
+to override this attribute with `role="alertdialog"`.
+
+If `modal` is set, the element will prevent the focus from exiting the element.
+It will also ensure that focus remains in the dialog.
+
+@hero hero.svg
+@demo demo/index.html
+@polymerBehavior Polymer.PaperDialogBehavior
+*/
+
+  Polymer.PaperDialogBehaviorImpl = {
+
+    hostAttributes: {
+      'role': 'dialog',
+      'tabindex': '-1'
+    },
+
+    properties: {
+
+      /**
+       * If `modal` is true, this implies `no-cancel-on-outside-click`, `no-cancel-on-esc-key` and `with-backdrop`.
+       */
+      modal: {
+        type: Boolean,
+        value: false
+      }
+
+    },
+
+    observers: [
+      '_modalChanged(modal, _readied)'
+    ],
+
+    listeners: {
+      'tap': '_onDialogClick'
+    },
+
+    ready: function () {
+      // Only now these properties can be read.
+      this.__prevNoCancelOnOutsideClick = this.noCancelOnOutsideClick;
+      this.__prevNoCancelOnEscKey = this.noCancelOnEscKey;
+      this.__prevWithBackdrop = this.withBackdrop;
+    },
+
+    _modalChanged: function(modal, readied) {
+      // modal implies noCancelOnOutsideClick, noCancelOnEscKey and withBackdrop.
+      // We need to wait for the element to be ready before we can read the
+      // properties values.
+      if (!readied) {
+        return;
+      }
+
+      if (modal) {
+        this.__prevNoCancelOnOutsideClick = this.noCancelOnOutsideClick;
+        this.__prevNoCancelOnEscKey = this.noCancelOnEscKey;
+        this.__prevWithBackdrop = this.withBackdrop;
+        this.noCancelOnOutsideClick = true;
+        this.noCancelOnEscKey = true;
+        this.withBackdrop = true;
+      } else {
+        // If the value was changed to false, let it false.
+        this.noCancelOnOutsideClick = this.noCancelOnOutsideClick &&
+          this.__prevNoCancelOnOutsideClick;
+        this.noCancelOnEscKey = this.noCancelOnEscKey &&
+          this.__prevNoCancelOnEscKey;
+        this.withBackdrop = this.withBackdrop && this.__prevWithBackdrop;
+      }
+    },
+
+    _updateClosingReasonConfirmed: function(confirmed) {
+      this.closingReason = this.closingReason || {};
+      this.closingReason.confirmed = confirmed;
+    },
+
+    /**
+     * Will dismiss the dialog if user clicked on an element with dialog-dismiss
+     * or dialog-confirm attribute.
+     */
+    _onDialogClick: function(event) {
+      // Search for the element with dialog-confirm or dialog-dismiss,
+      // from the root target until this (excluded).
+      var path = Polymer.dom(event).path;
+      for (var i = 0; i < path.indexOf(this); i++) {
+        var target = path[i];
+        if (target.hasAttribute && (target.hasAttribute('dialog-dismiss') || target.hasAttribute('dialog-confirm'))) {
+          this._updateClosingReasonConfirmed(target.hasAttribute('dialog-confirm'));
+          this.close();
+          event.stopPropagation();
+          break;
+        }
+      }
+    }
+
+  };
+
+  /** @polymerBehavior */
+  Polymer.PaperDialogBehavior = [Polymer.IronOverlayBehavior, Polymer.PaperDialogBehaviorImpl];
+
+</script>
+
+<dom-module id="paper-dialog-shared-styles" assetpath="../bower_components/paper-dialog-behavior/">
+  <template>
+    <style>
+      :host {
+        display: block;
+        margin: 24px 40px;
+
+        background: var(--paper-dialog-background-color, --primary-background-color);
+        color: var(--paper-dialog-color, --primary-text-color);
+
+        @apply(--paper-font-body1);
+        @apply(--shadow-elevation-16dp);
+        @apply(--paper-dialog);
+      }
+
+      :host > ::content > * {
+        margin-top: 20px;
+        padding: 0 24px;
+      }
+
+      :host > ::content > .no-padding {
+        padding: 0;
+      }
+
+      :host > ::content > *:first-child {
+        margin-top: 24px;
+      }
+
+      :host > ::content > *:last-child {
+        margin-bottom: 24px;
+      }
+
+      :host > ::content h2 {
+        position: relative;
+        margin: 0;
+        @apply(--paper-font-title);
+
+        @apply(--paper-dialog-title);
+      }
+
+      :host > ::content .buttons {
+        position: relative;
+        padding: 8px 8px 8px 24px;
+        margin: 0;
+
+        color: var(--paper-dialog-button-color, --primary-color);
+
+        @apply(--layout-horizontal);
+        @apply(--layout-end-justified);
+      }
+    </style>
+  </template>
+</dom-module>
+<dom-module id="paper-dialog" assetpath="../bower_components/paper-dialog/">
+  <template>
+    <style include="paper-dialog-shared-styles"></style>
+    <content></content>
+  </template>
+</dom-module>
+
+<script>
+
+(function() {
+
+  Polymer({
+
+    is: 'paper-dialog',
+
+    behaviors: [
+      Polymer.PaperDialogBehavior,
+      Polymer.NeonAnimationRunnerBehavior
+    ],
+
+    listeners: {
+      'neon-animation-finish': '_onNeonAnimationFinish'
+    },
+
+    _renderOpened: function() {
+      this.cancelAnimation();
+      this.playAnimation('entry');
+    },
+
+    _renderClosed: function() {
+      this.cancelAnimation();
+      this.playAnimation('exit');
+    },
+
+    _onNeonAnimationFinish: function() {
+      if (this.opened) {
+        this._finishRenderOpened();
+      } else {
+        this._finishRenderClosed();
+      }
+    }
+
+  });
+
+})();
+
+</script>
+
+
+<dom-module id="paper-dialog-scrollable" assetpath="../bower_components/paper-dialog-scrollable/">
+
+  <template>
+    <style>
+
+      :host {
+        display: block;
+        @apply(--layout-relative);
+      }
+
+      :host(.is-scrolled:not(:first-child))::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--divider-color);
+      }
+
+      :host(.can-scroll:not(.scrolled-to-bottom):not(:last-child))::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: var(--divider-color);
+      }
+
+      .scrollable {
+        padding: 0 24px;
+
+        @apply(--layout-scroll);
+        @apply(--paper-dialog-scrollable);
+      }
+
+      .fit {
+        @apply(--layout-fit);
+      }
+    </style>
+
+    <div id="scrollable" class="scrollable">
+      <content></content>
+    </div>
+  </template>
+
+</dom-module>
+
+<script>
+
+  Polymer({
+
+    is: 'paper-dialog-scrollable',
+
+    properties: {
+
+      /**
+       * The dialog element that implements `Polymer.PaperDialogBehavior` containing this element.
+       * @type {?Node}
+       */
+      dialogElement: {
+        type: Object
+      }
+
+    },
+
+    listeners: {
+      'scrollable.scroll': '_scroll'
+    },
+
+    /**
+     * Returns the scrolling element.
+     */
+    get scrollTarget() {
+      return this.$.scrollable;
+    },
+
+    ready: function () {
+      this._ensureTarget();
+    },
+
+    attached: function() {
+      this.classList.add('no-padding');
+      this._ensureTarget();
+      requestAnimationFrame(this._scroll.bind(this));
+    },
+
+    _scroll: function() {
+      this.toggleClass('is-scrolled', this.scrollTarget.scrollTop > 0);
+      this.toggleClass('can-scroll', this.scrollTarget.offsetHeight < this.scrollTarget.scrollHeight);
+      this.toggleClass('scrolled-to-bottom',
+        this.scrollTarget.scrollTop + this.scrollTarget.offsetHeight >= this.scrollTarget.scrollHeight);
+    },
+
+    _ensureTarget: function () {
+      // read parentNode on attached because if dynamically created,
+      // parentNode will be null on creation.
+      this.dialogElement = this.dialogElement || Polymer.dom(this).parentNode;
+      // Check if parent implements paper-dialog-behavior. If not, fit scrollTarget to host.
+      if (this.dialogElement && this.dialogElement.behaviors &&
+          this.dialogElement.behaviors.indexOf(Polymer.PaperDialogBehaviorImpl) >= 0) {
+        this.dialogElement.sizingTarget = this.scrollTarget;
+        this.scrollTarget.classList.remove('fit');
+      } else if (this.dialogElement) {
+        this.scrollTarget.classList.add('fit');
+      }
+    }
+
+  });
+
+</script>
+
+
 <style is="custom-style">
 
   /*
@@ -18367,12 +18971,25 @@ context. You should place this element as a child of `<body>` whenever possible.
       paper-menu {
         --paper-menu-selected-item: {
           color: var(--primary-color);
-        }
+        };
+
+        --paper-menu-focused-item-after: {
+          background: var(--primary-color);
+          opacity: 0;
+        };
+        cursor: pointer;
       }
 
-      --paper-menu-focused-item-after: {
-         background: var(--primary-color);
-       }
+      #mainMenu paper-item:focus:before {
+        opacity: 0;
+      }
+
+      #mainMenu {
+        padding: 0;
+      }
+
+      #mainMenu:focus {
+        outline: 0;
       }
 
       paper-menu iron-icon {
@@ -18394,6 +19011,10 @@ context. You should place this element as a child of `<body>` whenever possible.
         line-height: 24px;
         min-height: 48px;
         padding: 0 16px;
+      }
+
+      iron-collapse paper-menu {
+        padding: 0 0 0 16px;
       }
 
       paper-tab {
@@ -18517,10 +19138,6 @@ context. You should place this element as a child of `<body>` whenever possible.
       }
       .page-title {
         @apply(--paper-font-display2);
-      }
-
-      #mainMenu paper-item, #mainMenu paper-icon-item {
-        border-bottom: 1px solid rgba(0, 0, 0, 0.14);
       }
 
       @media (max-width: 600px) {
@@ -18732,11 +19349,22 @@ context. You should place this element as a child of `<body>` whenever possible.
       }
 
 
-/** Versamenti 2 (nuovo layout) **/
-  .v2-item-box {
+/** Items: nuovo layout **/
+  .layout-item-box {
     @apply(--layout-horizontal);
     @apply(--layout-flex);
     @apply(--layout-center);
+  }
+
+  .layout-anomalie {
+    @apply(--layout-vertical);
+    @apply(--layout-flex);
+    overflow: hidden;
+  }
+
+  .anomalie-group {
+    overflow: hidden;
+    padding: 0 10px;
   }
 
   .layout-group {
@@ -18758,6 +19386,20 @@ context. You should place this element as a child of `<body>` whenever possible.
     text-overflow: ellipsis;
   }
 
+  .fill-group {
+    width: 100%;
+  }
+
+  .item-titolo {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .item-sottotitolo {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   .item-label {
     color: var(--secondary-text-color);
     font-weight: 400;
@@ -18773,14 +19415,22 @@ context. You should place this element as a child of `<body>` whenever possible.
     display: none;
   }
 
-  .icon_v2 {
+  .vers_etichetta {
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    font-size: 14px;
+  }
+
+  .vers_valore {
+    color: var(--primary-text-color);
+    font-size: 14px;
+  }
+
+  .icon {
     display: inline-block;
     box-sizing: border-box;
-    border-radius: 50%;
-    color: transparent;
     text-align: center;
     padding: 4px;
-    border: 2px solid var(--toolbar-color);
   }
 
   .icon_div_ok {
@@ -18819,19 +19469,6 @@ context. You should place this element as a child of `<body>` whenever possible.
     color: #ffb74d;
   }
 
-  .vers_etichetta {
-    color: var(--secondary-text-color);
-    font-weight: 400;
-    font-size: 14px;
-  }
-
-  .vers_valore {
-    color: var(--primary-text-color);
-    font-size: 14px;
-  }
-
-
-
   @media (max-width: 600px) {
 
     .layout-group {
@@ -18843,7 +19480,7 @@ context. You should place this element as a child of `<body>` whenever possible.
     }
 
   }
-/** Fine Versamenti 2 (nuovo layout) **/
+/** Fine items: nuovo layout **/
 
     </style>
   </template>
@@ -19910,259 +20547,7 @@ if (!window.Promise) {
   });
 </script>
 
-<script>
-
-  /**
-   * `Polymer.NeonAnimatableBehavior` is implemented by elements containing animations for use with
-   * elements implementing `Polymer.NeonAnimationRunnerBehavior`.
-   * @polymerBehavior
-   */
-  Polymer.NeonAnimatableBehavior = {
-
-    properties: {
-
-      /**
-       * Animation configuration. See README for more info.
-       */
-      animationConfig: {
-        type: Object
-      },
-
-      /**
-       * Convenience property for setting an 'entry' animation. Do not set `animationConfig.entry`
-       * manually if using this. The animated node is set to `this` if using this property.
-       */
-      entryAnimation: {
-        observer: '_entryAnimationChanged',
-        type: String
-      },
-
-      /**
-       * Convenience property for setting an 'exit' animation. Do not set `animationConfig.exit`
-       * manually if using this. The animated node is set to `this` if using this property.
-       */
-      exitAnimation: {
-        observer: '_exitAnimationChanged',
-        type: String
-      }
-
-    },
-
-    _entryAnimationChanged: function() {
-      this.animationConfig = this.animationConfig || {};
-      this.animationConfig['entry'] = [{
-        name: this.entryAnimation,
-        node: this
-      }];
-    },
-
-    _exitAnimationChanged: function() {
-      this.animationConfig = this.animationConfig || {};
-      this.animationConfig['exit'] = [{
-        name: this.exitAnimation,
-        node: this
-      }];
-    },
-
-    _copyProperties: function(config1, config2) {
-      // shallowly copy properties from config2 to config1
-      for (var property in config2) {
-        config1[property] = config2[property];
-      }
-    },
-
-    _cloneConfig: function(config) {
-      var clone = {
-        isClone: true
-      };
-      this._copyProperties(clone, config);
-      return clone;
-    },
-
-    _getAnimationConfigRecursive: function(type, map, allConfigs) {
-      if (!this.animationConfig) {
-        return;
-      }
-
-      if(this.animationConfig.value && typeof this.animationConfig.value === 'function') {
-      	this._warn(this._logf('playAnimation', "Please put 'animationConfig' inside of your components 'properties' object instead of outside of it."));
-      	return;
-      }
-
-      // type is optional
-      var thisConfig;
-      if (type) {
-        thisConfig = this.animationConfig[type];
-      } else {
-        thisConfig = this.animationConfig;
-      }
-
-      if (!Array.isArray(thisConfig)) {
-        thisConfig = [thisConfig];
-      }
-
-      // iterate animations and recurse to process configurations from child nodes
-      if (thisConfig) {
-        for (var config, index = 0; config = thisConfig[index]; index++) {
-          if (config.animatable) {
-            config.animatable._getAnimationConfigRecursive(config.type || type, map, allConfigs);
-          } else {
-            if (config.id) {
-              var cachedConfig = map[config.id];
-              if (cachedConfig) {
-                // merge configurations with the same id, making a clone lazily
-                if (!cachedConfig.isClone) {
-                  map[config.id] = this._cloneConfig(cachedConfig)
-                  cachedConfig = map[config.id];
-                }
-                this._copyProperties(cachedConfig, config);
-              } else {
-                // put any configs with an id into a map
-                map[config.id] = config;
-              }
-            } else {
-              allConfigs.push(config);
-            }
-          }
-        }
-      }
-    },
-
-    /**
-     * An element implementing `Polymer.NeonAnimationRunnerBehavior` calls this method to configure
-     * an animation with an optional type. Elements implementing `Polymer.NeonAnimatableBehavior`
-     * should define the property `animationConfig`, which is either a configuration object
-     * or a map of animation type to array of configuration objects.
-     */
-    getAnimationConfig: function(type) {
-      var map = {};
-      var allConfigs = [];
-      this._getAnimationConfigRecursive(type, map, allConfigs);
-      // append the configurations saved in the map to the array
-      for (var key in map) {
-        allConfigs.push(map[key]);
-      }
-      return allConfigs;
-    }
-
-  };
-
-</script><script>
-
-  /**
-   * `Polymer.NeonAnimationRunnerBehavior` adds a method to run animations.
-   *
-   * @polymerBehavior Polymer.NeonAnimationRunnerBehavior
-   */
-  Polymer.NeonAnimationRunnerBehaviorImpl = {
-
-    _configureAnimations: function(configs) {
-      var results = [];
-      if (configs.length > 0) {
-        for (var config, index = 0; config = configs[index]; index++) {
-          var neonAnimation = document.createElement(config.name);
-          // is this element actually a neon animation?
-          if (neonAnimation.isNeonAnimation) {
-            var result = null;
-            // configuration or play could fail if polyfills aren't loaded
-            try {
-              result = neonAnimation.configure(config);
-              // Check if we have an Effect rather than an Animation
-              if (typeof result.cancel != 'function') { 
-                result = document.timeline.play(result);
-              }
-            } catch (e) {
-              result = null;
-              console.warn('Couldnt play', '(', config.name, ').', e);
-            }
-            if (result) {
-              results.push({
-                neonAnimation: neonAnimation,
-                config: config,
-                animation: result,
-              });
-            }
-          } else {
-            console.warn(this.is + ':', config.name, 'not found!');
-          }
-        }
-      }
-      return results;
-    },
-
-    _shouldComplete: function(activeEntries) {
-      var finished = true;
-      for (var i = 0; i < activeEntries.length; i++) {
-        if (activeEntries[i].animation.playState != 'finished') {
-          finished = false;
-          break;
-        }
-      }
-      return finished;
-    },
-
-    _complete: function(activeEntries) {
-      for (var i = 0; i < activeEntries.length; i++) {
-        activeEntries[i].neonAnimation.complete(activeEntries[i].config);
-      }
-      for (var i = 0; i < activeEntries.length; i++) {
-        activeEntries[i].animation.cancel();
-      }
-    },
-
-    /**
-     * Plays an animation with an optional `type`.
-     * @param {string=} type
-     * @param {!Object=} cookie
-     */
-    playAnimation: function(type, cookie) {
-      var configs = this.getAnimationConfig(type);
-      if (!configs) {
-        return;
-      }
-      this._active = this._active || {};
-      if (this._active[type]) {
-        this._complete(this._active[type]);
-        delete this._active[type];
-      }
-
-      var activeEntries = this._configureAnimations(configs);
-
-      if (activeEntries.length == 0) {
-        this.fire('neon-animation-finish', cookie, {bubbles: false});
-        return;
-      }
-
-      this._active[type] = activeEntries;
-
-      for (var i = 0; i < activeEntries.length; i++) {
-        activeEntries[i].animation.onfinish = function() {
-          if (this._shouldComplete(activeEntries)) {
-            this._complete(activeEntries);
-            delete this._active[type];
-            this.fire('neon-animation-finish', cookie, {bubbles: false});
-          }
-        }.bind(this);
-      }
-    },
-
-    /**
-     * Cancels the currently running animations.
-     */
-    cancelAnimation: function() {
-      for (var k in this._animations) {
-        this._animations[k].cancel();
-      }
-      this._animations = {};
-    }
-  };
-
-  /** @polymerBehavior Polymer.NeonAnimationRunnerBehavior */
-  Polymer.NeonAnimationRunnerBehavior = [
-    Polymer.NeonAnimatableBehavior,
-    Polymer.NeonAnimationRunnerBehaviorImpl
-  ];
-</script><dom-module id="neon-animated-pages" assetpath="../bower_components/neon-animation/">
+<dom-module id="neon-animated-pages" assetpath="../bower_components/neon-animation/">
   <template>
     <style>
       :host {
@@ -31562,6 +31947,7 @@ Polymer.AppLocalizeBehavior = {
     font-weight: 400;
     color: #9e9e9e;
   }
+
 </style><script>
   LinkFormBehavior = {
 
@@ -31679,7 +32065,7 @@ Polymer.AppLocalizeBehavior = {
               var pta = document.createElement('paper-textarea');
               this.setTextareaProperties(pta, obj);
               sezioneDiv.appendChild(pta);
-              pti.disabled = !obj.editable;
+              pta.disabled = !obj.editable;
               break;
             case 'InputDate':
               //Date input
@@ -31785,32 +32171,29 @@ Polymer.AppLocalizeBehavior = {
       sottotitoloRadio.className = 'sottotitoloElemento';
       Polymer.dom(etichetta).appendChild(sottotitoloRadio);
       Polymer.dom(list).appendChild(etichetta);
-      var listBox = document.createElement('paper-listbox');
-      listBox.id=data.id;
-      listBox.setAttribute('multi', '');
-      //listBox.style.maxHeight='192px';
-      listBox.style.overflow='auto';
-      listBox.attrForSelected='value';
+
+      var listBox = document.createElement('link-multi-select');
+      listBox.id = data.id;
+      listBox.label = data.label;
+      listBox.labelAttribute = 'etichetta';
+      listBox.attrForSelected = 'valore';
+      listBox.optionsValues = ['', -1, '*'];
       listBox.selectedValues = data.defaultValue;
+      listBox.elements = data.values;
+      listBox.required = data.required;
       listBox.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
-      for (var v = 0; v < data.values.length; v++) {
-        var voce = data.values[v];
-        var pi = document.createElement('paper-item');
-        pi.value = voce.valore;
-        Polymer.dom(pi).innerHTML = voce.etichetta;
-        Polymer.dom(listBox).appendChild(pi);
-      }
-      if (data.refreshParamIds.length>0){
+      if(data.refreshParamIds.length>0){
         listBox.refreshParamIds = data.refreshParamIds;
-        listBox.addEventListener('iron-select', this.changeData.bind(this));
+        listBox.addEventListener('ms-selection', this.changeData.bind(this));
       }
       if (data.refreshUri){
         listBox.refreshUri = REST_URL + data.refreshUri + app.appendLangParameter(data.refreshUri);
         listBox.refreshUriParamIds = data.refreshUriParamIds;
         listBox.refresh = this.refreshMultiSelectionDropdownData.bind(this, listBox);
+        listBox.addEventListener('ms-selection', this._modifiedForm);
       }
-      listBox.addEventListener('iron-select', this._modifiedForm);
       Polymer.dom(list).appendChild(listBox);
+
     },
 
     refreshMultiSelectionDropdownData: function(target){
@@ -32541,132 +32924,6 @@ Polymer.AppLocalizeBehavior = {
       return false;
     }
   };
-</script><script>
-
-/**
-Use `Polymer.PaperDialogBehavior` and `paper-dialog-shared-styles.html` to implement a Material Design
-dialog.
-
-For example, if `<paper-dialog-impl>` implements this behavior:
-
-    <paper-dialog-impl>
-        <h2>Header</h2>
-        <div>Dialog body</div>
-        <div class="buttons">
-            <paper-button dialog-dismiss>Cancel</paper-button>
-            <paper-button dialog-confirm>Accept</paper-button>
-        </div>
-    </paper-dialog-impl>
-
-`paper-dialog-shared-styles.html` provide styles for a header, content area, and an action area for buttons.
-Use the `<h2>` tag for the header and the `buttons` class for the action area. You can use the
-`paper-dialog-scrollable` element (in its own repository) if you need a scrolling content area.
-
-Use the `dialog-dismiss` and `dialog-confirm` attributes on interactive controls to close the
-dialog. If the user dismisses the dialog with `dialog-confirm`, the `closingReason` will update
-to include `confirmed: true`.
-
-### Accessibility
-
-This element has `role="dialog"` by default. Depending on the context, it may be more appropriate
-to override this attribute with `role="alertdialog"`.
-
-If `modal` is set, the element will prevent the focus from exiting the element.
-It will also ensure that focus remains in the dialog.
-
-@hero hero.svg
-@demo demo/index.html
-@polymerBehavior Polymer.PaperDialogBehavior
-*/
-
-  Polymer.PaperDialogBehaviorImpl = {
-
-    hostAttributes: {
-      'role': 'dialog',
-      'tabindex': '-1'
-    },
-
-    properties: {
-
-      /**
-       * If `modal` is true, this implies `no-cancel-on-outside-click`, `no-cancel-on-esc-key` and `with-backdrop`.
-       */
-      modal: {
-        type: Boolean,
-        value: false
-      }
-
-    },
-
-    observers: [
-      '_modalChanged(modal, _readied)'
-    ],
-
-    listeners: {
-      'tap': '_onDialogClick'
-    },
-
-    ready: function () {
-      // Only now these properties can be read.
-      this.__prevNoCancelOnOutsideClick = this.noCancelOnOutsideClick;
-      this.__prevNoCancelOnEscKey = this.noCancelOnEscKey;
-      this.__prevWithBackdrop = this.withBackdrop;
-    },
-
-    _modalChanged: function(modal, readied) {
-      // modal implies noCancelOnOutsideClick, noCancelOnEscKey and withBackdrop.
-      // We need to wait for the element to be ready before we can read the
-      // properties values.
-      if (!readied) {
-        return;
-      }
-
-      if (modal) {
-        this.__prevNoCancelOnOutsideClick = this.noCancelOnOutsideClick;
-        this.__prevNoCancelOnEscKey = this.noCancelOnEscKey;
-        this.__prevWithBackdrop = this.withBackdrop;
-        this.noCancelOnOutsideClick = true;
-        this.noCancelOnEscKey = true;
-        this.withBackdrop = true;
-      } else {
-        // If the value was changed to false, let it false.
-        this.noCancelOnOutsideClick = this.noCancelOnOutsideClick &&
-          this.__prevNoCancelOnOutsideClick;
-        this.noCancelOnEscKey = this.noCancelOnEscKey &&
-          this.__prevNoCancelOnEscKey;
-        this.withBackdrop = this.withBackdrop && this.__prevWithBackdrop;
-      }
-    },
-
-    _updateClosingReasonConfirmed: function(confirmed) {
-      this.closingReason = this.closingReason || {};
-      this.closingReason.confirmed = confirmed;
-    },
-
-    /**
-     * Will dismiss the dialog if user clicked on an element with dialog-dismiss
-     * or dialog-confirm attribute.
-     */
-    _onDialogClick: function(event) {
-      // Search for the element with dialog-confirm or dialog-dismiss,
-      // from the root target until this (excluded).
-      var path = Polymer.dom(event).path;
-      for (var i = 0; i < path.indexOf(this); i++) {
-        var target = path[i];
-        if (target.hasAttribute && (target.hasAttribute('dialog-dismiss') || target.hasAttribute('dialog-confirm'))) {
-          this._updateClosingReasonConfirmed(target.hasAttribute('dialog-confirm'));
-          this.close();
-          event.stopPropagation();
-          break;
-        }
-      }
-    }
-
-  };
-
-  /** @polymerBehavior */
-  Polymer.PaperDialogBehavior = [Polymer.IronOverlayBehavior, Polymer.PaperDialogBehaviorImpl];
-
 </script>
 
 <dom-module id="paper-header-panel" assetpath="../bower_components/paper-header-panel/">
@@ -33036,120 +33293,6 @@ It will also ensure that focus remains in the dialog.
     })();
   </script>
 </dom-module>
-
-
-<dom-module id="paper-dialog-scrollable" assetpath="../bower_components/paper-dialog-scrollable/">
-
-  <template>
-    <style>
-
-      :host {
-        display: block;
-        @apply(--layout-relative);
-      }
-
-      :host(.is-scrolled:not(:first-child))::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: var(--divider-color);
-      }
-
-      :host(.can-scroll:not(.scrolled-to-bottom):not(:last-child))::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: var(--divider-color);
-      }
-
-      .scrollable {
-        padding: 0 24px;
-
-        @apply(--layout-scroll);
-        @apply(--paper-dialog-scrollable);
-      }
-
-      .fit {
-        @apply(--layout-fit);
-      }
-    </style>
-
-    <div id="scrollable" class="scrollable">
-      <content></content>
-    </div>
-  </template>
-
-</dom-module>
-
-<script>
-
-  Polymer({
-
-    is: 'paper-dialog-scrollable',
-
-    properties: {
-
-      /**
-       * The dialog element that implements `Polymer.PaperDialogBehavior` containing this element.
-       * @type {?Node}
-       */
-      dialogElement: {
-        type: Object
-      }
-
-    },
-
-    listeners: {
-      'scrollable.scroll': '_scroll'
-    },
-
-    /**
-     * Returns the scrolling element.
-     */
-    get scrollTarget() {
-      return this.$.scrollable;
-    },
-
-    ready: function () {
-      this._ensureTarget();
-    },
-
-    attached: function() {
-      this.classList.add('no-padding');
-      this._ensureTarget();
-      requestAnimationFrame(this._scroll.bind(this));
-    },
-
-    _scroll: function() {
-      this.toggleClass('is-scrolled', this.scrollTarget.scrollTop > 0);
-      this.toggleClass('can-scroll', this.scrollTarget.offsetHeight < this.scrollTarget.scrollHeight);
-      this.toggleClass('scrolled-to-bottom',
-        this.scrollTarget.scrollTop + this.scrollTarget.offsetHeight >= this.scrollTarget.scrollHeight);
-    },
-
-    _ensureTarget: function () {
-      // read parentNode on attached because if dynamically created,
-      // parentNode will be null on creation.
-      this.dialogElement = this.dialogElement || Polymer.dom(this).parentNode;
-      // Check if parent implements paper-dialog-behavior. If not, fit scrollTarget to host.
-      if (this.dialogElement && this.dialogElement.behaviors &&
-          this.dialogElement.behaviors.indexOf(Polymer.PaperDialogBehaviorImpl) >= 0) {
-        this.dialogElement.sizingTarget = this.scrollTarget;
-        this.scrollTarget.classList.remove('fit');
-      } else if (this.dialogElement) {
-        this.scrollTarget.classList.add('fit');
-      }
-    }
-
-  });
-
-</script>
 <dom-module id="link-edit-form" assetpath="link-edit-form/">
   <template>
     <style include="shared-styles">
@@ -33308,11 +33451,11 @@ It will also ensure that focus remains in the dialog.
 
       edit: function(event){
         var ok = this.$.editForm.validate();
-        if (ok){
+          if (ok){
           var temp = this.serializeForm(this.$.editForm);
-          for (var lb = 0; lb < this.querySelectorAll('paper-listbox[multi]').length; lb++) {
-            var lbox = this.querySelectorAll('paper-listbox[multi]')[lb];
-            temp[lbox.id]=lbox.selectedValues;
+          var ms = this.querySelectorAll('link-multi-select');
+          for (var lb = 0; lb < ms.length; lb++) {
+            temp[ms[lb].id] = ms[lb].selectedValues;
           }
           var lista = Object.keys(temp);
           for (var i = 0; i < lista.length; i++) {
@@ -33380,44 +33523,6 @@ It will also ensure that focus remains in the dialog.
 <dom-module id="link-search-view" assetpath="link-views/">
   <template>
     <style include="shared-styles">
-      @media (min-width: 600px) {
-        :host {
-          display: block;
-        }
-
-        #searchbox {
-          width: 300px;
-        }
-
-        #resultsBox {
-          min-width: 300px;
-        }
-
-        .mainContent {
-          padding: 0 24px;
-          @apply(--layout-horizontal);
-          /*@apply(--layout-center-justified);*/
-        }
-      }
-
-      @media (max-width: 600px) {
-        :host {
-          display: block;
-          width: 100%;
-          height: 100%;
-
-        }
-
-        #searchbox {
-          width: 100%;
-        }
-
-        .mainContent {
-          padding: 0 8px;
-          @apply(--layout-vertical);
-          /*@apply(--layout-center-justified);*/
-        }
-      }
 
       .accentColor {
         background-color: var(--accent-color);
@@ -33470,13 +33575,48 @@ It will also ensure that focus remains in the dialog.
         overflow-x: hidden;
       }
 
+      @media (min-width: 600px) {
+        :host {
+          display: block;
+        }
+
+        #searchbox {
+          width: 300px;
+        }
+
+        #resultsBox {
+          min-width: 300px;
+        }
+
+        .mainContent {
+          padding: 0 24px;
+          @apply(--layout-horizontal);
+          /*@apply(--layout-center-justified);*/
+        }
+      }
+
+      @media (max-width: 600px) {
+        :host {
+          display: block;
+          width: 100%;
+          height: 100%;
+
+        }
+
+        .mainContent {
+          padding: 0 8px;
+          @apply(--layout-vertical);
+          /*@apply(--layout-center-justified);*/
+        }
+      }
+
     </style>
     <paper-scroll-header-panel id="headerPanelMain" class="main" main="" fixed="">
       
       <paper-toolbar hidden$="[[hideToolbar]]">
         <paper-icon-button icon="menu" on-tap="openDrawer"></paper-icon-button>
         <div class="app-name">[[title]]</div>
-        <div class="space"></div>
+        <link-search-simple placeholder="[[simplePlaceholder]]" hide="[[_showAdvancedSearch(results.length, obj)]]" on-key-enter="_onEnterSimpleSearch" on-show-advanced="_onTapAdvSearch"></link-search-simple>
         
         <link-user-action id="userAction" user="[[user]]"></link-user-action>
       </paper-toolbar>
@@ -33492,26 +33632,22 @@ It will also ensure that focus remains in the dialog.
             </div>
           </div>
           <div class="mainContent">
-            <link-searchbox id="searchbox" auto="" on-append-response="appendResults" hidden$="[[_hideSearch(obj)]]" on-response="setResults"></link-searchbox>
-            <span class="gap" hidden$="[[showSpaceBetween(results.length, obj)]]"></span>
-            <template is="dom-if" if="{{useVaadin}}">
-              <link-vaadinlistbox id="vaadinResultsBox" filtrabile="[[filtrabile]]" class="allSpace" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" intestazione="{{intestazione}}"></link-vaadinlistbox>
-            </template>
-            <template is="dom-if" if="{{!useVaadin}}">
-               <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" massive="[[massive]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
-            </template>
+            <link-searchbox id="searchbox" auto="" on-append-response="appendResults" on-response="setResults" hidden$="[[!advSearch]]"></link-searchbox>
+            <span class="gap" hidden$="[[!advSearch]]"></span>
+            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" massive="[[massive]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" on-listbox-item-count="activateFabs"></link-listbox>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
           </div>
         </div>
       </iron-scroll-threshold>
     </paper-scroll-header-panel>
-    <link-fab-menu class="addFAB">
-      <paper-fab icon="remove" class="fab-item" mini="" hidden$="[[!cancellazioneUrl]]" title="[[localize('eliminaElementi')]]"></paper-fab>
-      <paper-fab icon="file-download" class="fab-item" mini="" hidden$="[[!esportazioneUrl]]" title="[[localize('scaricaZIP')]]" on-tap="export"></paper-fab>
-      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[hideAddFAB(creazioneUrl)]]"></paper-fab>
+    <link-fab-menu class="addFAB" show="[[showFabMenu]]">
+      <paper-fab icon="remove" class="fab-item" mini="" on-tap="delete" hidden$="[[!cancellazioneUrl]]" title="[[localize('eliminaElementi')]]" color=""></paper-fab>
+      <paper-fab icon="file-download" class="fab-item" mini="" on-tap="export" hidden$="[[!esportazioneUrl]]" disabled$="[[dwnDisabled]]" title="[[localize('scaricaZIP')]]"></paper-fab>
+      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[!creazioneUrl]]"></paper-fab>
     </link-fab-menu>
     <iron-ajax id="getResourceInfo" handle-as="json" on-response="getResourceInfo_responseHandler" on-error="getResourceInfo_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="esportaDati" url="[[esportazioneUrl]]" handle-as="blob" method="POST" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="elimina" url="[[cancellazioneUrl]]" method="POST" handle-as="json" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="elimina_responseHandler" on-error="elimina_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
   <script>
   (function() {
@@ -33599,13 +33735,33 @@ It will also ensure that focus remains in the dialog.
           type: String,
           value: ''
         },
+        infoCancellazione: {
+          type: Object,
+          value: null
+        },
+        simplePlaceholder: {
+          type: String,
+          value: ''
+        },
+        advSearch: {
+          type: Boolean,
+          value: false
+        },
+        dwnDisabled: {
+          type: Boolean,
+          value: false
+        },
+        showFabMenu: {
+          type: Boolean,
+          value: false
+        },
         massive: {
           type: Boolean,
           value: false
         },
         maxSelections: {
-          type: Object,
-          value: { max: 0, total: 0}
+          type: Number,
+          value: 0
         },
         removable: {
           type: Boolean,
@@ -33642,19 +33798,20 @@ It will also ensure that focus remains in the dialog.
         if (response.exportMassivo) {
             this.massive = response.exportMassivo;
         }
-        if (response.numeroMassimoElementiExport) {
-            this.maxSelections.max = response.numeroMassimoElementiExport;
+        if (response.simpleSearchPlaceHolder) {
+            this.simplePlaceholder = response.simpleSearchPlaceHolder;
         }
-        if (response.totaleRisultati) {
-            this.maxSelections.total = response.totaleRisultati;
+        if (response.numeroMassimoElementiExport) {
+            this.maxSelections = response.numeroMassimoElementiExport;
         }
         if (response.infoCreazione){
           this.creazioneUrl = REST_URL + response.infoCreazione.uri + app.appendLangParameter(response.infoCreazione.uri);
         } else {
           this.creazioneUrl = '';
         }
-        if (response.cancellazione) {
-          this.cancellazioneUrl = REST_URL + response.cancellazione + app.appendLangParameter(response.cancellazione);
+        if (response.infoCancellazione) {
+          this.infoCancellazione = response.infoCancellazione;
+          this.cancellazioneUrl = REST_URL + response.infoCancellazione.uri + app.appendLangParameter(response.infoCancellazione.uri);
         } else {
           this.cancellazioneUrl = '';
         }
@@ -33711,36 +33868,131 @@ It will also ensure that focus remains in the dialog.
         return (this.cancellazioneUrl || this.esportazioneUrl) ? true : false;
       },
 
-      showSpaceBetween: function(numResults, obj){
+      _showAdvancedSearch: function(numResults, obj){
         return numResults!=0 && this._hideSearch(obj);
       },
 
-      export: function(event){
-       var listaId = [];
-        if(!this.useVaadin) {
-          for (var i = 0; i < this.results.length; i++) {
-            var obj = this.results[i];
-            if (obj.checked) {
-              listaId.push(obj.id);
-            }
+      _hideSearch: function(obj){
+        if (obj && obj.infoRicerca && ((obj.infoRicerca.titolo==null && obj.infoRicerca.sezioni[0].fields.length>0) || (obj.infoRicerca.titolo!=null))){
+          return false;
+        }
+        return true;
+      },
+
+      _onEnterSimpleSearch: function(e){
+        if (e.detail.keyCode === 13) {
+          e.detail.preventDefault();
+          var param = e.detail.currentTarget.value.toString().trim();
+          if (param != '') {
+            this.toggleAdvancedSearch(false);
+            this.$.searchbox.simpleSearch(param);
           }
+        }
+      },
+
+      _onTapAdvSearch: function(){
+        this.toggleAdvancedSearch(!this.advSearch);
+      },
+
+      toggleAdvancedSearch: function(value) {
+          this.advSearch = value;
+      },
+
+      activateFabs: function(event) {
+        if(this.massive) {
+          this.dwnDisabled = !(this.numResults > 0 && this.numResults <= this.maxSelections);
+          //this.dwnDisabled = !(event.detail.elements > 0 && event.detail.elements <= this.maxSelections);
+        }
+        else this.dwnDisabled = false;
+        this.showFabMenu = !(!this.creazioneUrl && !this.cancellazioneUrl && !this.esportazioneUrl);
+      },
+
+      delete: function(event) {
+        var listaId = [];
+        for (var i = 0; i < this.results.length; i++) {
+          var obj = this.results[i];
+          if (obj.checked) {
+            listaId.push(obj.id);
+          }
+        }
+        if((listaId.length > 0 && !this.massive) || (listaId.length == 0 && this.massive)) {
+          var lap = document.createElement('link-alert-panel');
+          lap.addEventListener('action-delete', function request(e) {
+            e.currentTarget.removeEventListener('action-delete', request);
+            var params = e.detail.fields;
+            params['ids'] = listaId;
+            this.$.elimina.body = JSON.stringify(params);
+            this.$.elimina.url = this.cancellazioneUrl;
+            this.$.elimina.url += this.$.searchbox.lastQuery;
+            this.$.elimina.contentType = 'application/json';
+            app.showSpinner();
+            this.$.elimina.generateRequest();
+          }.bind(this));
+          lap.addEventListener('iron-overlay-closed', function closing(e) {
+            e.currentTarget.removeEventListener('iron-overlay-closed', closing);
+            document.body.removeChild(e.currentTarget);
+          });
+          lap.qta = listaId.length;
+          lap.template = this.infoCancellazione;
+          document.body.appendChild(lap);
         } else {
-          var grid = grid || document.querySelector('#vaadinResultsBox_grid');
-          if(grid){
-            var selection = grid.selection.selected();
-            for (var i = 0; i < selection.length; i++) {
-              var obj = this.results[selection[i]];
-              listaId.push(obj.id);
+          app.showPaperToast(this.localize('nessunoSelezionato'), 'error');
+        }
+      },
+
+      elimina_responseHandler: function(event){
+        app.hideSpinner();
+        try {
+          this.$$('#resultsBox').resetSelection();
+          //Render list
+          var resp = event.detail.response;
+          this.obj = resp.response;
+          if (this.obj){
+            this.setResponse(this.obj);
+          }
+          if (resp.dettaglioEsito){
+            switch (resp.esitoOperazione){
+              case 'ESEGUITA':
+                app.showPaperToast(resp.dettaglioEsito, 'success');
+                break;
+              case 'NONESEGUITA':
+                app.showPaperToast(resp.dettaglioEsito, 'warning');
+                break;
+              case 'ERRORE':
+                app.showPaperToast(resp.dettaglioEsito, 'error');
+                break;
             }
+          } else {
+            console.log('Errore dettaglioEsito non presente');
+          }
+        } catch (err) {
+          console.log(err.message);
+        }
+      },
+
+      elimina_errorHandler: function(event){
+        app.hideSpinner();
+        app.dars_errorHandler(event);
+      },
+
+      export: function(event){
+        var listaId = [];
+        for (var i = 0; i < this.results.length; i++) {
+          var obj = this.results[i];
+          if (obj.checked) {
+            listaId.push(obj.id);
           }
         }
         if((listaId.length > 0 && !this.massive) || (listaId.length == 0 && this.massive)) {
           this.$$('#resultsBox').resetSelection();
           this.$.esportaDati.body = listaId;
-          this.$.esportaDati.url +='&'+this.$.searchbox.lastQuery;
+          this.$.esportaDati.url = this.esportazioneUrl;
+
+          this.$.esportaDati.url += this.$.searchbox.lastQuery;
           if(this.massive) {
             this.$.esportaDati.url +='&exportMassivo=true';
           }
+
           this.$.esportaDati.contentType = 'application/json';
           app.showSpinner();
           this.$.esportaDati.generateRequest();
@@ -33752,13 +34004,17 @@ It will also ensure that focus remains in the dialog.
 
       esportaDati_responseHandler: function(event){
         app.hideSpinner();
-        var a         = document.createElement('a');
-        a.href        = window.URL.createObjectURL(event.detail.xhr.response);
-        a.target      = '_blank';
-        var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
-        a.download    = nomeFile;
-        document.body.appendChild(a);
-        a.click();
+        try {
+          var a         = document.createElement('a');
+          a.href        = window.URL.createObjectURL(event.detail.xhr.response);
+          a.target      = '_blank';
+          var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
+          a.download    = nomeFile;
+          document.body.appendChild(a);
+          a.click();
+        } catch (err) {
+            console.log(err.message);
+        }
       },
 
       esportaDati_errorHandler: function(event){
@@ -33770,10 +34026,9 @@ It will also ensure that focus remains in the dialog.
         this.fire('open-drawer', this.resource, true);
       },
 
-
-      hideAddFAB: function(creazioneUrl){
+      /*hideAddFAB: function(creazioneUrl){
         return !creazioneUrl;
-      },
+      },*/
 
       loadMoreData: function(event){
         if (this.numResults > this.results.length && this.$.searchbox.searchUrl!=''){
@@ -33798,13 +34053,6 @@ It will also ensure that focus remains in the dialog.
           //temp.titolo = this.obj.titolo;
           temp.template = this.obj.infoCreazione;
         }
-      },
-
-      _hideSearch: function(obj){
-        if (obj && obj.infoRicerca && ((obj.infoRicerca.titolo==null && obj.infoRicerca.sezioni[0].fields.length>0) || (obj.infoRicerca.titolo!=null))){
-          return false;
-        }
-        return true;
       },
 
       saved: function(event){
@@ -35316,10 +35564,17 @@ It will also ensure that focus remains in the dialog.
         </iron-pages>
       </div>
     </paper-scroll-header-panel>
-    <paper-fab class="addFAB" icon="add" on-tap="addElemento" hidden$="[[hideAddFAB(selectedTab, obj)]]"></paper-fab>
-    <paper-fab class="editFAB" icon="create" on-tap="editElemento" hidden$="[[hideEditFAB(selectedTab, obj)]]"></paper-fab>
+    <link-fab-menu class="addFAB" show="[[showFabMenu]]">
+      <paper-fab icon="remove" class="fab-item" mini="" on-tap="delete" hidden$="[[!uriCancellazione]]" title="[[localize('eliminaElementi')]]" color=""></paper-fab>
+      <paper-fab icon="file-download" class="fab-item" mini="" on-tap="export" hidden$="[[!uriEsportazione]]" title="[[localize('scaricaZIP')]]"></paper-fab>
+      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[hideAddFAB(selectedTab, obj)]]"></paper-fab>
+      <paper-fab icon="create" class="fab-item" mini="" on-tap="editElemento" hidden$="[[hideEditFAB(selectedTab, obj)]]"></paper-fab>
+    </link-fab-menu>
+
     <iron-ajax id="getDetail" handle-as="json" on-response="getDetail_responseHandler" on-error="getDetail_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="downloadDati" url="[[downloadUrl]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="downloadDati_responseHandler" on-error="downloadDati_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="esportaDati" url="[[uriEsportazione]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="elimina" url="[[uriCancellazione]]" method="POST" handle-as="json" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="elimina_responseHandler" on-error="elimina_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
   <script>
   (function() {
@@ -35353,6 +35608,10 @@ It will also ensure that focus remains in the dialog.
           type: String,
           value: ''
         },
+        infoCancellazione: {
+          type: Object,
+          value: null
+        },
         uriEsportazione: {
           type: String,
           value: ''
@@ -35370,6 +35629,10 @@ It will also ensure that focus remains in the dialog.
           value: ''
         },
         showHome: {
+          type: Boolean,
+          value: false
+        },
+        showFabMenu: {
           type: Boolean,
           value: false
         }
@@ -35401,9 +35664,23 @@ It will also ensure that focus remains in the dialog.
       setUri: function(obj){
         if (obj){
           this.uriEsportazione = (obj.esportazione)? REST_URL + obj.esportazione + app.appendLangParameter(obj.esportazione) : '';
-          this.uriCancellazione = (obj.cancellazione)? REST_URL + obj.cancellazione + app.appendLangParameter(obj.cancellazione): '';
+          this.uriCancellazione = '';
+          if(obj.infoCancellazione) {
+            this.infoCancellazione = obj.infoCancellazione;
+            this.uriCancellazione = REST_URL + obj.infoCancellazione.uri + app.appendLangParameter(obj.infoCancellazione.uri);
+          }
           this.uriModifica = (obj.infoModifica)?REST_URL + obj.infoModifica.uri + app.appendLangParameter(obj.infoModifica.uri): '';
           this.user=app.USER_LOGGED;
+
+          this.fabsMenu();
+        }
+      },
+
+      fabsMenu: function() {
+        this.showFabMenu = false;
+        if(this.selectedTab == 0 && (!this.hideAddFAB(this.selectedTab, this.obj) || !this.hideEditFAB(this.selectedTab, this.obj) ||
+            this.uriEsportazione || this.uriCancellazione)) {
+          this.showFabMenu = true;
         }
       },
 
@@ -35532,6 +35809,7 @@ It will also ensure that focus remains in the dialog.
       cambiaTab: function (event) {
 
        // console.log(this.selectedTab);
+        this.fabsMenu();
 
         if(this.selectedTab > 0) {
           var ec = this.querySelectorAll('link-search-view');
@@ -35557,7 +35835,85 @@ It will also ensure that focus remains in the dialog.
           if (!voce.avanzata) return false;
         }
         return !avanzata;
-      }
+      },
+
+      delete: function(event) {
+        var lap = document.createElement('link-alert-panel');
+        lap.addEventListener('action-delete', function request(e) {
+          e.currentTarget.removeEventListener('action-delete', request);
+          var params = e.detail.fields;
+          this.$.elimina.body = JSON.stringify(params);
+          this.$.elimina.url = this.uriCancellazione;
+          this.$.elimina.contentType = 'application/json';
+          app.showSpinner();
+          this.$.elimina.generateRequest();
+        }.bind(this));
+        lap.addEventListener('iron-overlay-closed', function closing(e) {
+          e.currentTarget.removeEventListener('iron-overlay-closed', closing);
+          document.body.removeChild(e.currentTarget);
+        });
+        lap.template = this.infoCancellazione;
+        document.body.appendChild(lap);
+      },
+
+      elimina_responseHandler: function(event){
+        app.hideSpinner();
+        try {
+          var resp = event.detail.response;
+          if (resp.dettaglioEsito){
+            switch (resp.esitoOperazione){
+              case 'ESEGUITA':
+                app.showPaperToast(resp.dettaglioEsito, 'success');
+                this.goBack();
+                break;
+              case 'NONESEGUITA':
+                app.showPaperToast(resp.dettaglioEsito, 'warning');
+                break;
+              case 'ERRORE':
+                app.showPaperToast(resp.dettaglioEsito, 'error');
+                break;
+            }
+          } else {
+            console.log('Errore dettaglioEsito non presente');
+          }
+        } catch (err) {
+          console.log(err.message);
+        }
+      },
+
+      elimina_errorHandler: function(event){
+        app.hideSpinner();
+        app.dars_errorHandler(event);
+      },
+
+      export: function(event){
+        this.$.esportaDati.url = this.uriEsportazione;
+
+        this.$.esportaDati.contentType = 'application/json';
+        app.showSpinner();
+        this.$.esportaDati.generateRequest();
+      },
+
+      esportaDati_responseHandler: function(event){
+        app.hideSpinner();
+        try {
+          var a         = document.createElement('a');
+          a.href        = window.URL.createObjectURL(event.detail.xhr.response);
+          a.target      = '_blank';
+          var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
+          a.download    = nomeFile;
+          document.body.appendChild(a);
+          a.click();
+        } catch (err) {
+          console.log(err.message);
+        }
+      },
+
+      esportaDati_errorHandler: function(event){
+        app.hideSpinner();
+        app.dars_errorHandler(event);
+      },
+
     });
   })();
   </script>
@@ -36155,6 +36511,15 @@ event and do your own custom submission:
         this.searchWithOffset(0);
       },
 
+      simpleSearch: function(param) {
+        this.lastQuery = '';
+        this.offset = 0;
+        this.$.searchResource.url = this.searchUrl + app.appendLangParameter(this.searchUrl) + '&simpleSearch='+param;
+        this.lastQuery = '&simpleSearch='+param;
+        app.showSpinner();
+        this.$.searchResource.generateRequest();
+      },
+
       searchWithOffset: function(offset){
         this.offset = offset;
         var temp = this.$.searchForm.serialize();
@@ -36188,7 +36553,7 @@ event and do your own custom submission:
         if (query.length>0){
           var pp = this.$.searchResource.url.indexOf('?') > -1 ? '&' : '?';
           this.$.searchResource.url += pp +query.join('&');
-          this.lastQuery = query.join('&');
+          this.lastQuery = '&'+query.join('&');
         }
         app.showSpinner();
         this.$.searchResource.generateRequest();
@@ -36420,7 +36785,7 @@ event and do your own custom submission:
         -webkit-transform: translate3d(0, 0, 0);
       }
 
-      .v2-item-box-translate {
+      .layout-item-box-translate {
         transform: translateX(64px);
       }
 
@@ -36428,10 +36793,10 @@ event and do your own custom submission:
 
     <paper-material elevation="0">
       <paper-input hidden$="[[onlyOne(dataProvider.length)]]" class="header" label="filtra" bind-value="{{filtro}}" on-bind-value-changed="filtraRisultati"></paper-input>
-      <template id="listTemplate" is="dom-repeat" items="[[dataProvider]]" filter="isVisible">
+      <template id="listTemplate" is="dom-repeat" items="[[dataProvider]]" filter="isVisible" on-dom-change="_domChanged">
         <paper-item id="item_[[index]]" on-tap="nextLevel" on-track="_onswipe">
           <div class="icon-checkmark"><iron-icon icon="check"></iron-icon></div>
-          <paper-item-body two-line="" class$="[[classFromIndex(index)]]">
+          <paper-item-body class$="[[classFromIndex(index)]]">
             <template is="juicy-html" content$="[[_render(item)]]"></template>
           </paper-item-body>
         </paper-item>
@@ -36468,8 +36833,8 @@ event and do your own custom submission:
           value: 0
         },
         maxSelections: {
-          type: Object,
-          value: { max: 0, total: 0}
+          type: Number,
+          value: 0
         },
         swipeVelocity: {
           type: Number,
@@ -36485,6 +36850,10 @@ event and do your own custom submission:
         //this.$.sa.checked=false;
       },
 
+      _domChanged: function() {
+        this.fire('listbox-item-count', { elements: this.$.listTemplate.renderedItemCount });
+      },
+
       classFromIndex: function(index){
         if (index%2==0){
           // Pari
@@ -36498,7 +36867,7 @@ event and do your own custom submission:
         var cib = event.currentTarget.querySelector('paper-item-body');
         if(cib.className.indexOf('item-selected') != -1) {
           this.toggleClass('item-selected', false, cib);
-          this.toggleClass('v2-item-box-translate', false, cib);
+          this.toggleClass('layout-item-box-translate', false, cib);
           this.dataProvider[event.model.index].checked = false;
           this.selections = (this.selections > 0)?this.selections - 1:0;
           return;
@@ -36510,6 +36879,14 @@ event and do your own custom submission:
       },
 
       isVisible: function (item) {
+        item.checked = false;
+        var index = this.$.listTemplate.items.indexOf(item);
+        var el = this.querySelector('#item_'+index+' paper-item-body');
+        if(el) {
+          this.toggleClass('item-selected', false, el);
+          this.toggleClass('layout-item-box-translate', false, el);
+          this.selections = 0;
+        }
         if (this.filtro) {
           return !!(item.titolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1 ||
           item.sottotitolo.toLowerCase().indexOf(this.filtro.toLowerCase()) != -1);
@@ -36545,7 +36922,7 @@ event and do your own custom submission:
         for(var i = 0; i < selectedElements.length; i++) {
             var el = selectedElements[i];
             this.toggleClass('item-selected', false, el);
-            this.toggleClass('v2-item-box-translate', false, el);
+            this.toggleClass('layout-item-box-translate', false, el);
         }
         this.selectAll(false);
         this.selections = 0;
@@ -36553,7 +36930,7 @@ event and do your own custom submission:
 
       _onswipe: function(e) {
         if(this.selectable && !this.massive) {
-          if(this.selections < this.maxSelections.max) {
+          if(this.selections < this.maxSelections) {
             switch(e.detail.state) {
               case 'start':
                 this.swipeVelocity = new Date().getTime();
@@ -36565,7 +36942,7 @@ event and do your own custom submission:
                 if(e.detail.dx >= 100 && dt < 500) {
                   var pib = e.currentTarget.querySelector('paper-item-body');
                   if(pib.className.indexOf('item-selected') == -1) {
-                    pib.className += ' v2-item-box-translate item-selected';
+                    pib.className += ' layout-item-box-translate item-selected';
                     this.dataProvider[e.model.index].checked = true;
                     this.selections = (this.selections < 0)?1:this.selections + 1;
                   }
@@ -39012,115 +39389,12 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
   })();
   </script>
 </dom-module>
-
-
-
-
-<dom-module id="paper-dialog-shared-styles" assetpath="../bower_components/paper-dialog-behavior/">
-  <template>
-    <style>
-      :host {
-        display: block;
-        margin: 24px 40px;
-
-        background: var(--paper-dialog-background-color, --primary-background-color);
-        color: var(--paper-dialog-color, --primary-text-color);
-
-        @apply(--paper-font-body1);
-        @apply(--shadow-elevation-16dp);
-        @apply(--paper-dialog);
-      }
-
-      :host > ::content > * {
-        margin-top: 20px;
-        padding: 0 24px;
-      }
-
-      :host > ::content > .no-padding {
-        padding: 0;
-      }
-
-      :host > ::content > *:first-child {
-        margin-top: 24px;
-      }
-
-      :host > ::content > *:last-child {
-        margin-bottom: 24px;
-      }
-
-      :host > ::content h2 {
-        position: relative;
-        margin: 0;
-        @apply(--paper-font-title);
-
-        @apply(--paper-dialog-title);
-      }
-
-      :host > ::content .buttons {
-        position: relative;
-        padding: 8px 8px 8px 24px;
-        margin: 0;
-
-        color: var(--paper-dialog-button-color, --primary-color);
-
-        @apply(--layout-horizontal);
-        @apply(--layout-end-justified);
-      }
-    </style>
-  </template>
-</dom-module>
-<dom-module id="paper-dialog" assetpath="../bower_components/paper-dialog/">
-  <template>
-    <style include="paper-dialog-shared-styles"></style>
-    <content></content>
-  </template>
-</dom-module>
-
-<script>
-
-(function() {
-
-  Polymer({
-
-    is: 'paper-dialog',
-
-    behaviors: [
-      Polymer.PaperDialogBehavior,
-      Polymer.NeonAnimationRunnerBehavior
-    ],
-
-    listeners: {
-      'neon-animation-finish': '_onNeonAnimationFinish'
-    },
-
-    _renderOpened: function() {
-      this.cancelAnimation();
-      this.playAnimation('entry');
-    },
-
-    _renderClosed: function() {
-      this.cancelAnimation();
-      this.playAnimation('exit');
-    },
-
-    _onNeonAnimationFinish: function() {
-      if (this.opened) {
-        this._finishRenderOpened();
-      } else {
-        this._finishRenderClosed();
-      }
-    }
-
-  });
-
-})();
-
-</script>
 <dom-module id="link-user-action" assetpath="link-user-action/">
   <template>
     <style include="shared-styles">
       :host {
         display: block;
+        cursor: default;
       }
       #menu {
         position: relative;
@@ -39128,41 +39402,45 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
       }
 
       .userName {
-        padding: 18px;
         color: var(--accent-color);
       }
 
-      .versione {
-        margin-top: 4px;
+      .head-dialog {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--layout-end-justified);
+        margin-top: 10px;
       }
 
-      .copy {
-        font-weight: 500;
+      .icon-dismiss {
+        margin: 0 -8px 0 0;
       }
+
+      #prefs {
+        width: 50%;
+      }
+
     </style>
     <paper-menu-button id="pmb" vertical-align="top" horizontal-align="right">
-      <paper-icon-button icon="face" class="dropdown-trigger"></paper-icon-button>
+      <paper-icon-button icon="face" class="dropdown-trigger" tabindex="-1"></paper-icon-button>
       <div id="menu" class="dropdown-content">
-        <div class="userName">[[user.nome]]</div>
-        <paper-item>
-          <paper-checkbox on-change="setAdvanced" id="cbAdvanced" checked$="[[advanced]]">[[localize('modalitaAvanzata')]]</paper-checkbox>
-        </paper-item>
-        <paper-item on-tap="showAbout">[[localize('info')]]</paper-item>
-        <template is="dom-repeat" items="[[languages]]">
-          <paper-item on-tap="_changeCurrentLanguage" disabled="[[item.selected]]">[[localize(item.lingua)]]</paper-item>
-        </template>
+        <paper-item class="userName">[[user.nome]]</paper-item>
+        <paper-item on-tap="openPrefs">-**- Preferenze</paper-item>
         <paper-item on-tap="logout">[[localize('esci')]]</paper-item>
       </div>
     </paper-menu-button>
-    <paper-dialog id="animated" entry-animation="scale-up-animation" exit-animation="scale-down-animation">
-      <h2>[[aboutInfo.titolo]]</h2>
-      <p class="versione">Versione [[aboutInfo.versione]] ([[aboutInfo.build]])</p>
-      <p class="copy">[[aboutInfo.copyright]]</p>
-      <div class="buttons">
-        <paper-button goto="projectPage" on-tap="goto">[[localize('paginaProgetto')]]</paper-button>
-        <paper-button goto="manualeUso" on-tap="goto">[[localize('manuale')]]</paper-button>
-        <paper-button goto="licenza" on-tap="goto">[[localize('licenza')]]</paper-button>
+
+    <paper-dialog id="prefs">
+      <div class="head-dialog">
+        <paper-icon-button class="icon-dismiss" icon="icons:clear" tabindex="-1" on-tap="close"></paper-icon-button>
       </div>
+      <h2>-**- Preferenze</h2>
+      <paper-toggle-button on-change="setAdvanced" id="cbAdvanced" value$="[[advanced]]">[[localize('modalitaAvanzata')]]</paper-toggle-button>
+      <paper-radio-group on-paper-radio-group-changed="_changeCurrentLanguage" selected$="[[defaultLanguage]]">
+        <template is="dom-repeat" items="[[languages]]">
+          <paper-radio-button name="[[item.lingua]]">[[localize(item.lingua)]]</paper-radio-button>
+        </template>
+      </paper-radio-group>
     </paper-dialog>
     <iron-ajax id="logout" on-response="logout_responseHandler" on-error="logout_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
@@ -39189,15 +39467,17 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
             return app.USER_LOGGED;
           }
         },
+        defaultLanguage: {
+          type: String,
+          value: function(){
+            return app.LANGUAGE;
+          }
+        },
         advanced: {
           type: Object,
           value: function(){
             return app.ADVANCED_MODE;
           }
-        },
-        aboutInfo: {
-          type: Object,
-          value: null
         },
         languages: {
           type: Array,
@@ -39208,17 +39488,15 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
       setAdvanced: function(event){
         app.ADVANCED_MODE=event.target.checked;
         document.dispatchEvent(new CustomEvent('change-mode'))
+      },
+
+      openPrefs: function(){
+        this.$.prefs.open();
         this.$.pmb.close();
       },
 
-      showAbout: function(event){
-        this.aboutInfo = app.consoleInfo.about;
-        this.$.animated.open();
-        this.$.pmb.close();
-      },
-
-      goto: function(event){
-        window.open(this.aboutInfo[event.target.attributes['goto'].value], '_blank');
+      close: function(){
+        this.$.prefs.close();
       },
 
       logout: function(event){
@@ -39250,14 +39528,15 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
       _getLanguages: function(event){
         this.languages = [];
         for (var lingua in app.RESOURCES){
-         // this.push('languages', {lingua: lingua, selected: lingua == app.LANGUAGE});
+            this.push('languages', {lingua: lingua, selected: lingua == app.LANGUAGE});
         }
       },
 
       _changeCurrentLanguage: function(event){
-        app.LANGUAGE = event.model.item.lingua;
+        app.LANGUAGE = event.currentTarget.selected;
         document.dispatchEvent(new CustomEvent('change-language'));
       }
+
     });
   })();
   </script>
@@ -39268,15 +39547,17 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
       :host {
         display: block;
         margin-left: 8px;
-        z-index: 9999999;
+        z-index: 2;
       }
 
       .fab-content ::content .fab-item {
         position: absolute;
+        visibility: hidden;
       }
 
       .fab-content ::content .fab-item.fab-open {
         position: relative;
+        visibility: visible;
         margin-bottom: 8px;
       }
 
@@ -39287,11 +39568,11 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
 
     </style>
 
-      <div class="overlay-fab"></div>
-      <div class="fab-content fab-list">
+      
+      <div class="fab-content fab-list" hidden$="[[!show]]">
         <content></content>
       </div>
-      <paper-fab id="trigger" icon="more-vert" on-tap="_tap" on-blur="_blur"></paper-fab>
+      <paper-fab id="trigger" icon="more-vert" on-tap="_tap" on-blur="_blur" hidden$="[[!show]]"></paper-fab>
 
   </template>
   <script>
@@ -39301,20 +39582,44 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
     Polymer({
       is: 'link-fab-menu',
 
+      listeners: {
+        'down': '_downListener',
+        'up': '_upListener'
+      },
+
       properties: {
+        show: {
+          type: Boolean,
+          value: false
+        },
+        _hasAction: {
+          type: Boolean,
+          value: false
+        }
       },
 
       ready: function() {
-        //this.listen(document, 'tap', '_outside');
+      },
+
+      _downListener: function () {
+        this._hasAction = true;
+      },
+
+      _upListener: function (e) {
+        this._hasAction = false;
+        var el = Polymer.dom(e.target).getOwnerRoot().host;
+        if(el != this.$.trigger) {
+          this._blur();
+        }
       },
 
       detached: function() {
       },
 
       _blur: function() {
-        this.async(function() {
+        if(!this._hasAction) {
           this._tap(true);
-        }, 200);
+        }
       },
 
       _tap: function(forceClose) {
@@ -39331,17 +39636,1034 @@ function tI(a){return this.b.rf(a)}function uI(){return this.b.Xc()}function vI(
         }
         this.updateStyles();
 
-      },
-
-      /*_outside: function(event){
-        var polyEvent = Polymer.dom(event);
-        if (polyEvent.path.indexOf(this.$.trigger) == -1) {
-          this._tap(true);
-        }
-      }*/
+      }
 
     });
   })();
+  </script>
+</dom-module>
+<dom-module id="link-search-simple" assetpath="link-search-simple/">
+  <template>
+    <style>
+
+      :host {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+      }
+
+      .toolbar-search {
+        --paper-input-container-input-color: white;
+        --paper-input-container: {
+          background-color: rgba(255, 255, 255 , .1);
+          padding: 0 10px;
+        };
+        --paper-input-container-underline: {
+          border: none;
+        };
+        --paper-input-container-underline-focus: {
+          border: none;
+        };
+      }
+
+      .ico-advsearch {
+        display: block;
+      }
+
+      .mobile-icosearch {
+        display: none;
+      }
+
+      .prefix-icosearch {
+        display: block;
+        margin-right: 8px;
+        padding: 8px 0;
+      }
+
+      .mobile-resetsearch, .mobile-backsearch {
+        display: none;
+      }
+
+      .simple-bar-group {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--layout-center-justified);
+      }
+
+      .sub-bar-group {
+        width: 40%;
+      }
+
+      .sub-bar-group > * {
+        @apply(--layout-self-center);
+      }
+
+      @media (max-width: 600px) {
+
+        .simple-open {
+          position: absolute;
+          background-color: var(--toolbar-color);
+          right: 8px;
+          left: 8px;
+          top: 0;
+          bottom: 0;
+          z-index: 1;
+        }
+
+        .simple-bar-group {
+          @apply(--layout-horizontal);
+          @apply(--layout-flex);
+          @apply(--layout-end-justified);
+        }
+
+        .simple-bar-group-center {
+          @apply(--layout-center);
+        }
+
+        .sub-bar-group {
+          @apply(--layout-flex);
+        }
+
+        .toolbar-search {
+          display: var(--simple-toolbar-search, none);
+        }
+
+        .ico-advsearch {
+          display: none;
+        }
+
+        .mobile-icosearch {
+          display: var(--simple-toolbar-icosearch, block);
+        }
+
+        .prefix-icosearch {
+          display: var(--simple-toolbar-prefix-icosearch, none);
+        }
+
+        .mobile-resetsearch, .mobile-backsearch {
+          display: var(--simple-mobile-resetsearch, none);
+          margin-right: 8px;
+        }
+
+      }
+
+    </style>
+
+    <div class="simple-bar-group">
+      <div class="sub-bar-group">
+        <paper-input no-label-float="" placeholder="[[placeholder]]" class="toolbar-search" on-keypress="_onKeypressSimpleSearch">
+          <paper-icon-button prefix="" icon="arrow-back" class="mobile-backsearch" on-tap="_onTapMobileBack"></paper-icon-button>
+          <iron-icon icon="search" prefix="" class="prefix-icosearch"></iron-icon>
+          <paper-icon-button suffix="" icon="more-vert" class="ico-advsearch" hidden$="[[hide]]" on-tap="_onTapAdvSearch"></paper-icon-button>
+          <paper-icon-button suffix="" icon="clear" class="mobile-resetsearch" on-tap="_onTapMobileReset"></paper-icon-button>
+        </paper-input>
+      </div>
+      <paper-icon-button suffix="" icon="search" class="mobile-icosearch" on-tap="_onTapMobileSearch"></paper-icon-button>
+    </div>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-search-simple',
+
+      properties: {
+        placeholder: {
+          type: String,
+          value: ''
+        },
+        hide: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+      ready: function() {
+        this.listen(window, 'resize', '_resetVars');
+      },
+      detach: function() {
+        this.unlisten(window, 'resize', '_resetVars');
+      },
+      _resetVars: function(e) {
+        this.reset();
+      },
+      _onKeypressSimpleSearch: function(e) {
+        this.fire('key-enter', e);
+      },
+      _onTapAdvSearch: function(e) {
+        this.fire('show-advanced', e);
+      },
+      _onTapMobileReset: function() {
+        this.querySelector('paper-input').value = '';
+      },
+      _onTapMobileSearch: function(e) {
+        this._onTapMobileReset();
+        this.customStyle['--simple-toolbar-search'] = 'block';
+        this.customStyle['--simple-toolbar-icosearch'] = 'none';
+        this.customStyle['--simple-mobile-resetsearch'] = 'block';
+        this.customStyle['--simple-mobile-prefix-icosearch'] = 'none';
+        this.hideReset = false;
+        var sbg = this.querySelector('.simple-bar-group');
+        this.toggleClass('simple-bar-group-center', true, sbg);
+        this.toggleClass('simple-open', true, sbg);
+        this.updateStyles();
+        this.fire('mobile-search', e);
+      },
+      _onTapMobileBack: function(e) {
+        this.reset();
+        this.fire('mobile-reset', e);
+      },
+      reset: function() {
+        var update = false;
+        if(this.customStyle['--simple-toolbar-search'] != 'none') {
+          this.customStyle['--simple-toolbar-search'] = 'none';
+          update = true;
+        }
+        if(this.customStyle['--simple-toolbar-icosearch'] != 'block') {
+          this.customStyle['--simple-toolbar-icosearch'] = 'block';
+          update = true;
+        }
+        if(this.customStyle['--simple-mobile-resetsearch'] != 'none') {
+          this.customStyle['--simple-mobile-resetsearch'] = 'none';
+          update = true;
+        }
+        if(this.customStyle['--simple-mobile-prefix-icosearch'] != 'block') {
+          this.customStyle['--simple-mobile-prefix-icosearch'] = 'block';
+          update = true;
+        }
+        this.hideReset = true;
+        var sbg = this.querySelector('.simple-bar-group');
+        this.toggleClass('simple-bar-group-center', false, sbg);
+        this.toggleClass('simple-open', false, sbg);
+        if(update) {
+          this.updateStyles();
+        }
+      }
+
+    });
+  })();
+  </script>
+</dom-module>
+<script>
+
+/**
+`iron-a11y-keys` provides a cross-browser interface for processing
+keyboard commands. The interface adheres to [WAI-ARIA best
+practices](http://www.w3.org/TR/wai-aria-practices/#kbd_general_binding).
+It uses an expressive syntax to filter key presses.
+
+## Basic usage
+
+The sample code below is a portion of a custom element. The goal is to call
+the `onEnter` method whenever the `paper-input` element is in focus and
+the `Enter` key is pressed.
+
+    <iron-a11y-keys id="a11y" target="[[target]]" keys="enter"
+                        on-keys-pressed="onEnter"></iron-a11y-keys>
+    <paper-input id="input"
+                 placeholder="Type something. Press enter. Check console."
+                 value="{{userInput::input}}"></paper-input>
+
+The custom element declares an `iron-a11y-keys` element that is bound to a
+property called `target`. The `target` property
+needs to evaluate to the `paper-input` node. `iron-a11y-keys` registers
+an event handler for the target node using Polymer's [annotated event handler
+syntax](https://www.polymer-project.org/1.0/docs/devguide/events.html#annotated-listeners). `{{userInput::input}}` sets the `userInput` property to the
+user's input on each keystroke.
+
+The last step is to link the two elements within the custom element's
+registration.
+
+    ...
+    properties: {
+      userInput: {
+        type: String,
+        notify: true,
+      },
+      target: {
+        type: Object,
+        value: function() {
+          return this.$.input;
+        }
+      },
+    },
+    onEnter: function() {
+      console.log(this.userInput);
+    }
+    ...
+
+## The `keys` attribute
+
+The `keys` attribute expresses what combination of keys triggers the event.
+
+The attribute accepts a space-separated, plus-sign-concatenated
+set of modifier keys and some common keyboard keys.
+
+The common keys are: `a-z`, `0-9` (top row and number pad), `*` (shift 8 and
+number pad), `F1-F12`, `Page Up`, `Page Down`, `Left Arrow`, `Right Arrow`,
+`Down Arrow`, `Up Arrow`, `Home`, `End`, `Escape`, `Space`, `Tab`, `Enter`.
+
+The modifier keys are: `Shift`, `Control`, `Alt`, `Meta`.
+
+All keys are expected to be lowercase and shortened. E.g.
+`Left Arrow` is `left`, `Page Down` is `pagedown`, `Control` is `ctrl`,
+`F1` is `f1`, `Escape` is `esc`, etc.
+
+### Grammar
+
+Below is the [EBNF](http://en.wikipedia.org/wiki/Extended_Backus%E2%80%93Naur_Form)
+Grammar of the `keys` attribute.
+
+    modifier = "shift" | "ctrl" | "alt" | "meta";
+    ascii = ? /[a-z0-9]/ ? ;
+    fnkey = ? f1 through f12 ? ;
+    arrow = "up" | "down" | "left" | "right" ;
+    key = "tab" | "esc" | "space" | "*" | "pageup" | "pagedown" |
+          "home" | "end" | arrow | ascii | fnkey;
+    keycombo = { modifier, "+" }, key ;
+    keys = keycombo, { " ", keycombo } ;
+
+### Example
+
+Given the following value for `keys`:
+
+`ctrl+shift+f7 up pagedown esc space alt+m`
+
+The event is fired if any of the following key combinations are fired:
+`Control` and `Shift` and `F7` keys, `Up Arrow` key, `Page Down` key,
+`Escape` key, `Space` key, `Alt` and `M` keys.
+
+### WAI-ARIA Slider Example
+
+The following is an example of the set of keys that fulfills WAI-ARIA's
+"slider" role [best
+practices](http://www.w3.org/TR/wai-aria-practices/#slider):
+
+    <iron-a11y-keys target="[[target]]" keys="left pagedown down"
+                    on-keys-pressed="decrement"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="right pageup up"
+                    on-keys-pressed="increment"></iron-a11y-keys>
+    <iron-a11y-keys target="[[target]]" keys="home"
+                    on-keys-pressed="setMin"></iron-a11y-keys>
+    <iron-a11y-keys target=""[[target]] keys="end"
+                    on-keys-pressed="setMax"></iron-a11y-keys>
+
+The `target` properties must evaluate to a node. See the basic usage
+example above.
+
+Each of the values for the `on-keys-pressed` attributes must evalute
+to methods. The `increment` method should move the slider a set amount
+toward the maximum value. `decrement` should move the slider a set amount
+toward the minimum value. `setMin` should move the slider to the minimum
+value. `setMax` should move the slider to the maximum value.
+
+@demo demo/index.html
+*/
+
+
+
+  Polymer({
+    is: 'iron-a11y-keys',
+
+    behaviors: [
+      Polymer.IronA11yKeysBehavior
+    ],
+
+    properties: {
+      /** @type {?Node} */
+      target: {
+        type: Object,
+        observer: '_targetChanged'
+      },
+
+      keys: {
+        type: String,
+        reflectToAttribute: true,
+        observer: '_keysChanged'
+      }
+    },
+
+    attached: function() {
+      if (!this.target) {
+        this.target = this.parentNode;
+      }
+    },
+
+    _targetChanged: function(target) {
+      this.keyEventTarget = target;
+    },
+
+    _keysChanged: function() {
+      this.removeOwnKeyBindings();
+      this.addOwnKeyBinding(this.keys, '_fireKeysPressed');
+    },
+
+    _fireKeysPressed: function(event) {
+      this.fire('keys-pressed', event.detail, {});
+    }
+  });
+</script><dom-module id="link-alert-panel" assetpath="link-alert-panel/">
+  <template>
+    <style>
+
+      paper-dialog {
+        width: 50%;
+      }
+
+      .block {
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+    </style>
+
+    <iron-a11y-keys id="a11y" target="[[target]]" keys="enter space backspace a" on-keys-pressed="refit"></iron-a11y-keys>
+    <div class="block"></div>
+    <paper-dialog id="dialog" no-cancel-on-outside-click="">
+      <h2>[[template.titolo]] [[qta]]</h2>
+      <paper-dialog-scrollable>
+        <form is="iron-form" id="delForm"></form>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button on-tap="closePanel">Close</paper-button>
+        <paper-button on-tap="validate">Elimina</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-alert-panel',
+
+      observers: [
+        'build(template)'
+      ],
+
+      behaviors: [
+        LinkFormBehavior,
+        LinkLocalizeBehavior,
+        Polymer.IronA11yKeysBehavior
+      ],
+      properties: {
+        template: {
+          type: Object,
+          value: null
+        },
+        qta: {
+          type: Number,
+          value: 0
+        },
+        target: {
+          type: Object,
+          value: function() {
+            return this;
+          }
+        }
+      },
+
+      ready: function(){
+      },
+
+      build: function(template){
+        if (template){
+          this.buildForm(template, this.$.delForm);
+          this.openPanel();
+        }
+      },
+
+      openPanel: function(){
+        this.$.dialog.open();
+      },
+
+      closePanel: function(){
+        this.$.dialog.close();
+        document.body.removeChild(this);
+      },
+
+      refit: function(){
+        this.$.dialog.refit();
+      },
+
+      validate: function(){
+        var ok = this.$.delForm.validate();
+        if (ok) {
+          this.fire('action-delete', { fields: this.serialization() });
+          this.closePanel();
+        }
+      },
+
+      serialization: function() {
+        var temp = this.serializeForm(this.$.delForm);
+        var ms = this.querySelectorAll('link-multi-select');
+        for (var lb = 0; lb < ms.length; lb++) {
+          temp[ms[lb].id] = ms[lb].selectedValues;
+        }
+        var lista = Object.keys(temp);
+        for (var i = 0; i < lista.length; i++) {
+          var obj = lista[i];
+          var newValue = temp[obj];
+          switch (this.$$('#'+obj).localName){
+            case 'paper-dropdown-menu':
+              if (this.$$('#'+obj).selectedItem){
+                newValue = this.$$('#'+obj).selectedItem.value;
+              } else {
+                newValue = null;
+              }
+              break;
+            default:
+              break;
+          }
+          if (newValue != null){
+            temp[obj] = newValue;
+          }
+        }
+
+        return temp;
+      }
+
+    });
+  })();
+  </script>
+</dom-module>
+<dom-module id="link-info-action" assetpath="link-info-action/">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+      }
+
+      .versione {
+        margin-top: 4px;
+      }
+
+      .copy {
+        font-weight: 500;
+      }
+
+      .head-dialog {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--layout-end-justified);
+        margin-top: 10px;
+      }
+
+      .icon-dismiss {
+        margin: 0 -8px 0 0;
+      }
+
+    </style>
+    <paper-icon-button icon="icons:info" tabindex="-1" on-tap="showAbout"></paper-icon-button>
+    <paper-dialog id="animated" entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+      <div class="head-dialog">
+        <paper-icon-button class="icon-dismiss" icon="icons:clear" tabindex="-1" on-tap="close"></paper-icon-button>
+      </div>
+      <h2>[[aboutInfo.titolo]]</h2>
+      <p class="versione">Versione [[aboutInfo.versione]] ([[aboutInfo.build]])</p>
+      <p class="copy">[[aboutInfo.copyright]]</p>
+      <div class="buttons">
+        <paper-button goto="projectPage" on-tap="goto">[[localize('paginaProgetto')]]</paper-button>
+        <paper-button goto="manualeUso" on-tap="goto">[[localize('manuale')]]</paper-button>
+        <paper-button goto="licenza" on-tap="goto">[[localize('licenza')]]</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'link-info-action',
+
+        ready: function(){
+        },
+
+        behaviors: [
+          LinkLocalizeBehavior
+        ],
+
+        properties: {
+          aboutInfo: {
+            type: Object,
+            value: null
+          }
+        },
+
+        showAbout: function(event){
+          this.aboutInfo = app.consoleInfo.about;
+          this.$.animated.open();
+        },
+
+        close: function(){
+          this.$.animated.close();
+        },
+
+        goto: function(event){
+          window.open(this.aboutInfo[event.target.attributes['goto'].value], '_blank');
+        }
+
+      });
+    })();
+  </script>
+</dom-module>
+
+
+<dom-module id="iron-label" assetpath="../bower_components/iron-label/">
+  <script>
+    Polymer.IronLabel = Polymer({
+      is: 'iron-label',
+
+      listeners: {
+        'tap': '_tapHandler'
+      },
+
+      properties: {
+        /**
+          * An ID reference to another element that needs to be
+          * labelled by this `iron-label` element.
+          */
+        for: {
+          type: String,
+          value: '',
+          reflectToAttribute: true,
+          observer: '_forChanged'
+        },
+        /**
+         * @type {Element}
+         */
+        _forElement: Object
+      },
+
+      attached: function() {
+        this._forChanged();
+      },
+
+      ready: function() {
+        this._generateLabelId();
+      },
+
+      // generate a unique id for this element
+      _generateLabelId: function() {
+        if (!this.id) {
+          var id = 'iron-label-' + Polymer.IronLabel._labelNumber++;
+          Polymer.dom(this).setAttribute('id', id);
+        }
+      },
+
+      _findTarget: function() {
+        if (this.for) {
+          // external target
+          var scope = Polymer.dom(this).getOwnerRoot();
+          return Polymer.dom(scope).querySelector('#' + this.for);
+        } else {
+          // explicit internal target
+          var el = Polymer.dom(this).querySelector('[iron-label-target]');
+          if (!el) {
+            // implicit internal target
+            el = Polymer.dom(this).firstElementChild;
+          }
+          return el;
+        }
+      },
+
+      _tapHandler: function(ev) {
+        if (!this._forElement) {
+          return;
+        }
+        var target = Polymer.dom(ev).localTarget;
+        if (target === this._forElement) {
+          return;
+        }
+        this._forElement.focus();
+        this._forElement.click();
+      },
+
+      _applyLabelledBy: function() {
+        if (this._forElement) {
+          Polymer.dom(this._forElement).setAttribute('aria-labelledby', this.id);
+        }
+      },
+
+      _forChanged: function() {
+        if (this._forElement) {
+          Polymer.dom(this._forElement).removeAttribute('aria-labelledby');
+        }
+        this._forElement = this._findTarget();
+        this._applyLabelledBy();
+      }
+    });
+
+    // global counter for unique label ids
+    Polymer.IronLabel._labelNumber = 0;
+  </script>
+</dom-module>
+<dom-module id="link-multi-select" assetpath="link-multi-select/">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+      }
+
+      .multi-selector {
+        border-bottom: 2px solid var(--primary-color);
+        margin-bottom: 5px;
+      }
+
+      .paper-title {
+        @apply(--layout-flex);
+      }
+
+      iron-dropdown {
+        background-color: #fff;
+        border: 1px solid #f0f0f0;
+        width: var(--iron-list-content-width, auto);
+        box-shadow: 0px 5px 25px rgba(0,0,0,.08)
+      }
+
+      paper-item:focus:before {
+        opacity: 0;
+      }
+
+      .dropdown-content {
+        overflow-x: hidden !important;
+      }
+
+      .user-select {
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      paper-input {
+        background-color: #fff;
+      }
+
+      .item-multi-list {
+        padding: 0 16px;
+      }
+
+      .chips-group {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+      }
+
+      .chip {
+        @apply(--layout-horizontal);
+        @apply(--layout-self-justified);
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 0 3px 3px 0;
+        max-width: 25%;
+        cursor: default;
+
+        min-height: 20px;
+        line-height: 20px;
+        font-size: 14px;
+      }
+
+      .chip-label {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .chip-icon {
+        min-width: 20px;
+        --iron-icon-width: 20px;
+        --iron-icon-height: 20px;
+      }
+
+      .filter {
+        position: absolute;
+        border-bottom: 1px solid #f0f0f0;
+        background-color: white;
+        padding: 0 16px;
+        width: var(--iron-list-filter-width, auto);
+        z-index: 1;
+      }
+
+      .group {
+        width: var(--iron-list-content-width, auto);
+        margin: var(--iron-list-content-voffset, 0) 0 0 0;
+        z-index: 0;
+      }
+
+      .group paper-item:nth-child(even) {
+        background-color: #fbfbfb;
+      }
+
+      .error {
+        color: var(--error-color);
+        font-size: 12px;
+      }
+
+      .hide {
+        display: none;
+      }
+
+      .block {
+        display: var(--content-overaly-block, none);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+    </style>
+
+    <paper-item on-tap="open" class="dropdown-trigger multi-selector" disabled="[[disabled]]">
+      <div class="paper-title">[[label]]</div>
+      <iron-icon icon="icons:arrow-drop-down"></iron-icon>
+    </paper-item>
+    <iron-label class="error hide" secondary="">[[errorMessage]]</iron-label>
+    <div class="chips-group user-select">
+      <template is="dom-repeat" items="[[_multiSelections]]" as="el">
+        <paper-item on-tap="_deselectMe" class="chip" data-selection$="[[el]]" title="[[_chipLabel(el)]]">
+          <iron-label class="chip-label">[[_chipLabel(el)]]</iron-label>
+          <iron-icon class="chip-icon" icon="icons:clear"></iron-icon>
+        </paper-item>
+        
+      </template>
+    </div>
+    <div class="block"></div>
+    <iron-dropdown allow-outside-scroll="" horizontal-offset="[[_hoffset]]" on-iron-overlay-opened="_overlayList" on-iron-overlay-closed="_exitOverlayList">
+      <div class="dropdown-content">
+        <paper-input placeholder="-**- Filtro" no-label-float="" class="filter" on-value-changed="_filtering"></paper-input>
+        <div class="group">
+          <template id="templateList" is="dom-repeat" items="[[_elements]]" as="item" filter="_filterFunction" sort="_sortFunction">
+            <paper-item class="item-multi-list user-select" data-selection$="[[_attributeValue(item)]]" on-tap="_selectMe">[[_getLabelAttribute(item)]]</paper-item>
+          </template>
+        </div>
+      </div>
+    </iron-dropdown>
+
+  </template>
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'link-multi-select',
+
+        behaviors: [
+          Polymer.IronFormElementBehavior
+        ],
+        observers: [
+          '_setElements(elements.length, selectedValues.length)',
+          '_validation(valid)'
+        ],
+
+        properties: {
+
+          elements: {
+            type: Array,
+            value: []
+          },
+          selectedValues: {
+            type: Array,
+            value: []
+          },
+          label: {
+            type: String,
+            value: ''
+          },
+          errorMessage: {
+            type: String,
+            value: ''
+          },
+          attrForSelected: {
+            type: String,
+            value: ''
+          },
+          labelAttribute: {
+            type: String,
+            value: ''
+          },
+          optionsValues: {
+            type: Array,
+            value: []
+          },
+          valid: {
+            type: Boolean,
+            value: true
+          },
+          required: {
+            type: Boolean,
+            value: false
+          },
+          disabled: {
+            type: Boolean,
+            value: false
+          },
+          _elements: {
+            type: Array,
+            value: []
+          },
+          _multiSelections: {
+            type: Array,
+            value: []
+          },
+          _hoffset: {
+            type: Number,
+            value: 0
+          },
+          _filterValue: {
+            type: String,
+            value: ''
+          },
+          _itemList: {
+            type: Object
+          }
+        },
+
+        ready: function() {
+          this._itemList = this.querySelector('iron-dropdown');
+        },
+
+        validate: function() {
+          if(!this.disabled && this.required){
+            this.valid = (this.selectedValues.length != 0);
+            return this.valid;
+          }
+
+          return true;
+        },
+
+        open: function() {
+          this._itemList.toggle();
+        },
+
+        _setElements: function(_all, _svalues) {
+          var uid = 0;
+          this._elements = this.elements.filter(function (item) {
+            if(this.selectedValues && this.selectedValues.indexOf(item[this.attrForSelected]) == -1) {
+                return true;
+            }
+            return false;
+          }, this);
+          if(this._elements != 0) {
+            this._multiSelections = this.selectedValues.slice(0);
+          }
+        },
+
+        _validation: function(_valid) {
+          var il = this.querySelector('iron-label');
+          this.toggleClass('hide', _valid, il);
+        },
+
+        _overlayList: function(e) {
+          this.customStyle['--content-overaly-block'] = 'block';
+          this._updateOveralyList();
+        },
+
+        _exitOverlayList: function(e) {
+          this.customStyle['--content-overaly-block'] = 'none';
+          this.updateStyles();
+        },
+
+        _updateOveralyList: function() {
+          var pi = this.querySelector('paper-input');
+          var pit = this.querySelector('paper-item');
+          var _pi = pi.getBoundingClientRect();
+          var _pit = pit.getBoundingClientRect();
+          this._itemList.refit();
+          this._itemList.sizingTarget.style.maxWidth = '100%';
+          this.customStyle['--iron-list-content-width'] = (_pit.width - 2) +'px'; //width + border l&r
+          this.customStyle['--iron-list-filter-width'] = (_pit.width - 2 - (32 + 16)) +'px'; //width + border l&r + padding l&r
+          this.customStyle['--iron-list-content-voffset'] = (_pi.height + 2) +'px'; //height + border t&b
+          this.updateStyles();
+          pi.focus();
+        },
+
+        _chipLabel: function(si) {
+          var _el = this.elements.filter(function(item) {
+            return (si == item[this.attrForSelected]);
+          }, this)[0];
+
+          return (_el)?_el[this.labelAttribute]:'';
+        },
+
+        _getLabelAttribute: function(item) {
+            return item[this.labelAttribute];
+        },
+
+        _attributeValue: function(item) {
+            return item[this.attrForSelected];
+        },
+
+        _sortFunction: function(a, b) {
+          if (a.uid == b.uid) {
+            return 0;
+          }
+          return a.uid < b.uid ? -1 : 1;
+        },
+
+        _filterFunction: function(item) {
+          return (item[this.labelAttribute].indexOf(this._filterValue) != -1);
+        },
+
+        _filtering: function(e) {
+          if(this._itemList && !this._itemList.opened) {
+            this.open();
+          }
+          this._filterValue = e.detail.value;
+          this.$.templateList.render();
+        },
+
+        _selectMe: function(e) {
+          var ref = e.currentTarget.getAttribute('data-selection');
+          if(ref){
+            var isOptionsValues = (this.optionsValues.indexOf(parseInt(ref)) != -1 || this.hasElement(this.selectedValues, this.optionsValues));
+            if(isOptionsValues) {
+              this.set('selectedValues', [ parseInt(ref) ]);
+            }
+            else this.push('selectedValues', parseInt(ref));
+            this.valid = true;
+            this.fire('ms-selection', { item: ref });
+          }
+        },
+
+        _deselectMe: function(e) {
+          var ref = e.currentTarget.getAttribute('data-selection');
+          if(ref){
+            var index = this.selectedValues.indexOf(parseInt(ref));
+            if(index != -1) {
+              this.splice('selectedValues', index, 1);
+            }
+          }
+        },
+
+        /***
+         * Check if values has arr values
+         * @param values
+         * @param arr
+         * @returns {boolean}
+         */
+        hasElement: function (values, arr) {
+          var result = values.filter(function(el) {
+              return (arr.indexOf(el) != -1)
+          });
+          return (result.length != 0)
+        }
+
+
+      });
+    })();
   </script>
 </dom-module>
 </div></body></html>

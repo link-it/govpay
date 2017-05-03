@@ -42,7 +42,6 @@ import it.govpay.bd.anagrafica.IntermediariBD;
 import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Stazione;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Intermediario;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -89,7 +88,6 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 			this.codIntermediario = this.getParameter(uriInfo, codIntermediarioId, String.class);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			StazioneFilter filter = stazioniBD.newFilter();
@@ -506,7 +504,8 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 

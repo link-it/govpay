@@ -195,11 +195,22 @@
       }
 
 
-/** Versamenti 2 (nuovo layout) **/
-  .v2-item-box {
+/** Items: nuovo layout **/
+  .layout-item-box {
     @apply(--layout-horizontal);
     @apply(--layout-flex);
     @apply(--layout-center);
+  }
+
+  .layout-anomalie {
+    @apply(--layout-vertical);
+    @apply(--layout-flex);
+    overflow: hidden;
+  }
+
+  .anomalie-group {
+    overflow: hidden;
+    padding: 0 10px;
   }
 
   .layout-group {
@@ -221,6 +232,20 @@
     text-overflow: ellipsis;
   }
 
+  .fill-group {
+    width: 100%;
+  }
+
+  .item-titolo {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .item-sottotitolo {
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
   .item-label {
     color: var(--secondary-text-color);
     font-weight: 400;
@@ -236,14 +261,22 @@
     display: none;
   }
 
-  .icon_v2 {
+  .vers_etichetta {
+    color: var(--secondary-text-color);
+    font-weight: 400;
+    font-size: 14px;
+  }
+
+  .vers_valore {
+    color: var(--primary-text-color);
+    font-size: 14px;
+  }
+
+  .icon {
     display: inline-block;
     box-sizing: border-box;
-    border-radius: 50%;
-    color: transparent;
     text-align: center;
     padding: 4px;
-    border: 2px solid var(--toolbar-color);
   }
 
   .icon_div_ok {
@@ -282,19 +315,6 @@
     color: #ffb74d;
   }
 
-  .vers_etichetta {
-    color: var(--secondary-text-color);
-    font-weight: 400;
-    font-size: 14px;
-  }
-
-  .vers_valore {
-    color: var(--primary-text-color);
-    font-size: 14px;
-  }
-
-
-
   @media (max-width: 600px) {
 
     .layout-group {
@@ -306,6 +326,6 @@
     }
 
   }
-/** Fine Versamenti 2 (nuovo layout) **/
+/** Fine items: nuovo layout **/
 
     </style></template></dom-module>

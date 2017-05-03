@@ -104,6 +104,7 @@ import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputText;
+import it.govpay.web.rs.dars.model.input.base.InputTextArea;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
@@ -114,6 +115,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private Map<String, ParamField<?>> infoRicercaMap = null;
+	private Map<String, ParamField<?>> infoCancellazioneMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
 	public VersamentiHandler(Logger log, BaseDarsService darsService) { 
@@ -135,7 +137,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -1304,11 +1305,53 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		InfoForm infoCancellazione = new InfoForm(cancellazione);
 		infoCancellazione.setTitolo(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.titolo")); 
 
+		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+
+		if(this.infoCancellazioneMap == null){
+			this.initInfoCancellazione(uriInfo, bd);
+		}
+
+		Sezione sezioneRoot = infoCancellazione.getSezioneRoot();
+
+		InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
+		motivoCancellazione.setDefaultValue(null);
+		sezioneRoot.addField(motivoCancellazione);
+		
 		return infoCancellazione;
 	}
+	
+	private void initInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
+		if(this.infoCancellazioneMap == null){
+			this.infoCancellazioneMap = new HashMap<String, ParamField<?>>();
+
+			String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+			
+			String motivoCancellazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.label");
+			InputTextArea motivoCancellazione = new InputTextArea(motivoCancellazioneId, motivoCancellazioneLabel, null, true, false, true, 1, 255, 5, 100);
+			this.infoCancellazioneMap.put(motivoCancellazioneId, motivoCancellazione);
+		}
+	}
+	
+	
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException {
-		return null;
+		URI cancellazione = this.getUriCancellazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoCancellazione = new InfoForm(cancellazione);
+		infoCancellazione.setTitolo(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.titolo")); 
+
+		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+
+		if(this.infoCancellazioneMap == null){
+			this.initInfoCancellazione(uriInfo, bd);
+		}
+
+		Sezione sezioneRoot = infoCancellazione.getSezioneRoot();
+
+		InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
+		motivoCancellazione.setDefaultValue(null);
+		sezioneRoot.addField(motivoCancellazione);
+		
+		return infoCancellazione;
 	}
 
 	/* Creazione/Update non consentiti**/
@@ -1320,7 +1363,41 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	
+		StringBuffer sb = new StringBuffer();
+		if(idsToDelete != null && idsToDelete.size() > 0) {
+			for (Long long1 : idsToDelete) {
+
+				if(sb.length() > 0) {
+					sb.append(", ");
+				}
+
+				sb.append(long1);
+			}
+		}
+
+		String methodName = "delete " + this.titoloServizio + "[" + sb.toString() + "]";
+		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
+		String motivoCancellazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.label");
+		
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+
+			String value = Utils.getValue(rawValues, motivoCancellazioneId);
+			
+			this.log.info("Esecuzione " + methodName + ": Letto parametro ["+motivoCancellazioneLabel+"] con valore ["+value+"]");
+			
+			this.log.info("Esecuzione " + methodName + " completata.");
+			
+			
+			return this.getElenco(uriInfo, bd);
+
+		}catch(WebApplicationException e){
+			throw e;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
 
 	@Override
 	public Versamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

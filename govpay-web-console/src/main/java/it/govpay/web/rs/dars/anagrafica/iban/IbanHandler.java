@@ -44,7 +44,6 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Dominio;
 import it.govpay.model.IbanAccredito;
 import it.govpay.web.rs.dars.BaseDarsHandler;
@@ -623,8 +622,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
 
 
 	@Override

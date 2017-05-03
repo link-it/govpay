@@ -43,7 +43,6 @@ import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.model.Anagrafica;
-import it.govpay.model.Applicazione;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -87,7 +86,6 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -516,8 +514,8 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 	@Override

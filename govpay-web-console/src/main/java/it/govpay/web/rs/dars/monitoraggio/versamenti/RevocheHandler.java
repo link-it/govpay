@@ -23,7 +23,6 @@ import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.filters.RrFilter;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Rr.StatoRr;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
@@ -54,7 +53,6 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			this.darsService.getOperatoreByPrincipal(bd); 
 
 			URI esportazione = null; 
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
@@ -376,8 +374,8 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {}
-
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException { return null;}
+	
 	@Override
 	public Rr creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}
 
