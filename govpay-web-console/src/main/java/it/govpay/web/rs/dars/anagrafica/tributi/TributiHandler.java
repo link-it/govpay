@@ -373,13 +373,13 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			URI codificaTributoInIuvRefreshUri = this.getUriField(uriInfo, bd, codificaTributoInIuvId); 
 			CodificaTributoInIuv codificaTributoInIuv =
 					new CodificaTributoInIuv(this.nomeServizio, codificaTributoInIuvId, codificaTributoInIuvLabel, 1, 4, codificaTributoInIuvRefreshUri, idTipoTributoDependencyValues, bd,this.getLanguage());
-			codificaTributoInIuv.setValidation("[0-9]{4}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
+			codificaTributoInIuv.setValidation("[0-9]{0,4}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
 			codificaTributoInIuv.setAvanzata(true); 
 			codificaTributoInIuv.addDependencyField(idTipoTributo);
 			codificaTributoInIuv.init(idTipoTributoDependencyValues, bd,this.getLanguage());
 
 			InputText codificaTributoInIuvMod = new InputText(codificaTributoInIuvId, codificaTributoInIuvLabel, null, false, false, true, 1,4);
-			codificaTributoInIuvMod.setValidation("[0-9]{4}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
+			codificaTributoInIuvMod.setValidation("[0-9]{0,4}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
 			codificaTributoInIuvMod.setAvanzata(true); 
 
 			this.infoCreazioneMap.put(codificaTributoInIuvId, codificaTributoInIuv);

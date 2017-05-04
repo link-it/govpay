@@ -657,6 +657,8 @@
 				</xsd:complexType>
 			</xsd:element>
 			
+			<xsd:element name="paNotificaTransazioneResponse" type="xsd:string" nillable="true" />
+			
 			<xsd:element name="paNotificaStorno">
 				<xsd:complexType>
 					<xsd:sequence>
@@ -679,6 +681,8 @@
 					</xsd:sequence>
 				</xsd:complexType>
 			</xsd:element>
+			
+			<xsd:element name="paNotificaStornoResponse" type="xsd:string" nillable="true" />
 			
 			<xsd:element name="paVerificaVersamento">
 				<xsd:complexType>
@@ -717,8 +721,16 @@
 		<wsdl:part name="bodyrichiesta" element="pa:paNotificaTransazione" />
 	</wsdl:message>
 	
+	<wsdl:message name="paNotificaTransazioneResponse">
+		<wsdl:part name="bodyrisposta" element="pa:paNotificaTransazioneResponse" />
+	</wsdl:message>
+	
 	<wsdl:message name="paNotificaStorno">
 		<wsdl:part name="bodyrichiesta" element="pa:paNotificaStorno" />
+	</wsdl:message>
+	
+	<wsdl:message name="paNotificaStornoResponse">
+		<wsdl:part name="bodyrisposta" element="pa:paNotificaStornoResponse" />
 	</wsdl:message>
 	
 	<wsdl:message name="paVerificaVersamento">
@@ -736,10 +748,12 @@
 		
 		<wsdl:operation name="paNotificaTransazione">
 			<wsdl:input message="tns:paNotificaTransazione" />
+			<wsdl:output message="tns:paNotificaTransazioneResponse" />
 		</wsdl:operation>
 		
 		<wsdl:operation name="paNotificaStorno">
 			<wsdl:input message="tns:paNotificaStorno" />
+			<wsdl:output message="tns:paNotificaStornoResponse" />
 		</wsdl:operation>
 
 		<wsdl:operation name="paVerificaVersamento">
@@ -753,11 +767,13 @@
 		<wsdl:operation name="paNotificaTransazione">
 			<soap:operation soapAction="paNotificaTransazione" />
 			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
 		
 		<wsdl:operation name="paNotificaStorno">
 			<soap:operation soapAction="paNotificaStorno" />
 			<wsdl:input><soap:body use="literal" /></wsdl:input>
+			<wsdl:output><soap:body use="literal" /></wsdl:output>
 		</wsdl:operation>
 
 		<wsdl:operation name="paVerificaVersamento">

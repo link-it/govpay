@@ -80,5 +80,28 @@ public class DataTypeAdapter {
         }
         return date;
     }
+    
+    public static Date parseDate(String s) {
+        if (s == null) {
+            return null;
+        }
+        return DatatypeConverter.parseDateTime(s).getTime();
+    }
+    
+    public static String printDate(Date dt) {
+        if (dt == null) {
+            return null;
+        }
+        Calendar c = Calendar.getInstance();
+        c.setTime(dt);
+        String date = DatatypeConverter.printDateTime(c);
+        if(date != null && date.contains("+"))
+        	date = date.substring(0, date.indexOf("+"));
+        
+        if(date != null && date.length() > 10) {
+        	date = date.substring(0, 10);
+        }
+        return date;
+    }
 
 }
