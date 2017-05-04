@@ -329,7 +329,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			// codificaTributoInIuv
 			String codificaTributoInIuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.label");
 			InputText codificaTributoInIuv = new InputText(codificaTributoInIuvId, codificaTributoInIuvLabel, null, false, false, true, 1,4);
-			codificaTributoInIuv.setValidation("[0-9]{4}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
+			codificaTributoInIuv.setValidation("[0-9]{0,4}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaTributoInIuv.errorMessage"));
 			codificaTributoInIuv.setAvanzata(true); 
 			this.infoCreazioneMap.put(codificaTributoInIuvId, codificaTributoInIuv);
 		}
