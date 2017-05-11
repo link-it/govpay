@@ -48,6 +48,10 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	@Override
 	public IExpression toExpression() throws ServiceException {

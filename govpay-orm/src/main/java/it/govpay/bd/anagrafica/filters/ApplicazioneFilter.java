@@ -47,7 +47,11 @@ public class ApplicazioneFilter extends AbstractFilter {
 	}
 
 	public ApplicazioneFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor, false);
+	}
+	
+	public ApplicazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		
 		try{
 			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 

@@ -21,6 +21,7 @@ package it.govpay.web.rs.dars;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
@@ -52,6 +53,8 @@ import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.utils.Utils;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Path("/")
 public abstract class BaseDarsService extends BaseRsService {
@@ -60,6 +63,9 @@ public abstract class BaseDarsService extends BaseRsService {
 	public static final String PATH_ESPORTA = "esporta";
 	public static final String PATH_CANCELLA = "cancella";
 	public static final String PATH_UPLOAD = "upload";
+
+	public static final String SIMPLE_SEARCH_PARAMETER_ID = "simpleSearch";
+	public static final String IDS_TO_DELETE_PARAMETER_ID = "ids";
 
 	protected Logger log = LogManager.getLogger();
 
@@ -81,7 +87,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		try{
 			bd = BasicBD.newInstance(this.codOperazione);
 			Elenco elenco = this.getDarsHandler().getElenco(uriInfo,bd);
-			
+
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(elenco);
 		}catch(WebApplicationException e){
@@ -184,21 +190,12 @@ public abstract class BaseDarsService extends BaseRsService {
 		return darsResponse;
 	}
 
-	@GET
+	@POST
 	@Path("/cancella")
+	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public DarsResponse cancella(List<Long> idsToDelete, @Context UriInfo uriInfo) throws Exception{
-		StringBuffer sb = new StringBuffer();
-
-		if(idsToDelete != null && idsToDelete.size() > 0)
-			for (Long long1 : idsToDelete) {
-				if(sb.length() > 0)
-					sb.append(", ");
-
-				sb.append(long1);
-			}
-
-		String methodName = "cancella " + this.getNomeServizio() + "[" + sb.toString() + "]";  
+	public DarsResponse cancella(InputStream is, @Context UriInfo uriInfo) throws Exception{
+		String methodName = "cancella " + this.getNomeServizio(); // + "[" + idsAsString + "]";  
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
@@ -207,10 +204,38 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
+			
+		//	JsonConfig jsonConfig = new JsonConfig();
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			Utils.copy(is, baos);
 
-			this.getDarsHandler().delete(idsToDelete, uriInfo, bd);
+			baos.flush();
+			baos.close();
+
+			JSONObject jsonObjectFormCancellazione = JSONObject.fromObject( baos.toString() );
+			JSONArray jsonIDS = jsonObjectFormCancellazione.getJSONArray(IDS_TO_DELETE_PARAMETER_ID);
+			
+			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
+			for (Object key : jsonObjectFormCancellazione.keySet()) { 
+				String value = jsonObjectFormCancellazione.getString((String) key);
+				rawValues.add(new RawParamValue((String) key, value));
+			}
+			
+			String idsAsString = Utils.getValue(rawValues, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(IDS_TO_DELETE_PARAMETER_ID));
+			this.log.info("Richiesta cancellazione degli elementi con id "+idsAsString+""); 
+
+			List<Long> idsToDelete = new ArrayList<Long>();
+			if(jsonIDS != null && jsonIDS.size() > 0)
+				for (int i = 0; i < jsonIDS.size(); i++) {
+					long id = jsonIDS.getLong(i);
+					idsToDelete.add(id); 
+				}
+
+			Elenco elenco = this.getDarsHandler().delete(idsToDelete, rawValues, uriInfo, bd);
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setResponse(elenco); 
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".cancella.ok"));
 		} catch(WebApplicationException e){
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
@@ -221,6 +246,60 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".cancella.erroreGenerico"));
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		this.log.info("Richiesta "+methodName +" evasa con successo");
+		return darsResponse;
+	}
+	
+	@POST
+	@Path("/{id}/cancella")
+	@Consumes({MediaType.APPLICATION_JSON})
+	@Produces({MediaType.APPLICATION_JSON})
+	public DarsResponse cancellaDettaglio(@PathParam("id") long id, InputStream is, @Context UriInfo uriInfo) throws Exception{
+		String methodName = "cancellaDettaglio " + this.getNomeServizio() + "[" + id + "]";  
+		this.initLogger(methodName);
+
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		try {
+			bd = BasicBD.newInstance(this.codOperazione);
+			
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			Utils.copy(is, baos);
+
+			baos.flush();
+			baos.close();
+
+			JSONObject jsonObjectFormCancellazione = JSONObject.fromObject( baos.toString() );
+			
+			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
+			for (Object key : jsonObjectFormCancellazione.keySet()) { 
+				String value = jsonObjectFormCancellazione.getString((String) key);
+				rawValues.add(new RawParamValue((String) key, value));
+			}
+
+			List<Long> idsToDelete = new ArrayList<Long>();
+			idsToDelete.add(id);
+			Elenco elenco = this.getDarsHandler().delete(idsToDelete, rawValues, uriInfo, bd);
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setResponse(elenco); 
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".cancellaDettaglio.ok"));
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			if(bd != null) 
+				bd.rollback();
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".cancellaDettaglio.erroreGenerico"));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -424,9 +503,9 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
-			
+
 			Object res = this.getDarsHandler().uplaod(input, uriInfo, bd);
-			
+
 			darsResponse.setResponse(res); 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".upload.ok")); 

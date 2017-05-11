@@ -36,6 +36,10 @@ public class PspFilter extends AbstractFilter {
 	public PspFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public PspFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	@Override
 	public IExpression toExpression() throws ServiceException {

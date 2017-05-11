@@ -39,16 +39,23 @@ import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
 public abstract class AbstractFilter implements IFilter {
 	
 	public static final String ALIAS_ID = "id";
-
+	
 	public AbstractFilter(IExpressionConstructor expressionConstructor) {
+		this(expressionConstructor, false);
+	}
+	
+	public AbstractFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		this.expressionConstructor = expressionConstructor;
 		this.filterSortList = new ArrayList<FilterSortWrapper>();
+		this.simpleSearch = simpleSearch;
 	}
 	
 	private IExpressionConstructor expressionConstructor;
 	private Integer offset;
 	private Integer limit;
 	protected List<FilterSortWrapper> filterSortList;
+	protected boolean simpleSearch = false;
+	protected String simpleSearchString = null;
 
 	public Integer getOffset() {
 		return offset;
@@ -142,4 +149,19 @@ public abstract class AbstractFilter implements IFilter {
 		}
 	}
 
+	public boolean isSimpleSearch() {
+		return simpleSearch;
+	}
+
+	public void setSimpleSearch(boolean simpleSearch) {
+		this.simpleSearch = simpleSearch;
+	}
+
+	public String getSimpleSearchString() {
+		return simpleSearchString;
+	}
+
+	public void setSimpleSearchString(String simpleSearchString) {
+		this.simpleSearchString = simpleSearchString;
+	}
 }

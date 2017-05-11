@@ -109,7 +109,6 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -192,7 +191,11 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
-					this.getInfoCreazione(uriInfo, bd),	count, esportazione, cancellazione); 
+					this.getInfoCreazione(uriInfo, bd),	count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+			
+			// export massivo on
+			elenco.setExportMassivo(true);
+			elenco.setNumeroMassimoElementiExport(10);
 
 			List<EstrattoConto> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>(); 
 
@@ -328,7 +331,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 		}
 		return infoRicerca;
 	}
-
+	
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		if(this.infoRicercaMap == null){
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
@@ -360,6 +363,15 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			InputDate dataFine = new InputDate(dataFineId, dataFineLabel, null, false, false, true, null, null);
 			this.infoRicercaMap.put(dataFineId, dataFine);
 		}
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, EstrattoConto entry) throws ConsoleException {
+		return null;
 	}
 
 	@Override
@@ -423,11 +435,11 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			EstrattoConto pagamento = findAll.size() > 0 ? findAll.get(0) : null;
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, pagamento);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
 
 			String titolo = pagamento != null ? this.getTitolo(pagamento,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -875,7 +887,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, EstrattoConto entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	return null; }
 
 	@Override
 	public EstrattoConto creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

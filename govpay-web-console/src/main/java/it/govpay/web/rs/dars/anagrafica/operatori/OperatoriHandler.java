@@ -100,7 +100,6 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter();
@@ -133,7 +132,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Operatore> findAll = operatoriBD.findAll(filter);
 
@@ -399,6 +398,14 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		return infoModifica;
 	}
 
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -455,10 +462,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			}
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,operatore);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, operatore);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -719,8 +726,8 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 

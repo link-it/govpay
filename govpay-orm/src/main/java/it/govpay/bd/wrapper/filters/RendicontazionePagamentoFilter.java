@@ -72,6 +72,10 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	public RendicontazionePagamentoFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public RendicontazionePagamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
 		List<Object> obj = new ArrayList<Object>();

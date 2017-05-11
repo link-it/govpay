@@ -46,8 +46,12 @@ public class IntermediarioFilter extends AbstractFilter {
 	}
 
 	public IntermediarioFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
-
+		this(expressionConstructor,false);
+	}
+	
+	public IntermediarioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+		
 		try{
 			IntermediarioFieldConverter converter = new IntermediarioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(Intermediario.model()));

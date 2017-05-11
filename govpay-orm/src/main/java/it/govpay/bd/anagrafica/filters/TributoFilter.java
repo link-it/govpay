@@ -48,8 +48,11 @@ public class TributoFilter extends AbstractFilter {
 	public enum SortFields { }
 	
 	public TributoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
-		
+		this(expressionConstructor,false);
+	}
+	
+	public TributoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		try{
 			TributoFieldConverter converter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Tributo.model()));
