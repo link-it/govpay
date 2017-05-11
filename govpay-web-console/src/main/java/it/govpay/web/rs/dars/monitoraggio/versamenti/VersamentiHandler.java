@@ -1303,7 +1303,10 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI cancellazione = this.getUriCancellazione(uriInfo, bd);
 		InfoForm infoCancellazione = new InfoForm(cancellazione);
-		infoCancellazione.setTitolo(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.titolo")); 
+		List<String> titoli = new ArrayList<String>();
+		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.singolo.titolo"));
+		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.multiplo.titolo"));
+		infoCancellazione.setTitolo(titoli); 
 
 		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
 
@@ -1337,7 +1340,9 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException {
 		URI cancellazione = this.getUriCancellazioneDettaglio(uriInfo, bd, entry.getId());
 		InfoForm infoCancellazione = new InfoForm(cancellazione);
-		infoCancellazione.setTitolo(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.titolo")); 
+		List<String> titoli = new ArrayList<String>();
+		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.singolo.titolo"));
+		infoCancellazione.setTitolo(titoli); 
 
 		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
 

@@ -31,7 +31,7 @@ public class InfoForm {
 	
 	private URI uri;
 	private List<Sezione> sezioni;
-	private String titolo;
+	private List<String> titolo;
 	
 	public InfoForm(URI uri) {
 		this(uri, null);
@@ -39,7 +39,8 @@ public class InfoForm {
 	
 	public InfoForm(URI uri,String titolo) {
 		this.uri = uri;
-		this.titolo = titolo;
+		this.titolo = new ArrayList<String>();
+		this.titolo.add(titolo);
 		this.sezioni = new ArrayList<Sezione>();
 		this.sezioni.add(new Sezione(null));
 	}
@@ -85,11 +86,11 @@ public class InfoForm {
 		}
 	}
 
-	public String getTitolo() {
+	public List<String> getTitolo() {
 		return titolo;
 	}
 
-	public void setTitolo(String titolo) {
+	public void setTitolo(List<String> titolo) {
 		this.titolo = titolo;
 	}
 	
