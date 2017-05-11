@@ -42,6 +42,10 @@ public class PortaleFilter extends AbstractFilter {
 	public PortaleFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public PortaleFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	@Override
 	public IExpression toExpression() throws ServiceException {

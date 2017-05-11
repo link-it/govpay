@@ -32,6 +32,10 @@ public class RendicontazioneFilter extends AbstractFilter{
 	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public RendicontazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	@Override
 	public IExpression toExpression() throws ServiceException {

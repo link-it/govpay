@@ -42,7 +42,11 @@ public class OperatoreFilter extends AbstractFilter {
 	}
 	
 	public OperatoreFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 	}
 
 	@Override

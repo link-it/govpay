@@ -111,13 +111,23 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	/* Creazione/Update non consentiti**/
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, SingoloVersamento entry) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, SingoloVersamento entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	return null; }
 
 	@Override
 	public SingoloVersamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

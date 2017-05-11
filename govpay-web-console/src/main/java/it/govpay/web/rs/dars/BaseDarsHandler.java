@@ -142,6 +142,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public abstract InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 
 	@Override
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
@@ -162,6 +165,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public abstract InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo,BasicBD bd, T entry) throws ConsoleException;
 
 	@Override
 	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
@@ -208,7 +214,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public abstract Dettaglio getDettaglio(long id, UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException;
 	@Override
-	public abstract void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+	public abstract Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	@Override
 	public abstract T creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	@Override

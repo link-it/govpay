@@ -23,6 +23,7 @@ public class ConsoleProperties {
 	private static Logger log = LogManager.getLogger();
 	
 	private int numeroRisultatiPerPagina;
+	private int numeroMassimoElementiExport;
 	private boolean nascondiRicerca;
 	
 	private String dominioOperazioniJMX, tipoOperazioniJMX, nomeRisorsaOperazioniJMX, asJMX, usernameJMX, passwordJMX, factoryJMX;
@@ -124,6 +125,9 @@ public class ConsoleProperties {
 			this.urlEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.url", props, false);
 			this.usernameEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.username", props, false);
 			this.passwordEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.password", props, false);
+			
+			String num2 = ConsoleProperties.getProperty("it.govpay.console.numeroMassimoElementiExport", props, false);
+			this.numeroMassimoElementiExport = num2 != null ? Integer.parseInt(num2) : 25;
 			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
@@ -231,5 +235,8 @@ public class ConsoleProperties {
 	}
 	public String getResourceDir() {
 		return resourceDir;
+	}
+	public int getNumeroMassimoElementiExport() {
+		return numeroMassimoElementiExport;
 	}
 }

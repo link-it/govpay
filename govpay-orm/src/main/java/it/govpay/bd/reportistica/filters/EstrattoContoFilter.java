@@ -28,11 +28,15 @@ public class EstrattoContoFilter extends AbstractFilter {
 	private boolean ignoraStatoVersamento;
 	
 	public EstrattoContoFilter(IExpressionConstructor expressionConstructor) {
-		this(expressionConstructor, true);
+		this(expressionConstructor, true,false);
 	}
 	
 	public EstrattoContoFilter(IExpressionConstructor expressionConstructor,boolean ignoraStatoVersamento) {
-		super(expressionConstructor);
+		this(expressionConstructor,ignoraStatoVersamento,false);
+	}
+	
+	public EstrattoContoFilter(IExpressionConstructor expressionConstructor,boolean ignoraStatoVersamento , boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		this.ignoraStatoVersamento = ignoraStatoVersamento;
 	}
 

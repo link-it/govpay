@@ -53,6 +53,10 @@ public class PagamentoFilter extends AbstractFilter {
 	public PagamentoFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public PagamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	@Override
 	public IExpression toExpression() throws ServiceException {

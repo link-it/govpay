@@ -91,7 +91,6 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -114,7 +113,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd, params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<IbanAccredito> findAll = ibanAccreditoBD.findAll(filter);
 
@@ -371,6 +370,14 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		sezioneRoot.addField(postale);
 		return infoModifica;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, IbanAccredito entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
@@ -417,10 +424,10 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 			Dominio dominio = dominiBD.getDominio(ibanAccredito.getIdDominio());
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,ibanAccredito);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, ibanAccredito);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(ibanAccredito,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(ibanAccredito,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -615,8 +622,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
 
 
 	@Override

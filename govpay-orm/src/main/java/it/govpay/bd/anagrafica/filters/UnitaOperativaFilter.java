@@ -49,7 +49,11 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	private boolean excludeEC = false;
 
 	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType) {
-		super(expressionConstructor);
+		this(expressionConstructor,dbType,false);
+	}
+	
+	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		this.dbType = dbType;
 	}
 

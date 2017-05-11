@@ -111,14 +111,13 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd);
-			URI cancellazione = null;
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter();
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+			fsw.setField(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
@@ -154,7 +153,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Dominio> findAll = dominiBD.findAll(filter);
 
@@ -686,6 +685,14 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		return infoModifica;
 	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry) throws ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -730,10 +737,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			Dominio dominio = dominiBD.getDominio(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,dominio);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, dominio);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd,id);
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -870,8 +877,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
 	}
 
 	@Override

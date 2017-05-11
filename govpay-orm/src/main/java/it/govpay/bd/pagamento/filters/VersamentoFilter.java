@@ -20,6 +20,7 @@
 package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -60,9 +61,93 @@ public class VersamentoFilter extends AbstractFilter {
 	public VersamentoFilter(IExpressionConstructor expressionConstructor) {
 		super(expressionConstructor);
 	}
+	
+	public VersamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+	}
 
 	@Override
 	public IExpression toExpression() throws ServiceException {
+		if(!this.simpleSearch)
+			return _toExpression();
+		else 
+			return _toSimpleSearchExpression();
+	}
+
+	private IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			
+			List<IExpression> orExpr = new ArrayList<IExpression>();
+			if(this.simpleSearchString != null){
+				IExpression debExpr = this.newExpression();
+				debExpr.ilike(Versamento.model().DEBITORE_IDENTIFICATIVO, this.simpleSearchString,LikeMode.ANYWHERE);
+				orExpr.add(debExpr);
+				IExpression vExpr = this.newExpression();
+				vExpr.ilike(Versamento.model().COD_VERSAMENTO_ENTE, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(vExpr);
+			}
+			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
+			
+			
+//			boolean addAnd = false;
+			 
+
+			if(this.idDomini != null){
+				idDomini.removeAll(Collections.singleton(null));
+//				if(addAnd)
+					newExpression.and();
+				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
+				newExpression.in(cf, this.idDomini);
+				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
+//				addAnd = true;
+			}
+
+			 
+			
+			
+//			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
+//				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
+//					if(addAnd)
+//						newExpression.and();
+//
+//					IExpression orExpr = this.newExpression();
+//					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
+//					
+//					VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+//					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
+//					
+//					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
+//						String codV = this.codVersamentoEnte.get(i);
+//						Long idApp = this.idApplicazione.get(i);
+//						
+//						IExpression vExpr = this.newExpression();
+//						vExpr.equals(Versamento.model().COD_VERSAMENTO_ENTE, codV).and().equals(cf, idApp);
+//						
+//						lstOrExpr.add(vExpr);
+//					}
+//					
+//					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
+//					
+//					newExpression.and(orExpr);
+//					
+//					addAnd = true;
+//				}
+//			}
+			
+
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	private IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;

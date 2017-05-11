@@ -50,6 +50,7 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Rendicontazione.Anomalia;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -151,7 +152,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Rendicontazione> findAll = eseguiRicerca ? frBD.findAll(filter) : new ArrayList<Rendicontazione>(); 
 
@@ -270,11 +271,11 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			Rendicontazione rendicontazione = frBD.getRendicontazione(id);
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, rendicontazione);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
 
 			String titolo = rendicontazione != null ? this.getTitolo(rendicontazione,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -492,6 +493,16 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 	/* Creazione/Update non consentiti**/
 
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException {
+		return null;
+	}
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
@@ -499,7 +510,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}
 
 	@Override
 	public Rendicontazione creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }
