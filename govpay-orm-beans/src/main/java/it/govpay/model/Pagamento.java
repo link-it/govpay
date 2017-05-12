@@ -29,11 +29,17 @@ public class Pagamento extends BasicModel {
 	public enum TipoAllegato {
 		ES, BD
 	}
+	
+	public enum Stato {
+		PAGATO, INCASSATO
+	}
 
 	private Long id;
 	private String codDominio;
 	private String iuv;
 	private String iur;
+	
+	private Stato stato;
 	
 	private BigDecimal importoPagato;
 	private Date dataAcquisizione;
@@ -217,6 +223,14 @@ public class Pagamento extends BasicModel {
 
 	public void setIuv(String iuv) {
 		this.iuv = iuv;
+	}
+
+	public Stato getStato() {
+		return stato;
+	}
+
+	public void setStato(Stato stato) {
+		this.stato = stato;
 	}
 }
 

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs;
+package it.govpay.web.rs.v1;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,39 +28,37 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.core.business.model.RichiestaIncassoDTO;
+import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.GovPayException;
+import it.govpay.core.exceptions.IncassiException;
+import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
-import it.govpay.model.Applicazione;
-import it.govpay.web.rs.caricatore.ICaricatore;
-import it.govpay.web.rs.utils.RestUtils;
+import it.govpay.web.rs.BaseRsService;
+import it.govpay.web.rs.v1.beans.Incasso;
 
-@Path("/caricatore")
-public class Caricatore extends BaseRsService{
-
-	public static final String NOME_SERVIZIO = "PagamentiTelematiciAPPjson";
+@Path("/v1/incassi")
+public class Incassi extends BaseRsServiceV1 {
 	
-	public Caricatore() {
-		super(NOME_SERVIZIO);
-	}
-
+	public static final String NOME_SERVIZIO = "incassi";
+	
 	@POST
-	@Path("/caricaVersamento")
+	@Path("/")
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
-	public Response caricaVersamento(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders, @QueryParam("caricatoreImplClass") String caricatoreImplClass){
+	public Response addIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
 		String methodName = "CaricaVersamento"; 
 		
-		Applicazione applicazioneAutenticata = null; 
 		BasicBD bd = null;
 		GpContext ctx = null; 
 		ByteArrayOutputStream baos = null, baosResponse = null;
@@ -68,61 +66,44 @@ public class Caricatore extends BaseRsService{
 		
 		try{
 			baos = new ByteArrayOutputStream();
-			
 			BaseRsService.copy(is, baos);
 
-			this.logRequest(uriInfo, httpHeaders, methodName,baos);
-
-			if(caricatoreImplClass == null) {
-				caricatoreImplClass = "it.govpay.web.rs.caricatore.CaricatoreImpl";
-			}
-			
-			Class<?> caricatoreClass = Class.forName(caricatoreImplClass);
-			
-			Object caricatoreClassObjectImpl = caricatoreClass.newInstance();
-			
-			if(!(caricatoreClassObjectImpl instanceof ICaricatore)) {
-				throw new Exception("La classe ["+caricatoreImplClass+"] dovrebbe implementare l'interfaccia " + ICaricatore.class);
-			}
-
-			ICaricatore caricatoreClassImpl = (ICaricatore) caricatoreClassObjectImpl;
+			this.logRequest(uriInfo, httpHeaders, methodName, baos);
 
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
 			ctx =  GpThreadLocal.get();
-			applicazioneAutenticata = getApplicazioneAutenticata(bd); 
-
-			bais = new ByteArrayInputStream(baos.toByteArray());
-			String response = caricatoreClassImpl.caricaVersamento(bais, uriInfo, httpHeaders, bd, applicazioneAutenticata);
 			
-			baosResponse = new ByteArrayOutputStream();
-			baosResponse.write(response.getBytes());
+			Incasso incasso = Incasso.parse(baos.toString());
+			RichiestaIncassoDTO richiestaIncassoDTO = incasso.toRichiestaIncassoDTO();
+			richiestaIncassoDTO.setPrincipal(getPrincipal());
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, baosResponse);
+			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
+			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, richiestaIncassoDTOResponse.getPagamenti());
 
-			return Response.ok(response).build();
-		} catch (GovPayException e) {
-			e.log(log);
-			ByteArrayOutputStream baosGovPayExc = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
-			if(ctx!=null) ctx.log("rest.versamentoKo",e.getMessage());
-			return Response.serverError().entity(baosGovPayExc.toString()).build();
+			if(richiestaIncassoDTOResponse.isCreato())
+				return Response.status(Status.CREATED).entity(richiestaIncassoDTOResponse.getPagamenti()).build();
+			else 
+				return Response.status(Status.OK).entity(richiestaIncassoDTOResponse.getPagamenti()).build();
 		} catch (WebApplicationException e) {
 			GovPayException ge = new GovPayException(e);
 			ge.log(log);
 			if(ctx!=null) ctx.log("rest.versamentoKo",ge.getMessage());
 			return e.getResponse();
+		} catch (NotAuthorizedException e) {
+			return Response.status(Status.UNAUTHORIZED).build();
+		} catch (IncassiException e) {
+			return Response.status(422).entity(new Errore(e)).build();
 		} catch (Exception e) {
-			GovPayException ge = new GovPayException(e);
-			ge.log(log);
-			ByteArrayOutputStream baosExc = RestUtils.writeGovpayErrorResponse(this, log, e, uriInfo, httpHeaders, bd, methodName);
-			if(ctx!=null) ctx.log("rest.versamentoKo",ge.getMessage());
-			return Response.serverError().entity(baosExc.toString()).build();
+			log.error(e);
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
-			if(ctx != null)ctx.log();
+			if(ctx != null) ctx.log();
 			if(bais != null) try { bais.close();} catch (IOException e) {}
 			if(baos != null) try { baos.flush(); baos.close();} catch (IOException e) {}
 			if(baosResponse != null) try { baosResponse.flush(); baosResponse.close();} catch (IOException e) {}
 		}
 	}
-
 }

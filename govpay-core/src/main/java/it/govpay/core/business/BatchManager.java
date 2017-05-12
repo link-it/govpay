@@ -60,12 +60,12 @@ public class BatchManager {
 				try {
 					batchBD.update(batch);
 					bd.commit();
-					log.info("Semaforo di concorrenza per il batch " + codBatch + " inserito.");
+					log.debug("Semaforo di concorrenza per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				} catch (NotFoundException e) {
 					batchBD.insert(batch);
 					bd.commit();
-					log.info("Semaforo di concorrenza per il batch " + codBatch + " inserito.");
+					log.debug("Semaforo di concorrenza per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				}
 			} else {
@@ -80,6 +80,10 @@ public class BatchManager {
 	private static Batch getRunningBatch(BatchBD batchBD, String codBatch) throws ServiceException {
 		Batch batch = null;
 		
+		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
+		if(GovpayConfig.getInstance().getClusterId() == null) 
+			return null;
+		
 		try{
 			batch = batchBD.get(codBatch);
 		} catch(NotFoundException nfe) {
@@ -87,24 +91,22 @@ public class BatchManager {
 			return null;
 		}
 		
-		if(batch.getInizio() == null) {
+		if(batch.getNodo() == null) {
 			// Non c'e' un blocco, quindi non e' in esecuzione	
 			return null;
 		} else {
 			// C'e' un blocco.
 			// Verifico se e' scaduto
-			
 			long inizio = batch.getInizio().getTime();
-			long aggiornamento = batch.getAggiornamento() != null ? batch.getAggiornamento().getTime() : 0;
+			long aggiornamento = batch.getAggiornamento() != null ? batch.getAggiornamento().getTime() : inizio;
 			
-			long riferimento = inizio > aggiornamento ? inizio : aggiornamento;
-			long delay = new Date().getTime() - riferimento;
+			long delay = new Date().getTime() - aggiornamento;
 			
 			if(delay > GovpayConfig.getInstance().getTimeoutBatch()) {
 				log.warn("Individuato timeout del batch " + codBatch + ". La risorsa viene liberata per consentire l'esecuzione del batch.");
 				return null;
 			} else {
-				log.info("Batch in esecuzione sul nodo " + batch.getNodo() + ".");
+				log.debug("Batch in esecuzione sul nodo " + batch.getNodo() + ".");
 				return batch;
 			}
 		}
@@ -134,7 +136,7 @@ public class BatchManager {
 						batch.setAggiornamento(null); 
 						batchBD.update(batch);
 						bd.commit();
-						log.info("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
+						log.debug("Semaforo di concorrenza per il batch " + codBatch + " rimosso.");
 					} else {
 						// blocco non mio. lo lascio fare
 						log.warn("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch + ": semaforo di altro nodo");
