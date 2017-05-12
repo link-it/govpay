@@ -42,17 +42,24 @@ import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
+import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.utils.Utils;
 
 public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implements IDarsHandler<it.govpay.bd.model.Psp>{
 
+	private Map<String, ParamField<?>> infoRicercaMap = null;
+	
 	public PspHandler(Logger log, BaseDarsService darsService) {
 		super(log,darsService);
 	}
@@ -60,7 +67,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	@Override
 	public Elenco getElenco(UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
-		
+
 		try{		
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -79,6 +86,19 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 			
+			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+			String ragioneSociale = this.getParameter(uriInfo, ragioneSocialeId, String.class);
+			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
+			String codPsp = this.getParameter(uriInfo, codPspId, String.class);
+
+			if(StringUtils.isNotEmpty(codPsp)){
+				filter.setCodPsp(codPsp);
+			}
+			
+			if(StringUtils.isNotEmpty(ragioneSociale)){
+				filter.setRagioneSociale(ragioneSociale);
+			}
+			
 			long count = pspBD.count(filter);
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
@@ -87,9 +107,13 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 
 			List<it.govpay.bd.model.Psp> findAll = pspBD.findAll(filter);
 
+			// Indico la visualizzazione custom
+						String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Psp entry : findAll) {
-					elenco.getElenco().add(this.getElemento(entry, entry.getId(), this.pathServizio,bd));
+					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
+					elemento.setFormatter(formatter);
+					elenco.getElenco().add(elemento);
 				}
 			}
 
@@ -107,7 +131,49 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException {
 		URI ricerca = this.getUriRicerca(uriInfo, bd);
 		InfoForm infoRicerca = new InfoForm(ricerca);
+
+		if(visualizzaRicerca) {
+			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
+			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+
+			if(this.infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+
+			}
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+
+			InputText codPsp = (InputText) this.infoRicercaMap.get(codPspId);
+			codPsp.setDefaultValue(null);
+			codPsp.setEditable(true); 
+			sezioneRoot.addField(codPsp);
+			
+			InputText ragioneSociale = (InputText) this.infoRicercaMap.get(ragioneSocialeId);
+			ragioneSociale.setDefaultValue(null);
+			ragioneSociale.setEditable(true); 
+			sezioneRoot.addField(ragioneSociale);
+		}
+
 		return infoRicerca;
+	}
+	
+	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
+
+			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
+			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+
+			// codPsp
+			String codPspLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label");
+			InputText codPsp = new InputText(codPspId, codPspLabel, null, false, false, true, 1, 255);
+			this.infoRicercaMap.put(codPspId, codPsp);
+			
+			// nome
+			String ragioneSocialeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label");
+			InputText ragioneSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, false, true, 1, 255);
+			this.infoRicercaMap.put(ragioneSocialeId, ragioneSociale);
+		}
 	}
 
 	@Override
@@ -121,10 +187,10 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 		InfoForm infoModifica = null; 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Psp entry) throws ConsoleException {
 		return null;
@@ -152,7 +218,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			URI esportazione = null;
 
 			Dettaglio dettaglio = new Dettaglio(this.getTitolo(psp,bd), esportazione, infoCancellazione, infoModifica);
-			
+
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
 			// dati del psp
@@ -164,17 +230,17 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(psp.isAbilitato()));
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".bolloGestito.label"), Utils.getAbilitatoAsLabel(psp.isBolloGestito()));
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stornoGestito.label"), Utils.getAbilitatoAsLabel(psp.isStornoGestito()));
-			
+
 			// Elementi correlati
 			String etichettaCanali = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.canali.titolo");
 			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
-			
+
 			Canali canaliDars = new Canali();
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(codPspId, psp.getCodPsp());
 			URI uriDettaglio = Utils.creaUriConParametri(canaliDars.getPathServizio(), params);
 			dettaglio.addElementoCorrelato(etichettaCanali, uriDettaglio);
-			
+
 			this.log.info("Esecuzione " + methodName + " completata.");
 
 			return dettaglio;
@@ -184,29 +250,27 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException,ValidationException,DuplicatedEntryException {
 		return null;
 	}
-	
+
 	@Override
 	public it.govpay.bd.model.Psp creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public void checkEntry(Psp entry, Psp oldEntry) throws ValidationException {}
-	
+
 	@Override
 	public Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException {
 		return null;
 	}
-	
+
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public String getTitolo(it.govpay.bd.model.Psp entry, BasicBD bd) {
@@ -227,27 +291,49 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public List<String> getValori(Psp entry, BasicBD bd) throws ConsoleException {
-		return null;
+		return null; 
 	}
-	
+
 	@Override
-	public Map<String, Voce<String>> getVoci(Psp entry, BasicBD bd) throws ConsoleException { return null; }
+	public Map<String, Voce<String>> getVoci(Psp entry, BasicBD bd) throws ConsoleException {
+		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"),entry.getRagioneSociale()));
+
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id"),
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label"),entry.getCodPsp()));
+
+		// stato del dominio
+		// 
+		if(!entry.isAbilitato()) {
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.disabilitato")));
+		} else {
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.abilitato.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.abilitato")));
+		}
+
+		return valori;
+	}
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
 		return null;
 	}
 
-	
+
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}
 }

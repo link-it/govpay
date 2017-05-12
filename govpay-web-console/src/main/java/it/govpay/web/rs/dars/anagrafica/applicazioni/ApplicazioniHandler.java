@@ -67,6 +67,7 @@ import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributoHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -175,7 +176,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			codApplicazione.setDefaultValue(null);
 			sezioneRoot.addField(codApplicazione);
 		}
-		
+
 		return infoRicerca;
 	}
 
@@ -573,10 +574,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Applicazione entry) throws ConsoleException {
 		return null;
@@ -1085,9 +1086,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public String getTitolo(Applicazione entry, BasicBD bd) throws ConsoleException {
@@ -1110,7 +1109,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	public List<String> getValori(Applicazione entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(Applicazione entry, BasicBD bd) throws ConsoleException { return null; }
 

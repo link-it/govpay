@@ -50,7 +50,6 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
-import it.govpay.model.Applicazione;
 import it.govpay.model.Rendicontazione.Anomalia;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -60,6 +59,7 @@ import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -72,8 +72,8 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
-import it.govpay.web.rs.dars.monitoraggio.versamenti.Pagamenti;
-import it.govpay.web.rs.dars.monitoraggio.versamenti.PagamentiHandler;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.PagamentiHandler;
 import it.govpay.web.utils.Utils;
 
 public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> implements IDarsHandler<Rendicontazione>{
@@ -97,7 +97,6 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null; 
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -510,7 +509,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException { return null; }
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public Rendicontazione creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

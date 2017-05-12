@@ -44,6 +44,7 @@ public class DominioFilter extends AbstractFilter {
 	private CustomField cf;
 	
 	private String codDominio = null;
+	private String ragioneSociale = null;
 	
 	public enum SortFields {
 	}
@@ -101,6 +102,15 @@ public class DominioFilter extends AbstractFilter {
 				exp.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
 				
 				newExpression.and(exp);
+				addAnd = true;
+			}
+			
+			if(this.ragioneSociale != null){
+				if(addAnd)
+					newExpression.and();
+				
+				// 2. metto in and la stringa con la ragione sociale
+				newExpression.ilike(Dominio.model().RAGIONE_SOCIALE, this.ragioneSociale,LikeMode.ANYWHERE);
 			}
 			
 			return newExpression;
@@ -141,6 +151,14 @@ public class DominioFilter extends AbstractFilter {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public String getRagioneSociale() {
+		return this.ragioneSociale;
+	}
+
+	public void setRagioneSociale(String ragioneSociale) {
+		this.ragioneSociale = ragioneSociale;
 	}
 	
 	

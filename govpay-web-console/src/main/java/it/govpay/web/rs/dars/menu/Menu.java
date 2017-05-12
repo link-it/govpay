@@ -53,9 +53,10 @@ import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.SezioneMenu;
 import it.govpay.web.rs.dars.model.VoceMenu;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
+import it.govpay.web.rs.dars.monitoraggio.incassi.Incassi;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.ReportisticaPagamenti;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Fr;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
-import it.govpay.web.rs.dars.reportistica.pagamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
 
 @Path("/dars/")
@@ -172,16 +173,17 @@ public class Menu extends BaseRsService {
 				monitoraggio.getVociMenu().add(voceMenuEventi);
 			}
 
-			menu.getSezioni().add(monitoraggio);
-			
-			// Sezione Reportistica
-			SezioneMenu reportistica = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".reportistica"));
-			
-			Pagamenti reportisticaPagamentiDars = new Pagamenti();
-			URI reportisticaPagamentiURI = new URI(reportisticaPagamentiDars.getPathServizio());
-			VoceMenu voceMenuReportisticaPagamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(reportisticaPagamentiDars.getNomeServizio() + ".titolo"), reportisticaPagamentiURI, false);
+			ReportisticaPagamenti pagamentiDars = new ReportisticaPagamenti();
+			URI pagamentiURI = new URI(pagamentiDars.getPathServizio());
+			VoceMenu voceMenuPagamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".titolo"), pagamentiURI, false);
 
-			reportistica.getVociMenu().add(voceMenuReportisticaPagamenti);
+			monitoraggio.getVociMenu().add(voceMenuPagamenti);
+			
+			Incassi incassiDars = new Incassi();
+			URI incassiURI = new URI(incassiDars.getPathServizio());
+			VoceMenu voceMenuIncassi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(incassiDars.getNomeServizio() + ".titolo"), incassiURI, false);
+
+			monitoraggio.getVociMenu().add(voceMenuIncassi);
 			
 //			EstrattiConto estrattiContoDars = new EstrattiConto();
 //			URI estrattiContoURI = new URI(estrattiContoDars.getPathServizio()).build();
@@ -189,7 +191,7 @@ public class Menu extends BaseRsService {
 
 //			reportistica.getVociMenu().add(voceMenuReportisticaEstrattiConto);
 			
-			menu.getSezioni().add(reportistica);
+			menu.getSezioni().add(monitoraggio);
 
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
 				// sezione manutenzione

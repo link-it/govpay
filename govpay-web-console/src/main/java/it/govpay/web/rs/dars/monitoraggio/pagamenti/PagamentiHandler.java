@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.monitoraggio.versamenti;
+package it.govpay.web.rs.dars.monitoraggio.pagamenti;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
@@ -59,6 +59,7 @@ import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -67,6 +68,12 @@ import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.Revoche;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.RevocheHandler;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.SingoliVersamenti;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.SingoliVersamentiHandler;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.Transazioni;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.TransazioniHandler;
 import it.govpay.web.utils.Utils;
 
 public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDarsHandler<Pagamento>{
@@ -99,6 +106,9 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			String idRrId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRr.id");
 			String idRr= this.getParameter(uriInfo, idRrId, String.class);
+			
+			String idIncassoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIncasso.id");
+			String idIncasso= this.getParameter(uriInfo, idIncassoId, String.class);
 
 			boolean eseguiRicerca = true;
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -163,6 +173,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			if(StringUtils.isNotEmpty(idRr)){
 				params.put(idRrId, idRr);
 				filter.setIdRpt(Long.parseLong(idRr)); 
+			}
+			
+			if(StringUtils.isNotEmpty(idIncasso)){
+				params.put(idIncassoId, idIncasso);
+				filter.setIdIncasso(Long.parseLong(idIncasso)); 
 			}
 
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
@@ -450,7 +465,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException { return null;}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public Pagamento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}

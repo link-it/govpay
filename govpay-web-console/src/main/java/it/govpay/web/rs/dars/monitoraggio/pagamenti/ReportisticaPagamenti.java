@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.monitoraggio.versamenti;
+package it.govpay.web.rs.dars.monitoraggio.pagamenti;
 
 import javax.ws.rs.Path;
 
@@ -27,10 +27,10 @@ import org.apache.logging.log4j.Logger;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 
-@Path("/dars/pagamenti")
-public class Pagamenti extends BaseDarsService {
+@Path("/dars/reportisticaPagamenti")
+public class ReportisticaPagamenti extends BaseDarsService {
 
-	public Pagamenti() {
+	public ReportisticaPagamenti() {
 		super();
 	}
 	
@@ -38,12 +38,12 @@ public class Pagamenti extends BaseDarsService {
 	
 	@Override
 	public String getNomeServizio() {
-		return "pagamenti";
+		return "reportisticaPagamenti";
 	}
 
 	@Override
 	public IDarsHandler<?> getDarsHandler() {
-		return new PagamentiHandler(this.log, this);
+		return new ReportisticaPagamentiHandler(this.log, this);
 	}
 	
 	@Override

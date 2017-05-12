@@ -19,16 +19,23 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.FilterSortWrapper;
-
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.Psp;
+
 public class PspFilter extends AbstractFilter {
+	
+	private String codPsp = null;
+	private String ragioneSociale = null;
 
 	public enum SortFields {
 	}
@@ -44,8 +51,34 @@ public class PspFilter extends AbstractFilter {
 	@Override
 	public IExpression toExpression() throws ServiceException {
 		try {
-			return this.newExpression();
+			IExpression newExpression = this.newExpression();
+			boolean addAnd = false;
+			
+			if(this.ragioneSociale != null){
+				if(addAnd)
+					newExpression.and();
+				
+				// 2. metto in and la stringa con la ragione sociale
+				newExpression.ilike(Psp.model().RAGIONE_SOCIALE, this.ragioneSociale,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.codPsp != null){
+				if(addAnd)
+					newExpression.and();
+				
+				// 2. metto in and la stringa con il codice psp
+				newExpression.ilike(Psp.model().COD_PSP, this.codPsp,LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			
+			return newExpression;
 		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -55,4 +88,22 @@ public class PspFilter extends AbstractFilter {
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
 		this.filterSortList.add(filterSortWrapper);
 	}
+
+	public String getCodPsp() {
+		return codPsp;
+	}
+
+	public void setCodPsp(String codPsp) {
+		this.codPsp = codPsp;
+	}
+
+	public String getRagioneSociale() {
+		return ragioneSociale;
+	}
+
+	public void setRagioneSociale(String ragioneSociale) {
+		this.ragioneSociale = ragioneSociale;
+	}
+	
+	
 }

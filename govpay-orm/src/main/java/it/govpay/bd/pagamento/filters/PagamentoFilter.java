@@ -39,6 +39,7 @@ import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
 	
+	private Long idIncasso;
 	private Long idRr;
 	private Long idRpt;
 	private String codDominio;
@@ -79,6 +80,14 @@ public class PagamentoFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
+				addAnd = true;
+			}
+			
+			if(this.getIdIncasso() != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
 				addAnd = true;
 			}
 			
@@ -173,6 +182,14 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setIdRpt(Long idRpt) {
 		this.idRpt = idRpt;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
 	}
 	
 }

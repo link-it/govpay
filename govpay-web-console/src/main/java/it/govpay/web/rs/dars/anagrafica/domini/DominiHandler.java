@@ -71,6 +71,7 @@ import it.govpay.web.rs.dars.anagrafica.iban.Iban;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
 import it.govpay.web.rs.dars.anagrafica.uo.UnitaOperative;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -125,9 +126,16 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
 			String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 			String idStazione = this.getParameter(uriInfo, idStazioneId, String.class);
+			
+			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+			String ragioneSociale = this.getParameter(uriInfo, ragioneSocialeId, String.class);
 
 			if(StringUtils.isNotEmpty(codDominio)){
 				filter.setCodDominio(codDominio);
+			}
+			
+			if(StringUtils.isNotEmpty(ragioneSociale)){
+				filter.setRagioneSociale(ragioneSociale);
 			}
 
 			if(StringUtils.isNotEmpty(idStazione)){
@@ -184,6 +192,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		if(visualizzaRicerca) {
 			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 			String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
+			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
 
 			if(this.infoRicercaMap == null){
 				this.initInfoRicerca(uriInfo, bd);
@@ -197,6 +206,11 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			codDominio.setDefaultValue(null);
 			codDominio.setEditable(true); 
 			sezioneRoot.addField(codDominio);
+			
+			InputText ragioneSociale = (InputText) this.infoRicercaMap.get(ragioneSocialeId);
+			ragioneSociale.setDefaultValue(null);
+			ragioneSociale.setEditable(true); 
+			sezioneRoot.addField(ragioneSociale);
 
 			List<Voce<Long>> stazioni = new ArrayList<Voce<Long>>();
 
@@ -235,11 +249,17 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
 			String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
+			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
 
 			// codDominio
 			String codDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
 			InputText codDominio = new InputText(codDominioId, codDominioLabel, null, false, false, true, 1, 11);
 			this.infoRicercaMap.put(codDominioId, codDominio);
+			
+			// nome
+			String ragioneSocialeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label");
+			InputText ragioneSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, false, true, 1, 255);
+			this.infoRicercaMap.put(ragioneSocialeId, ragioneSociale);
 
 			// idstazione
 			String idStazionelabel =Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.label");
@@ -877,9 +897,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, ValidationException, DuplicatedEntryException{
@@ -1178,7 +1196,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id"),
-				new Voce<String>(entry.getRagioneSociale(),entry.getRagioneSociale()));
+				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"),entry.getRagioneSociale()));
 		
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"),entry.getCodDominio()));
