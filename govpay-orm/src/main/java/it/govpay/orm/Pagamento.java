@@ -54,6 +54,8 @@ import java.io.Serializable;
  * 			&lt;element name="importoRevocato" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="esitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="datiEsitoRevoca" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="stato" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idIncasso" type="{http://www.govpay.it/orm}id-incasso" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -86,7 +88,9 @@ import java.io.Serializable;
   	"datiRevoca",
   	"importoRevocato",
   	"esitoRevoca",
-  	"datiEsitoRevoca"
+  	"datiEsitoRevoca",
+  	"stato",
+  	"idIncasso"
   }
 )
 
@@ -262,6 +266,22 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
     this.datiEsitoRevoca = datiEsitoRevoca;
   }
 
+  public java.lang.String getStato() {
+    return this.stato;
+  }
+
+  public void setStato(java.lang.String stato) {
+    this.stato = stato;
+  }
+
+  public IdIncasso getIdIncasso() {
+    return this.idIncasso;
+  }
+
+  public void setIdIncasso(IdIncasso idIncasso) {
+    this.idIncasso = idIncasso;
+  }
+
   private static final long serialVersionUID = 1L;
 
   @XmlTransient
@@ -356,5 +376,12 @@ public class Pagamento extends org.openspcoop2.utils.beans.BaseBean implements S
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="datiEsitoRevoca",required=false,nillable=false)
   protected java.lang.String datiEsitoRevoca;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="stato",required=false,nillable=false)
+  protected java.lang.String stato;
+
+  @XmlElement(name="idIncasso",required=false,nillable=false)
+  protected IdIncasso idIncasso;
 
 }
