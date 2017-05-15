@@ -186,6 +186,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdIncasso }
+     */
+    public IdIncasso createIdIncasso() {
+        return new IdIncasso();
+    }
+
+    /**
      * Create an instance of {@link IdNotifica }
      */
     public IdNotifica createIdNotifica() {
@@ -330,6 +337,13 @@ public class ObjectFactory {
      */
     public IdConnettore createIdConnettore() {
         return new IdConnettore();
+    }
+
+    /**
+     * Create an instance of {@link Incasso }
+     */
+    public Incasso createIncasso() {
+        return new Incasso();
     }
 
     /**
