@@ -1,7 +1,9 @@
 DELETE FROM ID_MESSAGGIO_RELATIVO;
+DELETE FROM batch;
 DELETE FROM eventi;
 DELETE FROM rendicontazioni;
 DELETE FROM pagamenti;
+DELETE FROM incassi;
 DELETE FROM fr;
 DELETE FROM iuv;
 DELETE FROM notifiche;
