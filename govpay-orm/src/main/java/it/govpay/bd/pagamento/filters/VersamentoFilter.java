@@ -66,14 +66,7 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
-		if(!this.simpleSearch)
-			return _toExpression();
-		else 
-			return _toSimpleSearchExpression();
-	}
-
-	private IExpression _toSimpleSearchExpression() throws ServiceException {
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			
@@ -146,7 +139,8 @@ public class VersamentoFilter extends AbstractFilter {
 		}
 	}
 	
-	private IExpression _toExpression() throws ServiceException {
+	@Override
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;

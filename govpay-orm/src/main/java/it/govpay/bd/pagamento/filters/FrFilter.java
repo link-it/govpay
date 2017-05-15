@@ -19,10 +19,6 @@
  */
 package it.govpay.bd.pagamento.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.GovpayConfig;
-import it.govpay.orm.FR;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +31,11 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.GovpayConfig;
+import it.govpay.orm.FR;
 
 public class FrFilter extends AbstractFilter {
 	
@@ -258,7 +259,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
 			
@@ -323,6 +324,35 @@ public class FrFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			
+			List<IExpression> orExpr = new ArrayList<IExpression>();
+			if(this.simpleSearchString != null){
+				IExpression codFlussoExpr = this.newExpression();
+				codFlussoExpr.ilike(FR.model().COD_FLUSSO, this.simpleSearchString,LikeMode.ANYWHERE);
+				orExpr.add(codFlussoExpr);
+				IExpression codDominioExpr = this.newExpression();
+				codDominioExpr.ilike(FR.model().COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(codDominioExpr);
+				IExpression codPspExpr = this.newExpression();
+				codPspExpr.ilike(FR.model().COD_PSP, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(codPspExpr);
+			}
+			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} 
 	}
  
 	public String getStato() {

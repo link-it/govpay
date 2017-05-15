@@ -48,7 +48,7 @@ public class PortaleFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
 
@@ -63,6 +63,25 @@ public class PortaleFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression(); 
+			
+			if(this.simpleSearchString != null){
+				newExpression.ilike(Portale.model().COD_PORTALE, this.simpleSearchString,LikeMode.ANYWHERE);
+			}
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} 
 	}
 
 	public void addSortField(SortFields field, boolean asc) {

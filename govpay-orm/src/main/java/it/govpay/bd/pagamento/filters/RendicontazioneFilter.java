@@ -1,9 +1,7 @@
 package it.govpay.bd.pagamento.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.model.Rendicontazione.EsitoRendicontazione;
-import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.orm.Rendicontazione;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -13,6 +11,11 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.model.Rendicontazione.EsitoRendicontazione;
+import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.orm.Rendicontazione;
 
 public class RendicontazioneFilter extends AbstractFilter{
 	
@@ -38,7 +41,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
 			
@@ -93,6 +96,35 @@ public class RendicontazioneFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			
+			List<IExpression> orExpr = new ArrayList<IExpression>();
+			if(this.simpleSearchString != null){
+				IExpression iuvExpr = this.newExpression();
+				iuvExpr.ilike(Rendicontazione.model().IUV, this.simpleSearchString,LikeMode.ANYWHERE);
+				orExpr.add(iuvExpr);
+				IExpression iurExpr = this.newExpression();
+				iurExpr.ilike(Rendicontazione.model().IUR, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(iurExpr);
+				IExpression codExpr = this.newExpression();
+				codExpr.ilike(Rendicontazione.model().ID_FR.COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(codExpr);
+			}
+			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} 
 	}
 	
 	public String getCodDominio() {

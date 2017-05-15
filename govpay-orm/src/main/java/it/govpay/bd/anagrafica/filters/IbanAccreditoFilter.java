@@ -54,7 +54,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			boolean addAnd = false;
 			IExpression expr = this.newExpression();
@@ -77,6 +77,16 @@ public class IbanAccreditoFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
 	}
 
 	public void addSortField(SortFields field, boolean asc) {

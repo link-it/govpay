@@ -19,12 +19,6 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.Intermediario;
-import it.govpay.orm.dao.jdbc.converter.IntermediarioFieldConverter;
-
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -34,6 +28,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.Intermediario;
+import it.govpay.orm.dao.jdbc.converter.IntermediarioFieldConverter;
 
 public class IntermediarioFilter extends AbstractFilter {
 
@@ -61,7 +61,7 @@ public class IntermediarioFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
 
@@ -85,6 +85,25 @@ public class IntermediarioFilter extends AbstractFilter {
 			}
 
 			return exp;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression(); 
+			
+			if(this.simpleSearchString != null){
+				newExpression.ilike(Intermediario.model().COD_INTERMEDIARIO, this.simpleSearchString,LikeMode.ANYWHERE);
+			}
+			
+			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

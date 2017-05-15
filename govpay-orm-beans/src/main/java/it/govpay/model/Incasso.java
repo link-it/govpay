@@ -34,6 +34,7 @@ public class Incasso extends BasicModel {
 	private Date dataValuta;
 	private Date dataAcquisizione;
 	private String dispositivo;
+	private long idApplicazione;
 	
 	public Long getId() {
 		return id;
@@ -83,7 +84,11 @@ public class Incasso extends BasicModel {
 	public void setDataAcquisizione(Date dataAcquisizione) {
 		this.dataAcquisizione = dataAcquisizione;
 	}
-
-
+	public long getIdApplicazione() {
+		return idApplicazione;
+	}
+	public void setIdApplicazione(long idApplicazione) {
+		this.idApplicazione = idApplicazione;
+	}
 }
 

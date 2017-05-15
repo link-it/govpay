@@ -19,6 +19,7 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +30,7 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
@@ -60,7 +62,7 @@ public class PagamentoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -127,6 +129,29 @@ public class PagamentoFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			
+			List<IExpression> orExpr = new ArrayList<IExpression>();
+			if(this.simpleSearchString != null){
+				IExpression codDominioExpr = this.newExpression();
+				codDominioExpr.ilike(Pagamento.model().ID_RPT.COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(codDominioExpr);
+			}
+			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} 
 	}
 
 	public void addSortField(SortFields field, boolean asc) {
