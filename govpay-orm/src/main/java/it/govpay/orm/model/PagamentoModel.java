@@ -60,6 +60,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.IMPORTO_REVOCATO = new Field("importoRevocato",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.ESITO_REVOCA = new Field("esitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_ESITO_REVOCA = new Field("datiEsitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.STATO = new Field("stato",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new Field("idIncasso",it.govpay.orm.IdIncasso.class,"Pagamento",Pagamento.class));
 	
 	}
 	
@@ -86,6 +88,8 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 		this.IMPORTO_REVOCATO = new ComplexField(father,"importoRevocato",java.lang.Double.class,"Pagamento",Pagamento.class);
 		this.ESITO_REVOCA = new ComplexField(father,"esitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
 		this.DATI_ESITO_REVOCA = new ComplexField(father,"datiEsitoRevoca",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Pagamento",Pagamento.class);
+		this.ID_INCASSO = new it.govpay.orm.model.IdIncassoModel(new ComplexField(father,"idIncasso",it.govpay.orm.IdIncasso.class,"Pagamento",Pagamento.class));
 	
 	}
 	
@@ -128,6 +132,10 @@ public class PagamentoModel extends AbstractModel<Pagamento> {
 	public IField ESITO_REVOCA = null;
 	 
 	public IField DATI_ESITO_REVOCA = null;
+	 
+	public IField STATO = null;
+	 
+	public it.govpay.orm.model.IdIncassoModel ID_INCASSO = null;
 	 
 
 	@Override
