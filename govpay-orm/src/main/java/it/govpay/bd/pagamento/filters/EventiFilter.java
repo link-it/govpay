@@ -16,7 +16,6 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
-import it.govpay.orm.Dominio;
 import it.govpay.orm.Evento;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 

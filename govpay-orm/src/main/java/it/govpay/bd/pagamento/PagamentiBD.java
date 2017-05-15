@@ -47,6 +47,10 @@ public class PagamentiBD extends BasicBD {
 	public PagamentoFilter newFilter() throws ServiceException {
 		return new PagamentoFilter(this.getPagamentoService());
 	}
+	
+	public PagamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new PagamentoFilter(this.getPagamentoService(),simpleSearch);
+	}
 
 	/**
 	 * Recupera il pagamento identificato dalla chiave fisica

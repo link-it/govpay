@@ -102,6 +102,12 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso...");
+			
+			boolean simpleSearch = false;
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				simpleSearch = true;
+			} 
 
 			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
 			String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
@@ -117,7 +123,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			}
 
 			EventiBD eventiBD = new EventiBD(bd);
-			EventiFilter filter = eventiBD.newFilter();
+			EventiFilter filter = eventiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -165,9 +171,10 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 			Elemento intestazione = new Elemento(-1, valori , null);
 
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd));  
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 

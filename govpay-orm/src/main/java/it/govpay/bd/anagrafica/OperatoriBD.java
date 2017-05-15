@@ -204,6 +204,10 @@ public class OperatoriBD extends BasicBD {
 	public OperatoreFilter newFilter() throws ServiceException {
 		return new OperatoreFilter(this.getOperatoreService());
 	}
+	
+	public OperatoreFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new OperatoreFilter(this.getOperatoreService(),simpleSearch);
+	}
 
 	public long count(OperatoreFilter filter) throws ServiceException {
 		try {

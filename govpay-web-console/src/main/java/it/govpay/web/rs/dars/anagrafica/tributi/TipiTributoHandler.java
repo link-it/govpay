@@ -89,16 +89,22 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
+			
+			boolean simpleSearch = false;
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				simpleSearch = true;
+			} 
 
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
-			TipoTributoFilter filter = tipiTributoBD.newFilter();
+			TipoTributoFilter filter = tipiTributoBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.TipoTributo.model().DESCRIZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-
+			
 			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
 			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
 			if(StringUtils.isNotEmpty(codTributo)) {
@@ -129,9 +135,9 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), 
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd));  
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<TipoTributo> findAll = tipiTributoBD.findAll(filter);
 

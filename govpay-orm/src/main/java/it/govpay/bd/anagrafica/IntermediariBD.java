@@ -19,15 +19,6 @@
  */
 package it.govpay.bd.anagrafica;
 
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
-import it.govpay.bd.model.converter.ConnettoreConverter;
-import it.govpay.bd.model.converter.IntermediarioConverter;
-import it.govpay.model.Connettore;
-import it.govpay.model.Intermediario;
-import it.govpay.orm.IdIntermediario;
-import it.govpay.orm.dao.jdbc.JDBCIntermediarioServiceSearch;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +30,15 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
+
+import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
+import it.govpay.bd.model.converter.ConnettoreConverter;
+import it.govpay.bd.model.converter.IntermediarioConverter;
+import it.govpay.model.Connettore;
+import it.govpay.model.Intermediario;
+import it.govpay.orm.IdIntermediario;
+import it.govpay.orm.dao.jdbc.JDBCIntermediarioServiceSearch;
 
 public class IntermediariBD extends BasicBD {
 
@@ -210,6 +210,10 @@ public class IntermediariBD extends BasicBD {
 
 	public IntermediarioFilter newFilter() throws ServiceException {
 		return new IntermediarioFilter(this.getIntermediarioService());
+	}
+	
+	public IntermediarioFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new IntermediarioFilter(this.getIntermediarioService(),simpleSearch);
 	}
 
 	public long count(IntermediarioFilter filter) throws ServiceException {

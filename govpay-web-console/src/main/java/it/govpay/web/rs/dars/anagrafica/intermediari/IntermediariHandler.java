@@ -89,9 +89,15 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
+			
+			boolean simpleSearch = false;
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				simpleSearch = true;
+			} 
 
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
-			IntermediarioFilter filter = intermediariBD.newFilter();
+			IntermediarioFilter filter = intermediariBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -112,10 +118,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			//elenco.setFiltro(true);
 

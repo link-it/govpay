@@ -112,9 +112,15 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd);
+			
+			boolean simpleSearch = false;
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				simpleSearch = true;
+			} 
 
 			DominiBD dominiBD = new DominiBD(bd);
-			DominioFilter filter = dominiBD.newFilter();
+			DominioFilter filter = dominiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -159,9 +165,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 			// Indico la visualizzazione custom
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Dominio> findAll = dominiBD.findAll(filter);
 

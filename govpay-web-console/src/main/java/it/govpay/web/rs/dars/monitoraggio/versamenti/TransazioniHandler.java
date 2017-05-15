@@ -143,7 +143,6 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			filter.setIdVersamento(Long.parseLong(idVersamento)); 
 
 			long count = eseguiRicerca ? rptBD.count(filter) : 0;
-
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 

@@ -270,6 +270,10 @@ public class IuvBD extends BasicBD {
 	public IuvFilter newFilter() throws ServiceException {
 		return new IuvFilter(this.getIuvService());
 	}
+	
+	public IuvFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new IuvFilter(this.getIuvService(),simpleSearch);
+	}
 
 	public long count(IuvFilter filter) throws ServiceException {
 		try {

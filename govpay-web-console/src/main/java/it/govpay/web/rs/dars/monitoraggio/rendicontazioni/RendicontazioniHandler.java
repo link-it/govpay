@@ -149,9 +149,10 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params); 
 
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Rendicontazione> findAll = eseguiRicerca ? frBD.findAll(filter) : new ArrayList<Rendicontazione>(); 
 
