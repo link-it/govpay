@@ -34,11 +34,15 @@ public class BaseRsServiceV1 extends BaseRsService {
 	public int getVersione() {
 		return 1;
 	}
-
+	
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o) throws IOException {
+		logResponse(uriInfo, rsHttpHeaders, nomeOperazione, o, null);
+	}
+
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException {
 		JsonConfig jsonConfig = new JsonConfig();
 		jsonConfig.setRootClass(o.getClass());
 		JSONObject jsonObject = JSONObject.fromObject(o , jsonConfig);  
-		super.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, jsonObject.toString().getBytes());
+		super.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, jsonObject.toString().getBytes(), responseCode);
 	}
 }

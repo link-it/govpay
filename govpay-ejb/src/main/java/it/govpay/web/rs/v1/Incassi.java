@@ -57,7 +57,7 @@ public class Incassi extends BaseRsServiceV1 {
 	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON})
 	public Response addIncasso(InputStream is, @Context UriInfo uriInfo, @Context HttpHeaders httpHeaders){
-		String methodName = "CaricaVersamento"; 
+		String methodName = "addIncasso"; 
 		
 		BasicBD bd = null;
 		GpContext ctx = null; 
@@ -92,11 +92,15 @@ public class Incassi extends BaseRsServiceV1 {
 			if(ctx!=null) ctx.log("rest.versamentoKo",ge.getMessage());
 			return e.getResponse();
 		} catch (NotAuthorizedException e) {
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
 		} catch (IncassiException e) {
-			return Response.status(422).entity(new Errore(e)).build();
+			Errore errore = new Errore(e);
+			try { this.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2);}
+			return Response.status(422).entity(errore).build();
 		} catch (Exception e) {
 			log.error(e);
+			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {
 			if(bd != null) bd.closeConnection();
