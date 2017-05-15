@@ -32,8 +32,10 @@ public class Incasso extends BasicModel {
 	private String causale;
 	private BigDecimal importo;
 	private Date dataValuta;
-	private Date dataAcquisizione;
+	private Date dataIncasso;
+	private Date dataContabile;
 	private String dispositivo;
+	private long idApplicazione;
 	
 	public Long getId() {
 		return id;
@@ -77,11 +79,23 @@ public class Incasso extends BasicModel {
 	public void setDataValuta(Date dataValuta) {
 		this.dataValuta = dataValuta;
 	}
-	public Date getDataAcquisizione() {
-		return dataAcquisizione;
+	public Date getDataIncasso() {
+		return dataIncasso;
 	}
-	public void setDataAcquisizione(Date dataAcquisizione) {
-		this.dataAcquisizione = dataAcquisizione;
+	public void setDataIncasso(Date dataIncasso) {
+		this.dataIncasso = dataIncasso;
+	}
+	public Date getDataContabile() {
+		return dataContabile;
+	}
+	public void setDataContabile(Date dataContabile) {
+		this.dataContabile = dataContabile;
+	}
+	public long getIdApplicazione() {
+		return idApplicazione;
+	}
+	public void setIdApplicazione(long idApplicazione) {
+		this.idApplicazione = idApplicazione;
 	}
 
 

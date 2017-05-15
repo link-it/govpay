@@ -31,11 +31,12 @@ public class Incasso {
 	
 	private static JsonConfig jsonConfig = new JsonConfig();
 	
-	private String codDominio;
+	private String dominio;
 	private String trn;
 	private String causale;
 	private BigDecimal importo;
 	private Date data_valuta;
+	private Date data_contabile;
 	private String dispositivo;
 	private List<Pagamento> pagamenti;
 	
@@ -72,6 +73,12 @@ public class Incasso {
 	public void setData_valuta(Date data_valuta) {
 		this.data_valuta = data_valuta;
 	}
+	public Date getData_contabile() {
+		return data_contabile;
+	}
+	public void setData_contabile(Date data_contabile) {
+		this.data_contabile = data_contabile;
+	}
 	public String getDispositivo() {
 		return dispositivo;
 	}
@@ -84,15 +91,24 @@ public class Incasso {
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
 	}
+	public String getDominio() {
+		return dominio;
+	}
+	public void setDominio(String dominio) {
+		this.dominio = dominio;
+	}
 	
 	public RichiestaIncassoDTO toRichiestaIncassoDTO() {
 		RichiestaIncassoDTO dto = new RichiestaIncassoDTO();
 		dto.setCausale(causale);
-		dto.setCodDominio(codDominio);
-		dto.setData_valuta(data_valuta);
+		dto.setCodDominio(dominio);
+		dto.setDataValuta(data_valuta);
+		dto.setDataContabile(data_contabile);
 		dto.setDispositivo(dispositivo);
 		dto.setImporto(importo);
 		dto.setTrn(trn);
 		return dto;
 	}
+
+	
 }

@@ -31,7 +31,10 @@ public class IncassiException extends BaseException {
 		FR_ANOMALA("021404","Rendicontazione anomala."),
 		IDF_NON_TROVATO("021405","Flusso rendicontazione non trovato."),
 		PAGAMENTO_GIA_INCASSATO("021406","Pagamento gia incassato."),
-		IMPORTO_ERRATO("021407","Importo errato.");
+		IMPORTO_ERRATO("021407","Importo errato."),
+		ERRORE_SINTASSI("021408","Riscontrato errore di sintassi nella richiesta."),
+		DUPLICATO("021409","TRN gia' incassato."),
+		DOMINIO_INESISTENTE("021410","Dominio inesistente.");
 		
 		
 		private String faultCode;

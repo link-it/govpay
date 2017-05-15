@@ -29,7 +29,8 @@ public class RichiestaIncassoDTO {
 	private String trn;
 	private String causale;
 	private BigDecimal importo;
-	private Date data_valuta;
+	private Date dataValuta;
+	private Date dataContabile;
 	private String dispositivo;
 	
 	public String getTrn() {
@@ -50,12 +51,6 @@ public class RichiestaIncassoDTO {
 	public void setImporto(BigDecimal importo) {
 		this.importo = importo;
 	}
-	public Date getData_valuta() {
-		return data_valuta;
-	}
-	public void setData_valuta(Date data_valuta) {
-		this.data_valuta = data_valuta;
-	}
 	public String getDispositivo() {
 		return dispositivo;
 	}
@@ -73,5 +68,17 @@ public class RichiestaIncassoDTO {
 	}
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+	public Date getDataContabile() {
+		return dataContabile;
+	}
+	public void setDataContabile(Date dataContabile) {
+		this.dataContabile = dataContabile;
+	}
+	public Date getDataValuta() {
+		return dataValuta;
+	}
+	public void setDataValuta(Date dataValuta) {
+		this.dataValuta = dataValuta;
 	}
 }
