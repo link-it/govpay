@@ -126,4 +126,24 @@ public class Costanti {
 	public static final String LABEL_INTESTATO_A = "Intestato a:";
 	public static final String LABEL_ESTREMI_DI_PAGAMENTO = "Estremi di Pagamento";
 	
+	/** LABEL  INCASSI **/
+	
+	public static final String TITOLO_REPORT_INCASSO = "Report Incasso";
+	
+	public static final String LABEL_CREDITORE = "Creditore";
+	public static final String LABEL_IUV2 = "IUV";
+	public static final String LABEL_IUR2 = "IUR";
+	public static final String LABEL_TRN = "TRN";
+	public static final String LABEL_DATA_CONTABILE = "Data Contabile";
+	public static final String LABEL_DATA_VALUTA = "Data Valuta";
+	public static final String LABEL_DATA_INCASSO = "Data Incasso";
+	public static final String LABEL_APPLICAZIONE = "Applicazione";
+	public static final String LABEL_DISPOSITIVO = "Dispositivo";
+
+	/** COLONNE INCASSI **/
+	
+	public static final String CREDITORE_COL = "creditore";
+	public static final String IUR_COL = "iur";
+	public static final String IMPORTO_COL = "importo";
+	
 }

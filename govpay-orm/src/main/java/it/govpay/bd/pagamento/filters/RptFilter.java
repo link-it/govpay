@@ -47,7 +47,7 @@ public class RptFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -65,6 +65,25 @@ public class RptFilter extends AbstractFilter {
 				
 				newExpression.ilike(RPT.model().IUV, this.iuv, LikeMode.ANYWHERE);
 				addAnd = true;
+			}
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression(); 
+			
+			if(this.simpleSearchString != null){
+				newExpression.ilike(RPT.model().IUV, this.simpleSearchString,LikeMode.ANYWHERE);
 			}
 			
 			return newExpression;

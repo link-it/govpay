@@ -120,6 +120,18 @@ public abstract class AbstractFilter implements IFilter {
 		}
 		
 	}
+	
+	@Override
+	public IExpression toExpression() throws ServiceException {
+		if(!this.simpleSearch)
+			return _toExpression();
+		else 
+			return _toSimpleSearchExpression();
+	}
+	
+	public abstract IExpression _toExpression() throws ServiceException;
+	
+	public abstract IExpression _toSimpleSearchExpression() throws ServiceException;
 
 	protected String getRootTable() throws ExpressionException {
 		ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.expressionConstructor).getFieldConverter();

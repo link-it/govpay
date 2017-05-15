@@ -62,7 +62,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression(); 
 			boolean addAnd = false;
@@ -76,6 +76,25 @@ public class ApplicazioneFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
+			}
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression(); 
+			
+			if(this.simpleSearchString != null){
+				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.simpleSearchString,LikeMode.ANYWHERE);
 			}
 			
 			return newExpression;

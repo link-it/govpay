@@ -19,6 +19,9 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
 import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
@@ -49,7 +52,7 @@ public class PspFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -81,6 +84,32 @@ public class PspFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			
+			List<IExpression> orExpr = new ArrayList<IExpression>();
+			if(this.simpleSearchString != null){
+				IExpression codPspExpr = this.newExpression();
+				codPspExpr.ilike(Psp.model().COD_PSP, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(codPspExpr);
+				IExpression ragioneSocialeExpr = this.newExpression();
+				ragioneSocialeExpr.ilike(Psp.model().RAGIONE_SOCIALE, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(ragioneSocialeExpr);
+			}
+			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} 
 	}
 
 	public void addSortField(SortFields field, boolean asc) {
