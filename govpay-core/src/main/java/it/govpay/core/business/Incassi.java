@@ -29,6 +29,7 @@ import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
@@ -40,7 +41,10 @@ import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.IncassiException.FaultType;
 import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
+import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.model.Acl.Servizio;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -59,10 +63,39 @@ public class Incassi extends BasicBD {
 		try {
 			GpThreadLocal.get().log("incasso.richiesta");
 			
-			// TODO
-			/* if(richiestaIncasso.getPrincipal)
-			 *   throw new NotAuthorizedException
-			 */
+			// Validazione dati obbligatori
+			if(richiestaIncasso.getCausale() == null) {
+				GpThreadLocal.get().log("incasso.sintassi", "causale");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
+			}
+			
+			if(richiestaIncasso.getCodDominio() == null) {
+				GpThreadLocal.get().log("incasso.sintassi", "dominio");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio cod_dominio");
+			}
+			
+			if(richiestaIncasso.getImporto() == null) {
+				GpThreadLocal.get().log("incasso.sintassi", "importo");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio importo");
+			}
+
+			
+			// Verifica Dominio
+			try {
+				AnagraficaManager.getDominio(this, richiestaIncasso.getCodDominio());
+			} catch (NotFoundException e) {
+				GpThreadLocal.get().log("incasso.dominioInesistente", richiestaIncasso.getCodDominio());
+				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
+			}
+			
+			// Verifica autorizzazione all'incasso
+			try {
+				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, richiestaIncasso.getPrincipal());
+				if(!AclEngine.isAuthorized(applicazione, Servizio.INCASSI, richiestaIncasso.getCodDominio(), null))
+					throw new NotAuthorizedException();
+			} catch (NotFoundException e) {
+				throw new NotAuthorizedException();
+			} 
 			
 			RichiestaIncassoDTOResponse richiestaIncassoResponse = new RichiestaIncassoDTOResponse();
 			
@@ -70,6 +103,21 @@ public class Incassi extends BasicBD {
 			IncassiBD incassiBD = new IncassiBD(this);
 			try {
 				Incasso incasso = incassiBD.getIncasso(richiestaIncasso.getTrn());
+				
+				// Richiesta presente. Verifico che i dati accessori siano gli stessi
+				if(richiestaIncasso.getCausale().equals(incasso.getCausale())) {
+					GpThreadLocal.get().log("incasso.sintassi", "causale");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con causale diversa");
+				}
+				if(richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
+					GpThreadLocal.get().log("incasso.sintassi", "dominio");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
+				}
+				if(richiestaIncasso.getImporto().equals(incasso.getImporto())) {
+					GpThreadLocal.get().log("incasso.sintassi", "importo");
+					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
+				}
+				
 				richiestaIncassoResponse.setPagamenti(incasso.getPagamenti(this));
 				richiestaIncassoResponse.setCreato(false);
 				return richiestaIncassoResponse;
@@ -172,8 +220,9 @@ public class Incassi extends BasicBD {
 				it.govpay.bd.model.Incasso incasso = new it.govpay.bd.model.Incasso();
 				incasso.setCausale(richiestaIncasso.getCausale());
 				incasso.setCodDominio(richiestaIncasso.getCodDominio());
-				incasso.setDataAcquisizione(new Date());
-				incasso.setDataValuta(richiestaIncasso.getData_valuta());
+				incasso.setDataIncasso(new Date());
+				incasso.setDataValuta(richiestaIncasso.getDataValuta());
+				incasso.setDataContabile(richiestaIncasso.getDataContabile());
 				incasso.setDispositivo(richiestaIncasso.getDispositivo());
 				incasso.setImporto(richiestaIncasso.getImporto());
 				incasso.setTrn(richiestaIncasso.getTrn());
