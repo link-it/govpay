@@ -137,6 +137,11 @@ public class MessageLoggingHandlerUtils {
 	
 	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, byte[] bytes,
 			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) {
+		return logToSystemOut(uriInfo, rsHttpHeaders, request, bytes, nomeOperazione, nomeServizio, tipoServizio, versioneServizio, log, outbound, null);
+	}
+	
+	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, byte[] bytes,
+			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound, Integer responseCode) {
 	
 
 		
@@ -159,6 +164,7 @@ public class MessageLoggingHandlerUtils {
 				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
 			ctx.getContext().getResponse().setOutDate(new Date());
 			ctx.getContext().getResponse().setOutSize(Long.valueOf(bytes.length));
+			if(responseCode != null) ctx.getTransaction().getServer().setTransportCode(responseCode.intValue() + "");
 		} else {
 			try {
 				ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);

@@ -143,7 +143,7 @@ public class Incassi extends BasicBD {
 					}
 					
 					if(causale.startsWith("/PUR/LGPE-RIVERSAMENTO/URI/")) {
-						idf = causale.substring(28);
+						idf = causale.substring(27);
 					}
 				}
 			} catch (Throwable e) {
