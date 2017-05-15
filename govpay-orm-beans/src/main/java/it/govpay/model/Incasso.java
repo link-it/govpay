@@ -97,11 +97,5 @@ public class Incasso extends BasicModel {
 	public void setIdApplicazione(long idApplicazione) {
 		this.idApplicazione = idApplicazione;
 	}
-	public long getIdApplicazione() {
-		return idApplicazione;
-	}
-	public void setIdApplicazione(long idApplicazione) {
-		this.idApplicazione = idApplicazione;
-	}
 }
 
