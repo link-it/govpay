@@ -99,8 +99,8 @@ public class PspFilter extends AbstractFilter {
 				IExpression ragioneSocialeExpr = this.newExpression();
 				ragioneSocialeExpr.ilike(Psp.model().RAGIONE_SOCIALE, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(ragioneSocialeExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

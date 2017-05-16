@@ -89,13 +89,8 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = intermediariBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -105,14 +100,20 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
+				String codIntermediario = this.getParameter(uriInfo, codIntermediarioId, String.class);
 
-			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
-			String codIntermediario = this.getParameter(uriInfo, codIntermediarioId, String.class);
-
-			if(StringUtils.isNotEmpty(codIntermediario)){
-				filter.setIdIntermediario(codIntermediario); 
+				if(StringUtils.isNotEmpty(codIntermediario)){
+					filter.setIdIntermediario(codIntermediario); 
+				}
 			}
-
 			long count = intermediariBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -325,7 +326,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		InputText principal = (InputText) this.infoCreazioneMap.get(principalId);
 		principal.setDefaultValue(entry.getConnettorePdd() == null ? null : entry.getConnettorePdd().getPrincipal());
 		sezioneRoot.addField(principal);
-		
+
 		CheckButton abilitato = (CheckButton) this.infoCreazioneMap.get(abilitatoId);
 		abilitato.setDefaultValue(entry.isAbilitato()); 
 		sezioneRoot.addField(abilitato);
@@ -341,12 +342,12 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Intermediario entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
@@ -417,7 +418,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id");
 
 			Stazioni stazioniDars = new Stazioni();
-			
+
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(codIntermediarioId, intermediario.getCodIntermediario());
 			URI stazioneDettaglio = Utils.creaUriConParametri(stazioniDars.getPathServizio(), params );
@@ -495,7 +496,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			String principal = jsonObjectIntermediario.getString(principalId);
 			jsonObjectIntermediario.remove(principalId);
-			
+
 			String tipoSsl = jsonObjectIntermediario.containsKey(tipoSslId) ? jsonObjectIntermediario.getString(tipoSslId) : null;
 			if(tipoSsl != null) {
 				jsonObjectIntermediario.remove(tipoSslId);
@@ -514,7 +515,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			c.setPrincipal(principal);
 			entry.setConnettorePdd(c); 
-			
+
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -524,7 +525,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		}
 	}
 
-	
+
 
 	@Override
 	public void checkEntry(Intermediario entry, Intermediario oldEntry) throws ValidationException {
@@ -611,7 +612,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	public List<String> getValori(Intermediario entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(Intermediario entry, BasicBD bd) throws ConsoleException { return null; }
 

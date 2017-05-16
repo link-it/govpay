@@ -114,11 +114,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<String> idDomini = new ArrayList<String>();
 
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			IncassoFilter filter = incassiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -130,7 +126,10 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 			if(simpleSearch){
 				// simplesearch
-				filter.setSimpleSearchString(simpleSearchString); 
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
 			}else{
 				String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 

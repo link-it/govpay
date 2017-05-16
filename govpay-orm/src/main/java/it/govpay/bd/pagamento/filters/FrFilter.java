@@ -342,8 +342,8 @@ public class FrFilter extends AbstractFilter {
 				IExpression codPspExpr = this.newExpression();
 				codPspExpr.ilike(FR.model().COD_PSP, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(codPspExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

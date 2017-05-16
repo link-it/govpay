@@ -115,11 +115,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter(simpleSearch);
@@ -132,7 +128,10 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			if(simpleSearch){
 				// simplesearch
-				filter.setSimpleSearchString(simpleSearchString); 
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
 			}else{
 				String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
 				String codApplicazione = this.getParameter(uriInfo, codApplicazioneId, String.class	);

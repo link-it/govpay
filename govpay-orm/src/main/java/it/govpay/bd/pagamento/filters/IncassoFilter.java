@@ -72,8 +72,8 @@ public class IncassoFilter extends AbstractFilter{
 				IExpression causaleExpr = this.newExpression();
 				causaleExpr.ilike(Incasso.model().CAUSALE, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(causaleExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 
 			if(this.codDomini != null){
 				codDomini.removeAll(Collections.singleton(null));

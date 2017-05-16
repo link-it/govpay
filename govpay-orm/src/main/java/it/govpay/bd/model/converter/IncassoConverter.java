@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Incasso;
+import it.govpay.orm.IdApplicazione;
 
 public class IncassoConverter {
 
@@ -17,8 +18,7 @@ public class IncassoConverter {
 			dto.setDataValuta(vo.getDataValuta());
 			dto.setDispositivo(vo.getNomeDispositivo());
 			dto.setId(vo.getId());
-			// [TODO] aspettare giovanni
-			//dto.setIdApplicazione(vo.getCodApplicazione());
+			dto.setIdApplicazione(vo.getIdApplicazione().getId());
 			dto.setImporto(BigDecimal.valueOf(vo.getImporto()));
 			dto.setTrn(vo.getTrn());
 			
@@ -34,8 +34,9 @@ public class IncassoConverter {
 		vo.setDataValuta(dto.getDataValuta());
 		vo.setNomeDispositivo(dto.getDispositivo());
 		vo.setId(dto.getId());
-		// [TODO] aspettare giovanni
-		//vo.setIdApplicazione(dto.getCodApplicazione());
+		IdApplicazione idApplicazione = new IdApplicazione();
+		idApplicazione.setId(dto.getIdApplicazione());
+		vo.setIdApplicazione(idApplicazione);
 		vo.setImporto(dto.getImporto().doubleValue());
 		vo.setTrn(dto.getTrn());
 		

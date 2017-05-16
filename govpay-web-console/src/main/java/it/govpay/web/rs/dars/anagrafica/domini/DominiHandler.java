@@ -112,12 +112,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd);
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			DominiBD dominiBD = new DominiBD(bd);
 			DominioFilter filter = dominiBD.newFilter(simpleSearch);
@@ -132,27 +128,35 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
 			String idStazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idStazione.id");
 			String idStazione = this.getParameter(uriInfo, idStazioneId, String.class);
-			
+
 			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
 			String ragioneSociale = this.getParameter(uriInfo, ragioneSocialeId, String.class);
 
-			if(StringUtils.isNotEmpty(codDominio)){
-				filter.setCodDominio(codDominio);
-			}
-			
-			if(StringUtils.isNotEmpty(ragioneSociale)){
-				filter.setRagioneSociale(ragioneSociale);
-			}
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				if(StringUtils.isNotEmpty(codDominio)){
+					filter.setCodDominio(codDominio);
+				}
 
-			if(StringUtils.isNotEmpty(idStazione)){
-				long idStaz = -1l;
-				try{
-					idStaz = Long.parseLong(idStazione);
-				}catch(Exception e){ idStaz = -1l;	}
-				if(idStaz > 0){
-					StazioniBD stazioniBD = new StazioniBD(bd);
-					Stazione stazione = stazioniBD.getStazione(idStaz);
-					filter.setCodStazione(stazione.getCodStazione());
+				if(StringUtils.isNotEmpty(ragioneSociale)){
+					filter.setRagioneSociale(ragioneSociale);
+				}
+
+				if(StringUtils.isNotEmpty(idStazione)){
+					long idStaz = -1l;
+					try{
+						idStaz = Long.parseLong(idStazione);
+					}catch(Exception e){ idStaz = -1l;	}
+					if(idStaz > 0){
+						StazioniBD stazioniBD = new StazioniBD(bd);
+						Stazione stazione = stazioniBD.getStazione(idStaz);
+						filter.setCodStazione(stazione.getCodStazione());
+					}
 				}
 			}
 
@@ -213,7 +217,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			codDominio.setDefaultValue(null);
 			codDominio.setEditable(true); 
 			sezioneRoot.addField(codDominio);
-			
+
 			InputText ragioneSociale = (InputText) this.infoRicercaMap.get(ragioneSocialeId);
 			ragioneSociale.setDefaultValue(null);
 			ragioneSociale.setEditable(true); 
@@ -262,7 +266,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			String codDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label");
 			InputText codDominio = new InputText(codDominioId, codDominioLabel, null, false, false, true, 1, 11);
 			this.infoRicercaMap.put(codDominioId, codDominio);
-			
+
 			// nome
 			String ragioneSocialeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label");
 			InputText ragioneSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, false, true, 1, 255);
@@ -415,7 +419,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
 		prefissoIuvRigoroso.setDefaultValue(false);
 		sezioneGestioneIuv.addField(prefissoIuvRigoroso);
-		
+
 		// segregationCode
 		InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
 		segregationCode.setDefaultValue(null); 
@@ -532,7 +536,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			CheckButton prefissoIuvRigoroso = new CheckButton(prefissoIuvRigorosoId, prefissoIuvRigorosoLabel, false, false, false, true);
 			prefissoIuvRigoroso.setAvanzata(true); 
 			this.infoCreazioneMap.put(prefissoIuvRigorosoId,prefissoIuvRigoroso);
-			
+
 			// segregationCode
 			String segregationCodeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label");
 			InputText segregationCode = new InputText(segregationCodeId, segregationCodeLabel, null, false, false, true, 2, 2);
@@ -697,7 +701,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		CheckButton prefissoIuvRigoroso = (CheckButton) this.infoCreazioneMap.get(prefissoIuvRigorosoId);
 		prefissoIuvRigoroso.setDefaultValue(entry.isIuvPrefixStrict());
 		sezioneGestioneIuv.addField(prefissoIuvRigoroso);
-		
+
 		// segregationCode
 		InputText segregationCode = (InputText) this.infoCreazioneMap.get(segregationCodeId);
 		String segCode = entry.getSegregationCode() != null ? (entry.getSegregationCode() < 10 ? "0"+entry.getSegregationCode() : entry.getSegregationCode()+"" ) : null;
@@ -712,10 +716,10 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry) throws ConsoleException {
 		return null;
@@ -800,7 +804,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 					}
 				}
 			}
-			
+
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"), statoValue);
 			if(StringUtils.isNotEmpty(dominio.getNdpOperazione()))
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ndpOperazione.label"), dominio.getNdpOperazione());
@@ -826,7 +830,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 				sezioneIuv.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuv.label"), dominio.getIuvPrefix(),true);
 			}
 			sezioneIuv.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".prefissoIuvRigoroso.label"), Utils.getSiNoAsLabel(dominio.isIuvPrefixStrict()),true);
-			
+
 			if(dominio.getSegregationCode() != null){
 				String segCode = dominio.getSegregationCode() < 10 ? "0"+dominio.getSegregationCode() : dominio.getSegregationCode()+"";
 				sezioneIuv.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.label"), segCode,true);
@@ -857,15 +861,15 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			//			it.govpay.web.rs.dars.model.Sezione sezioneTabellaControparti = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + "tabellaControparti.titolo"));
 			//			UriBuilder uriTabellaContropartiBuilder = BaseRsService.checkDarsURI(uriInfo).path(this.pathServizio).path("{id}").path("informativa");
 			//			sezioneTabellaControparti.addVoce("Tabella Controparti", "scarica", uriTabellaContropartiBuilder.build(dominio.getId()));
-			
-			
+
+
 			// sezione anomalie
 			if(mostraAnomalia){
 				// Sezione iuv
 				it.govpay.web.rs.dars.model.Sezione sezioneAnomalia = dettaglio.addSezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneAnomalia"));
 				sezioneAnomalia.addVoce(dominio.getNdpDescrizione() , "");
 			}
-			
+
 
 			// Elementi correlati
 			String etichettaUnitaOperative = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.unitaOperative.titolo");
@@ -983,7 +987,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 		String methodName = "creaEntry " + this.titoloServizio;
 		Dominio entry = null;
 		String segregationCodeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".segregationCode.id");
-		
+
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
@@ -997,17 +1001,17 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			baos.close();
 
 			JSONObject jsonObjectDominio = JSONObject.fromObject( baos.toString() );
-			
+
 			String segregationCode = jsonObjectDominio.getString(segregationCodeId);
 			jsonObjectDominio.remove(segregationCodeId);
-			
+
 			jsonConfig.setRootClass(Dominio.class);
 			entry = (Dominio) JSONObject.toBean( jsonObjectDominio, jsonConfig );
-			
+
 			if(StringUtils.isNotEmpty(segregationCode)){
 				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
 			}
-			
+
 			entry.setTabellaControparti(DominioUtils.buildInformativaControparte(entry, true));
 			entry.setContiAccredito(DominioUtils.buildInformativaContoAccredito(entry, new ArrayList<IbanAccredito>()));
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -1043,8 +1047,8 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			//			String ragSocAnagrafica = jsonArray.getString(1);
 			//
 			//			jsonObjectDominio.remove(ragioneSocialeId);
-			
-			
+
+
 			String segregationCode = jsonObjectDominio.getString(segregationCodeId);
 			jsonObjectDominio.remove(segregationCodeId);
 
@@ -1058,7 +1062,7 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			if(entry.getIdApplicazioneDefault() != null && entry.getIdApplicazioneDefault().longValue() == -1l) {
 				entry.setIdApplicazioneDefault(null);
 			} 
-			
+
 			if(StringUtils.isNotEmpty(segregationCode)){
 				entry.setSegregationCode(Integer.parseInt(segregationCode)); 
 			}
@@ -1197,31 +1201,31 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	public List<String> getValori(Dominio entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(Dominio entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label"),entry.getRagioneSociale()));
-		
+
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"),entry.getCodDominio()));
-		
+
 		try {
 			Stazione stazione = entry.getStazione(bd);
-			
+
 			if(stazione != null){
 				Intermediario intermediario = stazione.getIntermediario(bd);
 				if(intermediario != null) {
-				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id"),
-						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label"),intermediario.getCodIntermediario()));
+					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codIntermediario.label"),intermediario.getCodIntermediario()));
 				}
 			}
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
 		}
-		
+
 		// stato del dominio
 		// 
 		if(!entry.isAbilitato()) {
@@ -1240,21 +1244,21 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok")));
 				} else {
 					String statoErrore = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore.label");
-					
+
 					if(StringUtils.isNotEmpty(entry.getNdpDescrizione())){
 						statoErrore = entry.getNdpDescrizione();
 					}
 					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 							new Voce<String>(statoErrore,
 									Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.errore")));
-					
+
 					valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.id"),
 							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anomalia.label"),statoErrore));
 				}
 			}
 		}
-		
-		
+
+
 		return valori;
 	}
 
