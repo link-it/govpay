@@ -39,11 +39,11 @@ import java.io.Serializable;
  * 			&lt;element name="codDominio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="causale" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="importo" type="{http://www.w3.org/2001/XMLSchema}decimal" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codApplicazione" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="dataValuta" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataContabile" type="{http://www.w3.org/2001/XMLSchema}date" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dataOraIncasso" type="{http://www.w3.org/2001/XMLSchema}dateTime" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nomeDispositivo" type="{http://www.govpay.it/orm}string" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -62,11 +62,11 @@ import java.io.Serializable;
   	"codDominio",
   	"causale",
   	"importo",
-  	"codApplicazione",
   	"dataValuta",
   	"dataContabile",
   	"dataOraIncasso",
-  	"nomeDispositivo"
+  	"nomeDispositivo",
+  	"idApplicazione"
   }
 )
 
@@ -122,14 +122,6 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
     this.importo = importo;
   }
 
-  public java.lang.String getCodApplicazione() {
-    return this.codApplicazione;
-  }
-
-  public void setCodApplicazione(java.lang.String codApplicazione) {
-    this.codApplicazione = codApplicazione;
-  }
-
   public java.util.Date getDataValuta() {
     return this.dataValuta;
   }
@@ -160,6 +152,14 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
 
   public void setNomeDispositivo(java.lang.String nomeDispositivo) {
     this.nomeDispositivo = nomeDispositivo;
+  }
+
+  public IdApplicazione getIdApplicazione() {
+    return this.idApplicazione;
+  }
+
+  public void setIdApplicazione(IdApplicazione idApplicazione) {
+    this.idApplicazione = idApplicazione;
   }
 
   private static final long serialVersionUID = 1L;
@@ -197,10 +197,6 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @XmlElement(name="importo",required=true,nillable=false)
   protected java.lang.Double importo;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codApplicazione",required=true,nillable=false)
-  protected java.lang.String codApplicazione;
-
   @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.openspcoop2.utils.jaxb.Date2String.class)
   @javax.xml.bind.annotation.XmlSchemaType(name="date")
   @XmlElement(name="dataValuta",required=false,nillable=false,type=java.lang.String.class)
@@ -219,5 +215,8 @@ public class Incasso extends org.openspcoop2.utils.beans.BaseBean implements Ser
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="nomeDispositivo",required=false,nillable=false)
   protected java.lang.String nomeDispositivo;
+
+  @XmlElement(name="idApplicazione",required=false,nillable=false)
+  protected IdApplicazione idApplicazione;
 
 }

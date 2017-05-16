@@ -135,18 +135,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		try{
 			List<IField> fields = new ArrayList<IField>();
 
-			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Incasso.model())));
 			fields.add(Incasso.model().TRN);
-			fields.add(Incasso.model().TRN);
-			fields.add(Incasso.model().COD_DOMINIO);
-			fields.add(Incasso.model().CAUSALE);
-			fields.add(Incasso.model().IMPORTO);
-			fields.add(Incasso.model().COD_APPLICAZIONE);
-			fields.add(Incasso.model().DATA_VALUTA);
-			fields.add(Incasso.model().DATA_CONTABILE);
-			fields.add(Incasso.model().DATA_ORA_INCASSO);
-			fields.add(Incasso.model().NOME_DISPOSITIVO);
-
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
@@ -173,13 +162,43 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		try{
 			List<IField> fields = new ArrayList<IField>();
 
+			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Incasso.model())));
+			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(Incasso.model())));
 			fields.add(Incasso.model().TRN);
+			fields.add(Incasso.model().COD_DOMINIO);
+			fields.add(Incasso.model().CAUSALE);
+			fields.add(Incasso.model().IMPORTO);
+			fields.add(Incasso.model().DATA_VALUTA);
+			fields.add(Incasso.model().DATA_CONTABILE);
+			fields.add(Incasso.model().DATA_ORA_INCASSO);
+			fields.add(Incasso.model().NOME_DISPOSITIVO);
 
 			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
         
 			for(Map<String, Object> map: returnMap) {
 				
-				list.add((Incasso)this.getFetch().fetch(jdbcProperties.getDatabase(), Incasso.model(), map));
+				Object idApplicazioneObj = map.remove("id_applicazione");
+				
+				Incasso incasso = (Incasso)this.getFetch().fetch(jdbcProperties.getDatabase(), Incasso.model(), map);
+
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+					){
+						if(idApplicazioneObj instanceof Long) {
+	
+							it.govpay.orm.IdApplicazione id_incasso_applicazione = null;
+							long idFK_incasso_applicazione = (Long) idApplicazioneObj;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_incasso_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_incasso_applicazione, false);
+							}else{
+								id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
+							}
+							id_incasso_applicazione.setId(idFK_incasso_applicazione);
+							incasso.setIdApplicazione(id_incasso_applicazione);
+						}
+					}
+
+				list.add(incasso);
 			}
 		} catch(NotFoundException e) {}
 
@@ -520,7 +539,14 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	
 	}
 	
-	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{}
+	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
+	
+		if(expression.inUseModel(Incasso.model().ID_APPLICAZIONE,false)){
+			String tableName1 = this.getIncassoFieldConverter().toAliasTable(Incasso.model());
+			String tableName2 = this.getIncassoFieldConverter().toAliasTable(Incasso.model().ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
+		}
+	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIncasso id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
@@ -545,6 +571,20 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 				new CustomField("id", Long.class, "id", converter.toTable(Incasso.model()))
 			));
 
+		// Incasso.model().ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Incasso.model().ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Incasso.model().ID_APPLICAZIONE))
+			));
+
+
+        // Delete this line when you have verified the method
+		int throwNotImplemented = 1;
+		if(throwNotImplemented==1){
+		        throw new NotImplementedException("NotImplemented");
+		}
+		// Delete this line when you have verified the method
+        
         return mapTableToPKColumn;		
 	}
 	

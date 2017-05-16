@@ -1654,11 +1654,20 @@
 			<xsd:element name="codDominio" type="String35" />
 			<xsd:element name="causale" type="String512" />
 			<xsd:element name="importo" type="xsd:decimal"/>
-			<xsd:element name="codApplicazione" type="String35" />
 			<xsd:element name="dataValuta" type="xsd:date" minOccurs="0"/>
 			<xsd:element name="dataContabile" type="xsd:date" minOccurs="0"/>
 			<xsd:element name="dataOraIncasso" type="xsd:dateTime"/>
 			<xsd:element name="nomeDispositivo" type="String512" minOccurs="0" />
+			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Applicazione" object-type="Applicazione"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
 	

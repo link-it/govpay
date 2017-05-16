@@ -62,8 +62,6 @@ public class IncassoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "causale", Incasso.model().CAUSALE.getFieldType()));
 				setParameter(object, "setImporto", Incasso.model().IMPORTO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "importo", Incasso.model().IMPORTO.getFieldType()));
-				setParameter(object, "setCodApplicazione", Incasso.model().COD_APPLICAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_applicazione", Incasso.model().COD_APPLICAZIONE.getFieldType()));
 				setParameter(object, "setDataValuta", Incasso.model().DATA_VALUTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "data_valuta", Incasso.model().DATA_VALUTA.getFieldType()));
 				setParameter(object, "setDataContabile", Incasso.model().DATA_CONTABILE.getFieldType(),
@@ -102,8 +100,6 @@ public class IncassoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"causale"));
 				setParameter(object, "setImporto", Incasso.model().IMPORTO.getFieldType(),
 					this.getObjectFromMap(map,"importo"));
-				setParameter(object, "setCodApplicazione", Incasso.model().COD_APPLICAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"codApplicazione"));
 				setParameter(object, "setDataValuta", Incasso.model().DATA_VALUTA.getFieldType(),
 					this.getObjectFromMap(map,"dataValuta"));
 				setParameter(object, "setDataContabile", Incasso.model().DATA_CONTABILE.getFieldType(),

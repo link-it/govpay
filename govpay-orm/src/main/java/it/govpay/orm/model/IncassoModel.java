@@ -45,11 +45,11 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.COD_DOMINIO = new Field("codDominio",java.lang.String.class,"Incasso",Incasso.class);
 		this.CAUSALE = new Field("causale",java.lang.String.class,"Incasso",Incasso.class);
 		this.IMPORTO = new Field("importo",java.lang.Double.class,"Incasso",Incasso.class);
-		this.COD_APPLICAZIONE = new Field("codApplicazione",java.lang.String.class,"Incasso",Incasso.class);
 		this.DATA_VALUTA = new Field("dataValuta",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_CONTABILE = new Field("dataContabile",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_ORA_INCASSO = new Field("dataOraIncasso",java.util.Date.class,"Incasso",Incasso.class);
 		this.NOME_DISPOSITIVO = new Field("nomeDispositivo",java.lang.String.class,"Incasso",Incasso.class);
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Incasso",Incasso.class));
 	
 	}
 	
@@ -61,11 +61,11 @@ public class IncassoModel extends AbstractModel<Incasso> {
 		this.COD_DOMINIO = new ComplexField(father,"codDominio",java.lang.String.class,"Incasso",Incasso.class);
 		this.CAUSALE = new ComplexField(father,"causale",java.lang.String.class,"Incasso",Incasso.class);
 		this.IMPORTO = new ComplexField(father,"importo",java.lang.Double.class,"Incasso",Incasso.class);
-		this.COD_APPLICAZIONE = new ComplexField(father,"codApplicazione",java.lang.String.class,"Incasso",Incasso.class);
 		this.DATA_VALUTA = new ComplexField(father,"dataValuta",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_CONTABILE = new ComplexField(father,"dataContabile",java.util.Date.class,"Incasso",Incasso.class);
 		this.DATA_ORA_INCASSO = new ComplexField(father,"dataOraIncasso",java.util.Date.class,"Incasso",Incasso.class);
 		this.NOME_DISPOSITIVO = new ComplexField(father,"nomeDispositivo",java.lang.String.class,"Incasso",Incasso.class);
+		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Incasso",Incasso.class));
 	
 	}
 	
@@ -79,8 +79,6 @@ public class IncassoModel extends AbstractModel<Incasso> {
 	 
 	public IField IMPORTO = null;
 	 
-	public IField COD_APPLICAZIONE = null;
-	 
 	public IField DATA_VALUTA = null;
 	 
 	public IField DATA_CONTABILE = null;
@@ -88,6 +86,8 @@ public class IncassoModel extends AbstractModel<Incasso> {
 	public IField DATA_ORA_INCASSO = null;
 	 
 	public IField NOME_DISPOSITIVO = null;
+	 
+	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 
 
 	@Override
