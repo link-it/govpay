@@ -112,7 +112,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			IncassiBD incassiBD = new IncassiBD(bd);
 			AclBD aclBD = new AclBD(bd);
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			List<Long> idDomini = new ArrayList<Long>();
+			List<String> idDomini = new ArrayList<String>();
 
 			boolean simpleSearch = false;
 			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
@@ -124,7 +124,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
+			fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
@@ -166,14 +166,17 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 				String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
 				if(StringUtils.isNotEmpty(idDominio)){
-					long idDom = -1l;
-					try{
-						idDom = Long.parseLong(idDominio);
-					}catch(Exception e){ idDom = -1l;	}
-					if(idDom > 0){
-						idDomini.add(idDom);
-						filter.setIdDomini(idDomini);
-					}
+					idDomini.add(idDominio);
+					filter.setCodDomini(idDomini);
+//					
+//					long idDom = -1l;
+//					try{
+//						idDom = Long.parseLong(idDominio);
+//					}catch(Exception e){ idDom = -1l;	}
+//					if(idDom > 0){
+//						idDomini.add(idDom);
+//						filter.setIdDomini(idDomini);
+//					}
 				}
 			}
 
@@ -186,7 +189,8 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getIdDominio());
+//							idDomini.add(acl.getIdDominio());
+							idDomini.add(acl.getCodDominio());
 						}
 					}
 				}
@@ -194,7 +198,8 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-						filter.setIdDomini(idDomini);
+//						filter.setIdDomini(idDomini);
+						filter.setCodDomini(idDomini);
 					}
 				}
 			}
@@ -427,7 +432,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 				//				filter.setIdUo(operatore.getIdEnti()); 
 
 				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
+				fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
 				fsw.setSortOrder(SortOrder.DESC);
 				filter.getFilterSortList().add(fsw);
 
@@ -624,14 +629,15 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
 				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
+				List<String> idDomini = new ArrayList<String>();
 				for(Acl acl: aclOperatore) {
 					if(Tipo.DOMINIO.equals(acl.getTipo())) {
 						if(acl.getIdDominio() == null) {
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getIdDominio());
+//							idDomini.add(acl.getIdDominio());
+							idDomini.add(acl.getCodDominio());
 						}
 					}
 				}
@@ -639,7 +645,8 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-						filter.setIdDomini(idDomini);
+//						filter.setIdDomini(idDomini);
+						filter.setCodDomini(idDomini);
 					}
 				}
 
@@ -717,14 +724,15 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 
 				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
+				List<String> idDomini = new ArrayList<String>();
 				for(Acl acl: aclOperatore) {
 					if(Tipo.DOMINIO.equals(acl.getTipo())) {
 						if(acl.getIdDominio() == null) {
 							vediTuttiDomini = true;
 							break;
 						} else {
-							idDomini.add(acl.getIdDominio());
+//							idDomini.add(acl.getIdDominio());
+							idDomini.add(acl.getCodDominio());
 						}
 					}
 				}
@@ -732,7 +740,8 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-						filter.setIdDomini(idDomini);
+//						filter.setIdDomini(idDomini);
+						filter.setCodDomini(idDomini);
 					}
 				}
 

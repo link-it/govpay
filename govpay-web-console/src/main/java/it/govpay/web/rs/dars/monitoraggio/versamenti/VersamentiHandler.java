@@ -151,7 +151,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			boolean simpleSearch = false;
 			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
+			if(simpleSearchString != null) {
 				simpleSearch = true;
 			} 
 
