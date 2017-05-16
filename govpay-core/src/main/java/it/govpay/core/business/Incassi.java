@@ -127,15 +127,15 @@ public class Incassi extends BasicBD {
 				Incasso incasso = incassiBD.getIncasso(richiestaIncasso.getTrn());
 				
 				// Richiesta presente. Verifico che i dati accessori siano gli stessi
-				if(richiestaIncasso.getCausale().equals(incasso.getCausale())) {
+				if(!richiestaIncasso.getCausale().equals(incasso.getCausale())) {
 					GpThreadLocal.get().log("incasso.sintassi", "causale");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con causale diversa");
 				}
-				if(richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
+				if(!richiestaIncasso.getCodDominio().equals(incasso.getCodDominio())) {
 					GpThreadLocal.get().log("incasso.sintassi", "dominio");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
 				}
-				if(richiestaIncasso.getImporto().equals(incasso.getImporto())) {
+				if(!richiestaIncasso.getImporto().equals(incasso.getImporto())) {
 					GpThreadLocal.get().log("incasso.sintassi", "importo");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
 				}
@@ -255,6 +255,7 @@ public class Incassi extends BasicBD {
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
 				for(it.govpay.bd.model.Pagamento pagamento : richiestaIncassoResponse.getPagamenti()) {
 					pagamento.setStato(Stato.INCASSATO);
+					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
 				}
 				commit();

@@ -97,13 +97,15 @@ public class PagamentiBD extends BasicBD {
 	public Pagamento getPagamento(String codDominio, String iuv)
 			throws ServiceException, NotFoundException, MultipleResultException {
 		try {
-			IExpression exp = this.getPagamentoService().newExpression();
+			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
 			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO,
 					codDominio);
 			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
-			it.govpay.orm.Pagamento pagamentoVO = this.getPagamentoService()
-					.find(exp);
-			return PagamentoConverter.toDTO(pagamentoVO);
+			List<it.govpay.orm.Pagamento> pagamentoVO = this.getPagamentoService()
+					.findAll(exp);
+			if(pagamentoVO.size() == 0) throw new NotFoundException();
+			if(pagamentoVO.size() == 1) return PagamentoConverter.toDTO(pagamentoVO.get(0));
+			throw new MultipleResultException();
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
 		} catch (ExpressionNotImplementedException e) {
