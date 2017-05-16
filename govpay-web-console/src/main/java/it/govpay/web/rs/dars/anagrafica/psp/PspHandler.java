@@ -76,9 +76,15 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
+			
+			boolean simpleSearch = false;
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				simpleSearch = true;
+			} 
 
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
-			PspFilter filter = pspBD.newFilter();
+			PspFilter filter = pspBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -101,9 +107,10 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			
 			long count = pspBD.count(filter);
 
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<it.govpay.bd.model.Psp> findAll = pspBD.findAll(filter);
 

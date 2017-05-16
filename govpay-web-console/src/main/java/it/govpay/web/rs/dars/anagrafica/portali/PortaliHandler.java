@@ -106,9 +106,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
+			
+			boolean simpleSearch = false;
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				simpleSearch = true;
+			} 
 
 			PortaliBD portaliBD = new PortaliBD(bd);
-			PortaleFilter filter = portaliBD.newFilter();
+			PortaleFilter filter = portaliBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -128,10 +134,10 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Portale> findAll = portaliBD.findAll(filter);
 

@@ -34,6 +34,7 @@ import it.govpay.orm.dao.IDBEventoService;
 import it.govpay.orm.dao.IDBFRService;
 import it.govpay.orm.dao.IDBIUVService;
 import it.govpay.orm.dao.IDBIbanAccreditoService;
+import it.govpay.orm.dao.IDBIncassoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
 import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
@@ -54,6 +55,7 @@ import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.IFRService;
 import it.govpay.orm.dao.IIUVService;
 import it.govpay.orm.dao.IIbanAccreditoService;
+import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
@@ -111,6 +113,7 @@ public class BasicBD {
 	private ITributoService tributoService;
 	private IUoService uoService;
 	private IVersamentoService versamentoService;
+	private IIncassoService incassoService;
 	
 	private String idTransaction;
 	private String idModulo;
@@ -178,6 +181,7 @@ public class BasicBD {
 				this.tributoService = this.serviceManager.getTributoService();
 				this.uoService = this.serviceManager.getUoService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
+				this.incassoService = this.serviceManager.getIncassoService();
 			} catch(NotImplementedException e) {
 				throw new ServiceException(e);
 			}
@@ -217,6 +221,7 @@ public class BasicBD {
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
 			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
+			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -253,6 +258,7 @@ public class BasicBD {
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
 			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
+			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
 		} catch(NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -447,6 +453,13 @@ public class BasicBD {
 			return father.getVersamentoService();
 		}
 		return versamentoService;
+	}
+	
+	public IIncassoService getIncassoService() {
+		if(father != null) {
+			return father.getIncassoService();
+		}
+		return incassoService;
 	}
 
 	public void setAutoCommit(boolean autoCommit) throws ServiceException {

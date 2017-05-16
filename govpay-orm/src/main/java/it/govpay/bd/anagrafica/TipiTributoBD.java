@@ -130,6 +130,10 @@ public class TipiTributoBD extends BasicBD {
 	public TipoTributoFilter newFilter() throws ServiceException {
 		return new TipoTributoFilter(this.getTipoTributoService());
 	}
+	
+	public TipoTributoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new TipoTributoFilter(this.getTipoTributoService(),simpleSearch);
+	}
 
 	public long count(TipoTributoFilter filter) throws ServiceException {
 		try {

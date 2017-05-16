@@ -44,7 +44,7 @@ public class IuvFilter extends AbstractFilter{
 	}
 	
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -65,6 +65,25 @@ public class IuvFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression(); 
+			
+			if(this.simpleSearchString != null){
+				newExpression.ilike(IUV.model().IUV, this.simpleSearchString,LikeMode.ANYWHERE);
+			}
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} 
 	}
 	
 	public String getIuv() {

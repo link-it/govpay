@@ -312,6 +312,20 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "dati_esito_revoca";
 			}
 		}
+		if(field.equals(Pagamento.model().STATO)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".stato";
+			}else{
+				return "stato";
+			}
+		}
+		if(field.equals(Pagamento.model().ID_INCASSO.TRN)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".trn";
+			}else{
+				return "trn";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -430,6 +444,12 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Pagamento.model().DATI_ESITO_REVOCA)){
 			return this.toTable(Pagamento.model(), returnAlias);
 		}
+		if(field.equals(Pagamento.model().STATO)){
+			return this.toTable(Pagamento.model(), returnAlias);
+		}
+		if(field.equals(Pagamento.model().ID_INCASSO.TRN)){
+			return this.toTable(Pagamento.model().ID_INCASSO, returnAlias);
+		}
 
 
 		return super.toTable(field,returnAlias);
@@ -470,6 +490,10 @@ public class PagamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(model.equals(Pagamento.model().ID_RR)){
 			return "rr";
 		}
+		if(model.equals(Pagamento.model().ID_INCASSO)){
+			return "incassi";
+		}
+
 
 		return super.toTable(model,returnAlias);
 		

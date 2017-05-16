@@ -592,6 +592,28 @@ CREATE INDEX index_fr_1 ON fr (cod_flusso);
 
 
 
+CREATE TABLE incassi
+(
+	trn VARCHAR(35) NOT NULL,
+	cod_dominio VARCHAR(35) NOT NULL,
+	causale VARCHAR(512) NOT NULL,
+	importo DOUBLE NOT NULL,
+	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
+	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP(3),
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data_ora_incasso TIMESTAMP(3) NOT NULL DEFAULT  CURRENT_TIMESTAMP(3),
+	nome_dispositivo VARCHAR(512),
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_applicazione BIGINT,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_incassi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
+	CONSTRAINT pk_incassi PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+
+
+
 CREATE TABLE pagamenti
 (
 	cod_dominio VARCHAR(35) NOT NULL,
@@ -614,15 +636,18 @@ CREATE TABLE pagamenti
 	importo_revocato DOUBLE,
 	esito_revoca VARCHAR(140),
 	dati_esito_revoca VARCHAR(140),
+	stato VARCHAR(35),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_rpt BIGINT,
 	id_singolo_versamento BIGINT,
 	id_rr BIGINT,
+	id_incasso BIGINT,
 	-- fk/pk keys constraints
 	CONSTRAINT fk_pagamenti_1 FOREIGN KEY (id_rpt) REFERENCES rpt(id) ON DELETE CASCADE,
 	CONSTRAINT fk_pagamenti_2 FOREIGN KEY (id_singolo_versamento) REFERENCES singoli_versamenti(id) ON DELETE CASCADE,
 	CONSTRAINT fk_pagamenti_3 FOREIGN KEY (id_rr) REFERENCES rr(id) ON DELETE CASCADE,
+	CONSTRAINT fk_pagamenti_4 FOREIGN KEY (id_incasso) REFERENCES incassi(id) ON DELETE CASCADE,
 	CONSTRAINT pk_pagamenti PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 

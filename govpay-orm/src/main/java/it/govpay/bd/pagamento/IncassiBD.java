@@ -19,11 +19,17 @@
  */
 package it.govpay.bd.pagamento;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.openspcoop2.generic_project.exception.NotFoundException;
+import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.converter.IncassoConverter;
+import it.govpay.bd.pagamento.filters.IncassoFilter;
 
 public class IncassiBD extends BasicBD {
 	
@@ -43,4 +49,34 @@ public class IncassiBD extends BasicBD {
 
 	}
 
+	public IncassoFilter newFilter() throws ServiceException {
+		return new IncassoFilter(this.getIncassoService());
+	}
+
+	public IncassoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new IncassoFilter(this.getIncassoService(),simpleSearch);
+	}
+
+	public long count(IncassoFilter filter) throws ServiceException {
+		try {
+			return this.getIncassoService().count(filter.toExpression()).longValue();
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+
+	public List<Incasso> findAll(IncassoFilter filter) throws ServiceException {
+		try {
+			List<Incasso> incassoLst = new ArrayList<Incasso>();
+
+			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return incassoLst;
+			List<it.govpay.orm.Incasso> incassoVOLst = this.getIncassoService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.Incasso incassoVO: incassoVOLst) {
+				incassoLst.add(IncassoConverter.toDTO(incassoVO));
+			}
+			return incassoLst;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
 }

@@ -254,6 +254,10 @@ public class DominiBD extends BasicBD {
 	public DominioFilter newFilter() throws ServiceException {
 		return new DominioFilter(this.getDominioService());
 	}
+	
+	public DominioFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new DominioFilter(this.getDominioService(),simpleSearch);
+	}
 
 	public long count(IFilter filter) throws ServiceException {
 		try {

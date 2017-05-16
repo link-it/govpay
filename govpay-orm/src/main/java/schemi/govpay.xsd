@@ -8,158 +8,159 @@
 			<xsd:totalDigits value="2"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="Int1">
 		<xsd:restriction base="xsd:int">
 			<xsd:totalDigits value="1"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String511">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="511"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String1024">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="1024"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String256">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="256"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String255">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="255"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String35">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="35"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String36">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="36"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String10">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="10"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String4">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="4"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String1">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="1"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String3">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="3"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String2">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="2"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String70">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="70"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String140">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="140"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String16">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="16"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="String512">
 		<xsd:restriction base="xsd:string">
 			<xsd:maxLength value="512"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="TwoDigitsDecimal">
 		<xsd:restriction base="xsd:integer">
 			<xsd:totalDigits value="2"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="FourDigitsDecimal">
 		<xsd:restriction base="xsd:integer">
 			<xsd:totalDigits value="4"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="ElevenDigitsDecimal">
 		<xsd:restriction base="xsd:integer">
 			<xsd:totalDigits value="11"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="OneDigitDecimal">
 		<xsd:restriction base="xsd:integer">
 			<xsd:totalDigits value="1"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:simpleType name="IBANType">
 		<xsd:restriction base="xsd:string">
 			<xsd:pattern value="[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"/>
 		</xsd:restriction>
 	</xsd:simpleType>
-	
+
 	<xsd:complexType name="id-uo">
 		<xsd:sequence>
 			<xsd:element name="codUo" type="xsd:string"/>
 			<xsd:element name="idDominio" type="id-dominio"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-pagamento">
 		<xsd:sequence>
 			<xsd:element name="idPagamento" type="xsd:long"/>
+			<xsd:element minOccurs="0" name="idVersamento" type="id-versamento"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-rendicontazione">
 		<xsd:sequence>
 			<xsd:element name="idRendicontazione" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-portale">
 		<xsd:sequence>
 			<xsd:element name="codPortale" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-stazione">
 		<xsd:sequence>
 			<xsd:element name="codStazione" type="xsd:string"/>
@@ -173,25 +174,32 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	
+	<xsd:complexType name="id-incasso">
+		<xsd:sequence>
+			<xsd:element name="trn" type="String35"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:complexType name="id-dominio">
 		<xsd:sequence>
 			<xsd:element name="codDominio" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-anagrafica">
 		<xsd:sequence>
 			<xsd:element name="idAnagrafica" type="xsd:long"/>
 			<xsd:element minOccurs="0" name="codUnivoco" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-psp">
 		<xsd:sequence>
 			<xsd:element name="codPsp" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-canale">
 		<xsd:sequence>
 			<xsd:element name="idPsp" type="id-psp"/>
@@ -199,65 +207,65 @@
 			<xsd:element name="tipoVersamento" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-operatore">
 		<xsd:sequence>
 			<xsd:element name="principal" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-intermediario">
 		<xsd:sequence>
 			<xsd:element name="codIntermediario" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-connettore">
 		<xsd:sequence>
 			<xsd:element name="codConnettore" type="xsd:string"/>
 			<xsd:element name="codProprieta" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-tabella-controparti">
 		<xsd:sequence>
 			<xsd:element name="idDominio" type="id-dominio"/>
 			<xsd:element name="idFlusso" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-conto-accredito">
 		<xsd:sequence>
 			<xsd:element name="idDominio" type="id-dominio"/>
 			<xsd:element name="idFlusso" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-applicazione">
 		<xsd:sequence>
 			<xsd:element name="codApplicazione" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-tracciato">
 		<xsd:sequence>
 			<xsd:element name="idTracciato" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-tributo">
 		<xsd:sequence>
 			<xsd:element name="idDominio" type="id-dominio"/>
 			<xsd:element name="idTipoTributo" type="id-tipo-tributo"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-tipo-tributo">
 		<xsd:sequence>
 			<xsd:element name="codTributo" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-versamento">
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="xsd:string"/>
@@ -271,7 +279,7 @@
 			<xsd:element minOccurs="0" name="statoVersamento" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-singolo-versamento">
 		<xsd:sequence>
 			<xsd:element name="idVersamento" type="id-versamento"/>
@@ -282,14 +290,14 @@
 			<xsd:element minOccurs="0" name="importoSingoloVersamento" type="xsd:double"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-carrello">
 		<xsd:sequence>
 			<xsd:element name="codCarrello" type="xsd:string"/>
 			<xsd:element name="idRpt" type="id-rpt"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-rpt">
 		<xsd:sequence>
 			<xsd:element name="codMsgRichiesta" type="xsd:string"/>
@@ -297,11 +305,17 @@
 			<xsd:element minOccurs="0" name="iuv" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
-	
+
+
 	<xsd:complexType name="id-evento">
 		<xsd:sequence>
 			<xsd:element name="idEvento" type="xsd:long"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:complexType name="id-batch">
+		<xsd:sequence>
+			<xsd:element name="codBatch" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -310,82 +324,82 @@
 			<xsd:element name="idNotifica" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-sla">
 		<xsd:sequence>
 			<xsd:element name="idSLA" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-rilevamento">
 		<xsd:sequence>
 			<xsd:element name="idRilevamento" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-media-rilevamento">
 		<xsd:sequence>
 			<xsd:element name="idSLA" type="id-sla"/>
 			<xsd:element name="dataOsservazione" type="xsd:date"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-rr">
 		<xsd:sequence>
 			<xsd:element name="codMsgRevoca" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-iban-accredito">
 		<xsd:sequence>
 			<xsd:element name="codIban" type="xsd:string"/>
 			<xsd:element name="idDominio" type="id-dominio"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-er">
 		<xsd:sequence>
 			<xsd:element name="codMsgEsito" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-acl">
 		<xsd:sequence>
 			<xsd:element name="idAcl" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-singola-revoca">
 		<xsd:sequence>
 			<xsd:element name="id-singola-revoca" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-fr">
 		<xsd:sequence>
 			<xsd:element name="codFlusso" type="xsd:string"/>
-			<xsd:element name="annoRiferimento" type="xsd:int"/>
+			<xsd:element minOccurs="0" name="codDominio" type="String35"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-singola-rendicontazione">
 		<xsd:sequence>
 			<xsd:element name="id-singola-rendicontazione" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-mail">
 		<xsd:sequence>
 			<xsd:element name="id-mail" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:complexType name="id-mail-template">
 		<xsd:sequence>
 			<xsd:element name="id-mail-template" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<!-- Anagrafica -->
 
 	<xsd:element name="Dominio" type="Dominio"/>
@@ -410,10 +424,15 @@
 			<xsd:element minOccurs="0" name="iuvPrefix" type="String255"/>
 			<xsd:element default="false" name="iuvPrefixStrict" type="xsd:boolean"/>
 			<xsd:element minOccurs="0" name="segregationCode" type="Int2"/>
-			
+
+			<xsd:element minOccurs="0" name="ndpStato" type="xsd:positiveInteger"/>
+			<xsd:element minOccurs="0" name="ndpOperazione" type="String256"/>
+			<xsd:element minOccurs="0" name="ndpDescrizione" type="String1024"/>
+			<xsd:element minOccurs="0" name="ndpData" type="xsd:dateTime"/>
+
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Psp" type="Psp"/>
 	<xsd:complexType name="Psp">
 		
@@ -426,16 +445,16 @@
 			<xsd:element name="marcaBollo" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Canale" type="Canale"/>
 	<xsd:complexType name="Canale">
 		
 		<xsd:sequence>
-			
+
 			<xsd:element name="idPsp" type="id-psp">
 				
 			</xsd:element>
-			
+
 			<xsd:element name="codCanale" type="String35"/>
 			<xsd:element name="codIntermediario" type="String35"/>
 			<xsd:element name="tipoVersamento" type="String4"/>
@@ -448,11 +467,11 @@
 			</xsd:element>
 			<xsd:element minOccurs="0" name="condizioni" type="String35"/>
 			<xsd:element minOccurs="0" name="urlInfo" type="xsd:string"/>
-			
+
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Uo" type="Uo"/>
 	<xsd:complexType name="Uo">
 		
@@ -473,7 +492,7 @@
 
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Portale" type="Portale"/>
 	<xsd:complexType name="Portale">
 		
@@ -486,7 +505,7 @@
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Connettore" type="Connettore"/>
 	<xsd:complexType name="Connettore">
 		
@@ -496,7 +515,7 @@
 			<xsd:element name="valore" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Intermediario" type="Intermediario"/>
 	<xsd:complexType name="Intermediario">
 		
@@ -507,7 +526,7 @@
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Stazione" type="Stazione"/>
 	<xsd:complexType name="Stazione">
 		
@@ -519,9 +538,15 @@
 			<xsd:element name="password" type="String35"/>
 			<xsd:element name="abilitato" type="xsd:boolean"/>
 			<xsd:element name="applicationCode" type="TwoDigitsDecimal"/>
+
+			<xsd:element minOccurs="0" name="ndpStato" type="xsd:positiveInteger"/>
+			<xsd:element minOccurs="0" name="ndpOperazione" type="String256"/>
+			<xsd:element minOccurs="0" name="ndpDescrizione" type="String1024"/>
+			<xsd:element minOccurs="0" name="ndpData" type="xsd:dateTime"/>
+
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Applicazione" type="Applicazione"/>
 	<xsd:complexType name="Applicazione">
 		
@@ -554,10 +579,10 @@
 			<xsd:element name="idDominio" type="id-dominio">
 				
 			</xsd:element>
-			
+
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Tributo" type="Tributo"/>
 	<xsd:complexType name="Tributo">
 		
@@ -577,7 +602,7 @@
 			<xsd:element minOccurs="0" name="codTributoIuv" type="String4"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="TipoTributo" type="TipoTributo"/>
 	<xsd:complexType name="TipoTributo">
 		
@@ -589,7 +614,7 @@
 			<xsd:element minOccurs="0" name="codTributoIuv" type="String4"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="ACL" type="ACL"/>
 	<xsd:complexType name="ACL">
 		
@@ -613,7 +638,7 @@
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Operatore" type="Operatore"/>
 	<xsd:complexType name="Operatore">
 		
@@ -624,9 +649,9 @@
 			<xsd:element default="true" name="abilitato" type="xsd:boolean"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<!-- Versamento -->
-	
+
 	<xsd:element name="IUV" type="IUV"/>
 	<xsd:complexType name="IUV">
 		
@@ -643,23 +668,24 @@
 				
 			</xsd:element>
 			<xsd:element minOccurs="0" name="codVersamentoEnte" type="String35"/>
+			<xsd:element default="0" name="auxDigit" type="Int1"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Versamento" type="Versamento"/>
 	<xsd:complexType name="Versamento">
 		
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="String35"/>
-			
+
 			<xsd:element name="idUo" type="id-uo">
 				
 			</xsd:element>
-			
+
 			<xsd:element name="idApplicazione" type="id-applicazione">
 				
 			</xsd:element>
-			
+
 			<xsd:element name="importoTotale" type="xsd:double"/>
 			<xsd:element name="statoVersamento" type="String35"/>
 			<xsd:element minOccurs="0" name="descrizioneStato" type="xsd:string"/>
@@ -688,7 +714,7 @@
 			<xsd:element minOccurs="0" name="codBundlekey" type="String256"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="Evento" type="Evento"/>
 	<xsd:complexType name="Evento">
 		
@@ -713,10 +739,10 @@
 
 			<xsd:element minOccurs="0" name="data1" type="xsd:dateTime"/>
 			<xsd:element minOccurs="0" name="data2" type="xsd:dateTime"/>
-			
+
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="SingoloVersamento" type="SingoloVersamento"/>
 	<xsd:complexType name="SingoloVersamento">
 		
@@ -734,14 +760,14 @@
 			<xsd:element minOccurs="0" name="tipoBollo" type="String2">
 				
 			</xsd:element>
-			
+
 			<xsd:element minOccurs="0" name="hashDocumento" type="String70">
 				
 			</xsd:element>
 			<xsd:element minOccurs="0" name="provinciaResidenza" type="String2">
 				
 			</xsd:element>
-			
+
 			<xsd:element minOccurs="0" name="idIbanAccredito" type="id-iban-accredito">
 				
 			</xsd:element>
@@ -749,10 +775,10 @@
 			<xsd:element minOccurs="0" name="codiceContabilita" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="note" type="String512"/>
 		</xsd:sequence>
-	</xsd:complexType>	
+	</xsd:complexType>
 
 	<!-- Pagamento -->
-	
+
 	<xsd:element name="RPT" type="RPT"/>
 	<xsd:complexType name="RPT">
 		
@@ -760,50 +786,50 @@
 			<xsd:element name="idVersamento" type="id-versamento">
 				
 			</xsd:element>
-			
+
 			<xsd:element name="idCanale" type="id-canale">
 				
 			</xsd:element>
-			
+
 			<xsd:element minOccurs="0" name="idPortale" type="id-portale">
 				
 			</xsd:element>
-			
+
 			<xsd:element minOccurs="0" name="codCarrello" type="String35"/>
-			
+
 			<xsd:element name="iuv" type="String35"/>
 			<xsd:element name="ccp" type="String35"/>
 			<xsd:element name="codDominio" type="String35"/>
-			
+
 			<xsd:element name="codMsgRichiesta" type="String35">
 				
 			</xsd:element>
 			<xsd:element name="dataMsgRichiesta" type="xsd:dateTime">
 				
 			</xsd:element>
-			
+
 			<xsd:element name="stato" type="String35">
 				
 			</xsd:element>
-			
+
 			<xsd:element minOccurs="0" name="descrizioneStato" type="String512">
 				
 			</xsd:element>
-			
+
 			<xsd:element minOccurs="0" name="codSessione" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="codSessionePortale" type="xsd:string"/>
 			<xsd:element minOccurs="0" name="pspRedirectURL" type="String512">
 				
 			</xsd:element>
-			
+
 			<xsd:element name="xmlRPT" type="xsd:base64Binary"/>
 			<xsd:element name="dataAggiornamentoStato" type="xsd:dateTime"/>
 			<xsd:element minOccurs="0" name="callbackURL" type="String512">
 				
 			</xsd:element>
-			
+
 			<xsd:element name="modelloPagamento" type="String16"/>
-			
+
 			<xsd:element minOccurs="0" name="codMsgRicevuta" type="String35"/>
 			<xsd:element minOccurs="0" name="dataMsgRicevuta" type="xsd:dateTime"/>
 			<xsd:element name="firmaRicevuta" type="String1"/>
@@ -811,13 +837,13 @@
 				
 			</xsd:element>
 			<xsd:element minOccurs="0" name="importoTotalePagato" type="xsd:decimal"/>
-			<xsd:element minOccurs="0" name="xmlRT" type="xsd:base64Binary"/>	
+			<xsd:element minOccurs="0" name="xmlRT" type="xsd:base64Binary"/>
 			<xsd:element name="codStazione" type="String35"/>
 			<xsd:element minOccurs="0" name="codTransazioneRPT" type="String36"/>
 			<xsd:element minOccurs="0" name="codTransazioneRT" type="String36"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="RR" type="RR"/>
 	<xsd:complexType name="RR">
 		
@@ -829,7 +855,7 @@
 			<xsd:element name="codDominio" type="String35"/>
 			<xsd:element name="iuv" type="String35"/>
 			<xsd:element name="ccp" type="String35"/>
-			
+
 			<xsd:element name="codMsgRevoca" type="String35"/>
 			<xsd:element name="dataMsgRevoca" type="xsd:dateTime"/>
 			<xsd:element minOccurs="0" name="dataMsgEsito" type="xsd:dateTime"/>
@@ -840,14 +866,14 @@
 			<xsd:element minOccurs="0" name="importoTotaleRevocato" type="xsd:decimal"/>
 			<xsd:element name="xmlRR" type="xsd:base64Binary"/>
 			<xsd:element minOccurs="0" name="xmlER" type="xsd:base64Binary"/>
-			
+
 			<xsd:element minOccurs="0" name="codTransazioneRR" type="String36"/>
 			<xsd:element minOccurs="0" name="codTransazioneER" type="String36"/>
-			
+
 		</xsd:sequence>
 	</xsd:complexType>
-	
-	
+
+
 	<xsd:element name="Rendicontazione" type="Rendicontazione"/>
 	<xsd:complexType name="Rendicontazione">
 		
@@ -869,8 +895,8 @@
 			</xsd:element>
 		</xsd:sequence>
 	</xsd:complexType>
-	
-	
+
+
 	<xsd:element name="Pagamento" type="Pagamento"/>
 	<xsd:complexType name="Pagamento">
 		
@@ -892,8 +918,8 @@
 			<xsd:element minOccurs="0" name="tipoAllegato" type="String2">
 				
 			</xsd:element>
-			
-			<xsd:element minOccurs="0" name="allegato" type="xsd:base64Binary"/>			
+
+			<xsd:element minOccurs="0" name="allegato" type="xsd:base64Binary"/>
 
 			<xsd:element minOccurs="0" name="idRr" type="id-rr">
 				
@@ -904,6 +930,11 @@
 			<xsd:element minOccurs="0" name="importoRevocato" type="xsd:decimal"/>
 			<xsd:element minOccurs="0" name="esitoRevoca" type="String140"/>
 			<xsd:element minOccurs="0" name="datiEsitoRevoca" type="String140"/>
+			<xsd:element minOccurs="0" name="stato" type="String35"/>
+			<xsd:element minOccurs="0" name="idIncasso" type="id-incasso">
+				
+			</xsd:element>
+			
 
 		</xsd:sequence>
 	</xsd:complexType>
@@ -912,7 +943,7 @@
 	<xsd:complexType name="Notifica">
 		
 		<xsd:sequence>
-
+			
 			<xsd:element name="idApplicazione" type="id-applicazione">
 				
 			</xsd:element>
@@ -933,23 +964,38 @@
 			<xsd:element minOccurs="0" name="tentativiSpedizione" type="xsd:unsignedLong"/>
 		</xsd:sequence>
 	</xsd:complexType>
+	<xsd:element name="Incasso" type="Incasso"/>
+	<xsd:complexType name="Incasso">
+		
+		<xsd:sequence>
+			
+			<xsd:element name="trn" type="String35"/>
+			<xsd:element name="codDominio" type="String35"/>
+			<xsd:element name="causale" type="String512"/>
+			<xsd:element name="importo" type="xsd:decimal"/>
+			<xsd:element name="codApplicazione" type="String35"/>
+			<xsd:element minOccurs="0" name="dataValuta" type="xsd:date"/>
+			<xsd:element minOccurs="0" name="dataContabile" type="xsd:date"/>
+			<xsd:element name="dataOraIncasso" type="xsd:dateTime"/>
+			<xsd:element minOccurs="0" name="nomeDispositivo" type="String512"/>
+		</xsd:sequence>
+	</xsd:complexType>
 	
 	<!-- Rendicontazioni -->
-		
+
 	<xsd:element name="FR" type="FR"/>
 	<xsd:complexType name="FR">
 		
 		<xsd:sequence>
 			<xsd:element name="codPsp" type="String35"/>
 			<xsd:element name="codDominio" type="String35"/>
-			
+
 			<xsd:element name="codFlusso" type="String35"/>
 			<xsd:element name="stato" type="String35"/>
 			<xsd:element minOccurs="0" name="descrizioneStato" type="xsd:string">
 				
 			</xsd:element>
 			<xsd:element name="iur" type="String35"/>
-			<xsd:element name="annoRiferimento" type="xsd:int"/>
 			<xsd:element minOccurs="0" name="dataOraFlusso" type="xsd:dateTime"/>
 			<xsd:element minOccurs="0" name="dataRegolamento" type="xsd:dateTime"/>
 			<xsd:element name="dataAcquisizione" type="xsd:dateTime"/>
@@ -957,9 +1003,14 @@
 			<xsd:element minOccurs="0" name="importoTotalePagamenti" type="xsd:decimal"/>
 			<xsd:element minOccurs="0" name="codBicRiversamento" type="String35"/>
 			<xsd:element name="xml" type="xsd:base64Binary"/>
+
+			<xsd:element minOccurs="0" name="idPagamento" type="id-pagamento">
+				
+			</xsd:element>
+
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
 	<xsd:element name="RendicontazionePagamento" type="RendicontazionePagamento"/>
 	<xsd:complexType name="RendicontazionePagamento">
 		
@@ -969,10 +1020,20 @@
 			<xsd:element ref="Pagamento"/>
 			<xsd:element ref="SingoloVersamento"/>
 			<xsd:element ref="Versamento"/>
-			<xsd:element ref="RPT"/>
 		</xsd:sequence>
 	</xsd:complexType>
-	
+
+	<xsd:element name="Batch" type="Batch"/>
+	<xsd:complexType name="Batch">
+		
+		<xsd:sequence>
+			<xsd:element name="codBatch" type="String255"/>
+			<xsd:element minOccurs="0" name="nodo" type="xsd:positiveInteger"/>
+			<xsd:element minOccurs="0" name="inizio" type="xsd:dateTime"/>
+			<xsd:element minOccurs="0" name="aggiornamento" type="xsd:dateTime"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
 	<xsd:element name="id-messaggio">
 		
 		<xsd:complexType>
@@ -992,8 +1053,8 @@
 			</xsd:sequence>
 		</xsd:complexType>
 	</xsd:element>
-	
-	
+
+
 
 
 </xsd:schema>

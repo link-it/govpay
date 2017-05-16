@@ -62,7 +62,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -103,6 +103,16 @@ public class TributoFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} 
 	}
 
 	public void addSortField(SortFields field, boolean asc) {

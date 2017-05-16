@@ -1,5 +1,6 @@
 package it.govpay.bd.pagamento.filters;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class EventiFilter extends AbstractFilter{
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
 			
@@ -88,6 +89,35 @@ public class EventiFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			
+			List<IExpression> orExpr = new ArrayList<IExpression>();
+			if(this.simpleSearchString != null){
+				IExpression iuvExpr = this.newExpression();
+				iuvExpr.ilike(Evento.model().IUV, this.simpleSearchString,LikeMode.ANYWHERE);
+				orExpr.add(iuvExpr);
+				IExpression codDominioExpr = this.newExpression();
+				codDominioExpr.ilike(Evento.model().COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(codDominioExpr);
+				IExpression ccpExpr = this.newExpression();
+				ccpExpr.ilike(Evento.model().CCP, this.simpleSearchString, LikeMode.ANYWHERE);
+				orExpr.add(ccpExpr);
+			}
+			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} 
 	}
 
 	public String getCodDominio() {

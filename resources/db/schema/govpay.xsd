@@ -47,6 +47,7 @@
 								<linkit:sql-table object-name="Notifica" object-type="Notifica"/>
 								<linkit:sql-table object-name="IUV" object-type="IUV"/>
 								<linkit:sql-table object-name="FR" object-type="FR"/>
+								<linkit:sql-table object-name="Incassi" object-type="Incassi"/>
 								<linkit:sql-table object-name="Pagamento" object-type="Pagamento"/>
 								<linkit:sql-table object-name="Rendicontazione"
 									object-type="Rendicontazione"/>
@@ -228,14 +229,21 @@
 			<xsd:element name="codStazione" type="xsd:string"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
 	<xsd:complexType name="id-iuv">
 		<xsd:sequence>
 			<xsd:element name="idDominio" type="id-dominio"/>
 			<xsd:element name="prg" type="xsd:long"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
+	
+	<xsd:complexType name="id-incasso">
+		<xsd:sequence>
+			<xsd:element name="trn" type="String35"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:complexType name="id-dominio">
 		<xsd:sequence>
 			<xsd:element name="codDominio" type="xsd:string"/>
@@ -1559,10 +1567,22 @@
 			<xsd:element name="importoRevocato" type="xsd:decimal" minOccurs="0"/>
 			<xsd:element name="esitoRevoca" type="String140" minOccurs="0"/>
 			<xsd:element name="datiEsitoRevoca" type="String140" minOccurs="0"/>
+			<xsd:element name="stato" type="String35" minOccurs="0"/>
+			<xsd:element name="idIncasso" type="id-incasso" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Incasso" object-type="Incasso"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
 
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
 	<xsd:element name="Notifica" type="Notifica"/>
 	<xsd:complexType name="Notifica">
 		<xsd:annotation>
@@ -1575,7 +1595,7 @@
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-
+			
 			<xsd:element name="idApplicazione" type="id-applicazione">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1596,7 +1616,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-
+			
 			<xsd:element name="idRr" type="id-rr" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1607,7 +1627,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-
+			
 			<xsd:element name="tipoEsito" type="String16"/>
 			<xsd:element name="dataCreazione" type="xsd:dateTime"/>
 			<xsd:element name="stato" type="String16"/>
@@ -1617,7 +1637,40 @@
 			<xsd:element name="tentativiSpedizione" type="xsd:unsignedLong" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	<xsd:element name="Incasso" type="Incasso"/>
+	<xsd:complexType name="Incasso">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-incasso"/>
+					<linkit:sql-table-mapping generate-sql="true" name="incassi"
+						on-delete-cascade="true"> </linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			
+			<xsd:element name="trn" type="String35" />
+			<xsd:element name="codDominio" type="String35" />
+			<xsd:element name="causale" type="String512" />
+			<xsd:element name="importo" type="xsd:decimal"/>
+			<xsd:element name="dataValuta" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="dataContabile" type="xsd:date" minOccurs="0"/>
+			<xsd:element name="dataOraIncasso" type="xsd:dateTime"/>
+			<xsd:element name="nomeDispositivo" type="String512" minOccurs="0" />
+			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Applicazione" object-type="Applicazione"
+								relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<!-- Rendicontazioni -->
 
 	<xsd:element name="FR" type="FR"/>

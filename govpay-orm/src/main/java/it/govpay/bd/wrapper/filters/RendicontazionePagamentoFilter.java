@@ -254,7 +254,7 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 //			if(this.codDominio != null){
@@ -283,6 +283,16 @@ public class RendicontazionePagamentoFilter extends AbstractFilter {
 		}
 	}
 
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

@@ -347,6 +347,10 @@ public class PspBD extends BasicBD {
 	public PspFilter newFilter() throws ServiceException {
 		return new PspFilter(this.getPspService());
 	}
+	
+	public PspFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new PspFilter(this.getPspService(),simpleSearch);
+	}
 
 	public long count(PspFilter filter) throws ServiceException {
 		try {

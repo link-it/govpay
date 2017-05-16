@@ -22,15 +22,20 @@ package it.govpay.bd.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.model.Applicazione;
 
 public class Incasso extends it.govpay.model.Incasso {
 
 	private static final long serialVersionUID = 1L;
 	// Business
 	private List<Pagamento> pagamenti;
+	private Applicazione applicazione;
+	private Dominio dominio;
 
 
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
@@ -38,6 +43,29 @@ public class Incasso extends it.govpay.model.Incasso {
 			pagamenti = new ArrayList<Pagamento>();
 		}
 		return pagamenti;
+	}
+	
+	public Applicazione getApplicazione(BasicBD bd) throws ServiceException {
+		if(applicazione == null) {
+			applicazione = AnagraficaManager.getApplicazione(bd, getIdApplicazione());
+		} 
+		return applicazione;
+	}
+	
+	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
+		applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+		this.setIdApplicazione(applicazione.getId());
+	}
+	
+	public Dominio getDominio(BasicBD bd) throws ServiceException {
+		if(dominio == null) {
+			try{
+				dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+			}catch (NotFoundException e) {
+				dominio = null;
+			}
+		} 
+		return dominio;
 	}
 }
 
