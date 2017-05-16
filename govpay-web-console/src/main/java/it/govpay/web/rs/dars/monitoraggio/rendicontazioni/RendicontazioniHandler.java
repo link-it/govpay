@@ -100,8 +100,9 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			RendicontazioniBD frBD = new RendicontazioniBD(bd);
-			RendicontazioneFilter filter = frBD.newFilter();
+			RendicontazioneFilter filter = frBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -109,7 +110,6 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			boolean eseguiRicerca = true;
 			Map<String, String> params = new HashMap<String, String>();
 			String idFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idFr.id");
@@ -125,23 +125,33 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 				}
 			}
 
-			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-			String stato = this.getParameter(uriInfo, statoId, String.class);
+			if(simpleSearch) {
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 
-			if(StringUtils.isNotEmpty(stato))
-				filter.setStato(StatoRendicontazione.valueOf(stato)); 
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			} else {
+				String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+				String stato = this.getParameter(uriInfo, statoId, String.class);
 
-			String tipoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.id");
-			String tipo = this.getParameter(uriInfo, tipoId, String.class);
+				if(StringUtils.isNotEmpty(stato))
+					filter.setStato(StatoRendicontazione.valueOf(stato)); 
 
-			if(StringUtils.isNotEmpty(tipo))
-				filter.setTipo(tipo); 
+				String tipoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.id");
+				String tipo = this.getParameter(uriInfo, tipoId, String.class);
 
-			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+				if(StringUtils.isNotEmpty(tipo))
+					filter.setTipo(tipo); 
 
-			if(StringUtils.isNotEmpty(iuv))
-				filter.setIuv(iuv);
+				String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+				String iuv = this.getParameter(uriInfo, iuvId, String.class);
+
+				if(StringUtils.isNotEmpty(iuv))
+					filter.setIuv(iuv);
+			}
 
 			long count = eseguiRicerca ? frBD.count(filter) : 0;
 
@@ -379,7 +389,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 		StringBuilder sb = new StringBuilder();
 		StatoRendicontazione stato = entry.getStato();
 		EsitoRendicontazione esito = entry.getEsito();
-		
+
 		sb.append(
 				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
 						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.label."+esito.name()),
@@ -414,7 +424,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 					new Voce<String>(this.getSottotitolo(entry, bd),
 							stato.name()));
 		}
-		
+
 		EsitoRendicontazione esito = entry.getEsito();
 		if(stato!= null) {
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.id"),
@@ -494,12 +504,12 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 	/* Creazione/Update non consentiti**/
 
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException {
 		return null;

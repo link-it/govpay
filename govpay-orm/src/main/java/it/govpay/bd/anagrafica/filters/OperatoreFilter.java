@@ -47,6 +47,7 @@ public class OperatoreFilter extends AbstractFilter {
 	
 	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Operatore.model().PRINCIPAL);
 	}
 
 	@Override
@@ -75,25 +76,6 @@ public class OperatoreFilter extends AbstractFilter {
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression(); 
-			
-			if(this.simpleSearchString != null){
-				newExpression.ilike(Operatore.model().PRINCIPAL, this.simpleSearchString,LikeMode.ANYWHERE);
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
-	}
-
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

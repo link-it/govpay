@@ -54,7 +54,7 @@ import it.govpay.web.rs.dars.model.SezioneMenu;
 import it.govpay.web.rs.dars.model.VoceMenu;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.rs.dars.monitoraggio.incassi.Incassi;
-import it.govpay.web.rs.dars.monitoraggio.pagamenti.ReportisticaPagamenti;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.rs.dars.monitoraggio.rendicontazioni.Fr;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.utils.Utils;
@@ -173,7 +173,7 @@ public class Menu extends BaseRsService {
 				monitoraggio.getVociMenu().add(voceMenuEventi);
 			}
 
-			ReportisticaPagamenti pagamentiDars = new ReportisticaPagamenti();
+			Pagamenti pagamentiDars = new Pagamenti();
 			URI pagamentiURI = new URI(pagamentiDars.getPathServizio());
 			VoceMenu voceMenuPagamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".titolo"), pagamentiURI, false);
 

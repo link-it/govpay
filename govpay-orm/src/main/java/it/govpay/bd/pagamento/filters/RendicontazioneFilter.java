@@ -1,7 +1,6 @@
 package it.govpay.bd.pagamento.filters;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collections;
 
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
@@ -15,6 +14,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
+import it.govpay.orm.Incasso;
 import it.govpay.orm.Rendicontazione;
 
 public class RendicontazioneFilter extends AbstractFilter{
@@ -33,11 +33,33 @@ public class RendicontazioneFilter extends AbstractFilter{
 	private Long idApplicazione; // versamenti
 	
 	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public RendicontazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Rendicontazione.model().IUV);
+		this.listaFieldSimpleSearch.add(Rendicontazione.model().IUR);
+		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_FR.COD_DOMINIO);
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = super._toSimpleSearchExpression();
+
+			if(this.idFr != null) {
+				CustomField idFrField = new CustomField("id_fr", Long.class, "id_fr", this.getRootTable());
+				newExpression.and();
+				newExpression.equals(idFrField, this.idFr);
+			}
+
+			return newExpression;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
 	}
 
 	@Override
@@ -96,35 +118,6 @@ public class RendicontazioneFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
-	}
-	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			
-			List<IExpression> orExpr = new ArrayList<IExpression>();
-			if(this.simpleSearchString != null){
-				IExpression iuvExpr = this.newExpression();
-				iuvExpr.ilike(Rendicontazione.model().IUV, this.simpleSearchString,LikeMode.ANYWHERE);
-				orExpr.add(iuvExpr);
-				IExpression iurExpr = this.newExpression();
-				iurExpr.ilike(Rendicontazione.model().IUR, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(iurExpr);
-				IExpression codExpr = this.newExpression();
-				codExpr.ilike(Rendicontazione.model().ID_FR.COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(codExpr);
-				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} 
 	}
 	
 	public String getCodDominio() {

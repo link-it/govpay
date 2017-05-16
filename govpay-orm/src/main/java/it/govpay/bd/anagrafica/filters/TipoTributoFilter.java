@@ -19,7 +19,6 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +60,9 @@ public class TipoTributoFilter extends AbstractFilter {
 		try{
 			TipoTributoFieldConverter converter = new TipoTributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoTributo.model()));
+			this.listaFieldSimpleSearch.add(TipoTributo.model().COD_TRIBUTO);
+			this.listaFieldSimpleSearch.add(TipoTributo.model().COD_CONTABILITA);
+			this.listaFieldSimpleSearch.add(TipoTributo.model().DESCRIZIONE);
 		} catch(Exception e){
 			
 		}
@@ -127,35 +129,6 @@ public class TipoTributoFilter extends AbstractFilter {
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			
-			List<IExpression> orExpr = new ArrayList<IExpression>();
-			if(this.simpleSearchString != null){
-				IExpression codTributoExpr = this.newExpression();
-				codTributoExpr.ilike(TipoTributo.model().COD_TRIBUTO, this.simpleSearchString,LikeMode.ANYWHERE);
-				orExpr.add(codTributoExpr);
-				IExpression codContabilitaExpr = this.newExpression();
-				codContabilitaExpr.ilike(TipoTributo.model().COD_CONTABILITA, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(codContabilitaExpr);
-				IExpression descrizioneExpr = this.newExpression();
-				descrizioneExpr.ilike(TipoTributo.model().DESCRIZIONE, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(descrizioneExpr);
-				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}  
-	}
-
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

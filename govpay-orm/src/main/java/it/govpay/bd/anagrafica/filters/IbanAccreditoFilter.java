@@ -46,7 +46,7 @@ public class IbanAccreditoFilter extends AbstractFilter {
 	}
 
 	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public IbanAccreditoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
@@ -79,16 +79,6 @@ public class IbanAccreditoFilter extends AbstractFilter {
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-	}
-
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 

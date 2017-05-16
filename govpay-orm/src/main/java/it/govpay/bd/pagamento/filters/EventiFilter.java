@@ -1,6 +1,5 @@
 package it.govpay.bd.pagamento.filters;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +17,7 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Evento;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
+import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
 
 public class EventiFilter extends AbstractFilter{
 	
@@ -29,11 +29,14 @@ public class EventiFilter extends AbstractFilter{
 	private List<Long> idEventi= null;
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Evento.model().IUV);
+		this.listaFieldSimpleSearch.add(Evento.model().CCP);
+		this.listaFieldSimpleSearch.add(Evento.model().COD_DOMINIO);
 	}
 
 	@Override
@@ -91,35 +94,6 @@ public class EventiFilter extends AbstractFilter{
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			
-			List<IExpression> orExpr = new ArrayList<IExpression>();
-			if(this.simpleSearchString != null){
-				IExpression iuvExpr = this.newExpression();
-				iuvExpr.ilike(Evento.model().IUV, this.simpleSearchString,LikeMode.ANYWHERE);
-				orExpr.add(iuvExpr);
-				IExpression codDominioExpr = this.newExpression();
-				codDominioExpr.ilike(Evento.model().COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(codDominioExpr);
-				IExpression ccpExpr = this.newExpression();
-				ccpExpr.ilike(Evento.model().CCP, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(ccpExpr);
-				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} 
-	}
-
 	public String getCodDominio() {
 		return codDominio;
 	}

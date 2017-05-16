@@ -58,28 +58,19 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public VersamentoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public VersamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Versamento.model().DEBITORE_IDENTIFICATIVO);
+		this.listaFieldSimpleSearch.add(Versamento.model().COD_VERSAMENTO_ENTE);
 	}
 
 	@Override
 	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
-			IExpression newExpression = this.newExpression();
-			
-			List<IExpression> orExpr = new ArrayList<IExpression>();
-			if(this.simpleSearchString != null){
-				IExpression debExpr = this.newExpression();
-				debExpr.ilike(Versamento.model().DEBITORE_IDENTIFICATIVO, this.simpleSearchString,LikeMode.ANYWHERE);
-				orExpr.add(debExpr);
-				IExpression vExpr = this.newExpression();
-				vExpr.ilike(Versamento.model().COD_VERSAMENTO_ENTE, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(vExpr);
-				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			}
+			IExpression newExpression = super._toSimpleSearchExpression();
 			
 //			boolean addAnd = false;
 			 
@@ -129,8 +120,6 @@ public class VersamentoFilter extends AbstractFilter {
 			
 
 			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {

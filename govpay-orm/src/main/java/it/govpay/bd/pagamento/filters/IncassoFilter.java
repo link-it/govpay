@@ -19,7 +19,6 @@
  */
 package it.govpay.bd.pagamento.filters;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -49,31 +48,20 @@ public class IncassoFilter extends AbstractFilter{
 	private List<Long> idIncasso= null;
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Incasso.model().TRN);
+		this.listaFieldSimpleSearch.add(Incasso.model().NOME_DISPOSITIVO);
+		this.listaFieldSimpleSearch.add(Incasso.model().CAUSALE);
 	}
 
 	@Override
 	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
-			IExpression newExpression = this.newExpression();
-
-			List<IExpression> orExpr = new ArrayList<IExpression>();
-			if(this.simpleSearchString != null){
-				IExpression trnExpr = this.newExpression();
-				trnExpr.ilike(Incasso.model().TRN, this.simpleSearchString,LikeMode.ANYWHERE);
-				orExpr.add(trnExpr);
-				IExpression dispositivoExpr = this.newExpression();
-				dispositivoExpr.ilike(Incasso.model().NOME_DISPOSITIVO, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(dispositivoExpr);
-				IExpression causaleExpr = this.newExpression();
-				causaleExpr.ilike(Incasso.model().CAUSALE, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(causaleExpr);
-				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			}
+			IExpression newExpression = super._toSimpleSearchExpression();
 
 			if(this.codDomini != null){
 				codDomini.removeAll(Collections.singleton(null));
@@ -82,8 +70,6 @@ public class IncassoFilter extends AbstractFilter{
 			}
 
 			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {

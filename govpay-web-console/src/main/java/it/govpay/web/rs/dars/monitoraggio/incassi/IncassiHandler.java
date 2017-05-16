@@ -165,17 +165,14 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
 				String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
 				if(StringUtils.isNotEmpty(idDominio)){
-					idDomini.add(idDominio);
-					filter.setCodDomini(idDomini);
-//					
-//					long idDom = -1l;
-//					try{
-//						idDom = Long.parseLong(idDominio);
-//					}catch(Exception e){ idDom = -1l;	}
-//					if(idDom > 0){
-//						idDomini.add(idDom);
-//						filter.setIdDomini(idDomini);
-//					}
+					long idDom = -1l;
+					try{
+						idDom = Long.parseLong(idDominio);
+					}catch(Exception e){ idDom = -1l;	}
+					if(idDom > 0){
+						idDomini.add(idDominio);
+						filter.setCodDomini(idDomini);
+					}
 				}
 			}
 
@@ -475,7 +472,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 				// Applicazione
 				Applicazione applicazione = incasso.getApplicazione(bd);
 				if(applicazione != null) {
-					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".applicazione.label"), applicazione.getCodApplicazione());
+					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idApplicazione.label"), applicazione.getCodApplicazione());
 				} 
 
 				if(incasso.getImporto() != null) {
@@ -526,7 +523,8 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 		String dispositivo = entry.getDispositivo();
 		Date dataValuta = entry.getDataValuta();
 
-		Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", dispositivo,this.sdf.format(dataValuta));
+		String dataValutaS = dataValuta != null ? this.sdf.format(dataValuta) : "";
+		Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", dispositivo,dataValutaS);
 
 		return sb.toString();
 	}

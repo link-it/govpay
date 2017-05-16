@@ -101,12 +101,8 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(simpleSearch);
@@ -116,23 +112,29 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			fsw.setField(it.govpay.orm.Operatore.model().PRINCIPAL);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
 
 
-			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String principal = this.getParameter(uriInfo, principalId, String.class);
-			String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
-			String profiloValue = this.getParameter(uriInfo, profiloId, String.class);
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				String principal = this.getParameter(uriInfo, principalId, String.class);
+				String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+				String profiloValue = this.getParameter(uriInfo, profiloId, String.class);
 
-			if(StringUtils.isNotEmpty(principal)){
-				filter.setPrincipal(principal);
+				if(StringUtils.isNotEmpty(principal)){
+					filter.setPrincipal(principal);
+				}
+
+				if(StringUtils.isNotEmpty(profiloValue)){
+					ProfiloOperatore profilo = ProfiloOperatore.valueOf(profiloValue);
+					filter.setProfilo(profilo);
+				}
 			}
-
-			if(StringUtils.isNotEmpty(profiloValue)){
-				ProfiloOperatore profilo = ProfiloOperatore.valueOf(profiloValue);
-				filter.setProfilo(profilo);
-			}
-
 			long count = operatoriBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -407,10 +409,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		return infoModifica;
 	}
 
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
 		return null;
@@ -762,7 +764,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	public List<String> getValori(Operatore entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(Operatore entry, BasicBD bd) throws ConsoleException { return null; }
 

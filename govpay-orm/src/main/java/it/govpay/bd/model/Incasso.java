@@ -19,7 +19,6 @@
  */
 package it.govpay.bd.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -27,6 +26,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.model.Applicazione;
 
 public class Incasso extends it.govpay.model.Incasso {
@@ -39,8 +40,11 @@ public class Incasso extends it.govpay.model.Incasso {
 
 
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {
-		if(pagamenti == null){
-			pagamenti = new ArrayList<Pagamento>();
+		if(pagamenti == null && getId() != null){
+			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			PagamentoFilter filter = pagamentiBD.newFilter();
+			filter.setIdIncasso(getId());
+			pagamenti = pagamentiBD.findAll(filter);
 		}
 		return pagamenti;
 	}

@@ -30,6 +30,7 @@ import java.util.zip.ZipOutputStream;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.NotFoundException;
@@ -92,7 +93,7 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			
 			UnitaOperativeBD unitaOperativaBD = new UnitaOperativeBD(bd);
-			UnitaOperativaFilter filter = unitaOperativaBD.newFilter();
+			UnitaOperativaFilter filter = unitaOperativaBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -101,17 +102,35 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 			filter.getFilterSortList().add(fsw);
 
 			boolean visualizzaRicerca = true;
-
+			Map<String, String> params = new HashMap<String, String>();
+			
 			// tutte le unita' con codice uo = 'EC' sono nascoste
 			filter.setExcludeEC(true); 
 
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 			filter.setDominioFilter(this.idDominio);
+			
+			if(simpleSearch) {
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+				
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			} else {
+				String codUoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codUo.id");
+				String codUo = this.getParameter(uriInfo, codUoId, String.class);
+				
+				if(StringUtils.isNotEmpty(codUo)){
+					filter.setCodUo(codUo);
+					params.put(codUoId, codUo);
+				}
+			}
 
 			long count = unitaOperativaBD.count(filter);
-
-			Map<String, String> params = new HashMap<String, String>();
+			
 			params.put(idDominioId, this.idDominio + "");
 			
 			// visualizza la ricerca solo se i risultati sono > del limit
