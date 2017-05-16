@@ -28,6 +28,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Incasso;
+import it.govpay.bd.model.converter.IncassoConverter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 
 public class IncassiBD extends BasicBD {
@@ -49,37 +50,33 @@ public class IncassiBD extends BasicBD {
 	}
 
 	public IncassoFilter newFilter() throws ServiceException {
-		//[TODO] cambiare
-		return new IncassoFilter(this.getVersamentoService());
+		return new IncassoFilter(this.getIncassoService());
 	}
 
 	public IncassoFilter newFilter(boolean simpleSearch) throws ServiceException {
-		//[TODO] cambiare
-		return new IncassoFilter(this.getVersamentoService(),simpleSearch);
+		return new IncassoFilter(this.getIncassoService(),simpleSearch);
 	}
 
 	public long count(IncassoFilter filter) throws ServiceException {
 		try {
-			//[TODO] cambiare
-			return this.getVersamentoService().count(filter.toExpression()).longValue();
+			return this.getIncassoService().count(filter.toExpression()).longValue();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
 
 	public List<Incasso> findAll(IncassoFilter filter) throws ServiceException {
-//		try {
+		try {
 			List<Incasso> incassoLst = new ArrayList<Incasso>();
 
 			if(filter.getIdDomini() != null && filter.getIdDomini().isEmpty()) return incassoLst;
-			//[TODO] cambiare
-//			List<it.govpay.orm.Versamento> incassoVOLst = this.getVersamentoService().findAll(filter.toPaginatedExpression()); 
-//			for(it.govpay.orm.Versamento incassoVO: incassoVOLst) {
-				//incassoLst.add(VersamentoConverter.toDTO(incassoVO));
-//			}
+			List<it.govpay.orm.Incasso> incassoVOLst = this.getIncassoService().findAll(filter.toPaginatedExpression()); 
+			for(it.govpay.orm.Incasso incassoVO: incassoVOLst) {
+				incassoLst.add(IncassoConverter.toDTO(incassoVO));
+			}
 			return incassoLst;
-//		} catch (NotImplementedException e) {
-//			throw new ServiceException(e);
-//		}
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
 	}
 }
