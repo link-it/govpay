@@ -828,14 +828,15 @@ CREATE TABLE incassi
 	cod_dominio VARCHAR2(35 CHAR) NOT NULL,
 	causale VARCHAR2(512 CHAR) NOT NULL,
 	importo BINARY_DOUBLE NOT NULL,
-	cod_applicazione VARCHAR2(35 CHAR) NOT NULL,
 	data_valuta DATE,
 	data_contabile DATE,
 	data_ora_incasso TIMESTAMP NOT NULL,
 	nome_dispositivo VARCHAR2(512 CHAR),
 	-- fk/pk columns
 	id NUMBER NOT NULL,
+	id_applicazione NUMBER,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_incassi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 );
 

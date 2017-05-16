@@ -598,7 +598,6 @@ CREATE TABLE incassi
 	cod_dominio VARCHAR(35) NOT NULL,
 	causale VARCHAR(512) NOT NULL,
 	importo DOUBLE NOT NULL,
-	cod_applicazione VARCHAR(35) NOT NULL,
 	data_valuta TIMESTAMP DEFAULT CURRENT_TIMESTAMP(3),
 	data_contabile TIMESTAMP DEFAULT  CURRENT_TIMESTAMP(3),
 	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
@@ -606,7 +605,9 @@ CREATE TABLE incassi
 	nome_dispositivo VARCHAR(512),
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
+	id_applicazione BIGINT,
 	-- fk/pk keys constraints
+	CONSTRAINT fk_incassi_1 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id) ON DELETE CASCADE,
 	CONSTRAINT pk_incassi PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
