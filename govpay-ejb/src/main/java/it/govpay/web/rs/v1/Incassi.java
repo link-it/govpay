@@ -23,12 +23,13 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
@@ -39,13 +40,13 @@ import javax.ws.rs.core.UriInfo;
 import it.govpay.bd.BasicBD;
 import it.govpay.core.business.model.RichiestaIncassoDTO;
 import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
-import it.govpay.core.exceptions.GovPayException;
 import it.govpay.core.exceptions.IncassiException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.v1.beans.Incasso;
+import it.govpay.web.rs.v1.beans.Pagamento;
 
 @Path("/v1/incassi")
 public class Incassi extends BaseRsServiceV1 {
@@ -80,17 +81,17 @@ public class Incassi extends BaseRsServiceV1 {
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, richiestaIncassoDTOResponse.getPagamenti());
+			List<Pagamento> pagamenti = new ArrayList<Pagamento>();
+			for(it.govpay.bd.model.Pagamento p : richiestaIncassoDTOResponse.getPagamenti()) {
+				pagamenti.add(new Pagamento(p));
+			}
+			
+			this.logResponse(uriInfo, httpHeaders, methodName, pagamenti);
 
 			if(richiestaIncassoDTOResponse.isCreato())
-				return Response.status(Status.CREATED).entity(richiestaIncassoDTOResponse.getPagamenti()).build();
+				return Response.status(Status.CREATED).entity(pagamenti).build();
 			else 
-				return Response.status(Status.OK).entity(richiestaIncassoDTOResponse.getPagamenti()).build();
-		} catch (WebApplicationException e) {
-			GovPayException ge = new GovPayException(e);
-			ge.log(log);
-			if(ctx!=null) ctx.log("rest.versamentoKo",ge.getMessage());
-			return e.getResponse();
+				return Response.status(Status.OK).entity(pagamenti).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();
@@ -99,7 +100,7 @@ public class Incassi extends BaseRsServiceV1 {
 			try { this.logResponse(uriInfo, httpHeaders, methodName, errore); } catch (Exception e2) { log.error(e2);}
 			return Response.status(422).entity(errore).build();
 		} catch (Exception e) {
-			log.error(e);
+			log.error("Errore interno durante il processo di incasso", e);
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0], 500);
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		} finally {

@@ -201,7 +201,7 @@ public class Incassi extends BasicBD {
 			// Verifica stato dei pagamenti da incassare e calcolo dell'importo pagato
 			BigDecimal totalePagato = BigDecimal.ZERO;
 			for(it.govpay.bd.model.Pagamento pagamento : richiestaIncassoResponse.getPagamenti()) {
-				if(pagamento.getStato().equals(Stato.INCASSATO)) {
+				if(Stato.INCASSATO.equals(pagamento.getStato())) {
 					GpThreadLocal.get().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
 					throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti incassati [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' incassato.");
 				}

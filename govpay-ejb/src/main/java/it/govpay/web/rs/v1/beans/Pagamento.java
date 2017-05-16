@@ -30,6 +30,14 @@ public class Pagamento {
 	private BigDecimal importo;
 	private Date data_pagamento;
 	
+	public Pagamento(it.govpay.bd.model.Pagamento p) {
+		this.setDominio(p.getCodDominio());
+		this.setIuv(p.getIuv());
+		this.setIur(p.getIur());
+		this.setImporto(p.getImportoPagato());
+		this.setData_pagamento(p.getDataPagamento());
+	}
+	
 	public String getDominio() {
 		return dominio;
 	}
