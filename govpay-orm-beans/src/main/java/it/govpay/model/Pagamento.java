@@ -63,6 +63,7 @@ public class Pagamento extends BasicModel {
 	public Pagamento() {
 		super();
 		this.dataAcquisizione = new Date();
+		this.stato = Stato.PAGATO;
 	}
 
 	public Long getId() {

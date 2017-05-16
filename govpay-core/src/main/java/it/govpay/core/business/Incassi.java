@@ -59,23 +59,43 @@ public class Incassi extends BasicBD {
 	}
 
 	public RichiestaIncassoDTOResponse richiestaIncasso(RichiestaIncassoDTO richiestaIncasso) throws NotAuthorizedException, InternalException, IncassiException {
-			
+		
 		try {
 			GpThreadLocal.get().log("incasso.richiesta");
 			
 			// Validazione dati obbligatori
+			if(richiestaIncasso.getTrn() == null) {
+				GpThreadLocal.get().log("incasso.sintassi", "trn mancante");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
+			}
+			
+			if(richiestaIncasso.getTrn().length() > 35) {
+				GpThreadLocal.get().log("incasso.sintassi", "trn troppo lungo");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Il valore del campo trn non rispetta la lunghezza massima di 35 caratteri");
+			}
+			
 			if(richiestaIncasso.getCausale() == null) {
-				GpThreadLocal.get().log("incasso.sintassi", "causale");
+				GpThreadLocal.get().log("incasso.sintassi", "causale mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio causale");
 			}
 			
+			if(richiestaIncasso.getCausale().length() > 512) {
+				GpThreadLocal.get().log("incasso.sintassi", "causale troppo lunga");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Il valore del campo causale non rispetta la lunghezza massima di 512 caratteri");
+			}
+			
+			if(richiestaIncasso.getTrn().length() > 35) {
+				GpThreadLocal.get().log("incasso.sintassi", "trn troppo lungo");
+				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio trn");
+			}
+			
 			if(richiestaIncasso.getCodDominio() == null) {
-				GpThreadLocal.get().log("incasso.sintassi", "dominio");
+				GpThreadLocal.get().log("incasso.sintassi", "dominio mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio cod_dominio");
 			}
 			
 			if(richiestaIncasso.getImporto() == null) {
-				GpThreadLocal.get().log("incasso.sintassi", "importo");
+				GpThreadLocal.get().log("incasso.sintassi", "importo mancante");
 				throw new IncassiException(FaultType.ERRORE_SINTASSI, "Nella richiesta di incasso non e' stato specificato il campo obbligatorio importo");
 			}
 
@@ -88,11 +108,13 @@ public class Incassi extends BasicBD {
 				throw new IncassiException(FaultType.DOMINIO_INESISTENTE, "Il dominio " + richiestaIncasso.getCodDominio() + " indicato nella richiesta non risulta censito in anagrafica GovPay.");
 			}
 			
-			// Verifica autorizzazione all'incasso
+			// Verifica autorizzazione all'incasso e acquisizione applicazione chiamante
+			Long idApplicazione = null;
 			try {
 				Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, richiestaIncasso.getPrincipal());
 				if(!AclEngine.isAuthorized(applicazione, Servizio.INCASSI, richiestaIncasso.getCodDominio(), null))
 					throw new NotAuthorizedException();
+				idApplicazione = applicazione.getId();
 			} catch (NotFoundException e) {
 				throw new NotAuthorizedException();
 			} 
@@ -226,6 +248,7 @@ public class Incassi extends BasicBD {
 				incasso.setDispositivo(richiestaIncasso.getDispositivo());
 				incasso.setImporto(richiestaIncasso.getImporto());
 				incasso.setTrn(richiestaIncasso.getTrn());
+				incasso.setIdApplicazione(idApplicazione);
 				
 				incassiBD.insertIncasso(incasso);
 				

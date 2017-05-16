@@ -26,6 +26,7 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Pagamento;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdRr;
@@ -74,7 +75,7 @@ public class PagamentoConverter {
 		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
 		if(vo.getImportoRevocato() != null)
 			dto.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
-		
+		dto.setStato(Stato.valueOf(vo.getStato()));
 		return dto;
 	}
 	
@@ -122,6 +123,7 @@ public class PagamentoConverter {
 		if(dto.getImportoRevocato() != null)
 			vo.setImportoRevocato(dto.getImportoRevocato().doubleValue());
 		
+		vo.setStato(dto.getStato().toString());
 		return vo;
 	}
 	
