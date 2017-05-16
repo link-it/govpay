@@ -114,8 +114,8 @@ public class RendicontazioneFilter extends AbstractFilter{
 				IExpression codExpr = this.newExpression();
 				codExpr.ilike(Rendicontazione.model().ID_FR.COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(codExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

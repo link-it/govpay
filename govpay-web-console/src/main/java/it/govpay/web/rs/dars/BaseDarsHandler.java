@@ -276,6 +276,18 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
 		return toReturn;
 	}
+	
+	public boolean containsParameter(UriInfo uriInfo, String parameterName) throws ConsoleException{
+		boolean toReturn = false;
+		try{
+			MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters(); 
+			toReturn = queryParams.getFirst(parameterName) != null;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+
+		return toReturn;
+	}
 
 	public Integer getOffset(UriInfo uriInfo) throws ConsoleException{
 		return this.getParameter(uriInfo, "offset", Integer.class);

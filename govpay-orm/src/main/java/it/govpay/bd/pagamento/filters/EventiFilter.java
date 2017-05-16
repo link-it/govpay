@@ -107,8 +107,8 @@ public class EventiFilter extends AbstractFilter{
 				IExpression ccpExpr = this.newExpression();
 				ccpExpr.ilike(Evento.model().CCP, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(ccpExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

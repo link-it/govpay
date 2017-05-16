@@ -149,11 +149,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<Long> idDomini = new ArrayList<Long>();
 
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID); 
 
 			VersamentoFilter filter = versamentiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -165,7 +161,10 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			if(simpleSearch){
 				// simplesearch
-				filter.setSimpleSearchString(simpleSearchString); 
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
 			}else{
 				String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
 				String cfDebitore = this.getParameter(uriInfo, cfDebitoreId, String.class);

@@ -141,8 +141,8 @@ public class PagamentoFilter extends AbstractFilter {
 				IExpression codDominioExpr = this.newExpression();
 				codDominioExpr.ilike(Pagamento.model().ID_RPT.COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(codDominioExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

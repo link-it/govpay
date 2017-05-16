@@ -59,7 +59,7 @@ import it.govpay.web.utils.Utils;
 public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implements IDarsHandler<it.govpay.bd.model.Psp>{
 
 	private Map<String, ParamField<?>> infoRicercaMap = null;
-	
+
 	public PspHandler(Logger log, BaseDarsService darsService) {
 		super(log,darsService);
 	}
@@ -76,12 +76,8 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
 			PspFilter filter = pspBD.newFilter(simpleSearch);
@@ -91,20 +87,27 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			fsw.setField(it.govpay.orm.Psp.model().RAGIONE_SOCIALE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
-			String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
-			String ragioneSociale = this.getParameter(uriInfo, ragioneSocialeId, String.class);
-			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
-			String codPsp = this.getParameter(uriInfo, codPspId, String.class);
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String ragioneSocialeId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.id");
+				String ragioneSociale = this.getParameter(uriInfo, ragioneSocialeId, String.class);
+				String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.id");
+				String codPsp = this.getParameter(uriInfo, codPspId, String.class);
 
-			if(StringUtils.isNotEmpty(codPsp)){
-				filter.setCodPsp(codPsp);
+				if(StringUtils.isNotEmpty(codPsp)){
+					filter.setCodPsp(codPsp);
+				}
+
+				if(StringUtils.isNotEmpty(ragioneSociale)){
+					filter.setRagioneSociale(ragioneSociale);
+				}
 			}
-			
-			if(StringUtils.isNotEmpty(ragioneSociale)){
-				filter.setRagioneSociale(ragioneSociale);
-			}
-			
+
 			long count = pspBD.count(filter);
 
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
@@ -115,7 +118,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			List<it.govpay.bd.model.Psp> findAll = pspBD.findAll(filter);
 
 			// Indico la visualizzazione custom
-						String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.bd.model.Psp entry : findAll) {
 					Elemento elemento = this.getElemento(entry, entry.getId(), this.pathServizio,bd);
@@ -154,7 +157,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			codPsp.setDefaultValue(null);
 			codPsp.setEditable(true); 
 			sezioneRoot.addField(codPsp);
-			
+
 			InputText ragioneSociale = (InputText) this.infoRicercaMap.get(ragioneSocialeId);
 			ragioneSociale.setDefaultValue(null);
 			ragioneSociale.setEditable(true); 
@@ -163,7 +166,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 
 		return infoRicerca;
 	}
-	
+
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		if(this.infoRicercaMap == null){
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
@@ -175,7 +178,7 @@ public class PspHandler extends BaseDarsHandler<it.govpay.bd.model.Psp> implemen
 			String codPspLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPsp.label");
 			InputText codPsp = new InputText(codPspId, codPspLabel, null, false, false, true, 1, 255);
 			this.infoRicercaMap.put(codPspId, codPsp);
-			
+
 			// nome
 			String ragioneSocialeLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ragioneSociale.label");
 			InputText ragioneSociale = new InputText(ragioneSocialeId, ragioneSocialeLabel, null, false, false, true, 1, 255);

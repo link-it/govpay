@@ -109,6 +109,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			boolean eseguiRicerca = true;
 			Map<String, String> params = new HashMap<String, String>();
 			String idFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idFr.id");

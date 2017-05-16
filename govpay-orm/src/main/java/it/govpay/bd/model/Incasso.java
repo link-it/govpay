@@ -52,8 +52,8 @@ public class Incasso extends it.govpay.model.Incasso {
 		return applicazione;
 	}
 	
-	public void setApplicazione(String codApplicazione, BasicBD bd) throws ServiceException, NotFoundException {
-		applicazione = AnagraficaManager.getApplicazione(bd, codApplicazione);
+	public void setApplicazione(long idApplicazione, BasicBD bd) throws ServiceException {
+		applicazione = AnagraficaManager.getApplicazione(bd, idApplicazione);
 		this.setIdApplicazione(applicazione.getId());
 	}
 	

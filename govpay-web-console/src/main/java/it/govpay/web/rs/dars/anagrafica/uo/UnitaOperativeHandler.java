@@ -89,6 +89,8 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			
 			UnitaOperativeBD unitaOperativaBD = new UnitaOperativeBD(bd);
 			UnitaOperativaFilter filter = unitaOperativaBD.newFilter();
 			filter.setOffset(offset);

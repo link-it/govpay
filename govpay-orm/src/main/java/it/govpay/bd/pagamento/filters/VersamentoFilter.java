@@ -78,9 +78,8 @@ public class VersamentoFilter extends AbstractFilter {
 				IExpression vExpr = this.newExpression();
 				vExpr.ilike(Versamento.model().COD_VERSAMENTO_ENTE, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(vExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			
 			
 //			boolean addAnd = false;
 			 

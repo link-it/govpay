@@ -114,12 +114,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			boolean visualizzaRicerca = true;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			ApplicazioniBD applicazioniBD = new ApplicazioniBD(bd);
 			ApplicazioneFilter filter = applicazioniBD.newFilter(simpleSearch);
@@ -130,10 +126,18 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
-			String codApplicazione = this.getParameter(uriInfo, codApplicazioneId, String.class	);
-			if(StringUtils.isNotEmpty(codApplicazione)){
-				filter.setCodApplicazione(codApplicazione); 
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String codApplicazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codApplicazione.id");
+				String codApplicazione = this.getParameter(uriInfo, codApplicazioneId, String.class	);
+				if(StringUtils.isNotEmpty(codApplicazione)){
+					filter.setCodApplicazione(codApplicazione); 
+				}
 			}
 
 			long count = applicazioniBD.count(filter);
@@ -218,7 +222,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
 		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 		String codificaApplicazioneInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
-		
+
 		String incassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".incassi.id");
 		String dominiIncassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiIncassi.id");
 
@@ -305,7 +309,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) this.infoCreazioneMap.get(dominiRendicontazioneId);
 		dominiRendicontazione.init(rendicontazioneValues, bd, this.getLanguage()); 
 		sezioneRendicontazione.addField(dominiRendicontazione); 
-		
+
 		// sezione incassi
 		String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
 		Sezione sezioneIncassi = infoCreazione.addSezione(etichettaIncassi);
@@ -360,7 +364,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			String incassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".incassi.id");
 			String dominiIncassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiIncassi.id");
-			
+
 			// id 
 			InputNumber id = new InputNumber(applicazioneId, null, null, true, true, false, 1, 20);
 			this.infoCreazioneMap.put(applicazioneId, id);
@@ -452,7 +456,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			dominiVersamenti.addDependencyField(trusted);
 			dominiVersamenti.init(versamentiValues, bd, this.getLanguage()); 
 			this.infoCreazioneMap.put(dominiVersamentiId, dominiVersamenti);
-			
+
 			//seziona incassi
 			// abilitato
 			String incassiLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".incassi.label");
@@ -514,7 +518,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		String dominiRendicontazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiRendicontazione.id");
 		String trustedId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trusted.id");
 		String codificaApplicazioneInIuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.id");
-		
+
 		String incassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".incassi.id");
 		String dominiIncassiId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominiIncassi.id");
 
@@ -608,11 +612,11 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 		DominiRendicontazione dominiRendicontazione = (DominiRendicontazione) this.infoCreazioneMap.get(dominiRendicontazioneId);
 		dominiRendicontazione.init(rendicontazioneValues, bd, this.getLanguage()); 
 		sezioneRendicontazione.addField(dominiRendicontazione);
-		
+
 		// sezione incassi
 		List<Long> idsAclDominiIncassi = Utils.getIdsFromAcls(entry.getAcls(), Tipo.DOMINIO, Servizio.INCASSI);
 		boolean visualizzaIncassi = idsAclDominiIncassi.size() > 0 ;
-		
+
 		String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
 		Sezione sezioneIncassi = infoModifica.addSezione(etichettaIncassi);
 
@@ -859,7 +863,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 					sezioneRendicontazione.addVoce(voce);
 				}
 			}
-			
+
 			String etichettaIncassi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.incassi.titolo");
 			it.govpay.web.rs.dars.model.Sezione sezioneIncassi = dettaglio.addSezione(etichettaIncassi);
 
@@ -1071,7 +1075,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			jsonObjectApplicazione.remove(versamentiId);
 			jsonObjectApplicazione.remove(tipiTributoVersamentiId);
 			jsonObjectApplicazione.remove(dominiVersamentiId);
-			
+
 			// Incassi
 			List<Acl> lstAclDominiIncassi = new ArrayList<Acl>();
 

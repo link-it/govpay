@@ -89,13 +89,8 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = tipiTributoBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -104,31 +99,38 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			fsw.setField(it.govpay.orm.TipoTributo.model().DESCRIZIONE);
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
-			
-			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
-			if(StringUtils.isNotEmpty(codTributo)) {
-				filter.setCodTributo(codTributo);
-			} 
 
-			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String tipocontabilitaS = this.getParameter(uriInfo, tipoContabilitaId, String.class);
-			if(StringUtils.isNotEmpty(tipocontabilitaS)){
-				filter.setCodificaTipoContabilita(tipocontabilitaS);
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+				String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
+				if(StringUtils.isNotEmpty(codTributo)) {
+					filter.setCodTributo(codTributo);
+				} 
+
+				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+				String tipocontabilitaS = this.getParameter(uriInfo, tipoContabilitaId, String.class);
+				if(StringUtils.isNotEmpty(tipocontabilitaS)){
+					filter.setCodificaTipoContabilita(tipocontabilitaS);
+				}
+
+				String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+				String codContabilita = this.getParameter(uriInfo, codContabilitaId, String.class);
+				if(StringUtils.isNotEmpty(codContabilita)) {
+					filter.setCodContabilita(codContabilita);
+				}
+
+				String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+				String descrizione = this.getParameter(uriInfo, descrizioneId, String.class);
+				if(StringUtils.isNotEmpty(descrizione)) {
+					filter.setDescrizione(descrizione);
+				}
 			}
-
-			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-			String codContabilita = this.getParameter(uriInfo, codContabilitaId, String.class);
-			if(StringUtils.isNotEmpty(codContabilita)) {
-				filter.setCodContabilita(codContabilita);
-			}
-
-			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-			String descrizione = this.getParameter(uriInfo, descrizioneId, String.class);
-			if(StringUtils.isNotEmpty(descrizione)) {
-				filter.setDescrizione(descrizione);
-			}
-
 
 			long count = tipiTributoBD.count(filter);
 
@@ -394,10 +396,10 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, TipoTributo entry) throws ConsoleException {
 		return null;
@@ -668,7 +670,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 		return valori;
 	}
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(TipoTributo entry, BasicBD bd) throws ConsoleException { return null; }
 

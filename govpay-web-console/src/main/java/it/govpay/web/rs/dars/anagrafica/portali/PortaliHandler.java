@@ -106,12 +106,8 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			PortaliBD portaliBD = new PortaliBD(bd);
 			PortaleFilter filter = portaliBD.newFilter(simpleSearch);
@@ -122,13 +118,20 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-			String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
+				String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
 
-			if(StringUtils.isNotEmpty(codPortale)){
-				filter.setCodPortale(codPortale);
+				if(StringUtils.isNotEmpty(codPortale)){
+					filter.setCodPortale(codPortale);
+				}
 			}
-
 			long count = portaliBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
@@ -535,12 +538,12 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Portale entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
@@ -1011,7 +1014,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 	@Override
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
-	
+
 	@Override
 	public String getTitolo(Portale entry, BasicBD bd) {
 		StringBuilder sb = new StringBuilder();
@@ -1033,7 +1036,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	public List<String> getValori(Portale entry, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Map<String, Voce<String>> getVoci(Portale entry, BasicBD bd) throws ConsoleException { return null; }
 

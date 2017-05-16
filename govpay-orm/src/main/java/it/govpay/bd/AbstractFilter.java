@@ -48,6 +48,7 @@ public abstract class AbstractFilter implements IFilter {
 		this.expressionConstructor = expressionConstructor;
 		this.filterSortList = new ArrayList<FilterSortWrapper>();
 		this.simpleSearch = simpleSearch;
+		this.listaFieldSimpleSearch = new ArrayList<IField>();
 	}
 	
 	private IExpressionConstructor expressionConstructor;
@@ -56,6 +57,7 @@ public abstract class AbstractFilter implements IFilter {
 	protected List<FilterSortWrapper> filterSortList;
 	protected boolean simpleSearch = false;
 	protected String simpleSearchString = null;
+	protected List<IField> listaFieldSimpleSearch = null;
 
 	public Integer getOffset() {
 		return offset;
@@ -176,4 +178,14 @@ public abstract class AbstractFilter implements IFilter {
 	public void setSimpleSearchString(String simpleSearchString) {
 		this.simpleSearchString = simpleSearchString;
 	}
+
+	public List<IField> getListaFieldSimpleSearch() {
+		return listaFieldSimpleSearch;
+	}
+
+	public void setListaFieldSimpleSearch(List<IField> listaFieldSimpleSearch) {
+		this.listaFieldSimpleSearch = listaFieldSimpleSearch;
+	}
+	
+	
 }

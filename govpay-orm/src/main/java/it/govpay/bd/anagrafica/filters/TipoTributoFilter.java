@@ -143,8 +143,8 @@ public class TipoTributoFilter extends AbstractFilter {
 				IExpression descrizioneExpr = this.newExpression();
 				descrizioneExpr.ilike(TipoTributo.model().DESCRIZIONE, this.simpleSearchString, LikeMode.ANYWHERE);
 				orExpr.add(descrizioneExpr);
+				newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
 			
 			return newExpression;
 		} catch (NotImplementedException e) {

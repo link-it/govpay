@@ -103,7 +103,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			
-			boolean simpleSearch = false;
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				simpleSearch = true;
