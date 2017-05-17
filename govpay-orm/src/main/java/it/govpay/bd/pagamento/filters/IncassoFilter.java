@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.LikeMode;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
@@ -128,6 +129,8 @@ public class IncassoFilter extends AbstractFilter{
 				newExpression.ilike(Incasso.model().CAUSALE, this.causale, LikeMode.ANYWHERE);
 				addAnd = true;
 			}
+			
+			newExpression.addOrder(Incasso.model().DATA_ORA_INCASSO, SortOrder.DESC);
 
 			return newExpression;
 		} catch (NotImplementedException e) {

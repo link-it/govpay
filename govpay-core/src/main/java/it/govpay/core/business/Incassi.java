@@ -20,7 +20,9 @@
 package it.govpay.core.business;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -35,6 +37,11 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.filters.IncassoFilter;
+import it.govpay.core.business.model.LeggiIncassoDTO;
+import it.govpay.core.business.model.LeggiIncassoDTOResponse;
+import it.govpay.core.business.model.ListaIncassiDTO;
+import it.govpay.core.business.model.ListaIncassiDTOResponse;
 import it.govpay.core.business.model.RichiestaIncassoDTO;
 import it.govpay.core.business.model.RichiestaIncassoDTOResponse;
 import it.govpay.core.exceptions.IncassiException;
@@ -271,4 +278,49 @@ public class Incassi extends BasicBD {
 			throw new InternalException(e);
 		}
 	}
+
+	public ListaIncassiDTOResponse listaIncassi(ListaIncassiDTO listaIncassoDTO) throws NotAuthorizedException, ServiceException {
+		Set<String> domini = null;
+		try {
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, listaIncassoDTO.getPrincipal());
+			domini = AclEngine.getAuthorizedInc(applicazione);
+			if(domini.size() == 0) {
+				throw new NotAuthorizedException();
+			}
+		} catch (NotFoundException e) {
+			throw new NotAuthorizedException();
+		} 
+		
+		IncassiBD incassiBD = new IncassiBD(this);
+		IncassoFilter newFilter = incassiBD.newFilter();
+		if(domini != null)
+			newFilter.setCodDomini(new ArrayList<String>(domini));
+		newFilter.setDataInizio(listaIncassoDTO.getInizio());
+		newFilter.setDataFine(listaIncassoDTO.getFine());
+		newFilter.setOffset(listaIncassoDTO.getOffset());
+		newFilter.setLimit(listaIncassoDTO.getLimit());
+		
+		ListaIncassiDTOResponse response = new ListaIncassiDTOResponse();
+		response.setIncassi(incassiBD.findAll(newFilter));
+		return response;
+	}
+	
+	public LeggiIncassoDTOResponse leggiIncasso(LeggiIncassoDTO leggiIncassoDTO) throws NotAuthorizedException, ServiceException {
+		IncassiBD incassiBD = new IncassiBD(this);
+		try {
+			Incasso incasso = incassiBD.getIncasso(leggiIncassoDTO.getTrn());
+			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, leggiIncassoDTO.getPrincipal());
+			Set<String> domini = AclEngine.getAuthorizedInc(applicazione);
+			if(!domini.contains(incasso.getCodDominio())) {
+				throw new NotAuthorizedException();
+			}
+			LeggiIncassoDTOResponse response = new LeggiIncassoDTOResponse();
+			response.setIncasso(incasso);
+			return response;
+		} catch (NotFoundException e) {
+			return null;
+		}
+	}
 }
+
+
