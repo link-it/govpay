@@ -477,8 +477,8 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 
 			// codificaApplicazioneInIuv
 			String codificaApplicazioneInIuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.label");
-			InputText codificaApplicazioneInIuv = new InputText(codificaApplicazioneInIuvId, codificaApplicazioneInIuvLabel, null, false, false, true, 1,3);
-			codificaApplicazioneInIuv.setValidation("[0-9]{3}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.errorMessage"));
+			InputText codificaApplicazioneInIuv = new InputText(codificaApplicazioneInIuvId, codificaApplicazioneInIuvLabel, null, false, false, true, 0,3);
+			codificaApplicazioneInIuv.setValidation("[0-9]{0,3}", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codificaApplicazioneInIuv.errorMessage"));
 			codificaApplicazioneInIuv.setAvanzata(true); 
 			this.infoCreazioneMap.put(codificaApplicazioneInIuvId, codificaApplicazioneInIuv);
 
@@ -1079,7 +1079,7 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 			// Incassi
 			List<Acl> lstAclDominiIncassi = new ArrayList<Acl>();
 
-			if(jsonObjectApplicazione.getBoolean(rendicontazioneId)){
+			if(jsonObjectApplicazione.getBoolean(incassiId)){
 				JSONArray jsonDomini = jsonObjectApplicazione.getJSONArray(dominiIncassiId);
 
 				for (int i = 0; i < jsonDomini.size(); i++) {

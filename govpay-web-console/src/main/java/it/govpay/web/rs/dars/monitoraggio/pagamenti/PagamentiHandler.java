@@ -145,6 +145,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<Long> idDomini = new ArrayList<Long>();
 			PagamentoFilter filter = pagamentiBD.newFilter(simpleSearch);
+			filter.setSogliaRitardo(ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti());
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -725,6 +726,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
 			PagamentiBD pagamentiBD = new PagamentiBD(bd); 
 			PagamentoFilter filter = pagamentiBD.newFilter(); 
+			filter.setSogliaRitardo(ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti());
 			boolean eseguiRicerca = true;
 			List<Long> idsToExport = new ArrayList<Long>();
 			idsToExport.add(idToExport);
@@ -948,12 +950,14 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				dataFine.setDefaultValue(null);
 				sezioneRoot.addField(dataFine);	
 
-				// idDominio
+				// Stato pagamento	
 				List<Voce<String>> stati = new ArrayList<Voce<String>>();
 				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
 				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.INCASSATO.name()), Stato.INCASSATO.name()));
 				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.PAGATO.name()), Stato.PAGATO.name()));
-				stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+PagamentoFilter.STATO_RITARDO_INCASSO), PagamentoFilter.STATO_RITARDO_INCASSO));
+				Integer sogliaGiorniRitardoPagamenti = ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti();
+				if(sogliaGiorniRitardoPagamenti != null && sogliaGiorniRitardoPagamenti.intValue() > 0)
+					stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+PagamentoFilter.STATO_RITARDO_INCASSO), PagamentoFilter.STATO_RITARDO_INCASSO));
 
 				SelectList<String> stato = (SelectList<String>) this.infoRicercaMap.get(statoId);
 				stato.setDefaultValue("");
