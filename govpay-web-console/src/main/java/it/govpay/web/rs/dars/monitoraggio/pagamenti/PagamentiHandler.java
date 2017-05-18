@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -294,11 +295,11 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 					elenco.getElenco().add(elemento);
 					
 					// aggiungo una copia per la revoca
-					if(entry.getIdRr() != null){
-						Elemento elementoRevoca = this.getElementoRevoca(entry, entry.getId(), this.pathServizio,bd);
-						elementoRevoca.setFormatter(formatter);
-						elenco.getElenco().add(elementoRevoca);	
-					}
+//					if(entry.getIdRr() != null){
+//						Elemento elementoRevoca = this.getElementoRevoca(entry, entry.getId(), this.pathServizio,bd);
+//						elementoRevoca.setFormatter(formatter);
+//						elenco.getElenco().add(elementoRevoca);	
+//					}
 				}
 			}
 
@@ -342,6 +343,30 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			// Sezione root coi dati del pagamento
 			it.govpay.web.rs.dars.model.Sezione sezioneRoot = dettaglio.getSezioneRoot();
+			
+			Date dataPagamento = pagamento.getDataPagamento();
+			Stato stato = pagamento.getStato();
+			
+			String statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.INCASSATO.name());
+			
+			if(!stato.equals(Stato.INCASSATO)) {
+				boolean inRitardo = false;
+				Integer sogliaGiorniRitardoPagamenti = ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti();
+				if(sogliaGiorniRitardoPagamenti != null && sogliaGiorniRitardoPagamenti.intValue() > 0) {
+					Calendar c = Calendar.getInstance();
+					c.setTime(new Date());
+					c.add(Calendar.DAY_OF_YEAR, -sogliaGiorniRitardoPagamenti.intValue()); 
+					inRitardo = dataPagamento.getTime() < c.getTime().getTime();
+				}
+				
+				if(inRitardo ) {
+					statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+PagamentoFilter.STATO_RITARDO_INCASSO);
+				} else {
+					statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+Stato.PAGATO.name());
+				}
+			}
+			
+			sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),statoPagamento);
 
 			SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
 			if(singoloVersamento != null){
@@ -350,14 +375,30 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), svDars.getPathServizio(),bd); 
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
 			}
+			
+			if(StringUtils.isNotEmpty(pagamento.getCodDominio())){
+				try{
+					Dominio dominio = pagamento.getDominio(bd);
+					Domini dominiDars = new Domini();
+					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
+					sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), elemento.getTitolo());
+				}catch(Exception e){
+					sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), pagamento.getCodDominio());
+				}
+			}
+			if(StringUtils.isNotEmpty(pagamento.getIuv()))
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),pagamento.getIuv());
+			if(StringUtils.isNotEmpty(pagamento.getIur()))
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),pagamento.getIur());
+			
 			if(pagamento.getImportoPagato() != null)
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),(pagamento.getImportoPagato().toString() + "€"));
+			if(dataPagamento != null)
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),this.sdf.format(dataPagamento)); 
+			
 			if(pagamento.getCommissioniPsp() != null)
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".commissioniPsp.label"),(pagamento.getCommissioniPsp().toString() + "€"));
-			if(StringUtils.isNotEmpty(pagamento.getIur()))
-				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),pagamento.getIur()); 
-			if(pagamento.getDataPagamento() != null)
-				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),this.sdf.format(pagamento.getDataPagamento())); 
+
 			TipoAllegato tipoAllegato = pagamento.getTipoAllegato();
 			if(tipoAllegato!= null)
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato.label"),
@@ -456,11 +497,38 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	public Map<String, Voce<String>> getVoci(Pagamento entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 		Date dataPagamento = entry.getDataPagamento();
-		String statoPagamento = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.ok");
+		
+		String statoPagamento = Stato.INCASSATO.name();
+		String statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+Stato.INCASSATO.name(), this.sdf.format(dataPagamento));
+		
+		Stato stato = entry.getStato();
+		
+		if(!stato.equals(Stato.INCASSATO)) {
+			boolean inRitardo = false;
+			Integer sogliaGiorniRitardoPagamenti = ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti();
+			if(sogliaGiorniRitardoPagamenti != null && sogliaGiorniRitardoPagamenti.intValue() > 0) {
+				Calendar c = Calendar.getInstance();
+				c.setTime(new Date());
+				c.add(Calendar.DAY_OF_YEAR, -sogliaGiorniRitardoPagamenti.intValue()); 
+				inRitardo = dataPagamento.getTime() < c.getTime().getTime();
+			}
+			
+			if(inRitardo ) {
+				statoPagamento = PagamentoFilter.STATO_RITARDO_INCASSO;
+				if(sogliaGiorniRitardoPagamenti.intValue() > 1)
+					statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+PagamentoFilter.STATO_RITARDO_INCASSO+".sogliaGiorni",	sogliaGiorniRitardoPagamenti);
+				else 
+					statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+PagamentoFilter.STATO_RITARDO_INCASSO+".sogliaGiorno");
+			} else {
+				statoPagamento = Stato.PAGATO.name();
+				statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo."+Stato.PAGATO.name(), this.sdf.format(dataPagamento));
+			}
+		}
+		
 		BigDecimal importo = entry.getImportoPagato() != null ? entry.getImportoPagato() : BigDecimal.ZERO;
-		String statoPagamentoLabel = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo.ok", this.sdf.format(dataPagamento));
+		
 
-		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoPagamento.id"),
+		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 				new Voce<String>(statoPagamentoLabel,statoPagamento));
 
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.id"),

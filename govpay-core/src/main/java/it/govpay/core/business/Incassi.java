@@ -29,8 +29,10 @@ import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
@@ -299,6 +301,11 @@ public class Incassi extends BasicBD {
 		newFilter.setDataFine(listaIncassoDTO.getFine());
 		newFilter.setOffset(listaIncassoDTO.getOffset());
 		newFilter.setLimit(listaIncassoDTO.getLimit());
+		
+		FilterSortWrapper fsw = new FilterSortWrapper();
+		fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
+		fsw.setSortOrder(SortOrder.DESC);
+		newFilter.getFilterSortList().add(fsw);
 		
 		ListaIncassiDTOResponse response = new ListaIncassiDTOResponse();
 		response.setIncassi(incassiBD.findAll(newFilter));

@@ -21,9 +21,11 @@ package it.govpay.bd.model;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.RptBD;
@@ -37,6 +39,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	private static final long serialVersionUID = 1L;
 	// Business
+	private Dominio dominio;
 	private Rpt rpt;
 	private SingoloVersamento singoloVersamento;
 	private Rr rr;
@@ -125,6 +128,16 @@ public class Pagamento extends it.govpay.model.Pagamento {
 				return true;
 		}
 		return false;
+	}
+	
+	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
+		if(dominio == null){
+			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+		}
+		return dominio;
+	}
+	public void setDominio(Dominio dominio) {
+		this.dominio = dominio;
 	}
 }
 

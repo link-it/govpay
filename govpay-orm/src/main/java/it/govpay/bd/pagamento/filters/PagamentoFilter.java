@@ -125,14 +125,14 @@ public class PagamentoFilter extends AbstractFilter {
 				
 				if(stato.equals(STATO_RITARDO_INCASSO)) {
 					if(this.sogliaRitardo != null && this.sogliaRitardo.intValue() > 0){
-						newExpression.notEquals(Pagamento.model().STATO,Stato.INCASSATO);
+						newExpression.notEquals(Pagamento.model().STATO,Stato.INCASSATO.name());
 						Calendar tempo = Calendar.getInstance();
 						tempo.setTime(new Date());
 						tempo.add(Calendar.DAY_OF_YEAR, -this.sogliaRitardo);
 						newExpression.lessThan(Pagamento.model().DATA_PAGAMENTO, tempo.getTime());
 					}
 				} else {
-					newExpression.equals(Pagamento.model().STATO,Stato.valueOf(this.stato));
+					newExpression.equals(Pagamento.model().STATO,this.stato);
 				}
 				
 				addAnd = true;
