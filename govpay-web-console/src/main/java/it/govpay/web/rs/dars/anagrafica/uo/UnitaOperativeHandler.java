@@ -569,11 +569,6 @@ public class UnitaOperativeHandler extends BaseDarsHandler<UnitaOperativa> imple
 	}
 
 	@Override
-	public List<String> getValori(UnitaOperativa entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
-	@Override
 	public Map<String, Voce<String>> getVoci(UnitaOperativa entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override

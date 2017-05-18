@@ -662,16 +662,6 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	}
 
 	@Override
-	public List<String> getValori(TipoTributo entry, BasicBD bd) throws ConsoleException {
-		List<String> valori = new ArrayList<String>();
-
-		valori.add(entry.getCodTributo());
-		valori.add(entry.getDescrizione());
-
-		return valori;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(TipoTributo entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override

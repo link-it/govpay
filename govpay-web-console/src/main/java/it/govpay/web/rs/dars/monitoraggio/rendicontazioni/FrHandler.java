@@ -521,11 +521,6 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	} 
 
 	@Override
-	public List<String> getValori(Fr entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 

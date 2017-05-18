@@ -609,11 +609,6 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 
 	@Override
-	public List<String> getValori(Intermediario entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Intermediario entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override

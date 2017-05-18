@@ -642,11 +642,6 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	}
 	
 	@Override
-	public List<String> getValori(IbanAccredito entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
-	@Override
 	public Map<String, Voce<String>> getVoci(IbanAccredito entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override

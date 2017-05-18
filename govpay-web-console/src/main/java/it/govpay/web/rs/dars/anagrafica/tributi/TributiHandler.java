@@ -843,11 +843,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
-	public List<String> getValori(Tributo entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Tributo entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override

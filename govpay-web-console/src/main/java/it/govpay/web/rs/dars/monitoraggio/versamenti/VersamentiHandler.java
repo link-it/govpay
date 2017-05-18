@@ -670,11 +670,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	} 
 
 	@Override
-	public List<String> getValori(Versamento entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 		try {

@@ -105,22 +105,15 @@ public class Menu extends BaseRsService {
 			console.setAbout(about);
 			it.govpay.web.rs.dars.model.Menu menu = new it.govpay.web.rs.dars.model.Menu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".govpay"));
 
-			Intermediari intermediariDars = new Intermediari();
-			Versamenti versamentiDars = new Versamenti();
-
-
-			URI versamentiURI = new URI(versamentiDars.getPathServizio()); 
-			VoceMenu voceMenuVersamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	versamentiURI, false);
-
+			// Sezione anagrafica visibile solo all'utente con ruolo amministratore
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
-
-				menu.setHome(voceMenuVersamenti);
 
 				SezioneMenu anagrafica = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".anagrafica"));
 				Psp pspDars = new Psp();
 				URI pspURI = new URI(pspDars.getPathServizio());
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pspDars.getNomeServizio() + ".titolo"), pspURI, false));
 
+				Intermediari intermediariDars = new Intermediari();
 				URI intermediariURI = new URI(intermediariDars.getPathServizio());
 				VoceMenu voceMenuIntermediari = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio() + ".titolo"),	intermediariURI, false);
 				anagrafica.getVociMenu().add(voceMenuIntermediari);
@@ -147,31 +140,22 @@ public class Menu extends BaseRsService {
 				anagrafica.getVociMenu().add(new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(operatoriDars.getNomeServizio() + ".titolo"), operatoriURI, false));
 				
 				menu.getSezioni().add(anagrafica);
-
-			} else {
-				menu.setHome(voceMenuVersamenti);
-
 			}
 			
 			// Sezione Monitoraggio
 			SezioneMenu monitoraggio = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".monitoraggio"));
 
+			Versamenti versamentiDars = new Versamenti();
+			URI versamentiURI = new URI(versamentiDars.getPathServizio()); 
+			VoceMenu voceMenuVersamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".titolo"),	versamentiURI, false);
 			monitoraggio.getVociMenu().add(voceMenuVersamenti);
+			menu.setHome(voceMenuVersamenti);
 
 			Fr frDars = new Fr();
 			URI frURI = new URI(frDars.getPathServizio());
 			VoceMenu voceMenuFlussiRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(frDars.getNomeServizio() + ".titolo"),	frURI, false);
 
 			monitoraggio.getVociMenu().add(voceMenuFlussiRendicontazioni);
-
-			if(profilo.equals(ProfiloOperatore.ADMIN)){
-
-				Eventi eventiDars = new Eventi();
-				URI eventiURI = new URI(eventiDars.getPathServizio());
-				VoceMenu voceMenuEventi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".titolo"),	eventiURI, false);
-
-				monitoraggio.getVociMenu().add(voceMenuEventi);
-			}
 
 			Pagamenti pagamentiDars = new Pagamenti();
 			URI pagamentiURI = new URI(pagamentiDars.getPathServizio());
@@ -185,14 +169,18 @@ public class Menu extends BaseRsService {
 
 			monitoraggio.getVociMenu().add(voceMenuIncassi);
 			
-//			EstrattiConto estrattiContoDars = new EstrattiConto();
-//			URI estrattiContoURI = new URI(estrattiContoDars.getPathServizio()).build();
-//			VoceMenu voceMenuReportisticaEstrattiConto = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(estrattiContoDars.getNomeServizio() + ".titolo"), estrattiContoURI, false);
+			if(profilo.equals(ProfiloOperatore.ADMIN)){
 
-//			reportistica.getVociMenu().add(voceMenuReportisticaEstrattiConto);
+				Eventi eventiDars = new Eventi();
+				URI eventiURI = new URI(eventiDars.getPathServizio());
+				VoceMenu voceMenuEventi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".titolo"),	eventiURI, false);
+
+				monitoraggio.getVociMenu().add(voceMenuEventi);
+			}
 			
 			menu.getSezioni().add(monitoraggio);
-
+			
+			// Sezione manutenzione visibile solo all'utente con ruolo amministratore.
 			if(profilo.equals(ProfiloOperatore.ADMIN)){
 				// sezione manutenzione
 				SezioneMenu manutenzione = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".manutenzione"));
@@ -208,7 +196,6 @@ public class Menu extends BaseRsService {
 			
 			// caricamento della sezione lingua
 			console.setLingue(Utils.getInstance(this.getLanguage()).getMapLingue()); 
-			
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(console);

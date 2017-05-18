@@ -1,7 +1,5 @@
 package it.govpay.bd.pagamento.filters;
 
-import java.util.Collections;
-
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -14,7 +12,6 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.orm.Incasso;
 import it.govpay.orm.Rendicontazione;
 
 public class RendicontazioneFilter extends AbstractFilter{
@@ -40,7 +37,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Rendicontazione.model().IUV);
 		this.listaFieldSimpleSearch.add(Rendicontazione.model().IUR);
-		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_FR.COD_DOMINIO);
+//		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_FR.COD_DOMINIO);
 	}
 	
 	@Override

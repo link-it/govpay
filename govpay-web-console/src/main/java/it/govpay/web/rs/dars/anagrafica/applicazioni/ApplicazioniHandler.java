@@ -1250,11 +1250,6 @@ public class ApplicazioniHandler extends BaseDarsHandler<Applicazione> implement
 	}
 
 	@Override
-	public List<String> getValori(Applicazione entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Applicazione entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override

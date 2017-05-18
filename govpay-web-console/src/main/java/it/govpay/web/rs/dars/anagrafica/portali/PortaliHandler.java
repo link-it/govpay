@@ -593,11 +593,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
-			// dati dell'intermediario
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.label"), portale.getCodPortale());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), portale.getPrincipal());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.label"), portale.getDefaultCallbackURL());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), portale.getVersione().getLabel(), true);
+			// dati portale
+			if(StringUtils.isNotEmpty(portale.getCodPortale()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.label"), portale.getCodPortale());
+			if(StringUtils.isNotEmpty(portale.getPrincipal()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), portale.getPrincipal());
+			if(StringUtils.isNotEmpty(portale.getDefaultCallbackURL()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.label"), portale.getDefaultCallbackURL());
+			if(portale.getVersione() != null)
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), portale.getVersione().getLabel(), true);
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(portale.isAbilitato()));
 
 			// Elementi correlati
@@ -1030,11 +1034,6 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		sb.append(Utils.getAbilitatoAsLabel(entry.isAbilitato()));
 
 		return sb.toString();
-	}
-
-	@Override
-	public List<String> getValori(Portale entry, BasicBD bd) throws ConsoleException {
-		return null;
 	}
 
 	@Override

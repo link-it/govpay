@@ -398,11 +398,6 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	} 
 
 	@Override
-	public List<String> getValori(Rendicontazione entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Rendicontazione entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 

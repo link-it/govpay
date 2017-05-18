@@ -29,6 +29,7 @@ import java.util.zip.ZipOutputStream;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -153,8 +154,11 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			// dati del canale
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
+			if(StringUtils.isNotEmpty(canale.getCodCanale()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
+			if(canale.getTipoVersamento() != null)
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
+			
 			ModelloPagamento modelloPagamento = canale.getModelloPagamento();
 			if(modelloPagamento != null){
 				String modelloPagamentoString = null;
@@ -176,11 +180,15 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
 			}
-
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), canale.getUrlInfo());
+			if(StringUtils.isNotEmpty(canale.getDisponibilita()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".disponibilita.label"), canale.getDisponibilita());
+			if(StringUtils.isNotEmpty(canale.getDescrizione()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.label"), canale.getDescrizione());
+			if(StringUtils.isNotEmpty(canale.getCondizioni()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".condizioni.label"), canale.getCondizioni());
+			if(StringUtils.isNotEmpty(canale.getUrlInfo()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".urlInfo.label"), canale.getUrlInfo());
+			
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getAbilitatoAsLabel(canale.isAbilitato()));
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -237,11 +245,6 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 				);
 
 		return sb.toString();
-	}
-
-	@Override
-	public List<String> getValori(Canale entry, BasicBD bd) throws ConsoleException {
-		return null;
 	}
 	
 	@Override

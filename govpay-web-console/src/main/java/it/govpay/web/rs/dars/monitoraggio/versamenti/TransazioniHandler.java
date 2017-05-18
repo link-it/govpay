@@ -426,11 +426,6 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	}
 
 	@Override
-	public List<String> getValori(Rpt entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Rpt entry, BasicBD bd) throws ConsoleException {
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 

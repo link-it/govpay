@@ -458,7 +458,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String sottotitolo = this.getSottotitolo(entry,bd);
 			URI urlDettaglio = (id != null && uriDettaglio != null) ? Utils.creaUriConPath(uriDettaglio , id+"") : null;
 			Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-			elemento.setValori(this.getValori(entry, bd)); 
 			elemento.setVoci(this.getVociRevoca(entry, bd)); 
 			return elemento;
 		}catch(Exception e) {throw new ConsoleException(e);}
@@ -486,11 +485,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		}
 
 		return sb.toString();
-	}
-
-	@Override
-	public List<String> getValori(Pagamento entry, BasicBD bd) throws ConsoleException {
-		return null;
 	}
 
 	@Override

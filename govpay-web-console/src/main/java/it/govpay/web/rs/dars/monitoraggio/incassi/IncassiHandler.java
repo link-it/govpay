@@ -542,11 +542,6 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 	} 
 
 	@Override
-	public List<String> getValori(Incasso entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Incasso entry, BasicBD bd) throws ConsoleException {
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
 

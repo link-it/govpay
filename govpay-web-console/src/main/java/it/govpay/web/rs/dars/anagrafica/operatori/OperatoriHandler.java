@@ -480,7 +480,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
-			// dati del psp
+			// dati operatore
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), operatore.getPrincipal());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.label"), operatore.getNome());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.label"), profiloValue);
@@ -758,11 +758,6 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		}
 
 		return sb.toString();
-	}
-
-	@Override
-	public List<String> getValori(Operatore entry, BasicBD bd) throws ConsoleException {
-		return null;
 	}
 
 	@Override

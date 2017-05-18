@@ -325,27 +325,6 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	} 
 
 	@Override
-	public List<String> getValori(Evento entry, BasicBD bd) throws ConsoleException { 
-		List<String> valori = new ArrayList<String>();
-
-		TipoEvento tipoEvento = entry.getTipoEvento();
-		Date dataRichiesta = entry.getDataRichiesta();
-		String esito = entry.getEsito();
-		String codDominio = entry.getCodDominio();
-		String iuv = entry.getIuv();
-		String ccp = entry.getCcp();
-
-		valori.add(this.sdf.format(dataRichiesta));
-		valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+ tipoEvento.name()));
-		valori.add(esito);
-		valori.add(codDominio);
-		valori.add(iuv);
-		valori.add(ccp);
-
-		return valori; 
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Evento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override

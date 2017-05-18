@@ -1198,11 +1198,6 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 	}
 
 	@Override
-	public List<String> getValori(Dominio entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Dominio entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 

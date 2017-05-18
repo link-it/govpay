@@ -245,13 +245,10 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			String sottotitolo = this.getSottotitolo(entry,bd);
 			URI urlDettaglio = (id != null && uriDettaglio != null) ?  Utils.creaUriConPath(uriDettaglio , id+"") : null;
 			Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-			elemento.setValori(this.getValori(entry, bd)); 
 			elemento.setVoci(this.getVoci(entry, bd)); 
 			return elemento;
 		}catch(Exception e) {throw new ConsoleException(e);}
 	}
-
-	public abstract List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
 
 	@Override
 	public abstract Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;

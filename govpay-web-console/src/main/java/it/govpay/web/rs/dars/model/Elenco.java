@@ -28,8 +28,6 @@ import it.govpay.web.utils.ConsoleProperties;
 public class Elenco {
 	
 	private List<Elemento> elenco;
-	private Elemento intestazione;
-	private boolean tabella;
 	private long totaleRisultati;
 	private String titolo;
 	private URI esportazione;
@@ -93,14 +91,6 @@ public class Elenco {
 
 	public void setFiltro(boolean filtro) {
 		this.filtro = filtro;
-	}
-
-	public Elemento getIntestazione() {
-		return this.intestazione;
-	}
-
-	public boolean isTabella() {
-		return tabella;
 	}
 
 	public boolean isExportMassivo() {
