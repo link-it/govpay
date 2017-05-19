@@ -21,9 +21,12 @@ package it.govpay.bd.model;
 
 import java.util.List;
 
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
@@ -36,9 +39,11 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	private static final long serialVersionUID = 1L;
 	// Business
+	private Dominio dominio;
 	private Rpt rpt;
 	private SingoloVersamento singoloVersamento;
 	private Rr rr;
+	private Incasso incasso;
 	private List<Rendicontazione> rendicontazioni;
 
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
@@ -55,7 +60,7 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		this.rpt = rpt;
 		this.setIdRpt(rpt.getId());
 	}
-
+	
 	public Rr getRr(BasicBD bd) throws ServiceException {
 		if(rr == null) {
 			RrBD rrBD = new RrBD(bd);
@@ -94,6 +99,21 @@ public class Pagamento extends it.govpay.model.Pagamento {
 		return rendicontazioni;
 	}
 	
+	public Incasso getIncasso(BasicBD bd) throws ServiceException {
+		if(this.getIdIncasso() != null) {
+			if(incasso == null) {
+				IncassiBD incassiBD = new IncassiBD(bd);
+				incasso = incassiBD.getIncasso(this.getIdIncasso());
+			}
+		}
+		return incasso;
+	}
+
+	public void setIncasso(Incasso incasso) {
+		this.incasso = incasso;
+		this.setIdIncasso(incasso.getId());
+	}
+	
 	public boolean isPagamentoRendicontato(BasicBD bd) throws ServiceException {
 		for(Rendicontazione r : getRendicontazioni(bd)) {
 			if(r.getEsito().equals(EsitoRendicontazione.ESEGUITO) || r.getEsito().equals(EsitoRendicontazione.ESEGUITO_SENZA_RPT))
@@ -108,6 +128,16 @@ public class Pagamento extends it.govpay.model.Pagamento {
 				return true;
 		}
 		return false;
+	}
+	
+	public Dominio getDominio(BasicBD bd) throws ServiceException, NotFoundException {
+		if(dominio == null){
+			dominio = AnagraficaManager.getDominio(bd, this.getCodDominio());
+		}
+		return dominio;
+	}
+	public void setDominio(Dominio dominio) {
+		this.dominio = dominio;
 	}
 }
 

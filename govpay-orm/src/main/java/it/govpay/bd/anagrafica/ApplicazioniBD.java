@@ -263,6 +263,10 @@ public class ApplicazioniBD extends BasicBD {
 	public ApplicazioneFilter newFilter() throws ServiceException {
 		return new ApplicazioneFilter(this.getApplicazioneService());
 	}
+	
+	public ApplicazioneFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new ApplicazioneFilter(this.getApplicazioneService(),simpleSearch);
+	}
 
 	public long count(ApplicazioneFilter filter) throws ServiceException {
 		try {

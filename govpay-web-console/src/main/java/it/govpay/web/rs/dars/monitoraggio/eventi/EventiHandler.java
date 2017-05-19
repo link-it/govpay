@@ -59,10 +59,10 @@ import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
-import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
@@ -102,21 +102,26 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
+
+
 			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
 			String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
 			SortOrder sortOrder = SortOrder.DESC;
 
 			Map<String, String> params = new HashMap<String, String>();
 
+			boolean simpleSearch = false; 
 			// se visualizzo gli eventi nella pagina delle transazioni li ordino in ordine crescente
 			if(StringUtils.isNotEmpty(idTransazione)){
 				visualizzaRicerca = false;
 				sortOrder = SortOrder.ASC;
 				params.put(idTransazioneId, idTransazione);
+			} else {
+				simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			}
 
 			EventiBD eventiBD = new EventiBD(bd);
-			EventiFilter filter = eventiBD.newFilter();
+			EventiFilter filter = eventiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -125,27 +130,38 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			fsw.setSortOrder(sortOrder);
 			filter.getFilterSortList().add(fsw);
 
-			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
-			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
 
-			String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
-			if(StringUtils.isNotEmpty(codDominio)){
-				filter.setCodDominio(codDominio);
-				params.put(codDominioId, codDominio);
-			}
+			if(simpleSearch) {
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 
-			String iuv = this.getParameter(uriInfo, iuvId, String.class);
-			if(StringUtils.isNotEmpty(iuv)){
-				filter.setIuv(iuv); 
-				params.put(iuvId, iuv);
-			}
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			} else {
+				String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
+				String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+				String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
+
+				String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
+				if(StringUtils.isNotEmpty(codDominio)){
+					filter.setCodDominio(codDominio);
+					params.put(codDominioId, codDominio);
+				}
+
+				String iuv = this.getParameter(uriInfo, iuvId, String.class);
+				if(StringUtils.isNotEmpty(iuv)){
+					filter.setIuv(iuv); 
+					params.put(iuvId, iuv);
+				}
 
 
-			String ccp = this.getParameter(uriInfo, ccpId, String.class);
-			if(StringUtils.isNotEmpty(ccp)){
-				filter.setCcp(ccp); 
-				params.put(ccpId, ccp);
+				String ccp = this.getParameter(uriInfo, ccpId, String.class);
+				if(StringUtils.isNotEmpty(ccp)){
+					filter.setCcp(ccp); 
+					params.put(ccpId, ccp);
+				}
 			}
 
 			long count = eventiBD.count(filter);
@@ -154,19 +170,10 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
-			List<String> valori = new ArrayList<String>();
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataRichiesta.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"));
-			valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"));
-
-			Elemento intestazione = new Elemento(-1, valori , null);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); //, true, intestazione ); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
@@ -318,27 +325,6 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	} 
 
 	@Override
-	public List<String> getValori(Evento entry, BasicBD bd) throws ConsoleException { 
-		List<String> valori = new ArrayList<String>();
-
-		TipoEvento tipoEvento = entry.getTipoEvento();
-		Date dataRichiesta = entry.getDataRichiesta();
-		String esito = entry.getEsito();
-		String codDominio = entry.getCodDominio();
-		String iuv = entry.getIuv();
-		String ccp = entry.getCcp();
-
-		valori.add(this.sdf.format(dataRichiesta));
-		valori.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+ tipoEvento.name()));
-		valori.add(esito);
-		valori.add(codDominio);
-		valori.add(iuv);
-		valori.add(ccp);
-
-		return valori; 
-	}
-	
-	@Override
 	public Map<String, Voce<String>> getVoci(Evento entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
@@ -412,7 +398,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 	private List<String> getCsvHeader(){
 		List<String> header = new ArrayList<String>();
-		
+
 		header.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".id.label"));
 		header.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".data.label"));
 		header.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.label"));
@@ -435,76 +421,76 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 	private List<String> getEventoCsv(Evento evento, boolean request){ 
 		List<String> oneLine = new ArrayList<String>();
-		
+
 		oneLine.add(evento.getId() + (request ? "_REQ" : "_RSP"));
-		
+
 		if(evento.getDataRichiesta()!= null)
 			oneLine.add( this.sdf.format(evento.getDataRichiesta()));
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getCodDominio()))
 			oneLine.add(evento.getCodDominio());
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getIuv()))
 			oneLine.add(evento.getIuv());
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getCcp()))
 			oneLine.add(evento.getCcp());
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getCodPsp()))
 			oneLine.add(evento.getCodPsp());
 		else 
 			oneLine.add("");
-		
+
 		if(evento.getTipoEvento() != null)
 			oneLine.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoEvento."+evento.getTipoEvento().name()));
 		else 
 			oneLine.add("");
-		
+
 		oneLine.add(request ? "req" : "rsp");
-		
+
 		if(evento.getCategoriaEvento() != null)
 			oneLine.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".categoriaEvento." +evento.getCategoriaEvento().name()));
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getComponente()))
 			oneLine.add(evento.getComponente());
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getFruitore()))
 			oneLine.add(evento.getFruitore());
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getErogatore()))
 			oneLine.add(evento.getErogatore());
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getCodStazione()))
 			oneLine.add(evento.getCodStazione());
 		else 
 			oneLine.add("");
-		
+
 		if(StringUtils.isNotEmpty(evento.getCodCanale()))
 			oneLine.add(evento.getCodCanale());
 		else 
 			oneLine.add("");
-		
+
 		if(evento.getTipoVersamento()!= null)
 			oneLine.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento." +evento.getTipoVersamento().name()));
 		else 
 			oneLine.add("");
-		
+
 		if(request) {
 			if(StringUtils.isNotEmpty(evento.getAltriParametriRichiesta()))
 				oneLine.add(evento.getAltriParametriRichiesta());
@@ -516,12 +502,12 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			else 
 				oneLine.add("");
 		}
-		
+
 		if(StringUtils.isNotEmpty(evento.getEsito()))
 			oneLine.add(evento.getEsito());
 		else 
 			oneLine.add("");
-		
+
 		return oneLine;
 	}
 
@@ -534,13 +520,21 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	/* Creazione/Update non consentiti**/
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry) throws ConsoleException {
+		return null;
+	}
+
+	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Evento entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public Evento creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

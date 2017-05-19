@@ -130,16 +130,26 @@ public class MessageLoggingHandlerUtils {
 		return true;
 	}
 	
-	
 	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, ByteArrayOutputStream baos,
 			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) {
+		return logToSystemOut(uriInfo, rsHttpHeaders, request, baos.toByteArray(), nomeOperazione, nomeServizio, tipoServizio, versioneServizio, log, outbound);
+	}
+	
+	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, byte[] bytes,
+			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound) {
+		return logToSystemOut(uriInfo, rsHttpHeaders, request, bytes, nomeOperazione, nomeServizio, tipoServizio, versioneServizio, log, outbound, null);
+	}
+	
+	public static boolean logToSystemOut(UriInfo uriInfo, HttpHeaders rsHttpHeaders,HttpServletRequest request, byte[] bytes,
+			String nomeOperazione, String nomeServizio,	String tipoServizio, int versioneServizio, Logger log, boolean outbound, Integer responseCode) {
+	
+
 		
 		GpContext ctx = null;
 		Message msg = new Message();
 		
 		try {
-			
-			msg.setContent(baos.toByteArray());
+			msg.setContent(bytes);
 		} catch (Exception e) {
 			log.error("Exception in handler: " + e);
 		}
@@ -153,7 +163,8 @@ public class MessageLoggingHandlerUtils {
 			if(rsHttpHeaders.getMediaType() != null)
 				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
 			ctx.getContext().getResponse().setOutDate(new Date());
-			ctx.getContext().getResponse().setOutSize(Long.valueOf(baos.size()));
+			ctx.getContext().getResponse().setOutSize(Long.valueOf(bytes.length));
+			if(responseCode != null) ctx.getTransaction().getServer().setTransportCode(responseCode.intValue() + "");
 		} else {
 			try {
 				ctx = new GpContext(uriInfo,rsHttpHeaders, request, nomeOperazione, nomeServizio, tipoServizio, versioneServizio);
@@ -168,7 +179,7 @@ public class MessageLoggingHandlerUtils {
 			if(rsHttpHeaders.getMediaType() != null)
 				msg.setContentType(rsHttpHeaders.getMediaType().getType() + "/" + rsHttpHeaders.getMediaType().getSubtype());
 			ctx.getContext().getRequest().setInDate(new Date());
-			ctx.getContext().getRequest().setInSize(Long.valueOf(baos.size()));
+			ctx.getContext().getRequest().setInSize(Long.valueOf(bytes.length));
 		}
 		
 		if(httpHeaders != null) {

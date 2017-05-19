@@ -28,11 +28,18 @@ public class EventiFilter extends AbstractFilter{
 	private List<Long> idEventi= null;
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public EventiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Evento.model().IUV);
+		this.listaFieldSimpleSearch.add(Evento.model().CCP);
+		this.listaFieldSimpleSearch.add(Evento.model().COD_DOMINIO);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
 			
@@ -85,7 +92,7 @@ public class EventiFilter extends AbstractFilter{
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public String getCodDominio() {
 		return codDominio;
 	}

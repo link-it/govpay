@@ -27,6 +27,7 @@ import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazione;
 import it.gov.digitpa.schemas._2011.ws.paa.NodoChiediFlussoRendicontazioneRisposta;
 import it.gov.digitpa.schemas._2011.ws.paa.TipoIdRendicontazione;
 import it.govpay.bd.BasicBD;
+import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PspBD;
@@ -80,6 +81,7 @@ import org.apache.logging.log4j.Logger;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
+import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.logger.beans.Property;
 
 
@@ -677,6 +679,10 @@ public class Rendicontazioni extends BasicBD {
 		newFilter.setDatainizio(da);
 		newFilter.setDataFine(a);
 		newFilter.setLimit(500);
+		FilterSortWrapper fs = new FilterSortWrapper();
+		fs.setField(it.govpay.orm.FR.model().DATA_ACQUISIZIONE);
+		fs.setSortOrder(SortOrder.DESC);
+		newFilter.getFilterSortList().add(fs);
 
 		if(codApplicazione != null) {
 			long idApplicazione = 0;

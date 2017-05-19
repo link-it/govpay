@@ -58,11 +58,69 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public VersamentoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public VersamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Versamento.model().DEBITORE_IDENTIFICATIVO);
+		this.listaFieldSimpleSearch.add(Versamento.model().COD_VERSAMENTO_ENTE);
+		this.listaFieldSimpleSearch.add(Versamento.model().IUV.IUV);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpressionOr = super._toSimpleSearchExpression();
+			
+			if(this.idDomini != null){
+				IExpression newExpressionDomini = this.newExpression();
+
+				idDomini.removeAll(Collections.singleton(null));
+				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
+				newExpressionDomini.in(cf, this.idDomini);
+				newExpressionDomini.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
+				
+				newExpressionOr.and(newExpressionDomini);
+			}
+
+//			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
+//				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
+//					IExpression orExpr = this.newExpression();
+//					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
+//					
+//					VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+//					CustomField cf = new CustomField("id_applicazione", Long.class, "id_applicazione", converter.toTable(Versamento.model()));
+//					
+//					for (int i = 0; i < this.codVersamentoEnte.size(); i++) {
+//						String codV = this.codVersamentoEnte.get(i);
+//						Long idApp = this.idApplicazione.get(i);
+//						
+//						IExpression vExpr = this.newExpression();
+//						vExpr.equals(Versamento.model().COD_VERSAMENTO_ENTE, codV).and().equals(cf, idApp);
+//						
+//						lstOrExpr.add(vExpr);
+//					}
+//					
+//					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
+//					
+//					newExpressionOr.or(orExpr);
+//				}
+//			}
+
+			return newExpressionOr;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;

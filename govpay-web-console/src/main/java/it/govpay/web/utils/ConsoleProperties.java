@@ -23,6 +23,7 @@ public class ConsoleProperties {
 	private static Logger log = LogManager.getLogger();
 	
 	private int numeroRisultatiPerPagina;
+	private int numeroMassimoElementiExport;
 	private boolean nascondiRicerca;
 	
 	private String dominioOperazioniJMX, tipoOperazioniJMX, nomeRisorsaOperazioniJMX, asJMX, usernameJMX, passwordJMX, factoryJMX;
@@ -34,6 +35,8 @@ public class ConsoleProperties {
 	private String resourceDir;
 	
 	private String urlEstrattoConto, usernameEstrattoConto, passwordEstrattoConto;
+	
+	private Integer sogliaGiorniRitardoPagamenti = null;
 	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
@@ -70,7 +73,7 @@ public class ConsoleProperties {
 				if(this.resourceDir != null) {
 					File resourceDirFile = new File(this.resourceDir);
 					if(!resourceDirFile.isDirectory())
-						throw new Exception("Il path indicato nella property \"it.govpay.console.resource.path\" (" + resourceDir + ") non esiste o non e' un folder.");
+						throw new Exception("Il path indicato nella property \"it.govpay.console.resource.path\" (" + this.resourceDir + ") non esiste o non e' un folder.");
 
 					File log4j2ConfigFile = new File(this.resourceDir + File.separatorChar + "log4j2.xml");
 
@@ -104,12 +107,12 @@ public class ConsoleProperties {
 			if(StringUtils.isNotEmpty(operazioniAsString))
 				this.operazioniJMXDisponibili = operazioniAsString.split(",");
 			
-			urlJMX = new HashMap<String, String>();
+			this.urlJMX = new HashMap<String, String>();
 			String nodiJMXAsString = ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.nodi", props, true);
 			if(StringUtils.isNotEmpty(nodiJMXAsString)) {
 				String[] nodi = nodiJMXAsString.split(",");
 				for(String nodo : nodi) {
-					urlJMX.put(nodo, ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.url."+nodo, props, true));
+					this.urlJMX.put(nodo, ConsoleProperties.getProperty("it.govpay.console.operazioni.jmx.url."+nodo, props, true));
 				}
 			}
 			
@@ -125,29 +128,35 @@ public class ConsoleProperties {
 			this.usernameEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.username", props, false);
 			this.passwordEstrattoConto = ConsoleProperties.getProperty("it.govpay.estrattoConto.password", props, false);
 			
+			String num2 = ConsoleProperties.getProperty("it.govpay.console.numeroMassimoElementiExport", props, false);
+			this.numeroMassimoElementiExport = num2 != null ? Integer.parseInt(num2) : 25;
+			
+			String sogliaS = ConsoleProperties.getProperty("it.govpay.console.pagamenti.sogliaRitardoGiorni", props, false);
+			this.sogliaGiorniRitardoPagamenti = sogliaS != null ? Integer.parseInt(sogliaS) : null;
+			
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
 	}
 	
 	public String getAsJMX() {
-		return asJMX;
+		return this.asJMX;
 	}
 
 	public String getUsernameJMX() {
-		return usernameJMX;
+		return this.usernameJMX;
 	}
 
 	public String getPasswordJMX() {
-		return passwordJMX;
+		return this.passwordJMX;
 	}
 
 	public String getFactoryJMX() {
-		return factoryJMX;
+		return this.factoryJMX;
 	}
 
 	public Map<String, String> getUrlJMX() {
-		return urlJMX;
+		return this.urlJMX;
 	}
 
 	private static String getProperty(String name, Properties props, boolean required) throws Exception {
@@ -195,41 +204,47 @@ public class ConsoleProperties {
 	}
 
 	public String getDominioOperazioniJMX() {
-		return dominioOperazioniJMX;
+		return this.dominioOperazioniJMX;
 	}
 
 	public String getTipoOperazioniJMX() {
-		return tipoOperazioniJMX;
+		return this.tipoOperazioniJMX;
 	}
 
 	public String getNomeRisorsaOperazioniJMX() {
-		return nomeRisorsaOperazioniJMX;
+		return this.nomeRisorsaOperazioniJMX;
 	}
 
 	public String[] getOperazioniJMXDisponibili() {
-		return operazioniJMXDisponibili;
+		return this.operazioniJMXDisponibili;
 	}
 	
 	public URI getLog4j2Config() {
-		return log4j2Config;
+		return this.log4j2Config;
 	}
 
 	public String getPathEstrattoContoPdfLoghi() {
-		return pathEstrattoContoPdfLoghi;
+		return this.pathEstrattoContoPdfLoghi;
 	}
 
 	public String getUrlEstrattoConto() {
-		return urlEstrattoConto;
+		return this.urlEstrattoConto;
 	}
 
 	public String getUsernameEstrattoConto() {
-		return usernameEstrattoConto;
+		return this.usernameEstrattoConto;
 	}
 
 	public String getPasswordEstrattoConto() {
-		return passwordEstrattoConto;
+		return this.passwordEstrattoConto;
 	}
 	public String getResourceDir() {
-		return resourceDir;
+		return this.resourceDir;
+	}
+	public int getNumeroMassimoElementiExport() {
+		return this.numeroMassimoElementiExport;
+	}
+	public Integer getSogliaGiorniRitardoPagamenti() {
+		return this.sogliaGiorniRitardoPagamenti;
 	}
 }

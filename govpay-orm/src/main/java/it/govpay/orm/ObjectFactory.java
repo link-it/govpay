@@ -186,6 +186,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdIncasso }
+     */
+    public IdIncasso createIdIncasso() {
+        return new IdIncasso();
+    }
+
+    /**
      * Create an instance of {@link IdNotifica }
      */
     public IdNotifica createIdNotifica() {
@@ -270,6 +277,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IuvSearch }
+     */
+    public IuvSearch createIuvSearch() {
+        return new IuvSearch();
+    }
+
+    /**
      * Create an instance of {@link RendicontazionePagamento }
      */
     public RendicontazionePagamento createRendicontazionePagamento() {
@@ -330,6 +344,13 @@ public class ObjectFactory {
      */
     public IdConnettore createIdConnettore() {
         return new IdConnettore();
+    }
+
+    /**
+     * Create an instance of {@link Incasso }
+     */
+    public Incasso createIncasso() {
+        return new Incasso();
     }
 
     /**

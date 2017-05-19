@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.reportistica.pagamenti;
+package it.govpay.web.rs.dars.monitoraggio.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -70,6 +70,7 @@ import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -86,13 +87,13 @@ import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements IDarsHandler<EstrattoConto>{
+public class ReportisticaPagamentiHandler extends BaseDarsHandler<EstrattoConto> implements IDarsHandler<EstrattoConto>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
-	public PagamentiHandler(Logger log, BaseDarsService darsService) { 
+	public ReportisticaPagamentiHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -109,7 +110,6 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -192,7 +192,11 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
-					this.getInfoCreazione(uriInfo, bd),	count, esportazione, cancellazione); 
+					this.getInfoCreazione(uriInfo, bd),	count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+			
+			// export massivo on
+			elenco.setExportMassivo(true);
+			elenco.setNumeroMassimoElementiExport(10);
 
 			List<EstrattoConto> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>(); 
 
@@ -328,7 +332,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 		}
 		return infoRicerca;
 	}
-
+	
 	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		if(this.infoRicercaMap == null){
 			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
@@ -360,6 +364,15 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			InputDate dataFine = new InputDate(dataFineId, dataFineLabel, null, false, false, true, null, null);
 			this.infoRicercaMap.put(dataFineId, dataFine);
 		}
+	}
+	
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, EstrattoConto entry) throws ConsoleException {
+		return null;
 	}
 
 	@Override
@@ -423,11 +436,11 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 			EstrattoConto pagamento = findAll.size() > 0 ? findAll.get(0) : null;
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, pagamento);
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
 
 			String titolo = pagamento != null ? this.getTitolo(pagamento,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -509,9 +522,6 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 		}catch(Exception e) {}
 		return sb.toString();
 	} 
-
-	@Override
-	public List<String> getValori(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
 	public Map<String, Voce<String>> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { 
@@ -875,7 +885,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, EstrattoConto entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public EstrattoConto creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

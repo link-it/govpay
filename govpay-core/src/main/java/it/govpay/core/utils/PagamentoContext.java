@@ -1,5 +1,6 @@
 package it.govpay.core.utils;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +16,8 @@ public class PagamentoContext {
 	public static final String codUoBeneficiariaKey="uo";
 	public static final String codTributoIuvKey="t";
 	public static final String codApplicazioneIuvKey="a";
+	public static final String anno4="Y";
+	public static final String anno2="y";
 	
 	private String codSessionePortale;
 	private boolean carrello;
@@ -99,6 +102,13 @@ public class PagamentoContext {
 			if(versamentoCtx.getCodTributoIuv() != null)
 				props.put(codTributoIuvKey, versamentoCtx.getCodTributoIuv());
 		}
+		
+		Calendar now = Calendar.getInstance(); 
+		int year = now.get(Calendar.YEAR);  
+		
+		props.put(anno4, year + "");
+		props.put(anno2, year%100 + "");
+		
 		return props;
 	}
 

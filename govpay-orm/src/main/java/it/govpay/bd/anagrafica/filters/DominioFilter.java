@@ -44,23 +44,30 @@ public class DominioFilter extends AbstractFilter {
 	private CustomField cf;
 	
 	private String codDominio = null;
+	private String ragioneSociale = null;
 	
 	public enum SortFields {
 	}
 	
 	public DominioFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
-		
+		this(expressionConstructor,false);
+	}
+	
+	public DominioFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		try{
 			DominioFieldConverter converter = new DominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Dominio.model()));
+			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().ID_STAZIONE.COD_STAZIONE);
+			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().COD_DOMINIO);
+			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
 		} catch(Exception e){
 			
 		}
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -98,6 +105,15 @@ public class DominioFilter extends AbstractFilter {
 				exp.ilike(Dominio.model().COD_DOMINIO, this.codDominio,LikeMode.ANYWHERE);
 				
 				newExpression.and(exp);
+				addAnd = true;
+			}
+			
+			if(this.ragioneSociale != null){
+				if(addAnd)
+					newExpression.and();
+				
+				// 2. metto in and la stringa con la ragione sociale
+				newExpression.ilike(Dominio.model().RAGIONE_SOCIALE, this.ragioneSociale,LikeMode.ANYWHERE);
 			}
 			
 			return newExpression;
@@ -109,7 +125,7 @@ public class DominioFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));
@@ -138,6 +154,14 @@ public class DominioFilter extends AbstractFilter {
 
 	public void setCodDominio(String codDominio) {
 		this.codDominio = codDominio;
+	}
+
+	public String getRagioneSociale() {
+		return this.ragioneSociale;
+	}
+
+	public void setRagioneSociale(String ragioneSociale) {
+		this.ragioneSociale = ragioneSociale;
 	}
 	
 	

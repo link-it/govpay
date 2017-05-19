@@ -55,7 +55,8 @@ public class Canale extends BasicModel {
 		ADDEBITO_DIRETTO("AD"), 
 		CARTA_PAGAMENTO("CP"), 
 		MYBANK("OBEP"), 
-		ATTIVATO_PRESSO_PSP("PO");
+		ATTIVATO_PRESSO_PSP("PO"),
+		OTHER("OTH");
 		
 		private String codifica;
 

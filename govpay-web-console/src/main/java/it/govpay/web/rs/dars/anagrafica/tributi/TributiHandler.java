@@ -57,6 +57,7 @@ import it.govpay.web.rs.dars.anagrafica.tributi.input.CodContabilita;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.CodificaTributoInIuv;
 import it.govpay.web.rs.dars.anagrafica.tributi.input.TipoContabilita;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -96,13 +97,15 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
-			URI cancellazione = null;
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			Map<String, String> params = new HashMap<String, String>();
+
 			TributiBD tributiBD = new TributiBD(bd);
-			TributoFilter filter = tributiBD.newFilter();
+			TributoFilter filter = tributiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -115,19 +118,33 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			filter.setIdDominio(this.idDominio);
 
-			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
-			filter.setCodTributo(codTributo); 
+			if(simpleSearch) {
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			} else {
+				String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+				String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
+				if(StringUtils.isNotEmpty(codTributo)){
+					filter.setCodTributo(codTributo);
+					params.put(codTributoId, codTributo);
+				}
+			}
 
 			long count = tributiBD.count(filter);
 
-			Map<String, String> params = new HashMap<String, String>();
+
 			params.put(idDominioId, this.idDominio + "");
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
-			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), count, esportazione, cancellazione); 
+			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, 
+					this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Tributo> findAll = tributiBD.findAll(filter);
 
@@ -525,6 +542,14 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
+		return null;
+	}
+
+	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
 		try{
@@ -563,10 +588,10 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			Tributo tributo = tributiBD.getTributo(id);
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,tributo);
-			URI cancellazione = null;
+			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, tributo);
 			URI esportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -779,9 +804,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	}
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		// operazione non prevista
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public String getTitolo(Tributo entry, BasicBD bd) {
@@ -819,11 +842,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		return sb.toString();
 	}
 
-	@Override
-	public List<String> getValori(Tributo entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
 	@Override
 	public Map<String, Voce<String>> getVoci(Tributo entry, BasicBD bd) throws ConsoleException { return null; }
 

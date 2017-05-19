@@ -175,6 +175,10 @@ public class PortaliBD extends BasicBD {
 	public PortaleFilter newFilter() throws ServiceException {
 		return new PortaleFilter(this.getPortaleService());
 	}
+	
+	public PortaleFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new PortaleFilter(this.getPortaleService(),simpleSearch);
+	}
 
 	public long count(PortaleFilter filter) throws ServiceException {
 		try {

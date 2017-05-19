@@ -42,11 +42,16 @@ public class OperatoreFilter extends AbstractFilter {
 	}
 	
 	public OperatoreFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public OperatoreFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Operatore.model().PRINCIPAL);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -70,7 +75,7 @@ public class OperatoreFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

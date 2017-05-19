@@ -42,6 +42,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
@@ -50,6 +51,10 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
+import it.govpay.model.Acl;
+import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Operatore;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Rendicontazione.Anomalia;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -59,6 +64,7 @@ import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -71,8 +77,8 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
-import it.govpay.web.rs.dars.monitoraggio.versamenti.Pagamenti;
-import it.govpay.web.rs.dars.monitoraggio.versamenti.PagamentiHandler;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.PagamentiHandler;
 import it.govpay.web.utils.Utils;
 
 public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> implements IDarsHandler<Rendicontazione>{
@@ -91,17 +97,22 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
 			// Operazione consentita agli utenti registrati
-			this.darsService.checkOperatoreAdmin(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null; 
-			URI cancellazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			RendicontazioniBD frBD = new RendicontazioniBD(bd);
-			RendicontazioneFilter filter = frBD.newFilter();
+			AclBD aclBD = new AclBD(bd);
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			List<String> listaCodDomini =  new ArrayList<String>();
+			RendicontazioneFilter filter = frBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -124,23 +135,55 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 				}
 			}
 
-			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-			String stato = this.getParameter(uriInfo, statoId, String.class);
+			if(simpleSearch) {
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 
-			if(StringUtils.isNotEmpty(stato))
-				filter.setStato(StatoRendicontazione.valueOf(stato)); 
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			} else {
+				String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+				String stato = this.getParameter(uriInfo, statoId, String.class);
 
-			String tipoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.id");
-			String tipo = this.getParameter(uriInfo, tipoId, String.class);
+				if(StringUtils.isNotEmpty(stato))
+					filter.setStato(StatoRendicontazione.valueOf(stato)); 
 
-			if(StringUtils.isNotEmpty(tipo))
-				filter.setTipo(tipo); 
+				String tipoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipo.id");
+				String tipo = this.getParameter(uriInfo, tipoId, String.class);
 
-			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+				if(StringUtils.isNotEmpty(tipo))
+					filter.setTipo(tipo); 
 
-			if(StringUtils.isNotEmpty(iuv))
-				filter.setIuv(iuv);
+				String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+				String iuv = this.getParameter(uriInfo, iuvId, String.class);
+
+				if(StringUtils.isNotEmpty(iuv))
+					filter.setIuv(iuv);
+			}
+			
+			if(!isAdmin && listaCodDomini.isEmpty()){
+				boolean vediTuttiDomini = false;
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							listaCodDomini.add(acl.getCodDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(listaCodDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(listaCodDomini);
+					}
+				}
+			}
 
 			long count = eseguiRicerca ? frBD.count(filter) : 0;
 
@@ -149,9 +192,10 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params); 
 
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, cancellazione); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Rendicontazione> findAll = eseguiRicerca ? frBD.findAll(filter) : new ArrayList<Rendicontazione>(); 
 
@@ -262,19 +306,59 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita agli utenti registrati
-			this.darsService.getOperatoreByPrincipal(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			
+			RendicontazioniBD frBD = new RendicontazioniBD(bd);
+			boolean eseguiRicerca = true; //isAdmin;
+			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
+			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
+			if(!isAdmin){
+				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+				RendicontazioneFilter filter = frBD.newFilter();
+				
+				List<Long> idRendL = new ArrayList<Long>();
+				idRendL.add(id);
+				filter.setIdRendicontazione(idRendL);
 
+				List<String> idDomini = new ArrayList<String>();
+				boolean vediTuttiDomini = false;
+
+				AclBD aclBD = new AclBD(bd);
+				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getCodDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
+
+				long count = eseguiRicerca ? frBD.count(filter) : 0;
+				eseguiRicerca = eseguiRicerca && count > 0;
+			}
 
 			// recupero oggetto
-			RendicontazioniBD frBD = new RendicontazioniBD(bd);
-			Rendicontazione rendicontazione = frBD.getRendicontazione(id);
+			Rendicontazione rendicontazione = eseguiRicerca ? frBD.getRendicontazione(id) : null;
 
 			InfoForm infoModifica = null;
-			URI cancellazione = null;
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
+			InfoForm infoCancellazione = rendicontazione != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, rendicontazione) : null;
+			URI esportazione = rendicontazione != null ? this.getUriEsportazioneDettaglio(uriInfo, bd, id) : null;
 
 			String titolo = rendicontazione != null ? this.getTitolo(rendicontazione,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, cancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -377,18 +461,13 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 		StringBuilder sb = new StringBuilder();
 		StatoRendicontazione stato = entry.getStato();
 		EsitoRendicontazione esito = entry.getEsito();
-		
+
 		sb.append(
 				Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",
 						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.label."+esito.name()),
 						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+stato.name())));
 		return sb.toString();
 	} 
-
-	@Override
-	public List<String> getValori(Rendicontazione entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
 
 	@Override
 	public Map<String, Voce<String>> getVoci(Rendicontazione entry, BasicBD bd) throws ConsoleException { 
@@ -412,7 +491,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 					new Voce<String>(this.getSottotitolo(entry, bd),
 							stato.name()));
 		}
-		
+
 		EsitoRendicontazione esito = entry.getEsito();
 		if(stato!= null) {
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esito.id"),
@@ -492,6 +571,16 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 	/* Creazione/Update non consentiti**/
 
+
+	@Override
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		return null;
+	}
+
+	@Override
+	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException {
+		return null;
+	}
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 
@@ -499,7 +588,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException { return null; }
 
 	@Override
-	public void delete(List<Long> idsToDelete, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public Rendicontazione creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

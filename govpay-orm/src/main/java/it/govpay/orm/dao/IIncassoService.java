@@ -17,37 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.reportistica.pagamenti;
+package it.govpay.orm.dao;
 
-import javax.ws.rs.Path;
+import it.govpay.orm.Incasso;
+import org.openspcoop2.generic_project.dao.IServiceWithId;
+import it.govpay.orm.IdIncasso;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+/**     
+ * Service can be used both for research that will make persistent objects on the backend of type it.govpay.orm.Incasso 
+ *
+ * @author Giovanni Bussu (bussu@link.it)
+ * @author Lorenzo Nardi (nardi@link.it)
+ * @author $Author$
+ * @version $Rev$, $Date$
+ */
 
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+public interface IIncassoService extends IServiceWithId<Incasso, IdIncasso> {
 
-@Path("/dars/reportisticaPagamenti")
-public class Pagamenti extends BaseDarsService {
-
-	public Pagamenti() {
-		super();
-	}
-	
-	Logger log = LogManager.getLogger();
-	
-	@Override
-	public String getNomeServizio() {
-		return "reportisticaPagamenti";
-	}
-
-	@Override
-	public IDarsHandler<?> getDarsHandler() {
-		return new PagamentiHandler(this.log, this);
-	}
-	
-	@Override
-	public String getPathServizio() {
-		return "/dars/" + this.getNomeServizio();
-	}
 }

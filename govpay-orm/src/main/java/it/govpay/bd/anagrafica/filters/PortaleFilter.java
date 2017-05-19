@@ -40,11 +40,16 @@ public class PortaleFilter extends AbstractFilter {
 	}
 	
 	public PortaleFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public PortaleFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Portale.model().COD_PORTALE);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression exp = this.newExpression();
 
@@ -60,7 +65,7 @@ public class PortaleFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

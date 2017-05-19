@@ -422,6 +422,7 @@
 			<xsd:enumeration value="CP"><xsd:annotation><xsd:documentation>Carta di Pagamento</xsd:documentation></xsd:annotation></xsd:enumeration>
 			<xsd:enumeration value="OBEP"><xsd:annotation><xsd:documentation>On-line Banking e-payment</xsd:documentation></xsd:annotation></xsd:enumeration>
 			<xsd:enumeration value="PO"><xsd:annotation><xsd:documentation>Pagamento attivato presso PSP</xsd:documentation></xsd:annotation></xsd:enumeration>
+			<xsd:enumeration value="OTH"><xsd:annotation><xsd:documentation>Altro tipo di versamento</xsd:documentation></xsd:annotation></xsd:enumeration>
 		</xsd:restriction>
 	</xsd:simpleType>
 	

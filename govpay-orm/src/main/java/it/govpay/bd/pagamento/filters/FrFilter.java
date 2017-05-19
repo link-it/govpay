@@ -19,10 +19,6 @@
  */
 package it.govpay.bd.pagamento.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.GovpayConfig;
-import it.govpay.orm.FR;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -35,6 +31,10 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.GovpayConfig;
+import it.govpay.orm.FR;
 
 public class FrFilter extends AbstractFilter {
 	
@@ -52,7 +52,13 @@ public class FrFilter extends AbstractFilter {
 	
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public FrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(FR.model().COD_FLUSSO);
+		this.listaFieldSimpleSearch.add(FR.model().IUR);
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
@@ -92,6 +98,13 @@ public class FrFilter extends AbstractFilter {
 
 		if(this.tnr!= null){
 			obj.add("%" + this.tnr.toLowerCase() + "%");
+		}
+
+		// campi in or per la simple search 
+		if(this.simpleSearch && StringUtils.isNotEmpty(this.simpleSearchString)){
+			for (int i = 0; i < this.listaFieldSimpleSearch.size(); i++) {
+				obj.add("%" + this.simpleSearchString.toLowerCase() + "%");
+			}
 		}
 
 		if(this.getOffset() != null && this.getLimit() != null && !count) {
@@ -217,6 +230,27 @@ public class FrFilter extends AbstractFilter {
 				placeholderWhereOut += "WHERE (ok+anomale > 0)";
 			}
 			
+			// campi in or per la simple search 
+			if(this.simpleSearch && StringUtils.isNotEmpty(this.simpleSearchString)){
+				if(placeholderWhereIn.length() > 0) {
+					placeholderWhereIn += " AND ";
+				} else {
+					placeholderWhereIn += " WHERE ";
+				}
+				placeholderWhereIn += " ( ";
+				for (int i = 0; i < this.listaFieldSimpleSearch.size(); i++) {
+					if(i > 0)
+						placeholderWhereIn += " OR ";
+					
+					String field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
+
+					String iLikefield = ilike(field);		
+					
+					placeholderWhereIn += iLikefield +" like ?";
+				}
+				placeholderWhereIn += " ) ";
+			}
+			
 			if(this.getOffset() != null && this.getLimit() != null) {
 				if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {
 					placeholderOffsetLimit = "OFFSET ? LIMIT ?";
@@ -254,7 +288,7 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
 			
@@ -320,7 +354,7 @@ public class FrFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
- 
+	
 	public String getStato() {
 		return stato;
 	}

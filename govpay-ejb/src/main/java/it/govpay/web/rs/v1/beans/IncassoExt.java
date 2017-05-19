@@ -17,37 +17,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.monitoraggio.versamenti;
+package it.govpay.web.rs.v1.beans;
 
-import javax.ws.rs.Path;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.bd.BasicBD;
 
-@Path("/dars/pagamenti")
-public class Pagamenti extends BaseDarsService {
-
-	public Pagamenti() {
-		super();
+public class IncassoExt extends Incasso{
+	
+	private List<Pagamento> pagamenti;
+	
+	public IncassoExt(it.govpay.bd.model.Incasso i, BasicBD bd) throws ServiceException {
+		super(i);
+		this.pagamenti = new ArrayList<Pagamento>();
+		for(it.govpay.bd.model.Pagamento p : i.getPagamenti(bd)) {
+			pagamenti.add(new Pagamento(p));
+		}
 	}
 	
-	Logger log = LogManager.getLogger();
-	
-	@Override
-	public String getNomeServizio() {
-		return "pagamenti";
+	public List<Pagamento> getPagamenti() {
+		return pagamenti;
 	}
-
-	@Override
-	public IDarsHandler<?> getDarsHandler() {
-		return new PagamentiHandler(this.log, this);
-	}
-	
-	@Override
-	public String getPathServizio() {
-		return "/dars/" + this.getNomeServizio();
+	public void setPagamenti(List<Pagamento> pagamenti) {
+		this.pagamenti = pagamenti;
 	}
 }

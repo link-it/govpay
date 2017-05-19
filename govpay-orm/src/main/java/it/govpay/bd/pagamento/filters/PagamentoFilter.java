@@ -19,6 +19,8 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -29,33 +31,48 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.dao.jdbc.converter.PagamentoFieldConverter;
 
 public class PagamentoFilter extends AbstractFilter {
 	
+	private Long idIncasso;
 	private Long idRr;
 	private Long idRpt;
-	private String codDominio;
+	private List<String> idDomini;
 	private Date dataInizio;
 	private Date dataFine;
 	private List<Long> idVersamenti;
+	private List<Long> idPagamenti;
+	private String stato;
+	private Integer sogliaRitardo = null;
+	public static final String STATO_RITARDO_INCASSO = "RITARDO_INCASSO";
+	private String codSingoloVersamentoEnte = null;
+	private String iur;
 	
 	public enum SortFields {
 		DATA
 	}
 
 	public PagamentoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
+	}
+	
+	public PagamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE);
+		this.listaFieldSimpleSearch.add(Pagamento.model().IUR);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -78,6 +95,14 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.getIdIncasso() != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
+				addAnd = true;
+			}
+			
 			if(this.dataInizio != null && this.dataFine != null) {
 				if(addAnd)
 					newExpression.and();
@@ -86,11 +111,30 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
-			if(this.codDominio != null) {
+			if(this.idDomini != null){
+				idDomini.removeAll(Collections.singleton(null));
 				if(addAnd)
 					newExpression.and();
-
-				newExpression.equals(Pagamento.model().ID_RPT.COD_DOMINIO,this.codDominio);
+				newExpression.in(Pagamento.model().COD_DOMINIO, this.idDomini);
+				addAnd = true;
+			}
+			
+			if(stato != null){
+				if(addAnd)
+					newExpression.and();
+				
+				if(stato.equals(STATO_RITARDO_INCASSO)) {
+					if(this.sogliaRitardo != null && this.sogliaRitardo.intValue() > 0){
+						newExpression.notEquals(Pagamento.model().STATO,Stato.INCASSATO.name());
+						Calendar tempo = Calendar.getInstance();
+						tempo.setTime(new Date());
+						tempo.add(Calendar.DAY_OF_YEAR, -this.sogliaRitardo);
+						newExpression.lessThan(Pagamento.model().DATA_PAGAMENTO, tempo.getTime());
+					}
+				} else {
+					newExpression.equals(Pagamento.model().STATO,this.stato);
+				}
+				
 				addAnd = true;
 			}
 			
@@ -106,12 +150,89 @@ public class PagamentoFilter extends AbstractFilter {
 				addAnd = true;
 			}
 			
+			if(this.idPagamenti != null && this.idPagamenti.size() >0){ 
+				if(addAnd)
+					newExpression.and();
+				CustomField cf = new CustomField(ALIAS_ID, Long.class, ALIAS_ID, pagamentoFieldConverter.toTable(Pagamento.model()));
+				newExpression.in(cf, this.idPagamenti);
+				addAnd = true;
+			}
+			
+			if(this.codSingoloVersamentoEnte != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE, this.codSingoloVersamentoEnte, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			if(this.iur != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Pagamento.model().IUR, this.iur, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
 			return newExpression;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			PagamentoFieldConverter pagamentoFieldConverter = new PagamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+			
+			IExpression newExpression = super._toSimpleSearchExpression();
+			
+			if(this.getIdRr() != null) {
+				IExpression newExpressionRR = this.newExpression();
+				newExpressionRR.equals(new CustomField("id_rr", Long.class, "id_rr", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRr());
+				newExpression.and(newExpressionRR);
+			}
+			
+			if(this.getIdRpt() != null) {
+				IExpression newExpressionRpt = this.newExpression();
+				newExpressionRpt.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
+				newExpression.and(newExpressionRpt);
+			}
+			
+			if(this.getIdIncasso() != null) {
+				IExpression newExpressionIncasso = this.newExpression();
+				newExpressionIncasso.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
+				newExpression.and(newExpressionIncasso);
+			}
+			
+			if(this.idVersamenti != null && this.idVersamenti.size() >0){
+				IExpression newExpressionVersamenti = this.newExpression();
+				CustomField idVersamentoField = new CustomField(ALIAS_ID, Long.class, ALIAS_ID,
+						pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
+				newExpressionVersamenti.in(idVersamentoField, this.idVersamenti);
+				// forzo la join con singoliversamenti
+				newExpressionVersamenti.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE); 
+				newExpressionVersamenti.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+				newExpression.and(newExpressionVersamenti);
+			}
+			
+			if(this.idDomini != null){
+				IExpression newExpressionDomini = this.newExpression();
+				idDomini.removeAll(Collections.singleton(null));
+				newExpressionDomini.in(Pagamento.model().COD_DOMINIO, this.idDomini);
+				newExpression.and(newExpressionDomini);
+			}
+
+			return newExpression;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -132,13 +253,6 @@ public class PagamentoFilter extends AbstractFilter {
 		this.idRr = idRr;
 	}
 
-	public String getCodDominio() {
-		return codDominio;
-	}
-
-	public void setCodDominio(String codDominio) {
-		this.codDominio = codDominio;
-	}
 	public Date getDataInizio() {
 		return dataInizio;
 	}
@@ -169,6 +283,62 @@ public class PagamentoFilter extends AbstractFilter {
 
 	public void setIdRpt(Long idRpt) {
 		this.idRpt = idRpt;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
+	}
+
+	public List<String> getIdDomini() {
+		return idDomini;
+	}
+
+	public void setIdDomini(List<String> idDomini) {
+		this.idDomini = idDomini;
+	}
+
+	public String getStato() {
+		return stato;
+	}
+
+	public void setStato(String stato) {
+		this.stato = stato;
+	}
+
+	public Integer getSogliaRitardo() {
+		return sogliaRitardo;
+	}
+
+	public void setSogliaRitardo(Integer sogliaRitardo) {
+		this.sogliaRitardo = sogliaRitardo;
+	}
+
+	public String getCodSingoloVersamentoEnte() {
+		return codSingoloVersamentoEnte;
+	}
+
+	public void setCodSingoloVersamentoEnte(String codSingoloVersamentoEnte) {
+		this.codSingoloVersamentoEnte = codSingoloVersamentoEnte;
+	}
+
+	public String getIur() {
+		return iur;
+	}
+
+	public void setIur(String iur) {
+		this.iur = iur;
+	}
+
+	public List<Long> getIdPagamenti() {
+		return idPagamenti;
+	}
+
+	public void setIdPagamenti(List<Long> idPagamenti) {
+		this.idPagamenti = idPagamenti;
 	}
 	
 }

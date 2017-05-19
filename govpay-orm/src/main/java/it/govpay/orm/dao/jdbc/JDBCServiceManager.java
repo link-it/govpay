@@ -77,6 +77,9 @@ import javax.sql.DataSource;
 import it.govpay.orm.dao.IBatchServiceSearch;
 import it.govpay.orm.dao.IBatchService;
 import org.apache.log4j.Logger;
+import it.govpay.orm.dao.IIncassoServiceSearch;
+import it.govpay.orm.dao.IIncassoService;
+
 import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
@@ -925,6 +928,38 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	@Override
 	public INotificaService getNotificaService() throws ServiceException,NotImplementedException{
 		return new JDBCNotificaService(this);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Incasso type:Incasso
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Incasso}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Incasso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IIncassoServiceSearch getIncassoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCIncassoServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Incasso}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Incasso}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IIncassoService getIncassoService() throws ServiceException,NotImplementedException{
+		return new JDBCIncassoService(this);
 	}
 	
 	

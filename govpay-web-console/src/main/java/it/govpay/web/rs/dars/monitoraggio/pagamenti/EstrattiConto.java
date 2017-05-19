@@ -1,4 +1,4 @@
-package it.govpay.web.rs.dars.reportistica.pagamenti;
+package it.govpay.web.rs.dars.monitoraggio.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 

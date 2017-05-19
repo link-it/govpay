@@ -161,7 +161,9 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 			fields.add(new CustomField("id_rpt", Long.class, "id_rpt", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(new CustomField("id_singolo_versamento", Long.class, "id_singolo_versamento", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(new CustomField("id_rr", Long.class, "id_rr", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
+			fields.add(new CustomField("id_incasso", Long.class, "id_incasso", this.getPagamentoFieldConverter().toTable(Pagamento.model())));
 			fields.add(Pagamento.model().COD_DOMINIO);
+			fields.add(Pagamento.model().STATO);
 			fields.add(Pagamento.model().IUV);
 			fields.add(Pagamento.model().IMPORTO_PAGATO);
 			fields.add(Pagamento.model().DATA_ACQUISIZIONE);
@@ -189,6 +191,13 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 
 				if(idRRObj instanceof Long)
 					idRR = (Long) idRRObj;
+
+				Long idIncasso = null;
+				
+				Object idIncassoObj = map.remove("id_incasso");
+
+				if(idIncassoObj instanceof Long)
+					idIncasso = (Long) idIncassoObj;
 				
 				Pagamento pagamento = (Pagamento)this.getPagamentoFetch().fetch(jdbcProperties.getDatabase(), Pagamento.model(), map);
 				
@@ -235,6 +244,22 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 								pagamento.setIdRr(id_pagamento_rr);
 							}
 					}
+
+					if(idIncasso != null) {
+						if(idMappingResolutionBehaviour==null ||
+								(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+								){
+							it.govpay.orm.IdIncasso id_pagamento_incasso = null;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_pagamento_incasso = ((JDBCIncassoServiceSearch)(this.getServiceManager().getIncassoServiceSearch())).findId(idIncasso, false);
+							}else{
+								id_pagamento_incasso = new it.govpay.orm.IdIncasso();
+							}
+							id_pagamento_incasso.setId(idIncasso);
+							pagamento.setIdIncasso(id_pagamento_incasso);
+						}
+					}
+
 
 				list.add(pagamento);
 	        }
@@ -541,11 +566,19 @@ public class JDBCPagamentoServiceSearchImpl implements IJDBCServiceSearchWithId<
 						imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio()!=null){
 					obj.getIdSingoloVersamento().getIdTributo().getIdDominio().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getIdDominio().getId());
 				}
+				if(obj.getIdSingoloVersamento().getIdTributo().getIdTipoTributo()!=null && 
+						imgSaved.getIdSingoloVersamento().getIdTributo().getIdTipoTributo()!=null){
+					obj.getIdSingoloVersamento().getIdTributo().getIdTipoTributo().setId(imgSaved.getIdSingoloVersamento().getIdTributo().getIdTipoTributo().getId());
+				}
 			}
 		}
 		if(obj.getIdRr()!=null && 
 				imgSaved.getIdRr()!=null){
 			obj.getIdRr().setId(imgSaved.getIdRr().getId());
+		}
+		if(obj.getIdIncasso()!=null && 
+				imgSaved.getIdIncasso()!=null){
+			obj.getIdIncasso().setId(imgSaved.getIdIncasso().getId());
 		}
 
 	}

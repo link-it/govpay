@@ -25,6 +25,3 @@ begin
                 FROM DUAL;
    END IF;
 end;
-/
-
-
