@@ -44,6 +44,10 @@ public class Incasso {
 		jsonConfig.setRootClass(Incasso.class);
 	}
 	
+	public Incasso() throws ServiceException {
+
+	}
+	
 	public Incasso(it.govpay.bd.model.Incasso i) throws ServiceException {
 		this.dominio = i.getCodDominio();
 		this.causale = i.getCausale();
