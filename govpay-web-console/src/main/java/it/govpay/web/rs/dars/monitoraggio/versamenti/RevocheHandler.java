@@ -193,11 +193,6 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 	
 	@Override
-	public List<String> getValori(Rr entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
-	@Override
 	public Map<String, Voce<String>> getVoci(Rr entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 

@@ -85,7 +85,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
-//	private SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
+	//	private SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 
 	public FrHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
@@ -105,12 +105,8 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			FrBD frBD = new FrBD(bd);
 			FrFilter filter = frBD.newFilter(simpleSearch);
@@ -120,52 +116,61 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			fsw.setField(it.govpay.orm.FR.model().DATA_ORA_FLUSSO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
-			
-			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
-			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
-
-			if(StringUtils.isNotEmpty(codFlusso))
-				filter.setCodFlusso(codFlusso); 
-
 			List<String> listaCodDomini =  new ArrayList<String>();
 			AclBD aclBD = new AclBD(bd);
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			
 			boolean eseguiRicerca = true;
-			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-			Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
 
-			if(idDominio != null && idDominio > 0){
-				Dominio dominio = AnagraficaManager.getDominio(bd, idDominio);
-				listaCodDomini = Arrays.asList(dominio.getCodDominio());
-				filter.setCodDominio(listaCodDomini); 
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+				String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
+
+				if(StringUtils.isNotEmpty(codFlusso))
+					filter.setCodFlusso(codFlusso); 
+
+
+				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+				Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
+
+				if(idDominio != null && idDominio > 0){
+					Dominio dominio = AnagraficaManager.getDominio(bd, idDominio);
+					listaCodDomini = Arrays.asList(dominio.getCodDominio());
+					filter.setCodDominio(listaCodDomini); 
+				}
+
+				String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+				String stato = this.getParameter(uriInfo, statoId, String.class);
+
+				if(StringUtils.isNotEmpty(stato)){
+					filter.setStato(stato);
+				}
+
+				String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+				String trn = this.getParameter(uriInfo, trnId, String.class);
+
+				if(StringUtils.isNotEmpty(trn))
+					filter.setTnr(trn);
+
+
+				String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
+				String nascondiAltriIntermediariS = this.getParameter(uriInfo, nascondiAltriIntermediariId, String.class);
+
+				Boolean nascondiAltriIntermediari = false;
+				if(StringUtils.isNotEmpty(nascondiAltriIntermediariS)){
+					if(StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "on") || StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "yes"))
+						nascondiAltriIntermediari = true;
+				}
+
+				filter.setNascondiSeSoloDiAltriIntermediari(nascondiAltriIntermediari);
+
 			}
 
-			String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-			String stato = this.getParameter(uriInfo, statoId, String.class);
-
-			if(StringUtils.isNotEmpty(stato)){
-				filter.setStato(stato);
-			}
-
-			String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
-			String trn = this.getParameter(uriInfo, trnId, String.class);
-
-			if(StringUtils.isNotEmpty(trn))
-				filter.setTnr(trn);
-
-
-			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
-			String nascondiAltriIntermediariS = this.getParameter(uriInfo, nascondiAltriIntermediariId, String.class);
-
-			Boolean nascondiAltriIntermediari = false;
-			if(StringUtils.isNotEmpty(nascondiAltriIntermediariS)){
-				if(StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "on") || StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "yes"))
-					nascondiAltriIntermediari = true;
-			}
-
-			filter.setNascondiSeSoloDiAltriIntermediari(nascondiAltriIntermediari);
-			
 			if(!isAdmin && listaCodDomini.isEmpty()){
 				boolean vediTuttiDomini = false;
 
@@ -399,7 +404,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 				}catch (Exception e) {
 					// psp non censito 
 				}
-				
+
 				if(psp != null) {
 					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
 				} else {
@@ -516,19 +521,14 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	} 
 
 	@Override
-	public List<String> getValori(Fr entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Fr entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> voci = new HashMap<String, Voce<String>>();
-		
-		
+
+
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+entry.getStato().name()),
 						entry.getStato().name()));
-		
+
 		if(StringUtils.isNotEmpty(entry.getCodFlusso())){
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.label"),
@@ -689,7 +689,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Fr entry) throws ConsoleException {
 		return null;

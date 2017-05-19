@@ -19,7 +19,6 @@
  */
 package it.govpay.bd.anagrafica.filters;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -59,6 +58,9 @@ public class DominioFilter extends AbstractFilter {
 		try{
 			DominioFieldConverter converter = new DominioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Dominio.model()));
+			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().ID_STAZIONE.COD_STAZIONE);
+			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().COD_DOMINIO);
+			this.listaFieldSimpleSearch.add(it.govpay.orm.Dominio.model().RAGIONE_SOCIALE);
 		} catch(Exception e){
 			
 		}
@@ -124,35 +126,6 @@ public class DominioFilter extends AbstractFilter {
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			
-			List<IExpression> orExpr = new ArrayList<IExpression>();
-			if(this.simpleSearchString != null){
-				IExpression codStazExpr = this.newExpression();
-				codStazExpr.ilike(it.govpay.orm.Dominio.model().ID_STAZIONE.COD_STAZIONE, this.simpleSearchString,LikeMode.ANYWHERE);
-				orExpr.add(codStazExpr);
-				IExpression codDominioExpr = this.newExpression();
-				codDominioExpr.ilike(Dominio.model().COD_DOMINIO, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(codDominioExpr);
-				IExpression ragioneSocialeExpr = this.newExpression();
-				ragioneSocialeExpr.ilike(Dominio.model().RAGIONE_SOCIALE, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(ragioneSocialeExpr);
-			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} 
-	}
-
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

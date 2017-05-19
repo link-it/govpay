@@ -56,6 +56,7 @@ public class ApplicazioneFilter extends AbstractFilter {
 		try{
 			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Applicazione.model()));
+			this.listaFieldSimpleSearch.add(Applicazione.model().COD_APPLICAZIONE);
 		} catch(Exception e){
 			
 		}
@@ -76,25 +77,6 @@ public class ApplicazioneFilter extends AbstractFilter {
 					newExpression.and();
 				
 				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.codApplicazione,LikeMode.ANYWHERE);
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
-	}
-	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression(); 
-			
-			if(this.simpleSearchString != null){
-				newExpression.ilike(Applicazione.model().COD_APPLICAZIONE, this.simpleSearchString,LikeMode.ANYWHERE);
 			}
 			
 			return newExpression;

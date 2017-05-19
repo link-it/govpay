@@ -27,6 +27,10 @@ public class Errore {
 	private String descrizione;
 	private String dettaglio;
 	
+	public Errore() {
+		// Necessario per marshalling/unmarshalling
+	}
+	
 	public Errore(BaseException exception) {
 		this.codice = exception.getFaultCode();
 		this.descrizione = exception.getFaultString();

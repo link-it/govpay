@@ -101,8 +101,11 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			Map<String, String> params = new HashMap<String, String>();
+
 			TributiBD tributiBD = new TributiBD(bd);
-			TributoFilter filter = tributiBD.newFilter();
+			TributoFilter filter = tributiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -115,13 +118,26 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 			filter.setIdDominio(this.idDominio);
 
-			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
-			filter.setCodTributo(codTributo); 
+			if(simpleSearch) {
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			} else {
+				String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+				String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
+				if(StringUtils.isNotEmpty(codTributo)){
+					filter.setCodTributo(codTributo);
+					params.put(codTributoId, codTributo);
+				}
+			}
 
 			long count = tributiBD.count(filter);
 
-			Map<String, String> params = new HashMap<String, String>();
+
 			params.put(idDominioId, this.idDominio + "");
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
@@ -524,10 +540,10 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
 		return null;
@@ -826,11 +842,6 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 		return sb.toString();
 	}
 
-	@Override
-	public List<String> getValori(Tributo entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
 	@Override
 	public Map<String, Voce<String>> getVoci(Tributo entry, BasicBD bd) throws ConsoleException { return null; }
 

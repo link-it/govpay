@@ -214,9 +214,6 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 
 	@Override
 	public String getSottotitolo(Object entry,BasicBD bd) { return null; }
-
-	@Override
-	public List<String> getValori(Object entry, BasicBD bd) throws ConsoleException { return null; }
 	
 	@Override
 	public Map<String, Voce<String>> getVoci(Object entry, BasicBD bd) throws ConsoleException { return null; }

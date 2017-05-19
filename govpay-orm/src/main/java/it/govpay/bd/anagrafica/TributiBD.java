@@ -147,6 +147,10 @@ public class TributiBD extends BasicBD {
 	public TributoFilter newFilter() throws ServiceException {
 		return new TributoFilter(this.getTributoService());
 	}
+	
+	public TributoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new TributoFilter(this.getTributoService(),simpleSearch);
+	}
 
 	public long count(TributoFilter filter) throws ServiceException {
 		try {

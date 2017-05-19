@@ -21,7 +21,8 @@ package it.govpay.web.rs.v1.beans;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
+
+import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.core.business.model.RichiestaIncassoDTO;
 import net.sf.json.JSONObject;
@@ -38,10 +39,19 @@ public class Incasso {
 	private Date data_valuta;
 	private Date data_contabile;
 	private String dispositivo;
-	private List<Pagamento> pagamenti;
 	
 	static {
 		jsonConfig.setRootClass(Incasso.class);
+	}
+	
+	public Incasso(it.govpay.bd.model.Incasso i) throws ServiceException {
+		this.dominio = i.getCodDominio();
+		this.causale = i.getCausale();
+		this.data_contabile = i.getDataContabile();
+		this.data_valuta = i.getDataValuta();
+		this.dispositivo = i.getDispositivo();
+		this.importo = i.getImporto();
+		this.trn = i.getTrn();
 	}
 	
 	public static Incasso parse(String json) {
@@ -85,12 +95,6 @@ public class Incasso {
 	public void setDispositivo(String dispositivo) {
 		this.dispositivo = dispositivo;
 	}
-	public List<Pagamento> getPagamenti() {
-		return pagamenti;
-	}
-	public void setPagamenti(List<Pagamento> pagamenti) {
-		this.pagamenti = pagamenti;
-	}
 	public String getDominio() {
 		return dominio;
 	}
@@ -109,6 +113,4 @@ public class Incasso {
 		dto.setTrn(trn);
 		return dto;
 	}
-
-	
 }

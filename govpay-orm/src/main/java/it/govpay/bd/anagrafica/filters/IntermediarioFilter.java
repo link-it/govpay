@@ -55,6 +55,7 @@ public class IntermediarioFilter extends AbstractFilter {
 		try{
 			IntermediarioFieldConverter converter = new IntermediarioFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(Intermediario.model()));
+			this.listaFieldSimpleSearch.add(Intermediario.model().COD_INTERMEDIARIO);
 		} catch(Exception e){
 			
 		}
@@ -94,25 +95,6 @@ public class IntermediarioFilter extends AbstractFilter {
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression(); 
-			
-			if(this.simpleSearchString != null){
-				newExpression.ilike(Intermediario.model().COD_INTERMEDIARIO, this.simpleSearchString,LikeMode.ANYWHERE);
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		}
-	}
-
 	public void addSortField(SortFields field, boolean asc){
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 

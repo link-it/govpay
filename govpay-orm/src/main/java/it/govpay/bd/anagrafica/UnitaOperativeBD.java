@@ -99,6 +99,10 @@ public class UnitaOperativeBD extends BasicBD {
 	public UnitaOperativaFilter newFilter() throws ServiceException {
 		return new UnitaOperativaFilter(this.getUoService(), this.getJdbcProperties().getDatabaseType());
 	}
+	
+	public UnitaOperativaFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new UnitaOperativaFilter(this.getUoService(), this.getJdbcProperties().getDatabaseType(),simpleSearch);
+	}
 
 	public long count(UnitaOperativaFilter filter) throws ServiceException {
 		try {

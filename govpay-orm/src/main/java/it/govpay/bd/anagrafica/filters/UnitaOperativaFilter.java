@@ -55,6 +55,7 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	public UnitaOperativaFilter(IExpressionConstructor expressionConstructor, String dbType, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
 		this.dbType = dbType;
+		this.listaFieldSimpleSearch.add(Uo.model().COD_UO);
 	}
 
 	@Override
@@ -100,13 +101,30 @@ public class UnitaOperativaFilter extends AbstractFilter {
 	@Override
 	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
-			IExpression newExpression = this.newExpression();
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-	}
+			IExpression newExpression = super._toSimpleSearchExpression();
+			boolean addAnd = false;
+			
+			if(this.idDominio != null){
+				UoFieldConverter fieldConverter = new UoFieldConverter(dbType);
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Uo.model())), idDominio);
+				addAnd = true;
+			}
+			
+			// esclude tutte le UO con codUo = EC
+			if(this.excludeEC){
+				if(addAnd) newExpression.and();
+				newExpression.notEquals(Uo.model().COD_UO, it.govpay.model.Dominio.EC);
+				addAnd = true;
+			}
 
+			return newExpression;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

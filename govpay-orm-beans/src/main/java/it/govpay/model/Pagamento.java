@@ -52,6 +52,7 @@ public class Pagamento extends BasicModel {
 	private Long idRpt;
 	private Long idSingoloVersamento;
 	private Long idRr;
+	private Long idIncasso;
 	
 	private Date dataAcquisizioneRevoca;
 	private String causaleRevoca;
@@ -63,6 +64,7 @@ public class Pagamento extends BasicModel {
 	public Pagamento() {
 		super();
 		this.dataAcquisizione = new Date();
+		this.stato = Stato.PAGATO;
 	}
 
 	public Long getId() {
@@ -231,6 +233,14 @@ public class Pagamento extends BasicModel {
 
 	public void setStato(Stato stato) {
 		this.stato = stato;
+	}
+
+	public Long getIdIncasso() {
+		return idIncasso;
+	}
+
+	public void setIdIncasso(Long idIncasso) {
+		this.idIncasso = idIncasso;
 	}
 }
 

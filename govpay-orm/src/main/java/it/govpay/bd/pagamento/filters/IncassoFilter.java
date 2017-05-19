@@ -19,19 +19,27 @@
  */
 package it.govpay.bd.pagamento.filters;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
+import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.orm.Incasso;
+import it.govpay.orm.dao.jdbc.converter.VersamentoFieldConverter;
 
 public class IncassoFilter extends AbstractFilter{
-	
-	private List<Long> idDomini;
+
+	private List<String> codDomini;
 	private Date dataInizio;
 	private Date dataFine;
 	private String trn;
@@ -40,39 +48,103 @@ public class IncassoFilter extends AbstractFilter{
 	private List<Long> idIncasso= null;
 
 	public IncassoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
-	
+
 	public IncassoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
-	}
-	
-	@Override
-	public IExpression _toExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		}
+		this.listaFieldSimpleSearch.add(Incasso.model().TRN);
+		this.listaFieldSimpleSearch.add(Incasso.model().NOME_DISPOSITIVO);
+		this.listaFieldSimpleSearch.add(Incasso.model().CAUSALE);
 	}
 
 	@Override
 	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
-			IExpression newExpression = this.newExpression();
+			IExpression newExpression = super._toSimpleSearchExpression();
+
+			if(this.codDomini != null){
+				codDomini.removeAll(Collections.singleton(null));
+				newExpression.and();
+				newExpression.in(Incasso.model().COD_DOMINIO, this.codDomini);
+			}
+
 			return newExpression;
-		} catch (NotImplementedException e) {
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
 	}
 
-	public List<Long> getIdDomini() {
-		return idDomini;
+	@Override
+	public IExpression _toExpression() throws ServiceException {
+		try {
+			IExpression newExpression = this.newExpression();
+			boolean addAnd = false;
+
+			if(this.dataInizio != null && this.dataFine != null) {
+				newExpression.between(Incasso.model().DATA_ORA_INCASSO, this.dataInizio,this.dataFine);
+				addAnd = true;
+			}
+
+			if(this.idIncasso != null && !this.idIncasso.isEmpty()){
+				if(addAnd)
+					newExpression.and();
+				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
+				CustomField cf = new CustomField("id", Long.class, "id", converter.toTable(Incasso.model()));
+				newExpression.in(cf, this.idIncasso);
+				addAnd = true;
+			}
+
+			if(this.codDomini != null){
+				codDomini.removeAll(Collections.singleton(null));
+				if(addAnd)
+					newExpression.and();
+				newExpression.in(Incasso.model().COD_DOMINIO, this.codDomini);
+				addAnd = true;
+			}
+
+			if(this.trn != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Incasso.model().TRN, this.trn, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+
+			if(this.dispositivo != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Incasso.model().NOME_DISPOSITIVO, this.dispositivo, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+
+			if(this.causale != null){
+				if(addAnd)
+					newExpression.and();
+
+				newExpression.ilike(Incasso.model().CAUSALE, this.causale, LikeMode.ANYWHERE);
+				addAnd = true;
+			}
+			
+			return newExpression;
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
 	}
 
-	public void setIdDomini(List<Long> idDomini) {
-		this.idDomini = idDomini;
+	public List<String> getCodDomini() {
+		return codDomini;
+	}
+
+	public void setCodDomini(List<String> codDomini) {
+		this.codDomini = codDomini;
 	}
 
 	public Date getDataInizio() {

@@ -93,11 +93,6 @@ public class SingoliVersamentiHandler extends BaseDarsHandler<SingoloVersamento>
 	}
 	
 	@Override
-	public List<String> getValori(SingoloVersamento entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
-	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException {
 		return null;

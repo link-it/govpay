@@ -42,7 +42,7 @@ public class StazioneFilter extends AbstractFilter {
 	}
 
 	public StazioneFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public StazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
@@ -67,16 +67,6 @@ public class StazioneFilter extends AbstractFilter {
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-	}
-
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 

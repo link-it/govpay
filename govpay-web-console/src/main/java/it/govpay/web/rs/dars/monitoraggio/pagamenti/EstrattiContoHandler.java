@@ -398,36 +398,6 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 		StringBuilder sb = new StringBuilder();
 		return sb.toString();
 	}
-
-	@Override
-	public List<String> getValori(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd) throws ConsoleException {
-		List<String> valori = new ArrayList<String>();
-
-		String dominioLabel = entry.getCodDominio();
-		try{
-			if(entry.getCodDominio() != null){
-				DominiBD dominiBD = new DominiBD(bd);
-				Dominio dominio = dominiBD.getDominio(entry.getCodDominio());
-				Domini dominiDars =new Domini();
-				dominioLabel = ((DominiHandler)dominiDars.getDarsHandler()).getTitolo(dominio, bd);
-			}
-
-		}catch(Exception e ){
-			dominioLabel = entry.getCodDominio(); 
-		}
-
-		valori.add(dominioLabel);
-		valori.add(entry.getMeseAnno());
-		valori.add(entry.getFormato());
-
-		if(StringUtils.isNotEmpty(entry.getIbanAccredito())) {
-			valori.add(entry.getIbanAccredito());
-		} else {
-			valori.add("--");
-		} 
-
-		return valori;
-	}
 	
 	@Override
 	public Map<String, Voce<String>> getVoci(it.govpay.model.reportistica.EstrattoContoMetadata entry, BasicBD bd) throws ConsoleException { return null; }

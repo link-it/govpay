@@ -245,13 +245,10 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			String sottotitolo = this.getSottotitolo(entry,bd);
 			URI urlDettaglio = (id != null && uriDettaglio != null) ?  Utils.creaUriConPath(uriDettaglio , id+"") : null;
 			Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-			elemento.setValori(this.getValori(entry, bd)); 
 			elemento.setVoci(this.getVoci(entry, bd)); 
 			return elemento;
 		}catch(Exception e) {throw new ConsoleException(e);}
 	}
-
-	public abstract List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
 
 	@Override
 	public abstract Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
@@ -270,6 +267,18 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 				else
 					toReturn = type.cast(paramAsString);
 			}
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+
+		return toReturn;
+	}
+	
+	public boolean containsParameter(UriInfo uriInfo, String parameterName) throws ConsoleException{
+		boolean toReturn = false;
+		try{
+			MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters(); 
+			toReturn = queryParams.getFirst(parameterName) != null;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}

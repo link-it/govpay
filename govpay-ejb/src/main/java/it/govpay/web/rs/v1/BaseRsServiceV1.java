@@ -24,9 +24,9 @@ import java.io.IOException;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.UriInfo;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import it.govpay.web.rs.BaseRsService;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 public class BaseRsServiceV1 extends BaseRsService {
 	
@@ -38,11 +38,11 @@ public class BaseRsServiceV1 extends BaseRsService {
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o) throws IOException {
 		logResponse(uriInfo, rsHttpHeaders, nomeOperazione, o, null);
 	}
+	
 
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders, String nomeOperazione, Object o, Integer responseCode) throws IOException {
-		JsonConfig jsonConfig = new JsonConfig();
-		jsonConfig.setRootClass(o.getClass());
-		JSONObject jsonObject = JSONObject.fromObject(o , jsonConfig);  
-		super.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, jsonObject.toString().getBytes(), responseCode);
+		ObjectMapper mapper = new ObjectMapper();
+        String json = mapper.writeValueAsString(o);
+		super.logResponse(uriInfo, rsHttpHeaders, nomeOperazione, json.getBytes(), responseCode);
 	}
 }

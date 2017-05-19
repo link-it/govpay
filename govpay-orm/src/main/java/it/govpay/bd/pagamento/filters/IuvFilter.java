@@ -36,11 +36,12 @@ public class IuvFilter extends AbstractFilter{
 	private String iuv;
 	
 	public IuvFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public IuvFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(IUV.model().IUV);
 	}
 	
 	@Override
@@ -65,25 +66,6 @@ public class IuvFilter extends AbstractFilter{
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
-	}
-	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression(); 
-			
-			if(this.simpleSearchString != null){
-				newExpression.ilike(IUV.model().IUV, this.simpleSearchString,LikeMode.ANYWHERE);
-			}
-			
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
-		} 
 	}
 	
 	public String getIuv() {

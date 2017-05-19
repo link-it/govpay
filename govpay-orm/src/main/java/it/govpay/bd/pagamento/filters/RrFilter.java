@@ -37,7 +37,7 @@ public class RrFilter extends AbstractFilter {
 	private Long idRpt;
 	
 	public RrFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public RrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
@@ -65,16 +65,6 @@ public class RrFilter extends AbstractFilter {
 		}
 	}
 	
-	@Override
-	public IExpression _toSimpleSearchExpression() throws ServiceException {
-		try {
-			IExpression newExpression = this.newExpression();
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
-		} 
-	}
-
 	public Long getIdRpt() {
 		return idRpt;
 	}

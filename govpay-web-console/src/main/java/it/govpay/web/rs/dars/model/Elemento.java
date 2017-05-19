@@ -20,26 +20,17 @@
 package it.govpay.web.rs.dars.model;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Elemento {
 	
 	public Elemento(long id, String titolo, String sottotitolo, URI urlDettaglio) {
 		this.id = id;
-		this.valori = new ArrayList<String>();
 		this.sottotitolo = sottotitolo;
 		this.titolo = titolo;
 		this.uri = urlDettaglio;
 		this.voci = new HashMap<String, Voce<String>>();
-	}
-	
-	public Elemento(long id, List<String> valori, URI urlDettaglio) {
-		this.id = id;
-		this.valori = valori;
-		this.uri = urlDettaglio;
 	}
 	
 	private long id;
@@ -48,8 +39,6 @@ public class Elemento {
 	private URI uri;
 	private String formatter;
 	private Map<String, Voce<String>> voci; 
-	
-	private List<String> valori;
 	
 	public long getId() {
 		return this.id;
@@ -62,12 +51,6 @@ public class Elemento {
 	}
 	public URI getUri() {
 		return this.uri;
-	}
-	public List<String> getValori() {
-		return valori;
-	}
-	public void setValori(List<String> valori) {
-		this.valori = valori;
 	}
 	public String getFormatter() {
 		return formatter;

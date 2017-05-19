@@ -524,9 +524,6 @@ public class ReportisticaPagamentiHandler extends BaseDarsHandler<EstrattoConto>
 	} 
 
 	@Override
-	public List<String> getValori(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
-
-	@Override
 	public Map<String, Voce<String>> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 		Date dataPagamento = entry.getDataPagamento();
