@@ -95,13 +95,6 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "importo";
 			}
 		}
-		if(field.equals(Incasso.model().COD_APPLICAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".cod_applicazione";
-			}else{
-				return "cod_applicazione";
-			}
-		}
 		if(field.equals(Incasso.model().DATA_VALUTA)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".data_valuta";
@@ -130,6 +123,13 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 				return "nome_dispositivo";
 			}
 		}
+		if(field.equals(Incasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".cod_applicazione";
+			}else{
+				return "cod_applicazione";
+			}
+		}
 
 
 		return super.toColumn(field,returnAlias,appendTablePrefix);
@@ -155,9 +155,6 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Incasso.model().IMPORTO)){
 			return this.toTable(Incasso.model(), returnAlias);
 		}
-		if(field.equals(Incasso.model().COD_APPLICAZIONE)){
-			return this.toTable(Incasso.model(), returnAlias);
-		}
 		if(field.equals(Incasso.model().DATA_VALUTA)){
 			return this.toTable(Incasso.model(), returnAlias);
 		}
@@ -169,6 +166,9 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(field.equals(Incasso.model().NOME_DISPOSITIVO)){
 			return this.toTable(Incasso.model(), returnAlias);
+		}
+		if(field.equals(Incasso.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
+			return this.toTable(Incasso.model().ID_APPLICAZIONE, returnAlias);
 		}
 
 
@@ -185,6 +185,9 @@ public class IncassoFieldConverter extends AbstractSQLFieldConverter {
 		
 		if(model.equals(Incasso.model())){
 			return "incassi";
+		}
+		if(model.equals(Incasso.model().ID_APPLICAZIONE)){
+			return "applicazioni";
 		}
 
 

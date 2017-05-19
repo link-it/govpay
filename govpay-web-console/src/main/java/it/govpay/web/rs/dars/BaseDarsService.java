@@ -45,6 +45,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import it.govpay.bd.BasicBD;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse;
@@ -201,7 +202,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
+		String idsAsString = null;
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
 			
@@ -221,7 +222,7 @@ public abstract class BaseDarsService extends BaseRsService {
 				rawValues.add(new RawParamValue((String) key, value));
 			}
 			
-			String idsAsString = Utils.getValue(rawValues, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(IDS_TO_DELETE_PARAMETER_ID));
+			idsAsString = Utils.getValue(rawValues, IDS_TO_DELETE_PARAMETER_ID);
 			this.log.info("Richiesta cancellazione degli elementi con id "+idsAsString+""); 
 
 			List<Long> idsToDelete = new ArrayList<Long>();
@@ -236,7 +237,13 @@ public abstract class BaseDarsService extends BaseRsService {
 			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
 			darsResponse.setResponse(elenco); 
 			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".cancella.ok"));
-		} catch(WebApplicationException e){
+		}catch(DeleteException e){
+			this.log.info("Esito operazione "+methodName+" [" + idsAsString + "] : " + e.getEsito() + ", causa: " +e.getMessaggi());
+			Elenco elenco = this.getDarsHandler().getElenco(uriInfo, bd);
+			darsResponse.setEsitoOperazione(e.getEsito());
+			darsResponse.setResponse(elenco); 
+			darsResponse.setDettaglioEsito(e.getMessaggi());
+		}  catch(WebApplicationException e){
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {

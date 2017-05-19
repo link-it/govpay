@@ -48,6 +48,7 @@ import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -504,10 +505,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public String getTitolo(Stazione entry, BasicBD bd) {
@@ -517,11 +515,6 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	@Override
 	public String getSottotitolo(Stazione entry, BasicBD bd) {
 		return Utils.getAbilitatoAsLabel(entry.isAbilitato()); 
-	}
-
-	@Override
-	public List<String> getValori(Stazione entry, BasicBD bd) throws ConsoleException {
-		return null;
 	}
 
 	@Override

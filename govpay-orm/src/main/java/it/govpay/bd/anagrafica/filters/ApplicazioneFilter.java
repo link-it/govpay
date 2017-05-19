@@ -56,13 +56,14 @@ public class ApplicazioneFilter extends AbstractFilter {
 		try{
 			ApplicazioneFieldConverter converter = new ApplicazioneFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.Applicazione.model()));
+			this.listaFieldSimpleSearch.add(Applicazione.model().COD_APPLICAZIONE);
 		} catch(Exception e){
 			
 		}
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression(); 
 			boolean addAnd = false;

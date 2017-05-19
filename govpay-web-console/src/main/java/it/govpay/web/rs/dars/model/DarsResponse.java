@@ -19,14 +19,21 @@
  */
 package it.govpay.web.rs.dars.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DarsResponse {
 	
 	public enum EsitoOperazione {ESEGUITA, NONESEGUITA, ERRORE} 
 	
 	private String codOperazione;
 	private EsitoOperazione esitoOperazione;
-	private String dettaglioEsito;
+	private List<String> dettaglioEsito;
 	private Object response;
+	
+	public DarsResponse() {
+		this.dettaglioEsito = new ArrayList<String>();
+	}
 	
 	public String getCodOperazione() {
 		return this.codOperazione;
@@ -40,11 +47,14 @@ public class DarsResponse {
 	public void setEsitoOperazione(EsitoOperazione esitoOperazione) {
 		this.esitoOperazione = esitoOperazione;
 	}
-	public String getDettaglioEsito() {
+	public List<String> getDettaglioEsito() {
 		return this.dettaglioEsito;
 	}
 	public void setDettaglioEsito(String dettaglioEsito) {
-		this.dettaglioEsito = dettaglioEsito;
+		this.dettaglioEsito.add(dettaglioEsito);
+	}
+	public void setDettaglioEsito(List<String> dettaglioEsito) {
+		this.dettaglioEsito.addAll(dettaglioEsito);
 	}
 	public Object getResponse() {
 		return this.response;

@@ -55,6 +55,7 @@ import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.operatori.input.Domini;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -101,8 +102,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = null;
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
-			OperatoreFilter filter = operatoriBD.newFilter();
+			OperatoreFilter filter = operatoriBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -110,29 +113,37 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
-			String principal = this.getParameter(uriInfo, principalId, String.class);
-			String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
-			String profiloValue = this.getParameter(uriInfo, profiloId, String.class);
 
-			if(StringUtils.isNotEmpty(principal)){
-				filter.setPrincipal(principal);
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String principalId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.id");
+				String principal = this.getParameter(uriInfo, principalId, String.class);
+				String profiloId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.id");
+				String profiloValue = this.getParameter(uriInfo, profiloId, String.class);
+
+				if(StringUtils.isNotEmpty(principal)){
+					filter.setPrincipal(principal);
+				}
+
+				if(StringUtils.isNotEmpty(profiloValue)){
+					ProfiloOperatore profilo = ProfiloOperatore.valueOf(profiloValue);
+					filter.setProfilo(profilo);
+				}
 			}
-
-			if(StringUtils.isNotEmpty(profiloValue)){
-				ProfiloOperatore profilo = ProfiloOperatore.valueOf(profiloValue);
-				filter.setProfilo(profilo);
-			}
-
 			long count = operatoriBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Operatore> findAll = operatoriBD.findAll(filter);
 
@@ -398,10 +409,10 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		return infoModifica;
 	}
 
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
 		return null;
@@ -469,7 +480,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
-			// dati del psp
+			// dati operatore
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), operatore.getPrincipal());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nome.label"), operatore.getNome());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".profilo.label"), profiloValue);
@@ -726,10 +737,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public String getTitolo(Operatore entry, BasicBD bd) {
@@ -752,11 +760,6 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 		return sb.toString();
 	}
 
-	@Override
-	public List<String> getValori(Operatore entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
 	@Override
 	public Map<String, Voce<String>> getVoci(Operatore entry, BasicBD bd) throws ConsoleException { return null; }
 

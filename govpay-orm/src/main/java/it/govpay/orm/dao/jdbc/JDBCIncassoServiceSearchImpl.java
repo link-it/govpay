@@ -19,43 +19,38 @@
  */
 package it.govpay.orm.dao.jdbc;
 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
+import it.govpay.orm.IdIncasso;
+import it.govpay.orm.Incasso;
+import it.govpay.orm.dao.jdbc.converter.IncassoFieldConverter;
+import it.govpay.orm.dao.jdbc.fetch.IncassoFetch;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-
-import org.openspcoop2.utils.sql.ISQLQueryObject;
-
-import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.beans.CustomField;
+import org.openspcoop2.generic_project.beans.FunctionField;
+import org.openspcoop2.generic_project.beans.IField;
+import org.openspcoop2.generic_project.beans.InUse;
+import org.openspcoop2.generic_project.beans.NonNegativeNumber;
+import org.openspcoop2.generic_project.beans.Union;
+import org.openspcoop2.generic_project.beans.UnionExpression;
+import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
+import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
 import org.openspcoop2.generic_project.dao.jdbc.utils.IJDBCFetch;
 import org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject;
-import org.openspcoop2.generic_project.dao.jdbc.IJDBCServiceSearchWithId;
-import it.govpay.orm.IdIncasso;
-import org.openspcoop2.generic_project.utils.UtilsTemplate;
-import org.openspcoop2.generic_project.beans.CustomField;
-import org.openspcoop2.generic_project.beans.InUse;
-import org.openspcoop2.generic_project.beans.IField;
-import org.openspcoop2.generic_project.beans.NonNegativeNumber;
-import org.openspcoop2.generic_project.beans.UnionExpression;
-import org.openspcoop2.generic_project.beans.Union;
-import org.openspcoop2.generic_project.beans.FunctionField;
 import org.openspcoop2.generic_project.exception.MultipleResultException;
 import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCExpression;
-import org.openspcoop2.generic_project.dao.jdbc.JDBCPaginatedExpression;
-
-import org.openspcoop2.generic_project.dao.jdbc.JDBCServiceManagerProperties;
-import it.govpay.orm.dao.jdbc.converter.IncassoFieldConverter;
-import it.govpay.orm.dao.jdbc.fetch.IncassoFetch;
-import it.govpay.orm.dao.jdbc.JDBCServiceManager;
-
-import it.govpay.orm.Incasso;
+import org.openspcoop2.generic_project.expression.impl.sql.ISQLFieldConverter;
+import org.openspcoop2.generic_project.utils.UtilsTemplate;
+import org.openspcoop2.utils.sql.ISQLQueryObject;
 
 /**     
  * JDBCIncassoServiceSearchImpl
@@ -106,22 +101,8 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	public IdIncasso convertToId(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Incasso incasso) throws NotImplementedException, ServiceException, Exception{
 	
 		IdIncasso idIncasso = new IdIncasso();
-		// idIncasso.setXXX(incasso.getYYY());
-		// ...
-		// idIncasso.setXXX(incasso.getYYY());
-		// TODO: popola IdIncasso
-	
-		/* 
-	     * TODO: implement code that returns the object id
-	    */
-	
-	    // Delete this line when you have implemented the method
-	    int throwNotImplemented = 1;
-	    if(throwNotImplemented==1){
-	            throw new NotImplementedException("NotImplemented");
-	    }
-	    // Delete this line when you have implemented the method 
-	
+		idIncasso.setTrn(incasso.getTrn());
+
 		return idIncasso;
 	}
 	
@@ -146,20 +127,23 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 		List<IdIncasso> list = new ArrayList<IdIncasso>();
 
-		// TODO: implementazione non efficente. 
-		// Per ottenere una implementazione efficente:
-		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari a create l'ID logico
-		// 2. Usare metodo getIncassoFetch() sul risultato della select per ottenere un oggetto Incasso
-		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
-		// 3. Usare metodo convertToId per ottenere l'id
-
-        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
-        
-        for(Long id: ids) {
-        	Incasso incasso = this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour);
-			IdIncasso idIncasso = this.convertToId(jdbcProperties,log,connection,sqlQueryObject,incasso);
-        	list.add(idIncasso);
+		// default behaviour (id-mapping)
+        if(idMappingResolutionBehaviour==null){
+                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
+        
+		try{
+			List<IField> fields = new ArrayList<IField>();
+
+			fields.add(Incasso.model().TRN);
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+        
+			for(Map<String, Object> map: returnMap) {
+				
+				list.add(this.convertToId(jdbcProperties, log, connection, sqlQueryObject, (Incasso)this.getFetch().fetch(jdbcProperties.getDatabase(), Incasso.model(), map)));
+			}
+		} catch(NotFoundException e) {}
 
         return list;
 		
@@ -169,20 +153,56 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	public List<Incasso> findAll(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, JDBCPaginatedExpression expression, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotImplementedException, ServiceException,Exception {
 
         List<Incasso> list = new ArrayList<Incasso>();
-        
-        // TODO: implementazione non efficente. 
-		// Per ottenere una implementazione efficente:
-		// 1. Usare metodo select di questa classe indirizzando esattamente i field necessari
-		// 2. Usare metodo getIncassoFetch() sul risultato della select per ottenere un oggetto Incasso
-		//	  La fetch con la map inserirà nell'oggetto solo i valori estratti 
 
-        List<Long> ids = this.findAllTableIds(jdbcProperties, log, connection, sqlQueryObject, expression);
-        
-        for(Long id: ids) {
-        	list.add(this.get(jdbcProperties, log, connection, sqlQueryObject, id, idMappingResolutionBehaviour));
+		// default behaviour (id-mapping)
+        if(idMappingResolutionBehaviour==null){
+                idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
         }
+        
+		try{
+			List<IField> fields = new ArrayList<IField>();
 
-        return list;      
+			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Incasso.model())));
+			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(Incasso.model())));
+			fields.add(Incasso.model().TRN);
+			fields.add(Incasso.model().COD_DOMINIO);
+			fields.add(Incasso.model().CAUSALE);
+			fields.add(Incasso.model().IMPORTO);
+			fields.add(Incasso.model().DATA_VALUTA);
+			fields.add(Incasso.model().DATA_CONTABILE);
+			fields.add(Incasso.model().DATA_ORA_INCASSO);
+			fields.add(Incasso.model().NOME_DISPOSITIVO);
+
+			List<Map<String, Object>> returnMap = this.select(jdbcProperties, log, connection, sqlQueryObject, expression, fields.toArray(new IField[1]));
+        
+			for(Map<String, Object> map: returnMap) {
+				
+				Object idApplicazioneObj = map.remove("id_applicazione");
+				
+				Incasso incasso = (Incasso)this.getFetch().fetch(jdbcProperties.getDatabase(), Incasso.model(), map);
+
+				if(idMappingResolutionBehaviour==null ||
+						(org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour) || org.openspcoop2.generic_project.beans.IDMappingBehaviour.USE_TABLE_ID.equals(idMappingResolutionBehaviour))
+					){
+						if(idApplicazioneObj instanceof Long) {
+	
+							it.govpay.orm.IdApplicazione id_incasso_applicazione = null;
+							long idFK_incasso_applicazione = (Long) idApplicazioneObj;
+							if(idMappingResolutionBehaviour==null || org.openspcoop2.generic_project.beans.IDMappingBehaviour.ENABLED.equals(idMappingResolutionBehaviour)){
+								id_incasso_applicazione = ((JDBCApplicazioneServiceSearch)(this.getServiceManager().getApplicazioneServiceSearch())).findId(idFK_incasso_applicazione, false);
+							}else{
+								id_incasso_applicazione = new it.govpay.orm.IdApplicazione();
+							}
+							id_incasso_applicazione.setId(idFK_incasso_applicazione);
+							incasso.setIdApplicazione(id_incasso_applicazione);
+						}
+					}
+
+				list.add(incasso);
+			}
+		} catch(NotFoundException e) {}
+
+		return list;      
 		
 	}
 	
@@ -471,43 +491,22 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	
 	private Incasso _get(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, Long tableId, org.openspcoop2.generic_project.beans.IDMappingBehaviour idMappingResolutionBehaviour) throws NotFoundException, MultipleResultException, NotImplementedException, ServiceException, Exception {
 	
-		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities jdbcUtilities = 
-					new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCPreparedStatementUtilities(sqlQueryObject.getTipoDatabaseOpenSPCoop2(), log, connection);
+		IField idField = new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(Incasso.model()));
+		JDBCPaginatedExpression expression = this.newPaginatedExpression(log);
 		
-		// default behaviour (id-mapping)
-		if(idMappingResolutionBehaviour==null){
-			idMappingResolutionBehaviour = org.openspcoop2.generic_project.beans.IDMappingBehaviour.valueOf("USE_TABLE_ID");
-		}
+		expression.equals(idField, tableId);
+		expression.offset(0);
+		expression.limit(2); //per verificare la multiple results
+		expression.addOrder(idField, org.openspcoop2.generic_project.expression.SortOrder.ASC);
+		List<Incasso> lst = this.findAll(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), expression, idMappingResolutionBehaviour);
 		
-		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
+		if(lst.size() <=0)
+			throw new NotFoundException("Id ["+tableId+"]");
 				
-		Incasso incasso = new Incasso();
+		if(lst.size() > 1)
+			throw new MultipleResultException("Id ["+tableId+"]");
 		
-
-		// Object incasso
-		ISQLQueryObject sqlQueryObjectGet_incasso = sqlQueryObjectGet.newSQLQueryObject();
-		sqlQueryObjectGet_incasso.setANDLogicOperator(true);
-		sqlQueryObjectGet_incasso.addFromTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
-		sqlQueryObjectGet_incasso.addSelectField("id");
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_DOMINIO,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().CAUSALE,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().IMPORTO,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().COD_APPLICAZIONE,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_VALUTA,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_CONTABILE,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().DATA_ORA_INCASSO,true));
-		sqlQueryObjectGet_incasso.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_DISPOSITIVO,true));
-		sqlQueryObjectGet_incasso.addWhereCondition("id=?");
-
-		// Get incasso
-		incasso = (Incasso) jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet_incasso.createSQLQuery(), jdbcProperties.isShowSql(), Incasso.model(), this.getIncassoFetch(),
-			new JDBCObject(tableId,Long.class));
-
-
-
-		
-        return incasso;  
+		return lst.get(0);
 	
 	} 
 	
@@ -542,58 +541,18 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 	
 	private void _join(IExpression expression, ISQLQueryObject sqlQueryObject) throws NotImplementedException, ServiceException, Exception{
 	
-		/* 
-		 * TODO: implement code that implement the join condition
-		*/
-		/*
-		if(expression.inUseModel(Incasso.model().XXXX,false)){
+		if(expression.inUseModel(Incasso.model().ID_APPLICAZIONE,false)){
 			String tableName1 = this.getIncassoFieldConverter().toAliasTable(Incasso.model());
-			String tableName2 = this.getIncassoFieldConverter().toAliasTable(Incasso.model().XXX);
-			sqlQueryObject.addWhereCondition(tableName1+".id="+tableName2+".id_table1");
+			String tableName2 = this.getIncassoFieldConverter().toAliasTable(Incasso.model().ID_APPLICAZIONE);
+			sqlQueryObject.addWhereCondition(tableName1+".id_applicazione="+tableName2+".id");
 		}
-		*/
-		
-		/* 
-         * TODO: implementa il codice che aggiunge la condizione FROM Table per le condizioni di join di oggetti annidati dal secondo livello in poi 
-         *       La addFromTable deve essere aggiunta solo se l'oggetto del livello precedente non viene utilizzato nella espressione 
-         *		 altrimenti il metodo sopra 'toSqlForPreparedStatementWithFromCondition' si occupa gia' di aggiungerla
-        */
-        /*
-        if(expression.inUseModel(Incasso.model().LEVEL1.LEVEL2,false)){
-			if(expression.inUseModel(Incasso.model().LEVEL1,false)==false){
-				sqlQueryObject.addFromTable(this.getIncassoFieldConverter().toTable(Incasso.model().LEVEL1));
-			}
-		}
-		...
-		if(expression.inUseModel(Incasso.model()....LEVELN.LEVELN+1,false)){
-			if(expression.inUseModel(Incasso.model().LEVELN,false)==false){
-				sqlQueryObject.addFromTable(this.getIncassoFieldConverter().toTable(Incasso.model().LEVELN));
-			}
-		}
-		*/
-		
-		// Delete this line when you have implemented the join condition
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have implemented the join condition
-        
 	}
 	
 	protected java.util.List<Object> _getRootTablePrimaryKeyValues(JDBCServiceManagerProperties jdbcProperties, Logger log, Connection connection, ISQLQueryObject sqlQueryObject, IdIncasso id) throws NotFoundException, ServiceException, NotImplementedException, Exception{
 	    // Identificativi
         java.util.List<Object> rootTableIdValues = new java.util.ArrayList<Object>();
-        // TODO: Define the column values used to identify the primary key
 		Long longId = this.findIdIncasso(jdbcProperties, log, connection, sqlQueryObject.newSQLQueryObject(), id, true);
 		rootTableIdValues.add(longId);
-        
-        // Delete this line when you have verified the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
-		// Delete this line when you have verified the method
         
         return rootTableIdValues;
 	}
@@ -604,13 +563,18 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		Map<String, List<IField>> mapTableToPKColumn = new java.util.Hashtable<String, List<IField>>();
 		UtilsTemplate<IField> utilities = new UtilsTemplate<IField>();
 
-		// TODO: Define the columns used to identify the primary key
 		//		  If a table doesn't have a primary key, don't add it to this map
 
 		// Incasso.model()
 		mapTableToPKColumn.put(converter.toTable(Incasso.model()),
 			utilities.newList(
 				new CustomField("id", Long.class, "id", converter.toTable(Incasso.model()))
+			));
+
+		// Incasso.model().ID_APPLICAZIONE
+		mapTableToPKColumn.put(converter.toTable(Incasso.model().ID_APPLICAZIONE),
+			utilities.newList(
+				new CustomField("id", Long.class, "id", converter.toTable(Incasso.model().ID_APPLICAZIONE))
 			));
 
 
@@ -683,9 +647,6 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		InUse inUse = new InUse();
 		inUse.setInUse(false);
 		
-		/* 
-		 * TODO: implement code that checks whether the object identified by the id parameter is used by other objects
-		*/
 		
 		// Delete this line when you have implemented the method
 		int throwNotImplemented = 1;
@@ -707,24 +668,10 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		/* 
-		 * TODO: implement code that returns the object identified by the id
-		*/
-
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
- 		// Delete this line when you have implemented the method                
-
 		// Object _incasso
-		//TODO Implementare la ricerca dell'id
 		sqlQueryObjectGet.addFromTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
-		// TODO select field for identify ObjectId
-		//sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_COLONNA_1,true));
-		//...
-		//sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_COLONNA_N,true));
+		sqlQueryObjectGet.addSelectField(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,true));
+
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.addWhereCondition("id=?");
 
@@ -733,9 +680,8 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tableId,Long.class)
 		};
 		List<Class<?>> listaFieldIdReturnType_incasso = new ArrayList<Class<?>>();
-		//listaFieldIdReturnType_incasso.add(Id1.class);
-		//...
-		//listaFieldIdReturnType_incasso.add(IdN.class);
+		listaFieldIdReturnType_incasso.add(Incasso.model().TRN.getFieldType());
+
 		it.govpay.orm.IdIncasso id_incasso = null;
 		List<Object> listaFieldId_incasso = jdbcUtilities.executeQuerySingleResult(sqlQueryObjectGet.createSQLQuery(), jdbcProperties.isShowSql(),
 				listaFieldIdReturnType_incasso, searchParams_incasso);
@@ -747,9 +693,7 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 		else{
 			// set _incasso
 			id_incasso = new it.govpay.orm.IdIncasso();
-			// id_incasso.setId1(listaFieldId_incasso.get(0));
-			// ...
-			// id_incasso.setIdN(listaFieldId_incasso.get(N-1));
+			id_incasso.setTrn((String) listaFieldId_incasso.get(0));
 		}
 		
 		return id_incasso;
@@ -780,34 +724,18 @@ public class JDBCIncassoServiceSearchImpl implements IJDBCServiceSearchWithId<In
 
 		ISQLQueryObject sqlQueryObjectGet = sqlQueryObject.newSQLQueryObject();
 
-		/* 
-		 * TODO: implement code that returns the object identified by the id
-		*/
-
-		// Delete this line when you have implemented the method
-		int throwNotImplemented = 1;
-		if(throwNotImplemented==1){
-		        throw new NotImplementedException("NotImplemented");
-		}
- 		// Delete this line when you have implemented the method                
 
 		// Object _incasso
-		//TODO Implementare la ricerca dell'id
 		sqlQueryObjectGet.addFromTable(this.getIncassoFieldConverter().toTable(Incasso.model()));
 		sqlQueryObjectGet.addSelectField("id");
-		// Devono essere mappati nella where condition i metodi dell'oggetto id.getXXX
+
 		sqlQueryObjectGet.setANDLogicOperator(true);
 		sqlQueryObjectGet.setSelectDistinct(true);
-		//sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_COLONNA_1,true)+"=?");
-		// ...
-		//sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().NOME_COLONNA_N,true)+"=?");
+		sqlQueryObjectGet.addWhereCondition(this.getIncassoFieldConverter().toColumn(Incasso.model().TRN,true)+"=?");
 
 		// Recupero _incasso
-		// TODO Aggiungere i valori dei parametri di ricerca sopra definiti recuperandoli con i metodi dell'oggetto id.getXXX
 		org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] searchParams_incasso = new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject [] { 
-			//new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(object,object.class),
-			//...
-			//new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(object,object.class)
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id.getTrn(),Incasso.model().TRN.getFieldType()),
 		};
 		Long id_incasso = null;
 		try{

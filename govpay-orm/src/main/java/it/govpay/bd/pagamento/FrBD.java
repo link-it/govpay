@@ -150,6 +150,11 @@ public class FrBD extends BasicBD {
 	public FrFilter newFilter() throws ServiceException {
 		return new FrFilter(this.getFrService());
 	}
+	
+	public FrFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new FrFilter(this.getFrService(),simpleSearch);
+	}
+	
 	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
 
 	public long countExt(FrFilter filter) throws ServiceException {

@@ -17,4 +17,3 @@ CREATE TABLE batch
 
 -- index
 CREATE INDEX index_batch_1 ON batch (cod_batch);
-

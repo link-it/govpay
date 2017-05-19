@@ -34,6 +34,7 @@ import org.openspcoop2.utils.csv.Format;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -71,7 +72,7 @@ public interface IDarsHandler<T> {
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;
 	
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,DeleteException;
 	
 	public T creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException,DuplicatedEntryException;
@@ -83,7 +84,6 @@ public interface IDarsHandler<T> {
 	
 	public String getTitolo(T entry, BasicBD bd) throws ConsoleException;
 	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
-	public List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
 	public Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
 	
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;

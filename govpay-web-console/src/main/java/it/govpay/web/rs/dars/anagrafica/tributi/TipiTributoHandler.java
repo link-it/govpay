@@ -48,6 +48,7 @@ import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -89,8 +90,9 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
-			TipoTributoFilter filter = tipiTributoBD.newFilter();
+			TipoTributoFilter filter = tipiTributoBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -98,39 +100,46 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
-			String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
-			if(StringUtils.isNotEmpty(codTributo)) {
-				filter.setCodTributo(codTributo);
-			} 
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String codTributoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codTributo.id");
+				String codTributo = this.getParameter(uriInfo, codTributoId, String.class);
+				if(StringUtils.isNotEmpty(codTributo)) {
+					filter.setCodTributo(codTributo);
+				} 
 
-			String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
-			String tipocontabilitaS = this.getParameter(uriInfo, tipoContabilitaId, String.class);
-			if(StringUtils.isNotEmpty(tipocontabilitaS)){
-				filter.setCodificaTipoContabilita(tipocontabilitaS);
+				String tipoContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoContabilita.id");
+				String tipocontabilitaS = this.getParameter(uriInfo, tipoContabilitaId, String.class);
+				if(StringUtils.isNotEmpty(tipocontabilitaS)){
+					filter.setCodificaTipoContabilita(tipocontabilitaS);
+				}
+
+				String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
+				String codContabilita = this.getParameter(uriInfo, codContabilitaId, String.class);
+				if(StringUtils.isNotEmpty(codContabilita)) {
+					filter.setCodContabilita(codContabilita);
+				}
+
+				String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
+				String descrizione = this.getParameter(uriInfo, descrizioneId, String.class);
+				if(StringUtils.isNotEmpty(descrizione)) {
+					filter.setDescrizione(descrizione);
+				}
 			}
-
-			String codContabilitaId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.id");
-			String codContabilita = this.getParameter(uriInfo, codContabilitaId, String.class);
-			if(StringUtils.isNotEmpty(codContabilita)) {
-				filter.setCodContabilita(codContabilita);
-			}
-
-			String descrizioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizione.id");
-			String descrizione = this.getParameter(uriInfo, descrizioneId, String.class);
-			if(StringUtils.isNotEmpty(descrizione)) {
-				filter.setDescrizione(descrizione);
-			}
-
 
 			long count = tipiTributoBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			visualizzaRicerca = visualizzaRicerca && this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), 
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd));  
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<TipoTributo> findAll = tipiTributoBD.findAll(filter);
 
@@ -387,10 +396,10 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 		return infoModifica;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, TipoTributo entry) throws ConsoleException {
 		return null;
@@ -614,9 +623,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public String getTitolo(TipoTributo entry, BasicBD bd) {
@@ -654,16 +661,6 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 		return sb.toString();
 	}
 
-	@Override
-	public List<String> getValori(TipoTributo entry, BasicBD bd) throws ConsoleException {
-		List<String> valori = new ArrayList<String>();
-
-		valori.add(entry.getCodTributo());
-		valori.add(entry.getDescrizione());
-
-		return valori;
-	}
-	
 	@Override
 	public Map<String, Voce<String>> getVoci(TipoTributo entry, BasicBD bd) throws ConsoleException { return null; }
 

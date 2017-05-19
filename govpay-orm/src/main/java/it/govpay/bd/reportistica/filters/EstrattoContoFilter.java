@@ -44,7 +44,7 @@ public class EstrattoContoFilter extends AbstractFilter {
 	}
 	
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			return newExpression;

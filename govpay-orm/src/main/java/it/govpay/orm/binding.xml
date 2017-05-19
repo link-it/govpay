@@ -38,6 +38,10 @@
     <structure name="idDominio" field="idDominio" usage="required" map-as="_IdDominio_Type"/>
     <value name="prg" field="prg" usage="required"/>
   </mapping>
+  <mapping name="iuv" class="it.govpay.orm.IuvSearch">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="iuv" field="iuv" usage="required"/>
+  </mapping>
   <mapping name="idIncasso" class="it.govpay.orm.IdIncasso">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <value name="trn" field="trn" usage="required"/>
@@ -421,6 +425,7 @@
     <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
     <structure field="idUo" usage="required" map-as="it.govpay.orm.IdUo"/>
     <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
+    <structure field="iuv" usage="optional" map-as="it.govpay.orm.IuvSearch"/>
     <value name="importoTotale" field="importoTotale" usage="required"/>
     <value name="statoVersamento" field="statoVersamento" usage="required"/>
     <value name="descrizioneStato" field="descrizioneStato" usage="optional"/>
@@ -587,11 +592,11 @@
     <value name="codDominio" field="codDominio" usage="required"/>
     <value name="causale" field="causale" usage="required"/>
     <value name="importo" field="importo" usage="required"/>
-    <value name="codApplicazione" field="codApplicazione" usage="required"/>
     <value name="dataValuta" field="dataValuta" usage="optional"/>
     <value name="dataContabile" field="dataContabile" usage="optional"/>
     <value name="dataOraIncasso" field="dataOraIncasso" usage="required"/>
     <value name="nomeDispositivo" field="nomeDispositivo" usage="optional"/>
+    <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
   </mapping>
   <mapping name="FR" class="it.govpay.orm.FR">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>

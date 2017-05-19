@@ -47,6 +47,10 @@ public class PagamentiBD extends BasicBD {
 	public PagamentoFilter newFilter() throws ServiceException {
 		return new PagamentoFilter(this.getPagamentoService());
 	}
+	
+	public PagamentoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new PagamentoFilter(this.getPagamentoService(),simpleSearch);
+	}
 
 	/**
 	 * Recupera il pagamento identificato dalla chiave fisica
@@ -81,6 +85,27 @@ public class PagamentiBD extends BasicBD {
 			it.govpay.orm.Pagamento pagamentoVO = this.getPagamentoService()
 					.find(exp);
 			return PagamentoConverter.toDTO(pagamentoVO);
+		} catch (NotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException();
+		} catch (ExpressionException e) {
+			throw new ServiceException();
+		}
+	}
+	
+	public Pagamento getPagamento(String codDominio, String iuv)
+			throws ServiceException, NotFoundException, MultipleResultException {
+		try {
+			IPaginatedExpression exp = this.getPagamentoService().newPaginatedExpression();
+			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.COD_DOMINIO,
+					codDominio);
+			exp.equals(it.govpay.orm.Pagamento.model().ID_RPT.IUV, iuv);
+			List<it.govpay.orm.Pagamento> pagamentoVO = this.getPagamentoService()
+					.findAll(exp);
+			if(pagamentoVO.size() == 0) throw new NotFoundException();
+			if(pagamentoVO.size() == 1) return PagamentoConverter.toDTO(pagamentoVO.get(0));
+			throw new MultipleResultException();
 		} catch (NotImplementedException e) {
 			throw new ServiceException();
 		} catch (ExpressionNotImplementedException e) {

@@ -26,7 +26,9 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.model.Pagamento;
+import it.govpay.model.Pagamento.Stato;
 import it.govpay.model.Pagamento.TipoAllegato;
+import it.govpay.orm.IdIncasso;
 import it.govpay.orm.IdRpt;
 import it.govpay.orm.IdRr;
 import it.govpay.orm.IdSingoloVersamento;
@@ -74,7 +76,10 @@ public class PagamentoConverter {
 		dto.setDatiEsitoRevoca(vo.getDatiEsitoRevoca());
 		if(vo.getImportoRevocato() != null)
 			dto.setImportoRevocato(BigDecimal.valueOf(vo.getImportoRevocato()));
+		dto.setStato(Stato.valueOf(vo.getStato()));
 		
+		if(vo.getIdIncasso() != null)
+			dto.setIdIncasso(vo.getIdIncasso().getId());
 		return dto;
 	}
 	
@@ -112,6 +117,11 @@ public class PagamentoConverter {
 			idSingoloVersamento.setId(dto.getIdSingoloVersamento());
 			vo.setIdSingoloVersamento(idSingoloVersamento);
 		}
+		if(dto.getIdIncasso() != null) {
+			IdIncasso idIncasso = new IdIncasso();
+			idIncasso.setId(dto.getIdIncasso());
+			vo.setIdIncasso(idIncasso);
+		}
 		
 		vo.setDataAcquisizioneRevoca(dto.getDataAcquisizioneRevoca());
 		vo.setCausaleRevoca(dto.getCausaleRevoca());
@@ -121,6 +131,8 @@ public class PagamentoConverter {
 		
 		if(dto.getImportoRevocato() != null)
 			vo.setImportoRevocato(dto.getImportoRevocato().doubleValue());
+		
+		vo.setStato(dto.getStato().toString());
 		
 		return vo;
 	}

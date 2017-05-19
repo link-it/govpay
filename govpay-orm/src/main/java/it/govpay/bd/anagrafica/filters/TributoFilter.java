@@ -62,7 +62,7 @@ public class TributoFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -104,7 +104,27 @@ public class TributoFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
+	
+	@Override
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
+		try {
+			IExpression newExpression = super._toSimpleSearchExpression();
+		//	boolean addAnd = false;
+			
+			if(this.idDominio != null){
+				TributoFieldConverter fieldConverter = new TributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase());
+				newExpression.equals(new CustomField("id_dominio", Long.class, "id_dominio", fieldConverter.toTable(it.govpay.orm.Tributo.model())), idDominio);
+			//	addAnd = true;
+			}
 
+			return newExpression;
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		}
+	}
+	
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

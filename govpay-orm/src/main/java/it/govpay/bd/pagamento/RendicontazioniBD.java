@@ -41,6 +41,10 @@ public class RendicontazioniBD extends BasicBD {
 	public RendicontazioneFilter newFilter() throws ServiceException {
 		return new RendicontazioneFilter(this.getRendicontazioneService());
 	}
+	
+	public RendicontazioneFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new RendicontazioneFilter(this.getRendicontazioneService(),simpleSearch);
+	}
 
 	public Rendicontazione insert(Rendicontazione dto) throws ServiceException {
 		try {

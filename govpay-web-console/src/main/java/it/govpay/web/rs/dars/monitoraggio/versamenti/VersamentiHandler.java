@@ -51,6 +51,7 @@ import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.filters.DominioFilter;
+import it.govpay.bd.exception.VersamentoException;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
@@ -93,8 +94,10 @@ import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -108,6 +111,7 @@ import it.govpay.web.rs.dars.model.input.base.InputTextArea;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
 import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
@@ -145,11 +149,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
 			List<Long> idDomini = new ArrayList<Long>();
 
-			boolean simpleSearch = false;
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			if(StringUtils.isNotEmpty(simpleSearchString)) {
-				simpleSearch = true;
-			} 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID); 
 
 			VersamentoFilter filter = versamentiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -161,7 +161,10 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 			if(simpleSearch){
 				// simplesearch
-				filter.setSimpleSearchString(simpleSearchString); 
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
 			}else{
 				String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
 				String cfDebitore = this.getParameter(uriInfo, cfDebitoreId, String.class);
@@ -460,19 +463,36 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-				//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				//				filter.setIdUo(operatore.getIdEnti()); 
-
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
-				fsw.setSortOrder(SortOrder.DESC);
-				filter.getFilterSortList().add(fsw);
-
-				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
+				
 				List<Long> idVersamentoL = new ArrayList<Long>();
 				idVersamentoL.add(id);
 				filter.setIdVersamento(idVersamentoL);
 
+				List<Long> idDomini = new ArrayList<Long>();
+				boolean vediTuttiDomini = false;
+
+				AclBD aclBD = new AclBD(bd);
+				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
+
+				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
 				eseguiRicerca = eseguiRicerca && count > 0;
 			}
 
@@ -481,8 +501,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			Versamento versamento = eseguiRicerca ? versamentiBD.getVersamento(id) : null;
 
 			InfoForm infoModifica = null;
-			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, versamento);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id);
+			InfoForm infoCancellazione = versamento != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, versamento) : null;
+			URI esportazione = versamento != null ? this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id) : null;
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioVersamento") ;
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
@@ -665,11 +685,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		return sb.toString();
 	} 
-
-	@Override
-	public List<String> getValori(Versamento entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
 
 	@Override
 	public Map<String, Voce<String>> getVoci(Versamento entry, BasicBD bd) throws ConsoleException {
@@ -1298,7 +1313,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		URI cancellazione = this.getUriCancellazione(uriInfo, bd);
@@ -1319,23 +1334,23 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
 		motivoCancellazione.setDefaultValue(null);
 		sezioneRoot.addField(motivoCancellazione);
-		
+
 		return infoCancellazione;
 	}
-	
+
 	private void initInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
 		if(this.infoCancellazioneMap == null){
 			this.infoCancellazioneMap = new HashMap<String, ParamField<?>>();
 
 			String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
-			
+
 			String motivoCancellazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.label");
 			InputTextArea motivoCancellazione = new InputTextArea(motivoCancellazioneId, motivoCancellazioneLabel, null, true, false, true, 1, 255, 5, 100);
 			this.infoCancellazioneMap.put(motivoCancellazioneId, motivoCancellazione);
 		}
 	}
-	
-	
+
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException {
 		URI cancellazione = this.getUriCancellazioneDettaglio(uriInfo, bd, entry.getId());
@@ -1355,7 +1370,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		InputTextArea motivoCancellazione = (InputTextArea) this.infoCancellazioneMap.get(motivoCancellazioneId);
 		motivoCancellazione.setDefaultValue(null);
 		sezioneRoot.addField(motivoCancellazione);
-		
+
 		return infoCancellazione;
 	}
 
@@ -1368,7 +1383,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, Versamento entry) throws ConsoleException { return null; }
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {
 		StringBuffer sb = new StringBuffer();
 		if(idsToDelete != null && idsToDelete.size() > 0) {
 			for (Long long1 : idsToDelete) {
@@ -1384,19 +1399,69 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		String methodName = "delete " + this.titoloServizio + "[" + sb.toString() + "]";
 		String motivoCancellazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.id");
 		String motivoCancellazioneLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivoCancellazione.label");
-		
+
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
+			// Operazione consentita solo all'amministratore
+			this.darsService.checkOperatoreAdmin(bd);
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
 
-			String value = Utils.getValue(rawValues, motivoCancellazioneId);
-			
-			this.log.info("Esecuzione " + methodName + ": Letto parametro ["+motivoCancellazioneLabel+"] con valore ["+value+"]");
-			
-			this.log.info("Esecuzione " + methodName + " completata.");
-			
-			
+			VersamentiBD versamentiBD = new VersamentiBD(bd);
+			versamentiBD.setAutoCommit(false);
+			versamentiBD.enableSelectForUpdate();
+
+			String motivoCancellazione = Utils.getValue(rawValues, motivoCancellazioneId);
+			this.log.debug("Esecuzione " + methodName + ": Letto parametro ["+motivoCancellazioneLabel+"] con valore ["+motivoCancellazione+"]");
+
+			List<String> lstErrori = new ArrayList<String>();
+			String dataS = this.sdf.format(new Date());
+			try{
+				for (Long id : idsToDelete) {
+					Versamento versamento = versamentiBD.getVersamento(id);
+
+					String descrizioneStato =  Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".cancellazione.descrizioneStato.template",
+							dataS,operatore.getPrincipal(),motivoCancellazione);
+					this.log.debug("Descrizione motivazione cancellamento: ["+descrizioneStato+"]"); 
+					versamento.setDescrizioneStato(descrizioneStato);
+					try{
+						versamentiBD.annullaVersamento(versamento,descrizioneStato);
+					} catch (VersamentoException e) {
+						String codEsito = e.getCodEsito();
+						String msgEsito = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.esito." + codEsito);
+						String msgErrore = Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".cancellazione.esito.messaggioUtente.template",
+								e.getCodVersamentoEnte(),msgEsito);
+						lstErrori.add(msgErrore);
+					}
+				}
+			}catch (ServiceException e) {
+				throw e;
+			}finally {
+				versamentiBD.commit();
+				versamentiBD.disableSelectForUpdate();
+			}
+
+			this.log.info("Esecuzione " + methodName + " completata, rilevati ["+lstErrori.size()+"] errori. ");
+
+			if(lstErrori.size() > 0) {
+				// sono andati tutti male
+				if(lstErrori.size() == idsToDelete.size()){
+					// selezionato uno o tutti 
+					String msg = idsToDelete.size() == 1 ? 
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.esito.messaggioUtente.soloErrore")
+							: Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.esito.messaggioUtente.tuttiErrore") ;
+
+							lstErrori.add(0,msg);
+							throw new DeleteException(lstErrori, EsitoOperazione.ERRORE);
+				}
+
+				lstErrori.add(0,Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.esito.messaggioUtente.alcuniErrore"));
+				throw new DeleteException(lstErrori, EsitoOperazione.NONESEGUITA);
+			}
+
 			return this.getElenco(uriInfo, bd);
 
+		}catch(DeleteException e){
+			throw e;
 		}catch(WebApplicationException e){
 			throw e;
 		}catch(Exception e){

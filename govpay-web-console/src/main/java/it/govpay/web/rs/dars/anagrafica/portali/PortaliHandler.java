@@ -63,6 +63,7 @@ import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPO;
 import it.govpay.web.rs.dars.anagrafica.portali.input.Trusted;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributoHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -106,8 +107,10 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+
 			PortaliBD portaliBD = new PortaliBD(bd);
-			PortaleFilter filter = portaliBD.newFilter();
+			PortaleFilter filter = portaliBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
 			FilterSortWrapper fsw = new FilterSortWrapper();
@@ -115,22 +118,29 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 			fsw.setSortOrder(SortOrder.ASC);
 			filter.getFilterSortList().add(fsw);
 
-			String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
-			String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
+			if(simpleSearch){
+				// simplesearch
+				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				if(StringUtils.isNotEmpty(simpleSearchString)) {
+					filter.setSimpleSearchString(simpleSearchString);
+				}
+			}else{
+				String codPortaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.id");
+				String codPortale = this.getParameter(uriInfo, codPortaleId, String.class);
 
-			if(StringUtils.isNotEmpty(codPortale)){
-				filter.setCodPortale(codPortale);
+				if(StringUtils.isNotEmpty(codPortale)){
+					filter.setCodPortale(codPortale);
+				}
 			}
-
 			long count = portaliBD.count(filter);
 
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
-
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Portale> findAll = portaliBD.findAll(filter);
 
@@ -528,12 +538,12 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
-	
+
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Portale entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		this.log.debug("Richiesto field ["+fieldId+"]");
@@ -583,11 +593,15 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
-			// dati dell'intermediario
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.label"), portale.getCodPortale());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), portale.getPrincipal());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.label"), portale.getDefaultCallbackURL());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), portale.getVersione().getLabel(), true);
+			// dati portale
+			if(StringUtils.isNotEmpty(portale.getCodPortale()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codPortale.label"), portale.getCodPortale());
+			if(StringUtils.isNotEmpty(portale.getPrincipal()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".principal.label"), portale.getPrincipal());
+			if(StringUtils.isNotEmpty(portale.getDefaultCallbackURL()))
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".defaultCallbackURL.label"), portale.getDefaultCallbackURL());
+			if(portale.getVersione() != null)
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".versione.label"), portale.getVersione().getLabel(), true);
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".abilitato.label"), Utils.getSiNoAsLabel(portale.isAbilitato()));
 
 			// Elementi correlati
@@ -1003,9 +1017,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		return null;
-	}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public String getTitolo(Portale entry, BasicBD bd) {
@@ -1024,11 +1036,6 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		return sb.toString();
 	}
 
-	@Override
-	public List<String> getValori(Portale entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-	
 	@Override
 	public Map<String, Voce<String>> getVoci(Portale entry, BasicBD bd) throws ConsoleException { return null; }
 

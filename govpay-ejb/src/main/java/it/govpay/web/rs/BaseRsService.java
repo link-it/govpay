@@ -53,42 +53,50 @@ import net.sf.json.JSONObject;
 
 @Path("/")
 public abstract class BaseRsService {
-	
-	public static final int VERSIONE_SERVIZIO = 1;
-	
+
 	public static final String ERRORE_INTERNO = "Errore Interno";
 
 	@Context protected HttpServletRequest request;
 	@Context protected HttpServletResponse response;
-	
+
 	protected String nomeServizio;
 	protected Logger log;
-	
+
 	protected String codOperazione;
-	
+
 	public BaseRsService(){
 		this.log = LogManager.getLogger();
 	}
-	
+
 	public BaseRsService(String nomeServizio){
 		this();
 		this.nomeServizio = nomeServizio;
-		
+
 	}
-	
+
 	public void setHttpServletRequest(HttpServletRequest request) {
 		this.request = request;
 	}
-		
+
 
 	public void logRequest(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,ByteArrayOutputStream baos) {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, VERSIONE_SERVIZIO, log, false);
+				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, false);
 	}
-	
+
 	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,ByteArrayOutputStream baos) {
 		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,baos,
-				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, VERSIONE_SERVIZIO, log, true);
+				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, true);
+	}
+	
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes) {
+		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
+				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, true);
+	}
+	
+	public void logResponse(UriInfo uriInfo, HttpHeaders rsHttpHeaders,String nomeOperazione,byte[] bytes, Integer responseCode) {
+		MessageLoggingHandlerUtils.logToSystemOut(uriInfo, rsHttpHeaders, this.request,bytes,
+				nomeOperazione, this.nomeServizio, GpContext.TIPO_SERVIZIO_GOVPAY_JSON, getVersione(), log, true, responseCode);
 	}
 
 	@OPTIONS
@@ -101,30 +109,30 @@ public abstract class BaseRsService {
 				.header("Access-Control-Allow-Methods", "OPTIONS, GET, PUT, POST")
 				.build();
 	}
-	
+
 	protected String getPrincipal(){
 		if(this.request.getUserPrincipal()!=null){
 			return this.request.getUserPrincipal().getName();
 		}
 		return null;
 	}
-		
+
 	protected Response getUnauthorizedResponse(){
 		Response res =	Response.status(Response.Status.UNAUTHORIZED)
 				.header("Access-Control-Allow-Origin", "*")
 				.build();
-		
+
 		return res;
 	}
-	
+
 	protected Response getForbiddenResponse(){
 		Response res =	Response.status(Response.Status.FORBIDDEN)
 				.header("Access-Control-Allow-Origin", "*")
 				.build();
-		
+
 		return res;
 	}
-	
+
 	public static Response getBadRequestResponse(String msg){
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		JSONObject jsonObject = new JSONObject();
@@ -138,29 +146,29 @@ public abstract class BaseRsService {
 			baos.flush();
 			baos.close();
 		}catch(Exception e){}
-		
-		
+
+
 		Response res =	Response.status(Response.Status.BAD_REQUEST)
 				.header("Access-Control-Allow-Origin", "*")
 				.entity(baos.toString())
 				.build();
-		
+
 		return res;
 	}
 
 	public void invalidateSession(Logger log){
 		if(log!= null)
 			log.info("Invalidate Session in corso...");
-		
+
 		HttpSession session = this.request.getSession(false);
 		if(session != null){
 			session.invalidate();
 		}
-		
+
 		if(log!= null)
 			log.info("Invalidate Session completata.");
 	}
-	
+
 	protected Applicazione getApplicazioneAutenticata(BasicBD bd) throws GovPayException, ServiceException {
 		if(getPrincipal() == null) {
 			throw new GovPayException(EsitoOperazione.AUT_000);
@@ -172,32 +180,36 @@ public abstract class BaseRsService {
 			throw new GovPayException(EsitoOperazione.AUT_001, getPrincipal());
 		}
 	}
-	
+
 	public static boolean isEmpty(List<?> lista){
 		if(lista == null)
 			return true;
-		
+
 		return lista.isEmpty();
 	}
-	
+
 	// copy method from From E.R. Harold's book "Java I/O"
-		public static void copy(InputStream in, OutputStream out) 
-				throws IOException {
+	public static void copy(InputStream in, OutputStream out) 
+			throws IOException {
 
-			// do not allow other threads to read from the
-			// input or write to the output while copying is
-			// taking place
+		// do not allow other threads to read from the
+		// input or write to the output while copying is
+		// taking place
 
-			synchronized (in) {
-				synchronized (out) {
+		synchronized (in) {
+			synchronized (out) {
 
-					byte[] buffer = new byte[256];
-					while (true) {
-						int bytesRead = in.read(buffer);
-						if (bytesRead == -1) break;
-						out.write(buffer, 0, bytesRead);
-					}
+				byte[] buffer = new byte[256];
+				while (true) {
+					int bytesRead = in.read(buffer);
+					if (bytesRead == -1) break;
+					out.write(buffer, 0, bytesRead);
 				}
 			}
 		}
+	}
+	
+	public int getVersione() {
+		return 1;
+	}
 }

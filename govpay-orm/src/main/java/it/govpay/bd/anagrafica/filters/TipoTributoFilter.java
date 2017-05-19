@@ -35,6 +35,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.TipoTributo;
 import it.govpay.orm.dao.jdbc.converter.TipoTributoFieldConverter;
 
 public class TipoTributoFilter extends AbstractFilter {
@@ -59,13 +60,16 @@ public class TipoTributoFilter extends AbstractFilter {
 		try{
 			TipoTributoFieldConverter converter = new TipoTributoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 			this.cf = new CustomField("id", Long.class, "id", converter.toTable(it.govpay.orm.TipoTributo.model()));
+			this.listaFieldSimpleSearch.add(TipoTributo.model().COD_TRIBUTO);
+			this.listaFieldSimpleSearch.add(TipoTributo.model().COD_CONTABILITA);
+			this.listaFieldSimpleSearch.add(TipoTributo.model().DESCRIZIONE);
 		} catch(Exception e){
 			
 		}
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -124,7 +128,7 @@ public class TipoTributoFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public void addSortField(SortFields field, boolean asc) {
 		FilterSortWrapper filterSortWrapper = new FilterSortWrapper();
 		filterSortWrapper.setSortOrder((asc ? SortOrder.ASC : SortOrder.DESC));

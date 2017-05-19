@@ -104,6 +104,19 @@ public class AclEngine {
 		return domini;
 	}
 	
+	public static Set<String> getAuthorizedInc(Applicazione applicazione) {
+		Set<String> domini = new HashSet<String>();
+		for(Acl acl : applicazione.getAcls()) {
+			if(acl.getTipo().equals(Tipo.DOMINIO) && acl.getServizio().equals(Servizio.INCASSI)) {
+				if(acl.getIdDominio() != null)
+					domini.add(acl.getCodDominio());
+				else 
+					return null;
+			}
+		}
+		return domini;
+	}
+	
 	/** 
 	 * Ritorna la lista dei domini autorizzati al servizio Rendicontazione per l'applicazione indicata
 	 * 
@@ -125,5 +138,5 @@ public class AclEngine {
 		}
 		return domini;
 	}
-
+	
 }

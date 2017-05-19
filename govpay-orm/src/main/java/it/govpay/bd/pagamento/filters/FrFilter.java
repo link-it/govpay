@@ -19,22 +19,20 @@
  */
 package it.govpay.bd.pagamento.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.GovpayConfig;
-import it.govpay.orm.FR;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
-import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.GovpayConfig;
+import it.govpay.orm.FR;
 
 public class FrFilter extends AbstractFilter {
 	
@@ -52,11 +50,13 @@ public class FrFilter extends AbstractFilter {
 	
 
 	public FrFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public FrFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(FR.model().COD_FLUSSO);
+		this.listaFieldSimpleSearch.add(FR.model().IUR);
 	}
 
 	public List<Object> getFields(boolean count) throws ServiceException {
@@ -96,6 +96,13 @@ public class FrFilter extends AbstractFilter {
 
 		if(this.tnr!= null){
 			obj.add("%" + this.tnr.toLowerCase() + "%");
+		}
+
+		// campi in or per la simple search 
+		if(this.simpleSearch && StringUtils.isNotEmpty(this.simpleSearchString)){
+			for (int i = 0; i < this.listaFieldSimpleSearch.size(); i++) {
+				obj.add("%" + this.simpleSearchString.toLowerCase() + "%");
+			}
 		}
 
 		if(this.getOffset() != null && this.getLimit() != null && !count) {
@@ -221,6 +228,27 @@ public class FrFilter extends AbstractFilter {
 				placeholderWhereOut += "WHERE (ok+anomale > 0)";
 			}
 			
+			// campi in or per la simple search 
+			if(this.simpleSearch && StringUtils.isNotEmpty(this.simpleSearchString)){
+				if(placeholderWhereIn.length() > 0) {
+					placeholderWhereIn += " AND ";
+				} else {
+					placeholderWhereIn += " WHERE ";
+				}
+				placeholderWhereIn += " ( ";
+				for (int i = 0; i < this.listaFieldSimpleSearch.size(); i++) {
+					if(i > 0)
+						placeholderWhereIn += " OR ";
+					
+					String field = this.getColumn(this.listaFieldSimpleSearch.get(i),true);
+
+					String iLikefield = ilike(field);		
+					
+					placeholderWhereIn += iLikefield +" like ?";
+				}
+				placeholderWhereIn += " ) ";
+			}
+			
 			if(this.getOffset() != null && this.getLimit() != null) {
 				if(GovpayConfig.getInstance().getDatabaseType().equals("postgresql")) {
 					placeholderOffsetLimit = "OFFSET ? LIMIT ?";
@@ -258,73 +286,73 @@ public class FrFilter extends AbstractFilter {
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
 			
-			boolean addAnd = false;
-			// Filtro sullo stato pagamenti
-			if(this.stato != null && StringUtils.isNotEmpty(this.stato)){
-				newExpression.equals(FR.model().STATO, this.stato);
-				addAnd = true;
-			}
-			
-			if(this.idApplicazione != null){
-				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
-				
-				
-				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
-				newExpression.equals(idApplicazioneField, this.idApplicazione); //per scatenare la join
-				addAnd = true;
-			}
-			
-			if(this.codDominio != null){
-				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
-				addAnd = true;
-			}
-			
-			if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(FR.model().COD_PSP, this.codPsp);
-				addAnd = true;
-			}
-			
-			if(this.datainizio != null && this.dataFine != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
-				addAnd = true;
-			}
-			
-			if(this.codFlusso != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.like(FR.model().COD_FLUSSO, this.codFlusso);
-				addAnd = true;
-			}
-			if(this.idFr != null && !this.idFr.isEmpty()) {
-				if(addAnd)
-					newExpression.and();
-				CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
-
-				newExpression.in(baseField, this.idFr);
-				addAnd = true;
-			}
+//			boolean addAnd = false;
+//			// Filtro sullo stato pagamenti
+//			if(this.stato != null && StringUtils.isNotEmpty(this.stato)){
+//				newExpression.equals(FR.model().STATO, this.stato);
+//				addAnd = true;
+//			}
+//			
+//			if(this.idApplicazione != null){
+//				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
+//				
+//				
+//				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+//				newExpression.equals(idApplicazioneField, this.idApplicazione); //per scatenare la join
+//				addAnd = true;
+//			}
+//			
+//			if(this.codDominio != null){
+//				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
+//				addAnd = true;
+//			}
+//			
+//			if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
+//				if(addAnd)
+//					newExpression.and();
+//				
+//				newExpression.equals(FR.model().COD_PSP, this.codPsp);
+//				addAnd = true;
+//			}
+//			
+//			if(this.datainizio != null && this.dataFine != null) {
+//				if(addAnd)
+//					newExpression.and();
+//				
+//				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
+//				addAnd = true;
+//			}
+//			
+//			if(this.codFlusso != null) {
+//				if(addAnd)
+//					newExpression.and();
+//				
+//				newExpression.like(FR.model().COD_FLUSSO, this.codFlusso);
+//				addAnd = true;
+//			}
+//			if(this.idFr != null && !this.idFr.isEmpty()) {
+//				if(addAnd)
+//					newExpression.and();
+//				CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
+//
+//				newExpression.in(baseField, this.idFr);
+//				addAnd = true;
+//			}
 			
 			return newExpression;
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
-		} catch (ExpressionNotImplementedException e) {
-			throw new ServiceException(e);
-		} catch (ExpressionException e) {
-			throw new ServiceException(e);
+//		} catch (ExpressionNotImplementedException e) {
+//			throw new ServiceException(e);
+//		} catch (ExpressionException e) {
+//			throw new ServiceException(e);
 		}
 	}
- 
+	
 	public String getStato() {
 		return stato;
 	}

@@ -103,12 +103,12 @@ public abstract class BaseRsService {
 	}
 
 	protected String getPrincipal(){
-		return "amministratore";
-		// [TODO] ripristinare
-//		if(this.request.getUserPrincipal()!=null){
-//			return this.request.getUserPrincipal().getName();
-//		}
-//		return null;
+//		return "amministratore";
+		
+		if(this.request.getUserPrincipal()!=null){
+			return this.request.getUserPrincipal().getName();
+		}
+		return null;
 	}
 
 	public Operatore getOperatoreByPrincipal(BasicBD bd) throws ServiceException,WebApplicationException {

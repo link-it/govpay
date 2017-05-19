@@ -95,6 +95,13 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_applicazione";
 			}
 		}
+		if(field.equals(Versamento.model().IUV.IUV)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".iuv";
+			}else{
+				return "iuv";
+			}
+		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".importo_totale";
@@ -288,6 +295,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Versamento.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
 			return this.toTable(Versamento.model().ID_APPLICAZIONE, returnAlias);
 		}
+		if(field.equals(Versamento.model().IUV.IUV)){
+			return this.toTable(Versamento.model().IUV, returnAlias);
+		}
 		if(field.equals(Versamento.model().IMPORTO_TOTALE)){
 			return this.toTable(Versamento.model(), returnAlias);
 		}
@@ -384,6 +394,9 @@ public class VersamentoFieldConverter extends AbstractSQLFieldConverter {
 		}
 		if(model.equals(Versamento.model().ID_APPLICAZIONE)){
 			return "applicazioni";
+		}
+		if(model.equals(Versamento.model().IUV)){
+			return "iuv";
 		}
 
 

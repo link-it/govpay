@@ -43,6 +43,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.utils.CSVSerializerProperties;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -214,7 +215,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public abstract Dettaglio getDettaglio(long id, UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException;
 	@Override
-	public abstract Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+	public abstract Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,DeleteException;
 	@Override
 	public abstract T creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
 	@Override
@@ -244,13 +245,10 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			String sottotitolo = this.getSottotitolo(entry,bd);
 			URI urlDettaglio = (id != null && uriDettaglio != null) ?  Utils.creaUriConPath(uriDettaglio , id+"") : null;
 			Elemento elemento = new Elemento(id, titolo, sottotitolo, urlDettaglio);
-			elemento.setValori(this.getValori(entry, bd)); 
 			elemento.setVoci(this.getVoci(entry, bd)); 
 			return elemento;
 		}catch(Exception e) {throw new ConsoleException(e);}
 	}
-
-	public abstract List<String> getValori(T entry, BasicBD bd) throws ConsoleException;
 
 	@Override
 	public abstract Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
@@ -269,6 +267,18 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 				else
 					toReturn = type.cast(paramAsString);
 			}
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+
+		return toReturn;
+	}
+	
+	public boolean containsParameter(UriInfo uriInfo, String parameterName) throws ConsoleException{
+		boolean toReturn = false;
+		try{
+			MultivaluedMap<String, String> queryParams = uriInfo.getQueryParameters(); 
+			toReturn = queryParams.getFirst(parameterName) != null;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}

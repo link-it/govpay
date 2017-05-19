@@ -20,7 +20,6 @@
 package it.govpay.bd.pagamento.filters;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -59,59 +58,35 @@ public class VersamentoFilter extends AbstractFilter {
 	}
 
 	public VersamentoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public VersamentoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Versamento.model().DEBITORE_IDENTIFICATIVO);
+		this.listaFieldSimpleSearch.add(Versamento.model().COD_VERSAMENTO_ENTE);
+		this.listaFieldSimpleSearch.add(Versamento.model().IUV.IUV);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
-		if(!this.simpleSearch)
-			return _toExpression();
-		else 
-			return _toSimpleSearchExpression();
-	}
-
-	private IExpression _toSimpleSearchExpression() throws ServiceException {
+	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
-			IExpression newExpression = this.newExpression();
+			IExpression newExpressionOr = super._toSimpleSearchExpression();
 			
-			List<IExpression> orExpr = new ArrayList<IExpression>();
-			if(this.simpleSearchString != null){
-				IExpression debExpr = this.newExpression();
-				debExpr.ilike(Versamento.model().DEBITORE_IDENTIFICATIVO, this.simpleSearchString,LikeMode.ANYWHERE);
-				orExpr.add(debExpr);
-				IExpression vExpr = this.newExpression();
-				vExpr.ilike(Versamento.model().COD_VERSAMENTO_ENTE, this.simpleSearchString, LikeMode.ANYWHERE);
-				orExpr.add(vExpr);
-			}
-			newExpression.or(orExpr.toArray(new IExpression[orExpr.size()])); 
-			
-			
-//			boolean addAnd = false;
-			 
-
 			if(this.idDomini != null){
+				IExpression newExpressionDomini = this.newExpression();
+
 				idDomini.removeAll(Collections.singleton(null));
-//				if(addAnd)
-					newExpression.and();
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
-				newExpression.in(cf, this.idDomini);
-				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
-//				addAnd = true;
+				newExpressionDomini.in(cf, this.idDomini);
+				newExpressionDomini.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
+				
+				newExpressionOr.and(newExpressionDomini);
 			}
 
-			 
-			
-			
 //			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
 //				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
-//					if(addAnd)
-//						newExpression.and();
-//
 //					IExpression orExpr = this.newExpression();
 //					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
 //					
@@ -130,24 +105,22 @@ public class VersamentoFilter extends AbstractFilter {
 //					
 //					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
 //					
-//					newExpression.and(orExpr);
-//					
-//					addAnd = true;
+//					newExpressionOr.or(orExpr);
 //				}
 //			}
-			
 
-			return newExpression;
-		} catch (NotImplementedException e) {
-			throw new ServiceException(e);
+			return newExpressionOr;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
+			throw new ServiceException(e);
 		}
 	}
 	
-	private IExpression _toExpression() throws ServiceException {
+	@Override
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;

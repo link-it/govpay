@@ -16,7 +16,6 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Evento;
-import it.govpay.orm.dao.IEventoService;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
 
 public class EventiFilter extends AbstractFilter{
@@ -29,15 +28,18 @@ public class EventiFilter extends AbstractFilter{
 	private List<Long> idEventi= null;
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public EventiFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(Evento.model().IUV);
+		this.listaFieldSimpleSearch.add(Evento.model().CCP);
+		this.listaFieldSimpleSearch.add(Evento.model().COD_DOMINIO);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = newExpression();
 			
@@ -90,7 +92,7 @@ public class EventiFilter extends AbstractFilter{
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public String getCodDominio() {
 		return codDominio;
 	}

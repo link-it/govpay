@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.reportistica.pagamenti;
+package it.govpay.web.rs.dars.monitoraggio.pagamenti;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
@@ -70,6 +70,7 @@ import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -86,13 +87,13 @@ import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements IDarsHandler<EstrattoConto>{
+public class ReportisticaPagamentiHandler extends BaseDarsHandler<EstrattoConto> implements IDarsHandler<EstrattoConto>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
 	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
-	public PagamentiHandler(Logger log, BaseDarsService darsService) { 
+	public ReportisticaPagamentiHandler(Logger log, BaseDarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -523,9 +524,6 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 	} 
 
 	@Override
-	public List<String> getValori(EstrattoConto entry, BasicBD bd) throws ConsoleException { return null; }
-
-	@Override
 	public Map<String, Voce<String>> getVoci(EstrattoConto entry, BasicBD bd) throws ConsoleException { 
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 		Date dataPagamento = entry.getDataPagamento();
@@ -887,7 +885,7 @@ public class PagamentiHandler extends BaseDarsHandler<EstrattoConto> implements 
 	public InfoForm getInfoModifica(UriInfo uriInfo, BasicBD bd, EstrattoConto entry) throws ConsoleException { return null; }
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {	return null; }
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public EstrattoConto creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null; }

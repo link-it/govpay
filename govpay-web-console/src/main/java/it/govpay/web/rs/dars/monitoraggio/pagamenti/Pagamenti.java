@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars.monitoraggio.versamenti;
+package it.govpay.web.rs.dars.monitoraggio.pagamenti;
 
 import javax.ws.rs.Path;
 

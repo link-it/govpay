@@ -30,6 +30,7 @@ public class Acl extends BasicModel {
 		VERSAMENTI("V"),
 		NOTIFICHE("N"),
 		RENDICONTAZIONE("R"),
+		INCASSI("I"),
 		CRUSCOTTO("C");
 		
 		private String codifica;

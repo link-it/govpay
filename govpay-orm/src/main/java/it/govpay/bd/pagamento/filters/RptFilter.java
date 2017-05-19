@@ -39,15 +39,16 @@ public class RptFilter extends AbstractFilter {
 	private String iuv;
 	
 	public RptFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor,false);
 	}
 	
 	public RptFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
 		super(expressionConstructor, simpleSearch);
+		this.listaFieldSimpleSearch.add(RPT.model().IUV);
 	}
 
 	@Override
-	public IExpression toExpression() throws ServiceException {
+	public IExpression _toExpression() throws ServiceException {
 		try {
 			IExpression newExpression = this.newExpression();
 			boolean addAnd = false;
@@ -76,7 +77,7 @@ public class RptFilter extends AbstractFilter {
 			throw new ServiceException(e);
 		}
 	}
-
+	
 	public Long getIdVersamento() {
 		return idVersamento;
 	}

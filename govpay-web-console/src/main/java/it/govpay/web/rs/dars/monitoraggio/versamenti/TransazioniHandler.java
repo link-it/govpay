@@ -50,6 +50,7 @@ import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -142,7 +143,6 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			filter.setIdVersamento(Long.parseLong(idVersamento)); 
 
 			long count = eseguiRicerca ? rptBD.count(filter) : 0;
-
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
@@ -426,11 +426,6 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	}
 
 	@Override
-	public List<String> getValori(Rpt entry, BasicBD bd) throws ConsoleException {
-		return null;
-	}
-
-	@Override
 	public Map<String, Voce<String>> getVoci(Rpt entry, BasicBD bd) throws ConsoleException {
 		Map<String, Voce<String>> valori = new HashMap<String, Voce<String>>();
 
@@ -629,7 +624,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
 
 	@Override
-	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException { return null;}
+	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
 
 	@Override
 	public Rpt creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException { return null;	}
