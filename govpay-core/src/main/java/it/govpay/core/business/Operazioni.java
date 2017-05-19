@@ -281,35 +281,42 @@ public class Operazioni{
 	}
 
 	private static void aggiornaSondaOK(String nome, BasicBD bd) {
-		BasicBD bd1 = null;
+		if(bd==null) return;
+		boolean wasConnected = true;
 		try {
-			bd1 = BasicBD.newInstance(bd.getIdTransaction());
-			Connection con = bd1.getConnection();
+			if(bd.isClosed()) {
+				wasConnected = false;
+				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+			}
+			Connection con = bd.getConnection();
 
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
 			((SondaBatch)sonda).aggiornaStatoSonda(true, new Date(), "Ok", con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
-			log.warn("Errore nell'aggiornamento della sonda", t);
+			log.warn("Errore nell'aggiornamento della sonda OK", t);
 		}
 		finally {
-			if(bd1 != null) bd1.closeConnection();
+			if(bd != null && !wasConnected) bd.closeConnection();
 		}
 	}
 
 	private static void aggiornaSondaKO(String nome, Exception e, BasicBD bd) {
-		BasicBD bd1 = null;
+		if(bd==null) return;
+		boolean wasConnected = true;
 		try {
-			bd1 = BasicBD.newInstance(bd.getIdTransaction());
-			Connection con = bd1.getConnection();
-
+			if(bd.isClosed()) {
+				wasConnected = false;
+				bd.setupConnection(GpThreadLocal.get().getTransactionId());
+			}
+			Connection con = bd.getConnection();
 			Sonda sonda = SondaFactory.get(nome, con, bd.getJdbcProperties().getDatabase());
 			if(sonda == null) throw new SondaException("Sonda ["+nome+"] non trovata");
 			((SondaBatch)sonda).aggiornaStatoSonda(false, new Date(), "Il batch e' stato interrotto con errore: " + e.getMessage(), con, bd.getJdbcProperties().getDatabase());
 		} catch (Throwable t) {
-			log.warn("Errore nell'aggiornamento della sonda", t);
+			log.warn("Errore nell'aggiornamento della sonda KO", t);
 		} finally {
-			if(bd1 != null) bd1.closeConnection();
+			if(bd != null && !wasConnected) bd.closeConnection();
 		}
 	}
 }

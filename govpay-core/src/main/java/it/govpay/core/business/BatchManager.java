@@ -113,11 +113,11 @@ public class BatchManager {
 	}
 
 	public static void stopEsecuzione(BasicBD bd, String codBatch) {
-		
-		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
-		if(GovpayConfig.getInstance().getClusterId() == null) 
-			return;
-		try {
+		try {		
+			// Se non ho configurato l'id del cluster, non gestisco i blocchi.
+			if(GovpayConfig.getInstance().getClusterId() == null) 
+				return;
+			
 			try {
 				bd.setAutoCommit(false);
 				bd.enableSelectForUpdate();
@@ -151,9 +151,8 @@ public class BatchManager {
 				bd.setAutoCommit(true);
 				bd.disableSelectForUpdate();
 			}
-		} catch(ServiceException se) {
+		} catch(Throwable se) {
 			log.error("Errore nella rimozione del semaforo di concorrenza per il batch " + codBatch, se);
 		}
 	}
-
 }
