@@ -237,6 +237,12 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:complexType name="iuv-search">
+		<xsd:sequence>
+			<xsd:element name="iuv" type="String35"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	
 	<xsd:complexType name="id-incasso">
 		<xsd:sequence>
@@ -1082,7 +1088,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-
+			
 			<xsd:element name="idApplicazione" type="id-applicazione">
 				<xsd:annotation>
 					<xsd:appinfo>
@@ -1093,7 +1099,18 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-
+			
+			<xsd:element name="iuv" type="iuv-search" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="IUV"
+								object-type="IUV" relationship="none"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			
 			<xsd:element name="importoTotale" type="xsd:double"/>
 			<xsd:element name="statoVersamento" type="String35"/>
 			<xsd:element name="descrizioneStato" type="xsd:string" minOccurs="0"/>

@@ -277,6 +277,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IuvSearch }
+     */
+    public IuvSearch createIuvSearch() {
+        return new IuvSearch();
+    }
+
+    /**
      * Create an instance of {@link RendicontazionePagamento }
      */
     public RendicontazionePagamento createRendicontazionePagamento() {

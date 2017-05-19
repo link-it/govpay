@@ -25,6 +25,7 @@ import it.govpay.orm.IdRendicontazione;
 import it.govpay.orm.Versamento;
 import it.govpay.orm.IdUo;
 import it.govpay.orm.IdApplicazione;
+import it.govpay.orm.IuvSearch;
 import it.govpay.orm.Psp;
 import it.govpay.orm.IdVersamento;
 import it.govpay.orm.IdIntermediario;
@@ -403,6 +404,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdApplicazione readIdApplicazioneFromString(String in) throws DeserializerException {
 		return (IdApplicazione) this.xmlToObj(in.getBytes(), IdApplicazione.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: iuv-search
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.IuvSearch}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IuvSearch}
+	 * @return Object type {@link it.govpay.orm.IuvSearch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IuvSearch readIuvSearch(String fileName) throws DeserializerException {
+		return (IuvSearch) this.xmlToObj(fileName, IuvSearch.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.IuvSearch}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.IuvSearch}
+	 * @return Object type {@link it.govpay.orm.IuvSearch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IuvSearch readIuvSearch(File file) throws DeserializerException {
+		return (IuvSearch) this.xmlToObj(file, IuvSearch.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.IuvSearch}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.IuvSearch}
+	 * @return Object type {@link it.govpay.orm.IuvSearch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IuvSearch readIuvSearch(InputStream in) throws DeserializerException {
+		return (IuvSearch) this.xmlToObj(in, IuvSearch.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.IuvSearch}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.IuvSearch}
+	 * @return Object type {@link it.govpay.orm.IuvSearch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IuvSearch readIuvSearch(byte[] in) throws DeserializerException {
+		return (IuvSearch) this.xmlToObj(in, IuvSearch.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.IuvSearch}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.IuvSearch}
+	 * @return Object type {@link it.govpay.orm.IuvSearch}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public IuvSearch readIuvSearchFromString(String in) throws DeserializerException {
+		return (IuvSearch) this.xmlToObj(in.getBytes(), IuvSearch.class);
 	}	
 	
 	
