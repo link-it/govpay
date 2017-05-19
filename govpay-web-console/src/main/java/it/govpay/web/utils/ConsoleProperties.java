@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -37,6 +39,8 @@ public class ConsoleProperties {
 	private String urlEstrattoConto, usernameEstrattoConto, passwordEstrattoConto;
 	
 	private Integer sogliaGiorniRitardoPagamenti = null;
+	
+	private List<String> localeAbilitati= null;
 	
 	public static ConsoleProperties getInstance() {
 		if(instance == null)
@@ -134,6 +138,15 @@ public class ConsoleProperties {
 			String sogliaS = ConsoleProperties.getProperty("it.govpay.console.pagamenti.sogliaRitardoGiorni", props, false);
 			this.sogliaGiorniRitardoPagamenti = sogliaS != null ? Integer.parseInt(sogliaS) : null;
 			
+			this.localeAbilitati = new ArrayList<String>();
+			String localeAsString = ConsoleProperties.getProperty("it.govpay.console.lingueAbilitate", props, true);
+			if(StringUtils.isNotEmpty(localeAsString)) {
+				String[] lingue = localeAsString.split(","); 
+				for(String lingua : lingue) {
+					this.localeAbilitati.add(lingua);
+				}
+			}
+						
 		} catch (Exception e) {
 			log.warn("Errore di inizializzazione " + e.getMessage() + ". Impostati valori di default."); 
 		}
@@ -246,5 +259,9 @@ public class ConsoleProperties {
 	}
 	public Integer getSogliaGiorniRitardoPagamenti() {
 		return this.sogliaGiorniRitardoPagamenti;
+	}
+
+	public List<String> getLocaleAbilitati() {
+		return localeAbilitati;
 	}
 }

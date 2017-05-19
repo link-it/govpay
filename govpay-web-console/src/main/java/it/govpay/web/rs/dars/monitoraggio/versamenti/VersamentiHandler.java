@@ -96,6 +96,7 @@ import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -748,7 +749,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+			throws WebApplicationException, ConsoleException,ExportException {
 		StringBuffer sb = new StringBuffer();
 		if(idsToExport != null && idsToExport.size() > 0) {
 			for (Long long1 : idsToExport) {
@@ -763,6 +764,13 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+		
+		if(idsToExport == null || idsToExport.size() == 0) {
+			List<String> msg = new ArrayList<String>();
+			msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.erroreSelezioneVuota"));
+			throw new ExportException(msg, EsitoOperazione.ERRORE);
+		}
+		
 		int numeroZipEntries = 0;
 		String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 
@@ -1050,7 +1058,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
 

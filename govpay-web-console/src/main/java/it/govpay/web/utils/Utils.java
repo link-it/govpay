@@ -27,6 +27,7 @@ import java.io.Writer;
 import java.net.URI;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +67,7 @@ public class Utils {
 	public static final String MISSING_RESOURCE_END_PLACEHOLDER = " not found ??";
 	public static final String MISSING_RESOURCE_START_PLACEHOLDER = "?? key ";
 	public static final String PREFIX_LABEL_CONSOLE = "console.label.";
+	public static final String PREFIX_LABEL_CON_PARAMETRI_CONSOLE = "console.labelConParametri.";
 	public static final String LIST_LABEL_CONSOLE = "console.label.list";
 
 	private static Map<String, Utils> instance = null;
@@ -97,7 +99,7 @@ public class Utils {
 
 		return utils != null ? utils : getInstance(); 
 	}
-	
+
 	public static Utils getInstance(String locale){
 		if(Utils.instance == null)
 			init();
@@ -128,8 +130,15 @@ public class Utils {
 
 	public static List<Locale> getListaLingueDisponibili(){
 		List<Locale> lst = new ArrayList<Locale>();
-		lst.add(Locale.ITALY);
-		lst.add(Locale.UK);
+
+		List<String> listaLingueAbilitate = ConsoleProperties.getInstance().getLocaleAbilitati();
+		for (String lingua : listaLingueAbilitate) {
+			lst.add(new Locale(lingua));
+		}
+
+		if(lst.size() == 0)
+			lst.add(Locale.ITALY);
+
 		return lst;
 	}
 
@@ -142,7 +151,7 @@ public class Utils {
 
 		return map;
 	}
-	
+
 	public List<Lingua> getLingue(){
 		List<Lingua> lst = new ArrayList<Lingua>();
 		for (Locale locale : Utils.getListaLingueDisponibili()) {
@@ -160,30 +169,30 @@ public class Utils {
 	}
 
 	private Map<String, String> getEtichetteLingua(Locale locale) {
-		Map<String, String> etichette = new HashMap<String, String>();
-		for (String key : this.getElencoKeyLabelConsole()) {
-			String etichetta = this.getConsoleLabel(key, locale);
-			etichette.put(key,etichetta);
-		}
+		Map<String, String> etichette = this.getMessagesFromResourceBundle(PREFIX_LABEL_CONSOLE, locale);
+		int numeroMassimoElementiExport = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
+		etichette.put("exportMassivoDisabilitato",
+				this.getMessageWithParamsFromResourceBundle(PREFIX_LABEL_CON_PARAMETRI_CONSOLE + "exportMassivoDisabilitato", locale, numeroMassimoElementiExport));
+
 		return etichette;
 	}
 
-	public List<String> getElencoKeyLabelConsole(){
-		List<String> list = new ArrayList<String>();
-
-		String listL = this.getMessageFromResourceBundle(LIST_LABEL_CONSOLE);
-
-		if(listL != null){
-			String[] split = listL.split(",");
-			if(split != null && split.length > 0){
-				for (String string : split) {
-					list.add(string);
-				}
-			}
-		}
-
-		return list;
-	}
+//	public List<String> getElencoKeyLabelConsole(){
+//		List<String> list = new ArrayList<String>();
+//
+//		String listL = this.getMessageFromResourceBundle(LIST_LABEL_CONSOLE);
+//
+//		if(listL != null){
+//			String[] split = listL.split(",");
+//			if(split != null && split.length > 0){
+//				for (String string : split) {
+//					list.add(string);
+//				}
+//			}
+//		}
+//
+//		return list;
+//	}
 
 	public String getConsoleLabel(String key){
 		Locale locale = this.getLocale();
@@ -201,6 +210,10 @@ public class Utils {
 
 	public   String getMessageWithParamsFromResourceBundle(String key, Object ... params) {
 		Locale locale = this.getLocale();
+		return this.getMessageFromResourceBundle("messages", key, params, locale);
+	}
+
+	public   String getMessageWithParamsFromResourceBundle(String key,Locale locale, Object ... params) {
 		return this.getMessageFromResourceBundle("messages", key, params, locale);
 	}
 
@@ -251,6 +264,63 @@ public class Utils {
 			text = mf.format(params, new StringBuffer(), null).toString();
 		}
 		return text;
+	}
+
+
+	public Map<String, String> getMessagesFromResourceBundle(String keyPrefix,Locale locale) {
+		return this.getMessagesFromResourceBundle("messages", keyPrefix, null, locale);
+	}
+
+	public Map<String, String> getMessagesWithParamsFromResourceBundle(String keyPrefix,Locale locale, Object ... params) {
+		return this.getMessagesFromResourceBundle("messages", keyPrefix, params, locale);
+	}
+
+	public Map<String, String> getMessagesFromResourceBundle(String keyPrefix, String bundleName, Locale locale){
+		if(locale == null){
+			locale = this.getLocale();
+		}
+
+		if(bundleName == null)
+			bundleName = "messages";
+
+		return this.getMessagesFromResourceBundle(bundleName, keyPrefix, null, locale);
+	}
+
+
+	public Map<String, String> getMessagesFromResourceBundle(
+			String bundleName, 
+			String keyPrefix, 
+			Object params[], 
+			Locale locale){
+
+		Map<String, String> toRet = new HashMap<String, String>();
+
+		String text = null;
+
+		ResourceBundle bundle = 
+				ResourceBundle.getBundle(bundleName, locale, 
+						this.getCurrentClassLoader(params));
+
+		Enumeration<String> keys = bundle.getKeys();
+
+		while (keys.hasMoreElements()) {
+			String key = (String) keys.nextElement();
+			if(key.startsWith(keyPrefix)){
+				try{
+					text = bundle.getString(key);
+				} catch(MissingResourceException e){
+					text = MISSING_RESOURCE_START_PLACEHOLDER + key + MISSING_RESOURCE_END_PLACEHOLDER;
+				}
+				if(params != null){
+					MessageFormat mf = new MessageFormat(text, locale);
+					text = mf.format(params, new StringBuffer(), null).toString();
+				}
+
+				toRet.put(key.substring(keyPrefix.length()), text); 
+			}
+		}
+
+		return toRet;
 	}
 
 	// copy method from From E.R. Harold's book "Java I/O"
@@ -449,14 +519,14 @@ public class Utils {
 
 		return c;
 	}
-	
+
 	public static String getSigla(String nome){
 		StringBuffer sb = new StringBuffer();
-		
+
 		int init = 0;
 		if(StringUtils.isNotBlank(nome)){
 			String[] split = nome.split(" ");
-			
+
 			if(split != null && split.length > 0){
 				for (String string : split) {
 					sb.append(string.charAt(0));
@@ -467,10 +537,10 @@ public class Utils {
 				init++;
 			}
 		}
-		
+
 		return sb.toString().substring(0, Math.min(2, init));  
 	}
-	
+
 	public static URI creaUriConParametri(String pathServizio, Map<String, String> parameters)
 			throws ConsoleException {
 		try{
@@ -500,7 +570,7 @@ public class Utils {
 			throw new ConsoleException(e);
 		}
 	}
-	
+
 	public static URI creaUriConPath(String pathServizio, String ... paths)	throws ConsoleException {
 		try{
 			URI ricerca = null;
@@ -523,6 +593,52 @@ public class Utils {
 			}else {
 				ricerca = new URI(pathServizio);
 			}
+
+			return ricerca;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
+	}
+	
+	public static URI creaUriConPathEParametri(String pathServizio, Map<String, String> parameters, String ... paths)	throws ConsoleException {
+		try{
+			URI ricerca = null;
+			StringBuffer sb = new StringBuffer();
+			if(paths != null && paths.length > 0){
+				try{
+					
+
+					sb.append(pathServizio);
+					for(String parameterId : paths) {
+						if(sb.toString().endsWith("/"))
+							sb.append(parameterId);
+						else
+							sb.append("/").append(parameterId);
+					}
+
+				}catch(Exception e ){
+					throw new ConsoleException(e);
+				}
+			}else {
+				sb.append(pathServizio);
+			}
+			
+			if(parameters != null && parameters.size() > 0){
+				try{
+					// gia aggiunto su
+					//sb.append(pathServizio);
+					int  i=0;
+					for(String parameterId : parameters.keySet()) {
+						if(i == 0) sb.append("?"); else sb.append("&"); 
+						sb.append(parameterId).append("=").append(parameters.get(parameterId));
+						i++;
+					}
+				}catch(Exception e ){
+					throw new ConsoleException(e);
+				}
+			}
+			
+			ricerca = new URI(sb.toString());
 
 			return ricerca;
 		}catch(Exception e){

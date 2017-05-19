@@ -33653,16 +33653,16 @@ Polymer.AppLocalizeBehavior = {
           <div class="mainContent">
             <link-searchbox id="searchbox" auto="" on-append-response="appendResults" on-response="setResults" on-advanced-search-request="_onAdvRequest" hidden$="[[!advSearch]]"></link-searchbox>
             <span class="gap" hidden$="[[!advSearch]]"></span>
-            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" massive="[[massive]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}" on-listbox-item-count="activateFabs"></link-listbox>
+            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" massive="[[massive]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
           </div>
         </div>
       </iron-scroll-threshold>
     </paper-scroll-header-panel>
     <link-fab-menu show="[[showFabMenu]]">
-      <paper-fab icon="icons:delete" class="fab-item" mini="" on-tap="delete" hidden$="[[!cancellazioneUrl]]" title="[[localize('eliminaElementi')]]" color=""></paper-fab>
-      <paper-fab icon="file-download" class="fab-item" mini="" on-tap="export" hidden$="[[!esportazioneUrl]]" disabled$="[[dwnDisabled]]" title="[[localize('scaricaZIP')]]"></paper-fab>
-      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[!creazioneUrl]]"></paper-fab>
+      <paper-fab icon="icons:delete" class="fab-item" mini="" on-tap="delete" hidden$="[[_setVisibility(cancellazioneUrl)]]" title="[[localize('eliminaElementi')]]" color=""></paper-fab>
+      <paper-fab icon="file-download" class="fab-item" mini="" on-tap="export" hidden$="[[_setVisibility(esportazioneUrl)]]" disabled$="[[dwnDisabled]]" title="[[localize('scaricaZIP')]]"></paper-fab>
+      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[_setVisibility(creazioneUrl)]]" title="[[localize('nuovoElemento')]]"></paper-fab>
     </link-fab-menu>
     <iron-ajax id="getResourceInfo" handle-as="json" on-response="getResourceInfo_responseHandler" on-error="getResourceInfo_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="esportaDati" url="[[esportazioneUrl]]" handle-as="blob" method="POST" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
@@ -33681,6 +33681,7 @@ Polymer.AppLocalizeBehavior = {
 
       observers: [
         'requestResourceInfo(resource)',
+        'activateFabs(numResults)',
         'languageLoad(language)'
       ],
 
@@ -33841,14 +33842,14 @@ Polymer.AppLocalizeBehavior = {
       },
 
       setResponse: function(response){
-        if (response.exportMassivo) {
-            this.massive = response.exportMassivo;
+        if (response.hasOwnProperty('exportMassivo')) {
+          this.massive = response.exportMassivo;
         }
         if (response.simpleSearchPlaceHolder) {
-            this.simplePlaceholder = response.simpleSearchPlaceHolder;
+          this.simplePlaceholder = response.simpleSearchPlaceHolder;
         }
         if (response.numeroMassimoElementiExport) {
-            this.maxSelections = response.numeroMassimoElementiExport;
+          this.maxSelections = response.numeroMassimoElementiExport;
         }
         if (response.infoCreazione){
           this.creazioneUrl = REST_URL + response.infoCreazione.uri + app.appendLangParameter(response.infoCreazione.uri);
@@ -33922,6 +33923,10 @@ Polymer.AppLocalizeBehavior = {
         return (this.cancellazioneUrl || this.esportazioneUrl) ? true : false;
       },
 
+      _setVisibility: function(url){
+        return (url && url != '')?false:true;
+      },
+
       _showAdvancedSearch: function(numResults, obj){
         return numResults!=0 && this._hideSearch(obj);
       },
@@ -33959,12 +33964,7 @@ Polymer.AppLocalizeBehavior = {
           this.advSearch = value;
       },
 
-      activateFabs: function(event) {
-        if(this.massive) {
-          this.dwnDisabled = !(this.numResults > 0 && this.numResults <= this.maxSelections);
-          //this.dwnDisabled = !(event.detail.elements > 0 && event.detail.elements <= this.maxSelections);
-        }
-        else this.dwnDisabled = false;
+      activateFabs: function() {
         this.showFabMenu = !(!this.creazioneUrl && !this.cancellazioneUrl && !this.esportazioneUrl);
       },
 
@@ -33997,7 +33997,7 @@ Polymer.AppLocalizeBehavior = {
           lap.template = this.infoCancellazione;
           document.body.appendChild(lap);
         } else {
-          app.showPaperToast(this.localize('nessunoSelezionato'), 'error');
+          app.showPaperToast(this.localize('selezioneCancellazioneVuota'), 'error');
         }
       },
 
@@ -34044,22 +34044,25 @@ Polymer.AppLocalizeBehavior = {
             listaId.push(obj.id);
           }
         }
-        if((listaId.length > 0 && !this.massive) || (listaId.length == 0 && this.massive)) {
+        if((listaId.length > 0 && !this.massive) || (listaId.length == 0 && this.massive &&
+          (this.numResults > 0 && this.numResults <= this.maxSelections))) {
           this.$$('#resultsBox').resetSelection();
           this.$.esportaDati.body = listaId;
           this.$.esportaDati.url = this.esportazioneUrl;
 
           this.$.esportaDati.url += this.$.searchbox.lastQuery;
-          if(this.massive) {
-            this.$.esportaDati.url +='&exportMassivo=true';
-          }
 
           this.$.esportaDati.contentType = 'application/json';
           app.showSpinner();
           this.$.esportaDati.generateRequest();
           console.debug('Chiamata a ' + this.esportazioneUrl + ' con array ' + listaId);
         } else {
-          app.showPaperToast(this.localize('nessunoSelezionato'), 'error');
+          if(this.massive && !(this.numResults > 0 && this.numResults <= this.maxSelections)) {
+            app.showPaperToast(this.localize('exportMassivoDisabilitato'), 'error');
+          }
+          else {
+            app.showPaperToast(this.localize('selezioneExportVuota'), 'error');
+          }
         }
       },
 
@@ -35654,10 +35657,10 @@ Polymer.AppLocalizeBehavior = {
       </div>
     </paper-scroll-header-panel>
     <link-fab-menu show="[[showFabMenu]]">
-      <paper-fab icon="icons:delete" class="fab-item" mini="" on-tap="delete" hidden$="[[!uriCancellazione]]" title="[[localize('eliminaElementi')]]" color=""></paper-fab>
-      <paper-fab icon="file-download" class="fab-item" mini="" on-tap="export" hidden$="[[!uriEsportazione]]" title="[[localize('scaricaZIP')]]"></paper-fab>
-      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[hideAddFAB(selectedTab, obj)]]"></paper-fab>
-      <paper-fab icon="create" class="fab-item" mini="" on-tap="editElemento" hidden$="[[hideEditFAB(selectedTab, obj)]]"></paper-fab>
+      <paper-fab icon="icons:delete" class="fab-item" mini="" on-tap="delete" hidden$="[[_setVisibility(uriCancellazione)]]" title="[[localize('eliminaElemento')]]" color=""></paper-fab>
+      <paper-fab icon="file-download" class="fab-item" mini="" on-tap="export" hidden$="[[_setVisibility(uriEsportazione)]]" title="[[localize('scaricaDettaglioZIP')]]"></paper-fab>
+      <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[hideAddFAB(selectedTab, obj)]]" title="[[localize('nuovoElemento')]]"></paper-fab>
+      <paper-fab icon="create" class="fab-item" mini="" on-tap="editElemento" hidden$="[[hideEditFAB(selectedTab, obj)]]" title="[[localize('modificaElemento')]]"></paper-fab>
     </link-fab-menu>
 
     <iron-ajax id="getDetail" handle-as="json" on-response="getDetail_responseHandler" on-error="getDetail_errorHandler" debounce-duration="300"></iron-ajax>
@@ -35790,7 +35793,7 @@ Polymer.AppLocalizeBehavior = {
           this.uriCancellazione = '';
           if(obj.infoCancellazione) {
             this.infoCancellazione = obj.infoCancellazione;
-            this.uriCancellazione = REST_URL + obj.infoCancellazione.uri + app.appendLangParameter(obj.infoCancellazione.uri);
+            this.uriCancellazione = (obj.infoCancellazione.uri)?REST_URL + obj.infoCancellazione.uri + app.appendLangParameter(obj.infoCancellazione.uri):'';
           }
           this.uriModifica = (obj.infoModifica)?REST_URL + obj.infoModifica.uri + app.appendLangParameter(obj.infoModifica.uri): '';
           this.user=app.USER_LOGGED;
@@ -35808,6 +35811,10 @@ Polymer.AppLocalizeBehavior = {
             this.uriEsportazione || this.uriCancellazione)) {
           this.showFabMenu = true;
         }
+      },
+
+      _setVisibility: function(url){
+        return (url && url != '')?false:true;
       },
 
       _hideSearch: function(obj){
@@ -37054,7 +37061,7 @@ event and do your own custom submission:
       },
 
       _domChanged: function() {
-        this.fire('listbox-item-count', { elements: this.$.listTemplate.renderedItemCount });
+        //this.fire('listbox-item-count', { elements: this.$.listTemplate.renderedItemCount });
       },
 
       classFromIndex: function(index){
@@ -37806,7 +37813,7 @@ event and do your own custom submission:
       },
 
       _titlePanel: function(_title) {
-        if(_title && _title.length == 2) {
+        if(_title) {
           if(this.qta > 1) {
             return _title[1].split('#').join(this.qta);
           }

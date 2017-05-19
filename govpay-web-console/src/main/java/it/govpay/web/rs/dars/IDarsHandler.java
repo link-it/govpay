@@ -36,6 +36,7 @@ import it.govpay.bd.BasicBD;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -63,7 +64,10 @@ public interface IDarsHandler<T> {
 	public URI getUriUpload(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
+	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
+	
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd,T entry) throws ConsoleException;
 	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id) throws ConsoleException;
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,long id) throws ConsoleException;
@@ -86,8 +90,8 @@ public interface IDarsHandler<T> {
 	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 	public Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
 	
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
+	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
 
 	public Format getFormat();
 	public Locale getLanguage();

@@ -45,6 +45,7 @@ import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -149,8 +150,14 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
 	@Override
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
+		return this.getUriCancellazione(uriInfo, bd, null);
+	}
+	
+	@Override
+	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters)
+			throws ConsoleException {
 		try{
-			URI uri =Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_CANCELLA);
+			URI uri =Utils.creaUriConPathEParametri(this.pathServizio, parameters, BaseDarsService.PATH_CANCELLA);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -159,8 +166,13 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
 	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
+		return this.getUriEsportazione(uriInfo, bd, null);
+	}
+	
+	@Override
+	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		try{
-			URI uri = Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_ESPORTA);
+			URI uri = Utils.creaUriConPathEParametri(this.pathServizio,parameters, BaseDarsService.PATH_ESPORTA);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -234,10 +246,10 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public  abstract String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 
 	@Override
-	public abstract String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException;
+	public abstract String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
 
 	@Override
-	public abstract String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException;
+	public abstract String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException,ExportException;
 
 	public Elemento getElemento(T entry, Long id, String uriDettaglio, BasicBD bd) throws ConsoleException{
 		try{

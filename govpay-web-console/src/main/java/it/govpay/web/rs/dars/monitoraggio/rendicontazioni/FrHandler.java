@@ -67,6 +67,7 @@ import it.govpay.web.rs.dars.anagrafica.psp.PspHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -75,10 +76,12 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.CheckButton;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
@@ -97,15 +100,12 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 		try{	
 			// Operazione consentita agli utenti registrati
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
 			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-
 			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			FrBD frBD = new FrBD(bd);
@@ -116,82 +116,9 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			fsw.setField(it.govpay.orm.FR.model().DATA_ORA_FLUSSO);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
-			List<String> listaCodDomini =  new ArrayList<String>();
-			AclBD aclBD = new AclBD(bd);
-			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			boolean eseguiRicerca = true;
-
-			if(simpleSearch){
-				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-				if(StringUtils.isNotEmpty(simpleSearchString)) {
-					filter.setSimpleSearchString(simpleSearchString);
-				}
-			}else{
-				String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
-				String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
-
-				if(StringUtils.isNotEmpty(codFlusso))
-					filter.setCodFlusso(codFlusso); 
 
 
-				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-				Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
-
-				if(idDominio != null && idDominio > 0){
-					Dominio dominio = AnagraficaManager.getDominio(bd, idDominio);
-					listaCodDomini = Arrays.asList(dominio.getCodDominio());
-					filter.setCodDominio(listaCodDomini); 
-				}
-
-				String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
-				String stato = this.getParameter(uriInfo, statoId, String.class);
-
-				if(StringUtils.isNotEmpty(stato)){
-					filter.setStato(stato);
-				}
-
-				String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
-				String trn = this.getParameter(uriInfo, trnId, String.class);
-
-				if(StringUtils.isNotEmpty(trn))
-					filter.setTnr(trn);
-
-
-				String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
-				String nascondiAltriIntermediariS = this.getParameter(uriInfo, nascondiAltriIntermediariId, String.class);
-
-				Boolean nascondiAltriIntermediari = false;
-				if(StringUtils.isNotEmpty(nascondiAltriIntermediariS)){
-					if(StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "on") || StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "yes"))
-						nascondiAltriIntermediari = true;
-				}
-
-				filter.setNascondiSeSoloDiAltriIntermediari(nascondiAltriIntermediari);
-
-			}
-
-			if(!isAdmin && listaCodDomini.isEmpty()){
-				boolean vediTuttiDomini = false;
-
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							listaCodDomini.add(acl.getCodDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(listaCodDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setCodDominio(listaCodDomini);
-					}
-				}
-			}
+			boolean eseguiRicerca  = popolaFiltroRicerca(uriInfo, bd, operatore, simpleSearch, filter);
 
 
 			long count = eseguiRicerca ? frBD.countExt(filter) : 0;
@@ -205,6 +132,8 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+			// export massivo on
+			elenco.setExportMassivo(true);
 
 			List<Fr> findAll = eseguiRicerca ? frBD.findAllExt(filter) : new ArrayList<Fr>(); 
 
@@ -224,6 +153,89 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+	}
+
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore,
+			boolean simpleSearch, FrFilter filter) throws ServiceException, NotFoundException, ConsoleException {
+		List<String> listaCodDomini =  new ArrayList<String>();
+		AclBD aclBD = new AclBD(bd);
+		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		ProfiloOperatore profilo = operatore.getProfilo();
+		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+		boolean eseguiRicerca = true;
+
+		if(simpleSearch){
+			// simplesearch
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+			}
+		}else{
+			String codFlussoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codFlusso.id");
+			String codFlusso = this.getParameter(uriInfo, codFlussoId, String.class);
+
+			if(StringUtils.isNotEmpty(codFlusso))
+				filter.setCodFlusso(codFlusso); 
+
+
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			Long idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
+
+			if(idDominio != null && idDominio > 0){
+				Dominio dominio = AnagraficaManager.getDominio(bd, idDominio);
+				listaCodDomini = Arrays.asList(dominio.getCodDominio());
+				filter.setCodDominio(listaCodDomini); 
+			}
+
+			String statoId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+			String stato = this.getParameter(uriInfo, statoId, String.class);
+
+			if(StringUtils.isNotEmpty(stato)){
+				filter.setStato(stato);
+			}
+
+			String trnId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+			String trn = this.getParameter(uriInfo, trnId, String.class);
+
+			if(StringUtils.isNotEmpty(trn))
+				filter.setTnr(trn);
+
+
+			String nascondiAltriIntermediariId = Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".nascondiAltriIntermediari.id");
+			String nascondiAltriIntermediariS = this.getParameter(uriInfo, nascondiAltriIntermediariId, String.class);
+
+			Boolean nascondiAltriIntermediari = false;
+			if(StringUtils.isNotEmpty(nascondiAltriIntermediariS)){
+				if(StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "on") || StringUtils.equalsIgnoreCase(nascondiAltriIntermediariS, "yes"))
+					nascondiAltriIntermediari = true;
+			}
+
+			filter.setNascondiSeSoloDiAltriIntermediari(nascondiAltriIntermediari);
+
+		}
+
+		if(!isAdmin && listaCodDomini.isEmpty()){
+			boolean vediTuttiDomini = false;
+
+			for(Acl acl: aclOperatore) {
+				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+					if(acl.getIdDominio() == null) {
+						vediTuttiDomini = true;
+						break;
+					} else {
+						listaCodDomini.add(acl.getCodDominio());
+					}
+				}
+			}
+			if(!vediTuttiDomini) {
+				if(listaCodDomini.isEmpty()) {
+					eseguiRicerca = false;
+				} else {
+					filter.setCodDominio(listaCodDomini);
+				}
+			}
+		}
+		return eseguiRicerca;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -397,7 +409,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 						filter.setCodDominio(listaCodDomini);
 					}
 				}
-				
+
 				long count = eseguiRicerca ? frBD.count(filter) : 0;
 				eseguiRicerca = eseguiRicerca && count > 0;
 			}
@@ -624,7 +636,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 	@Override
 	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+			throws WebApplicationException, ConsoleException,ExportException {
 		StringBuffer sb = new StringBuffer();
 		if(idsToExport != null && idsToExport.size() > 0) {
 			for (Long long1 : idsToExport) {
@@ -639,20 +651,49 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
-		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
-		} 
-
 		String fileName = "Rendicontazioni.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
+			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 			FrBD frBD = new FrBD(bd);
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			FrFilter filter = frBD.newFilter(simpleSearch);
 
-			for (Long idVersamento : idsToExport) {
-				Fr fr = frBD.getFr(idVersamento);
+			//1. eseguo una count per verificare che il numero dei risultati da esportare sia <= sogliamassimaexport massivo
+			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, frBD, operatore,  simpleSearch, filter); 
 
+			if(!eseguiRicerca){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.operazioneNonPermessa"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+			
+			long count = frBD.countExt(filter);
+			
+			if(count < 1){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.nessunElementoDaEsportare"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			} 
+			
+			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+			
+			filter.setOffset(0);
+			filter.setLimit(limit);
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.FR.model().DATA_ORA_FLUSSO);
+			fsw.setSortOrder(SortOrder.DESC);
+			filter.getFilterSortList().add(fsw);
+			
+			List<Fr> findAllExt = frBD.findAllExt(filter);
+			
+			for (Fr fr : findAllExt) {
 				String folderName = "Rendicontazione_" + fr.getIur();
 
 				ZipEntry frXml = new ZipEntry(folderName +"/fr.xml");
@@ -668,6 +709,8 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			return fileName;
 		}catch(WebApplicationException e){
 			throw e;
+		}catch(ExportException e){
+			throw e;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
@@ -675,7 +718,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
 
