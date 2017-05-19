@@ -1,3 +1,6 @@
+--DEV-238
+CREATE SEQUENCE seq_incassi start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
 CREATE TABLE incassi
 (
        trn VARCHAR(35) NOT NULL,
