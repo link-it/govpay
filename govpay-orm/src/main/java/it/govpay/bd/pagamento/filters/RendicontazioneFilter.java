@@ -1,5 +1,8 @@
 package it.govpay.bd.pagamento.filters;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
@@ -28,6 +31,8 @@ public class RendicontazioneFilter extends AbstractFilter{
 	// Esterni alla tabella
 	private String codDominio; // fr 
 	private Long idApplicazione; // versamenti
+	private List<String> idDomini;
+	private List<Long> idRendicontazione;
 	
 	public RendicontazioneFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -37,7 +42,7 @@ public class RendicontazioneFilter extends AbstractFilter{
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Rendicontazione.model().IUV);
 		this.listaFieldSimpleSearch.add(Rendicontazione.model().IUR);
-//		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_FR.COD_DOMINIO);
+		this.listaFieldSimpleSearch.add(Rendicontazione.model().ID_FR.COD_DOMINIO);
 	}
 	
 	@Override
@@ -46,15 +51,26 @@ public class RendicontazioneFilter extends AbstractFilter{
 			IExpression newExpression = super._toSimpleSearchExpression();
 
 			if(this.idFr != null) {
+				IExpression newExpressionFr = this.newExpression();
+				
 				CustomField idFrField = new CustomField("id_fr", Long.class, "id_fr", this.getRootTable());
-				newExpression.and();
-				newExpression.equals(idFrField, this.idFr);
+				newExpressionFr.equals(idFrField, this.idFr);
+				newExpression.and(newExpressionFr);
+			}
+			
+			if(this.idDomini != null){
+				IExpression newExpressionDomini = this.newExpression();
+				idDomini.removeAll(Collections.singleton(null));
+				newExpressionDomini.in(Rendicontazione.model().ID_FR.COD_DOMINIO, this.idDomini);
+				newExpression.and(newExpressionDomini);
 			}
 
 			return newExpression;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}
@@ -97,12 +113,22 @@ public class RendicontazioneFilter extends AbstractFilter{
 			if(this.codDominio != null) {
 				exp.equals(Rendicontazione.model().ID_FR.COD_DOMINIO, this.codDominio);
 			}
+			
+			if(this.idDomini != null){
+				idDomini.removeAll(Collections.singleton(null));
+				exp.in(Rendicontazione.model().ID_FR.COD_DOMINIO, this.idDomini);
+			}
 
 			if(this.idApplicazione != null) {
 				exp.isNotNull(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO); //per forzare la join
 				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(Rendicontazione.model().ID_PAGAMENTO.ID_VERSAMENTO));
 				exp.equals(idApplicazioneField, this.idApplicazione);
 				
+			}
+			
+			if(this.idRendicontazione != null && this.idRendicontazione.size() >0){ 
+				CustomField cf = new CustomField(ALIAS_ID, Long.class, ALIAS_ID, this.getTable(Rendicontazione.model()));
+				exp.in(cf, this.idRendicontazione);
 			}
 
 			return exp;
@@ -187,6 +213,22 @@ public class RendicontazioneFilter extends AbstractFilter{
 
 	public void setTipo(String tipo) {
 		this.tipo = tipo;
+	}
+
+	public List<String> getIdDomini() {
+		return idDomini;
+	}
+
+	public void setIdDomini(List<String> idDomini) {
+		this.idDomini = idDomini;
+	}
+
+	public List<Long> getIdRendicontazione() {
+		return idRendicontazione;
+	}
+
+	public void setIdRendicontazione(List<Long> idRendicontazione) {
+		this.idRendicontazione = idRendicontazione;
 	}
 	
 }

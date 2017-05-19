@@ -171,8 +171,12 @@ public abstract class AbstractFilter implements IFilter {
 	}
 	
 	protected String getColumn(IField field) throws ExpressionException {
+		return this.getColumn(field, false);
+	}
+	
+	protected String getColumn(IField field, boolean includeTableName) throws ExpressionException {
 		ISQLFieldConverter converter = ((IDBServiceUtilities<?>)this.expressionConstructor).getFieldConverter();
-		return converter.toColumn(field,false);
+		return converter.toColumn(field,includeTableName);
 	}
 	
 	protected FilterSortWrapper getDefaultFilterSortWrapper() throws ServiceException {

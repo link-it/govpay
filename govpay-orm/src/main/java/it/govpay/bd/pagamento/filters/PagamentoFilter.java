@@ -191,56 +191,48 @@ public class PagamentoFilter extends AbstractFilter {
 			
 			IExpression newExpression = super._toSimpleSearchExpression();
 			
-			boolean addAnd = false;
-
 			if(this.getIdRr() != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(new CustomField("id_rr", Long.class, "id_rr", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRr());
-				addAnd = true;
+				IExpression newExpressionRR = this.newExpression();
+				newExpressionRR.equals(new CustomField("id_rr", Long.class, "id_rr", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRr());
+				newExpression.and(newExpressionRR);
 			}
 			
 			if(this.getIdRpt() != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
-				addAnd = true;
+				IExpression newExpressionRpt = this.newExpression();
+				newExpressionRpt.equals(new CustomField("id_rpt", Long.class, "id_rpt", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdRpt());
+				newExpression.and(newExpressionRpt);
 			}
 			
 			if(this.getIdIncasso() != null) {
-				if(addAnd)
-					newExpression.and();
-				
-				newExpression.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
-				addAnd = true;
+				IExpression newExpressionIncasso = this.newExpression();
+				newExpressionIncasso.equals(new CustomField("id_incasso", Long.class, "id_incasso", pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model())), this.getIdIncasso());
+				newExpression.and(newExpressionIncasso);
 			}
 			
-			if(this.idVersamenti != null && this.idVersamenti.size() >0){ 
-				if(addAnd)
-					newExpression.and();
+			if(this.idVersamenti != null && this.idVersamenti.size() >0){
+				IExpression newExpressionVersamenti = this.newExpression();
 				CustomField idVersamentoField = new CustomField(ALIAS_ID, Long.class, ALIAS_ID,
 						pagamentoFieldConverter.toTable(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO));
-				newExpression.in(idVersamentoField, this.idVersamenti);
+				newExpressionVersamenti.in(idVersamentoField, this.idVersamenti);
 				// forzo la join con singoliversamenti
-				newExpression.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE); 
-				newExpression.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
-				addAnd = true;
+				newExpressionVersamenti.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.COD_SINGOLO_VERSAMENTO_ENTE); 
+				newExpressionVersamenti.isNotNull(it.govpay.orm.Pagamento.model().ID_SINGOLO_VERSAMENTO.ID_VERSAMENTO.STATO_VERSAMENTO);
+				newExpression.and(newExpressionVersamenti);
 			}
 			
 			if(this.idDomini != null){
+				IExpression newExpressionDomini = this.newExpression();
 				idDomini.removeAll(Collections.singleton(null));
-				if(addAnd)
-					newExpression.and();
-				newExpression.in(Pagamento.model().COD_DOMINIO, this.idDomini);
-				addAnd = true;
+				newExpressionDomini.in(Pagamento.model().COD_DOMINIO, this.idDomini);
+				newExpression.and(newExpressionDomini);
 			}
 
 			return newExpression;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}

@@ -463,19 +463,36 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-				//				filter.setIdApplicazioni(operatore.getIdApplicazioni());
-				//				filter.setIdUo(operatore.getIdEnti()); 
-
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
-				fsw.setSortOrder(SortOrder.DESC);
-				filter.getFilterSortList().add(fsw);
-
-				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
+				
 				List<Long> idVersamentoL = new ArrayList<Long>();
 				idVersamentoL.add(id);
 				filter.setIdVersamento(idVersamentoL);
 
+				List<Long> idDomini = new ArrayList<Long>();
+				boolean vediTuttiDomini = false;
+
+				AclBD aclBD = new AclBD(bd);
+				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getIdDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
+
+				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
 				eseguiRicerca = eseguiRicerca && count > 0;
 			}
 
@@ -484,8 +501,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			Versamento versamento = eseguiRicerca ? versamentiBD.getVersamento(id) : null;
 
 			InfoForm infoModifica = null;
-			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, versamento);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id);
+			InfoForm infoCancellazione = versamento != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, versamento) : null;
+			URI esportazione = versamento != null ? this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id) : null;
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioVersamento") ;
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);

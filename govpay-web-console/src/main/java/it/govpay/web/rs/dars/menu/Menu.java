@@ -151,18 +151,18 @@ public class Menu extends BaseRsService {
 			monitoraggio.getVociMenu().add(voceMenuVersamenti);
 			menu.setHome(voceMenuVersamenti);
 
-			Fr frDars = new Fr();
-			URI frURI = new URI(frDars.getPathServizio());
-			VoceMenu voceMenuFlussiRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(frDars.getNomeServizio() + ".titolo"),	frURI, false);
-
-			monitoraggio.getVociMenu().add(voceMenuFlussiRendicontazioni);
-
 			Pagamenti pagamentiDars = new Pagamenti();
 			URI pagamentiURI = new URI(pagamentiDars.getPathServizio());
 			VoceMenu voceMenuPagamenti = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".titolo"), pagamentiURI, false);
 
 			monitoraggio.getVociMenu().add(voceMenuPagamenti);
 			
+			Fr frDars = new Fr();
+			URI frURI = new URI(frDars.getPathServizio());
+			VoceMenu voceMenuFlussiRendicontazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(frDars.getNomeServizio() + ".titolo"),	frURI, false);
+
+			monitoraggio.getVociMenu().add(voceMenuFlussiRendicontazioni);
+
 			Incassi incassiDars = new Incassi();
 			URI incassiURI = new URI(incassiDars.getPathServizio());
 			VoceMenu voceMenuIncassi = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(incassiDars.getNomeServizio() + ".titolo"), incassiURI, false);
