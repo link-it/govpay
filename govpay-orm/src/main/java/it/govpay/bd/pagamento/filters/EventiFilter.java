@@ -17,7 +17,6 @@ import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.orm.Evento;
 import it.govpay.orm.dao.jdbc.converter.EventoFieldConverter;
-import it.govpay.orm.dao.jdbc.converter.TributoFieldConverter;
 
 public class EventiFilter extends AbstractFilter{
 	

@@ -32261,6 +32261,7 @@ Polymer.AppLocalizeBehavior = {
       }
       dropdown.items = items;
       dropdown.value = data.defaultValue;
+      dropdown.reset = this._vaadinReset.bind(this, dropdown);
       /*var plb = document.createElement('paper-listbox');
       plb.className = 'dropdown-content';
       plb.attrForSelected='value';
@@ -32275,6 +32276,10 @@ Polymer.AppLocalizeBehavior = {
       }
       plb.addEventListener('iron-select', this._modifiedForm);
       Polymer.dom(dropdown).appendChild(plb);*/
+    },
+
+    _vaadinReset: function(event){
+      event.inputElement.value = (event.selectedItem && event.itemLabelPath)?event.selectedItem[event.itemLabelPath]:'';
     },
 
     refreshDropdownData: function(target){
@@ -33630,7 +33635,7 @@ Polymer.AppLocalizeBehavior = {
       <paper-toolbar hidden$="[[hideToolbar]]">
         <paper-icon-button icon="menu" on-tap="openDrawer"></paper-icon-button>
         <div class$="[[_titleClass(obj)]]">[[title]]</div>
-        <link-search-simple placeholder="[[simplePlaceholder]]" hide="[[_showAdvancedSearch(results.length, obj)]]" hidden$="[[_hideSearch(obj)]]" on-lss-key-enter="_onEnterSimpleSearch" on-lss-show-advanced="_onTapAdvSearch"></link-search-simple>
+        <link-search-simple placeholder="[[simplePlaceholder]]" hide="[[_showAdvancedSearch(results.length, obj)]]" hidden$="[[_hideSearch(obj)]]" on-lss-key-enter="_onEnterSimpleSearch" on-lss-tap="_onTapSimpleSearch" on-lss-show-advanced="_onTapAdvSearch"></link-search-simple>
         
         <link-user-action id="userAction" user="[[user]]"></link-user-action>
       </paper-toolbar>
@@ -33935,9 +33940,15 @@ Polymer.AppLocalizeBehavior = {
         if (e.detail.keyCode === 13) {
           var param = e.detail.currentTarget.value.toString().trim();
           e.detail.currentTarget.inputElement.blur();
-          this.toggleAdvancedSearch(false);
-          this.$.searchbox.simpleSearch(param);
+          var tap_event = {};
+          tap_event.detail = { value: param };
+          this._onTapSimpleSearch(tap_event);
         }
+      },
+
+      _onTapSimpleSearch: function(e){
+        this.toggleAdvancedSearch(false);
+        this.$.searchbox.simpleSearch(e.detail.value);
       },
 
       _onTapAdvSearch: function(){
@@ -35606,7 +35617,7 @@ Polymer.AppLocalizeBehavior = {
         <paper-icon-button class="menu-icon" icon="home" on-tap="goHome" hidden$="[[!showHome]]"></paper-icon-button>
         <paper-icon-button class="menu-icon" icon="arrow-back" on-tap="goBack"></paper-icon-button>
         <div id="titleDetail" class="ellipsis-text">[[obj.titolo]]</div>
-        <link-search-simple placeholder="[[simplePlaceholder]]" hide="[[advancedSearchHidden]]" hidden$="[[simpleSearchHidden]]" on-lss-key-enter="_onEnterSimpleSearch" on-lss-show-advanced="_onTapAdvSearch"></link-search-simple>
+        <link-search-simple placeholder="[[simplePlaceholder]]" hide="[[advancedSearchHidden]]" hidden$="[[simpleSearchHidden]]" on-lss-key-enter="_onEnterSimpleSearch" on-lss-tap="_onTapSimpleSearch" on-lss-show-advanced="_onTapAdvSearch"></link-search-simple>
         
         <link-user-action id="userAction" user="[[user]]"></link-user-action>
         <paper-tabs selected="{{selectedTab}}" class="bottom self-end" on-iron-select="cambiaTab">
@@ -35837,10 +35848,16 @@ Polymer.AppLocalizeBehavior = {
         if (e.detail.keyCode === 13) {
           var param = e.detail.currentTarget.value.toString().trim();
           e.detail.currentTarget.inputElement.blur();
-          var _lsv = this.querySelector('link-search-view');
-          _lsv.toggleAdvancedSearch(false);
-          _lsv.$.searchbox.simpleSearch(param);
+          var tap_event = {};
+          tap_event.detail = { value: param };
+          this._onTapSimpleSearch(tap_event);
         }
+      },
+
+      _onTapSimpleSearch: function(e){
+        var _lsv = this.querySelector('link-search-view');
+        _lsv.toggleAdvancedSearch(false);
+        _lsv.$.searchbox.simpleSearch(e.detail.value);
       },
 
       _onTapAdvSearch: function(){
@@ -36614,7 +36631,7 @@ event and do your own custom submission:
     </style>
     <paper-material elevation="0">
       <div class="cont">
-        <form is="iron-form" id="searchForm" class="form" method="get" on-iron-form-submit="sumbitted">
+        <form is="iron-form" id="searchForm" class="form" method="get" on-iron-form-submit="sumbitted" on-iron-form-reset="_ironFormReset">
         </form>
         <div class="buttonBar searchBoxBar">
           <paper-button class="accentColor" on-tap="search">[[localize('cerca')]]</paper-button>
@@ -36658,6 +36675,18 @@ event and do your own custom submission:
         lastQuery: {
           type: String,
           value: ''
+        }
+      },
+
+      _ironFormReset: function(event){
+        var fcs = event.currentTarget.serialize();
+        for (var p in fcs) {
+          if (fcs.hasOwnProperty(p)) {
+            var el = event.currentTarget.querySelector('#'+p);
+            if(typeof el.reset == 'function') {
+              el.reset();
+            }
+          }
         }
       },
 
@@ -37486,7 +37515,7 @@ event and do your own custom submission:
       <div class="sub-bar-group">
         <paper-input no-label-float="" placeholder="[[placeholder]]" class="toolbar-search" on-keypress="_onKeypressSimpleSearch">
           <paper-icon-button prefix="" icon="arrow-back" class="mobile-backsearch" on-tap="_onTapMobileBack"></paper-icon-button>
-          <iron-icon icon="search" prefix="" class="prefix-icosearch"></iron-icon>
+          <paper-icon-button icon="search" prefix="" class="prefix-icosearch" on-tap="_onTapSimpleSearch"></paper-icon-button>
           <paper-icon-button suffix="" icon="more-vert" class="ico-advsearch" hidden$="[[hide]]" on-tap="_onTapAdvSearch"></paper-icon-button>
           <paper-icon-button suffix="" icon="clear" class="mobile-resetsearch" on-tap="_onTapMobileReset"></paper-icon-button>
         </paper-input>
@@ -37530,6 +37559,9 @@ event and do your own custom submission:
       },
       _onKeypressSimpleSearch: function(e) {
         this.fire('lss-key-enter', e);
+      },
+      _onTapSimpleSearch: function(e) {
+        this.fire('lss-tap', {value: this.querySelector('paper-input').value });
       },
       _onTapAdvSearch: function(e) {
         this.fire('lss-show-advanced', e);

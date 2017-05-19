@@ -357,17 +357,57 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
+			FrBD frBD = new FrBD(bd);
 			// Operazione consentita agli utenti registrati
-			this.darsService.getOperatoreByPrincipal(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
+			boolean eseguiRicerca = true; //isAdmin;
+			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
+			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
+			if(!isAdmin){
+				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+				FrFilter filter = frBD.newFilter();
+
+				List<Long> idFrL = new ArrayList<Long>();
+				idFrL.add(id);
+				filter.setIdFr(idFrL);
+
+				List<String> listaCodDomini = new ArrayList<String>();
+				boolean vediTuttiDomini = false;
+
+				AclBD aclBD = new AclBD(bd);
+				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							listaCodDomini.add(acl.getCodDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(listaCodDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setCodDominio(listaCodDomini);
+					}
+				}
+				
+				long count = eseguiRicerca ? frBD.count(filter) : 0;
+				eseguiRicerca = eseguiRicerca && count > 0;
+			}
 
 			// recupero oggetto
-			FrBD frBD = new FrBD(bd);
-			Fr fr = frBD.getFrExt(id);
+			Fr fr = eseguiRicerca ? frBD.getFrExt(id) : null;
 
 			InfoForm infoModifica = null;
-			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, fr);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
+			InfoForm infoCancellazione = fr != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, fr) : null;
+			URI esportazione = fr != null ? this.getUriEsportazioneDettaglio(uriInfo, bd, id) : null;
 
 			String titolo = fr != null ? this.getTitolo(fr,bd) : "";
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
@@ -442,22 +482,6 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 						sezioneAnomalie.addVoce(anomalia.getCodice(),anomalia.getDescrizione());
 					}
 				}
-
-				//				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numeroPagamenti.label"), fr.getNumeroPagamenti()+ "");
-				//
-				//				int annoFlusso = Integer.parseInt(simpleDateFormatAnno.format(fr.getDataFlusso()));
-				//				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".annoRiferimento.label"), annoFlusso+"");
-				//
-				//				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) {
-				//					root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
-				//				}
-				//
-				//				if(StringUtils.isNotEmpty(fr.getDescrizioneStato())) 
-				//					root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), fr.getDescrizioneStato());
-				//
-				//				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniOk.label"), fr.getNumOk() + "");
-				//				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAnomale.label"), fr.getNumAnomale() + "");
-				//				root.addVoce(Utils.getInstance().getMessageFromResourceBundle(this.nomeServizio + ".numRendicontazioniAltroIntermediario.label"), fr.getNumAltroIntermediario() +"");
 
 				Rendicontazioni rendicontazioniDars = new Rendicontazioni();
 				String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.rendicontazioni.titolo");

@@ -64,15 +64,18 @@ public class IncassoFilter extends AbstractFilter{
 			IExpression newExpression = super._toSimpleSearchExpression();
 
 			if(this.codDomini != null){
+				IExpression newExpressionDomini = this.newExpression();
 				codDomini.removeAll(Collections.singleton(null));
-				newExpression.and();
-				newExpression.in(Incasso.model().COD_DOMINIO, this.codDomini);
+				newExpressionDomini.in(Incasso.model().COD_DOMINIO, this.codDomini);
+				newExpression.and(newExpressionDomini);
 			}
 
 			return newExpression;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}

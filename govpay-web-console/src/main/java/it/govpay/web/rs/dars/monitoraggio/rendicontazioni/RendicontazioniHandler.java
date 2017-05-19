@@ -42,6 +42,7 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
+import it.govpay.bd.anagrafica.AclBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Fr;
@@ -50,6 +51,10 @@ import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.model.SingoloVersamento;
 import it.govpay.bd.pagamento.RendicontazioniBD;
 import it.govpay.bd.pagamento.filters.RendicontazioneFilter;
+import it.govpay.model.Acl;
+import it.govpay.model.Acl.Tipo;
+import it.govpay.model.Operatore;
+import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Rendicontazione.Anomalia;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
@@ -92,7 +97,9 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
 			// Operazione consentita agli utenti registrati
-			this.darsService.checkOperatoreAdmin(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -102,6 +109,9 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			RendicontazioniBD frBD = new RendicontazioniBD(bd);
+			AclBD aclBD = new AclBD(bd);
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			List<String> listaCodDomini =  new ArrayList<String>();
 			RendicontazioneFilter filter = frBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
@@ -151,6 +161,28 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 				if(StringUtils.isNotEmpty(iuv))
 					filter.setIuv(iuv);
+			}
+			
+			if(!isAdmin && listaCodDomini.isEmpty()){
+				boolean vediTuttiDomini = false;
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							listaCodDomini.add(acl.getCodDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(listaCodDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(listaCodDomini);
+					}
+				}
 			}
 
 			long count = eseguiRicerca ? frBD.count(filter) : 0;
@@ -274,16 +306,56 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita agli utenti registrati
-			this.darsService.getOperatoreByPrincipal(bd); 
+			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+			ProfiloOperatore profilo = operatore.getProfilo();
+			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			
+			RendicontazioniBD frBD = new RendicontazioniBD(bd);
+			boolean eseguiRicerca = true; //isAdmin;
+			// SE l'operatore non e' admin vede solo i versamenti associati alle sue UO ed applicazioni
+			// controllo se l'operatore ha fatto una richiesta di visualizzazione di un versamento che puo' vedere
+			if(!isAdmin){
+				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
+				RendicontazioneFilter filter = frBD.newFilter();
+				
+				List<Long> idRendL = new ArrayList<Long>();
+				idRendL.add(id);
+				filter.setIdRendicontazione(idRendL);
 
+				List<String> idDomini = new ArrayList<String>();
+				boolean vediTuttiDomini = false;
+
+				AclBD aclBD = new AclBD(bd);
+				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+				for(Acl acl: aclOperatore) {
+					if(Tipo.DOMINIO.equals(acl.getTipo())) {
+						if(acl.getIdDominio() == null) {
+							vediTuttiDomini = true;
+							break;
+						} else {
+							idDomini.add(acl.getCodDominio());
+						}
+					}
+				}
+				if(!vediTuttiDomini) {
+					if(idDomini.isEmpty()) {
+						eseguiRicerca = false;
+					} else {
+						filter.setIdDomini(idDomini);
+					}
+				}
+
+				long count = eseguiRicerca ? frBD.count(filter) : 0;
+				eseguiRicerca = eseguiRicerca && count > 0;
+			}
 
 			// recupero oggetto
-			RendicontazioniBD frBD = new RendicontazioniBD(bd);
-			Rendicontazione rendicontazione = frBD.getRendicontazione(id);
+			Rendicontazione rendicontazione = eseguiRicerca ? frBD.getRendicontazione(id) : null;
 
 			InfoForm infoModifica = null;
-			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, rendicontazione);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
+			InfoForm infoCancellazione = rendicontazione != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, rendicontazione) : null;
+			URI esportazione = rendicontazione != null ? this.getUriEsportazioneDettaglio(uriInfo, bd, id) : null;
 
 			String titolo = rendicontazione != null ? this.getTitolo(rendicontazione,bd) : "";
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);

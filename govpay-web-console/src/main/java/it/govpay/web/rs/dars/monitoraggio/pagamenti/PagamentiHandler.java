@@ -124,8 +124,18 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			
+			PagamentiBD pagamentiBD = new PagamentiBD(bd);
+			AclBD aclBD = new AclBD(bd);
+			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		
+			List<Long> idDomini = new ArrayList<Long>();
 			Map<String, String> params = new HashMap<String, String>();
-
+			boolean elementoCorrelato = false;
+			boolean eseguiRicerca = true;
+			
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			PagamentoFilter filter = pagamentiBD.newFilter(simpleSearch);
+			
 			String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
 			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
@@ -138,14 +148,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String idIncassoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIncasso.id");
 			String idIncasso= this.getParameter(uriInfo, idIncassoId, String.class);
 
-			boolean eseguiRicerca = true;
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
-
-			PagamentiBD pagamentiBD = new PagamentiBD(bd);
-			AclBD aclBD = new AclBD(bd);
-			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			List<Long> idDomini = new ArrayList<Long>();
-			PagamentoFilter filter = pagamentiBD.newFilter(simpleSearch);
+			
 			filter.setSogliaRitardo(ConsoleProperties.getInstance().getSogliaGiorniRitardoPagamenti());
 			filter.setOffset(offset);
 			filter.setLimit(limit);
@@ -154,9 +157,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 			
-			long count = 0;
-			boolean elementoCorrelato = false;
-
 			// elemento correlato al versamento.
 			if(StringUtils.isNotEmpty(idVersamento)){
 				params.put(versamentoId, idVersamento);
@@ -222,7 +222,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				}
 
 				String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
-
 				String dataInizio = this.getParameter(uriInfo, dataInizioId, String.class);
 				if(StringUtils.isNotEmpty(dataInizio)){
 					filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
@@ -277,15 +276,25 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				}
 			}
 
-			URI esportazione = elementoCorrelato ? null : this.getUriEsportazione(uriInfo, bd); 
+			URI esportazione = this.getUriEsportazione(uriInfo, bd);
+			
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
-			count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
+			long count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
 			eseguiRicerca = eseguiRicerca && count > 0;
+			boolean visualizzaRicerca = true;
+			
+			if(elementoCorrelato) {
+				// se elemento correlato visualizza la ricerca solo se i risultati sono > del limit
+				  visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			}
 
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,visualizzaRicerca,params),
 					this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
+			// export massivo on
+			//elenco.setExportMassivo(true);
+			
 			List<Pagamento> pagamenti = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
 
 			if(pagamenti != null && pagamenti.size() > 0){

@@ -65,35 +65,28 @@ public class VersamentoFilter extends AbstractFilter {
 		super(expressionConstructor, simpleSearch);
 		this.listaFieldSimpleSearch.add(Versamento.model().DEBITORE_IDENTIFICATIVO);
 		this.listaFieldSimpleSearch.add(Versamento.model().COD_VERSAMENTO_ENTE);
+		this.listaFieldSimpleSearch.add(Versamento.model().IUV.IUV);
 	}
 
 	@Override
 	public IExpression _toSimpleSearchExpression() throws ServiceException {
 		try {
-			IExpression newExpression = super._toSimpleSearchExpression();
+			IExpression newExpressionOr = super._toSimpleSearchExpression();
 			
-//			boolean addAnd = false;
-			 
-
 			if(this.idDomini != null){
+				IExpression newExpressionDomini = this.newExpression();
+
 				idDomini.removeAll(Collections.singleton(null));
-//				if(addAnd)
-					newExpression.and();
 				VersamentoFieldConverter converter = new VersamentoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 
 				CustomField cf = new CustomField("id_dominio", Long.class, "id_dominio", converter.toTable(Versamento.model().ID_UO));
-				newExpression.in(cf, this.idDomini);
-				newExpression.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
-//				addAnd = true;
+				newExpressionDomini.in(cf, this.idDomini);
+				newExpressionDomini.isNotNull(Versamento.model().ID_UO.COD_UO); //Sempre not null, solo per forzare la join
+				
+				newExpressionOr.and(newExpressionDomini);
 			}
 
-			 
-			
-			
 //			if(this.idApplicazione!= null && this.idApplicazione.size() > 0 && this.codVersamentoEnte!= null && this.codVersamentoEnte.size() > 0) {
 //				if(this.idApplicazione.size() == this.codVersamentoEnte.size()){
-//					if(addAnd)
-//						newExpression.and();
-//
 //					IExpression orExpr = this.newExpression();
 //					List<IExpression> lstOrExpr = new ArrayList<IExpression>();
 //					
@@ -112,17 +105,16 @@ public class VersamentoFilter extends AbstractFilter {
 //					
 //					orExpr.or(lstOrExpr.toArray(new IExpression[lstOrExpr.size()]));
 //					
-//					newExpression.and(orExpr);
-//					
-//					addAnd = true;
+//					newExpressionOr.or(orExpr);
 //				}
 //			}
-			
 
-			return newExpression;
+			return newExpressionOr;
 		} catch (ExpressionNotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {
+			throw new ServiceException(e);
+		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
 	}

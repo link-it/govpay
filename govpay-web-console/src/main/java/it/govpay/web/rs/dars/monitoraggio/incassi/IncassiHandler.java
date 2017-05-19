@@ -185,7 +185,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 							vediTuttiDomini = true;
 							break;
 						} else {
-//							idDomini.add(acl.getIdDominio());
+							//							idDomini.add(acl.getIdDominio());
 							idDomini.add(acl.getCodDominio());
 						}
 					}
@@ -194,7 +194,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-//						filter.setIdDomini(idDomini);
+						//						filter.setIdDomini(idDomini);
 						filter.setCodDomini(idDomini);
 					}
 				}
@@ -567,6 +567,11 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dispositivo.label"), entry.getDispositivo()));
 		}
 
+		if(StringUtils.isNotEmpty(entry.getTrn())) {
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.label"), entry.getTrn()));
+		}
+
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.ok"),
 						"ok"));
@@ -574,6 +579,23 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 		if(entry.getImporto() != null) {
 			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importo.label"), entry.getImporto().toString()+ "€"));
+		}
+
+		try{		
+			Dominio dominio = entry.getDominio(bd);
+			if(dominio != null){
+				Domini dominiDars = new Domini();
+				DominiHandler dominiDarsHandler =  (DominiHandler) dominiDars.getDarsHandler();
+				String dominioTitolo = dominiDarsHandler.getTitolo(dominio, bd);
+				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),
+								dominioTitolo));
+			}
+		} catch (ServiceException e) {
+			// dominio non censito metto solo il coddominio
+			voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),
+							entry.getCodDominio()));
 		}
 
 		return voci; 
@@ -628,7 +650,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 							vediTuttiDomini = true;
 							break;
 						} else {
-//							idDomini.add(acl.getIdDominio());
+							//							idDomini.add(acl.getIdDominio());
 							idDomini.add(acl.getCodDominio());
 						}
 					}
@@ -637,7 +659,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-//						filter.setIdDomini(idDomini);
+						//						filter.setIdDomini(idDomini);
 						filter.setCodDomini(idDomini);
 					}
 				}
@@ -723,7 +745,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 							vediTuttiDomini = true;
 							break;
 						} else {
-//							idDomini.add(acl.getIdDominio());
+							//							idDomini.add(acl.getIdDominio());
 							idDomini.add(acl.getCodDominio());
 						}
 					}
@@ -732,7 +754,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 					if(idDomini.isEmpty()) {
 						eseguiRicerca = false;
 					} else {
-//						filter.setIdDomini(idDomini);
+						//						filter.setIdDomini(idDomini);
 						filter.setCodDomini(idDomini);
 					}
 				}
