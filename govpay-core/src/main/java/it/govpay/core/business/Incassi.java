@@ -286,7 +286,7 @@ public class Incassi extends BasicBD {
 		try {
 			Applicazione applicazione = AnagraficaManager.getApplicazioneByPrincipal(this, listaIncassoDTO.getPrincipal());
 			domini = AclEngine.getAuthorizedInc(applicazione);
-			if(domini.size() == 0) {
+			if(domini != null && domini.size() == 0) {
 				throw new NotAuthorizedException();
 			}
 		} catch (NotFoundException e) {
