@@ -90,7 +90,7 @@ public interface IDarsHandler<T> {
 	public String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 	public Map<String, Voce<String>> getVoci(T entry, BasicBD bd) throws ConsoleException;
 	
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
+	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
 
 	public Format getFormat();

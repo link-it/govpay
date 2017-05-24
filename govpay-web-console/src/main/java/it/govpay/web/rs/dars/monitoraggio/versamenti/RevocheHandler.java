@@ -252,7 +252,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 
 	@Override
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		StringBuffer sb = new StringBuffer();
 		if(idsToExport != null && idsToExport.size() > 0)

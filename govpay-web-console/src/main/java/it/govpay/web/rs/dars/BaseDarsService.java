@@ -38,6 +38,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -68,6 +69,7 @@ public abstract class BaseDarsService extends BaseRsService {
 
 	public static final String SIMPLE_SEARCH_PARAMETER_ID = "simpleSearch";
 	public static final String IDS_TO_DELETE_PARAMETER_ID = "ids";
+	public static final String IDS_TO_EXPORT_PARAMETER_ID = "ids";
 
 	protected Logger log = LogManager.getLogger();
 
@@ -319,35 +321,53 @@ public abstract class BaseDarsService extends BaseRsService {
 	@POST
 	@Path("/esporta")
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM})
-	public Response esporta(List<Long> idsToExport, @Context UriInfo uriInfo) throws Exception{
-		StringBuffer sb = new StringBuffer();
-
-		if(idsToExport != null && idsToExport.size() > 0)
-			for (Long long1 : idsToExport) {
-
-				if(sb.length() > 0)
-					sb.append(", ");
-
-				sb.append(long1);
-			}
-
-		String methodName = "esporta " + this.getNomeServizio() + "[" + sb.toString() + "]";  
+	public Response esporta(InputStream is, @Context UriInfo uriInfo) throws Exception{
+		String methodName = "esporta " + this.getNomeServizio() ; //+ "[" + sb.toString() + "]";
+		
+		  
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
+		String idsAsString = null;
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
+//			JsonConfig jsonConfig = new JsonConfig();
+			ByteArrayOutputStream baosIn = new ByteArrayOutputStream();
+			Utils.copy(is, baosIn);
+
+			baosIn.flush();
+			baosIn.close();
+
+			JSONObject jsonObjectFormExport = JSONObject.fromObject( baosIn.toString() );
+			JSONArray jsonIDS = jsonObjectFormExport.getJSONArray(IDS_TO_EXPORT_PARAMETER_ID);
+
+			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
+			for (Object key : jsonObjectFormExport.keySet()) {
+				String value = jsonObjectFormExport.getString((String) key);
+				if(StringUtils.isNotEmpty(value) && !"null".equals(value))
+				rawValues.add(new RawParamValue((String) key, value));
+			}
+			
+			idsAsString = Utils.getValue(rawValues, IDS_TO_EXPORT_PARAMETER_ID);
+			this.log.info("Richiesto export degli elementi con id "+idsAsString+""); 
+
+			List<Long> idsToExport = new ArrayList<Long>();
+			if(jsonIDS != null && jsonIDS.size() > 0)
+				for (int i = 0; i < jsonIDS.size(); i++) {
+					long id = jsonIDS.getLong(i);
+					idsToExport.add(id); 
+				}
+			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ZipOutputStream zout = new ZipOutputStream(baos);
 
-			String fileName = this.getDarsHandler().esporta(idsToExport, uriInfo, bd, zout);
+			String fileName = this.getDarsHandler().esporta(idsToExport, rawValues, uriInfo, bd, zout);
 			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
 			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
 		} catch(ExportException e){
-			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":"+e.getMessaggi());
+			this.log.info("Esito operazione "+methodName+" [" + idsAsString + "] : " + e.getEsito() + ", causa: " +e.getMessaggi());
 			darsResponse.setEsitoOperazione(e.getEsito());
 			darsResponse.setDettaglioEsito(e.getMessaggi());
 			return Response.ok(darsResponse,MediaType.APPLICATION_JSON).build();
@@ -355,11 +375,9 @@ public abstract class BaseDarsService extends BaseRsService {
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Esito operazione "+methodName+" [" + idsAsString + "], causa: " +e.getMessage());
 			if(bd != null) 
 				bd.rollback();
-			
-			
 			
 			return Response.serverError().build();
 		}finally {

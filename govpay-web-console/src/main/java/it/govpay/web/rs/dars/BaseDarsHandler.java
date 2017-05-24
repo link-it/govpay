@@ -246,7 +246,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	public  abstract String getSottotitolo(T entry, BasicBD bd) throws ConsoleException;
 
 	@Override
-	public abstract String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
+	public abstract String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
 
 	@Override
 	public abstract String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException,ExportException;

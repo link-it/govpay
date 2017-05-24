@@ -33653,7 +33653,7 @@ Polymer.AppLocalizeBehavior = {
           <div class="mainContent">
             <link-searchbox id="searchbox" auto="" on-append-response="appendResults" on-response="setResults" on-advanced-search-request="_onAdvRequest" hidden$="[[!advSearch]]"></link-searchbox>
             <span class="gap" hidden$="[[!advSearch]]"></span>
-            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" massive="[[massive]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
+            <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
           </div>
         </div>
@@ -33665,7 +33665,7 @@ Polymer.AppLocalizeBehavior = {
       <paper-fab icon="add" class="fab-item" mini="" on-tap="addElemento" hidden$="[[_setVisibility(creazioneUrl)]]" title="[[localize('nuovoElemento')]]"></paper-fab>
     </link-fab-menu>
     <iron-ajax id="getResourceInfo" handle-as="json" on-response="getResourceInfo_responseHandler" on-error="getResourceInfo_errorHandler" debounce-duration="300"></iron-ajax>
-    <iron-ajax id="esportaDati" url="[[esportazioneUrl]]" handle-as="blob" method="POST" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="esportaDati" url="[[esportazioneUrl]]" handle-as="arraybuffer" method="POST" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="elimina" url="[[cancellazioneUrl]]" method="POST" handle-as="json" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="elimina_responseHandler" on-error="elimina_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
   <script>
@@ -33792,10 +33792,6 @@ Polymer.AppLocalizeBehavior = {
           type: Boolean,
           value: false
         },
-        massive: {
-          type: Boolean,
-          value: false
-        },
         maxSelections: {
           type: Number,
           value: 0
@@ -33842,9 +33838,6 @@ Polymer.AppLocalizeBehavior = {
       },
 
       setResponse: function(response){
-        if (response.hasOwnProperty('exportMassivo')) {
-          this.massive = response.exportMassivo;
-        }
         if (response.simpleSearchPlaceHolder) {
           this.simplePlaceholder = response.simpleSearchPlaceHolder;
         }
@@ -33976,16 +33969,32 @@ Polymer.AppLocalizeBehavior = {
             listaId.push(obj.id);
           }
         }
-        if((listaId.length > 0 && !this.massive) || (listaId.length == 0 && this.massive)) {
+        if((listaId.length > 0 && listaId.length <= this.maxSelections) ||
+          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections)) {
           var lap = document.createElement('link-alert-panel');
           lap.addEventListener('action-delete', function request(e) {
             e.currentTarget.removeEventListener('action-delete', request);
-            var params = e.detail.fields;
+
+            var params = {};
+            params = e.detail.fields;
+            var sbox = this.$$('#searchbox');
+            if(sbox.isSimpleQuery.active) {
+              params['simpleSearch'] = sbox.isSimpleQuery.value;
+            } else {
+              var sbox_params = sbox.serialization_fields();
+              for (var f in sbox_params) {
+                if (sbox_params.hasOwnProperty(f)) {
+                  params[f] = sbox_params[f];
+                }
+              }
+            }
             params['ids'] = listaId;
+
             this.$.elimina.body = JSON.stringify(params);
             this.$.elimina.url = this.cancellazioneUrl;
-            this.$.elimina.url += this.$.searchbox.lastQuery;
+
             this.$.elimina.contentType = 'application/json';
+
             app.showSpinner();
             this.$.elimina.generateRequest();
           }.bind(this));
@@ -33997,7 +34006,7 @@ Polymer.AppLocalizeBehavior = {
           lap.template = this.infoCancellazione;
           document.body.appendChild(lap);
         } else {
-          app.showPaperToast(this.localize('selezioneCancellazioneVuota'), 'error');
+          app.showPaperToast(this.localize('cancellazioneSogliaSuperata'), 'error');
         }
       },
 
@@ -34044,41 +34053,108 @@ Polymer.AppLocalizeBehavior = {
             listaId.push(obj.id);
           }
         }
-        if((listaId.length > 0 && !this.massive) || (listaId.length == 0 && this.massive &&
-          (this.numResults > 0 && this.numResults <= this.maxSelections))) {
+        if((listaId.length > 0 && listaId.length <= this.maxSelections) ||
+          (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections)) {
           this.$$('#resultsBox').resetSelection();
-          this.$.esportaDati.body = listaId;
+
+          var params = {};
+          var sbox = this.$$('#searchbox');
+          if(sbox.isSimpleQuery.active) {
+            params['simpleSearch'] = sbox.isSimpleQuery.value;
+          } else {
+            params = sbox.serialization_fields();
+          }
+          params['ids'] = listaId;
+
+          this.$.esportaDati.body = JSON.stringify(params);
           this.$.esportaDati.url = this.esportazioneUrl;
 
-          this.$.esportaDati.url += this.$.searchbox.lastQuery;
-
           this.$.esportaDati.contentType = 'application/json';
+
           app.showSpinner();
           this.$.esportaDati.generateRequest();
-          console.debug('Chiamata a ' + this.esportazioneUrl + ' con array ' + listaId);
         } else {
-          if(this.massive && !(this.numResults > 0 && this.numResults <= this.maxSelections)) {
-            app.showPaperToast(this.localize('exportMassivoDisabilitato'), 'error');
-          }
-          else {
-            app.showPaperToast(this.localize('selezioneExportVuota'), 'error');
-          }
+          app.showPaperToast(this.localize('exportSogliaSuperata'), 'error');
         }
       },
 
       esportaDati_responseHandler: function(event){
         app.hideSpinner();
         try {
-          var a         = document.createElement('a');
-          a.href        = window.URL.createObjectURL(event.detail.xhr.response);
-          a.target      = '_blank';
-          var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
-          a.download    = nomeFile;
-          document.body.appendChild(a);
-          a.click();
+          var ct =  event.detail.xhr.getResponseHeader('Content-Type');
+          if(ct != 'application/json') {
+            var _blob = new Blob([event.detail.xhr.response], {type: ct });
+            var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
+            if(!this.isIE()){
+              var a         = document.createElement('a');
+              a.href        = window.URL.createObjectURL(_blob);
+              a.target      = '_blank';
+              a.download    = nomeFile;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            } else {
+              window.navigator.msSaveOrOpenBlob(_blob, nomeFile);
+            }
+          } else {
+            var decodedString = this.utf8ArrayToString(new Uint8Array(event.detail.xhr.response));
+            var resp = JSON.parse(decodedString); //text to JSON
+            if (resp.dettaglioEsito){
+              switch (resp.esitoOperazione){
+                case 'ESEGUITA':
+                  app.showPaperToast(resp.dettaglioEsito, 'success');
+                  break;
+                case 'NONESEGUITA':
+                  app.showPaperToast(resp.dettaglioEsito, 'warning');
+                  break;
+                case 'ERRORE':
+                  app.showPaperToast(resp.dettaglioEsito, 'error');
+                  break;
+              }
+            } else {
+              console.log('Errore dettaglioEsito non presente');
+            }
+          }
         } catch (err) {
             console.log(err.message);
         }
+      },
+
+      /**
+       * @return { string }
+       */
+      utf8ArrayToString: function (array) {
+        var out, i, len, c;
+        var char2, char3;
+
+        out = "";
+        len = array.length;
+        i = 0;
+        while(i < len) {
+          c = array[i++];
+          switch(c >> 4)
+          {
+            case 0: case 1: case 2: case 3: case 4: case 5: case 6: case 7:
+            // 0xxxxxxx
+            out += String.fromCharCode(c);
+            break;
+            case 12: case 13:
+            // 110x xxxx   10xx xxxx
+            char2 = array[i++];
+            out += String.fromCharCode(((c & 0x1F) << 6) | (char2 & 0x3F));
+            break;
+            case 14:
+              // 1110 xxxx  10xx xxxx  10xx xxxx
+              char2 = array[i++];
+              char3 = array[i++];
+              out += String.fromCharCode(((c & 0x0F) << 12) |
+                ((char2 & 0x3F) << 6) |
+                ((char3 & 0x3F) << 0));
+              break;
+          }
+        }
+
+        return out;
       },
 
       esportaDati_errorHandler: function(event){
@@ -34122,7 +34198,33 @@ Polymer.AppLocalizeBehavior = {
       saved: function(event){
         this.refresh();
 //        this.set('obj', event.detail);
+      },
+
+      isIE: function() {
+        var ua = window.navigator.userAgent;
+
+        var msie = ua.indexOf('MSIE ');
+        if (msie > 0) {
+          // IE 10 or older => return version number
+          return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        }
+
+        var trident = ua.indexOf('Trident/');
+        if (trident > 0) {
+          // IE 11 => version
+          var rv = ua.indexOf('rv:');
+          return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
+
+        var edge = ua.indexOf('Edge/');
+        if (edge > 0) {
+          // Edge (IE 12+) => version
+          return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+        }
+
+        return false;
       }
+
     });
   })();
   </script>
@@ -36085,13 +36187,20 @@ Polymer.AppLocalizeBehavior = {
       esportaDati_responseHandler: function(event){
         app.hideSpinner();
         try {
-          var a         = document.createElement('a');
-          a.href        = window.URL.createObjectURL(event.detail.xhr.response);
-          a.target      = '_blank';
+          var ct =  event.detail.xhr.getResponseHeader('Content-Type');
+          var _blob = new Blob([event.detail.xhr.response], {type: ct });
           var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
-          a.download    = nomeFile;
-          document.body.appendChild(a);
-          a.click();
+          if(!this.isIE()){
+            var a         = document.createElement('a');
+            a.href        = window.URL.createObjectURL(event.detail.xhr.response);
+            a.target      = '_blank';
+            a.download    = nomeFile;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          } else {
+            window.navigator.msSaveOrOpenBlob(_blob, nomeFile);
+          }
         } catch (err) {
           console.log(err.message);
         }
@@ -36101,6 +36210,31 @@ Polymer.AppLocalizeBehavior = {
         app.hideSpinner();
         app.dars_errorHandler(event);
       },
+
+      isIE: function() {
+        var ua = window.navigator.userAgent;
+
+        var msie = ua.indexOf('MSIE ');
+        if (msie > 0) {
+          // IE 10 or older => return version number
+          return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+        }
+
+        var trident = ua.indexOf('Trident/');
+        if (trident > 0) {
+          // IE 11 => version
+          var rv = ua.indexOf('rv:');
+          return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+        }
+
+        var edge = ua.indexOf('Edge/');
+        if (edge > 0) {
+          // Edge (IE 12+) => version
+          return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+        }
+
+        return false;
+      }
 
     });
   })();
@@ -36679,9 +36813,9 @@ event and do your own custom submission:
           type: Object,
           value: null
         },
-        lastQuery: {
-          type: String,
-          value: ''
+        isSimpleQuery: {
+          type: Object,
+          value: { value: '', active: false }
         }
       },
 
@@ -36690,7 +36824,7 @@ event and do your own custom submission:
         for (var p in fcs) {
           if (fcs.hasOwnProperty(p)) {
             var el = event.currentTarget.querySelector('#'+p);
-            if(typeof el.reset == 'function') {
+            if(el && typeof el.reset == 'function') {
               el.reset();
             }
           }
@@ -36717,10 +36851,9 @@ event and do your own custom submission:
       },
 
       simpleSearch: function(param) {
-        this.lastQuery = '';
+        this.isSimpleQuery = { value: param, active: true };
         this.offset = 0;
         this.$.searchResource.url = this.searchUrl + app.appendLangParameter(this.searchUrl) + '&simpleSearch='+param;
-        this.lastQuery = '&simpleSearch='+param;
         app.showSpinner();
         this.$.searchForm.reset();
         this.$.searchResource.generateRequest();
@@ -36728,6 +36861,7 @@ event and do your own custom submission:
 
       searchWithOffset: function(offset){
         this.fire('advanced-search-request');
+        this.isSimpleQuery = { value: '', active: false };
         this.offset = offset;
         var temp = this.$.searchForm.serialize();
         var lista = Object.keys(temp);
@@ -36756,11 +36890,9 @@ event and do your own custom submission:
           query.push('offset='+this.offset);
         }
         this.$.searchResource.url = this.searchUrl + app.appendLangParameter(this.searchUrl);
-        this.lastQuery = '';
         if (query.length>0){
           var pp = this.$.searchResource.url.indexOf('?') > -1 ? '&' : '?';
           this.$.searchResource.url += pp +query.join('&');
-          this.lastQuery = '&'+query.join('&');
         }
         app.showSpinner();
         this.$.searchResource.generateRequest();
@@ -36785,7 +36917,37 @@ event and do your own custom submission:
       searchResource_errorHandler: function(event){
         app.hideSpinner();
         app.dars_errorHandler(event);
+      },
+
+      serialization_fields: function() {
+        var temp = this.serializeForm(this.$.searchForm);
+        var ms = this.querySelectorAll('link-multi-select');
+        for (var lb = 0; lb < ms.length; lb++) {
+          temp[ms[lb].id] = ms[lb].selectedValues;
+        }
+        var lista = Object.keys(temp);
+        for (var i = 0; i < lista.length; i++) {
+          var obj = lista[i];
+          var newValue = temp[obj];
+          switch (this.$$('#'+obj).localName){
+            case 'paper-dropdown-menu':
+              if (this.$$('#'+obj).selectedItem){
+                newValue = this.$$('#'+obj).selectedItem.value;
+              } else {
+                newValue = null;
+              }
+              break;
+            default:
+              break;
+          }
+          if (newValue != null){
+            temp[obj] = newValue;
+          }
+        }
+
+        return temp;
       }
+
     });
   })();
   </script>
@@ -37034,10 +37196,6 @@ event and do your own custom submission:
           type: Boolean,
           value: false
         },
-        massive: {
-          type: Boolean,
-          value: false
-        },
         selections: {
           type: Number,
           value: 0
@@ -37139,7 +37297,7 @@ event and do your own custom submission:
       },
 
       _onswipe: function(e) {
-        if(this.selectable && !this.massive) {
+        if(this.selectable) {
           if(this.selections < this.maxSelections) {
             switch(e.detail.state) {
               case 'start':

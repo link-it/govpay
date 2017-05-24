@@ -332,6 +332,154 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		}
 		return eseguiRicerca;
 	}
+	
+	private boolean popolaFiltroPagamenti(List<RawParamValue> rawValues, BasicBD bd, Operatore operatore, 
+			Map<String, String> params,   boolean simpleSearch,
+			PagamentoFilter filter) throws ConsoleException, ServiceException, NotFoundException, Exception {
+
+		boolean elementoCorrelato = false;
+		boolean eseguiRicerca = true;
+		List<Long> idDomini = new ArrayList<Long>();
+		AclBD aclBD = new AclBD(bd);
+		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		ProfiloOperatore profilo = operatore.getProfilo();
+		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+
+		String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
+		String idVersamento = Utils.getValue(rawValues, versamentoId);
+
+		String idRptId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRpt.id");
+		String idRpt = Utils.getValue(rawValues, idRptId);
+
+		String idRrId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRr.id");
+		String idRr= Utils.getValue(rawValues, idRrId);
+
+		String idIncassoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIncasso.id");
+		String idIncasso= Utils.getValue(rawValues, idIncassoId);
+
+
+
+
+		// elemento correlato al versamento.
+		if(StringUtils.isNotEmpty(idVersamento)){
+			params.put(versamentoId, idVersamento);
+			elementoCorrelato = true;
+			List<Long> idVersamentoL = new ArrayList<Long>();
+			idVersamentoL.add(Long.parseLong(idVersamento));
+
+			// Ricerca pagamenti associati 
+			filter.setIdVersamenti(idVersamentoL);
+		}
+
+		// elemento correlato rpt
+		if(StringUtils.isNotEmpty(idRpt)){
+			params.put(idRptId, idRpt);
+			elementoCorrelato = true;
+			filter.setIdRpt(Long.parseLong(idRpt));
+		}
+
+		// elemento correlato rr
+		if(StringUtils.isNotEmpty(idRr)){
+			params.put(idRrId, idRr);
+			elementoCorrelato = true;
+			filter.setIdRpt(Long.parseLong(idRr)); 
+		}
+
+		// elemento correlato incassi			
+		if(StringUtils.isNotEmpty(idIncasso)){
+			params.put(idIncassoId, idIncasso);
+			elementoCorrelato = true;
+			filter.setIdIncasso(Long.parseLong(idIncasso)); 
+		}
+
+		if(simpleSearch) {
+			// simplesearch
+			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+				if(elementoCorrelato)
+					params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+			}
+		} else {
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = Utils.getValue(rawValues, idDominioId);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDom);
+					filter.setIdDomini(toListCodDomini(idDomini, bd));
+					if(elementoCorrelato)
+						params.put(idDominioId,idDominio);
+				}
+			}
+
+			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
+			String stato = Utils.getValue(rawValues, statoId);
+			if(StringUtils.isNotEmpty(stato)){
+				filter.setStato(stato);
+				if(elementoCorrelato)
+					params.put(statoId,stato);
+			}
+
+			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
+			String dataInizio = Utils.getValue(rawValues, dataInizioId);
+			if(StringUtils.isNotEmpty(dataInizio)){
+				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
+				if(elementoCorrelato)
+					params.put(dataInizioId,dataInizio);
+			}
+
+			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
+			String dataFine = Utils.getValue(rawValues, dataFineId);
+			if(StringUtils.isNotEmpty(dataFine)){
+				filter.setDataFine(this.convertJsonStringToDate(dataFine));
+				if(elementoCorrelato)
+					params.put(dataFineId,dataFine);
+			}
+
+			String iurId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id");
+			String iur = Utils.getValue(rawValues, iurId);
+			if(StringUtils.isNotEmpty(iur)){
+				filter.setIur(iur);
+				if(elementoCorrelato)
+					params.put(iurId,iur);
+			}
+
+			String codSingoloVersamentoEnteId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.id");
+			String codSingoloVersamentoEnte = Utils.getValue(rawValues, codSingoloVersamentoEnteId);
+			if(StringUtils.isNotEmpty(codSingoloVersamentoEnte)){
+				filter.setCodSingoloVersamentoEnte(codSingoloVersamentoEnte);
+				if(elementoCorrelato)
+					params.put(codSingoloVersamentoEnteId,codSingoloVersamentoEnte);
+			}
+		}
+
+		if(!isAdmin && idDomini.isEmpty()){
+			boolean vediTuttiDomini = false;
+
+			for(Acl acl: aclOperatore) {
+				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+					if(acl.getIdDominio() == null) {
+						vediTuttiDomini = true;
+						break;
+					} else {
+						idDomini.add(acl.getIdDominio());
+					}
+				}
+			}
+			if(!vediTuttiDomini) {
+				if(idDomini.isEmpty()) {
+					eseguiRicerca = false;
+				} else {
+					filter.setIdDomini(toListCodDomini(idDomini, bd));
+				}
+			}
+		}
+		return eseguiRicerca;
+	}
 
 	private List<String > toListCodDomini(List<Long> lstCodDomini, BasicBD bd) throws ServiceException, NotFoundException {
 		List<String > lst = new ArrayList<String >();
@@ -617,7 +765,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 	}
 
 	@Override
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 
 		Printer printer  = null;
@@ -632,14 +780,18 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			PagamentiBD pagamentiBD = new PagamentiBD(bd); 
 			PagamentoFilter filter = pagamentiBD.newFilter(simpleSearch); 
 			Map<String, String> params = new HashMap<String, String>();
 
+			// se ho ricevuto anche gli id li utilizzo per fare il check della count
+			if(idsToExport != null && idsToExport.size() > 0) 
+				filter.setIdPagamenti(idsToExport);
+
 			//1. eseguo una count per verificare che il numero dei risultati da esportare sia <= sogliamassimaexport massivo
-			boolean eseguiRicerca = this.popolaFiltroPagamenti(uriInfo, pagamentiBD, operatore, params, simpleSearch, filter);
+			boolean eseguiRicerca = this.popolaFiltroPagamenti(rawValues, pagamentiBD, operatore, params, simpleSearch, filter);
 
 			if(!eseguiRicerca){
 				List<String> msg = new ArrayList<String>();
@@ -776,7 +928,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
-		
+
 	}
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {

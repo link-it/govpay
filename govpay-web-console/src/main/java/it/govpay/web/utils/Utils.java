@@ -171,8 +171,10 @@ public class Utils {
 	private Map<String, String> getEtichetteLingua(Locale locale) {
 		Map<String, String> etichette = this.getMessagesFromResourceBundle(PREFIX_LABEL_CONSOLE, locale);
 		int numeroMassimoElementiExport = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
-		etichette.put("exportMassivoDisabilitato",
-				this.getMessageWithParamsFromResourceBundle(PREFIX_LABEL_CON_PARAMETRI_CONSOLE + "exportMassivoDisabilitato", locale, numeroMassimoElementiExport));
+		etichette.put("exportSogliaSuperata",
+				this.getMessageWithParamsFromResourceBundle(PREFIX_LABEL_CON_PARAMETRI_CONSOLE + "exportSogliaSuperata", locale, numeroMassimoElementiExport));
+		etichette.put("cancellazioneSogliaSuperata",
+				this.getMessageWithParamsFromResourceBundle(PREFIX_LABEL_CON_PARAMETRI_CONSOLE + "cancellazioneSogliaSuperata", locale, numeroMassimoElementiExport));
 
 		return etichette;
 	}
@@ -425,8 +427,20 @@ public class Utils {
 	public static String getValue(List<RawParamValue> values, String parameterName){
 		String toReturn = null;
 		for(RawParamValue paramValue : values) {
-			if(paramValue.getId().equals(parameterName))
+			if(paramValue.getId().equals(parameterName)){
 				return paramValue.getValue();
+			}
+		}
+
+		return toReturn;
+	}
+	
+	public static boolean containsParameter(List<RawParamValue> values, String parameterName) {
+		boolean toReturn = false;
+		
+		for(RawParamValue paramValue : values) {
+			if(paramValue.getId().equals(parameterName))
+				return true;
 		}
 
 		return toReturn;
