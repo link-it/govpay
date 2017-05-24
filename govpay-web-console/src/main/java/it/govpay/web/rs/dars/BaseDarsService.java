@@ -38,6 +38,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
@@ -47,6 +48,7 @@ import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
@@ -67,6 +69,7 @@ public abstract class BaseDarsService extends BaseRsService {
 
 	public static final String SIMPLE_SEARCH_PARAMETER_ID = "simpleSearch";
 	public static final String IDS_TO_DELETE_PARAMETER_ID = "ids";
+	public static final String IDS_TO_EXPORT_PARAMETER_ID = "ids";
 
 	protected Logger log = LogManager.getLogger();
 
@@ -205,8 +208,8 @@ public abstract class BaseDarsService extends BaseRsService {
 		String idsAsString = null;
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
-			
-		//	JsonConfig jsonConfig = new JsonConfig();
+
+			//	JsonConfig jsonConfig = new JsonConfig();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Utils.copy(is, baos);
 
@@ -215,13 +218,13 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			JSONObject jsonObjectFormCancellazione = JSONObject.fromObject( baos.toString() );
 			JSONArray jsonIDS = jsonObjectFormCancellazione.getJSONArray(IDS_TO_DELETE_PARAMETER_ID);
-			
+
 			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
 			for (Object key : jsonObjectFormCancellazione.keySet()) { 
 				String value = jsonObjectFormCancellazione.getString((String) key);
 				rawValues.add(new RawParamValue((String) key, value));
 			}
-			
+
 			idsAsString = Utils.getValue(rawValues, IDS_TO_DELETE_PARAMETER_ID);
 			this.log.info("Richiesta cancellazione degli elementi con id "+idsAsString+""); 
 
@@ -260,7 +263,7 @@ public abstract class BaseDarsService extends BaseRsService {
 		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
 	}
-	
+
 	@POST
 	@Path("/{id}/cancella")
 	@Consumes({MediaType.APPLICATION_JSON})
@@ -275,7 +278,7 @@ public abstract class BaseDarsService extends BaseRsService {
 
 		try {
 			bd = BasicBD.newInstance(this.codOperazione);
-			
+
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Utils.copy(is, baos);
 
@@ -283,7 +286,7 @@ public abstract class BaseDarsService extends BaseRsService {
 			baos.close();
 
 			JSONObject jsonObjectFormCancellazione = JSONObject.fromObject( baos.toString() );
-			
+
 			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
 			for (Object key : jsonObjectFormCancellazione.keySet()) { 
 				String value = jsonObjectFormCancellazione.getString((String) key);
@@ -317,48 +320,65 @@ public abstract class BaseDarsService extends BaseRsService {
 
 	@POST
 	@Path("/esporta")
-	@Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
-	public Response esporta(List<Long> idsToExport, @Context UriInfo uriInfo) throws Exception{
-		StringBuffer sb = new StringBuffer();
-
-		if(idsToExport != null && idsToExport.size() > 0)
-			for (Long long1 : idsToExport) {
-
-				if(sb.length() > 0)
-					sb.append(", ");
-
-				sb.append(long1);
-			}
-
-		String methodName = "esporta " + this.getNomeServizio() + "[" + sb.toString() + "]";  
+	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM})
+	public Response esporta(InputStream is, @Context UriInfo uriInfo) throws Exception{
+		String methodName = "esporta " + this.getNomeServizio() ; //+ "[" + sb.toString() + "]";
+		
+		  
 		this.initLogger(methodName);
 
 		BasicBD bd = null;
 		DarsResponse darsResponse = new DarsResponse();
 		darsResponse.setCodOperazione(this.codOperazione);
-
+		String idsAsString = null;
 		try {
-			if(idsToExport != null && idsToExport.size() > 0){
-				bd = BasicBD.newInstance(this.codOperazione);
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-				ZipOutputStream zout = new ZipOutputStream(baos);
+			bd = BasicBD.newInstance(this.codOperazione);
+//			JsonConfig jsonConfig = new JsonConfig();
+			ByteArrayOutputStream baosIn = new ByteArrayOutputStream();
+			Utils.copy(is, baosIn);
 
-				String fileName = this.getDarsHandler().esporta(idsToExport, uriInfo, bd, zout);
-				this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
-				return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
-			}else{
-				this.log.error("Riscontrato errore di input durante l'esecuzione del metodo "+methodName+": La selezione degli elementi da esportare e' vuota.");
-				darsResponse.setEsitoOperazione(EsitoOperazione.NONESEGUITA);
-				darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".esporta.erroreSelezioneVuota"));
-				return Response.ok(darsResponse,MediaType.APPLICATION_JSON).build();
+			baosIn.flush();
+			baosIn.close();
+
+			JSONObject jsonObjectFormExport = JSONObject.fromObject( baosIn.toString() );
+			JSONArray jsonIDS = jsonObjectFormExport.getJSONArray(IDS_TO_EXPORT_PARAMETER_ID);
+
+			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
+			for (Object key : jsonObjectFormExport.keySet()) {
+				String value = jsonObjectFormExport.getString((String) key);
+				if(StringUtils.isNotEmpty(value) && !"null".equals(value))
+				rawValues.add(new RawParamValue((String) key, value));
 			}
-		} catch(WebApplicationException e){
+			
+			idsAsString = Utils.getValue(rawValues, IDS_TO_EXPORT_PARAMETER_ID);
+			this.log.info("Richiesto export degli elementi con id "+idsAsString+""); 
+
+			List<Long> idsToExport = new ArrayList<Long>();
+			if(jsonIDS != null && jsonIDS.size() > 0)
+				for (int i = 0; i < jsonIDS.size(); i++) {
+					long id = jsonIDS.getLong(i);
+					idsToExport.add(id); 
+				}
+			
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			ZipOutputStream zout = new ZipOutputStream(baos);
+
+			String fileName = this.getDarsHandler().esporta(idsToExport, rawValues, uriInfo, bd, zout);
+			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
+			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
+		} catch(ExportException e){
+			this.log.info("Esito operazione "+methodName+" [" + idsAsString + "] : " + e.getEsito() + ", causa: " +e.getMessaggi());
+			darsResponse.setEsitoOperazione(e.getEsito());
+			darsResponse.setDettaglioEsito(e.getMessaggi());
+			return Response.ok(darsResponse,MediaType.APPLICATION_JSON).build();
+		}catch(WebApplicationException e){
 			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
 			throw e;
 		} catch (Exception e) {
-			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			this.log.error("Esito operazione "+methodName+" [" + idsAsString + "], causa: " +e.getMessage());
 			if(bd != null) 
 				bd.rollback();
+			
 			return Response.serverError().build();
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
