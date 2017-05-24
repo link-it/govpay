@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>govpay</artifactId>
 		<groupId>it.govpay</groupId>
-		<version>2.3.3.0</version>
+		<version>2.3.3.1</version>
 	</parent>
 
 	<artifactId>govpay-ear</artifactId>
@@ -24,12 +24,6 @@
 			<type>war</type>
 		</dependency>
 		
-		<dependency>
-			<groupId>it.govpay</groupId>
-			<artifactId>govpay-web</artifactId>
-			<version>${project.version}</version><!--$NO-MVN-MAN-VER$ -->
-			<type>pom</type>
-		</dependency>
 	</dependencies>
 
 	<build>
@@ -52,9 +46,6 @@
 					<filters>
 						<filter>${basedir}/../resources/filters/${env}.filter.properties</filter>
 					</filters>
-					<defaultLibBundleDir>lib</defaultLibBundleDir>
-					<earSourceExcludes>${resourceToExclude}</earSourceExcludes>
-					<skinnyWars>true</skinnyWars>
 					<modules>
 						<webModule>
 							<groupId>it.govpay</groupId>
@@ -62,7 +53,6 @@
 							<contextRoot>/govpay</contextRoot>
 						</webModule>
 					</modules>
-                			<libraryDirectoryMode>EMPTY</libraryDirectoryMode>
                 			<version>6</version>
 				</configuration>
 			</plugin>

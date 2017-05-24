@@ -65,6 +65,7 @@ import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributoHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -1040,13 +1041,13 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 	public Map<String, Voce<String>> getVoci(Portale entry, BasicBD bd) throws ConsoleException { return null; }
 
 	@Override
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
 

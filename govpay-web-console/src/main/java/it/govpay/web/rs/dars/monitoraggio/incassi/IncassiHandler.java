@@ -65,7 +65,9 @@ import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -97,11 +99,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 		try{	
 			// Operazione consentita agli utenti registrati
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-			boolean eseguiRicerca = true; // isAdmin;
-			// SE l'operatore non e' admin vede solo gli incassi associati ai domini definiti nelle ACL
-			boolean iuvNonEsistente = false;
+
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -110,10 +108,6 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			IncassiBD incassiBD = new IncassiBD(bd);
-			AclBD aclBD = new AclBD(bd);
-			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			List<String> idDomini = new ArrayList<String>();
-
 			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			IncassoFilter filter = incassiBD.newFilter(simpleSearch);
@@ -124,83 +118,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			if(simpleSearch){
-				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-				if(StringUtils.isNotEmpty(simpleSearchString)) {
-					filter.setSimpleSearchString(simpleSearchString);
-				}
-			}else{
-				String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
-
-				String dataInizio = this.getParameter(uriInfo, dataInizioId, String.class);
-				if(StringUtils.isNotEmpty(dataInizio)){
-					filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
-				}
-
-				String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
-				String dataFine = this.getParameter(uriInfo, dataFineId, String.class);
-				if(StringUtils.isNotEmpty(dataFine)){
-					filter.setDataFine(this.convertJsonStringToDate(dataFine));
-				}
-
-				String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
-				String trn = this.getParameter(uriInfo, trnId, String.class);
-				if(StringUtils.isNotEmpty(trn)) {
-					filter.setTrn(trn);
-				} 
-
-				String dispositivoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dispositivo.id");
-				String dispositivo = this.getParameter(uriInfo, dispositivoId, String.class);
-				if(StringUtils.isNotEmpty(dispositivo)) {
-					filter.setDispositivo(dispositivo);
-				}
-
-				String causaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".causale.id");
-				String causale = this.getParameter(uriInfo, causaleId, String.class);
-				if(StringUtils.isNotEmpty(causale)) {
-					filter.setCausale(dispositivo);
-				}
-
-				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-				String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
-				if(StringUtils.isNotEmpty(idDominio)){
-					long idDom = -1l;
-					try{
-						idDom = Long.parseLong(idDominio);
-					}catch(Exception e){ idDom = -1l;	}
-					if(idDom > 0){
-						idDomini.add(idDominio);
-						filter.setCodDomini(idDomini);
-					}
-				}
-			}
-
-			if(!isAdmin && idDomini.isEmpty()){
-				boolean vediTuttiDomini = false;
-
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							//							idDomini.add(acl.getIdDominio());
-							idDomini.add(acl.getCodDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						//						filter.setIdDomini(idDomini);
-						filter.setCodDomini(idDomini);
-					}
-				}
-			}
-
-			eseguiRicerca = eseguiRicerca && !iuvNonEsistente;
+			boolean eseguiRicerca = popolaFiltroRicerca(uriInfo, bd, operatore , simpleSearch, filter);
 
 			long count = eseguiRicerca ? incassiBD.count(filter) : 0;
 
@@ -233,6 +151,180 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+	}
+
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , boolean simpleSearch, IncassoFilter filter) throws ConsoleException, Exception {
+
+		ProfiloOperatore profilo = operatore.getProfilo();
+		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+		boolean eseguiRicerca = true;
+		AclBD aclBD = new AclBD(bd);
+		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		List<String> idDomini = new ArrayList<String>();
+
+		if(simpleSearch){
+			// simplesearch
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+			}
+		}else{
+			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
+
+			String dataInizio = this.getParameter(uriInfo, dataInizioId, String.class);
+			if(StringUtils.isNotEmpty(dataInizio)){
+				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
+			}
+
+			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
+			String dataFine = this.getParameter(uriInfo, dataFineId, String.class);
+			if(StringUtils.isNotEmpty(dataFine)){
+				filter.setDataFine(this.convertJsonStringToDate(dataFine));
+			}
+
+			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+			String trn = this.getParameter(uriInfo, trnId, String.class);
+			if(StringUtils.isNotEmpty(trn)) {
+				filter.setTrn(trn);
+			} 
+
+			String dispositivoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dispositivo.id");
+			String dispositivo = this.getParameter(uriInfo, dispositivoId, String.class);
+			if(StringUtils.isNotEmpty(dispositivo)) {
+				filter.setDispositivo(dispositivo);
+			}
+
+			String causaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".causale.id");
+			String causale = this.getParameter(uriInfo, causaleId, String.class);
+			if(StringUtils.isNotEmpty(causale)) {
+				filter.setCausale(dispositivo);
+			}
+
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDominio);
+					filter.setCodDomini(idDomini);
+				}
+			}
+		}
+
+		if(!isAdmin && idDomini.isEmpty()){
+			boolean vediTuttiDomini = false;
+
+			for(Acl acl: aclOperatore) {
+				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+					if(acl.getIdDominio() == null) {
+						vediTuttiDomini = true;
+						break;
+					} else {
+						//							idDomini.add(acl.getIdDominio());
+						idDomini.add(acl.getCodDominio());
+					}
+				}
+			}
+			if(!vediTuttiDomini) {
+				if(idDomini.isEmpty()) {
+					eseguiRicerca = false;
+				} else {
+					//						filter.setIdDomini(idDomini);
+					filter.setCodDomini(idDomini);
+				}
+			}
+		}
+		return eseguiRicerca;
+	}
+
+	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd, Operatore operatore , boolean simpleSearch, IncassoFilter filter) throws ConsoleException, Exception {
+
+		ProfiloOperatore profilo = operatore.getProfilo();
+		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+		boolean eseguiRicerca = true;
+		AclBD aclBD = new AclBD(bd);
+		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		List<String> idDomini = new ArrayList<String>();
+
+		if(simpleSearch){
+			// simplesearch
+			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+			}
+		}else{
+			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
+
+			String dataInizio = Utils.getValue(rawValues, dataInizioId);
+			if(StringUtils.isNotEmpty(dataInizio)){
+				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
+			}
+
+			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
+			String dataFine = Utils.getValue(rawValues, dataFineId);
+			if(StringUtils.isNotEmpty(dataFine)){
+				filter.setDataFine(this.convertJsonStringToDate(dataFine));
+			}
+
+			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
+			String trn = Utils.getValue(rawValues, trnId);
+			if(StringUtils.isNotEmpty(trn)) {
+				filter.setTrn(trn);
+			} 
+
+			String dispositivoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dispositivo.id");
+			String dispositivo = Utils.getValue(rawValues, dispositivoId);
+			if(StringUtils.isNotEmpty(dispositivo)) {
+				filter.setDispositivo(dispositivo);
+			}
+
+			String causaleId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".causale.id");
+			String causale = Utils.getValue(rawValues, causaleId);
+			if(StringUtils.isNotEmpty(causale)) {
+				filter.setCausale(dispositivo);
+			}
+
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = Utils.getValue(rawValues, idDominioId);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDominio);
+					filter.setCodDomini(idDomini);
+				}
+			}
+		}
+
+		if(!isAdmin && idDomini.isEmpty()){
+			boolean vediTuttiDomini = false;
+
+			for(Acl acl: aclOperatore) {
+				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+					if(acl.getIdDominio() == null) {
+						vediTuttiDomini = true;
+						break;
+					} else {
+						//							idDomini.add(acl.getIdDominio());
+						idDomini.add(acl.getCodDominio());
+					}
+				}
+			}
+			if(!vediTuttiDomini) {
+				if(idDomini.isEmpty()) {
+					eseguiRicerca = false;
+				} else {
+					//						filter.setIdDomini(idDomini);
+					filter.setCodDomini(idDomini);
+				}
+			}
+		}
+		return eseguiRicerca;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -602,8 +694,8 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 	}
 
 	@Override
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException ,ExportException{
 		StringBuffer sb = new StringBuffer();
 		if(idsToExport != null && idsToExport.size() > 0) {
 			for (Long long1 : idsToExport) {
@@ -617,76 +709,71 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 		}
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+
 		int numeroZipEntries = 0;
 		String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 
-		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
-		} 
+//		if(idsToExport.size() == 1) {
+//			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+//		} 
 
 		String fileName = "Export.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-			boolean eseguiRicerca = true;
-
+			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
+			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			IncassiBD incassiBD = new IncassiBD(bd);
-			IncassoFilter filter = incassiBD.newFilter();
-			List<Long> ids = new ArrayList<Long>();
-			ids = idsToExport;
+			IncassoFilter filter = incassiBD.newFilter(simpleSearch);
 
-			if(!isAdmin){
+			// se ho ricevuto anche gli id li utilizzo per fare il check della count
+			if(idsToExport != null && idsToExport.size() > 0) 
+				filter.setIdIncasso(idsToExport);
 
-				AclBD aclBD = new AclBD(bd);
-				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			boolean eseguiRicerca = this.popolaFiltroRicerca(rawValues, bd, operatore, simpleSearch, filter);
 
-				boolean vediTuttiDomini = false;
-				List<String> idDomini = new ArrayList<String>();
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							//							idDomini.add(acl.getIdDominio());
-							idDomini.add(acl.getCodDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						//						filter.setIdDomini(idDomini);
-						filter.setCodDomini(idDomini);
-					}
-				}
-
-				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
-				if(eseguiRicerca){
-					filter.setIdIncasso(ids);
-					eseguiRicerca = eseguiRicerca && incassiBD.count(filter) > 0;
-				}
+			if(!eseguiRicerca){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.operazioneNonPermessa"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			}
 
-			if(eseguiRicerca){
-				for (Long idIncasso : idsToExport) {
-					Incasso incasso = incassiBD.getIncasso(idIncasso);
-					Applicazione applicazione = incasso.getApplicazione(incassiBD);
-					List<Pagamento> pagamenti = incasso.getPagamenti(incassiBD);
-					List<it.govpay.model.Pagamento> pagamentiList = new ArrayList<it.govpay.model.Pagamento>();
-					pagamentiList.addAll(pagamenti);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					IncassoPdf.getPdfIncasso(pathLoghi, incasso, pagamentiList, applicazione, baos,this.log);
-					String incassoPdfEntryName = incasso.getTrn() + ".pdf";
-					numeroZipEntries ++;
-					ZipEntry rtPdf = new ZipEntry(incassoPdfEntryName);
-					zout.putNextEntry(rtPdf);
-					zout.write(baos.toByteArray());
-					zout.closeEntry();
-				}
+			long count = incassiBD.count(filter);
+
+			if(count < 1){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.nessunElementoDaEsportare"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			} 
+
+			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+
+			filter.setOffset(0);
+			filter.setLimit(limit);
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Incasso.model().DATA_ORA_INCASSO);
+			fsw.setSortOrder(SortOrder.DESC);
+			filter.getFilterSortList().add(fsw);
+
+			List<Incasso> findAll = incassiBD.findAll(filter);
+
+			for (Incasso incasso : findAll) {
+				Applicazione applicazione = incasso.getApplicazione(incassiBD);
+				List<Pagamento> pagamenti = incasso.getPagamenti(incassiBD);
+				List<it.govpay.model.Pagamento> pagamentiList = new ArrayList<it.govpay.model.Pagamento>();
+				pagamentiList.addAll(pagamenti);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				IncassoPdf.getPdfIncasso(pathLoghi, incasso, pagamentiList, applicazione, baos,this.log);
+				String incassoPdfEntryName = incasso.getTrn() + ".pdf";
+				numeroZipEntries ++;
+				ZipEntry rtPdf = new ZipEntry(incassoPdfEntryName);
+				zout.putNextEntry(rtPdf);
+				zout.write(baos.toByteArray());
+				zout.closeEntry();
 			}
 
 			// se non ho inserito nessuna entry
@@ -714,7 +801,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
 		try{

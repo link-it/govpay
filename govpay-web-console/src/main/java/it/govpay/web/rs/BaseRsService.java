@@ -103,8 +103,6 @@ public abstract class BaseRsService {
 	}
 
 	protected String getPrincipal(){
-//		return "amministratore";
-		
 		if(this.request.getUserPrincipal()!=null){
 			return this.request.getUserPrincipal().getName();
 		}

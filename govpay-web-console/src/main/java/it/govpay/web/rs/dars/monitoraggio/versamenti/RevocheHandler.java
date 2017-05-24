@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +31,14 @@ import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.utils.Utils;
 
 public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<Rr>{
@@ -249,8 +252,8 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 
 	@Override
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException,ExportException {
 		StringBuffer sb = new StringBuffer();
 		if(idsToExport != null && idsToExport.size() > 0)
 			for (Long long1 : idsToExport) {
@@ -262,6 +265,12 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			}
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+		
+		if(idsToExport == null || idsToExport.size() == 0) {
+			List<String> msg = new ArrayList<String>();
+			msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.erroreSelezioneVuota"));
+			throw new ExportException(msg, EsitoOperazione.ERRORE);
+		}
 
 		if(idsToExport.size() == 1)
 			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
@@ -303,7 +312,8 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException {
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
 

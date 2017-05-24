@@ -96,6 +96,7 @@ import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
+import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -132,11 +133,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		try{	
 			// Operazione consentita agli utenti registrati
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-			boolean eseguiRicerca = true; // isAdmin;
-			// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
-			boolean iuvNonEsistente = false;
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -145,10 +141,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
-			AclBD aclBD = new AclBD(bd);
-			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			List<Long> idDomini = new ArrayList<Long>();
-
 			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID); 
 
 			VersamentoFilter filter = versamentiBD.newFilter(simpleSearch);
@@ -159,91 +151,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
 
-			if(simpleSearch){
-				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-				if(StringUtils.isNotEmpty(simpleSearchString)) {
-					filter.setSimpleSearchString(simpleSearchString);
-				}
-			}else{
-				String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
-				String cfDebitore = this.getParameter(uriInfo, cfDebitoreId, String.class);
-				if(StringUtils.isNotEmpty(cfDebitore)) {
-					filter.setCodUnivocoDebitore(cfDebitore);
-				} 
-
-				String codVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
-				String codVersamento = this.getParameter(uriInfo, codVersamentoId, String.class);
-				if(StringUtils.isNotEmpty(codVersamento)) {
-					filter.setCodVersamento(codVersamento);
-				}
-
-
-				String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
-				String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
-				if(StringUtils.isNotEmpty(idDominio)){
-					long idDom = -1l;
-					try{
-						idDom = Long.parseLong(idDominio);
-					}catch(Exception e){ idDom = -1l;	}
-					if(idDom > 0){
-						idDomini.add(idDom);
-						filter.setIdDomini(idDomini);
-					}
-				}
-
-				String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-				String iuv = this.getParameter(uriInfo, iuvId, String.class);
-
-				if(StringUtils.isNotEmpty(iuv)){
-					IuvBD iuvBd = new IuvBD(bd);
-					IuvFilter newFilter = iuvBd.newFilter();
-					newFilter.setIuv(iuv);
-					List<Iuv> findAll = iuvBd.findAll(newFilter);
-					List<Long> idApplicazioneL = new ArrayList<Long>();
-					List<String> codVersamentoEnte = new ArrayList<String>();
-					for (Iuv iuv2 : findAll) {
-						idApplicazioneL.add(iuv2.getIdApplicazione());
-						codVersamentoEnte.add(iuv2.getCodVersamentoEnte());
-					}
-					// iuv inserito in pagina non corrisponde a nessun rpt
-					iuvNonEsistente = findAll.size() == 0;
-
-					filter.setIdApplicazione(idApplicazioneL);
-					filter.setCodVersamentoEnte(codVersamentoEnte);
-				}
-
-				String statoVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
-				String statoVersamento = this.getParameter(uriInfo, statoVersamentoId, String.class);
-
-				if(StringUtils.isNotEmpty(statoVersamento)){
-					filter.setStatoVersamento(StatoVersamento.valueOf(statoVersamento));
-				}
-			}
-
-			if(!isAdmin && idDomini.isEmpty()){
-				boolean vediTuttiDomini = false;
-
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(idDomini);
-					}
-				}
-			}
-
-			eseguiRicerca = eseguiRicerca && !iuvNonEsistente;
+			boolean eseguiRicerca = this.popolaFiltroRicerca(uriInfo, versamentiBD, operatore, simpleSearch, filter);
 
 			long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
 
@@ -276,6 +184,200 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+	}
+
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
+		ProfiloOperatore profilo = operatore.getProfilo();
+		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+		AclBD aclBD = new AclBD(bd);
+		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		List<Long> idDomini = new ArrayList<Long>();
+		boolean eseguiRicerca = true; // isAdmin;
+		// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
+		boolean iuvNonEsistente = false;
+
+		if(simpleSearch){
+			// simplesearch
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+			}
+		}else{
+			String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
+			String cfDebitore = this.getParameter(uriInfo, cfDebitoreId, String.class);
+			if(StringUtils.isNotEmpty(cfDebitore)) {
+				filter.setCodUnivocoDebitore(cfDebitore);
+			} 
+
+			String codVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
+			String codVersamento = this.getParameter(uriInfo, codVersamentoId, String.class);
+			if(StringUtils.isNotEmpty(codVersamento)) {
+				filter.setCodVersamento(codVersamento);
+			}
+
+
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDom);
+					filter.setIdDomini(idDomini);
+				}
+			}
+
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+
+			if(StringUtils.isNotEmpty(iuv)){
+				IuvBD iuvBd = new IuvBD(bd);
+				IuvFilter newFilter = iuvBd.newFilter();
+				newFilter.setIuv(iuv);
+				List<Iuv> findAll = iuvBd.findAll(newFilter);
+				List<Long> idApplicazioneL = new ArrayList<Long>();
+				List<String> codVersamentoEnte = new ArrayList<String>();
+				for (Iuv iuv2 : findAll) {
+					idApplicazioneL.add(iuv2.getIdApplicazione());
+					codVersamentoEnte.add(iuv2.getCodVersamentoEnte());
+				}
+				// iuv inserito in pagina non corrisponde a nessun rpt
+				iuvNonEsistente = findAll.size() == 0;
+
+				filter.setIdApplicazione(idApplicazioneL);
+				filter.setCodVersamentoEnte(codVersamentoEnte);
+			}
+
+			String statoVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+			String statoVersamento = this.getParameter(uriInfo, statoVersamentoId, String.class);
+
+			if(StringUtils.isNotEmpty(statoVersamento)){
+				filter.setStatoVersamento(StatoVersamento.valueOf(statoVersamento));
+			}
+		}
+
+		if(!isAdmin && idDomini.isEmpty()){
+			boolean vediTuttiDomini = false;
+
+			for(Acl acl: aclOperatore) {
+				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+					if(acl.getIdDominio() == null) {
+						vediTuttiDomini = true;
+						break;
+					} else {
+						idDomini.add(acl.getIdDominio());
+					}
+				}
+			}
+			if(!vediTuttiDomini) {
+				if(idDomini.isEmpty()) {
+					eseguiRicerca = false;
+				} else {
+					filter.setIdDomini(idDomini);
+				}
+			}
+		}
+
+		return eseguiRicerca && !iuvNonEsistente;
+	}
+
+	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, BasicBD bd, Operatore operatore , boolean simpleSearch, VersamentoFilter filter) throws ConsoleException, Exception {
+		ProfiloOperatore profilo = operatore.getProfilo();
+		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+		AclBD aclBD = new AclBD(bd);
+		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		List<Long> idDomini = new ArrayList<Long>();
+		boolean eseguiRicerca = true; // isAdmin;
+		// SE l'operatore non e' admin vede solo i versamenti associati ai domini definiti nelle ACL
+		boolean iuvNonEsistente = false;
+
+		if(simpleSearch){
+			// simplesearch
+			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+			}
+		}else{
+			String cfDebitoreId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cfDebitore.id");
+			String cfDebitore = Utils.getValue(rawValues, cfDebitoreId);
+			if(StringUtils.isNotEmpty(cfDebitore)) {
+				filter.setCodUnivocoDebitore(cfDebitore);
+			} 
+
+			String codVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codVersamento.id");
+			String codVersamento = Utils.getValue(rawValues, codVersamentoId);
+			if(StringUtils.isNotEmpty(codVersamento)) {
+				filter.setCodVersamento(codVersamento);
+			}
+
+
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = Utils.getValue(rawValues, idDominioId);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDom);
+					filter.setIdDomini(idDomini);
+				}
+			}
+
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String iuv = Utils.getValue(rawValues, iuvId);
+
+			if(StringUtils.isNotEmpty(iuv)){
+				IuvBD iuvBd = new IuvBD(bd);
+				IuvFilter newFilter = iuvBd.newFilter();
+				newFilter.setIuv(iuv);
+				List<Iuv> findAll = iuvBd.findAll(newFilter);
+				List<Long> idApplicazioneL = new ArrayList<Long>();
+				List<String> codVersamentoEnte = new ArrayList<String>();
+				for (Iuv iuv2 : findAll) {
+					idApplicazioneL.add(iuv2.getIdApplicazione());
+					codVersamentoEnte.add(iuv2.getCodVersamentoEnte());
+				}
+				// iuv inserito in pagina non corrisponde a nessun rpt
+				iuvNonEsistente = findAll.size() == 0;
+
+				filter.setIdApplicazione(idApplicazioneL);
+				filter.setCodVersamentoEnte(codVersamentoEnte);
+			}
+
+			String statoVersamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id");
+			String statoVersamento = Utils.getValue(rawValues, statoVersamentoId);
+
+			if(StringUtils.isNotEmpty(statoVersamento)){
+				filter.setStatoVersamento(StatoVersamento.valueOf(statoVersamento));
+			}
+		}
+
+		if(!isAdmin && idDomini.isEmpty()){
+			boolean vediTuttiDomini = false;
+
+			for(Acl acl: aclOperatore) {
+				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+					if(acl.getIdDominio() == null) {
+						vediTuttiDomini = true;
+						break;
+					} else {
+						idDomini.add(acl.getIdDominio());
+					}
+				}
+			}
+			if(!vediTuttiDomini) {
+				if(idDomini.isEmpty()) {
+					eseguiRicerca = false;
+				} else {
+					filter.setIdDomini(idDomini);
+				}
+			}
+		}
+
+		return eseguiRicerca && !iuvNonEsistente;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -463,7 +565,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				//				eseguiRicerca = !Utils.isEmpty(operatore.getIdApplicazioni()) || !Utils.isEmpty(operatore.getIdEnti());
 				VersamentiBD versamentiBD = new VersamentiBD(bd);
 				VersamentoFilter filter = versamentiBD.newFilter();
-				
+
 				List<Long> idVersamentoL = new ArrayList<Long>();
 				idVersamentoL.add(id);
 				filter.setIdVersamento(idVersamentoL);
@@ -747,8 +849,8 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 	}
 
 	@Override
-	public String esporta(List<Long> idsToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+			throws WebApplicationException, ConsoleException,ExportException {
 		StringBuffer sb = new StringBuffer();
 		if(idsToExport != null && idsToExport.size() > 0) {
 			for (Long long1 : idsToExport) {
@@ -763,21 +865,20 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 		Printer printer  = null;
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
+
 		int numeroZipEntries = 0;
 		String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 
-		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
-		} 
+		//		if(idsToExport.size() == 1) {
+		//			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+		//		} 
 
 		String fileName = "Export.zip";
 		try{
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-			boolean eseguiRicerca = true;
-
+			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
+			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			RptBD rptBD = new RptBD(bd);
 			EventiBD eventiBd = new EventiBD(bd);
@@ -788,241 +889,240 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			Map<String, List<Long>> mappaInputEstrattoConto = new HashMap<String, List<Long>>();
 			Map<String, Dominio> mappaInputDomini = new HashMap<String, Dominio>();
 
-			VersamentoFilter filter = versamentiBD.newFilter();
-			List<Long> ids = new ArrayList<Long>();
-			ids = idsToExport;
+			VersamentoFilter filter = versamentiBD.newFilter(simpleSearch);
 
-			if(!isAdmin){
+			// se ho ricevuto anche gli id li utilizzo per fare il check della count
+			if(idsToExport != null && idsToExport.size() > 0) 
+				filter.setIdVersamento(idsToExport);
 
-				AclBD aclBD = new AclBD(bd);
-				List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+			boolean eseguiRicerca = this.popolaFiltroRicerca(rawValues, bd, operatore, simpleSearch, filter);
 
-				boolean vediTuttiDomini = false;
-				List<Long> idDomini = new ArrayList<Long>();
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(idDomini);
-					}
-				}
-
-				// l'operatore puo' vedere i domini associati, controllo se c'e' un versamento con Id nei domini concessi.
-				if(eseguiRicerca){
-					filter.setIdVersamento(ids);
-					eseguiRicerca = eseguiRicerca && versamentiBD.count(filter) > 0;
-				}
+			if(!eseguiRicerca){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.operazioneNonPermessa"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
 			}
 
-			if(eseguiRicerca){
-				for (Long idVersamento : idsToExport) {
-					Versamento versamento = versamentiBD.getVersamento(idVersamento);
+			long count = versamentiBD.count(filter);
 
-					// Prelevo il dominio
-					UnitaOperativa uo  = AnagraficaManager.getUnitaOperativa(bd, versamento.getIdUo());
-					Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
+			if(count < 1){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.nessunElementoDaEsportare"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			} 
 
-					String dirDominio = dominio.getCodDominio();
+			if(count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+			
+			filter.setOffset(0);
+			filter.setLimit(limit);
+			FilterSortWrapper fsw = new FilterSortWrapper();
+			fsw.setField(it.govpay.orm.Versamento.model().DATA_ORA_ULTIMO_AGGIORNAMENTO);
+			fsw.setSortOrder(SortOrder.DESC);
+			filter.getFilterSortList().add(fsw);
+			
+			List<Versamento> findAll = versamentiBD.findAll(filter);
+			
 
-					// Aggrego i versamenti per dominio per generare gli estratti conto
-					List<Long> idVersamentiDominio = null;
-					if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio())) {
-						idVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
-					} else{
-						idVersamentiDominio = new ArrayList<Long>();
-						mappaInputEstrattoConto.put(dominio.getCodDominio(), idVersamentiDominio);
-						mappaInputDomini.put(dominio.getCodDominio(), dominio);
-					}
-					idVersamentiDominio.add(idVersamento);
+			for (Versamento versamento : findAll) {
 
-					String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
+				// Prelevo il dominio
+				UnitaOperativa uo  = AnagraficaManager.getUnitaOperativa(bd, versamento.getIdUo());
+				Dominio dominio  = AnagraficaManager.getDominio(bd, uo.getIdDominio());
 
-					RptFilter rptFilter = rptBD.newFilter();
-					FilterSortWrapper rptFsw = new FilterSortWrapper();
-					rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
-					rptFsw.setSortOrder(SortOrder.DESC);
-					rptFilter.getFilterSortList().add(rptFsw);
-					rptFilter.setIdVersamento(idVersamento); 
+				String dirDominio = dominio.getCodDominio();
 
-					RrBD rrBD = new RrBD(bd);
-					FilterSortWrapper rrFsw = new FilterSortWrapper();
-					rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
-					rrFsw.setSortOrder(SortOrder.DESC);
+				// Aggrego i versamenti per dominio per generare gli estratti conto
+				List<Long> idVersamentiDominio = null;
+				if(mappaInputEstrattoConto.containsKey(dominio.getCodDominio())) {
+					idVersamentiDominio = mappaInputEstrattoConto.get(dominio.getCodDominio());
+				} else{
+					idVersamentiDominio = new ArrayList<Long>();
+					mappaInputEstrattoConto.put(dominio.getCodDominio(), idVersamentiDominio);
+					mappaInputDomini.put(dominio.getCodDominio(), dominio);
+				}
+				idVersamentiDominio.add(versamento.getId());
 
-					List<Rpt> listaRpt = rptBD.findAll(rptFilter);
-					if(listaRpt != null && listaRpt.size() >0 ) {
-						for (Rpt rpt : listaRpt) {
+				String dirVersamento = dirDominio + "/" + versamento.getCodVersamentoEnte();
+
+				RptFilter rptFilter = rptBD.newFilter();
+				FilterSortWrapper rptFsw = new FilterSortWrapper();
+				rptFsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
+				rptFsw.setSortOrder(SortOrder.DESC);
+				rptFilter.getFilterSortList().add(rptFsw);
+				rptFilter.setIdVersamento(versamento.getId()); 
+
+				RrBD rrBD = new RrBD(bd);
+				FilterSortWrapper rrFsw = new FilterSortWrapper();
+				rrFsw.setField(it.govpay.orm.RR.model().DATA_MSG_REVOCA);
+				rrFsw.setSortOrder(SortOrder.DESC);
+
+				List<Rpt> listaRpt = rptBD.findAll(rptFilter);
+				if(listaRpt != null && listaRpt.size() >0 ) {
+					for (Rpt rpt : listaRpt) {
+						numeroZipEntries ++;
+
+						String iuv = rpt.getIuv();
+						String ccp = rpt.getCcp();
+
+						String iuvCcpDir = dirVersamento + "/" + iuv;
+
+						// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
+						if(!StringUtils.equalsIgnoreCase(ccp, "n/a")) {
+							iuvCcpDir = iuvCcpDir  + "_" + ccp;
+						}
+
+						String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
+
+
+						ZipEntry rptXml = new ZipEntry(rptEntryName);
+						zout.putNextEntry(rptXml);
+						zout.write(rpt.getXmlRpt());
+						zout.closeEntry();
+
+						if(rpt.getXmlRt() != null){
 							numeroZipEntries ++;
-
-							String iuv = rpt.getIuv();
-							String ccp = rpt.getCcp();
-
-							String iuvCcpDir = dirVersamento + "/" + iuv;
-
-							// non appendo il ccp nel caso sia uguale ad 'n/a' altrimenti crea un nuovo livello di directory;
-							if(!StringUtils.equalsIgnoreCase(ccp, "n/a")) {
-								iuvCcpDir = iuvCcpDir  + "_" + ccp;
-							}
-
-							String rptEntryName = iuvCcpDir + "/rpt_" + rpt.getCodMsgRichiesta() + ".xml"; 
-
-
-							ZipEntry rptXml = new ZipEntry(rptEntryName);
-							zout.putNextEntry(rptXml);
-							zout.write(rpt.getXmlRpt());
+							String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
+							ZipEntry rtXml = new ZipEntry(rtEntryName);
+							zout.putNextEntry(rtXml);
+							zout.write(rpt.getXmlRt());
 							zout.closeEntry();
 
-							if(rpt.getXmlRt() != null){
-								numeroZipEntries ++;
-								String rtEntryName = iuvCcpDir + "/rt_" + rpt.getCodMsgRichiesta() + ".xml";
-								ZipEntry rtXml = new ZipEntry(rtEntryName);
-								zout.putNextEntry(rtXml);
-								zout.write(rpt.getXmlRt());
-								zout.closeEntry();
-
-								// RT in formato pdf
-								String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
-								byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
-								CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
-								ByteArrayOutputStream baos = new ByteArrayOutputStream();
-								String auxDigit = dominio.getAuxDigit() + "";
-								String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
-								RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
-								String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
-								numeroZipEntries ++;
-								ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
-								zout.putNextEntry(rtPdf);
-								zout.write(baos.toByteArray());
-								zout.closeEntry();
-							}
-
-							// Eventi
-							String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
-
-							EventiFilter eventiFilter = eventiBd.newFilter();
-							eventiFilter.setCodDominio(dominio.getCodDominio());
-							eventiFilter.setIuv(iuv);
-							eventiFilter.setCcp(ccp);
-							FilterSortWrapper fsw = new FilterSortWrapper();
-							fsw.setField(it.govpay.orm.Evento.model().DATA_1);
-							fsw.setSortOrder(SortOrder.ASC);
-							eventiFilter.getFilterSortList().add(fsw);
-
-							List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+							// RT in formato pdf
+							String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+							byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+							CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
 							ByteArrayOutputStream baos = new ByteArrayOutputStream();
-							eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
-
-							ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
-							zout.putNextEntry(eventiCSV);
+							String auxDigit = dominio.getAuxDigit() + "";
+							String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
+							RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, versamento, auxDigit, applicationCode, baos, this.log);
+							String rtPdfEntryName = iuvCcpDir + "/ricevuta_pagamento.pdf";
+							numeroZipEntries ++;
+							ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+							zout.putNextEntry(rtPdf);
 							zout.write(baos.toByteArray());
 							zout.closeEntry();
+						}
 
-							RrFilter rrFilter = rrBD.newFilter();
-							rrFilter.getFilterSortList().add(rrFsw);
-							rrFilter.setIdRpt(rpt.getId()); 
-							List<Rr> findAll = rrBD.findAll(rrFilter);
-							if(findAll != null && findAll.size() > 0){
-								for (Rr rr : findAll) {
+						// Eventi
+						String entryEventiCSV =  iuvCcpDir + "/eventi.csv";
+
+						EventiFilter eventiFilter = eventiBd.newFilter();
+						eventiFilter.setCodDominio(dominio.getCodDominio());
+						eventiFilter.setIuv(iuv);
+						eventiFilter.setCcp(ccp);
+						FilterSortWrapper fswEventi = new FilterSortWrapper();
+						fswEventi.setField(it.govpay.orm.Evento.model().DATA_1);
+						fswEventi.setSortOrder(SortOrder.ASC);
+						eventiFilter.getFilterSortList().add(fswEventi);
+
+						List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+
+						ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
+						zout.putNextEntry(eventiCSV);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
+
+						RrFilter rrFilter = rrBD.newFilter();
+						rrFilter.getFilterSortList().add(rrFsw);
+						rrFilter.setIdRpt(rpt.getId()); 
+						List<Rr> findAllRR = rrBD.findAll(rrFilter);
+						if(findAllRR != null && findAllRR.size() > 0){
+							for (Rr rr : findAllRR) {
+								numeroZipEntries ++;
+								String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
+
+								ZipEntry rrXml = new ZipEntry(rrEntryName);
+								zout.putNextEntry(rrXml);
+								zout.write(rr.getXmlRr());
+								zout.closeEntry();
+
+								if(rr.getXmlEr() != null){
 									numeroZipEntries ++;
-									String rrEntryName = iuvCcpDir + "/rr_" + rr.getCodMsgRevoca() + ".xml"; 
-
-									ZipEntry rrXml = new ZipEntry(rrEntryName);
-									zout.putNextEntry(rrXml);
-									zout.write(rr.getXmlRr());
+									String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
+									ZipEntry rtXml = new ZipEntry(erEntryName);
+									zout.putNextEntry(rtXml);
+									zout.write(rr.getXmlEr());
 									zout.closeEntry();
 
-									if(rr.getXmlEr() != null){
-										numeroZipEntries ++;
-										String erEntryName = iuvCcpDir + "/er_" + rr.getCodMsgRevoca() + ".xml"; 
-										ZipEntry rtXml = new ZipEntry(erEntryName);
-										zout.putNextEntry(rtXml);
-										zout.write(rr.getXmlEr());
-										zout.closeEntry();
+									// ER in formato pdf
+									CtEsitoRevoca er = JaxbUtils.toER(rr.getXmlEr());
+									String causale = versamento.getCausaleVersamento().getSimple();
+									baos = new ByteArrayOutputStream();
+									Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
+									ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,this.log);
 
-										// ER in formato pdf
-										CtEsitoRevoca er = JaxbUtils.toER(rr.getXmlEr());
-										String causale = versamento.getCausaleVersamento().getSimple();
-										baos = new ByteArrayOutputStream();
-										Dominio dominio3 = AnagraficaManager.getDominio(bd, er.getDominio().getIdentificativoDominio());
-										ErPdf.getPdfEsitoRevoca(pathLoghi, er, dominio3, dominio3.getAnagrafica(bd), causale,baos,this.log);
-
-										String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
-										numeroZipEntries ++;
-										ZipEntry erPdf = new ZipEntry(erPdfEntryName);
-										zout.putNextEntry(erPdf);
-										zout.write(baos.toByteArray());
-										zout.closeEntry();
-									}
+									String erPdfEntryName = iuvCcpDir + "/esito_revoca.pdf";
+									numeroZipEntries ++;
+									ZipEntry erPdf = new ZipEntry(erPdfEntryName);
+									zout.putNextEntry(erPdf);
+									zout.write(baos.toByteArray());
+									zout.closeEntry();
 								}
 							}
 						}
 					}
 				}
+			}
 
-				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
-				for (String codDominio : mappaInputEstrattoConto.keySet()) {
-					it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoVersamentiPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
-					listInputEstrattoConto.add(input);
-				}
-
-
-				List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
-
-				for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
-					Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
-					for (String nomeEntry : estrattoContoVersamenti.keySet()) {
-						numeroZipEntries ++;
-						ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
-						ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
-						zout.putNextEntry(estrattoContoEntry);
-						zout.write(baos.toByteArray());
-						zout.closeEntry();
-					}
+			List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
+			for (String codDominio : mappaInputEstrattoConto.keySet()) {
+				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoVersamentiPDF(mappaInputDomini.get(codDominio), mappaInputEstrattoConto.get(codDominio)); 
+				listInputEstrattoConto.add(input);
+			}
 
 
-				}
+			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoVersamenti(listInputEstrattoConto,pathLoghi);
 
-				// Estratto Conto in formato CSV
-				EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
-				EstrattoContoFilter ecFilter = estrattiContoBD.newFilter();
-				ecFilter.setIdVersamento(idsToExport); 
-				List<EstrattoConto> findAll =  estrattiContoBD.estrattoContoFromIdVersamenti(ecFilter);
-
-				if(findAll != null && findAll.size() > 0){
-					//ordinamento record
-					Collections.sort(findAll, new EstrattoContoComparator());
+			for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
+				Map<String, ByteArrayOutputStream> estrattoContoVersamenti = estrattoContoOutput.getOutput(); 
+				for (String nomeEntry : estrattoContoVersamenti.keySet()) {
 					numeroZipEntries ++;
-					ByteArrayOutputStream baos  = new ByteArrayOutputStream();
-					try{
-						ZipEntry pagamentoCsv = new ZipEntry("estrattoConto.csv");
-						zout.putNextEntry(pagamentoCsv);
-						printer = new Printer(this.getFormat() , baos);
-						printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
-						for (EstrattoConto pagamento : findAll) {
-							printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
-						}
-					}finally {
-						try{
-							if(printer!=null){
-								printer.close();
-							}
-						}catch (Exception e) {
-							throw new Exception("Errore durante la chiusura dello stream ",e);
-						}
-					}
+					ByteArrayOutputStream baos = estrattoContoVersamenti.get(nomeEntry);
+					ZipEntry estrattoContoEntry = new ZipEntry(estrattoContoOutput.getDominio().getCodDominio() + "/" + nomeEntry);
+					zout.putNextEntry(estrattoContoEntry);
 					zout.write(baos.toByteArray());
 					zout.closeEntry();
 				}
+
+
+			}
+
+			// Estratto Conto in formato CSV
+			EstrattiContoBD estrattiContoBD = new EstrattiContoBD(bd);
+			EstrattoContoFilter ecFilter = estrattiContoBD.newFilter();
+			ecFilter.setIdVersamento(idsToExport); 
+			List<EstrattoConto> findAllEstrattoConto =  estrattiContoBD.estrattoContoFromIdVersamenti(ecFilter); 
+
+			if(findAllEstrattoConto != null && findAllEstrattoConto.size() > 0){
+				//ordinamento record
+				Collections.sort(findAllEstrattoConto, new EstrattoContoComparator());
+				numeroZipEntries ++;
+				ByteArrayOutputStream baos  = new ByteArrayOutputStream();
+				try{
+					ZipEntry pagamentoCsv = new ZipEntry("estrattoConto.csv");
+					zout.putNextEntry(pagamentoCsv);
+					printer = new Printer(this.getFormat() , baos);
+					printer.printRecord(CSVUtils.getEstrattoContoCsvHeader());
+					for (EstrattoConto pagamento : findAllEstrattoConto) {
+						printer.printRecord(CSVUtils.getEstrattoContoAsCsvRow(pagamento,this.sdf));
+					}
+				}finally {
+					try{
+						if(printer!=null){
+							printer.close();
+						}
+					}catch (Exception e) {
+						throw new Exception("Errore durante la chiusura dello stream ",e);
+					}
+				}
+				zout.write(baos.toByteArray());
+				zout.closeEntry();
 			}
 
 			// se non ho inserito nessuna entry
@@ -1050,7 +1150,7 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 
 	@Override
 	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException {
+			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
 
@@ -1404,7 +1504,6 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd);
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
 			versamentiBD.setAutoCommit(false);
@@ -1414,17 +1513,14 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 			this.log.debug("Esecuzione " + methodName + ": Letto parametro ["+motivoCancellazioneLabel+"] con valore ["+motivoCancellazione+"]");
 
 			List<String> lstErrori = new ArrayList<String>();
-			String dataS = this.sdf.format(new Date());
 			try{
 				for (Long id : idsToDelete) {
 					Versamento versamento = versamentiBD.getVersamento(id);
 
-					String descrizioneStato =  Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".cancellazione.descrizioneStato.template",
-							dataS,operatore.getPrincipal(),motivoCancellazione);
-					this.log.debug("Descrizione motivazione cancellamento: ["+descrizioneStato+"]"); 
-					versamento.setDescrizioneStato(descrizioneStato);
+					this.log.debug("Descrizione motivazione cancellamento: ["+motivoCancellazione+"]"); 
+					versamento.setDescrizioneStato(motivoCancellazione);
 					try{
-						versamentiBD.annullaVersamento(versamento,descrizioneStato);
+						versamentiBD.annullaVersamento(versamento,motivoCancellazione);
 					} catch (VersamentoException e) {
 						String codEsito = e.getCodEsito();
 						String msgEsito = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".cancellazione.esito." + codEsito);
