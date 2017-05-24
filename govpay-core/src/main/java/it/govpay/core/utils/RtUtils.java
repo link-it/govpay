@@ -269,7 +269,10 @@ public class RtUtils extends NdpValidationUtils {
 				ctRt = JaxbUtils.toRT(rtByteValidato);
 			} catch (Exception e) {
 				log.warn("Errore durante la validazione sintattica della Ricevuta Telematica.", e);
-				throw new NdpException(FaultPa.PAA_SINTASSI_XSD, codDominio, e.getCause().getMessage());
+				if(e.getCause() != null)
+					throw new NdpException(FaultPa.PAA_SINTASSI_XSD, codDominio, e.getCause().getMessage());
+				else
+					throw new NdpException(FaultPa.PAA_SINTASSI_XSD, codDominio, e.getMessage());
 			}
 		} catch (NdpException e) {
 			log.warn("Rt rifiutata: " + e.getDescrizione());
