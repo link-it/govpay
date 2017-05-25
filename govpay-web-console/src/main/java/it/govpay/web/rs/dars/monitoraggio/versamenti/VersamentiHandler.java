@@ -828,7 +828,15 @@ public class VersamentiHandler extends BaseDarsHandler<Versamento> implements ID
 				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento.id"),
 						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoVersamento."+entry.getStatoVersamento().name()),
 								entry.getStatoVersamento().name()));
+				
+				if(entry.getStatoVersamento().equals(StatoVersamento.ANNULLATO)) {
+					voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivazioneAnnullamento.id"),
+							new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".motivazioneAnnullamento.label"),entry.getDescrizioneStato()));
+				}
 			}
+			
+			
+			
 
 			if(entry.getImportoTotale() != null) {
 				voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoTotale.id"),
