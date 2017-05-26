@@ -624,22 +624,6 @@ public class Rendicontazioni extends BasicBD {
 
 
 	/**
-	 * Recupera l'elenco dei flussi di rendicontazione che contengono almeno una redicontazione
-	 * afferente all'applicazione fornita.
-	 * 
-	 * @param applicazione
-	 * @return
-	 * @throws GovPayException
-	 * @throws ServiceException
-	 */
-	public List<Fr> chiediListaRendicontazioni(Applicazione applicazione) throws GovPayException, ServiceException {
-		FrBD frBD = new FrBD(this);
-		FrFilter newFilter = frBD.newFilter();
-		newFilter.setIdApplicazione(applicazione.getId());
-		return frBD.findAll(newFilter);
-	}
-
-	/**
 	 * Recupera l'elenco dei flussi di rendicontazione per cui l'applicazione richiedente e' abilitata
 	 * 
 	 * 
