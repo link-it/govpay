@@ -24,8 +24,10 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.openspcoop2.generic_project.beans.CustomField;
 import org.openspcoop2.generic_project.dao.IExpressionConstructor;
 import org.openspcoop2.generic_project.exception.ExpressionException;
+import org.openspcoop2.generic_project.exception.ExpressionNotImplementedException;
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
@@ -290,66 +292,66 @@ public class FrFilter extends AbstractFilter {
 		try {
 			IExpression newExpression = newExpression();
 			
-//			boolean addAnd = false;
-//			// Filtro sullo stato pagamenti
-//			if(this.stato != null && StringUtils.isNotEmpty(this.stato)){
-//				newExpression.equals(FR.model().STATO, this.stato);
-//				addAnd = true;
-//			}
-//			
-//			if(this.idApplicazione != null){
-//				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
-//				
-//				
-//				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
-//				newExpression.equals(idApplicazioneField, this.idApplicazione); //per scatenare la join
-//				addAnd = true;
-//			}
-//			
-//			if(this.codDominio != null){
-//				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
-//				addAnd = true;
-//			}
-//			
-//			if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
-//				if(addAnd)
-//					newExpression.and();
-//				
-//				newExpression.equals(FR.model().COD_PSP, this.codPsp);
-//				addAnd = true;
-//			}
-//			
-//			if(this.datainizio != null && this.dataFine != null) {
-//				if(addAnd)
-//					newExpression.and();
-//				
-//				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
-//				addAnd = true;
-//			}
-//			
-//			if(this.codFlusso != null) {
-//				if(addAnd)
-//					newExpression.and();
-//				
-//				newExpression.like(FR.model().COD_FLUSSO, this.codFlusso);
-//				addAnd = true;
-//			}
-//			if(this.idFr != null && !this.idFr.isEmpty()) {
-//				if(addAnd)
-//					newExpression.and();
-//				CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
-//
-//				newExpression.in(baseField, this.idFr);
-//				addAnd = true;
-//			}
+			boolean addAnd = false;
+			// Filtro sullo stato pagamenti
+			if(this.stato != null && StringUtils.isNotEmpty(this.stato)){
+				newExpression.equals(FR.model().STATO, this.stato);
+				addAnd = true;
+			}
+			
+			if(this.idApplicazione != null){
+				newExpression.isNotNull(FR.model().ID_PAGAMENTO.ID_VERSAMENTO.COD_VERSAMENTO_ENTE); //sempre not null, serve solo per scatenare la join
+				
+				
+				CustomField idApplicazioneField = new CustomField("id_applicazione", Long.class, "id_applicazione", this.getTable(FR.model().ID_PAGAMENTO.ID_VERSAMENTO));
+				newExpression.equals(idApplicazioneField, this.idApplicazione); //per scatenare la join
+				addAnd = true;
+			}
+			
+			if(this.codDominio != null){
+				newExpression.in(FR.model().COD_DOMINIO, this.codDominio);
+				addAnd = true;
+			}
+			
+			if(this.codPsp != null && StringUtils.isNotEmpty(this.codPsp)) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.equals(FR.model().COD_PSP, this.codPsp);
+				addAnd = true;
+			}
+			
+			if(this.datainizio != null && this.dataFine != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.between(FR.model().DATA_ORA_FLUSSO, this.datainizio,this.dataFine);
+				addAnd = true;
+			}
+			
+			if(this.codFlusso != null) {
+				if(addAnd)
+					newExpression.and();
+				
+				newExpression.like(FR.model().COD_FLUSSO, this.codFlusso);
+				addAnd = true;
+			}
+			if(this.idFr != null && !this.idFr.isEmpty()) {
+				if(addAnd)
+					newExpression.and();
+				CustomField baseField = new CustomField("id", Long.class, "id", getRootTable());
+
+				newExpression.in(baseField, this.idFr);
+				addAnd = true;
+			}
 			
 			return newExpression;
 		}  catch (NotImplementedException e) {
 			throw new ServiceException(e);
-//		} catch (ExpressionNotImplementedException e) {
-//			throw new ServiceException(e);
-//		} catch (ExpressionException e) {
-//			throw new ServiceException(e);
+		} catch (ExpressionNotImplementedException e) {
+			throw new ServiceException(e);
+		} catch (ExpressionException e) {
+			throw new ServiceException(e);
 		}
 	}
 	
