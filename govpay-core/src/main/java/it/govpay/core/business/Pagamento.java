@@ -595,7 +595,19 @@ public class Pagamento extends BasicBD {
 				ctx.log("pendenti.listaPendentiGovPayOk", rpts.size() + "");
 
 				// Scorro le transazioni. Se non risulta pendente sul nodo (quindi non e' pendente) la mando in aggiornamento.
+				
+				Date mezzorafa = new Date(new Date().getTime() - (30 * 60 * 1000));
+				
 				for(Rpt rpt : rpts) {
+					
+					// WORKAROUND CONCORRENZA CON INVIO RPT DAL NODO
+					// SKIPPO LE RPT PENDENTI CREATE MENO DI MEZZ'ORA FA
+					
+					if(rpt.getDataMsgRichiesta().after(mezzorafa)) {
+						log.debug("Rpt recente [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: aggiornamento non necessario");
+						continue;
+					}
+					
 					String stato = statiRptPendenti.get(rpt.getIuv() + "@" + rpt.getCcp());
 					if(stato != null) {
 						log.debug("Rpt confermata pendente dal nodo [CodMsgRichiesta: " + rpt.getCodMsgRichiesta() + "]: stato " + stato);
