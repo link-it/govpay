@@ -113,6 +113,7 @@ public class RicevutaPagamentoUtils {
 			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoloPagamento.get(0);
 			ricevuta.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
 			ricevuta.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione()); 
+			ricevuta.setCausale(ctDatiSingoloPagamentoRT.getCausaleVersamento());
 //			ricevuta.setCausale(v.getCausaleVersamento() != null ? v.getCausaleVersamento().getSimple() : ctDatiSingoloPagamentoRT.getCausaleVersamento()); 
 		}
 		
