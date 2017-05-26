@@ -374,12 +374,12 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			// codContabilita
 			String codContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
 			URI codContabilitaRefreshUri = this.getUriField(uriInfo, bd, codContabilitaId); 
-			CodContabilita codContabilita = new CodContabilita(this.nomeServizio, codContabilitaId, codContabilitaLabel, 1, 255, codContabilitaRefreshUri, idTipoTributoDependencyValues, bd,this.getLanguage());
+			CodContabilita codContabilita = new CodContabilita(this.nomeServizio, codContabilitaId, codContabilitaLabel, 3, 255, codContabilitaRefreshUri, idTipoTributoDependencyValues, bd,this.getLanguage());
 			codContabilita.setValidation("^\\S+$", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.errorMessage"));
 			codContabilita.addDependencyField(idTipoTributo);
 			codContabilita.init(idTipoTributoDependencyValues, bd,this.getLanguage());
 
-			InputText codContabilitaMod = new InputText(codContabilitaId, codContabilitaLabel, null, false, false, true, 1, 255);
+			InputText codContabilitaMod = new InputText(codContabilitaId, codContabilitaLabel, null, false, false, true, 3, 255);
 			codContabilitaMod.setValidation("^\\S+$", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.errorMessage"));
 
 
@@ -818,7 +818,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 	public String getSottotitolo(Tributo entry, BasicBD bd) throws ConsoleException {
 		StringBuilder sb = new StringBuilder();
 
-		TipoContabilta tipoContabilita = entry.getTipoContabilitaDefault() != null ? entry.getTipoContabilitaDefault() : TipoContabilta.CAPITOLO;
+		TipoContabilta tipoContabilita = entry.getTipoContabilita() != null ? entry.getTipoContabilita() : TipoContabilta.CAPITOLO;
 		String tipoContabilitaValue = null;
 		switch (tipoContabilita) {
 		case ALTRO:
@@ -836,7 +836,7 @@ public class TributiHandler extends BaseDarsHandler<Tributo> implements IDarsHan
 			break;
 		}
 
-		String codContabilitaValue = StringUtils.isNotEmpty(entry.getCodContabilitaDefault()) ? entry.getCodContabilitaDefault() : "--";
+		String codContabilitaValue = StringUtils.isNotEmpty(entry.getCodContabilita()) ? entry.getCodContabilita() : "--";
 
 		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.sottotitolo",entry.getCodTributo(), tipoContabilitaValue,codContabilitaValue,Utils.getAbilitatoAsLabel(entry.isAbilitato())));
 

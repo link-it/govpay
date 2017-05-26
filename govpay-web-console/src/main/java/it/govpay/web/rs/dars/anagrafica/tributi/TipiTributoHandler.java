@@ -331,7 +331,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			// codContabilita
 			String codContabilitaLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.label");
-			InputText codContabilita = new InputText(codContabilitaId, codContabilitaLabel, null, true, false, true, 1, 255);
+			InputText codContabilita = new InputText(codContabilitaId, codContabilitaLabel, null, true, false, true, 3, 138);
 			codContabilita.setValidation("^\\S+$", Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codContabilita.errorMessage"));
 			this.infoCreazioneMap.put(codContabilitaId, codContabilita);
 

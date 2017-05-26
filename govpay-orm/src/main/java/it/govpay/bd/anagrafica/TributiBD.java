@@ -190,7 +190,7 @@ public class TributiBD extends BasicBD {
 		}catch(ServiceException e){
 			throw e;
 		} catch (NotFoundException e) {
-			throw new ServiceException(e);
+			return new ArrayList<Long>();
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionException e) {

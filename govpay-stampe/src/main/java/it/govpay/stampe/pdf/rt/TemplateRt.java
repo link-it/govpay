@@ -226,15 +226,24 @@ public class TemplateRt {
 			StyleBuilder columnStyle = stl.style(TemplateBase.columnBorderStyle).setLeftPadding(5).setRightPadding(0).setTopPadding(5).setBottomPadding(5);
 
 			List<String> values = new ArrayList<String>();
-			String importoDovutoAsString = "‎€"+ ricevuta.getImportoDovuto().doubleValue(); 
 			StringBuilder sb = new StringBuilder();
-			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_DOVUTO, importoDovutoAsString));
+			boolean addBreak = false;
+			if(ricevuta.getImportoDovuto() != null) {
+				String importoDovutoAsString = "‎€"+ ricevuta.getImportoDovuto().doubleValue();
+				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_DOVUTO, importoDovutoAsString));
+				addBreak = true;
+			}
+
 			if(ricevuta.getDataScadenza() != null){
-				sb.append("<br/>");
+				if(addBreak)
+					sb.append("<br/>");
 				sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_DATA_SCADENZA, TemplateBase.sdf_ddMMyyyy.format(ricevuta.getDataScadenza())));
+				addBreak = true;
 			}
 			String importoPagatoAsString = "‎€"+ ricevuta.getImportoPagato().doubleValue(); 
-			sb.append("<br/>");
+			if(addBreak) 
+				sb.append("<br/>");
+			
 			sb.append(MessageFormat.format(Costanti.PATTERN_NOME_DUE_PUNTI_VALORE,Costanti.LABEL_IMPORTO_PAGATO, importoPagatoAsString));
 			if(ricevuta.getDataPagamento() != null){
 				sb.append("<br/>");

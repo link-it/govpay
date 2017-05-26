@@ -190,6 +190,10 @@ public class RptBD extends BasicBD {
 	public RptFilter newFilter() throws ServiceException {
 		return new RptFilter(this.getRptService());
 	}
+	
+	public RptFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new RptFilter(this.getRptService(),simpleSearch);
+	}
 
 	public long count(RptFilter filter) throws ServiceException {
 		try {

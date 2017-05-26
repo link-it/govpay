@@ -16,6 +16,7 @@ import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.gov.digitpa.schemas._2011.pagamenti.CtSoggettoPagatore;
 import it.govpay.model.Anagrafica;
 import it.govpay.model.Dominio;
+import it.govpay.model.Pagamento;
 import it.govpay.model.RicevutaPagamento;
 import it.govpay.model.Versamento;
 import it.govpay.servizi.gpprt.GpChiediStatoVersamentoResponse;
@@ -64,6 +65,60 @@ public class RicevutaPagamentoUtils {
 		
 		ricevuta.setDataScadenza(v.getDataScadenza());
 		ricevuta.setImportoDovuto(v.getImportoTotale());
+		
+		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
+		ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante()); 
+		
+		CtSoggettoPagatore soggettoPagatore = rt.getSoggettoPagatore();
+		Anagrafica anagraficaDebitore = new Anagrafica();
+		anagraficaDebitore.setCodUnivoco(soggettoPagatore.getIdentificativoUnivocoPagatore().getCodiceIdentificativoUnivoco());
+		anagraficaDebitore.setRagioneSociale(soggettoPagatore.getAnagraficaPagatore());
+		ricevuta.setAnagraficaDebitore(anagraficaDebitore);
+		
+		return getPdfRicevutaPagamento(pathLoghi, ricevuta, osAPPdf, log);
+	}
+	
+	public static List<String> getPdfRicevutaPagamento(String pathLoghi, CtRicevutaTelematica rt,Pagamento p,String auxDigit, String applicationCode, OutputStream osAPPdf, Logger log) throws Exception {
+
+		RicevutaPagamento ricevuta = new RicevutaPagamento();
+		
+		CtEnteBeneficiario enteBeneficiario = rt.getEnteBeneficiario();
+		Dominio dominioCreditore = new Dominio();
+		dominioCreditore.setCodDominio(enteBeneficiario.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco());
+		dominioCreditore.setRagioneSociale(enteBeneficiario.getDenominazioneBeneficiario());
+		Anagrafica anagraficaCreditore = new Anagrafica();
+		anagraficaCreditore.setCap(enteBeneficiario.getCapBeneficiario());
+		anagraficaCreditore.setCivico(enteBeneficiario.getCivicoBeneficiario());
+		anagraficaCreditore.setCodUnivoco(enteBeneficiario.getIdentificativoUnivocoBeneficiario().getCodiceIdentificativoUnivoco());
+		anagraficaCreditore.setIndirizzo(enteBeneficiario.getIndirizzoBeneficiario());
+		anagraficaCreditore.setLocalita(enteBeneficiario.getLocalitaBeneficiario());
+		anagraficaCreditore.setNazione(enteBeneficiario.getNazioneBeneficiario());
+		anagraficaCreditore.setProvincia(enteBeneficiario.getProvinciaBeneficiario());
+		anagraficaCreditore.setRagioneSociale(enteBeneficiario.getDenominazioneBeneficiario());
+		
+		ricevuta.setDominioCreditore(dominioCreditore);
+		ricevuta.setCodDominio(dominioCreditore.getCodDominio());
+		
+		ricevuta.setAnagraficaCreditore(anagraficaCreditore);
+		
+		CtDatiVersamentoRT datiPagamento = rt.getDatiPagamento();
+		ricevuta.setCodAvviso(auxDigit+applicationCode+ datiPagamento.getIdentificativoUnivocoVersamento());
+		ricevuta.setIuv(datiPagamento.getIdentificativoUnivocoVersamento());
+		
+		ricevuta.setCcp(datiPagamento.getCodiceContestoPagamento());
+		ricevuta.setImportoPagato(datiPagamento.getImportoTotalePagato());
+		
+		List<CtDatiSingoloPagamentoRT> datiSingoloPagamento = datiPagamento.getDatiSingoloPagamento();
+		if(datiSingoloPagamento!= null && datiSingoloPagamento.size() >0){
+			CtDatiSingoloPagamentoRT ctDatiSingoloPagamentoRT = datiSingoloPagamento.get(0);
+			ricevuta.setDataPagamento(ctDatiSingoloPagamentoRT.getDataEsitoSingoloPagamento());
+			ricevuta.setIdRiscossione(ctDatiSingoloPagamentoRT.getIdentificativoUnivocoRiscossione()); 
+			ricevuta.setCausale(ctDatiSingoloPagamentoRT.getCausaleVersamento());
+//			ricevuta.setCausale(v.getCausaleVersamento() != null ? v.getCausaleVersamento().getSimple() : ctDatiSingoloPagamentoRT.getCausaleVersamento()); 
+		}
+		
+//		ricevuta.setDataScadenza(v.getDataScadenza());
+//		ricevuta.setImportoDovuto(v.getImportoTotale());
 		
 		CtIstitutoAttestante istitutoAttestante = rt.getIstitutoAttestante();
 		ricevuta.setPsp(istitutoAttestante.getDenominazioneAttestante()); 
