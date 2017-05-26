@@ -158,7 +158,8 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			if(StringUtils.isNotEmpty(canale.getCodCanale()))
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codCanale.label"), canale.getCodCanale());
 			if(canale.getTipoVersamento() != null)
-				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), canale.getTipoVersamento().toString());
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"), 
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento."+canale.getTipoVersamento().name() ));
 			
 			ModelloPagamento modelloPagamento = canale.getModelloPagamento();
 			if(modelloPagamento != null){
