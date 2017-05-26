@@ -33651,7 +33651,7 @@ Polymer.AppLocalizeBehavior = {
             </div>
           </div>
           <div class="mainContent">
-            <link-searchbox id="searchbox" auto="" on-append-response="appendResults" on-response="setResults" on-advanced-search-request="_onAdvRequest" hidden$="[[!advSearch]]"></link-searchbox>
+            <link-searchbox id="searchbox" on-append-response="appendResults" on-response="setResults" on-advanced-search-request="_onAdvRequest" hidden$="[[!advSearch]]"></link-searchbox>
             <span class="gap" hidden$="[[!advSearch]]"></span>
             <link-listbox id="resultsBox" filtrabile="[[filtrabile]]" class="allSpace" max-selections="[[maxSelections]]" selectable="[[isSelectable(results.length)]]" hidden$="[[noResults(results.length)]]" data-provider="{{results}}"></link-listbox>
             <div class="noResults" hidden$="[[!noResults(results.length)]]">[[localize('nessunElemento')]]</div>
@@ -33874,6 +33874,7 @@ Polymer.AppLocalizeBehavior = {
           this.useVaadin = response.tabella;
           this.intestazione= response.intestazione;
         }
+        this.activateFabs();
         this.fire('data-search-view', { numResults: response.totaleRisultati, infoRicerca: response.infoRicerca, simplePlaceholder: response.simpleSearchPlaceHolder });
       },
 
@@ -33890,6 +33891,7 @@ Polymer.AppLocalizeBehavior = {
         if (this.results.length==0){
           //app.showPaperToast('Nessun risultato dalla ricerca');
         }
+        this.$.scrollThreshold.toggleScrollListener(true);
       },
 
       appendResults: function(event){
@@ -33899,6 +33901,7 @@ Polymer.AppLocalizeBehavior = {
             this.push('results', obj);
           }
         }
+        this.$.scrollThreshold.toggleScrollListener(true);
       },
 
       noResults: function(numResults){
@@ -33958,7 +33961,11 @@ Polymer.AppLocalizeBehavior = {
       },
 
       activateFabs: function() {
-        this.showFabMenu = !(!this.creazioneUrl && !this.cancellazioneUrl && !this.esportazioneUrl);
+        this.showFabMenu = false;
+        if ((this.creazioneUrl && this.creazioneUrl != '') || (this.cancellazioneUrl && this.cancellazioneUrl != '') ||
+            (this.esportazioneUrl && this.esportazioneUrl != '')) {
+          this.showFabMenu = true;
+        }
       },
 
       delete: function(event) {
@@ -34171,8 +34178,11 @@ Polymer.AppLocalizeBehavior = {
       },*/
 
       loadMoreData: function(event){
-        if (this.numResults > this.results.length && this.$.searchbox.searchUrl!=''){
-          this.$.searchbox.searchWithOffset(this.results.length);
+        if(this.$.resultsBox && this.$.resultsBox.getBoundingClientRect().height != 0) {
+          if (this.numResults > this.results.length && this.$.searchbox.searchUrl!=''){
+            this.$.scrollThreshold.toggleScrollListener(false);
+            this.$.searchbox.searchWithOffset(this.results.length);
+          }
         }
         this.$.scrollThreshold.clearTriggers();
       },
@@ -35651,6 +35661,9 @@ Polymer.AppLocalizeBehavior = {
       }
 
       .card-content {
+        @apply(--layout-horizontal);
+        @apply(--layout-wrap);
+        flex-basis: 50%;
         font-size: 12px;
         padding: 0;
         position:relative;
@@ -35659,6 +35672,8 @@ Polymer.AppLocalizeBehavior = {
       .voce {
         min-height: 24px;
         padding-bottom: 8px;
+        flex-basis: 50%;
+        width: 50%;
       }
 
       .card-content .etichetta {
@@ -36022,13 +36037,24 @@ Polymer.AppLocalizeBehavior = {
 
       downloadDati_responseHandler: function(event){
         app.hideSpinner();
-        var a         = document.createElement('a');
-        a.href        = window.URL.createObjectURL(event.detail.xhr.response);
-        a.target      = '_blank';
-        var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
-        a.download    = nomeFile;
-        document.body.appendChild(a);
-        a.click();
+        try {
+          var ct =  event.detail.xhr.getResponseHeader('Content-Type');
+          var _blob = new Blob([event.detail.xhr.response], {type: ct });
+          var nomeFile = event.detail.xhr.getResponseHeader('content-disposition').split("\"")[1];
+          if(!this.isIE()){
+            var a         = document.createElement('a');
+            a.href        = window.URL.createObjectURL(event.detail.xhr.response);
+            a.target      = '_blank';
+            a.download    = nomeFile;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+          } else {
+            window.navigator.msSaveOrOpenBlob(_blob, nomeFile);
+          }
+        } catch (err) {
+          console.log(err.message);
+        }
       },
 
       downloadDati_errorHandler: function(event){
@@ -36851,15 +36877,16 @@ event and do your own custom submission:
       },
 
       simpleSearch: function(param) {
+        app.showSpinner();
         this.isSimpleQuery = { value: param, active: true };
         this.offset = 0;
         this.$.searchResource.url = this.searchUrl + app.appendLangParameter(this.searchUrl) + '&simpleSearch='+param;
-        app.showSpinner();
         this.$.searchForm.reset();
         this.$.searchResource.generateRequest();
       },
 
       searchWithOffset: function(offset){
+        app.showSpinner();
         this.fire('advanced-search-request');
         this.isSimpleQuery = { value: '', active: false };
         this.offset = offset;
@@ -36894,7 +36921,6 @@ event and do your own custom submission:
           var pp = this.$.searchResource.url.indexOf('?') > -1 ? '&' : '?';
           this.$.searchResource.url += pp +query.join('&');
         }
-        app.showSpinner();
         this.$.searchResource.generateRequest();
       },
 
@@ -37336,6 +37362,7 @@ event and do your own custom submission:
         left: 0;
         right: 0;
         bottom: 0;
+        background-color: rgba(255,255,255,.5);
       }
 
       .width-centered {

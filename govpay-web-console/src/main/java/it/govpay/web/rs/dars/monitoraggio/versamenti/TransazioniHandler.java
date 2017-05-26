@@ -1,5 +1,6 @@
 package it.govpay.web.rs.dars.monitoraggio.versamenti;
 
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.net.URI;
@@ -18,27 +19,35 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
+import org.openspcoop2.generic_project.exception.NotFoundException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
+import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.PortaliBD;
+import it.govpay.bd.anagrafica.filters.DominioFilter;
 import it.govpay.bd.model.Canale;
+import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.Psp;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.Stazione;
+import it.govpay.bd.model.Versamento;
+import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
-import it.govpay.bd.pagamento.VersamentiBD;
+import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
-import it.govpay.bd.pagamento.filters.VersamentoFilter;
 import it.govpay.model.Acl;
+import it.govpay.model.Evento;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Canale.ModelloPagamento;
+import it.govpay.model.Canale.TipoVersamento;
 import it.govpay.model.Intermediario;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
@@ -49,24 +58,34 @@ import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.anagrafica.domini.Domini;
+import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.anagrafica.psp.Canali;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
+import it.govpay.web.rs.dars.model.InfoForm.Sezione;
+import it.govpay.web.rs.dars.model.input.ParamField;
+import it.govpay.web.rs.dars.model.input.base.InputText;
+import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.monitoraggio.eventi.Eventi;
+import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
+import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
 
 public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHandler<Rpt>{
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
+	private Map<String, ParamField<?>> infoRicercaMap = null;
 
 	public TransazioniHandler(Logger log, BaseDarsService darsService) {
 		super(log, darsService);
@@ -78,76 +97,38 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 		try{	
 			// Operazione consentita agli utenti registrati
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-
+			Map<String, String> params = new HashMap<String, String>();
 			URI esportazione = null;  
+			Integer offset = this.getOffset(uriInfo);
+			Integer limit = this.getLimit(uriInfo);
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
-			Versamenti versamentiDars = new  Versamenti();
-			String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(versamentiDars.getNomeServizio() + ".idVersamento.id");
-			String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
-
-			Map<String, String> params = new HashMap<String, String>();
-
-			if(StringUtils.isNotEmpty(idVersamento)){
-				params.put(versamentoId, idVersamento);
-			}
-
-			AclBD aclBD = new AclBD(bd);
-			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-			List<Long> idDomini = new ArrayList<Long>();
-			boolean eseguiRicerca = true; // isAdmin;
-			// SE l'operatore non e' admin vede solo le transazioni dei versamenti associati ai suoi domini
-			if(!isAdmin){
-				boolean vediTuttiDomini = false;
-
-				VersamentiBD versamentiBD = new VersamentiBD(bd);
-				VersamentoFilter filter = versamentiBD.newFilter();
-				for(Acl acl: aclOperatore) {
-					if(Tipo.DOMINIO.equals(acl.getTipo())) {
-						if(acl.getIdDominio() == null) {
-							vediTuttiDomini = true;
-							break;
-						} else {
-							idDomini.add(acl.getIdDominio());
-						}
-					}
-				}
-				if(!vediTuttiDomini) {
-					if(idDomini.isEmpty()) {
-						eseguiRicerca = false;
-					} else {
-						filter.setIdDomini(idDomini);
-					}
-				}
-
-				FilterSortWrapper fsw = new FilterSortWrapper();
-				fsw.setField(it.govpay.orm.Versamento.model().DATA_CREAZIONE);
-				fsw.setSortOrder(SortOrder.DESC);
-				filter.getFilterSortList().add(fsw);
-
-				long count = eseguiRicerca ? versamentiBD.count(filter) : 0;
-				List<Long> idVersamentoL = new ArrayList<Long>();
-				idVersamentoL.add(Long.parseLong(idVersamento));
-				filter.setIdVersamento(idVersamentoL);
-
-				eseguiRicerca = eseguiRicerca && count > 0;
-			}
-
 			RptBD rptBD = new RptBD(bd);
-			RptFilter filter = rptBD.newFilter();
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID); 
+
+
+
+			RptFilter filter = rptBD.newFilter(simpleSearch);
 			FilterSortWrapper fsw = new FilterSortWrapper();
 			fsw.setField(it.govpay.orm.RPT.model().DATA_MSG_RICHIESTA);
 			fsw.setSortOrder(SortOrder.DESC);
 			filter.getFilterSortList().add(fsw);
-			filter.setIdVersamento(Long.parseLong(idVersamento)); 
+			filter.setOffset(offset);
+			filter.setLimit(limit);
 
+			boolean eseguiRicerca = popoloFiltroRicerca(uriInfo, bd, operatore, params, simpleSearch, filter);
+			boolean visualizzaRicerca = true;
 			long count = eseguiRicerca ? rptBD.count(filter) : 0;
-			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
+			if(params.size() > 0) {
+				// se elemento correlato visualizza la ricerca solo se i risultati sono > del limit
+				visualizzaRicerca = this.visualizzaRicerca(count, limit);
+			}
+
+			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
+			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,visualizzaRicerca,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Rpt> rpt = eseguiRicerca ? rptBD.findAll(filter) : new ArrayList<Rpt>();
 
@@ -192,6 +173,84 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 		}
 	}
 
+	private boolean popoloFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore, Map<String, String> params,
+			boolean simpleSearch, RptFilter filter) throws ServiceException, NotFoundException, ConsoleException {
+		ProfiloOperatore profilo = operatore.getProfilo();
+		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+		AclBD aclBD = new AclBD(bd);
+		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		boolean elementoCorrelato = false;
+		boolean eseguiRicerca = true; // isAdmin;
+		List<Long> idDomini = new ArrayList<Long>();
+
+		String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
+		String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
+
+		if(StringUtils.isNotEmpty(idVersamento)){
+			filter.setIdVersamento(Long.parseLong(idVersamento)); 
+			elementoCorrelato = true;
+			params.put(versamentoId, idVersamento);
+		}
+
+		if(simpleSearch) {
+			// simplesearch
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+				if(elementoCorrelato)
+					params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+			}
+		} else {
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			String idDominio = this.getParameter(uriInfo, idDominioId, String.class);
+			if(StringUtils.isNotEmpty(idDominio)){
+				long idDom = -1l;
+				try{
+					idDom = Long.parseLong(idDominio);
+				}catch(Exception e){ idDom = -1l;	}
+				if(idDom > 0){
+					idDomini.add(idDom);
+					filter.setIdDomini(toListCodDomini(idDomini, bd));
+					if(elementoCorrelato)
+						params.put(idDominioId,idDominio);
+				}
+			}
+
+		}
+
+		// SE l'operatore non e' admin vede solo le transazioni dei versamenti associati ai suoi domini
+		if(!isAdmin && idDomini.isEmpty()){
+			boolean vediTuttiDomini = false;
+
+			for(Acl acl: aclOperatore) {
+				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+					if(acl.getIdDominio() == null) {
+						vediTuttiDomini = true;
+						break;
+					} else {
+						idDomini.add(acl.getIdDominio());
+					}
+				}
+			}
+			if(!vediTuttiDomini) {
+				if(idDomini.isEmpty()) {
+					eseguiRicerca = false;
+				} else {
+					filter.setIdDomini(toListCodDomini(idDomini, bd));
+				}
+			}
+		}
+		return eseguiRicerca;
+	}
+
+	private List<String > toListCodDomini(List<Long> lstCodDomini, BasicBD bd) throws ServiceException, NotFoundException {
+		List<String > lst = new ArrayList<String >();
+		for(Long codDominio: lstCodDomini) {
+			lst.add(AnagraficaManager.getDominio(bd, codDominio).getCodDominio());
+		}
+		return lst;
+	}
+
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
@@ -216,28 +275,47 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			it.govpay.web.rs.dars.model.Sezione sezioneRpt = dettaglio.getSezioneRoot();
 			String etichettaRpt = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneRPT.titolo");
 			sezioneRpt.setEtichetta(etichettaRpt); 
+			
+			Versamento versamento = rpt.getVersamento(bd);
+			if(versamento != null){
+				Versamenti versamentiDars = new Versamenti();
+				VersamentiHandler versamentiDarsHandler = (VersamentiHandler) versamentiDars.getDarsHandler();
+				Elemento elemento = versamentiDarsHandler.getElemento(versamento, versamento.getId(), versamentiDars.getPathServizio(), bd);				
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.label"),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.visualizza"),elemento.getUri());
+			}
+			
+			if(StringUtils.isNotEmpty(rpt.getCodDominio())){
+				try{
+					Dominio dominio = AnagraficaManager.getDominio(bd, rpt.getCodDominio());
+					Domini dominiDars = new Domini();
+					Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
+					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),elemento.getTitolo());
+					
+				}catch(Exception e){
+					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),rpt.getCodDominio());
+				}
+			}
+			if(StringUtils.isNotEmpty(rpt.getIuv()))
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),rpt.getIuv());
+			if(StringUtils.isNotEmpty(rpt.getCcp()))
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),rpt.getCcp());
 
+			if(rpt.getDataMsgRicevuta() != null)
+				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRichiesta.label"),this.sdf.format(rpt.getDataMsgRichiesta()));
+			
 			StatoRpt stato = rpt.getStato(); 
 			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),
 					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + stato.name()));
+			
 			if(StringUtils.isNotEmpty(rpt.getDescrizioneStato()))
 				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"),rpt.getDescrizioneStato());
-			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),rpt.getIuv());
-			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),rpt.getCcp());
+
 			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codMsgRichiesta.label"),rpt.getCodMsgRichiesta());
-			if(rpt.getDataMsgRicevuta() != null)
-				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataMsgRichiesta.label"),this.sdf.format(rpt.getDataMsgRichiesta()));
+			
 			if(rpt.getDataAggiornamento() != null)
 				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataAggiornamento.label"),this.sdf.format(rpt.getDataAggiornamento()));
-			sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dominio.label"),rpt.getCodDominio());
-			Intermediario intermediario = rpt.getIntermediario(bd);
-			if(intermediario != null)
-				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".intermediario.label"),intermediario.getCodIntermediario());
-
-			Stazione stazione = rpt.getStazione(bd);
-			if(stazione!= null)
-				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stazione.label"),	stazione.getCodStazione());
-
+			
 			Psp psp = rpt.getPsp(bd);
 			if(psp != null)
 				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp());
@@ -245,13 +323,24 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			Canale canale = rpt.getCanale(bd);
 			if(canale != null)
 				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".canale.label"),canale.getCodCanale());
-
-			Long idPortale = rpt.getIdPortale();
-			if(idPortale != null){
-				PortaliBD portaliBD = new PortaliBD(bd);
-				Portale portale = portaliBD.getPortale(idPortale);
-				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".portale.label"),	portale.getCodPortale());
-			}
+			
+			
+	//			Intermediario intermediario = rpt.getIntermediario(bd);
+	//			if(intermediario != null)
+	//				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".intermediario.label"),intermediario.getCodIntermediario());
+	//
+	//			Stazione stazione = rpt.getStazione(bd);
+	//			if(stazione!= null)
+	//				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stazione.label"),	stazione.getCodStazione());
+	//
+	//
+	//
+	//			Long idPortale = rpt.getIdPortale();
+	//			if(idPortale != null){
+	//				PortaliBD portaliBD = new PortaliBD(bd);
+	//				Portale portale = portaliBD.getPortale(idPortale);
+	//				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".portale.label"),	portale.getCodPortale());
+	//			}
 
 
 			ModelloPagamento modelloPagamento = rpt.getModelloPagamento();
@@ -275,6 +364,16 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 				sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".modelloPagamento.label"),modelloPagamentoString);
 			}
+			
+			if(canale != null) {
+				TipoVersamento tipoVersamento = canale.getTipoVersamento();
+				if(tipoVersamento != null) {
+					Canali canaliDars = new Canali();
+					sezioneRpt.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoVersamento.label"),
+							Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(canaliDars.getNomeServizio() + ".tipoVersamento."+tipoVersamento.name()));
+				}
+			}
+			
 			FirmaRichiesta firmaRichiesta = rpt.getFirmaRichiesta();
 			if(firmaRichiesta != null){
 				String firmaRichiestaAsString = null;
@@ -346,20 +445,30 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 			//Eventi correlati
 			// Elementi correlati
+
+			Pagamenti pagamentiDars = new Pagamenti();
+			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(pagamentiDars.getNomeServizio() + ".idRpt.id");
+			String etichettaPagamenti = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.pagamenti.titolo");
+			Map<String, String> params = new HashMap<String, String>();
+			params.put(idTransazioneId, rpt.getId()+"");
+			URI pagamentoDettaglio = Utils.creaUriConParametri(pagamentiDars.getPathServizio(), params );
+			dettaglio.addElementoCorrelato(etichettaPagamenti, pagamentoDettaglio); 
+
+
 			String etichettaEventi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.eventi.titolo");
 			Eventi eventiDars = new Eventi();
-
+			String idTransazioneIdEventi = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".idTransazione.id");
 			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".codDominio.id");
 			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".iuv.id");
 			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".ccp.id");
-			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(eventiDars.getNomeServizio() + ".idTransazione.id");
 
-			Map<String, String> params = new HashMap<String, String>();
-			params.put(codDominioId, rpt.getCodDominio());
-			params.put(iuvId, rpt.getIuv());
-			params.put(ccpId, rpt.getCcp());
-			params.put(idTransazioneId, rpt.getId()+"");
-			URI eventoDettaglio = Utils.creaUriConParametri(eventiDars.getPathServizio(), params );
+
+			Map<String, String> paramsEventi = new HashMap<String, String>();
+			paramsEventi.put(codDominioId, rpt.getCodDominio());
+			paramsEventi.put(iuvId, rpt.getIuv());
+			paramsEventi.put(ccpId, rpt.getCcp());
+			paramsEventi.put(idTransazioneIdEventi, rpt.getId()+"");
+			URI eventoDettaglio = Utils.creaUriConParametri(eventiDars.getPathServizio(), paramsEventi );
 			dettaglio.addElementoCorrelato(etichettaEventi, eventoDettaglio);
 
 			this.log.info("Esecuzione " + methodName + " completata.");
@@ -490,7 +599,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.label"),entry.getCcp()));
 		}
-		
+
 		Psp psp = null;
 		try {
 			psp = entry.getPsp(bd);
@@ -499,6 +608,20 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".psp.label"),psp.getCodPsp()));
 		} catch (ServiceException e) {
 			throw new ConsoleException(e);
+		}
+		
+		if(StringUtils.isNotEmpty(entry.getCodDominio())){
+			try{
+				Dominio dominio = AnagraficaManager.getDominio(bd, entry.getCodDominio());
+				Domini dominiDars = new Domini();
+				Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),elemento.getTitolo()));
+				
+			}catch(Exception e){
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),entry.getCodDominio()));
+			}
 		}
 
 		return valori; 
@@ -519,7 +642,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			}
 
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
-		
+
 		if(idsToExport == null || idsToExport.size() == 0) {
 			List<String> msg = new ArrayList<String>();
 			msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.erroreSelezioneVuota"));
@@ -535,10 +658,15 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			this.darsService.getOperatoreByPrincipal(bd); 
 
 			RptBD rptBD = new RptBD(bd);
+			EventiBD eventiBd = new EventiBD(bd);
+			Eventi eventiDars = new Eventi();
+			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler(); 
 
 			for (Long idTransazione : idsToExport) {
 				Rpt rpt = rptBD.getRpt(idTransazione);
 				String folderName = rpt.getCodMsgRichiesta();
+				String iuv = rpt.getIuv();
+				String ccp = rpt.getCcp();
 
 				ZipEntry rptXml = new ZipEntry(folderName + "/rpt.xml");
 				zout.putNextEntry(rptXml);
@@ -551,6 +679,28 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 					zout.write(rpt.getXmlRt());
 					zout.closeEntry();
 				}
+				
+				// Eventi
+				String entryEventiCSV =  folderName + "/eventi.csv";
+				
+				EventiFilter eventiFilter = eventiBd.newFilter();
+				Dominio dominio = AnagraficaManager.getDominio(bd, rpt.getCodDominio());
+				eventiFilter.setCodDominio(dominio.getCodDominio());
+				eventiFilter.setIuv(iuv);
+				eventiFilter.setCcp(ccp);
+				FilterSortWrapper fswEventi = new FilterSortWrapper();
+				fswEventi.setField(it.govpay.orm.Evento.model().DATA_1);
+				fswEventi.setSortOrder(SortOrder.ASC);
+				eventiFilter.getFilterSortList().add(fswEventi);
+
+				List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+
+				ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
+				zout.putNextEntry(eventiCSV);
+				zout.write(baos.toByteArray());
+				zout.closeEntry();
 			}
 			zout.flush();
 			zout.close();
@@ -576,9 +726,14 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			this.darsService.getOperatoreByPrincipal(bd); 
 
 			RptBD rptBD = new RptBD(bd);
+			EventiBD eventiBd = new EventiBD(bd);
+			Eventi eventiDars = new Eventi();
+			EventiHandler eventiDarsHandler = (EventiHandler) eventiDars.getDarsHandler();
 			Rpt rpt = rptBD.getRpt(idToExport);
 
 			String fileName = "Transazione_"+rpt.getCodMsgRichiesta()+".zip";
+			String iuv = rpt.getIuv();
+			String ccp = rpt.getCcp();
 
 			ZipEntry rptXml = new ZipEntry("rpt.xml");
 			zout.putNextEntry(rptXml);
@@ -591,6 +746,28 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 				zout.write(rpt.getXmlRt());
 				zout.closeEntry();
 			}
+			
+			// Eventi
+			String entryEventiCSV =  "eventi.csv";
+			
+			EventiFilter eventiFilter = eventiBd.newFilter();
+			Dominio dominio = AnagraficaManager.getDominio(bd, rpt.getCodDominio());
+			eventiFilter.setCodDominio(dominio.getCodDominio());
+			eventiFilter.setIuv(iuv);
+			eventiFilter.setCcp(ccp);
+			FilterSortWrapper fswEventi = new FilterSortWrapper();
+			fswEventi.setField(it.govpay.orm.Evento.model().DATA_1);
+			fswEventi.setSortOrder(SortOrder.ASC);
+			eventiFilter.getFilterSortList().add(fswEventi);
+
+			List<Evento> findAllEventi = eventiBd.findAll(eventiFilter);
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			eventiDarsHandler.scriviCSVEventi(baos, findAllEventi);
+
+			ZipEntry eventiCSV = new ZipEntry(entryEventiCSV);
+			zout.putNextEntry(eventiCSV);
+			zout.write(baos.toByteArray());
+			zout.closeEntry();
 
 			zout.flush();
 			zout.close();
@@ -605,15 +782,128 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca, Map<String,String> parameters) throws ConsoleException { 	
 		URI ricerca =  this.getUriRicerca(uriInfo, bd, parameters);
-		InfoForm formRicerca = new InfoForm(ricerca);
-		return formRicerca;
+		InfoForm infoRicerca = new InfoForm(ricerca);
+
+		
+		if(visualizzaRicerca) {
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+			
+			if(this.infoRicercaMap == null){
+				this.initInfoRicerca(uriInfo, bd);
+			}
+
+			Sezione sezioneRoot = infoRicerca.getSezioneRoot();
+			
+			try{
+
+				Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
+				ProfiloOperatore profilo = operatore.getProfilo();
+				boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+
+				// idDominio
+				List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+
+				DominiBD dominiBD = new DominiBD(bd);
+				DominioFilter filter;
+				try {
+					filter = dominiBD.newFilter();
+					boolean eseguiRicerca = true;
+					if(isAdmin){
+
+					} else {
+						AclBD aclBD = new AclBD(bd);
+						List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+
+						boolean vediTuttiDomini = false;
+						List<Long> idDomini = new ArrayList<Long>();
+						for(Acl acl: aclOperatore) {
+							if(Tipo.DOMINIO.equals(acl.getTipo())) {
+								if(acl.getIdDominio() == null) {
+									vediTuttiDomini = true;
+									break;
+								} else {
+									idDomini.add(acl.getIdDominio());
+								}
+							}
+						}
+						if(!vediTuttiDomini) {
+							if(idDomini.isEmpty()) {
+								eseguiRicerca = false;
+							} else {
+								filter.setIdDomini(idDomini);
+							}
+						}
+					}
+
+
+
+					if(eseguiRicerca) {
+						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+						FilterSortWrapper fsw = new FilterSortWrapper();
+						fsw.setField(it.govpay.orm.Dominio.model().COD_DOMINIO);
+						fsw.setSortOrder(SortOrder.ASC);
+						filter.getFilterSortList().add(fsw);
+						List<Dominio> findAll = dominiBD.findAll(filter );
+
+						Domini dominiDars = new Domini();
+						DominiHandler dominiHandler = (DominiHandler) dominiDars.getDarsHandler();
+
+						if(findAll != null && findAll.size() > 0){
+							for (Dominio dominio : findAll) {
+								domini.add(new Voce<Long>(dominiHandler.getTitolo(dominio,bd), dominio.getId()));  
+							}
+						}
+					}else {
+						domini.add(new Voce<Long>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), -1L));
+					}
+				} catch (ServiceException e) {
+					throw new ConsoleException(e);
+				}
+				SelectList<Long> idDominio = (SelectList<Long>) this.infoRicercaMap.get(idDominioId);
+				idDominio.setDefaultValue(-1L);
+				idDominio.setValues(domini); 
+				sezioneRoot.addField(idDominio);
+
+			}catch(Exception e){
+				throw new ConsoleException(e);
+			}
+			
+			InputText iuv = (InputText) this.infoRicercaMap.get(iuvId);
+			iuv.setDefaultValue(null);
+			sezioneRoot.addField(iuv);
+			
+		}
+		return infoRicerca;
+	}
+
+	private void initInfoRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
+		String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+		String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
+		
+		
+		if(this.infoRicercaMap == null){
+			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
+
+			// iuv
+			String iuvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label");
+			InputText iuv = new InputText(iuvId, iuvLabel, null, false, false, true, 1, 35);
+			this.infoRicercaMap.put(iuvId, iuv);	
+			
+			List<Voce<Long>> domini = new ArrayList<Voce<Long>>();
+			// idDominio
+			String idDominioLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label");
+			SelectList<Long> idDominio = new SelectList<Long>(idDominioId, idDominioLabel, null, false, false, true, domini);
+			this.infoRicercaMap.put(idDominioId, idDominio);
+		}
 	}
 
 	/* Operazioni non consentite */
-	
+
 	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
 		return null;
@@ -622,7 +912,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rpt entry) throws ConsoleException {
 		return null;
 	}
-	
+
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 

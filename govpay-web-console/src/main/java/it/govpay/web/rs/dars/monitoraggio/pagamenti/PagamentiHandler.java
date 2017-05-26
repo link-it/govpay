@@ -45,6 +45,7 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.SortOrder;
 import org.openspcoop2.utils.csv.Printer;
 
+import it.gov.digitpa.schemas._2011.pagamenti.CtRicevutaTelematica;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AclBD;
@@ -64,14 +65,16 @@ import it.govpay.bd.pagamento.filters.PagamentoFilter;
 import it.govpay.bd.reportistica.EstrattiContoBD;
 import it.govpay.bd.reportistica.filters.EstrattoContoFilter;
 import it.govpay.core.utils.CSVUtils;
+import it.govpay.core.utils.JaxbUtils;
+import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Pagamento.Stato;
-import it.govpay.model.Pagamento.TipoAllegato;
 import it.govpay.model.comparator.EstrattoContoComparator;
+import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -96,10 +99,10 @@ import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Revoche;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.RevocheHandler;
-import it.govpay.web.rs.dars.monitoraggio.versamenti.SingoliVersamenti;
-import it.govpay.web.rs.dars.monitoraggio.versamenti.SingoliVersamentiHandler;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.Transazioni;
 import it.govpay.web.rs.dars.monitoraggio.versamenti.TransazioniHandler;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.Versamenti;
+import it.govpay.web.rs.dars.monitoraggio.versamenti.VersamentiHandler;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
@@ -333,7 +336,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		return eseguiRicerca;
 	}
 	
-	private boolean popolaFiltroPagamenti(List<RawParamValue> rawValues, BasicBD bd, Operatore operatore, 
+	private boolean popolaFiltroPagamenti(List<RawParamValue> rawValues,UriInfo uriInfo, BasicBD bd, Operatore operatore, 
 			Map<String, String> params,   boolean simpleSearch,
 			PagamentoFilter filter) throws ConsoleException, ServiceException, NotFoundException, Exception {
 
@@ -346,19 +349,16 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
 
 		String versamentoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id");
-		String idVersamento = Utils.getValue(rawValues, versamentoId);
+		String idVersamento = this.getParameter(uriInfo, versamentoId, String.class);
 
 		String idRptId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRpt.id");
-		String idRpt = Utils.getValue(rawValues, idRptId);
+		String idRpt = this.getParameter(uriInfo, idRptId, String.class);
 
 		String idRrId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idRr.id");
-		String idRr= Utils.getValue(rawValues, idRrId);
+		String idRr= this.getParameter(uriInfo, idRrId, String.class);
 
 		String idIncassoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idIncasso.id");
-		String idIncasso= Utils.getValue(rawValues, idIncassoId);
-
-
-
+		String idIncasso= this.getParameter(uriInfo, idIncassoId, String.class);
 
 		// elemento correlato al versamento.
 		if(StringUtils.isNotEmpty(idVersamento)){
@@ -505,13 +505,13 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, pagamento);
 			URI esportazione = null; 
-
-			String titolo = this.getTitolo(pagamento,bd);
+			
+			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglio.label.titolo");
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			// Sezione root coi dati del pagamento
 			it.govpay.web.rs.dars.model.Sezione sezioneRoot = dettaglio.getSezioneRoot();
-
+			
 			Date dataPagamento = pagamento.getDataPagamento();
 			Stato stato = pagamento.getStato();
 
@@ -535,15 +535,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			}
 
 			sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"),statoPagamento);
-
-			SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
-			if(singoloVersamento != null){
-				SingoliVersamenti svDars = new SingoliVersamenti();
-				SingoliVersamentiHandler svHandler = (SingoliVersamentiHandler) svDars.getDarsHandler();
-				Elemento elemento = svHandler.getElemento(singoloVersamento, singoloVersamento.getId(), svDars.getPathServizio(),bd); 
-				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".singoloVersamento.label"),elemento.getTitolo());
-			}
-
+			
 			if(StringUtils.isNotEmpty(pagamento.getCodDominio())){
 				try{
 					Dominio dominio = pagamento.getDominio(bd);
@@ -554,23 +546,45 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 					sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"), pagamento.getCodDominio());
 				}
 			}
+			
 			if(StringUtils.isNotEmpty(pagamento.getIuv()))
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),pagamento.getIuv());
 			if(StringUtils.isNotEmpty(pagamento.getIur()))
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),pagamento.getIur());
-
+			
+			SingoloVersamento singoloVersamento = pagamento.getSingoloVersamento(bd);
+			
+			if(singoloVersamento != null){
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoDovuto.label"),singoloVersamento.getImportoSingoloVersamento().toString() + "€");
+			}
+			
 			if(pagamento.getImportoPagato() != null)
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".importoPagato.label"),(pagamento.getImportoPagato().toString() + "€"));
-			if(dataPagamento != null)
-				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),this.sdf.format(dataPagamento)); 
-
+			
 			if(pagamento.getCommissioniPsp() != null)
 				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".commissioniPsp.label"),(pagamento.getCommissioniPsp().toString() + "€"));
 
-			TipoAllegato tipoAllegato = pagamento.getTipoAllegato();
-			if(tipoAllegato!= null)
-				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato.label"),
-						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato."+tipoAllegato.name()));
+			if(StringUtils.isNotEmpty(pagamento.getIbanAccredito()))
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ibanAccredito.label"),pagamento.getIbanAccredito());
+
+			if(dataPagamento != null)
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataPagamento.label"),this.sdf.format(dataPagamento)); 
+
+//			TipoAllegato tipoAllegato = pagamento.getTipoAllegato();
+//			if(tipoAllegato!= null)
+//				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato.label"),
+//						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoAllegato."+tipoAllegato.name()));
+			
+			if(singoloVersamento != null){
+				Versamento versamento = singoloVersamento.getVersamento(pagamentiBD);
+				Versamenti versamentiDars = new Versamenti();
+				VersamentiHandler versamentiDarsHandler = (VersamentiHandler) versamentiDars.getDarsHandler();
+				Elemento elemento = versamentiDarsHandler.getElemento(versamento, versamento.getId(), versamentiDars.getPathServizio(), bd);				
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.label"),
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.visualizza"),elemento.getUri());
+				
+				sezioneRoot.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codSingoloVersamentoEnte.label"),singoloVersamento.getCodSingoloVersamentoEnte());
+			}
 
 			Rpt rpt = pagamento.getRpt(bd);
 			if(rpt!= null){
@@ -707,6 +721,25 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.id"),
 					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iur.label"),entry.getIur()));
 		}
+		
+		if(entry.getIuv() != null){
+			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id"),
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.label"),entry.getIuv()));
+		}
+		
+		if(StringUtils.isNotEmpty(entry.getCodDominio())){
+			try{
+				Dominio dominio = entry.getDominio(bd);
+				Domini dominiDars = new Domini();
+				Elemento elemento = ((DominiHandler)dominiDars.getDarsHandler()).getElemento(dominio, dominio.getId(), dominiDars.getPathServizio(), bd);
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),elemento.getTitolo()));
+				
+			}catch(Exception e){
+				valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id"),
+						new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.label"),entry.getCodDominio()));
+			}
+		}
 
 		try{
 			SingoloVersamento singoloVersamento = entry.getSingoloVersamento(bd);
@@ -774,9 +807,8 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		int numeroZipEntries = 0;
 
 		String fileName = "Pagamenti.zip";
-
-
 		try{
+			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
@@ -791,7 +823,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				filter.setIdPagamenti(idsToExport);
 
 			//1. eseguo una count per verificare che il numero dei risultati da esportare sia <= sogliamassimaexport massivo
-			boolean eseguiRicerca = this.popolaFiltroPagamenti(rawValues, pagamentiBD, operatore, params, simpleSearch, filter);
+			boolean eseguiRicerca = this.popolaFiltroPagamenti(rawValues, uriInfo, pagamentiBD, operatore, params, simpleSearch, filter);
 
 			if(!eseguiRicerca){
 				List<String> msg = new ArrayList<String>();
@@ -824,6 +856,32 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			List<Long> ids = new ArrayList<Long>();
 			for (Pagamento pagamento : findAllPag) {
 				ids.add(pagamento.getIdSingoloVersamento());
+				
+				// ricevuta pagamento
+				try{
+					Rpt rpt = pagamento.getRpt(bd);
+					Dominio dominio = pagamento.getDominio(bd);
+				
+					if(rpt.getXmlRt() != null){
+						numeroZipEntries ++;
+						String ricevutaDir = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
+
+						// RT in formato pdf
+						String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+						byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+						CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						String auxDigit = dominio.getAuxDigit() + "";
+						String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
+						RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
+						String rtPdfEntryName = ricevutaDir + "/ricevuta_pagamento.pdf";
+						numeroZipEntries ++;
+						ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+						zout.putNextEntry(rtPdf);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
+					}
+				}catch (Exception e) {	}
 			}
 
 			SingoliVersamentiBD singoliVersamentiBD = new SingoliVersamentiBD(bd);
@@ -887,7 +945,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				listInputEstrattoConto.add(input);
 			}
 
-			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 			it.govpay.core.business.EstrattoConto estrattoContoBD = new it.govpay.core.business.EstrattoConto(bd);
 			List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoPagamenti(listInputEstrattoConto,pathLoghi);
 
@@ -935,7 +992,9 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
 		int numeroZipEntries = 0;
+		
 		try{
+			String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 			String fileName = "Pagamenti.zip";
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
@@ -984,6 +1043,33 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 
 			if(eseguiRicerca ){
 				Pagamento pagamento = pagamentiBD.getPagamento(idToExport);
+				
+				// ricevuta pagamento
+				try{
+					Rpt rpt = pagamento.getRpt(bd);
+					Dominio dominio = pagamento.getDominio(bd);
+				
+					if(rpt.getXmlRt() != null){
+						numeroZipEntries ++;
+						String ricevutaDir = dominio.getCodDominio() + "_" + pagamento.getIuv() + "_" +pagamento.getIur();
+
+						// RT in formato pdf
+						String tipoFirma = rpt.getFirmaRichiesta().getCodifica();
+						byte[] rtByteValidato = RtUtils.validaFirma(tipoFirma, rpt.getXmlRt(), dominio.getCodDominio());
+						CtRicevutaTelematica rt = JaxbUtils.toRT(rtByteValidato);
+						ByteArrayOutputStream baos = new ByteArrayOutputStream();
+						String auxDigit = dominio.getAuxDigit() + "";
+						String applicationCode = String.format("%02d", dominio.getStazione(bd).getApplicationCode());
+						RicevutaPagamentoUtils.getPdfRicevutaPagamento(pathLoghi, rt, pagamento, auxDigit, applicationCode, baos, this.log);
+						String rtPdfEntryName = ricevutaDir + "/ricevuta_pagamento.pdf";
+						numeroZipEntries ++;
+						ZipEntry rtPdf = new ZipEntry(rtPdfEntryName);
+						zout.putNextEntry(rtPdf);
+						zout.write(baos.toByteArray());
+						zout.closeEntry();
+					}
+				}catch (Exception e) {	}
+				
 				List<Long> ids = new ArrayList<Long>();
 				ids.add(pagamento.getIdSingoloVersamento());
 
@@ -1032,7 +1118,6 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 				it.govpay.core.business.model.EstrattoConto input =  it.govpay.core.business.model.EstrattoConto.creaEstrattoContoPagamentiPDF(dominio, idSingoliVersamentiDominio);
 				List<it.govpay.core.business.model.EstrattoConto> listInputEstrattoConto = new ArrayList<it.govpay.core.business.model.EstrattoConto>();
 				listInputEstrattoConto.add(input);
-				String pathLoghi = ConsoleProperties.getInstance().getPathEstrattoContoPdfLoghi();
 				List<it.govpay.core.business.model.EstrattoConto> listOutputEstattoConto = estrattoContoBD.getEstrattoContoPagamenti(listInputEstrattoConto,pathLoghi);
 
 				for (it.govpay.core.business.model.EstrattoConto estrattoContoOutput : listOutputEstattoConto) {
