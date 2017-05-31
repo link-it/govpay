@@ -34,7 +34,7 @@ public class IncassoExt extends Incasso{
 		super(i);
 		this.pagamenti = new ArrayList<Pagamento>();
 		for(it.govpay.bd.model.Pagamento p : i.getPagamenti(bd)) {
-			pagamenti.add(new Pagamento(p));
+			pagamenti.add(new Pagamento(p, bd));
 		}
 	}
 	
