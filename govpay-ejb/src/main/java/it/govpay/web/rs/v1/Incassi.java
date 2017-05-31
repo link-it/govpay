@@ -58,7 +58,6 @@ import it.govpay.core.utils.GpThreadLocal;
 import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.v1.beans.Incasso;
 import it.govpay.web.rs.v1.beans.IncassoExt;
-import it.govpay.web.rs.v1.beans.Pagamento;
 
 @Path("/v1/incassi")
 public class Incassi extends BaseRsServiceV1 {
@@ -93,17 +92,14 @@ public class Incassi extends BaseRsServiceV1 {
 			it.govpay.core.business.Incassi incassi = new it.govpay.core.business.Incassi(bd);
 			RichiestaIncassoDTOResponse richiestaIncassoDTOResponse = incassi.richiestaIncasso(richiestaIncassoDTO);
 			
-			List<Pagamento> pagamenti = new ArrayList<Pagamento>();
-			for(it.govpay.bd.model.Pagamento p : richiestaIncassoDTOResponse.getPagamenti()) {
-				pagamenti.add(new Pagamento(p, bd));
-			}
+			IncassoExt incassoExt = new IncassoExt(richiestaIncassoDTOResponse.getIncasso(), bd);
 			
-			this.logResponse(uriInfo, httpHeaders, methodName, pagamenti);
+			this.logResponse(uriInfo, httpHeaders, methodName, incassoExt);
 
 			if(richiestaIncassoDTOResponse.isCreato())
-				return Response.status(Status.CREATED).entity(pagamenti).build();
+				return Response.status(Status.CREATED).entity(incassoExt).build();
 			else 
-				return Response.status(Status.OK).entity(pagamenti).build();
+				return Response.status(Status.OK).entity(incassoExt).build();
 		} catch (NotAuthorizedException e) {
 			this.logResponse(uriInfo, httpHeaders, methodName, new byte[0],401);
 			return Response.status(Status.UNAUTHORIZED).build();

@@ -44,7 +44,7 @@ public class Incasso {
 		jsonConfig.setRootClass(Incasso.class);
 	}
 	
-	public Incasso() throws ServiceException {
+	public Incasso() {
 
 	}
 	
