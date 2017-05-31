@@ -25,10 +25,16 @@ import java.util.List;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
 import it.govpay.bd.BasicBD;
+import it.govpay.core.utils.IncassoUtils;
 
 public class IncassoExt extends Incasso{
 	
+	private String riferimento_rendicontazione;
 	private List<Pagamento> pagamenti;
+	
+	public IncassoExt() {
+		super();
+	}
 	
 	public IncassoExt(it.govpay.bd.model.Incasso i, BasicBD bd) throws ServiceException {
 		super(i);
@@ -36,6 +42,7 @@ public class IncassoExt extends Incasso{
 		for(it.govpay.bd.model.Pagamento p : i.getPagamenti(bd)) {
 			pagamenti.add(new Pagamento(p, bd));
 		}
+		this.riferimento_rendicontazione = IncassoUtils.getRiferimentoIncasso(this.getCausale());
 	}
 	
 	public List<Pagamento> getPagamenti() {
@@ -43,5 +50,13 @@ public class IncassoExt extends Incasso{
 	}
 	public void setPagamenti(List<Pagamento> pagamenti) {
 		this.pagamenti = pagamenti;
+	}
+
+	public String getRiferimento_rendicontazione() {
+		return riferimento_rendicontazione;
+	}
+
+	public void setRiferimento_rendicontazione(String riferimento_rendicontazione) {
+		this.riferimento_rendicontazione = riferimento_rendicontazione;
 	}
 }

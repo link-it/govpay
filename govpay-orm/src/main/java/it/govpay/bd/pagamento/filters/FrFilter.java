@@ -31,6 +31,7 @@ import org.openspcoop2.generic_project.exception.ExpressionNotImplementedExcepti
 import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
+import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.GovpayConfig;
@@ -333,7 +334,7 @@ public class FrFilter extends AbstractFilter {
 				if(addAnd)
 					newExpression.and();
 				
-				newExpression.like(FR.model().COD_FLUSSO, this.codFlusso);
+				newExpression.ilike(FR.model().COD_FLUSSO, this.codFlusso, LikeMode.EXACT);
 				addAnd = true;
 			}
 			if(this.idFr != null && !this.idFr.isEmpty()) {

@@ -22,6 +22,7 @@ package it.govpay.core.business;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,11 +35,13 @@ import org.openspcoop2.generic_project.expression.SortOrder;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.model.Fr;
 import it.govpay.bd.model.Incasso;
 import it.govpay.bd.model.Rendicontazione;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.IncassiBD;
 import it.govpay.bd.pagamento.PagamentiBD;
+import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.bd.pagamento.filters.IncassoFilter;
 import it.govpay.core.business.model.LeggiIncassoDTO;
 import it.govpay.core.business.model.LeggiIncassoDTOResponse;
@@ -52,6 +55,7 @@ import it.govpay.core.exceptions.InternalException;
 import it.govpay.core.exceptions.NotAuthorizedException;
 import it.govpay.core.utils.AclEngine;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.IncassoUtils;
 import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Fr.StatoFr;
@@ -149,7 +153,7 @@ public class Incassi extends BasicBD {
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
 				}
 				
-				richiestaIncassoResponse.setPagamenti(incasso.getPagamenti(this));
+				richiestaIncassoResponse.setIncasso(incasso);
 				richiestaIncassoResponse.setCreato(false);
 				return richiestaIncassoResponse;
 			} catch(NotFoundException nfe) {
@@ -166,16 +170,8 @@ public class Incassi extends BasicBD {
 			try {
 				if(causale != null) {
 					// Riversamento singolo
-					if(causale.startsWith("/RFS/") || causale.startsWith("/RFB/")) {
-						if(causale.indexOf("/", 6) != -1)
-							iuv = causale.substring(5, causale.indexOf("/", 6));
-						else
-							iuv = causale.substring(5);
-					}
-					
-					if(causale.startsWith("/PUR/LGPE-RIVERSAMENTO/URI/")) {
-						idf = causale.substring(27);
-					}
+					iuv = IncassoUtils.getRiferimentoIncassoSingolo(causale);
+					idf = IncassoUtils.getRiferimentoIncassoCumulativo(causale);
 				}
 			} catch (Throwable e) {
 				log.error("Riscontrato errore durante il parsing della causale",e);
@@ -189,12 +185,14 @@ public class Incassi extends BasicBD {
 			// Sto selezionando i pagamenti per impostarli come Incassati.
 			this.enableSelectForUpdate();
 			
+			List<it.govpay.bd.model.Pagamento> pagamenti = new ArrayList<it.govpay.bd.model.Pagamento>();
+			
 			// Riversamento singolo
 			if(iuv != null) {
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
 				try {
 					it.govpay.bd.model.Pagamento pagamento = pagamentiBD.getPagamento(richiestaIncasso.getCodDominio(), iuv);
-					richiestaIncassoResponse.getPagamenti().add(pagamento);
+					pagamenti.add(pagamento);
 				} catch (NotFoundException nfe) {
 					GpThreadLocal.get().log("incasso.iuvNonTrovato", iuv);
 					throw new IncassiException(FaultType.PAGAMENTO_NON_TROVATO, "Lo IUV " + iuv + " estratto dalla causale di incasso non identifica alcun pagamento per il creditore " + richiestaIncasso.getCodDominio());
@@ -208,7 +206,17 @@ public class Incassi extends BasicBD {
 			if(idf != null) {
 				FrBD frBD = new FrBD(this);
 				try {
-					it.govpay.bd.model.Fr fr = frBD.getFr(idf);
+					// Cerco l'idf come case insensitive
+					FrFilter newFilter = frBD.newFilter();
+					newFilter.setCodFlusso(idf);
+					List<Fr> frs = frBD.findAll(newFilter);
+					Fr fr = null;
+					for(Fr tmp : frs) {
+						if(tmp.getCodFlusso().equalsIgnoreCase(idf))
+							fr = tmp;
+					}
+					if(fr == null) throw new NotFoundException();
+					
 					if(!fr.getStato().equals(StatoFr.ACCETTATA)) {
 						GpThreadLocal.get().log("incasso.frAnomala", idf);
 						throw new IncassiException(FaultType.FR_ANOMALA, "Il flusso di rendicontazione " + idf + " identificato dalla causale di incasso risulta avere delle anomalie");
@@ -221,7 +229,7 @@ public class Incassi extends BasicBD {
 						}
 						
 						it.govpay.bd.model.Pagamento pagamento = rendicontazione.getPagamento(this);
-						richiestaIncassoResponse.getPagamenti().add(pagamento);
+						pagamenti.add(pagamento);
 					}
 				} catch (NotFoundException nfe) {
 					GpThreadLocal.get().log("incasso.idfNonTrovato", idf);
@@ -231,7 +239,7 @@ public class Incassi extends BasicBD {
 			
 			// Verifica stato dei pagamenti da incassare e calcolo dell'importo pagato
 			BigDecimal totalePagato = BigDecimal.ZERO;
-			for(it.govpay.bd.model.Pagamento pagamento : richiestaIncassoResponse.getPagamenti()) {
+			for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 				if(Stato.INCASSATO.equals(pagamento.getStato())) {
 					GpThreadLocal.get().log("incasso.pagamentoGiaIncassato", pagamento.getCodDominio(), pagamento.getIuv(), pagamento.getIur());
 					throw new IncassiException(FaultType.PAGAMENTO_GIA_INCASSATO, "Uno dei pagamenti incassati [Dominio:" + pagamento.getCodDominio() + " Iuv:" + pagamento.getIuv() + " Iur:" + pagamento.getIur() + "] risuta gia' incassato.");
@@ -258,11 +266,11 @@ public class Incassi extends BasicBD {
 				incasso.setImporto(richiestaIncasso.getImporto());
 				incasso.setTrn(richiestaIncasso.getTrn());
 				incasso.setIdApplicazione(idApplicazione);
-				
+				richiestaIncassoResponse.setIncasso(incasso);
 				incassiBD.insertIncasso(incasso);
 				
 				PagamentiBD pagamentiBD = new PagamentiBD(this);
-				for(it.govpay.bd.model.Pagamento pagamento : richiestaIncassoResponse.getPagamenti()) {
+				for(it.govpay.bd.model.Pagamento pagamento : pagamenti) {
 					pagamento.setStato(Stato.INCASSATO);
 					pagamento.setIncasso(incasso);
 					pagamentiBD.updatePagamento(pagamento);
