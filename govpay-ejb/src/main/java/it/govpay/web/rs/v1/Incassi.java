@@ -95,7 +95,7 @@ public class Incassi extends BaseRsServiceV1 {
 			
 			List<Pagamento> pagamenti = new ArrayList<Pagamento>();
 			for(it.govpay.bd.model.Pagamento p : richiestaIncassoDTOResponse.getPagamenti()) {
-				pagamenti.add(new Pagamento(p));
+				pagamenti.add(new Pagamento(p, bd));
 			}
 			
 			this.logResponse(uriInfo, httpHeaders, methodName, pagamenti);

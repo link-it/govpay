@@ -22,6 +22,10 @@ package it.govpay.web.rs.v1.beans;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import org.openspcoop2.generic_project.exception.ServiceException;
+
+import it.govpay.bd.BasicBD;
+
 public class Pagamento {
 	
 	private String dominio;
@@ -29,13 +33,19 @@ public class Pagamento {
 	private String iur;
 	private BigDecimal importo;
 	private Date data_pagamento;
+	private String id_applicazione;
+	private String id_versamento_ente;
+	private String id_singolo_versamento_ente;
 	
-	public Pagamento(it.govpay.bd.model.Pagamento p) {
+	public Pagamento(it.govpay.bd.model.Pagamento p, BasicBD bd) throws ServiceException {
 		this.setDominio(p.getCodDominio());
 		this.setIuv(p.getIuv());
 		this.setIur(p.getIur());
 		this.setImporto(p.getImportoPagato());
 		this.setData_pagamento(p.getDataPagamento());
+		this.setId_applicazione(p.getSingoloVersamento(bd).getVersamento(bd).getApplicazione(bd).getCodApplicazione());
+		this.setId_versamento_ente(p.getSingoloVersamento(bd).getVersamento(bd).getCodVersamentoEnte());
+		this.setId_singolo_versamento_ente(p.getSingoloVersamento(bd).getCodSingoloVersamentoEnte());
 	}
 	
 	public String getDominio() {
@@ -68,7 +78,23 @@ public class Pagamento {
 	public void setData_pagamento(Date data_pagamento) {
 		this.data_pagamento = data_pagamento;
 	}
-	
-	
+	public String getId_applicazione() {
+		return id_applicazione;
+	}
+	public void setId_applicazione(String id_applicazione) {
+		this.id_applicazione = id_applicazione;
+	}
+	public String getId_versamento_ente() {
+		return id_versamento_ente;
+	}
+	public void setId_versamento_ente(String id_versamento_ente) {
+		this.id_versamento_ente = id_versamento_ente;
+	}
+	public String getId_singolo_versamento_ente() {
+		return id_singolo_versamento_ente;
+	}
+	public void setId_singolo_versamento_ente(String id_singolo_versamento_ente) {
+		this.id_singolo_versamento_ente = id_singolo_versamento_ente;
+	}
 
 }
