@@ -144,7 +144,7 @@ public class Incassi extends BasicBD {
 					GpThreadLocal.get().log("incasso.sintassi", "dominio");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con dominio diverso");
 				}
-				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) == 0) {
+				if(richiestaIncasso.getImporto().compareTo(incasso.getImporto()) != 0) {
 					GpThreadLocal.get().log("incasso.sintassi", "importo");
 					throw new IncassiException(FaultType.DUPLICATO, "Incasso gia' registrato con importo diverso");
 				}
