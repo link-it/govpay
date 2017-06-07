@@ -58,19 +58,49 @@
           "201": {
             "description": "Incasso registrato con successo",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Pagamento"
-              }
+              "allOf": [
+                {
+                  "$ref": "#/definitions/Incasso"
+                },
+                {
+                  "properties": {
+                    "riferimento_rendicontazone": {
+                      "type": "string",
+                      "description": "Identificativo flusso o versamento individuato nella causale"
+                    },
+                    "pagamenti": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Pagamento"
+                      }
+                    }
+                  }
+                }
+              ]
             }
           },
           "200": {
-            "description": "Richiesta di incasso gia' registrata con successo",
+            "description": "Richiesta di incasso già registrata con successo",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Pagamento"
-              }
+              "allOf": [
+                {
+                  "$ref": "#/definitions/Incasso"
+                },
+                {
+                  "properties": {
+                    "riferimento_rendicontazone": {
+                      "type": "string",
+                      "description": "Identificativo flusso o versamento individuato nella causale"
+                    },
+                    "pagamenti": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/Pagamento"
+                      }
+                    }
+                  }
+                }
+              ]
             }
           },
           "401": {
@@ -185,6 +215,10 @@
                 },
                 {
                   "properties": {
+                    "riferimento_rendicontazone": {
+                      "type": "string",
+                      "description": "Identificativo flusso o versamento individuato nella causale"
+                    },
                     "pagamenti": {
                       "type": "array",
                       "items": {
@@ -323,4 +357,3 @@
     }
   }
 }
-
