@@ -37,10 +37,13 @@ public class BatchManager {
 	private static Logger log = LogManager.getLogger();
 
 	public static boolean startEsecuzione(BasicBD bd, String codBatch) throws ServiceException {
-		
+		log.debug("Verifico possibilita di avviare il batch " + codBatch);
+
 		// Se non ho configurato l'id del cluster, non gestisco i blocchi.
-		if(GovpayConfig.getInstance().getClusterId() == null) 
+		if(GovpayConfig.getInstance().getClusterId() == null) {
+			log.debug("ClusterId non impostato. Gestione concorrenza non abilitata. Avvio batch consentito");
 			return true;
+		}
 		
 		try {
 			bd.setAutoCommit(false);
@@ -52,6 +55,7 @@ public class BatchManager {
 			
 			if(batch == null) {
 				// Batch libero. Procedo a configurare il blocco
+				log.debug("Semaforo " + codBatch + " verde!!! Imposto rosso [" + GovpayConfig.getInstance().getClusterId() + "]");
 				batch = new Batch();
 				batch.setCodBatch(codBatch);
 				batch.setInizio(new Date()); 
@@ -60,15 +64,16 @@ public class BatchManager {
 				try {
 					batchBD.update(batch);
 					bd.commit();
-					log.debug("Semaforo di concorrenza per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+					log.debug("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				} catch (NotFoundException e) {
 					batchBD.insert(batch);
 					bd.commit();
-					log.debug("Semaforo di concorrenza per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
+					log.debug("Impostato semaforo rosso per il batch " + codBatch + " inserito per il nodo " + GovpayConfig.getInstance().getClusterId() + ".");
 					return true;
 				}
 			} else {
+				log.debug("Semaforo rosso impostato dal nodo [" + batch.getNodo() + "]");
 				return false;
 			}
 		} finally {
@@ -106,7 +111,7 @@ public class BatchManager {
 				log.warn("Individuato timeout del batch " + codBatch + ". La risorsa viene liberata per consentire l'esecuzione del batch.");
 				return null;
 			} else {
-				log.debug("Batch in esecuzione sul nodo " + batch.getNodo() + ".");
+				log.debug("Batch " + codBatch + " in esecuzione sul nodo " + batch.getNodo() + ".");
 				return batch;
 			}
 		}
@@ -115,8 +120,10 @@ public class BatchManager {
 	public static void stopEsecuzione(BasicBD bd, String codBatch) {
 		try {		
 			// Se non ho configurato l'id del cluster, non gestisco i blocchi.
-			if(GovpayConfig.getInstance().getClusterId() == null) 
+			if(GovpayConfig.getInstance().getClusterId() == null) {
+				log.debug("ClusterId non impostato. Gestione concorrenza non abilitata. Rimozione semaforo inibita");
 				return;
+			}
 			
 			try {
 				bd.setAutoCommit(false);
