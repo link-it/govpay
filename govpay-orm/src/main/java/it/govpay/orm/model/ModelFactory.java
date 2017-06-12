@@ -83,5 +83,9 @@ public class ModelFactory {
 	
 	public static BatchModel BATCH = new BatchModel();
 	
+	public static OperazioneModel OPERAZIONE = new OperazioneModel();
+	
+	public static TracciatoModel TRACCIATO = new TracciatoModel();
+	
 
 }

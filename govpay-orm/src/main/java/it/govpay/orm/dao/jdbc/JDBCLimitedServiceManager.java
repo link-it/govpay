@@ -71,6 +71,11 @@ import it.govpay.orm.dao.IVersamentoServiceSearch;
 import it.govpay.orm.dao.IBatchServiceSearch;
 import it.govpay.orm.dao.IBatchService;
 import java.sql.Connection;
+import it.govpay.orm.dao.IOperazioneServiceSearch;
+import it.govpay.orm.dao.IOperazioneService;
+import it.govpay.orm.dao.ITracciatoServiceSearch;
+import it.govpay.orm.dao.ITracciatoService;
+
 
 import javax.sql.DataSource;
 import it.govpay.orm.dao.IIncassoServiceSearch;
@@ -969,6 +974,70 @@ public class JDBCLimitedServiceManager extends JDBCServiceManager {
 	@Override
 	public IBatchService getBatchService() throws ServiceException,NotImplementedException{
 		return new JDBCBatchService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Operazione type:Operazione
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Operazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IOperazioneServiceSearch getOperazioneServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCOperazioneServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Operazione}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IOperazioneService getOperazioneService() throws ServiceException,NotImplementedException{
+		return new JDBCOperazioneService(this.unlimitedJdbcServiceManager);
+	}
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Tracciato type:Tracciato
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Tracciato}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Tracciato}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoServiceSearch getTracciatoServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoServiceSearch(this.unlimitedJdbcServiceManager);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Tracciato}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Tracciato}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public ITracciatoService getTracciatoService() throws ServiceException,NotImplementedException{
+		return new JDBCTracciatoService(this.unlimitedJdbcServiceManager);
 	}
 	
 	

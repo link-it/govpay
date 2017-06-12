@@ -53,6 +53,8 @@
 									object-type="Rendicontazione"/>
 								<linkit:sql-table object-name="Evento" object-type="Evento"/>
 								<linkit:sql-table object-name="Batch" object-type="Batch"/>
+								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
+								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>
@@ -1842,7 +1844,111 @@
 		</xsd:complexType>
 	</xsd:element>
 
-
-
-
+	<xsd:element name="Operazione" type="Operazione" />
+	<xsd:complexType name="Operazione">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true"
+						name="operazioni" on-delete-cascade="true">
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idTracciato" type="id-tracciato" minOccurs="0">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Tracciato"
+								object-type="Tracciato" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="lineaElaborazione" type="xsd:long" minOccurs="0"/>
+			<xsd:element name="stato" type="StatoOperazioneType"/>
+			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
+			<xsd:element name="datiRisposta" type="xsd:base64Binary"/>
+			<xsd:element name="esito" type="EsitoGovpayType"/>
+			<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0"/>
+			<xsd:element name="tipoOperazione" type="xsd:string"/>
+			<xsd:element name="idApplicazione" type="id-applicazione">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Applicazione"
+								object-type="Applicazione" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="codVersamentoEnte" type="xsd:string" />
+			
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:element name="Tracciato" type="Tracciato" />
+	<xsd:complexType name="Tracciato">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-tracciato"/>
+					<linkit:sql-table-mapping generate-sql="true"
+						name="tracciati" on-delete-cascade="true">
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="idOperatore" type="id-operatore">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Operatore"
+								object-type="Operatore" relationship="reversed" />
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="dataCaricamento" type="xsd:dateTime"/>
+			<xsd:element name="dataUltimoAggiornamento" type="xsd:dateTime"/>
+			<xsd:element name="stato" type="StatoTracciatoType"/>
+			<xsd:element name="lineaElaborazione" type="xsd:long"/>
+			<xsd:element name="descrizioneStato" type="String1024" minOccurs="0"/>
+			<xsd:element name="numLineeTotali" type="xsd:long"/>
+			<xsd:element name="numOperazioniOk" type="xsd:long"/>
+			<xsd:element name="numOperazioniKo" type="xsd:long"/>
+			<xsd:element name="nomeFile" type="xsd:string"/>
+			<xsd:element name="rawData" type="xsd:base64Binary"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+	<xsd:simpleType name="StatoTracciatoType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ANNULLATO" />
+			<xsd:enumeration value="NUOVO" />
+			<xsd:enumeration value="IN_CARICAMENTO" />
+			<xsd:enumeration value="CARICAMENTO_OK" />
+			<xsd:enumeration value="CARICAMENTO_KO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="StatoOperazioneType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="NON_VALIDO" />
+			<xsd:enumeration value="NUOVO" />
+			<xsd:enumeration value="ESEGUITO_OK" />
+			<xsd:enumeration value="ESEGUITO_KO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="EsitoGovpayType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="OK" />
+			<xsd:enumeration value="KO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
 </xsd:schema>

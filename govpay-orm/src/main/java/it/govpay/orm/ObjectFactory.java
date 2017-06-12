@@ -263,6 +263,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Tracciato }
+     */
+    public Tracciato createTracciato() {
+        return new Tracciato();
+    }
+
+    /**
      * Create an instance of {@link IdPagamento }
      */
     public IdPagamento createIdPagamento() {
@@ -442,6 +449,13 @@ public class ObjectFactory {
      */
     public IUV createIUV() {
         return new IUV();
+    }
+
+    /**
+     * Create an instance of {@link Operazione }
+     */
+    public Operazione createOperazione() {
+        return new Operazione();
     }
 
     /**

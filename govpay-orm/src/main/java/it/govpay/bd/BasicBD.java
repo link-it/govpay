@@ -38,6 +38,7 @@ import it.govpay.orm.dao.IDBIncassoService;
 import it.govpay.orm.dao.IDBIntermediarioService;
 import it.govpay.orm.dao.IDBNotificaService;
 import it.govpay.orm.dao.IDBOperatoreService;
+import it.govpay.orm.dao.IDBOperazioneService;
 import it.govpay.orm.dao.IDBPagamentoService;
 import it.govpay.orm.dao.IDBPortaleService;
 import it.govpay.orm.dao.IDBPspService;
@@ -47,6 +48,7 @@ import it.govpay.orm.dao.IDBRendicontazioneService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
+import it.govpay.orm.dao.IDBTracciatoService;
 import it.govpay.orm.dao.IDBTributoService;
 import it.govpay.orm.dao.IDBUoService;
 import it.govpay.orm.dao.IDBVersamentoService;
@@ -59,6 +61,7 @@ import it.govpay.orm.dao.IIncassoService;
 import it.govpay.orm.dao.IIntermediarioService;
 import it.govpay.orm.dao.INotificaService;
 import it.govpay.orm.dao.IOperatoreService;
+import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.IPagamentoService;
 import it.govpay.orm.dao.IPortaleService;
 import it.govpay.orm.dao.IPspService;
@@ -69,6 +72,7 @@ import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
+import it.govpay.orm.dao.ITracciatoService;
 import it.govpay.orm.dao.ITributoService;
 import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IVersamentoService;
@@ -100,6 +104,7 @@ public class BasicBD {
 	private IIUVService iuvService;
 	private INotificaService notificaService;
 	private IOperatoreService operatoreService;
+	private IOperazioneService operazioneService;
 	private IPagamentoService pagamentoService;
 	private IPortaleService portaleService;
 	private IPspService pspService;
@@ -111,6 +116,7 @@ public class BasicBD {
 	private IStazioneService stazioneService;
 	private ITipoTributoService tipoTributoService;
 	private ITributoService tributoService;
+	private ITracciatoService tracciatoService;
 	private IUoService uoService;
 	private IVersamentoService versamentoService;
 	private IIncassoService incassoService;
@@ -168,6 +174,7 @@ public class BasicBD {
 				this.iuvService = this.serviceManager.getIUVService();
 				this.notificaService = this.serviceManager.getNotificaService();
 				this.operatoreService = this.serviceManager.getOperatoreService();
+				this.operazioneService = this.serviceManager.getOperazioneService();
 				this.portaleService = this.serviceManager.getPortaleService();
 				this.pagamentoService = this.serviceManager.getPagamentoService();
 				this.pspService = this.serviceManager.getPspService();
@@ -179,6 +186,7 @@ public class BasicBD {
 				this.stazioneService = this.serviceManager.getStazioneService();
 				this.tipoTributoService = this.serviceManager.getTipoTributoService();
 				this.tributoService = this.serviceManager.getTributoService();
+				this.tracciatoService = this.serviceManager.getTracciatoService();
 				this.uoService = this.serviceManager.getUoService();
 				this.versamentoService = this.serviceManager.getVersamentoService();
 				this.incassoService = this.serviceManager.getIncassoService();
@@ -209,6 +217,7 @@ public class BasicBD {
 			((IDBIUVService)this.iuvService).enableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).enableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).enableSelectForUpdate();
+			((IDBOperazioneService)this.operazioneService).enableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).enableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).enableSelectForUpdate();
 			((IDBPspService)this.pspService).enableSelectForUpdate();
@@ -219,6 +228,7 @@ public class BasicBD {
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).enableSelectForUpdate();
 			((IDBTributoService)this.tributoService).enableSelectForUpdate();
+			((IDBTracciatoService)this.tracciatoService).enableSelectForUpdate();
 			((IDBUoService)this.uoService).enableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).enableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).enableSelectForUpdate();
@@ -246,6 +256,7 @@ public class BasicBD {
 			((IDBIUVService)this.iuvService).disableSelectForUpdate();
 			((IDBNotificaService)this.notificaService).disableSelectForUpdate();
 			((IDBOperatoreService)this.operatoreService).disableSelectForUpdate();
+			((IDBOperazioneService)this.operazioneService).disableSelectForUpdate();
 			((IDBPagamentoService)this.pagamentoService).disableSelectForUpdate();
 			((IDBPortaleService)this.portaleService).disableSelectForUpdate();
 			((IDBPspService)this.pspService).disableSelectForUpdate();
@@ -256,6 +267,7 @@ public class BasicBD {
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
 			((IDBTipoTributoService)this.tipoTributoService).disableSelectForUpdate();
 			((IDBTributoService)this.tributoService).disableSelectForUpdate();
+			((IDBTracciatoService)this.tracciatoService).disableSelectForUpdate();
 			((IDBUoService)this.uoService).disableSelectForUpdate();
 			((IDBVersamentoService)this.versamentoService).disableSelectForUpdate();
 			((IDBIncassoService)this.incassoService).disableSelectForUpdate();
@@ -364,6 +376,13 @@ public class BasicBD {
 		return operatoreService;
 	}
 	
+	public IOperazioneService getOperazioneService() {
+		if(father != null) {
+			return father.getOperazioneService();
+		}
+		return operazioneService;
+	}
+	
 	public IPagamentoService getPagamentoService() {
 		if(father != null) {
 			return father.getPagamentoService();
@@ -439,6 +458,12 @@ public class BasicBD {
 			return father.getTributoService();
 		}
 		return tributoService;
+	}
+	public ITracciatoService getTracciatoService() {
+		if(father != null) {
+			return father.getTracciatoService();
+		}
+		return tracciatoService;
 	}
 	
 	public IUoService getUoService() {
