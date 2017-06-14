@@ -1161,9 +1161,6 @@ public class DominiHandler extends BaseDarsHandler<Dominio> implements IDarsHand
 			// ripristino l'autocommit.
 			bd.setAutoCommit(true); 
 
-
-			dominiBD.updateDominio(entry); 
-
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return this.getDettaglio(entry.getId(), uriInfo, bd);
 		}catch(ValidationException e){

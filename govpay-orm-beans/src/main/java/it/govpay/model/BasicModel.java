@@ -25,6 +25,9 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
+
 public class BasicModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
@@ -107,5 +110,10 @@ public class BasicModel implements Serializable {
 		}
 		
 		return null;
+	}
+	
+	
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this, ToStringStyle.DEFAULT_STYLE, false);
 	}
 }

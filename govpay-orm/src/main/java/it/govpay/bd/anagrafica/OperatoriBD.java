@@ -157,7 +157,7 @@ public class OperatoriBD extends BasicBD {
 			
 			
 			operatore.setId(vo.getId());
-			AnagraficaManager.removeFromCache(operatore);
+			emitAudit(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -196,6 +196,8 @@ public class OperatoriBD extends BasicBD {
 					}
 				}
 			}
+			
+			emitAudit(operatore);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

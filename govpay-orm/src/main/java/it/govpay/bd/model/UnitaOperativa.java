@@ -34,7 +34,7 @@ public class UnitaOperativa extends it.govpay.model.UnitaOperativa {
 	
 	// Business
 	
-	private Dominio dominio;
+	private transient Dominio dominio;
 	
 	public Dominio getDominio(BasicBD bd) throws ServiceException {
 		if(dominio == null) {
