@@ -65,6 +65,6 @@ public class Tributo extends it.govpay.model.Tributo {
 		this.ibanAccredito = ibanAccredito;
 	}
 
-	private IbanAccredito ibanAccredito;
+	private transient IbanAccredito ibanAccredito;
 	
 }

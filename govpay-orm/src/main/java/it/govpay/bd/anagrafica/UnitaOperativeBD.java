@@ -76,7 +76,7 @@ public class UnitaOperativeBD extends BasicBD {
 				throw new NotFoundException("UnitaOperativa con id ["+idUnitaOperativa.toJson()+"] non trovato");
 			}
 			this.getUoService().update(idUnitaOperativa, vo);
-			AnagraficaManager.removeFromCache(uo);
+			emitAudit(uo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -91,6 +91,7 @@ public class UnitaOperativeBD extends BasicBD {
 			it.govpay.orm.Uo vo = UnitaOperativaConverter.toVO(uo);
 			this.getUoService().create(vo);
 			uo.setId(vo.getId());
+			emitAudit(uo);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}

@@ -31,10 +31,11 @@ public class Stazione extends BasicModel {
 	private String password;
 	private boolean abilitato;
 	private int applicationCode;
-	private Integer ndpStato;
-	private String ndpOperazione;
-	private String ndpDescrizione;
-	private Date ndpData;
+	
+	private transient Integer ndpStato;
+	private transient String ndpOperazione;
+	private transient String ndpDescrizione;
+	private transient Date ndpData;
 
 	public Stazione() {
 	}

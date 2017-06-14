@@ -299,6 +299,7 @@ public class BasicClient {
 		try {
 			responseCode = connection.getResponseCode();
 			ctx.getTransaction().getServer().setTransportCode(Integer.toString(responseCode));
+			
 		} catch (Exception e) {
 			throw new ClientException(e);
 		}
@@ -343,8 +344,11 @@ public class BasicClient {
 				throw new ClientException("Ricevuto [HTTP " + responseCode + "]");
 			}
 		} finally {
-			if(responseMsg != null)
+			if(responseMsg != null) {
+				ctx.getContext().getResponse().setInDate(new Date());
+				ctx.getContext().getResponse().setInSize((long)responseMsg.getContent().length);
 				ctx.log(responseMsg);
+			}
 
 			if(log.getLevel().isMoreSpecificThan(Level.TRACE) && connection != null && connection.getHeaderFields() != null) {
 				StringBuffer sb = new StringBuffer();

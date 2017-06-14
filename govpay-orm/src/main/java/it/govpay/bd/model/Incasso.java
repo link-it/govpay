@@ -34,9 +34,9 @@ public class Incasso extends it.govpay.model.Incasso {
 
 	private static final long serialVersionUID = 1L;
 	// Business
-	private List<Pagamento> pagamenti;
-	private Applicazione applicazione;
-	private Dominio dominio;
+	private transient List<Pagamento> pagamenti;
+	private transient Applicazione applicazione;
+	private transient Dominio dominio;
 
 
 	public List<Pagamento> getPagamenti(BasicBD bd) throws ServiceException {

@@ -36,15 +36,15 @@ public class Dominio extends BasicModel {
 	private boolean riusoIuv;
 	private boolean customIuv;
 	private boolean abilitato;
-	private byte[] contiAccredito;
-	private byte[] tabellaControparti;
+	private transient byte[] contiAccredito;
+	private transient byte[] tabellaControparti;
 	private int auxDigit;
 	private Integer segregationCode;
 	
-	private Integer ndpStato;
-	private String ndpOperazione;
-	private String ndpDescrizione;
-	private Date ndpData;
+	private transient Integer ndpStato;
+	private transient String ndpOperazione;
+	private transient String ndpDescrizione;
+	private transient Date ndpData;
 	
 	private String iuvPrefix;
 	private boolean iuvPrefixStrict;
@@ -199,7 +199,6 @@ public class Dominio extends BasicModel {
 	public void setNdpData(Date ndpData) {
 		this.ndpData = ndpData;
 	}
-
-
+	
 }
 

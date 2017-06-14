@@ -74,6 +74,13 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "id_tracciato";
 			}
 		}
+		if(field.equals(Operazione.model().TIPO_OPERAZIONE)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".tipo_operazione";
+			}else{
+				return "tipo_operazione";
+			}
+		}
 		if(field.equals(Operazione.model().LINEA_ELABORAZIONE)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".linea_elaborazione";
@@ -102,25 +109,11 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 				return "dati_risposta";
 			}
 		}
-		if(field.equals(Operazione.model().ESITO)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".esito";
-			}else{
-				return "esito";
-			}
-		}
 		if(field.equals(Operazione.model().DETTAGLIO_ESITO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".dettaglio_esito";
 			}else{
 				return "dettaglio_esito";
-			}
-		}
-		if(field.equals(Operazione.model().TIPO_OPERAZIONE)){
-			if(appendTablePrefix){
-				return this.toAliasTable(field)+".tipo_operazione";
-			}else{
-				return "tipo_operazione";
 			}
 		}
 		if(field.equals(Operazione.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){
@@ -153,6 +146,9 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Operazione.model().ID_TRACCIATO.ID_TRACCIATO)){
 			return this.toTable(Operazione.model().ID_TRACCIATO, returnAlias);
 		}
+		if(field.equals(Operazione.model().TIPO_OPERAZIONE)){
+			return this.toTable(Operazione.model(), returnAlias);
+		}
 		if(field.equals(Operazione.model().LINEA_ELABORAZIONE)){
 			return this.toTable(Operazione.model(), returnAlias);
 		}
@@ -165,13 +161,7 @@ public class OperazioneFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Operazione.model().DATI_RISPOSTA)){
 			return this.toTable(Operazione.model(), returnAlias);
 		}
-		if(field.equals(Operazione.model().ESITO)){
-			return this.toTable(Operazione.model(), returnAlias);
-		}
 		if(field.equals(Operazione.model().DETTAGLIO_ESITO)){
-			return this.toTable(Operazione.model(), returnAlias);
-		}
-		if(field.equals(Operazione.model().TIPO_OPERAZIONE)){
 			return this.toTable(Operazione.model(), returnAlias);
 		}
 		if(field.equals(Operazione.model().ID_APPLICAZIONE.COD_APPLICAZIONE)){

@@ -26,7 +26,7 @@ public class Psp extends it.govpay.model.Psp {
 	
 	private static final long serialVersionUID = 1L;
 	 
-	private List<Canale> listaCanali;
+	private transient List<Canale> listaCanali;
 	
 	public List<Canale> getCanalis() {
 		if(listaCanali == null) 

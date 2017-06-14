@@ -7,12 +7,12 @@ public class RendicontazionePagamento extends BasicModel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Fr fr;
-	private Rendicontazione rendicontazione;
-	private Pagamento pagamento;
-	private Versamento versamento;
-	private SingoloVersamento singoloVersamento;
-	private String tipo;
+	private transient Fr fr;
+	private transient Rendicontazione rendicontazione;
+	private transient Pagamento pagamento;
+	private transient Versamento versamento;
+	private transient SingoloVersamento singoloVersamento;
+	private transient String tipo;
 	
 	public Fr getFr() {
 		return fr;

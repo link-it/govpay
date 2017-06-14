@@ -54,6 +54,8 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType()));
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "linea_elaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType()));
 				setParameter(object, "set_value_stato", String.class,
@@ -62,12 +64,8 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "dati_richiesta", Operazione.model().DATI_RICHIESTA.getFieldType()));
 				setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dati_risposta", Operazione.model().DATI_RISPOSTA.getFieldType()));
-				setParameter(object, "set_value_esito", String.class,
-					jdbcParameterUtilities.readParameter(rs, "esito", Operazione.model().ESITO.getFieldType())+"");
 				setParameter(object, "setDettaglioEsito", Operazione.model().DETTAGLIO_ESITO.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "dettaglio_esito", Operazione.model().DETTAGLIO_ESITO.getFieldType()));
-				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "tipo_operazione", Operazione.model().TIPO_OPERAZIONE.getFieldType()));
 				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "cod_versamento_ente", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()));
 				return object;
@@ -92,6 +90,8 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 				Operazione object = new Operazione();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
+				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
+					this.getObjectFromMap(map,"tipoOperazione"));
 				setParameter(object, "setLineaElaborazione", Operazione.model().LINEA_ELABORAZIONE.getFieldType(),
 					this.getObjectFromMap(map,"lineaElaborazione"));
 				setParameter(object, "set_value_stato", String.class,
@@ -100,12 +100,8 @@ public class OperazioneFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"datiRichiesta"));
 				setParameter(object, "setDatiRisposta", Operazione.model().DATI_RISPOSTA.getFieldType(),
 					this.getObjectFromMap(map,"datiRisposta"));
-				setParameter(object, "set_value_esito", String.class,
-					this.getObjectFromMap(map,"esito"));
 				setParameter(object, "setDettaglioEsito", Operazione.model().DETTAGLIO_ESITO.getFieldType(),
 					this.getObjectFromMap(map,"dettaglioEsito"));
-				setParameter(object, "setTipoOperazione", Operazione.model().TIPO_OPERAZIONE.getFieldType(),
-					this.getObjectFromMap(map,"tipoOperazione"));
 				setParameter(object, "setCodVersamentoEnte", Operazione.model().COD_VERSAMENTO_ENTE.getFieldType(),
 					this.getObjectFromMap(map,"codVersamentoEnte"));
 				return object;

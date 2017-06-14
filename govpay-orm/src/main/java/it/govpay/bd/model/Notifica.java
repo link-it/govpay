@@ -62,9 +62,9 @@ public class Notifica extends it.govpay.model.Notifica {
 	private static final long serialVersionUID = 1L;
 	
 	// Business 
-	private Applicazione applicazione;
-	private Rpt rpt;
-	private Rr rr;
+	private transient Applicazione applicazione;
+	private transient Rpt rpt;
+	private transient Rr rr;
 	
 	public void setApplicazione(Applicazione applicazione) {
 		this.applicazione = applicazione;
