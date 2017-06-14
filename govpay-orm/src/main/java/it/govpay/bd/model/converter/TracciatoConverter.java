@@ -58,8 +58,9 @@ public class TracciatoConverter {
 		dto.setNumOperazioniOk(vo.getNumOperazioniOk());
 		dto.setNumOperazioniKo(vo.getNumOperazioniKo());
 
-		dto.setRawData(vo.getRawData());
-
+		dto.setRawDataRichiesta(vo.getRawDataRichiesta());
+		dto.setRawDataRisposta(vo.getRawDataRisposta());
+		
 		return dto;
 	}
 
@@ -84,7 +85,8 @@ public class TracciatoConverter {
 		vo.setNumOperazioniOk(dto.getNumOperazioniOk());
 		vo.setNumOperazioniKo(dto.getNumOperazioniKo());
 
-		vo.setRawData(dto.getRawData());
+		vo.setRawDataRichiesta(dto.getRawDataRichiesta());
+		vo.setRawDataRisposta(dto.getRawDataRisposta());
 
 		return vo;
 	}

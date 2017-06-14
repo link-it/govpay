@@ -19,7 +19,6 @@
  */
 package it.govpay.orm;
 
-import it.govpay.orm.constants.EsitoGovpayType;
 import it.govpay.orm.constants.StatoOperazioneType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -37,16 +36,15 @@ import java.io.Serializable;
  * <pre>
  * &lt;complexType name="Operazione">
  * 		&lt;sequence>
- * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="lineaElaborazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoOperazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="lineaElaborazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoOperazioneType" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="datiRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="datiRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="esito" type="{http://www.govpay.it/orm}EsitoGovpayType" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="datiRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="dettaglioEsito" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
- * 			&lt;element name="tipoOperazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="codVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="idApplicazione" type="{http://www.govpay.it/orm}id-applicazione" minOccurs="0" maxOccurs="1"/>
+ * 			&lt;element name="codVersamentoEnte" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -62,13 +60,12 @@ import java.io.Serializable;
 @XmlType(name = "Operazione", 
   propOrder = {
   	"idTracciato",
+  	"tipoOperazione",
   	"lineaElaborazione",
   	"stato",
   	"datiRichiesta",
   	"datiRisposta",
-  	"esito",
   	"dettaglioEsito",
-  	"tipoOperazione",
   	"idApplicazione",
   	"codVersamentoEnte"
   }
@@ -100,6 +97,14 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
 
   public void setIdTracciato(IdTracciato idTracciato) {
     this.idTracciato = idTracciato;
+  }
+
+  public java.lang.String getTipoOperazione() {
+    return this.tipoOperazione;
+  }
+
+  public void setTipoOperazione(java.lang.String tipoOperazione) {
+    this.tipoOperazione = tipoOperazione;
   }
 
   public long getLineaElaborazione() {
@@ -146,40 +151,12 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
     this.datiRisposta = datiRisposta;
   }
 
-  public void set_value_esito(String value) {
-    this.esito = (EsitoGovpayType) EsitoGovpayType.toEnumConstantFromString(value);
-  }
-
-  public String get_value_esito() {
-    if(this.esito == null){
-    	return null;
-    }else{
-    	return this.esito.toString();
-    }
-  }
-
-  public it.govpay.orm.constants.EsitoGovpayType getEsito() {
-    return this.esito;
-  }
-
-  public void setEsito(it.govpay.orm.constants.EsitoGovpayType esito) {
-    this.esito = esito;
-  }
-
   public java.lang.String getDettaglioEsito() {
     return this.dettaglioEsito;
   }
 
   public void setDettaglioEsito(java.lang.String dettaglioEsito) {
     this.dettaglioEsito = dettaglioEsito;
-  }
-
-  public java.lang.String getTipoOperazione() {
-    return this.tipoOperazione;
-  }
-
-  public void setTipoOperazione(java.lang.String tipoOperazione) {
-    this.tipoOperazione = tipoOperazione;
   }
 
   public IdApplicazione getIdApplicazione() {
@@ -217,11 +194,15 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
   }
 
 
-  @XmlElement(name="idTracciato",required=false,nillable=false)
+  @XmlElement(name="idTracciato",required=true,nillable=false)
   protected IdTracciato idTracciato;
 
+  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlElement(name="tipoOperazione",required=true,nillable=false)
+  protected java.lang.String tipoOperazione;
+
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
-  @XmlElement(name="lineaElaborazione",required=false,nillable=false)
+  @XmlElement(name="lineaElaborazione",required=true,nillable=false)
   protected long lineaElaborazione;
 
   @XmlTransient
@@ -235,28 +216,18 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
   protected byte[] datiRichiesta;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="datiRisposta",required=true,nillable=false)
+  @XmlElement(name="datiRisposta",required=false,nillable=false)
   protected byte[] datiRisposta;
-
-  @XmlTransient
-  protected java.lang.String _value_esito;
-
-  @XmlElement(name="esito",required=true,nillable=false)
-  protected EsitoGovpayType esito;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="dettaglioEsito",required=false,nillable=false)
   protected java.lang.String dettaglioEsito;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="tipoOperazione",required=true,nillable=false)
-  protected java.lang.String tipoOperazione;
-
-  @XmlElement(name="idApplicazione",required=true,nillable=false)
+  @XmlElement(name="idApplicazione",required=false,nillable=false)
   protected IdApplicazione idApplicazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
-  @XmlElement(name="codVersamentoEnte",required=true,nillable=false)
+  @XmlElement(name="codVersamentoEnte",required=false,nillable=false)
   protected java.lang.String codVersamentoEnte;
 
 }

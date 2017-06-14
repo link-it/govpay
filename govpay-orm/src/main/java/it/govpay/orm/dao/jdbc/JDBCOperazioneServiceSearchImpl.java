@@ -120,7 +120,6 @@ public class JDBCOperazioneServiceSearchImpl implements IJDBCServiceSearchWithou
     		fields.add(Operazione.model().STATO);
     		fields.add(Operazione.model().DATI_RICHIESTA);
     		fields.add(Operazione.model().DATI_RISPOSTA);
-    		fields.add(Operazione.model().ESITO);
     		fields.add(Operazione.model().DETTAGLIO_ESITO);
     		fields.add(Operazione.model().TIPO_OPERAZIONE);
     		fields.add(Operazione.model().COD_VERSAMENTO_ENTE);

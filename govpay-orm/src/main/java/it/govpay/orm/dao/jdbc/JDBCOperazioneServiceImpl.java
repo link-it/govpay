@@ -106,13 +106,12 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 
 		// Object operazione
 		sqlQueryObjectInsert.addInsertTable(this.getOperazioneFieldConverter().toTable(Operazione.model()));
+		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TIPO_OPERAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().LINEA_ELABORAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().STATO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().DATI_RICHIESTA,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().DATI_RISPOSTA,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().ESITO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().DETTAGLIO_ESITO,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TIPO_OPERAZIONE,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getOperazioneFieldConverter().toColumn(Operazione.model().COD_VERSAMENTO_ENTE,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_tracciato","?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
@@ -120,13 +119,12 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		// Insert operazione
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getOperazioneFetch().getKeyGeneratorObject(Operazione.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getTipoOperazione(),Operazione.model().TIPO_OPERAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getLineaElaborazione(),Operazione.model().LINEA_ELABORAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getStato(),Operazione.model().STATO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getDatiRichiesta(),Operazione.model().DATI_RICHIESTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getDatiRisposta(),Operazione.model().DATI_RISPOSTA.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getEsito(),Operazione.model().ESITO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getDettaglioEsito(),Operazione.model().DETTAGLIO_ESITO.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getTipoOperazione(),Operazione.model().TIPO_OPERAZIONE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(operazione.getCodVersamentoEnte(),Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_tracciato,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class)
@@ -208,6 +206,8 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		sqlQueryObjectUpdate.addUpdateTable(this.getOperazioneFieldConverter().toTable(Operazione.model()));
 		boolean isUpdate_operazione = true;
 		java.util.List<JDBCObject> lstObjects_operazione = new java.util.ArrayList<JDBCObject>();
+		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TIPO_OPERAZIONE,false), "?");
+		lstObjects_operazione.add(new JDBCObject(operazione.getTipoOperazione(), Operazione.model().TIPO_OPERAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().LINEA_ELABORAZIONE,false), "?");
 		lstObjects_operazione.add(new JDBCObject(operazione.getLineaElaborazione(), Operazione.model().LINEA_ELABORAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().STATO,false), "?");
@@ -216,12 +216,8 @@ public class JDBCOperazioneServiceImpl extends JDBCOperazioneServiceSearchImpl
 		lstObjects_operazione.add(new JDBCObject(operazione.getDatiRichiesta(), Operazione.model().DATI_RICHIESTA.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().DATI_RISPOSTA,false), "?");
 		lstObjects_operazione.add(new JDBCObject(operazione.getDatiRisposta(), Operazione.model().DATI_RISPOSTA.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().ESITO,false), "?");
-		lstObjects_operazione.add(new JDBCObject(operazione.getEsito(), Operazione.model().ESITO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().DETTAGLIO_ESITO,false), "?");
 		lstObjects_operazione.add(new JDBCObject(operazione.getDettaglioEsito(), Operazione.model().DETTAGLIO_ESITO.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().TIPO_OPERAZIONE,false), "?");
-		lstObjects_operazione.add(new JDBCObject(operazione.getTipoOperazione(), Operazione.model().TIPO_OPERAZIONE.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getOperazioneFieldConverter().toColumn(Operazione.model().COD_VERSAMENTO_ENTE,false), "?");
 		lstObjects_operazione.add(new JDBCObject(operazione.getCodVersamentoEnte(), Operazione.model().COD_VERSAMENTO_ENTE.getFieldType()));
 		if(setIdMappingResolutionBehaviour){

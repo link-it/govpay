@@ -1,6 +1,5 @@
 package it.govpay.bd.model;
 
-import it.govpay.orm.constants.EsitoGovpayType;
 import it.govpay.orm.constants.StatoOperazioneType;
 
 public class Operazione {
@@ -11,7 +10,6 @@ public class Operazione {
 	private byte[] datiRichiesta;
 	private byte[] datiRisposta;
 	private StatoOperazioneType stato;
-	private EsitoGovpayType esito;
 	private String dettaglioEsito;
 	private String idOperazione;
 	private String tipoOperazione;
@@ -47,12 +45,6 @@ public class Operazione {
 	}
 	public void setDatiRisposta(byte[] datiRisposta) {
 		this.datiRisposta = datiRisposta;
-	}
-	public EsitoGovpayType getEsito() {
-		return esito;
-	}
-	public void setEsito(EsitoGovpayType esito) {
-		this.esito = esito;
 	}
 	public String getDettaglioEsito() {
 		return dettaglioEsito;

@@ -42,13 +42,12 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 		super();
 	
 		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new Field("idTracciato",it.govpay.orm.IdTracciato.class,"Operazione",Operazione.class));
+		this.TIPO_OPERAZIONE = new Field("tipoOperazione",java.lang.String.class,"Operazione",Operazione.class);
 		this.LINEA_ELABORAZIONE = new Field("lineaElaborazione",long.class,"Operazione",Operazione.class);
 		this.STATO = new Field("stato",java.lang.String.class,"Operazione",Operazione.class);
 		this.DATI_RICHIESTA = new Field("datiRichiesta",byte[].class,"Operazione",Operazione.class);
 		this.DATI_RISPOSTA = new Field("datiRisposta",byte[].class,"Operazione",Operazione.class);
-		this.ESITO = new Field("esito",java.lang.String.class,"Operazione",Operazione.class);
 		this.DETTAGLIO_ESITO = new Field("dettaglioEsito",java.lang.String.class,"Operazione",Operazione.class);
-		this.TIPO_OPERAZIONE = new Field("tipoOperazione",java.lang.String.class,"Operazione",Operazione.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new Field("idApplicazione",it.govpay.orm.IdApplicazione.class,"Operazione",Operazione.class));
 		this.COD_VERSAMENTO_ENTE = new Field("codVersamentoEnte",java.lang.String.class,"Operazione",Operazione.class);
 	
@@ -59,13 +58,12 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 		super(father);
 	
 		this.ID_TRACCIATO = new it.govpay.orm.model.IdTracciatoModel(new ComplexField(father,"idTracciato",it.govpay.orm.IdTracciato.class,"Operazione",Operazione.class));
+		this.TIPO_OPERAZIONE = new ComplexField(father,"tipoOperazione",java.lang.String.class,"Operazione",Operazione.class);
 		this.LINEA_ELABORAZIONE = new ComplexField(father,"lineaElaborazione",long.class,"Operazione",Operazione.class);
 		this.STATO = new ComplexField(father,"stato",java.lang.String.class,"Operazione",Operazione.class);
 		this.DATI_RICHIESTA = new ComplexField(father,"datiRichiesta",byte[].class,"Operazione",Operazione.class);
 		this.DATI_RISPOSTA = new ComplexField(father,"datiRisposta",byte[].class,"Operazione",Operazione.class);
-		this.ESITO = new ComplexField(father,"esito",java.lang.String.class,"Operazione",Operazione.class);
 		this.DETTAGLIO_ESITO = new ComplexField(father,"dettaglioEsito",java.lang.String.class,"Operazione",Operazione.class);
-		this.TIPO_OPERAZIONE = new ComplexField(father,"tipoOperazione",java.lang.String.class,"Operazione",Operazione.class);
 		this.ID_APPLICAZIONE = new it.govpay.orm.model.IdApplicazioneModel(new ComplexField(father,"idApplicazione",it.govpay.orm.IdApplicazione.class,"Operazione",Operazione.class));
 		this.COD_VERSAMENTO_ENTE = new ComplexField(father,"codVersamentoEnte",java.lang.String.class,"Operazione",Operazione.class);
 	
@@ -75,6 +73,8 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 
 	public it.govpay.orm.model.IdTracciatoModel ID_TRACCIATO = null;
 	 
+	public IField TIPO_OPERAZIONE = null;
+	 
 	public IField LINEA_ELABORAZIONE = null;
 	 
 	public IField STATO = null;
@@ -83,11 +83,7 @@ public class OperazioneModel extends AbstractModel<Operazione> {
 	 
 	public IField DATI_RISPOSTA = null;
 	 
-	public IField ESITO = null;
-	 
 	public IField DETTAGLIO_ESITO = null;
-	 
-	public IField TIPO_OPERAZIONE = null;
 	 
 	public it.govpay.orm.model.IdApplicazioneModel ID_APPLICAZIONE = null;
 	 

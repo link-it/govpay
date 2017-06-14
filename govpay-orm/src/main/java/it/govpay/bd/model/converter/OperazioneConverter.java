@@ -32,7 +32,6 @@ public class OperazioneConverter {
 		
 		dto.setDatiRichiesta(vo.getDatiRichiesta());
 		dto.setDatiRisposta(vo.getDatiRisposta());
-		dto.setEsito(vo.getEsito());
 		dto.setDettaglioEsito(vo.getDettaglioEsito());
 
 		dto.setIdTracciato(vo.getIdTracciato().getIdTracciato());
@@ -56,7 +55,6 @@ public class OperazioneConverter {
 		vo.setDatiRichiesta(dto.getDatiRichiesta());
 		vo.setDatiRisposta(dto.getDatiRisposta());
 		vo.setDettaglioEsito(dto.getDettaglioEsito());
-		vo.setEsito(dto.getEsito());
 
 		IdTracciato idTracciato = new IdTracciato();
 		idTracciato.setId(dto.getIdTracciato());

@@ -72,8 +72,10 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					jdbcParameterUtilities.readParameter(rs, "num_operazioni_ko", Tracciato.model().NUM_OPERAZIONI_KO.getFieldType()));
 				setParameter(object, "setNomeFile", Tracciato.model().NOME_FILE.getFieldType(),
 					jdbcParameterUtilities.readParameter(rs, "nome_file", Tracciato.model().NOME_FILE.getFieldType()));
-				setParameter(object, "setRawData", Tracciato.model().RAW_DATA.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "raw_data", Tracciato.model().RAW_DATA.getFieldType()));
+				setParameter(object, "setRawDataRichiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "raw_data_richiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()));
+				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "raw_data_risposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()));
 				return object;
 			}
 			
@@ -114,8 +116,10 @@ public class TracciatoFetch extends AbstractJDBCFetch {
 					this.getObjectFromMap(map,"numOperazioniKo"));
 				setParameter(object, "setNomeFile", Tracciato.model().NOME_FILE.getFieldType(),
 					this.getObjectFromMap(map,"nomeFile"));
-				setParameter(object, "setRawData", Tracciato.model().RAW_DATA.getFieldType(),
-					this.getObjectFromMap(map,"rawData"));
+				setParameter(object, "setRawDataRichiesta", Tracciato.model().RAW_DATA_RICHIESTA.getFieldType(),
+					this.getObjectFromMap(map,"rawDataRichiesta"));
+				setParameter(object, "setRawDataRisposta", Tracciato.model().RAW_DATA_RISPOSTA.getFieldType(),
+					this.getObjectFromMap(map,"rawDataRisposta"));
 				return object;
 			}
 			
