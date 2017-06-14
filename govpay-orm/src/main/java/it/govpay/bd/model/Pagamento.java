@@ -39,12 +39,12 @@ public class Pagamento extends it.govpay.model.Pagamento {
 
 	private static final long serialVersionUID = 1L;
 	// Business
-	private Dominio dominio;
-	private Rpt rpt;
-	private SingoloVersamento singoloVersamento;
-	private Rr rr;
-	private Incasso incasso;
-	private List<Rendicontazione> rendicontazioni;
+	private transient Dominio dominio;
+	private transient Rpt rpt;
+	private transient SingoloVersamento singoloVersamento;
+	private transient Rr rr;
+	private transient Incasso incasso;
+	private transient List<Rendicontazione> rendicontazioni;
 
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(this.getIdRpt() != null) {

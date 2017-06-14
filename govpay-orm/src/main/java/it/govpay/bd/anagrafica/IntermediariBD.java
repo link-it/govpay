@@ -158,7 +158,7 @@ public class IntermediariBD extends BasicBD {
 				}
 			}
 
-			AnagraficaManager.removeFromCache(intermediario);
+			emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -196,7 +196,7 @@ public class IntermediariBD extends BasicBD {
 					this.getConnettoreService().create(connettore);
 				}
 			}
-
+			emitAudit(intermediario);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (ExpressionNotImplementedException e) {

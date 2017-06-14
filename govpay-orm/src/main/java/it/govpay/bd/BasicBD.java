@@ -19,6 +19,8 @@
  */
 package it.govpay.bd;
 
+import it.govpay.bd.anagrafica.AuditBD;
+import it.govpay.model.BasicModel;
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
 import it.govpay.orm.dao.IBatchService;
@@ -127,6 +129,7 @@ public class BasicBD {
 	private Connection connection;
 	private boolean isClosed;
 	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
+	private long idOperatore;
 	
 	BasicBD father;
 	
@@ -582,6 +585,23 @@ public class BasicBD {
 			return father.isClosed();
 		}
 		return isClosed;
+	}
+	
+	protected void emitAudit(BasicModel model){
+		if(father != null) {
+			father.emitAudit(model);
+		} else {
+			AuditBD db = new AuditBD(this);
+			db.insertAudit(getIdOperatore(), model);
+		}
+	}
+
+	public long getIdOperatore() {
+		return idOperatore;
+	}
+
+	public void setIdOperatore(long idOperatore) {
+		this.idOperatore = idOperatore;
 	}
 }
 

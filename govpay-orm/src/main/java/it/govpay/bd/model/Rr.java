@@ -34,8 +34,8 @@ public class Rr extends it.govpay.model.Rr{
 	
 	// Business
 	
-	private Rpt rpt;
-	private List<Pagamento> pagamenti;
+	private transient Rpt rpt;
+	private transient List<Pagamento> pagamenti;
 	
 	public Rpt getRpt(BasicBD bd) throws ServiceException {
 		if(this.rpt == null) {

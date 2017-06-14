@@ -17,32 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
+package it.govpay.bd.anagrafica;
 
-package it.govpay.bd.model;
-
-import org.openspcoop2.generic_project.exception.ServiceException;
+import java.util.Date;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.AnagraficaManager;
-import it.govpay.model.Intermediario;
+import it.govpay.model.BasicModel;
 
-public class Stazione extends it.govpay.model.Stazione {
-	private static final long serialVersionUID = 1L;
+public class AuditBD extends BasicBD {
 
-	// Business
+	public AuditBD(BasicBD basicBD) {
+		super(basicBD);
+	}
 	
-	private transient Intermediario intermediario;
-	
-	public Intermediario getIntermediario(BasicBD bd) throws ServiceException {
-		if(intermediario == null) {
-			intermediario = AnagraficaManager.getIntermediario(bd, this.getIdIntermediario());
+	public void insertAudit(long idOperatore, BasicModel model) {
+		
+		// insert con data attuale;
+		// In caso di errore loggare
+		
+		
+		
+		System.out.println("<<<< START AUDIT >>>> " );
+		if(idOperatore == 0) {
+			System.err.println("Operatore non fornito!!!!");
+		} else {
+			System.out.println("Operatore " + idOperatore);
 		}
-		return intermediario;
+		System.out.println("Tipo " + model.getClass().getSimpleName());
+		System.out.println("Data " + new Date());
+		System.out.println("Bean " + model.toString());
+		System.out.println("<<<< STOP  AUDIT >>>> " );
 	}
 	
-	public void setIntermediario(Intermediario intermediario) {
-		this.intermediario = intermediario;
-	}
-
+	
 }
-
