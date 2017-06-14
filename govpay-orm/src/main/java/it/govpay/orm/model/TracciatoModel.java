@@ -51,7 +51,8 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 		this.NUM_OPERAZIONI_OK = new Field("numOperazioniOk",long.class,"Tracciato",Tracciato.class);
 		this.NUM_OPERAZIONI_KO = new Field("numOperazioniKo",long.class,"Tracciato",Tracciato.class);
 		this.NOME_FILE = new Field("nomeFile",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.RAW_DATA = new Field("rawData",byte[].class,"Tracciato",Tracciato.class);
+		this.RAW_DATA_RICHIESTA = new Field("rawDataRichiesta",byte[].class,"Tracciato",Tracciato.class);
+		this.RAW_DATA_RISPOSTA = new Field("rawDataRisposta",byte[].class,"Tracciato",Tracciato.class);
 	
 	}
 	
@@ -69,7 +70,8 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 		this.NUM_OPERAZIONI_OK = new ComplexField(father,"numOperazioniOk",long.class,"Tracciato",Tracciato.class);
 		this.NUM_OPERAZIONI_KO = new ComplexField(father,"numOperazioniKo",long.class,"Tracciato",Tracciato.class);
 		this.NOME_FILE = new ComplexField(father,"nomeFile",java.lang.String.class,"Tracciato",Tracciato.class);
-		this.RAW_DATA = new ComplexField(father,"rawData",byte[].class,"Tracciato",Tracciato.class);
+		this.RAW_DATA_RICHIESTA = new ComplexField(father,"rawDataRichiesta",byte[].class,"Tracciato",Tracciato.class);
+		this.RAW_DATA_RISPOSTA = new ComplexField(father,"rawDataRisposta",byte[].class,"Tracciato",Tracciato.class);
 	
 	}
 	
@@ -95,7 +97,9 @@ public class TracciatoModel extends AbstractModel<Tracciato> {
 	 
 	public IField NOME_FILE = null;
 	 
-	public IField RAW_DATA = null;
+	public IField RAW_DATA_RICHIESTA = null;
+	 
+	public IField RAW_DATA_RISPOSTA = null;
 	 
 
 	@Override

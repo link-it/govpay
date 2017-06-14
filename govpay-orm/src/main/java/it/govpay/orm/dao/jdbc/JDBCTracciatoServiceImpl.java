@@ -99,7 +99,8 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_OPERAZIONI_OK,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NUM_OPERAZIONI_KO,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NOME_FILE,false),"?");
-		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RICHIESTA,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RISPOSTA,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_operatore","?");
 
 		// Insert tracciato
@@ -114,7 +115,8 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNumOperazioniOk(),Tracciato.model().NUM_OPERAZIONI_OK.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNumOperazioniKo(),Tracciato.model().NUM_OPERAZIONI_KO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getNomeFile(),Tracciato.model().NOME_FILE.getFieldType()),
-			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawData(),Tracciato.model().RAW_DATA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRichiesta(),Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(tracciato.getRawDataRisposta(),Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_operatore,Long.class)
 		);
 		tracciato.setId(id);
@@ -204,8 +206,10 @@ public class JDBCTracciatoServiceImpl extends JDBCTracciatoServiceSearchImpl
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getNumOperazioniKo(), Tracciato.model().NUM_OPERAZIONI_KO.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().NOME_FILE,false), "?");
 		lstObjects_tracciato.add(new JDBCObject(tracciato.getNomeFile(), Tracciato.model().NOME_FILE.getFieldType()));
-		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA,false), "?");
-		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawData(), Tracciato.model().RAW_DATA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RICHIESTA,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawDataRichiesta(), Tracciato.model().RAW_DATA_RICHIESTA.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getTracciatoFieldConverter().toColumn(Tracciato.model().RAW_DATA_RISPOSTA,false), "?");
+		lstObjects_tracciato.add(new JDBCObject(tracciato.getRawDataRisposta(), Tracciato.model().RAW_DATA_RISPOSTA.getFieldType()));
 		if(setIdMappingResolutionBehaviour){
 			sqlQueryObjectUpdate.addUpdateField("id_operatore","?");
 		}

@@ -59,7 +59,7 @@
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>
 						</linkit:sql-script>
-						<linkit:sql-mapping single-table-mapping="false" on-delete-cascade="true"
+						<linkit:sql-mapping single-table-mapping="false" on-delete-cascade="false"
 							force-tolowercase-sqlname="false"/>
 					</linkit:sql>
 				</linkit:dao>
@@ -480,7 +480,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-dominio"/>
 					<linkit:sql-table-mapping generate-sql="true" name="domini"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codDominio"/>
 						</linkit:sql-table-unique>
@@ -538,7 +538,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-psp"/>
 					<linkit:sql-table-mapping generate-sql="true" name="psp"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codPsp"/>
 						</linkit:sql-table-unique>
@@ -563,7 +563,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-canale"/>
 					<linkit:sql-table-mapping generate-sql="true" name="canali"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_psp"/>
 							<linkit:sql-table-unique-field name="codCanale"/>
@@ -621,7 +621,7 @@
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-uo"/>
-					<linkit:sql-table-mapping generate-sql="true" name="uo" on-delete-cascade="true">
+					<linkit:sql-table-mapping generate-sql="true" name="uo" on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codUo"/>
 							<linkit:sql-table-unique-column name="id_dominio"/>
@@ -662,7 +662,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-portale"/>
 					<linkit:sql-table-mapping generate-sql="true" name="portali"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codPortale"/>
 						</linkit:sql-table-unique>
@@ -690,7 +690,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-connettore"/>
 					<linkit:sql-table-mapping generate-sql="true" name="connettori"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codConnettore"/>
 							<linkit:sql-table-unique-field name="codProprieta"/>
@@ -713,7 +713,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-intermediario"/>
 					<linkit:sql-table-mapping generate-sql="true" name="intermediari"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codIntermediario"/>
 						</linkit:sql-table-unique>
@@ -736,7 +736,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-stazione"/>
 					<linkit:sql-table-mapping generate-sql="true" name="stazioni"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codStazione"/>
 						</linkit:sql-table-unique>
@@ -775,7 +775,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-applicazione"/>
 					<linkit:sql-table-mapping generate-sql="true" name="applicazioni"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codApplicazione"/>
 						</linkit:sql-table-unique>
@@ -806,7 +806,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-iban-accredito"/>
 					<linkit:sql-table-mapping generate-sql="true" name="iban_accredito"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codIban"/>
 							<linkit:sql-table-unique-column name="id_dominio"/>
@@ -846,7 +846,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-tributo"/>
 					<linkit:sql-table-mapping generate-sql="true" name="tributi"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_dominio"/>
 							<linkit:sql-table-unique-column name="id_tipo_tributo"/>
@@ -900,7 +900,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-tipo-tributo"/>
 					<linkit:sql-table-mapping generate-sql="true" name="tipi_tributo"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codTributo"/>
 						</linkit:sql-table-unique>
@@ -924,7 +924,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-acl"/>
 					<linkit:sql-table-mapping generate-sql="true" name="acl"
-						on-delete-cascade="true"> </linkit:sql-table-mapping>
+						on-delete-cascade="false"> </linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -991,7 +991,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-operatore"/>
 					<linkit:sql-table-mapping generate-sql="true" name="operatori"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="principal"/>
 						</linkit:sql-table-unique>
@@ -1016,7 +1016,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-iuv"/>
 					<linkit:sql-table-mapping generate-sql="true" name="iuv"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_dominio"/>
 							<linkit:sql-table-unique-field name="iuv"/>
@@ -1068,7 +1068,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-versamento"/>
 					<linkit:sql-table-mapping generate-sql="true" name="versamenti"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codVersamentoEnte"/>
 							<linkit:sql-table-unique-column name="id_applicazione"/>
@@ -1155,7 +1155,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true"/>
 					<linkit:sql-table-mapping generate-sql="true" name="eventi"
-						on-delete-cascade="true"> </linkit:sql-table-mapping>
+						on-delete-cascade="false"> </linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1191,7 +1191,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-singolo-versamento"/>
 					<linkit:sql-table-mapping generate-sql="true" name="singoli_versamenti"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-column name="id_versamento"/>
 							<linkit:sql-table-unique-field name="codSingoloVersamentoEnte"/>
@@ -1279,7 +1279,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-rpt"/>
 					<linkit:sql-table-mapping generate-sql="true" name="rpt"
-						on-delete-cascade="true">
+						on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codMsgRichiesta"/>
 						</linkit:sql-table-unique>
@@ -1425,7 +1425,7 @@
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-rr"/>
-					<linkit:sql-table-mapping generate-sql="true" name="rr" on-delete-cascade="true">
+					<linkit:sql-table-mapping generate-sql="true" name="rr" on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codMsgRevoca"/>
 						</linkit:sql-table-unique>
@@ -1474,7 +1474,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-rendicontazione"/>
 					<linkit:sql-table-mapping generate-sql="true" name="rendicontazioni"
-						on-delete-cascade="true"> </linkit:sql-table-mapping>
+						on-delete-cascade="false"> </linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1525,7 +1525,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-pagamento"/>
 					<linkit:sql-table-mapping generate-sql="true" name="pagamenti"
-						on-delete-cascade="true"> </linkit:sql-table-mapping>
+						on-delete-cascade="false"> </linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1609,7 +1609,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-notifica"/>
 					<linkit:sql-table-mapping generate-sql="true" name="notifiche"
-						on-delete-cascade="true"> </linkit:sql-table-mapping>
+						on-delete-cascade="false"> </linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1663,7 +1663,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-incasso"/>
 					<linkit:sql-table-mapping generate-sql="true" name="incassi"
-						on-delete-cascade="true"> </linkit:sql-table-mapping>
+						on-delete-cascade="false"> </linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
@@ -1698,7 +1698,7 @@
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-fr"/>
-					<linkit:sql-table-mapping generate-sql="true" name="fr" on-delete-cascade="true">
+					<linkit:sql-table-mapping generate-sql="true" name="fr" on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codFlusso"/>
 						</linkit:sql-table-unique>
@@ -1771,7 +1771,7 @@
 			<xsd:appinfo>
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-batch"/>
-					<linkit:sql-table-mapping generate-sql="true" name="batch" on-delete-cascade="true">
+					<linkit:sql-table-mapping generate-sql="true" name="batch" on-delete-cascade="false">
 						<linkit:sql-table-unique create-index="true">
 							<linkit:sql-table-unique-field name="codBatch"/>
 						</linkit:sql-table-unique>
@@ -1851,13 +1851,13 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true"/>
 					<linkit:sql-table-mapping generate-sql="true"
-						name="operazioni" on-delete-cascade="true">
+						name="operazioni" on-delete-cascade="false">
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
 		</xsd:annotation>
 		<xsd:sequence>
-			<xsd:element name="idTracciato" type="id-tracciato" minOccurs="0">
+			<xsd:element name="idTracciato" type="id-tracciato">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1867,14 +1867,13 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="lineaElaborazione" type="xsd:long" minOccurs="0"/>
+			<xsd:element name="tipoOperazione" type="xsd:string"/>
+			<xsd:element name="lineaElaborazione" type="xsd:long"/>
 			<xsd:element name="stato" type="StatoOperazioneType"/>
 			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
-			<xsd:element name="datiRisposta" type="xsd:base64Binary"/>
-			<xsd:element name="esito" type="EsitoGovpayType"/>
+			<xsd:element name="datiRisposta" type="xsd:base64Binary" minOccurs="0"/>
 			<xsd:element name="dettaglioEsito" type="xsd:string" minOccurs="0"/>
-			<xsd:element name="tipoOperazione" type="xsd:string"/>
-			<xsd:element name="idApplicazione" type="id-applicazione">
+			<xsd:element name="idApplicazione" type="id-applicazione" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>
 						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
@@ -1884,7 +1883,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="codVersamentoEnte" type="xsd:string" />
+			<xsd:element name="codVersamentoEnte" type="xsd:string" minOccurs="0"/>
 			
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1896,7 +1895,7 @@
 				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
 					<linkit:interface crud="true" id="id-tracciato"/>
 					<linkit:sql-table-mapping generate-sql="true"
-						name="tracciati" on-delete-cascade="true">
+						name="tracciati" on-delete-cascade="false">
 					</linkit:sql-table-mapping>
 				</linkit:generator>
 			</xsd:appinfo>
@@ -1921,7 +1920,8 @@
 			<xsd:element name="numOperazioniOk" type="xsd:long"/>
 			<xsd:element name="numOperazioniKo" type="xsd:long"/>
 			<xsd:element name="nomeFile" type="xsd:string"/>
-			<xsd:element name="rawData" type="xsd:base64Binary"/>
+			<xsd:element name="rawDataRichiesta" type="xsd:base64Binary"/>
+			<xsd:element name="rawDataRisposta" type="xsd:base64Binary" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1938,16 +1938,8 @@
 	<xsd:simpleType name="StatoOperazioneType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="NON_VALIDO" />
-			<xsd:enumeration value="NUOVO" />
 			<xsd:enumeration value="ESEGUITO_OK" />
 			<xsd:enumeration value="ESEGUITO_KO" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	
-	<xsd:simpleType name="EsitoGovpayType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="OK" />
-			<xsd:enumeration value="KO" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

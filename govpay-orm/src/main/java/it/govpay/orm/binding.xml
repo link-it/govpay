@@ -644,16 +644,15 @@
   </mapping>
   <mapping name="Operazione" class="it.govpay.orm.Operazione">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
-    <structure field="idTracciato" usage="optional" map-as="it.govpay.orm.IdTracciato"/>
-    <value name="lineaElaborazione" field="lineaElaborazione" usage="optional"/>
+    <structure field="idTracciato" usage="required" map-as="it.govpay.orm.IdTracciato"/>
+    <value name="tipoOperazione" field="tipoOperazione" usage="required"/>
+    <value name="lineaElaborazione" field="lineaElaborazione" usage="required"/>
     <value name="stato" field="stato" usage="required" enum-value-method="toString"/>
     <value name="datiRichiesta" field="datiRichiesta" usage="required"/>
-    <value name="datiRisposta" field="datiRisposta" usage="required"/>
-    <value name="esito" field="esito" usage="required" enum-value-method="toString"/>
+    <value name="datiRisposta" field="datiRisposta" usage="optional"/>
     <value name="dettaglioEsito" field="dettaglioEsito" usage="optional"/>
-    <value name="tipoOperazione" field="tipoOperazione" usage="required"/>
-    <structure name="idApplicazione" field="idApplicazione" usage="required" map-as="_IdApplicazione_Type"/>
-    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="required"/>
+    <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>
+    <value name="codVersamentoEnte" field="codVersamentoEnte" usage="optional"/>
   </mapping>
   <mapping name="Tracciato" class="it.govpay.orm.Tracciato">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
@@ -667,6 +666,7 @@
     <value name="numOperazioniOk" field="numOperazioniOk" usage="required"/>
     <value name="numOperazioniKo" field="numOperazioniKo" usage="required"/>
     <value name="nomeFile" field="nomeFile" usage="required"/>
-    <value name="rawData" field="rawData" usage="required"/>
+    <value name="rawDataRichiesta" field="rawDataRichiesta" usage="required"/>
+    <value name="rawDataRisposta" field="rawDataRisposta" usage="optional"/>
   </mapping>
 </binding>

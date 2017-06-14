@@ -13,6 +13,22 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 
 public class Tracciato {
 
+	private long id;
+	private long idOperatore;
+	private Date dataCaricamento;
+	private Date dataUltimoAggiornamento;
+	private StatoTracciatoType stato;
+	private long lineaElaborazione;
+	private String descrizioneStato;
+	private long numLineeTotali;
+	private long numOperazioniOk;
+	private long numOperazioniKo;
+	private String nomeFile;
+	private byte[] rawDataRichiesta;
+	private byte[] rawDataRisposta;
+	
+	private Operatore operatore = null;
+	
 	public long getIdOperatore() {
 		return idOperatore;
 	}
@@ -67,32 +83,12 @@ public class Tracciato {
 	public void setNomeFile(String nomeFile) {
 		this.nomeFile = nomeFile;
 	}
-	public byte[] getRawData() {
-		return rawData;
-	}
-	public void setRawData(byte[] rawData) {
-		this.rawData = rawData;
-	}
 	public long getId() {
 		return id;
 	}
 	public void setId(long id) {
 		this.id = id;
 	}
-	private long id;
-	private long idOperatore;
-	private Date dataCaricamento;
-	private Date dataUltimoAggiornamento;
-	private StatoTracciatoType stato;
-	private long lineaElaborazione;
-	private String descrizioneStato;
-	private long numLineeTotali;
-	private long numOperazioniOk;
-	private long numOperazioniKo;
-	private String nomeFile;
-	private byte[] rawData;
-	
-	private Operatore operatore = null;
 	
 	public Operatore getOperatore(BasicBD bd) throws ServiceException {
 		if(this.operatore == null) {
@@ -111,6 +107,18 @@ public class Tracciato {
 	}
 	public void setDataUltimoAggiornamento(Date dataUltimoAggiornamento) {
 		this.dataUltimoAggiornamento = dataUltimoAggiornamento;
+	}
+	public byte[] getRawDataRichiesta() {
+		return rawDataRichiesta;
+	}
+	public void setRawDataRichiesta(byte[] rawDataRichiesta) {
+		this.rawDataRichiesta = rawDataRichiesta;
+	}
+	public byte[] getRawDataRisposta() {
+		return rawDataRisposta;
+	}
+	public void setRawDataRisposta(byte[] rawDataRisposta) {
+		this.rawDataRisposta = rawDataRisposta;
 	}
 	
 

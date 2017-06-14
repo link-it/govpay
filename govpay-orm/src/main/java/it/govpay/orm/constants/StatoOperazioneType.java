@@ -39,8 +39,6 @@ public enum StatoOperazioneType implements IEnumeration , Serializable , Cloneab
 
 	@javax.xml.bind.annotation.XmlEnumValue("NON_VALIDO")
 	NON_VALIDO ("NON_VALIDO"),
-	@javax.xml.bind.annotation.XmlEnumValue("NUOVO")
-	NUOVO ("NUOVO"),
 	@javax.xml.bind.annotation.XmlEnumValue("ESEGUITO_OK")
 	ESEGUITO_OK ("ESEGUITO_OK"),
 	@javax.xml.bind.annotation.XmlEnumValue("ESEGUITO_KO")

@@ -46,7 +46,8 @@ import java.io.Serializable;
  * 			&lt;element name="numOperazioniOk" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="numOperazioniKo" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="nomeFile" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="rawData" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rawDataRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="rawDataRisposta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0" maxOccurs="1"/>
  * 		&lt;/sequence>
  * &lt;/complexType>
  * </pre>
@@ -71,7 +72,8 @@ import java.io.Serializable;
   	"numOperazioniOk",
   	"numOperazioniKo",
   	"nomeFile",
-  	"rawData"
+  	"rawDataRichiesta",
+  	"rawDataRisposta"
   }
 )
 
@@ -187,12 +189,20 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
     this.nomeFile = nomeFile;
   }
 
-  public byte[] getRawData() {
-    return this.rawData;
+  public byte[] getRawDataRichiesta() {
+    return this.rawDataRichiesta;
   }
 
-  public void setRawData(byte[] rawData) {
-    this.rawData = rawData;
+  public void setRawDataRichiesta(byte[] rawDataRichiesta) {
+    this.rawDataRichiesta = rawDataRichiesta;
+  }
+
+  public byte[] getRawDataRisposta() {
+    return this.rawDataRisposta;
+  }
+
+  public void setRawDataRisposta(byte[] rawDataRisposta) {
+    this.rawDataRisposta = rawDataRisposta;
   }
 
   private static final long serialVersionUID = 1L;
@@ -258,7 +268,11 @@ public class Tracciato extends org.openspcoop2.utils.beans.BaseBean implements S
   protected java.lang.String nomeFile;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
-  @XmlElement(name="rawData",required=true,nillable=false)
-  protected byte[] rawData;
+  @XmlElement(name="rawDataRichiesta",required=true,nillable=false)
+  protected byte[] rawDataRichiesta;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="base64Binary")
+  @XmlElement(name="rawDataRisposta",required=false,nillable=false)
+  protected byte[] rawDataRisposta;
 
 }

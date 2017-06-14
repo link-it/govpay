@@ -137,11 +137,18 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 				return "nome_file";
 			}
 		}
-		if(field.equals(Tracciato.model().RAW_DATA)){
+		if(field.equals(Tracciato.model().RAW_DATA_RICHIESTA)){
 			if(appendTablePrefix){
-				return this.toAliasTable(field)+".raw_data";
+				return this.toAliasTable(field)+".raw_data_richiesta";
 			}else{
-				return "raw_data";
+				return "raw_data_richiesta";
+			}
+		}
+		if(field.equals(Tracciato.model().RAW_DATA_RISPOSTA)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".raw_data_risposta";
+			}else{
+				return "raw_data_risposta";
 			}
 		}
 
@@ -187,7 +194,10 @@ public class TracciatoFieldConverter extends AbstractSQLFieldConverter {
 		if(field.equals(Tracciato.model().NOME_FILE)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
-		if(field.equals(Tracciato.model().RAW_DATA)){
+		if(field.equals(Tracciato.model().RAW_DATA_RICHIESTA)){
+			return this.toTable(Tracciato.model(), returnAlias);
+		}
+		if(field.equals(Tracciato.model().RAW_DATA_RISPOSTA)){
 			return this.toTable(Tracciato.model(), returnAlias);
 		}
 
