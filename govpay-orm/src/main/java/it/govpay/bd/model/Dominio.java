@@ -33,9 +33,9 @@ public class Dominio extends it.govpay.model.Dominio {
 	
 	// Business
 	
-	private Anagrafica anagrafica;
-	private Stazione stazione;
-	private Applicazione applicazioneDefault;
+	private transient Anagrafica anagrafica;
+	private transient Stazione stazione;
+	private transient Applicazione applicazioneDefault;
 	
 	public Stazione getStazione(BasicBD bd) throws ServiceException {
 		if(stazione == null) {

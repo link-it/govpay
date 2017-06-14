@@ -36,12 +36,12 @@ public class Rpt extends it.govpay.model.Rpt{
 	 
 	// Business
 	
-	private Versamento versamento;
-	private Stazione stazione;
-	private Intermediario intermediario;
-	private Canale canale;
-	private Psp psp;
-	private List<Pagamento> pagamenti;
+	private transient Versamento versamento;
+	private transient Stazione stazione;
+	private transient Intermediario intermediario;
+	private transient Canale canale;
+	private transient Psp psp;
+	private transient List<Pagamento> pagamenti;
 	
 	
 	public Versamento getVersamento(BasicBD bd) throws ServiceException {

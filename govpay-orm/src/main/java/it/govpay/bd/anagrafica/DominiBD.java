@@ -50,6 +50,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 public class DominiBD extends BasicBD {
+	
+	public static final String tipoElemento = "DOMINIO";
 
 	public DominiBD(BasicBD basicBD) {
 		super(basicBD);
@@ -68,10 +70,8 @@ public class DominiBD extends BasicBD {
 		try {
 			IdDominio id = new IdDominio();
 			id.setCodDominio(codDominio);
-			
 			it.govpay.orm.Dominio dominioVO = this.getDominioService().get(id);
 			Dominio dominio = DominioConverter.toDTO(dominioVO);
-
 			return dominio;
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
@@ -114,10 +114,9 @@ public class DominiBD extends BasicBD {
 	public void insertDominio(Dominio dominio) throws ServiceException{
 		try {
 			it.govpay.orm.Dominio vo = DominioConverter.toVO(dominio);
-			
 			this.getDominioService().create(vo);
 			dominio.setId(vo.getId());
-			
+			emitAudit(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		}
@@ -137,10 +136,9 @@ public class DominiBD extends BasicBD {
 			if(!this.getDominioService().exists(id)) {
 				throw new NotFoundException("Dominio con id ["+id+"] non esiste.");
 			}
-			
 			this.getDominioService().update(id, vo);
 			dominio.setId(vo.getId());
-			AnagraficaManager.removeFromCache(dominio);
+			emitAudit(dominio);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (MultipleResultException e) {
@@ -155,7 +153,6 @@ public class DominiBD extends BasicBD {
 	
 	public void setStatoNdp(long idDominio, Integer codice, String operazione, String descrizione) throws ServiceException{
 		try {
-			
 			List<UpdateField> lst = new ArrayList<UpdateField>();
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_STATO, codice));
 			lst.add(new UpdateField(it.govpay.orm.Dominio.model().NDP_OPERAZIONE, operazione));
