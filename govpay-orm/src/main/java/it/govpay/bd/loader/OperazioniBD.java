@@ -75,6 +75,10 @@ public class OperazioniBD extends BasicBD {
 		return new OperazioneFilter(this.getOperazioneService());
 	}
 	
+	public OperazioneFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new OperazioneFilter(this.getOperazioneService(),simpleSearch);
+	}
+	
 	public long count(OperazioneFilter filter) throws ServiceException {
 		try {
 			return this.getOperazioneService().count(filter.toExpression()).longValue();

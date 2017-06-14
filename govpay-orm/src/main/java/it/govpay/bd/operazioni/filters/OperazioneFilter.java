@@ -21,7 +21,11 @@ public class OperazioneFilter extends AbstractFilter {
 	private EsitoGovpayType esito = null;
 	
 	public OperazioneFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor, false);
+	}
+	
+	public OperazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor,simpleSearch);
 	}
 
 	public enum SortFields {

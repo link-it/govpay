@@ -20,12 +20,6 @@
  */
 package it.govpay.bd.operazioni.filters;
 
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.constants.StatoTracciatoType;
-import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +32,12 @@ import org.openspcoop2.generic_project.exception.NotImplementedException;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
+
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
 
 public class TracciatoFilter extends AbstractFilter {
 
@@ -52,7 +52,11 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 	
 	public TracciatoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor, false);
+	}
+	
+	public TracciatoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		
 		try{
 			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 

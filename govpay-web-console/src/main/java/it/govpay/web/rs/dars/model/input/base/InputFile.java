@@ -27,6 +27,9 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 
 public class InputFile extends ParamField<byte[]> {
 	
+	public static final String FILENAME = "filename";
+	public static final String DATA = "data";
+	
 	private List<String> acceptedMimeTypes;
 	private long maxFileSize;
 	private int maxFiles;

@@ -44,6 +44,7 @@ import it.govpay.web.rs.dars.anagrafica.operatori.Operatori;
 import it.govpay.web.rs.dars.anagrafica.portali.Portali;
 import it.govpay.web.rs.dars.anagrafica.psp.Psp;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributo;
+import it.govpay.web.rs.dars.caricamenti.tracciati.Tracciati;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.manutenzione.strumenti.Strumenti;
 import it.govpay.web.rs.dars.model.About;
@@ -185,6 +186,16 @@ public class Menu extends BaseRsService {
 			}
 			
 			menu.getSezioni().add(monitoraggio);
+			
+			// sezione caricamenti
+			SezioneMenu caricamenti = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".operazioniMassive"));
+
+			Tracciati caricamentoTracciatiDars = new Tracciati();
+			URI caricamentoTracciatiURI = new URI(caricamentoTracciatiDars.getPathServizio());
+			VoceMenu voceMenuCaricamentoTracciati = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(caricamentoTracciatiDars.getNomeServizio() + ".titolo"),	caricamentoTracciatiURI, false);
+			caricamenti.getVociMenu().add(voceMenuCaricamentoTracciati);
+
+			menu.getSezioni().add(caricamenti);
 			
 			// Sezione manutenzione visibile solo all'utente con ruolo amministratore.
 			if(profilo.equals(ProfiloOperatore.ADMIN)){

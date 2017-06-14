@@ -76,6 +76,10 @@ public class TracciatiBD extends BasicBD {
 		return new TracciatoFilter(this.getTracciatoService());
 	}
 	
+	public TracciatoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new TracciatoFilter(this.getTracciatoService(),simpleSearch);
+	}
+	
 	public long count(TracciatoFilter filter) throws ServiceException {
 		try {
 			return this.getTracciatoService().count(filter.toExpression()).longValue();
