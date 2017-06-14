@@ -129,7 +129,7 @@ public class BasicBD {
 	private Connection connection;
 	private boolean isClosed;
 	private static Logger log = Logger.getLogger(JDBCServiceManager.class);
-	private long idOperatore;
+	private Long idOperatore;
 	
 	BasicBD father;
 	
@@ -591,8 +591,10 @@ public class BasicBD {
 		if(father != null) {
 			father.emitAudit(model);
 		} else {
-			AuditBD db = new AuditBD(this);
-			db.insertAudit(getIdOperatore(), model);
+			if(idOperatore != null) {
+				AuditBD db = new AuditBD(this);
+				db.insertAudit(getIdOperatore(), model);
+			}
 		}
 	}
 
