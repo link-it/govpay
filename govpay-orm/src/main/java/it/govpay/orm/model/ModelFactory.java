@@ -53,6 +53,8 @@ public class ModelFactory {
 	
 	public static TipoTributoModel TIPO_TRIBUTO = new TipoTributoModel();
 	
+	public static AuditModel AUDIT = new AuditModel();
+	
 	public static ACLModel ACL = new ACLModel();
 	
 	public static OperatoreModel OPERATORE = new OperatoreModel();

@@ -55,6 +55,7 @@
 								<linkit:sql-table object-name="Batch" object-type="Batch"/>
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
+								<linkit:sql-table object-name="Audit" object-type="Audit"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>
@@ -916,7 +917,45 @@
 			<xsd:element name="codTributoIuv" type="String4" minOccurs="0"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
+	<xsd:element name="Audit" type="Audit"/>
+	<xsd:complexType name="Audit">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true"/>
+					<linkit:sql-table-mapping generate-sql="true" name="audit"
+						on-delete-cascade="false">
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="data" type="xsd:dateTime"/>
+			<xsd:element name="idOperatore" type="id-operatore">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-id-mapping object-name="Operatore"
+								object-type="Operatore" relationship="reversed"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+			<xsd:element name="idOggetto" type="xsd:long"/>
+			<xsd:element name="tipoOggetto" type="xsd:string"/>
+			<xsd:element name="oggetto" type="xsd:string">
+				<xsd:annotation>
+					<xsd:appinfo>
+						<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+							<linkit:sql-column-mapping long-text="true"/>
+						</linkit:generator>
+					</xsd:appinfo>
+				</xsd:annotation>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:element name="ACL" type="ACL"/>
 	<xsd:complexType name="ACL">
 		<xsd:annotation>

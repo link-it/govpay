@@ -39,6 +39,7 @@ import it.govpay.orm.IdSla;
 import it.govpay.orm.IdMediaRilevamento;
 import it.govpay.orm.IdSingoloVersamento;
 import it.govpay.orm.IdTributo;
+import it.govpay.orm.Audit;
 import it.govpay.orm.IdIuv;
 import it.govpay.orm.SingoloVersamento;
 import it.govpay.orm.IdIbanAccredito;
@@ -1288,6 +1289,69 @@ public abstract class AbstractDeserializer {
 	 */
 	public IdTributo readIdTributoFromString(String in) throws DeserializerException {
 		return (IdTributo) this.xmlToObj(in.getBytes(), IdTributo.class);
+	}	
+	
+	
+	
+	/*
+	 =================================================================================
+	 Object: Audit
+	 =================================================================================
+	*/
+	
+	/**
+	 * Transform the xml in <var>fileName</var> in the object type {@link it.govpay.orm.Audit}
+	 * 
+	 * @param fileName Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Audit}
+	 * @return Object type {@link it.govpay.orm.Audit}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Audit readAudit(String fileName) throws DeserializerException {
+		return (Audit) this.xmlToObj(fileName, Audit.class);
+	}
+	
+	/**
+	 * Transform the xml in <var>file</var> in the object type {@link it.govpay.orm.Audit}
+	 * 
+	 * @param file Xml file to use for the reconstruction of the object type {@link it.govpay.orm.Audit}
+	 * @return Object type {@link it.govpay.orm.Audit}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Audit readAudit(File file) throws DeserializerException {
+		return (Audit) this.xmlToObj(file, Audit.class);
+	}
+	
+	/**
+	 * Transform the input stream <var>in</var> in the object type {@link it.govpay.orm.Audit}
+	 * 
+	 * @param in InputStream to use for the reconstruction of the object type {@link it.govpay.orm.Audit}
+	 * @return Object type {@link it.govpay.orm.Audit}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Audit readAudit(InputStream in) throws DeserializerException {
+		return (Audit) this.xmlToObj(in, Audit.class);
+	}	
+	
+	/**
+	 * Transform the byte array <var>in</var> in the object type {@link it.govpay.orm.Audit}
+	 * 
+	 * @param in Byte array to use for the reconstruction of the object type {@link it.govpay.orm.Audit}
+	 * @return Object type {@link it.govpay.orm.Audit}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Audit readAudit(byte[] in) throws DeserializerException {
+		return (Audit) this.xmlToObj(in, Audit.class);
+	}	
+	
+	/**
+	 * Transform the String <var>in</var> in the object type {@link it.govpay.orm.Audit}
+	 * 
+	 * @param in String to use for the reconstruction of the object type {@link it.govpay.orm.Audit}
+	 * @return Object type {@link it.govpay.orm.Audit}
+	 * @throws DeserializerException The exception that is thrown when an error occurs during deserialization
+	 */
+	public Audit readAuditFromString(String in) throws DeserializerException {
+		return (Audit) this.xmlToObj(in.getBytes(), Audit.class);
 	}	
 	
 	
