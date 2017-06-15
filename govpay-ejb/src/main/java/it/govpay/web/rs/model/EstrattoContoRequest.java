@@ -2,17 +2,9 @@ package it.govpay.web.rs.model;
 
 import java.util.Date;
 
-import it.govpay.model.BasicModel;
+public class EstrattoContoRequest {
 
-public class EstrattoContoRequest extends BasicModel{
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	public EstrattoContoRequest(){super();}
-	
 	
 	private String codiceCreditore;
 	private Date dataInizio;

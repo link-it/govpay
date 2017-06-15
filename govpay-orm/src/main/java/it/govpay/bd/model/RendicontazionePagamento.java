@@ -1,12 +1,9 @@
 package it.govpay.bd.model;
 
-import it.govpay.model.BasicModel;
 import it.govpay.model.Rendicontazione;
 
-public class RendicontazionePagamento extends BasicModel {
+public class RendicontazionePagamento {
 
-	private static final long serialVersionUID = 1L;
-	
 	private transient Fr fr;
 	private transient Rendicontazione rendicontazione;
 	private transient Pagamento pagamento;

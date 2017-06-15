@@ -22,8 +22,8 @@ package it.govpay.model;
 import org.apache.commons.lang.ArrayUtils;
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-public class Acl extends BasicModel {
-	private static final long serialVersionUID = 1L;
+public class Acl {
+
 	public enum Servizio {
 		PAGAMENTI_ATTESA("A"),
 		PAGAMENTI_ONLINE("O"),
@@ -31,7 +31,15 @@ public class Acl extends BasicModel {
 		NOTIFICHE("N"),
 		RENDICONTAZIONE("R"),
 		INCASSI("I"),
-		CRUSCOTTO("C");
+		CRUSCOTTO("C"),
+		Anagrafica_PagoPa("A_PPA"),
+		Anagrafica_Contabile("A_CON"),
+		Anagrafica_Applicazioni("A_APP"),
+		Anagrafica_Utenti("A_USR"),
+		Gestione_Pagamenti("G_PAG"),
+		Gestione_Rendicontazioni("G_RND"),
+		Giornale_Eventi("GDE"),
+		Manutenzione("MAN");
 		
 		private String codifica;
 
@@ -80,6 +88,7 @@ public class Acl extends BasicModel {
 	private String codTributo;
 	private Long idDominio;
 	private Long idTributo;
+	private int diritti;
 	
 	public Tipo getTipo() {
 		return tipo;
@@ -116,5 +125,11 @@ public class Acl extends BasicModel {
 	}
 	public void setIdTributo(Long idTributo) {
 		this.idTributo = idTributo;
+	}
+	public int getDiritti() {
+		return diritti;
+	}
+	public void setDiritti(int diritti) {
+		this.diritti = diritti;
 	}
 }

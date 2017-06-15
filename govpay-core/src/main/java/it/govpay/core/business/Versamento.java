@@ -335,7 +335,7 @@ public class Versamento extends BasicBD {
 		filter.addSortField(filterSortList);
 		
 		List<Long> domini = new ArrayList<Long>();
-		Set<Long> dominiSet = AclEngine.getAuthorizedPagamenti(portaleAutenticato);
+		Set<Long> dominiSet = AclEngine.getIdDominiAutorizzati(portaleAutenticato, Servizio.PAGAMENTI_ONLINE);
 		if(dominiSet != null) {
 			domini.addAll(dominiSet);
 			filter.setIdDomini(domini);

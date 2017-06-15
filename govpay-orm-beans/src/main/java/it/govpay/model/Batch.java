@@ -21,9 +21,8 @@ package it.govpay.model;
 
 import java.util.Date;
 
-public class Batch extends BasicModel {
+public class Batch {
 	
-	private static final long serialVersionUID = 1L;
 	private String codBatch;
 	private Integer nodo;
 	private Date inizio;

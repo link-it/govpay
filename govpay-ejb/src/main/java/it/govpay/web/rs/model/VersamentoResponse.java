@@ -1,13 +1,6 @@
 package it.govpay.web.rs.model;
 
-import it.govpay.model.BasicModel;
-
-public class VersamentoResponse extends BasicModel{ 
-	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class VersamentoResponse { 
 	
 	public VersamentoResponse(){super();}
 	
