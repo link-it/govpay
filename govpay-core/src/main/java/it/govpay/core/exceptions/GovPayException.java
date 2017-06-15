@@ -115,7 +115,7 @@ public class GovPayException extends Exception {
 			log.error("[" + codEsito + "] " + getMessage() + (getCausa() != null ? "\n" + getCausa() : ""), this);
 		break;
 		default:
-			log.warn("[" + codEsito + "] " + getMessage() +  (getCausa() != null ? "\n" + getCausa() : ""), this);
+			log.warn("[" + codEsito + "] " + getMessage() +  (getCausa() != null ? "\n" + getCausa() : ""));
 			break;
 		}
 	}

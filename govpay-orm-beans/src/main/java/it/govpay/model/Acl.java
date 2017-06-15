@@ -31,7 +31,15 @@ public class Acl {
 		NOTIFICHE("N"),
 		RENDICONTAZIONE("R"),
 		INCASSI("I"),
-		CRUSCOTTO("C");
+		CRUSCOTTO("C"),
+		Anagrafica_PagoPa("A_PPA"),
+		Anagrafica_Contabile("A_CON"),
+		Anagrafica_Applicazioni("A_APP"),
+		Anagrafica_Utenti("A_USR"),
+		Gestione_Pagamenti("G_PAG"),
+		Gestione_Rendicontazioni("G_RND"),
+		Giornale_Eventi("GDE"),
+		Manutenzione("MAN");
 		
 		private String codifica;
 
@@ -80,6 +88,7 @@ public class Acl {
 	private String codTributo;
 	private Long idDominio;
 	private Long idTributo;
+	private int diritti;
 	
 	public Tipo getTipo() {
 		return tipo;
@@ -116,5 +125,11 @@ public class Acl {
 	}
 	public void setIdTributo(Long idTributo) {
 		this.idTributo = idTributo;
+	}
+	public int getDiritti() {
+		return diritti;
+	}
+	public void setDiritti(int diritti) {
+		this.diritti = diritti;
 	}
 }
