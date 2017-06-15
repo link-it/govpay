@@ -73,7 +73,8 @@ import it.govpay.orm.dao.IOperazioneServiceSearch;
 import it.govpay.orm.dao.IOperazioneService;
 import it.govpay.orm.dao.ITracciatoServiceSearch;
 import it.govpay.orm.dao.ITracciatoService;
-
+import it.govpay.orm.dao.IAuditServiceSearch;
+import it.govpay.orm.dao.IAuditService;
 import java.sql.Connection;
 import java.util.Properties;
 
@@ -582,7 +583,36 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 		return new JDBCTipoTributoService(this);
 	}
 	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Audit type:Audit
+	 =====================================================================================================================
+	*/
 	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Audit}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Audit}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAuditServiceSearch getAuditServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCAuditServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Audit}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Audit}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IAuditService getAuditService() throws ServiceException,NotImplementedException{
+		return new JDBCAuditService(this);
+	}
+
 	
 	/*
 	 =====================================================================================================================

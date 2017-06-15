@@ -51,4 +51,22 @@ CREATE TABLE operazioni
        CONSTRAINT pk_operazioni PRIMARY KEY (id)
 );
 
+--GP-524
+
+CREATE SEQUENCE seq_audit start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE audit
+(
+       data TIMESTAMP NOT NULL,
+       id_oggetto BIGINT NOT NULL,
+       tipo_oggetto VARCHAR(255) NOT NULL,
+       oggetto TEXT NOT NULL,
+       -- fk/pk columns
+       id BIGINT DEFAULT nextval('seq_audit') NOT NULL,
+       id_operatore BIGINT NOT NULL,
+       -- fk/pk keys constraints
+       CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+       CONSTRAINT pk_audit PRIMARY KEY (id)
+);
+
 

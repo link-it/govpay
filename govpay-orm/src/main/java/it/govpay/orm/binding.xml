@@ -396,6 +396,14 @@
     <value name="codContabilita" field="codContabilita" usage="optional"/>
     <value name="codTributoIuv" field="codTributoIuv" usage="optional"/>
   </mapping>
+  <mapping name="Audit" class="it.govpay.orm.Audit">
+    <namespace uri="http://www.govpay.it/orm" default="elements"/>
+    <value name="data" field="data" usage="required"/>
+    <structure name="idOperatore" field="idOperatore" usage="required" map-as="_IdOperatore_Type"/>
+    <value name="idOggetto" field="idOggetto" usage="required"/>
+    <value name="tipoOggetto" field="tipoOggetto" usage="required"/>
+    <value name="oggetto" field="oggetto" usage="required"/>
+  </mapping>
   <mapping name="ACL" class="it.govpay.orm.ACL">
     <namespace uri="http://www.govpay.it/orm" default="elements"/>
     <structure name="idApplicazione" field="idApplicazione" usage="optional" map-as="_IdApplicazione_Type"/>

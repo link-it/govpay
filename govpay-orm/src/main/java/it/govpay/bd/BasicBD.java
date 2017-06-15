@@ -23,11 +23,13 @@ import it.govpay.bd.anagrafica.AuditBD;
 import it.govpay.model.BasicModel;
 import it.govpay.orm.dao.IACLService;
 import it.govpay.orm.dao.IApplicazioneService;
+import it.govpay.orm.dao.IAuditService;
 import it.govpay.orm.dao.IBatchService;
 import it.govpay.orm.dao.ICanaleService;
 import it.govpay.orm.dao.IConnettoreService;
 import it.govpay.orm.dao.IDBACLService;
 import it.govpay.orm.dao.IDBApplicazioneService;
+import it.govpay.orm.dao.IDBAuditService;
 import it.govpay.orm.dao.IDBBatchService;
 import it.govpay.orm.dao.IDBCanaleService;
 import it.govpay.orm.dao.IDBConnettoreService;
@@ -95,6 +97,7 @@ public class BasicBD {
 	
 	private IApplicazioneService applicazioneService;
 	private IACLService aclService;
+	private IAuditService auditService;
 	private IBatchService batchService;
 	private ICanaleService canaleService;
 	private IConnettoreService connettoreService;
@@ -166,6 +169,7 @@ public class BasicBD {
 			try {
 				this.applicazioneService = this.serviceManager.getApplicazioneService();
 				this.aclService = this.serviceManager.getACLService();
+				this.auditService = this.serviceManager.getAuditService();
 				this.batchService = this.serviceManager.getBatchService();
 				this.canaleService = this.serviceManager.getCanaleService();
 				this.connettoreService = this.serviceManager.getConnettoreService();
@@ -209,6 +213,7 @@ public class BasicBD {
 		try {
 			((IDBApplicazioneService)this.applicazioneService).enableSelectForUpdate();
 			((IDBACLService)this.aclService).enableSelectForUpdate();
+			((IDBAuditService)this.auditService).enableSelectForUpdate();
 			((IDBBatchService)this.batchService).enableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).enableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).enableSelectForUpdate();
@@ -248,6 +253,7 @@ public class BasicBD {
 		try {
 			((IDBApplicazioneService)this.applicazioneService).disableSelectForUpdate();
 			((IDBACLService)this.aclService).disableSelectForUpdate();
+			((IDBAuditService)this.auditService).disableSelectForUpdate();
 			((IDBBatchService)this.batchService).disableSelectForUpdate();
 			((IDBCanaleService)this.canaleService).disableSelectForUpdate();
 			((IDBConnettoreService)this.connettoreService).disableSelectForUpdate();
@@ -299,6 +305,13 @@ public class BasicBD {
 			return father.getAclService();
 		}
 		return aclService;
+	}
+
+	public IAuditService getAuditService() {
+		if(father != null) {
+			return father.getAuditService();
+		}
+		return auditService;
 	}
 
 	public IBatchService getBatchService() {

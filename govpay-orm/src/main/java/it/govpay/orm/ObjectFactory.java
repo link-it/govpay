@@ -382,6 +382,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Audit }
+     */
+    public Audit createAudit() {
+        return new Audit();
+    }
+
+    /**
      * Create an instance of {@link IdPortale }
      */
     public IdPortale createIdPortale() {

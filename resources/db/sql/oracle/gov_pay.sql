@@ -1087,6 +1087,36 @@ end;
 
 
 
+CREATE SEQUENCE seq_audit MINVALUE 1 MAXVALUE 9223372036854775807 START WITH 1 INCREMENT BY 1 CACHE 2 NOCYCLE;
+
+CREATE TABLE audit
+(
+	data TIMESTAMP NOT NULL,
+	id_oggetto NUMBER NOT NULL,
+	tipo_oggetto VARCHAR2(255 CHAR) NOT NULL,
+	oggetto CLOB NOT NULL,
+	-- fk/pk columns
+	id NUMBER NOT NULL,
+	id_operatore NUMBER NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_audit PRIMARY KEY (id)
+);
+
+CREATE TRIGGER trg_audit
+BEFORE
+insert on audit
+for each row
+begin
+   IF (:new.id IS NULL) THEN
+      SELECT seq_audit.nextval INTO :new.id
+                FROM DUAL;
+   END IF;
+end;
+/
+
+
+
 CREATE TABLE ID_MESSAGGIO_RELATIVO
 (
 	COUNTER NUMBER NOT NULL,
