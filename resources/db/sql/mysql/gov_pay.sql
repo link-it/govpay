@@ -109,7 +109,7 @@ CREATE TABLE applicazioni
 	CONSTRAINT pk_applicazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
--- index
+-- index/oracle/gov_pay.sql
 CREATE INDEX index_applicazioni_1 ON applicazioni (cod_applicazione);
 CREATE INDEX index_applicazioni_2 ON applicazioni (principal);
 
@@ -776,6 +776,23 @@ CREATE TABLE operazioni
 	CONSTRAINT fk_operazioni_2 FOREIGN KEY (id_applicazione) REFERENCES applicazioni(id),
 	CONSTRAINT pk_operazioni PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+
+CREATE TABLE audit
+(
+	-- Precisione ai millisecondi supportata dalla versione 5.6.4, se si utilizza una versione precedente non usare il suffisso '(3)'
+	data TIMESTAMP(3) NOT NULL DEFAULT 0,
+	id_oggetto BIGINT NOT NULL,
+	tipo_oggetto VARCHAR(255) NOT NULL,
+	oggetto LONGTEXT NOT NULL,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	id_operatore BIGINT NOT NULL,
+	-- fk/pk keys constraints
+	CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
+	CONSTRAINT pk_audit PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
 
 
 

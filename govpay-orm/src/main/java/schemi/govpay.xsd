@@ -620,7 +620,23 @@
 			<xsd:element minOccurs="0" name="codTributoIuv" type="String4"/>
 		</xsd:sequence>
 	</xsd:complexType>
-
+	
+	<xsd:element name="Audit" type="Audit"/>
+	<xsd:complexType name="Audit">
+		
+		<xsd:sequence>
+			<xsd:element name="data" type="xsd:dateTime"/>
+			<xsd:element name="idOperatore" type="id-operatore">
+				
+			</xsd:element>
+			<xsd:element name="idOggetto" type="xsd:long"/>
+			<xsd:element name="tipoOggetto" type="xsd:string"/>
+			<xsd:element name="oggetto" type="xsd:string">
+				
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:element name="ACL" type="ACL"/>
 	<xsd:complexType name="ACL">
 		
@@ -1070,20 +1086,19 @@
 	<xsd:complexType name="Operazione">
 		
 		<xsd:sequence>
-			<xsd:element minOccurs="0" name="idTracciato" type="id-tracciato">
+			<xsd:element name="idTracciato" type="id-tracciato">
 				
 			</xsd:element>
-			<xsd:element minOccurs="0" name="lineaElaborazione" type="xsd:long"/>
+			<xsd:element name="tipoOperazione" type="xsd:string"/>
+			<xsd:element name="lineaElaborazione" type="xsd:long"/>
 			<xsd:element name="stato" type="StatoOperazioneType"/>
 			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
-			<xsd:element name="datiRisposta" type="xsd:base64Binary"/>
-			<xsd:element name="esito" type="EsitoGovpayType"/>
+			<xsd:element minOccurs="0" name="datiRisposta" type="xsd:base64Binary"/>
 			<xsd:element minOccurs="0" name="dettaglioEsito" type="xsd:string"/>
-			<xsd:element name="tipoOperazione" type="TipoOperazioneType"/>
-			<xsd:element name="idApplicazione" type="id-applicazione">
+			<xsd:element minOccurs="0" name="idApplicazione" type="id-applicazione">
 				
 			</xsd:element>
-			<xsd:element name="codVersamentoEnte" type="xsd:string"/>
+			<xsd:element minOccurs="0" name="codVersamentoEnte" type="xsd:string"/>
 			
 		</xsd:sequence>
 	</xsd:complexType>
@@ -1104,7 +1119,8 @@
 			<xsd:element name="numOperazioniOk" type="xsd:long"/>
 			<xsd:element name="numOperazioniKo" type="xsd:long"/>
 			<xsd:element name="nomeFile" type="xsd:string"/>
-			<xsd:element name="rawData" type="xsd:base64Binary"/>
+			<xsd:element name="rawDataRichiesta" type="xsd:base64Binary"/>
+			<xsd:element minOccurs="0" name="rawDataRisposta" type="xsd:base64Binary"/>
 		</xsd:sequence>
 	</xsd:complexType>
 	
@@ -1121,24 +1137,9 @@
 	<xsd:simpleType name="StatoOperazioneType">
 		<xsd:restriction base="xsd:string">
 			<xsd:enumeration value="NON_VALIDO"/>
-			<xsd:enumeration value="NUOVO"/>
 			<xsd:enumeration value="ESEGUITO_OK"/>
 			<xsd:enumeration value="ESEGUITO_KO"/>
 		</xsd:restriction>
 	</xsd:simpleType>
 	
-	<xsd:simpleType name="EsitoGovpayType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="OK"/>
-			<xsd:enumeration value="KO"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-	
-	<xsd:simpleType name="TipoOperazioneType">
-		<xsd:restriction base="xsd:string">
-			<xsd:enumeration value="CARICAMENTO"/>
-			<xsd:enumeration value="ANNULLAMENTO"/>
-		</xsd:restriction>
-	</xsd:simpleType>
-
 </xsd:schema>
