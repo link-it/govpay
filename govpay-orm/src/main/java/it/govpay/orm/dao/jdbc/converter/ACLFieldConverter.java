@@ -95,6 +95,13 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 				return "cod_tipo";
 			}
 		}
+		if(field.equals(ACL.model().DIRITTI)){
+			if(appendTablePrefix){
+				return this.toAliasTable(field)+".diritti";
+			}else{
+				return "diritti";
+			}
+		}
 		if(field.equals(ACL.model().COD_SERVIZIO)){
 			if(appendTablePrefix){
 				return this.toAliasTable(field)+".cod_servizio";
@@ -139,6 +146,9 @@ public class ACLFieldConverter extends AbstractSQLFieldConverter {
 			return this.toTable(ACL.model().ID_OPERATORE, returnAlias);
 		}
 		if(field.equals(ACL.model().COD_TIPO)){
+			return this.toTable(ACL.model(), returnAlias);
+		}
+		if(field.equals(ACL.model().DIRITTI)){
 			return this.toTable(ACL.model(), returnAlias);
 		}
 		if(field.equals(ACL.model().COD_SERVIZIO)){

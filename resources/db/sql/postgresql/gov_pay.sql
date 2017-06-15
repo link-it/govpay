@@ -311,7 +311,8 @@ CREATE SEQUENCE seq_acl start 1 increment 1 maxvalue 9223372036854775807 minvalu
 CREATE TABLE acl
 (
 	cod_tipo VARCHAR(1) NOT NULL,
-	cod_servizio VARCHAR(1) NOT NULL,
+	diritti INT,
+	cod_servizio VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT DEFAULT nextval('seq_acl') NOT NULL,
 	id_applicazione BIGINT,
@@ -780,6 +781,23 @@ CREATE TABLE audit
 	-- fk/pk keys constraints
 	CONSTRAINT fk_audit_1 FOREIGN KEY (id_operatore) REFERENCES operatori(id),
 	CONSTRAINT pk_audit PRIMARY KEY (id)
+);
+
+
+
+
+CREATE SEQUENCE seq_ruoli start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE ruoli
+(
+	cod_ruolo VARCHAR(35) NOT NULL,
+	descrizione VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT DEFAULT nextval('seq_ruoli') NOT NULL,
+	-- unique constraints
+	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_ruoli PRIMARY KEY (id)
 );
 
 

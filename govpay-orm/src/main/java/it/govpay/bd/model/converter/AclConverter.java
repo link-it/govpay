@@ -39,6 +39,7 @@ public class AclConverter {
 		Acl dto = new Acl();
 		dto.setServizio(Servizio.toEnum(vo.getCodServizio()));
 		dto.setTipo(Tipo.toEnum(vo.getCodTipo()));
+		dto.setDiritti(vo.getDiritti());
 
 		if(vo.getIdDominio() != null){
 			try{
@@ -60,7 +61,7 @@ public class AclConverter {
 		ACL vo = new ACL();
 		vo.setCodServizio(dto.getServizio().getCodifica());
 		vo.setCodTipo(dto.getTipo().getCodifica());
-
+		vo.setDiritti(dto.getDiritti());
 		if(dto.getIdDominio() != null || dto.getCodDominio() != null){
 			IdDominio idDominio = new IdDominio();
 			if(dto.getIdDominio() == null) {

@@ -159,6 +159,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		// Object acl
 		sqlQueryObjectInsert.addInsertTable(this.getACLFieldConverter().toTable(ACL.model()));
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,false),"?");
+		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false),"?");
 		sqlQueryObjectInsert.addInsertField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false),"?");
 		sqlQueryObjectInsert.addInsertField("id_applicazione","?");
 		sqlQueryObjectInsert.addInsertField("id_portale","?");
@@ -170,6 +171,7 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		org.openspcoop2.utils.jdbc.IKeyGeneratorObject keyGenerator = this.getACLFetch().getKeyGeneratorObject(ACL.model());
 		long id = jdbcUtilities.insertAndReturnGeneratedKey(sqlQueryObjectInsert, keyGenerator, jdbcProperties.isShowSql(),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodTipo(),ACL.model().COD_TIPO.getFieldType()),
+			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getDiritti(),ACL.model().DIRITTI.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(acl.getCodServizio(),ACL.model().COD_SERVIZIO.getFieldType()),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_applicazione,Long.class),
 			new org.openspcoop2.generic_project.dao.jdbc.utils.JDBCObject(id_portale,Long.class),
@@ -316,6 +318,8 @@ public class JDBCACLServiceImpl extends JDBCACLServiceSearchImpl
 		java.util.List<JDBCObject> lstObjects_acl = new java.util.ArrayList<JDBCObject>();
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().COD_TIPO,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getCodTipo(), ACL.model().COD_TIPO.getFieldType()));
+		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().DIRITTI,false), "?");
+		lstObjects_acl.add(new JDBCObject(acl.getDiritti(), ACL.model().DIRITTI.getFieldType()));
 		sqlQueryObjectUpdate.addUpdateField(this.getACLFieldConverter().toColumn(ACL.model().COD_SERVIZIO,false), "?");
 		lstObjects_acl.add(new JDBCObject(acl.getCodServizio(), ACL.model().COD_SERVIZIO.getFieldType()));
 		if(setIdMappingResolutionBehaviour){

@@ -49,6 +49,7 @@ import it.govpay.orm.dao.IDBPspService;
 import it.govpay.orm.dao.IDBRPTService;
 import it.govpay.orm.dao.IDBRRService;
 import it.govpay.orm.dao.IDBRendicontazioneService;
+import it.govpay.orm.dao.IDBRuoloService;
 import it.govpay.orm.dao.IDBSingoloVersamentoService;
 import it.govpay.orm.dao.IDBStazioneService;
 import it.govpay.orm.dao.IDBTipoTributoService;
@@ -73,6 +74,7 @@ import it.govpay.orm.dao.IRPTService;
 import it.govpay.orm.dao.IRRService;
 import it.govpay.orm.dao.IRendicontazionePagamentoServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
+import it.govpay.orm.dao.IRuoloService;
 import it.govpay.orm.dao.ISingoloVersamentoService;
 import it.govpay.orm.dao.IStazioneService;
 import it.govpay.orm.dao.ITipoTributoService;
@@ -117,6 +119,7 @@ public class BasicBD {
 	private IRendicontazioneService rendicontazioneService;
 	private IRPTService rptService;
 	private IRRService rrService;
+	private IRuoloService ruoloService;
 	private ISingoloVersamentoService singoloVersamentoService;
 	private IStazioneService stazioneService;
 	private ITipoTributoService tipoTributoService;
@@ -189,6 +192,7 @@ public class BasicBD {
 				this.rendicontazioneService = this.serviceManager.getRendicontazioneService();
 				this.rptService = this.serviceManager.getRPTService();
 				this.rrService = this.serviceManager.getRRService();
+				this.ruoloService = this.serviceManager.getRuoloService();
 				this.singoloVersamentoService = this.serviceManager.getSingoloVersamentoService();
 				this.stazioneService = this.serviceManager.getStazioneService();
 				this.tipoTributoService = this.serviceManager.getTipoTributoService();
@@ -231,6 +235,7 @@ public class BasicBD {
 			((IDBPspService)this.pspService).enableSelectForUpdate();
 			((IDBRPTService)this.rptService).enableSelectForUpdate();
 			((IDBRRService)this.rrService).enableSelectForUpdate();
+			((IDBRuoloService)this.ruoloService).enableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).enableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).enableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).enableSelectForUpdate();
@@ -271,6 +276,7 @@ public class BasicBD {
 			((IDBPspService)this.pspService).disableSelectForUpdate();
 			((IDBRPTService)this.rptService).disableSelectForUpdate();
 			((IDBRRService)this.rrService).disableSelectForUpdate();
+			((IDBRuoloService)this.ruoloService).disableSelectForUpdate();
 			((IDBSingoloVersamentoService)this.singoloVersamentoService).disableSelectForUpdate();
 			((IDBRendicontazioneService)this.rendicontazioneService).disableSelectForUpdate();
 			((IDBStazioneService)this.stazioneService).disableSelectForUpdate();
@@ -446,6 +452,13 @@ public class BasicBD {
 			return father.getRrService();
 		}
 		return rrService;
+	}
+
+	public IRuoloService getRuoloService() {
+		if(father != null) {
+			return father.getRuoloService();
+		}
+		return ruoloService;
 	}
 
 	public ISingoloVersamentoService getSingoloVersamentoService() {

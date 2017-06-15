@@ -69,4 +69,22 @@ CREATE TABLE audit
        CONSTRAINT pk_audit PRIMARY KEY (id)
 );
 
+--GP-526
 
+CREATE SEQUENCE seq_ruoli start 1 increment 1 maxvalue 9223372036854775807 minvalue 1 cache 1 NO CYCLE;
+
+CREATE TABLE ruoli
+(
+       cod_ruolo VARCHAR(35) NOT NULL,
+       descrizione VARCHAR(255) NOT NULL,
+       -- fk/pk columns
+       id BIGINT DEFAULT nextval('seq_ruoli') NOT NULL,
+       -- unique constraints
+       CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+       -- fk/pk keys constraints
+       CONSTRAINT pk_ruoli PRIMARY KEY (id)
+);
+
+ALTER TABLE acl ADD COLUMN diritti INT;
+ALTER TABLE acl ALTER COLUMN cod_servizio TYPE VARCHAR(35) NOT NULL;
+diritti INT,

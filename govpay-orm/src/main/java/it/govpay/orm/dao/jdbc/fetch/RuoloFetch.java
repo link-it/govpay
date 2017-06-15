@@ -30,18 +30,18 @@ import java.util.Map;
 import org.openspcoop2.utils.TipiDatabase;
 import org.openspcoop2.utils.jdbc.IKeyGeneratorObject;
 
-import it.govpay.orm.ACL;
+import it.govpay.orm.Ruolo;
 
 
 /**     
- * ACLFetch
+ * RuoloFetch
  *
  * @author Giovanni Bussu (bussu@link.it)
  * @author Lorenzo Nardi (nardi@link.it)
  * @author $Author$
  * @version $Rev$, $Date$
  */
-public class ACLFetch extends AbstractJDBCFetch {
+public class RuoloFetch extends AbstractJDBCFetch {
 
 	@Override
 	public Object fetch(TipiDatabase tipoDatabase, IModel<?> model , ResultSet rs) throws ServiceException {
@@ -50,16 +50,14 @@ public class ACLFetch extends AbstractJDBCFetch {
 			JDBCParameterUtilities jdbcParameterUtilities =  
 					new JDBCParameterUtilities(tipoDatabase);
 
-			if(model.equals(ACL.model())){
-				ACL object = new ACL();
+			if(model.equals(Ruolo.model())){
+				Ruolo object = new Ruolo();
 				setParameter(object, "setId", Long.class,
 					jdbcParameterUtilities.readParameter(rs, "id", Long.class));
-				setParameter(object, "setCodTipo", ACL.model().COD_TIPO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_tipo", ACL.model().COD_TIPO.getFieldType()));
-				setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "diritti", ACL.model().DIRITTI.getFieldType()));
-				setParameter(object, "setCodServizio", ACL.model().COD_SERVIZIO.getFieldType(),
-					jdbcParameterUtilities.readParameter(rs, "cod_servizio", ACL.model().COD_SERVIZIO.getFieldType()));
+				setParameter(object, "setCodRuolo", Ruolo.model().COD_RUOLO.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "cod_ruolo", Ruolo.model().COD_RUOLO.getFieldType()));
+				setParameter(object, "setDescrizione", Ruolo.model().DESCRIZIONE.getFieldType(),
+					jdbcParameterUtilities.readParameter(rs, "descrizione", Ruolo.model().DESCRIZIONE.getFieldType()));
 				return object;
 			}
 			
@@ -78,16 +76,14 @@ public class ACLFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(ACL.model())){
-				ACL object = new ACL();
+			if(model.equals(Ruolo.model())){
+				Ruolo object = new Ruolo();
 				setParameter(object, "setId", Long.class,
 					this.getObjectFromMap(map,"id"));
-				setParameter(object, "setCodTipo", ACL.model().COD_TIPO.getFieldType(),
-					this.getObjectFromMap(map,"codTipo"));
-				setParameter(object, "setDiritti", ACL.model().DIRITTI.getFieldType(),
-					this.getObjectFromMap(map,"diritti"));
-				setParameter(object, "setCodServizio", ACL.model().COD_SERVIZIO.getFieldType(),
-					this.getObjectFromMap(map,"codServizio"));
+				setParameter(object, "setCodRuolo", Ruolo.model().COD_RUOLO.getFieldType(),
+					this.getObjectFromMap(map,"codRuolo"));
+				setParameter(object, "setDescrizione", Ruolo.model().DESCRIZIONE.getFieldType(),
+					this.getObjectFromMap(map,"descrizione"));
 				return object;
 			}
 			
@@ -107,8 +103,8 @@ public class ACLFetch extends AbstractJDBCFetch {
 		
 		try{
 
-			if(model.equals(ACL.model())){
-				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("acl","id","seq_acl","acl_init_seq");
+			if(model.equals(Ruolo.model())){
+				return new org.openspcoop2.utils.jdbc.CustomKeyGeneratorObject("ruoli","id","seq_ruoli","ruoli_init_seq");
 			}
 			
 			else{
