@@ -21,13 +21,18 @@ package it.govpay.core.business;
 
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
+import it.govpay.bd.loader.TracciatiBD;
 import it.govpay.bd.model.Notifica;
+import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.operazioni.filters.TracciatoFilter;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.core.utils.GovpayConfig;
 import it.govpay.core.utils.GpContext;
 import it.govpay.core.utils.GpThreadLocal;
+import it.govpay.core.utils.thread.CaricaTracciatoThread;
 import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
+import it.govpay.orm.constants.StatoTracciatoType;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -53,6 +58,7 @@ public class Operazioni{
 	public static final String psp = "update-psp";
 	public static final String pnd = "update-pnd";
 	public static final String ntfy = "update-ntfy";
+	public static final String trac = "trac";
 	public static final String conto = "update-conto";
 
 	public static String acquisizioneRendicontazioni(String serviceName){
@@ -227,6 +233,85 @@ public class Operazioni{
 				}
 
 				return "Spedizione notifiche completata.";
+			}
+		}
+	}
+
+	public static String caricamentoTracciati(String serviceName){
+		BasicBD bd = null;
+		List<CaricaTracciatoThread> threads = new ArrayList<CaricaTracciatoThread>();
+		GpContext ctx = null;
+		try {
+			ctx = new GpContext();
+			ThreadContext.put("cmd", "CaricaTracciato");
+			ThreadContext.put("op", ctx.getTransactionId());
+			Service service = new Service();
+			service.setName(serviceName);
+			service.setType(GpContext.TIPO_SERVIZIO_GOVPAY_OPT);
+			ctx.getTransaction().setService(service);
+			Operation opt = new Operation();
+			opt.setName("CaricamentoTracciato");
+			ctx.getTransaction().setOperation(opt);
+			GpThreadLocal.set(ctx);
+			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+
+			if(BatchManager.startEsecuzione(bd, trac)) {
+				log.trace("Caricamento tracciati");
+				TracciatiBD tracciatiBD = new TracciatiBD(bd);
+				TracciatoFilter filter = tracciatiBD.newFilter();
+				filter.addStatoTracciato(StatoTracciatoType.NUOVO);
+				filter.addStatoTracciato(StatoTracciatoType.IN_CARICAMENTO);
+				
+				filter.setDataUltimoAggiornamentoMax(new Date());
+
+				List<Tracciato> tracciati  = tracciatiBD.findAll(filter);
+				if(tracciati.size() == 0) {
+					BatchManager.stopEsecuzione(bd, trac);
+					return "Nessun tracciato da caricare.";
+				}
+
+				log.info("Trovati ["+tracciati.size()+"] tracciati da caricare");
+				for(Tracciato tracciato: tracciati) {
+					CaricaTracciatoThread sender = new CaricaTracciatoThread(tracciato, bd);
+					ThreadExecutorManager.getClientPoolExecutor().execute(sender);
+					threads.add(sender);
+				}
+				log.info("Processi di caricamento avviati.");
+				aggiornaSondaOK(trac, bd);
+			} else {
+				return "Operazione in corso su altro nodo. Richiesta interrotta.";
+			}
+		} catch (Exception e) {
+			log.error("Non è stato possibile avviare il caricamento dei tracciati", e);
+			aggiornaSondaKO(trac, e, bd); 
+			return "Non è stato possibile avviare il caricamento dei tracciati: " + e;
+		} finally {
+			if(bd != null) bd.closeConnection();
+		}
+
+		// Aspetto che abbiano finito tutti
+		while(true){
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+
+			}
+			boolean completed = true;
+			for(CaricaTracciatoThread sender : threads) {
+				if(!sender.isCompleted()) 
+					completed = false;
+			}
+
+			if(completed) {
+				try {
+					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+					BatchManager.stopEsecuzione(bd, trac);
+				} catch (ServiceException e) {
+				} finally {
+					if(bd != null) bd.closeConnection();
+				}
+
+				return "Caricamento tracciati completato.";
 			}
 		}
 	}
