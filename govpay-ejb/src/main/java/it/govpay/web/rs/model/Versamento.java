@@ -2,15 +2,8 @@ package it.govpay.web.rs.model;
 
 import java.util.Date;
 
-import it.govpay.model.BasicModel;
+public class Versamento {
 
-public class Versamento extends BasicModel {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	
 	public Versamento(){super();}
 
 	private String bundleKey;

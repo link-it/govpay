@@ -28,11 +28,13 @@ import java.util.List;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 
-public class BasicModel implements Serializable {
+public abstract class BasicModel implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	public BasicModel() {}
+	
+	public abstract Long getId();
 
 	public static boolean equals(Object a, Object b) {
 		if(a==null)
