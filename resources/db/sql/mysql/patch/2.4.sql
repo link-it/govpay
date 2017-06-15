@@ -86,4 +86,4 @@ CREATE INDEX index_ruoli_1 ON ruoli (cod_ruolo);
 
 
 ALTER TABLE acl ADD COLUMN diritti INT;
-ALTER TABLE acl MODIFY COLUMN cod_servizio VARCHAR(35) NOT NULL;
+ALTER TABLE acl MODIFY COLUMN cod_servizio VARCHAR(35);

@@ -133,4 +133,4 @@ end;
 /
 
 ALTER TABLE acl ADD diritti NUMBER;
-ALTER TABLE acl MODIFY cod_servizio VARCHAR2(35 CHAR) NOT NULL;
+ALTER TABLE acl MODIFY cod_servizio VARCHAR2(35 CHAR);
