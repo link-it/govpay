@@ -319,7 +319,7 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 	}
 	
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
 	
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry) throws ConsoleException {
@@ -327,7 +327,7 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 	}
 	
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry)	throws ConsoleException {	return null;	}

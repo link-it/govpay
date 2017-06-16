@@ -88,8 +88,13 @@ public abstract class DarsHandler<T> extends BaseDarsHandler<T> implements IDars
 	}
 	
 	@Override
-	public abstract InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException {
+		return this.getInfoCancellazione(uriInfo, bd, null);
+	}
 
+	@Override
+	public abstract InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters)	throws ConsoleException ;
+	
 	@Override
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
 		return this.getUriCancellazione(uriInfo, bd, null);

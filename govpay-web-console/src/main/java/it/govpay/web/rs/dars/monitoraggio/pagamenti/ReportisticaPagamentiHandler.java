@@ -363,7 +363,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 	}
 	
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return null;
 	}
 	@Override
@@ -372,7 +372,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 	}
 
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, EstrattoConto entry)	throws ConsoleException {	return null;	}

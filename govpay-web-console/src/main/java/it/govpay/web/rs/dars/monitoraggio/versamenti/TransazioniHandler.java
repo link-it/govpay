@@ -122,7 +122,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,visualizzaRicerca,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd,params), this.getInfoCancellazione(uriInfo, bd,params),simpleSearchPlaceholder); 
 
 			List<Rpt> rpt = eseguiRicerca ? rptBD.findAll(filter) : new ArrayList<Rpt>();
 
@@ -899,7 +899,7 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return null;
 	}
 	@Override
@@ -908,8 +908,8 @@ public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler
 	}
 	
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
+		URI esportazione = this.getUriEsportazione(uriInfo, bd);
 		InfoForm infoEsportazione = new InfoForm(esportazione);
 		return infoEsportazione; 
 	}

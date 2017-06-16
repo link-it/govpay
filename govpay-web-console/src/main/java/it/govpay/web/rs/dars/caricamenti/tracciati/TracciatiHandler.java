@@ -270,7 +270,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 	}
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return null;
 	}
 
@@ -281,7 +281,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 	}
 	
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tracciato entry)	throws ConsoleException {	

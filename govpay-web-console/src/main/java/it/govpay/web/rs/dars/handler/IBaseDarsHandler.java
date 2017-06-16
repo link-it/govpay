@@ -47,6 +47,7 @@ public interface IBaseDarsHandler<T> {
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	
 	public InfoForm getInfoEsportazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoEsportazione(UriInfo uriInfo,BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,T entry) throws ConsoleException;

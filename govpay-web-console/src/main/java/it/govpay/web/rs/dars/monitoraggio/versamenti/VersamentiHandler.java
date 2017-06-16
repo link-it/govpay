@@ -1191,7 +1191,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	}
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		URI cancellazione = this.getUriCancellazione(uriInfo, bd);
 		InfoForm infoCancellazione = new InfoForm(cancellazione);
 		List<String> titoli = new ArrayList<String>();
@@ -1251,8 +1251,8 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	}
 	
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
-		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
+		URI esportazione = this.getUriEsportazione(uriInfo, bd);
 		InfoForm infoEsportazione = new InfoForm(esportazione);
 		return infoEsportazione; 
 	}

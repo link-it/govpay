@@ -372,7 +372,7 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 	}
 	
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
 	
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, IbanAccredito entry) throws ConsoleException {
@@ -380,7 +380,7 @@ public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHand
 	}
 	
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,IbanAccredito entry)	throws ConsoleException {	return null;	}

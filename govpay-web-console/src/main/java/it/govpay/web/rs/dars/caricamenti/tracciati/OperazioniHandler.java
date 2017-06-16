@@ -254,7 +254,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 	}
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return null;
 	}
 
@@ -264,7 +264,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 		return null;
 	}
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operazione entry)	throws ConsoleException {	

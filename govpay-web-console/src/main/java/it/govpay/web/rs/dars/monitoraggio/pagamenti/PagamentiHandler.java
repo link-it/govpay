@@ -153,7 +153,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,visualizzaRicerca,params),
-					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd,params),
+					this.getInfoCancellazione(uriInfo, bd,params),simpleSearchPlaceholder); 
 
 			List<Pagamento> pagamenti = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
 
@@ -1327,7 +1328,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return null;
 	}
 
@@ -1336,8 +1337,8 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		return null;
 	}
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
-		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
+		URI esportazione = this.getUriEsportazione(uriInfo, bd);
 		InfoForm infoEsportazione = new InfoForm(esportazione);
 		return infoEsportazione; 
 	}

@@ -57,6 +57,7 @@ public interface IDarsHandler<T> extends IBaseDarsHandler<T> {
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
 	
 	public InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	

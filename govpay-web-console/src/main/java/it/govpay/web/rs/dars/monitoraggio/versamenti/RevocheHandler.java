@@ -359,7 +359,7 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 	/* Operazioni non consentite */
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return null;
 	}
 	
@@ -369,7 +369,7 @@ public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 	}
 	
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null; }
 	
 	@Override
 	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rr entry)	throws ConsoleException {	return null;	}

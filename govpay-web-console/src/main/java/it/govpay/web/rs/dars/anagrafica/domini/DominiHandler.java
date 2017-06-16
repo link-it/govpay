@@ -717,7 +717,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 	}
 
 	@Override
-	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
+	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { return null;}
 
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry) throws ConsoleException {
@@ -725,8 +725,8 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 	}
 	
 	@Override
-	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
-		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException { 
+		URI esportazione = this.getUriEsportazione(uriInfo, bd);
 		InfoForm infoEsportazione = new InfoForm(esportazione);
 		return infoEsportazione; 
 	}

@@ -121,7 +121,13 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	}
 	
 	@Override
-	public abstract InfoForm getInfoEsportazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
+	public InfoForm getInfoEsportazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException {
+		return this.getInfoEsportazione(uriInfo, bd, null);
+	}
+	
+	@Override
+	public abstract InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters)
+			throws ConsoleException ;
 
 	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
