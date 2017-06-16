@@ -28,6 +28,7 @@ import it.govpay.bd.loader.model.Operazione;
 import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.core.loader.utils.TimerCaricamentoTracciatoSmistatore;
 import it.govpay.core.utils.GpContext;
+import it.govpay.model.loader.Operazione.StatoOperazioneType;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 
 import java.io.BufferedReader;
@@ -47,18 +48,21 @@ public class CaricaTracciatoThread implements Runnable {
 	private static Logger log = LogManager.getLogger();
 	private Tracciato tracciato;
 	private boolean completed = false;
-	private BasicBD bd;
+//	private BasicBD bd;
 
 	public CaricaTracciatoThread(Tracciato tracciato, BasicBD bd) throws ServiceException {
 		this.tracciato = tracciato;
-		this.bd = bd;
+//		this.bd = bd;
 	}
 
 	@Override
 	public void run() {
-		
+		BasicBD bd = null;
 		GpContext ctx = null;
 		try {
+			
+			bd = BasicBD.newInstance("BATTCH");
+			bd.setAutoCommit(false);
 			
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
 			OperazioniBD operazioniBD = new OperazioniBD(bd);
@@ -96,17 +100,26 @@ public class CaricaTracciatoThread implements Runnable {
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();
 				for(Operazione op: operazioniInserite) {
 					
-					baos.write(op.getDatiRisposta());
+					if(op.getStato().equals(StatoOperazioneType.ESEGUITO_OK)) {
+						countOK++;
+					} else {
+						countErrori++;
+					}
+
+					if(op.getDatiRisposta() != null)
+						baos.write(op.getDatiRisposta());
+					
+					baos.write("\n".getBytes());
 				}
 				tracciato.setNumOperazioniKo(countErrori);
-				if(countErrori > 1) {
+				if(countErrori > 0) {
 					tracciato.setStato(StatoTracciatoType.CARICAMENTO_KO);
 				} else {
 					tracciato.setStato(StatoTracciatoType.CARICAMENTO_OK);
 				}
 				
 
-				tracciato.setNumOperazioniKo(countOK);
+				tracciato.setNumOperazioniOk(countOK);
 
 			} catch(Exception e) {
 				CaricaTracciatoThread.log.error("Errore durante l'inserimento del tracciato ["+tracciato.getId()+"]: " + e.getMessage(), e);

@@ -384,7 +384,7 @@ public class Operazioni{
 			ctx.getTransaction().setOperation(opt);
 			GpThreadLocal.set(ctx);
 			bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-
+			bd.setAutoCommit(false);
 			if(BatchManager.startEsecuzione(bd, trac)) {
 				log.trace("Caricamento tracciati");
 				TracciatiBD tracciatiBD = new TracciatiBD(bd);
@@ -407,7 +407,34 @@ public class Operazioni{
 					threads.add(sender);
 				}
 				log.info("Processi di caricamento avviati.");
-				aggiornaSondaOK(trac, bd);
+
+				// Aspetto che abbiano finito tutti
+				while(true){
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+
+					}
+					boolean completed = true;
+					for(CaricaTracciatoThread sender : threads) {
+						if(!sender.isCompleted()) 
+							completed = false;
+					}
+
+					if(completed) {
+						try {
+							bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
+							BatchManager.stopEsecuzione(bd, trac);
+						} catch (ServiceException e) {
+						} finally {
+							if(bd != null) bd.closeConnection();
+						}
+						aggiornaSondaOK(trac, bd);
+
+						return "Caricamento tracciati completato.";
+					}
+				}
+
 			} else {
 				return "Operazione in corso su altro nodo. Richiesta interrotta.";
 			}
@@ -417,32 +444,6 @@ public class Operazioni{
 			return "Non è stato possibile avviare il caricamento dei tracciati: " + e;
 		} finally {
 			if(bd != null) bd.closeConnection();
-		}
-
-		// Aspetto che abbiano finito tutti
-		while(true){
-			try {
-				Thread.sleep(500);
-			} catch (InterruptedException e) {
-
-			}
-			boolean completed = true;
-			for(CaricaTracciatoThread sender : threads) {
-				if(!sender.isCompleted()) 
-					completed = false;
-			}
-
-			if(completed) {
-				try {
-					bd = BasicBD.newInstance(GpThreadLocal.get().getTransactionId());
-					BatchManager.stopEsecuzione(bd, trac);
-				} catch (ServiceException e) {
-				} finally {
-					if(bd != null) bd.closeConnection();
-				}
-
-				return "Caricamento tracciati completato.";
-			}
 		}
 	}
 

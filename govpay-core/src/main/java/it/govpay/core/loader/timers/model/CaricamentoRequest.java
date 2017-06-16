@@ -7,13 +7,12 @@ import java.util.Date;
 
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.csv.Parser;
 import org.openspcoop2.utils.csv.Record;
 
 public class CaricamentoRequest extends AbstractOperazioneRequest {
 
-	public CaricamentoRequest(Parser parser, Record record) {
-		super(TipoOperazioneType.ADD, parser, record);
+	public CaricamentoRequest(Record record) {
+		super(TipoOperazioneType.ADD, record);
 		try {
 			this.setCodDominio(validaESettaRecord(record, "codDominio", 35, null, false));
 			this.setCfDebitore(validaESettaRecord(record, "cfDebitore", 35, null, false));

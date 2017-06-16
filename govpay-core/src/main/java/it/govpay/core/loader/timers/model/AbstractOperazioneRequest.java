@@ -9,7 +9,6 @@ import java.util.Date;
 import org.apache.commons.lang.time.DateFormatUtils;
 import org.openspcoop2.generic_project.exception.ValidationException;
 import org.openspcoop2.utils.UtilsException;
-import org.openspcoop2.utils.csv.Parser;
 import org.openspcoop2.utils.csv.Record;
 
 
@@ -23,7 +22,7 @@ public abstract class AbstractOperazioneRequest {
 	private TipoOperazioneType tipoOperazione;
 	private boolean isValid;
 	
-	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione, Parser parser, Record record) {
+	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione, Record record) {
 		this.isValid = true;
 		try {
 			this.tipoOperazione = tipoOperazione;

@@ -47,18 +47,16 @@ public class AcquisizioneUtils {
 		}
 
 	}
-	public AbstractOperazioneRequest acquisisci(Record record, Operatore operatore, List<String> domini, List<String> tributi) throws ValidationException, ServiceException {
+	public AbstractOperazioneRequest acquisisci(Record record) throws ValidationException, ServiceException {
 		AbstractOperazioneRequest request = null;
 		String op = record.getRecord().get(0);
 		if("ADD".equals(op)) {
-			request = new CaricamentoRequest(this.getParser(op), record);
+			request = new CaricamentoRequest(record);
 		} else if("DEL".equals(op)) {
-			request = new AnnullamentoRequest(this.getParser(op), record);
+			request = new AnnullamentoRequest(record);
 		} else {
 			throw new ValidationException("Codice operazione "+op+" non supportata");
 		}
-
-		validateACL(operatore, request, domini, tributi);
 
 		return request;
 	}
@@ -79,6 +77,8 @@ public class AcquisizioneUtils {
 		AbstractOperazioneRequest request = null;
 		try{
 
+			validateACL(operatore, domini, tributi);
+			
 			String op = linea.toString().split(this.formatW.getCsvFormat().getRecordSeparator())[0]; //TODO trovare modo elegante
 
 			ParserResult parsed = null;
@@ -94,12 +94,13 @@ public class AcquisizioneUtils {
 			if(parsed.getRecords().size() > 1)
 				throw new ValidationException("Record multipli trovati");
 
-			request = acquisisci(parsed.getRecords().get(0), operatore, domini, tributi);
+			request = acquisisci(parsed.getRecords().get(0));
 		} catch(ValidationException e) {
 			request = new OperazioneNonValidaRequest();
 		} finally {
 			request.setIdTracciato(tracciato.getId());
 			request.setLinea(numLinea);
+			request.setDati(linea);
 		}
 		
 		return request;
@@ -136,7 +137,7 @@ public class AcquisizioneUtils {
 
 	}
 
-	private void validateACL(Operatore operatore, AbstractOperazioneRequest request, List<String> codDomini, List<String> codTributi) throws ServiceException, ValidationException {
+	private void validateACL(Operatore operatore, List<String> codDomini, List<String> codTributi) throws ServiceException, ValidationException {
 
 		if(ProfiloOperatore.ADMIN.equals(operatore.getProfilo())) {
 			return;
