@@ -98,4 +98,21 @@ public class Operazioni{
 		it.govpay.core.business.Operazioni.estrattoConto("Batch");
 	}
 
+	@Schedule(hour="3", persistent=false)
+	@AccessTimeout(value=90, unit=TimeUnit.MINUTES)
+	public static String richiestaConservazioneRt(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		return it.govpay.core.business.Operazioni.richiestaConservazioneRt("Batch");
+	}
+	
+	@Schedule(hour="5", persistent=false)
+	@AccessTimeout(value=60, unit=TimeUnit.MINUTES)
+	public static String esitoConservazioneRt(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		return it.govpay.core.business.Operazioni.esitoConservazioneRt("Batch");
+	}
 }

@@ -19,6 +19,7 @@
  */
 package it.govpay.core.utils;
 
+import it.govpay.core.business.IConservazione;
 import it.govpay.core.utils.client.handler.IntegrationOutHandler;
 
 import java.io.File;
@@ -78,6 +79,8 @@ public class GovpayConfig {
 	private String pathEstrattoConto, pathEstrattoContoPdf,pathEstrattoContoPdfLoghi;
 
 	private Properties[] props;
+	
+	private IConservazione conservazionePlugin;
 
 	public GovpayConfig() throws Exception {
 		// Default values:
@@ -353,6 +356,23 @@ public class GovpayConfig {
 				log.info("Proprieta \"it.govpay.timeoutBatch\" impostata com valore di default (5 minuti)");
 				this.timeoutBatch = 5 * 60 * 1000;
 			}
+			
+			String conservazionePluginString = getProperty("it.govpay.plugin.conservazione", props, false, log);
+			
+			if(conservazionePluginString != null && !conservazionePluginString.isEmpty()) {
+				Class<?> c = null;
+				try {
+					c = this.getClass().getClassLoader().loadClass(conservazionePluginString);
+				} catch (ClassNotFoundException e) {
+					throw new Exception("La classe ["+conservazionePluginString+"] specificata per plugin di conservazione non e' presente nel classpath");
+				}
+				Object instance = c.newInstance();
+				if(!(instance instanceof IConservazione)) {
+					throw new Exception("La classe ["+conservazionePluginString+"] specificata per plugin di conservazione deve implementare l'interfaccia " + IConservazione.class.getName());
+				}
+				conservazionePlugin = (IConservazione) instance;
+			}
+			
 
 		} catch (Exception e) {
 			log.error("Errore di inizializzazione: " + e.getMessage());
@@ -518,5 +538,9 @@ public class GovpayConfig {
 
 	public long getTimeoutBatch(){
 		return this.timeoutBatch;
+	}
+	
+	public IConservazione getConservazionPlugin(){
+		return conservazionePlugin;
 	}
 }

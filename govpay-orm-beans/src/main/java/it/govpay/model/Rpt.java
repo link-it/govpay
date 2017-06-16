@@ -127,6 +127,12 @@ public class Rpt extends BasicModel{
 		}
 	}
 	
+	public enum StatoConservazione {
+		ERRORE,
+		RICHIESTA, 
+		OK; 
+	}
+	
 	private Long id;
 	private long idVersamento;
 	private long idCanale;
@@ -157,6 +163,10 @@ public class Rpt extends BasicModel{
 	
 	private String idTransazioneRpt;
 	private String idTransazioneRt;
+	
+	private StatoConservazione statoConservazione;
+	private Date dataConservazione;
+	private String descrizioneStatoConservazione;
 	
 	public Long getId() {
 		return id;
@@ -326,6 +336,24 @@ public class Rpt extends BasicModel{
 	}
 	public void setCodSessionePortale(String codSessionePortale) {
 		this.codSessionePortale = codSessionePortale;
+	}
+	public StatoConservazione getStatoConservazione() {
+		return statoConservazione;
+	}
+	public void setStatoConservazione(StatoConservazione statoConservazione) {
+		this.statoConservazione = statoConservazione;
+	}
+	public Date getDataConservazione() {
+		return dataConservazione;
+	}
+	public void setDataConservazione(Date dataConservazione) {
+		this.dataConservazione = dataConservazione;
+	}
+	public String getDescrizioneStatoConservazione() {
+		return descrizioneStatoConservazione;
+	}
+	public void setDescrizioneStatoConservazione(String descrizioneStatoConservazione) {
+		this.descrizioneStatoConservazione = descrizioneStatoConservazione;
 	}
 
 }

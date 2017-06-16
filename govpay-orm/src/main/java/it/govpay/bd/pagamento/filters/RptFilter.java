@@ -33,6 +33,7 @@ import org.openspcoop2.generic_project.expression.LikeMode;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
+import it.govpay.model.Rpt.StatoRpt;
 import it.govpay.orm.Pagamento;
 import it.govpay.orm.RPT;
 import it.govpay.orm.dao.jdbc.converter.RPTFieldConverter;
@@ -42,6 +43,8 @@ public class RptFilter extends AbstractFilter {
 	private Long idVersamento;
 	private String iuv;
 	private List<String> idDomini;
+	private Boolean conservato;
+	private StatoRpt stato;
 
 	public RptFilter(IExpressionConstructor expressionConstructor) {
 		this(expressionConstructor,false);
@@ -143,5 +146,23 @@ public class RptFilter extends AbstractFilter {
 	public void setIdDomini(List<String> idDomini) {
 		this.idDomini = idDomini;
 	}
+
+
+	public StatoRpt getStato() {
+		return stato;
+	}
+
+	public void setStato(StatoRpt stato) {
+		this.stato = stato;
+	}
+
+	public Boolean getConservato() {
+		return conservato;
+	}
+
+	public void setConservato(Boolean conservato) {
+		this.conservato = conservato;
+	}
+
 
 }
