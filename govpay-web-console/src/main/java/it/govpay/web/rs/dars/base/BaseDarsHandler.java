@@ -68,6 +68,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	protected Map<String, ParamField<?>> infoRicercaMap = null;
 	protected Map<String, ParamField<?>> infoCancellazioneMap = null;
 	protected Map<String, ParamField<?>> infoCreazioneMap = null;
+	protected Map<String, ParamField<?>> infoEsportazioneMap = null;
 
 	public BaseDarsHandler(Logger log, BaseDarsService darsService){
 		this.log = log;
