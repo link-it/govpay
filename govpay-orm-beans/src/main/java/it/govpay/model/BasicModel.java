@@ -34,7 +34,9 @@ public abstract class BasicModel implements Serializable {
 	
 	public BasicModel() {}
 	
-	public abstract Long getId();
+	public Long getId() {
+		return null;
+	}
 
 	public static boolean equals(Object a, Object b) {
 		if(a==null)

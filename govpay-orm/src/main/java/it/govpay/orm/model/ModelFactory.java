@@ -55,6 +55,8 @@ public class ModelFactory {
 	
 	public static AuditModel AUDIT = new AuditModel();
 	
+	public static RuoloModel RUOLO = new RuoloModel();
+	
 	public static ACLModel ACL = new ACLModel();
 	
 	public static OperatoreModel OPERATORE = new OperatoreModel();

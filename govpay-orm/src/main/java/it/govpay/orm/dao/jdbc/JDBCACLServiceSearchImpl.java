@@ -158,6 +158,7 @@ public class JDBCACLServiceSearchImpl implements IJDBCServiceSearchWithId<ACL, I
 			fields.add(new CustomField("id", Long.class, "id", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(ACL.model().COD_SERVIZIO);
 			fields.add(ACL.model().COD_TIPO);
+			fields.add(ACL.model().DIRITTI);
 			fields.add(new CustomField("id_applicazione", Long.class, "id_applicazione", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_dominio", Long.class, "id_dominio", this.getFieldConverter().toTable(ACL.model())));
 			fields.add(new CustomField("id_tipo_tributo", Long.class, "id_tipo_tributo", this.getFieldConverter().toTable(ACL.model())));

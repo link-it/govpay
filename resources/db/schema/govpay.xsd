@@ -56,6 +56,7 @@
 								<linkit:sql-table object-name="Tracciato" object-type="Tracciato"/>
 								<linkit:sql-table object-name="Operazione" object-type="Operazione"/>
 								<linkit:sql-table object-name="Audit" object-type="Audit"/>
+								<linkit:sql-table object-name="Ruolo" object-type="Ruolo"/>
 								<linkit:sql-table object-name="id-messaggio"
 									object-type="id-messaggio"/>
 							</linkit:sql-table-list>
@@ -338,6 +339,12 @@
 		</xsd:sequence>
 	</xsd:complexType>
 
+	<xsd:complexType name="id-ruolo">
+		<xsd:sequence>
+			<xsd:element name="codRuolo" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:complexType name="id-versamento">
 		<xsd:sequence>
 			<xsd:element name="codVersamentoEnte" type="xsd:string"/>
@@ -956,6 +963,27 @@
 		</xsd:sequence>
 	</xsd:complexType>
 	
+	<xsd:element name="Ruolo" type="Ruolo"/>
+	<xsd:complexType name="Ruolo">
+		<xsd:annotation>
+			<xsd:appinfo>
+				<linkit:generator xmlns:linkit="http://www.link.it/project_generator">
+					<linkit:interface crud="true" id="id-ruolo"/>
+					<linkit:sql-table-mapping generate-sql="true" name="ruoli"
+						on-delete-cascade="false">
+						<linkit:sql-table-unique create-index="true">
+							<linkit:sql-table-unique-field name="codRuolo"/>
+						</linkit:sql-table-unique>
+					</linkit:sql-table-mapping>
+				</linkit:generator>
+			</xsd:appinfo>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="codRuolo" type="String35"/>
+			<xsd:element name="descrizione" type="xsd:string"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
 	<xsd:element name="ACL" type="ACL"/>
 	<xsd:complexType name="ACL">
 		<xsd:annotation>
@@ -999,7 +1027,8 @@
 				</xsd:annotation>
 			</xsd:element>
 			<xsd:element name="codTipo" type="String1"/>
-			<xsd:element name="codServizio" type="String1"/>
+			<xsd:element name="diritti" type="xsd:int" minOccurs="0"/>
+			<xsd:element name="codServizio" type="String35"/>
 			<xsd:element name="idDominio" type="id-dominio" minOccurs="0">
 				<xsd:annotation>
 					<xsd:appinfo>

@@ -61,6 +61,9 @@ public class CheckSonda {
 		sondaCheckNtfy.setName("check-ntfy");
 		sondaCheckNtfy.setCoda(true);
 		check.add(sondaCheckNtfy);
+		CheckSonda sondaCheckTracciati = new CheckSonda();
+		sondaCheckTracciati.setName("trac");
+		check.add(sondaCheckTracciati);
 		return check;
 	}
 }

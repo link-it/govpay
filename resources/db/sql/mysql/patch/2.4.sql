@@ -67,4 +67,23 @@ CREATE TABLE audit
        CONSTRAINT pk_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+--GP-526
 
+CREATE TABLE ruoli
+(
+       cod_ruolo VARCHAR(35) NOT NULL,
+       descrizione VARCHAR(255) NOT NULL,
+       -- fk/pk columns
+       id BIGINT AUTO_INCREMENT,
+       -- unique constraints
+       CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+       -- fk/pk keys constraints
+       CONSTRAINT pk_ruoli PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE INDEX index_ruoli_1 ON ruoli (cod_ruolo);
+
+
+ALTER TABLE acl ADD COLUMN diritti INT;
+ALTER TABLE acl MODIFY COLUMN cod_servizio VARCHAR(35);

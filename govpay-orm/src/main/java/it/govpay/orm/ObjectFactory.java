@@ -102,6 +102,13 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link IdRuolo }
+     */
+    public IdRuolo createIdRuolo() {
+        return new IdRuolo();
+    }
+
+    /**
      * Create an instance of {@link Applicazione }
      */
     public Applicazione createApplicazione() {
@@ -288,6 +295,13 @@ public class ObjectFactory {
      */
     public IuvSearch createIuvSearch() {
         return new IuvSearch();
+    }
+
+    /**
+     * Create an instance of {@link Ruolo }
+     */
+    public Ruolo createRuolo() {
+        return new Ruolo();
     }
 
     /**

@@ -39,6 +39,7 @@ import java.io.Serializable;
  * 			&lt;element name="idPortale" type="{http://www.govpay.it/orm}id-portale" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idOperatore" type="{http://www.govpay.it/orm}id-operatore" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codTipo" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="diritti" type="{http://www.w3.org/2001/XMLSchema}int" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="codServizio" type="{http://www.govpay.it/orm}string" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="idDominio" type="{http://www.govpay.it/orm}id-dominio" minOccurs="0" maxOccurs="1"/>
  * 			&lt;element name="idTipoTributo" type="{http://www.govpay.it/orm}id-tipo-tributo" minOccurs="0" maxOccurs="1"/>
@@ -60,6 +61,7 @@ import java.io.Serializable;
   	"idPortale",
   	"idOperatore",
   	"codTipo",
+  	"diritti",
   	"codServizio",
   	"idDominio",
   	"idTipoTributo"
@@ -118,6 +120,14 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
     this.codTipo = codTipo;
   }
 
+  public int getDiritti() {
+    return this.diritti;
+  }
+
+  public void setDiritti(int diritti) {
+    this.diritti = diritti;
+  }
+
   public java.lang.String getCodServizio() {
     return this.codServizio;
   }
@@ -173,6 +183,10 @@ public class ACL extends org.openspcoop2.utils.beans.BaseBean implements Seriali
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codTipo",required=true,nillable=false)
   protected java.lang.String codTipo;
+
+  @javax.xml.bind.annotation.XmlSchemaType(name="int")
+  @XmlElement(name="diritti",required=false,nillable=false)
+  protected int diritti;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="string")
   @XmlElement(name="codServizio",required=true,nillable=false)

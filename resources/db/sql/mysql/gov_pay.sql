@@ -311,7 +311,8 @@ CREATE INDEX index_tributi_1 ON tributi (id_dominio,id_tipo_tributo);
 CREATE TABLE acl
 (
 	cod_tipo VARCHAR(1) NOT NULL,
-	cod_servizio VARCHAR(1) NOT NULL,
+	diritti INT,
+	cod_servizio VARCHAR(35) NOT NULL,
 	-- fk/pk columns
 	id BIGINT AUTO_INCREMENT,
 	id_applicazione BIGINT,
@@ -793,6 +794,23 @@ CREATE TABLE audit
 	CONSTRAINT pk_audit PRIMARY KEY (id)
 )ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
 
+
+
+
+CREATE TABLE ruoli
+(
+	cod_ruolo VARCHAR(35) NOT NULL,
+	descrizione VARCHAR(255) NOT NULL,
+	-- fk/pk columns
+	id BIGINT AUTO_INCREMENT,
+	-- unique constraints
+	CONSTRAINT unique_ruoli_1 UNIQUE (cod_ruolo),
+	-- fk/pk keys constraints
+	CONSTRAINT pk_ruoli PRIMARY KEY (id)
+)ENGINE INNODB CHARACTER SET latin1 COLLATE latin1_general_cs;
+
+-- index
+CREATE INDEX index_ruoli_1 ON ruoli (cod_ruolo);
 
 
 

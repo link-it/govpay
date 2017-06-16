@@ -67,6 +67,9 @@ import it.govpay.orm.dao.IUoService;
 import it.govpay.orm.dao.IUoServiceSearch;
 import it.govpay.orm.dao.IVersamentoService;
 import it.govpay.orm.dao.IVersamentoServiceSearch;
+import it.govpay.orm.dao.IRuoloServiceSearch;
+import it.govpay.orm.dao.IRuoloService;
+
 import it.govpay.orm.dao.IRendicontazioneServiceSearch;
 import it.govpay.orm.dao.IRendicontazioneService;
 import it.govpay.orm.dao.IOperazioneServiceSearch;
@@ -612,7 +615,40 @@ public class JDBCServiceManager extends org.openspcoop2.generic_project.dao.jdbc
 	public IAuditService getAuditService() throws ServiceException,NotImplementedException{
 		return new JDBCAuditService(this);
 	}
-
+	
+	
+	
+	/*
+	 =====================================================================================================================
+	 Services relating to the object with name:Ruolo type:Ruolo
+	 =====================================================================================================================
+	*/
+	
+	/**
+	 * Return a service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}
+	 *
+	 * @return Service used to research on the backend on objects of type {@link it.govpay.orm.Ruolo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IRuoloServiceSearch getRuoloServiceSearch() throws ServiceException,NotImplementedException{
+		return new JDBCRuoloServiceSearch(this);
+	}
+	
+	/**
+	 * Return a service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}
+	 *
+	 * @return Service used to research and manage on the backend on objects of type {@link it.govpay.orm.Ruolo}	
+	 * @throws ServiceException Exception thrown when an error occurs during processing of the request
+	 * @throws NotImplementedException Exception thrown when the method is not implemented
+	 */
+	@Override
+	public IRuoloService getRuoloService() throws ServiceException,NotImplementedException{
+		return new JDBCRuoloService(this);
+	}
+	
+	
 	
 	/*
 	 =====================================================================================================================

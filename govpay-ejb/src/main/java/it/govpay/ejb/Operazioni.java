@@ -73,6 +73,15 @@ public class Operazioni{
 		return it.govpay.core.business.Operazioni.spedizioneNotifiche("Batch");
 	}
 
+	@Schedule(hour="*", minute="*", persistent=false)
+	@AccessTimeout(value=20, unit=TimeUnit.MINUTES)
+	public static String caricamentoTracciati(){
+		if(!GovpayConfig.getInstance().isBatchOn()) {
+			return "Batch non attivi";
+		}
+		return it.govpay.core.business.Operazioni.caricamentoTracciati("Batch");
+	}
+
 	public static String resetCacheAnagrafica(){
 		if(!GovpayConfig.getInstance().isBatchOn()) {
 			return "Batch non attivi";
