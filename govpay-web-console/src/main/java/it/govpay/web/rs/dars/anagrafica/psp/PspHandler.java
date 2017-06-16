@@ -70,7 +70,6 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 		try{		
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
@@ -112,7 +111,7 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<it.govpay.bd.model.Psp> findAll = pspBD.findAll(filter);
 
@@ -204,6 +203,12 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Psp entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Psp entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
@@ -230,9 +235,9 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,psp);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, psp);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(psp,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(psp,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -344,7 +349,7 @@ public class PspHandler extends DarsHandler<it.govpay.bd.model.Psp> implements I
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

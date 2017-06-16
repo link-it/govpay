@@ -29,6 +29,7 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
+import it.govpay.model.loader.Operazione.TipoOperazioneType;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
@@ -70,7 +71,6 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			Map<String, String> params = new HashMap<String, String>();
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null; //this.getUriEsportazione(uriInfo, bd);
 
 			OperazioniBD operazioniBD = new OperazioniBD(bd);
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID); 
@@ -95,7 +95,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Operazione> findAll = eseguiRicerca ? operazioniBD.findAll(filter) : new ArrayList<Operazione>(); 
 
@@ -264,6 +264,12 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			throws ConsoleException {
 		return null;
 	}
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operazione entry)	throws ConsoleException {	
+		return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
@@ -287,18 +293,19 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;
-			URI esportazione = null;//this.getUriEsportazioneDettaglio(uriInfo, bd,id);
+			InfoForm infoEsportazione = this.getInfoEsportazioneDettaglio(uriInfo, operazioniBD, entry);
 			
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioOperazione") ;
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 			
 			root.getVoci().add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"), 
 					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+entry.getStato().name())));
 			
-			if(StringUtils.isNotEmpty(entry.getTipoOperazione()))
-				root.getVoci().add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione.label"), entry.getTipoOperazione()));
+			if(entry.getTipoOperazione() != null)
+				root.getVoci().add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione.label"), 
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione."+entry.getTipoOperazione())));
 
 			if(StringUtils.isNotEmpty(entry.getCodVersamentoEnte()))
 				root.getVoci().add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.label"), entry.getCodVersamentoEnte()));
@@ -314,7 +321,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 			
 			it.govpay.web.rs.dars.model.Sezione sezioneDati = new it.govpay.web.rs.dars.model.Sezione(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".sezioneDati.label"));
 			
-			if(entry.getTipoOperazione().equals("ADD")){
+			if(entry.getTipoOperazione().equals(TipoOperazioneType.ADD)){
 				OperazioneCaricamento opCaricamento = (OperazioneCaricamento) entry;
 				
 				long idDominio = -1;
@@ -361,7 +368,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 					sezioneDati.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".identificativoDebito.label"), opCaricamento.getIdDebito());
 				if(StringUtils.isNotEmpty(opCaricamento.getNote()))
 					sezioneDati.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".note.label"), opCaricamento.getNote());
-			} else if(entry.getTipoOperazione().equals("DEL")){
+			} else if(entry.getTipoOperazione().equals(TipoOperazioneType.DEL)){
 				OperazioneAnnullamento opAnnullamento = (OperazioneAnnullamento) entry;
 				
 				if(StringUtils.isNotEmpty(opAnnullamento.getMotivoAnnullamento()))
@@ -432,7 +439,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException, ExportException {
 		return null;
 	}
@@ -447,7 +454,7 @@ public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsH
 
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione.label"),
-						entry.getTipoOperazione()));
+						Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tipoOperazione." + entry.getTipoOperazione())));
 		
 		voci.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idVersamento.label"),

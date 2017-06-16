@@ -27,6 +27,7 @@ import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.loader.TracciatiBD;
 import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
@@ -74,7 +75,6 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null; //this.getUriEsportazione(uriInfo, bd);
 
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID); 
@@ -99,7 +99,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Tracciato> findAll = eseguiRicerca ? tracciatiBD.findAll(filter) : new ArrayList<Tracciato>(); 
 
@@ -282,6 +282,16 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 			throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tracciato entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
@@ -332,10 +342,10 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd,id);
+			InfoForm infoEsportazione = this.getInfoEsportazioneDettaglio(uriInfo, tracciatiBD, tracciato);
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioTracciato") ;
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -525,7 +535,7 @@ public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHan
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException, ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException, ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		boolean exportTracciatoOriginale = true;
 		boolean exportTracciatoElaborato = true;

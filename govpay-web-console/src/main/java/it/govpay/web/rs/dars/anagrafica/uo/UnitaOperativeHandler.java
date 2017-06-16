@@ -44,6 +44,7 @@ import it.govpay.bd.anagrafica.filters.UnitaOperativaFilter;
 import it.govpay.bd.model.Dominio;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.model.Anagrafica;
+import it.govpay.model.Applicazione;
 import it.govpay.web.rs.dars.anagrafica.anagrafica.AnagraficaHandler;
 import it.govpay.web.rs.dars.base.DarsHandler;
 import it.govpay.web.rs.dars.base.DarsService;
@@ -85,7 +86,6 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -138,7 +138,7 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<UnitaOperativa> findAll =  unitaOperativaBD.findAll(filter);
 
@@ -326,6 +326,12 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, UnitaOperativa entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -376,9 +382,9 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,unitaOperativa);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, unitaOperativa);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(unitaOperativa,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(unitaOperativa,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -583,7 +589,7 @@ public class UnitaOperativeHandler extends DarsHandler<UnitaOperativa> implement
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

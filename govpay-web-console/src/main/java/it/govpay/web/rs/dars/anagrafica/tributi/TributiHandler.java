@@ -95,7 +95,6 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
@@ -143,7 +142,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca,params);
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, 
-					this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Tributo> findAll = tributiBD.findAll(filter);
 
@@ -547,6 +546,12 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tributo entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Tributo entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -594,9 +599,9 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,tributo);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, tributo);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -857,7 +862,7 @@ public class TributiHandler extends DarsHandler<Tributo> implements IDarsHandler
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

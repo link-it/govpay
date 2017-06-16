@@ -53,6 +53,7 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
@@ -102,7 +103,6 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
@@ -130,7 +130,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Fr> findAll = eseguiRicerca ? frBD.findAllExt(filter) : new ArrayList<Fr>(); 
 
@@ -509,10 +509,10 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = fr != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, fr) : null;
-			URI esportazione = fr != null ? this.getUriEsportazioneDettaglio(uriInfo, bd, id) : null;
+			InfoForm infoEsportazione = fr != null ? this.getInfoEsportazioneDettaglio(uriInfo, bd, fr) : null;
 
 			String titolo = fr != null ? this.getTitolo(fr,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -811,7 +811,7 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
@@ -855,6 +855,21 @@ public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Fr entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Fr entry)	throws ConsoleException {
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+	}
+	
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 

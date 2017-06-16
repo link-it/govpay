@@ -103,10 +103,16 @@ public class SingoliVersamentiHandler extends DarsHandler<SingoloVersamento> imp
 	}
 	
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport,  List<RawParamValue> rawValues,  UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, SingoloVersamento entry)	throws ConsoleException {	return null;	}
 
 	/* Creazione/Update non consentiti**/
 

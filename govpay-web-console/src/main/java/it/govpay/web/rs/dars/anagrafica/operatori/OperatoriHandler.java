@@ -99,7 +99,6 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
@@ -142,7 +141,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Operatore> findAll = operatoriBD.findAll(filter);
 
@@ -416,6 +415,12 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operatore entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -478,9 +483,9 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,operatore);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, operatore);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -774,7 +779,7 @@ public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHan
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

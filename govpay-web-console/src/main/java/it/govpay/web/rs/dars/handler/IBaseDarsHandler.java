@@ -46,12 +46,14 @@ public interface IBaseDarsHandler<T> {
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
 	
+	public InfoForm getInfoEsportazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException;
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException;
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,T entry) throws ConsoleException;
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,long id) throws ConsoleException;
 	
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
 	
 	public Object getSearchField(UriInfo uriInfo,List<RawParamValue>values, String fieldId, BasicBD bd) throws WebApplicationException,ConsoleException;
 	public URI getUriSearchField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException;

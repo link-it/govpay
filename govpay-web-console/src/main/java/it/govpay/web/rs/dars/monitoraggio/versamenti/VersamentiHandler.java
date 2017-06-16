@@ -119,8 +119,6 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
-
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			VersamentiBD versamentiBD = new VersamentiBD(bd);
@@ -147,7 +145,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Versamento> findAll = eseguiRicerca ? versamentiBD.findAll(filter) : new ArrayList<Versamento>(); 
 
@@ -590,10 +588,10 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = versamento != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, versamento) : null;
-			URI esportazione = versamento != null ? this.getUriEsportazioneDettaglio(uriInfo, versamentiBD, id) : null;
+			InfoForm infoEsportazione = versamento != null ? this.getInfoEsportazioneDettaglio(uriInfo, bd, versamento): null;
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioVersamento") ;
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -1055,7 +1053,7 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
@@ -1250,6 +1248,20 @@ public class VersamentiHandler extends DarsHandler<Versamento> implements IDarsH
 		sezioneRoot.addField(motivoCancellazione);
 
 		return infoCancellazione;
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
 	}
 
 	/* Creazione/Update non consentiti**/

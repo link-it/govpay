@@ -113,7 +113,7 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, this.getUriEsportazione(uriInfo, bd, params) , this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
+					count, this.getInfoEsportazione(uriInfo, bd) , this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
@@ -611,7 +611,7 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
@@ -624,6 +624,20 @@ public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<E
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry) throws ConsoleException {
 		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
 	}
 
 	@Override

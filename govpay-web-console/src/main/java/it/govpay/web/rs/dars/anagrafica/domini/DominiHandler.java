@@ -111,7 +111,6 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd);
 
 			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
@@ -172,7 +171,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Dominio> findAll = dominiBD.findAll(filter);
 
@@ -724,6 +723,20 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Dominio entry)	throws ConsoleException {
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -775,9 +788,9 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,dominio);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, dominio);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd,id);
+			InfoForm infoEsportazione = this.getInfoEsportazioneDettaglio(uriInfo, bd,dominio);
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(dominio,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -1284,7 +1297,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 		}
 
 		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout);
 		} 
 
 		String fileName = "Domini.zip";
@@ -1332,7 +1345,7 @@ public class DominiHandler extends DarsHandler<Dominio> implements IDarsHandler<
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
 

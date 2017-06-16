@@ -69,8 +69,6 @@ public class CanaliHandler extends DarsHandler<it.govpay.bd.model.Canale> implem
 			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("psp.codPsp.id");
 			String codPsp = this.getParameter(uriInfo, codPspId, String.class);
 
-			URI esportazione = null;
-
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
 			it.govpay.bd.model.Psp psp = pspBD.getPsp(codPsp);
 
@@ -81,7 +79,7 @@ public class CanaliHandler extends DarsHandler<it.govpay.bd.model.Canale> implem
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
 
@@ -127,6 +125,12 @@ public class CanaliHandler extends DarsHandler<it.govpay.bd.model.Canale> implem
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Canale entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Canale entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
@@ -154,9 +158,9 @@ public class CanaliHandler extends DarsHandler<it.govpay.bd.model.Canale> implem
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,canale);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, canale);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -265,7 +269,7 @@ public class CanaliHandler extends DarsHandler<it.govpay.bd.model.Canale> implem
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
 

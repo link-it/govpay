@@ -119,6 +119,9 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	public URI getUriRicerca(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		return Utils.creaUriConParametri(this.pathServizio,parameters);
 	}
+	
+	@Override
+	public abstract InfoForm getInfoEsportazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
 
 	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
@@ -134,6 +137,9 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 			throw new ConsoleException(e);
 		}
 	}
+	
+	@Override
+	public abstract InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo,BasicBD bd, T entry) throws ConsoleException;
 	
 	@Override
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
@@ -168,7 +174,7 @@ public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 	public abstract String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException,ConsoleException,ExportException;
 
 	@Override
-	public abstract String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException,ExportException;
+	public abstract String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)throws WebApplicationException, ConsoleException,ExportException;
 
 	public Elemento getElemento(T entry, Long id, String uriDettaglio, BasicBD bd) throws ConsoleException{
 		try{

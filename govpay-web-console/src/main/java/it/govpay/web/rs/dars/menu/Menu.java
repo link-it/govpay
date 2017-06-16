@@ -198,15 +198,19 @@ public class Menu extends BaseRsService {
 
 			menu.getSezioni().add(caricamenti);
 
-			// sezione statistiche
-			SezioneMenu statistiche = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statistiche"));
+			boolean visualizzaStatistiche = false;
 			
-			StatisticheTransazioni statTransazioniDars = new StatisticheTransazioni();
-			URI statTransazioniURI = new URI(statTransazioniDars.getPathServizio());
-			VoceMenu voceMenuStatTransazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(statTransazioniDars.getNomeServizio() + ".titolo"),	statTransazioniURI, VoceMenu.VOCE_STATISTICA);
-			statistiche.getVociMenu().add(voceMenuStatTransazioni);
-			
-			menu.getSezioni().add(statistiche);
+			if(visualizzaStatistiche){
+				// sezione statistiche
+				SezioneMenu statistiche = new SezioneMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statistiche"));
+				
+				StatisticheTransazioni statTransazioniDars = new StatisticheTransazioni();
+				URI statTransazioniURI = new URI(statTransazioniDars.getPathServizio());
+				VoceMenu voceMenuStatTransazioni = new VoceMenu(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(statTransazioniDars.getNomeServizio() + ".titolo"),	statTransazioniURI, VoceMenu.VOCE_STATISTICA);
+				statistiche.getVociMenu().add(voceMenuStatTransazioni);
+				
+				menu.getSezioni().add(statistiche);
+			}
 			
 			// Sezione manutenzione visibile solo all'utente con ruolo amministratore.
 			if(profilo.equals(ProfiloOperatore.ADMIN)){

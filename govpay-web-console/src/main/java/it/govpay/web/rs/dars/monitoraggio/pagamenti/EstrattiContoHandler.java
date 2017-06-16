@@ -70,7 +70,6 @@ public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportis
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd);
 
 			List<String> idDomini = new ArrayList<String>();
 			AclBD aclBD = new AclBD(bd);
@@ -139,7 +138,7 @@ public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportis
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			if(findAll != null && findAll.size() > 0){
 				for (it.govpay.model.reportistica.EstrattoContoMetadata entry : findAll) {
@@ -287,6 +286,20 @@ public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportis
 			throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, EstrattoContoMetadata entry)	throws ConsoleException {
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;		
+		}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -310,9 +323,9 @@ public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportis
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, estrattoConto);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(estrattoConto,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(estrattoConto,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -422,7 +435,7 @@ public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportis
 		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 
 		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout);
 		} 
 
 		String fileZipName = "EstrattiConto.zip";
@@ -462,7 +475,7 @@ public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportis
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
 

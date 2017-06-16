@@ -102,7 +102,6 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -130,7 +129,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Incasso> findAll = eseguiRicerca ? incassiBD.findAll(filter) : new ArrayList<Incasso>(); 
 
@@ -539,10 +538,10 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, incassiBD, id);
+			InfoForm infoEsportazione =  incasso != null ? this.getInfoEsportazioneDettaglio(uriInfo, incassiBD, incasso) : null;
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioIncasso") ;
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -802,7 +801,7 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
@@ -904,6 +903,20 @@ public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Incasso entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Incasso entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+		}
 
 	/* Creazione/Update non consentiti**/
 

@@ -68,6 +68,7 @@ import it.govpay.core.utils.CSVUtils;
 import it.govpay.core.utils.JaxbUtils;
 import it.govpay.core.utils.RtUtils;
 import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Operatore;
@@ -141,8 +142,6 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			boolean eseguiRicerca = popolaFiltroPagamenti(uriInfo, bd, operatore, params, simpleSearch, filter);
 
-			URI esportazione = this.getUriEsportazione(uriInfo, bd,params);
-
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			long count = eseguiRicerca ? pagamentiBD.count(filter) : 0;
 			eseguiRicerca = eseguiRicerca && count > 0;
@@ -155,7 +154,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,visualizzaRicerca,params),
-					this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Pagamento> pagamenti = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<Pagamento>();
 
@@ -500,10 +499,10 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, pagamento);
-			URI esportazione = null; 
+			InfoForm infoEsportazione = this.getInfoEsportazioneDettaglio(uriInfo, bd, pagamento); 
 			
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglio.label.titolo");
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			// Sezione root coi dati del pagamento
 			it.govpay.web.rs.dars.model.Sezione sezioneRoot = dettaglio.getSezioneRoot();
@@ -984,7 +983,7 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 
 	}
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
 		int numeroZipEntries = 0;
@@ -1337,6 +1336,20 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Pagamento entry) throws ConsoleException {
 		return null;
 	}
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Pagamento entry)	throws ConsoleException {
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+		}
+	
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 

@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
 
-import javax.ws.rs.GET;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -111,6 +111,7 @@ public abstract class BaseDarsService extends BaseRsService {
 
 	@POST
 	@Path("/esporta")
+	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM})
 	public Response esporta(InputStream is, @Context UriInfo uriInfo) throws Exception{
 		String methodName = "esporta " + this.getNomeServizio() ; //+ "[" + sb.toString() + "]";
@@ -180,10 +181,11 @@ public abstract class BaseDarsService extends BaseRsService {
 
 	}
 
-	@GET
+	@POST
 	@Path("/{id}/esporta")
+	@Consumes({MediaType.APPLICATION_JSON})
 	@Produces({MediaType.APPLICATION_OCTET_STREAM})
-	public Response esportaDettaglio(@PathParam("id") long id, @Context UriInfo uriInfo) throws Exception{
+	public Response esportaDettaglio(@PathParam("id") long id, InputStream is, @Context UriInfo uriInfo) throws Exception{
 
 		String methodName = "esporta " + this.getNomeServizio() + "[" + id+ "]";  
 		this.initLogger(methodName);
@@ -196,10 +198,25 @@ public abstract class BaseDarsService extends BaseRsService {
 			bd = BasicBD.newInstance(this.codOperazione);
 			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
 			
+			ByteArrayOutputStream baosIn = new ByteArrayOutputStream();
+			Utils.copy(is, baosIn);
+
+			baosIn.flush();
+			baosIn.close();
+
+			JSONObject jsonObjectFormExport = JSONObject.fromObject( baosIn.toString() );
+			
+			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
+			for (Object key : jsonObjectFormExport.keySet()) {
+				String value = jsonObjectFormExport.getString((String) key);
+				if(StringUtils.isNotEmpty(value) && !"null".equals(value))
+				rawValues.add(new RawParamValue((String) key, value));
+			}
+			
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			ZipOutputStream zout = new ZipOutputStream(baos);
 
-			String fileName = this.getDarsHandler().esporta(id, uriInfo, bd, zout);
+			String fileName = this.getDarsHandler().esporta(id, rawValues,uriInfo, bd, zout);
 			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
 			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
 		} catch(WebApplicationException e){

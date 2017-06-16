@@ -57,12 +57,10 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.model.UnitaOperativa;
 import it.govpay.bd.model.Versamento;
 import it.govpay.bd.pagamento.EventiBD;
-import it.govpay.bd.pagamento.IuvBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.VersamentiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
-import it.govpay.bd.pagamento.filters.IuvFilter;
 import it.govpay.bd.pagamento.filters.RptFilter;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.bd.pagamento.filters.VersamentoFilter;
@@ -75,10 +73,8 @@ import it.govpay.model.Acl;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.EstrattoConto;
 import it.govpay.model.Evento;
-import it.govpay.model.Iuv;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.model.Versamento.StatoVersamento;
 import it.govpay.model.comparator.EstrattoContoComparator;
 import it.govpay.stampe.pdf.er.ErPdf;
 import it.govpay.stampe.pdf.rt.utils.RicevutaPagamentoUtils;
@@ -584,6 +580,16 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	}
 
 	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Versamento entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+	}
+	
+	@Override
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		StringBuffer sb = new StringBuffer();
@@ -884,6 +890,6 @@ public class StatisticheTransazioniHandler extends StatisticaDarsHandler<Versame
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException,ExportException { return null; }
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException,ExportException { return null; }
 
 }

@@ -43,11 +43,10 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 			// Operazione consentita solo all'amministratore
 			this.darsService.checkOperatoreAdmin(bd);
-			URI esportazione = null;
 			long count = 0;
 
 			Elenco elenco = new Elenco(this.titoloServizio, 
-					this.getInfoRicerca(uriInfo, bd),	this.getInfoCreazione(uriInfo, bd), count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					this.getInfoRicerca(uriInfo, bd),	this.getInfoCreazione(uriInfo, bd), count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			String[] listaOperazioni =  ConsoleProperties.getInstance().getOperazioniJMXDisponibili(); 
 
@@ -90,7 +89,7 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
 			String dominio= ConsoleProperties.getInstance().getDominioOperazioniJMX();
 			String tipo = ConsoleProperties.getInstance().getTipoOperazioniJMX();
@@ -100,7 +99,7 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 			String username = ConsoleProperties.getInstance().getUsernameJMX();
 			String password = ConsoleProperties.getInstance().getPasswordJMX();
 
-			Dettaglio dettaglio = new Dettaglio(titoloOperazione, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titoloOperazione, infoEsportazione, infoCancellazione, infoModifica);
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
 			Object invoke = null;
@@ -184,6 +183,12 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 	}
 	
 	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Object entry)	throws ConsoleException {	return null;	}
+	
+	@Override
 	public InfoForm getInfoCancellazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null;}
 
 	@Override
@@ -226,7 +231,7 @@ public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandle
 	public String esporta(List<Long> idsToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException,ExportException { return null; }
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException,ExportException {	return null;	} 
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout) throws WebApplicationException, ConsoleException,ExportException {	return null;	} 
 
 	@Override
 	public Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException { return null;}

@@ -74,6 +74,7 @@ import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.handler.IDarsHandler;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -81,7 +82,6 @@ import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputDate;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
@@ -110,7 +110,6 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
@@ -193,7 +192,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
-					this.getInfoCreazione(uriInfo, bd),	count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					this.getInfoCreazione(uriInfo, bd),	count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 			
 			List<EstrattoConto> findAll = eseguiRicerca ? pagamentiBD.findAll(filter) : new ArrayList<EstrattoConto>(); 
 
@@ -373,6 +372,12 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 	}
 
 	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, EstrattoConto entry)	throws ConsoleException {	return null;	}
+	
+	@Override
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
@@ -437,10 +442,10 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, pagamento);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
+			InfoForm infoEsportazione = this.getInfoEsportazioneDettaglio(uriInfo, bd, pagamento);
 
 			String titolo = pagamento != null ? this.getTitolo(pagamento,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -591,7 +596,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 		int numeroZipEntries = 0;
 
 		if(idsToExport.size() == 1) {
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout);
+			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout);
 		} 
 
 		String fileName = "Pagamenti.zip";
@@ -743,7 +748,7 @@ public class ReportisticaPagamentiHandler extends DarsHandler<EstrattoConto> imp
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport,  List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 		Printer printer  = null;
