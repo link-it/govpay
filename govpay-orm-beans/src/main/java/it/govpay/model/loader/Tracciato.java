@@ -1,18 +1,14 @@
-package it.govpay.bd.model;
-
-import it.govpay.bd.BasicBD;
-import it.govpay.bd.anagrafica.OperatoriBD;
-import it.govpay.model.Operatore;
-import it.govpay.orm.constants.StatoTracciatoType;
+package it.govpay.model.loader;
 
 import java.util.Date;
 
-import org.openspcoop2.generic_project.exception.MultipleResultException;
-import org.openspcoop2.generic_project.exception.NotFoundException;
-import org.openspcoop2.generic_project.exception.ServiceException;
-
 public class Tracciato {
 
+	public enum StatoTracciatoType {
+		ANNULLATO ,NUOVO ,IN_CARICAMENTO ,CARICAMENTO_OK ,CARICAMENTO_KO;
+	}
+	
+	
 	private long id;
 	private long idOperatore;
 	private Date dataCaricamento;
@@ -26,8 +22,6 @@ public class Tracciato {
 	private String nomeFile;
 	private byte[] rawDataRichiesta;
 	private byte[] rawDataRisposta;
-	
-	private Operatore operatore = null;
 	
 	public long getIdOperatore() {
 		return idOperatore;
@@ -90,18 +84,6 @@ public class Tracciato {
 		this.id = id;
 	}
 	
-	public Operatore getOperatore(BasicBD bd) throws ServiceException {
-		if(this.operatore == null) {
-			try {
-				this.operatore = new OperatoriBD(bd).getOperatore(idOperatore);
-			} catch(NotFoundException e) {
-				throw new ServiceException(e);
-			} catch(MultipleResultException e) {
-				throw new ServiceException(e);
-			}
-		}
-		return this.operatore;
-	}
 	public Date getDataUltimoAggiornamento() {
 		return dataUltimoAggiornamento;
 	}

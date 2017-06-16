@@ -282,7 +282,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 			String dataInizio = this.getParameter(uriInfo, dataInizioId, String.class);
 			if(StringUtils.isNotEmpty(dataInizio)){
-				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
+				filter.setDataInizio(this.convertJsonStringToDataInizio(dataInizio));
 				if(elementoCorrelato)
 					params.put(dataInizioId,dataInizio);
 			}
@@ -290,7 +290,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String dataFine = this.getParameter(uriInfo, dataFineId, String.class);
 			if(StringUtils.isNotEmpty(dataFine)){
-				filter.setDataFine(this.convertJsonStringToDate(dataFine));
+				filter.setDataFine(this.convertJsonStringToDataFine(dataFine));
 				if(elementoCorrelato)
 					params.put(dataFineId,dataFine);
 			}
@@ -427,7 +427,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String dataInizioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataInizio.id");
 			String dataInizio = Utils.getValue(rawValues, dataInizioId);
 			if(StringUtils.isNotEmpty(dataInizio)){
-				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
+				filter.setDataInizio(this.convertJsonStringToDataInizio(dataInizio));
 				if(elementoCorrelato)
 					params.put(dataInizioId,dataInizio);
 			}
@@ -435,7 +435,7 @@ public class PagamentiHandler extends BaseDarsHandler<Pagamento> implements IDar
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String dataFine = Utils.getValue(rawValues, dataFineId);
 			if(StringUtils.isNotEmpty(dataFine)){
-				filter.setDataFine(this.convertJsonStringToDate(dataFine));
+				filter.setDataFine(this.convertJsonStringToDataFine(dataFine));
 				if(elementoCorrelato)
 					params.put(dataFineId,dataFine);
 			}

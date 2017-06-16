@@ -3,14 +3,14 @@ package it.govpay.core.loader.utils;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.loader.OperazioniBD;
-import it.govpay.bd.model.Operazione;
-import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.loader.model.Operazione;
+import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.core.loader.timers.model.AbstractOperazioneRequest;
 import it.govpay.core.loader.timers.model.AbstractOperazioneResponse;
 import it.govpay.core.loader.timers.model.AnnullamentoRequest;
 import it.govpay.core.loader.timers.model.CaricamentoRequest;
 import it.govpay.core.loader.timers.model.OperazioneNonValidaRequest;
-import it.govpay.orm.constants.StatoOperazioneType;
+import it.govpay.model.loader.Operazione.StatoOperazioneType;
 
 import java.util.List;
 import java.util.concurrent.Callable;

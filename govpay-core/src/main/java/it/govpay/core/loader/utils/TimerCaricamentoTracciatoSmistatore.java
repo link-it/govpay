@@ -1,7 +1,7 @@
 package it.govpay.core.loader.utils;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.loader.model.Tracciato;
 
 import java.util.ArrayList;
 import java.util.List;

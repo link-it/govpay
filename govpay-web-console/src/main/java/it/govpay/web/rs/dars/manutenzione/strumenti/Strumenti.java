@@ -2,9 +2,6 @@ package it.govpay.web.rs.dars.manutenzione.strumenti;
 
 import javax.ws.rs.Path;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
 
@@ -14,8 +11,6 @@ public class Strumenti extends BaseDarsService {
 	public Strumenti() {
 		super();
 	}
-	
-	Logger log = LogManager.getLogger();
 	
 	@Override
 	public String getNomeServizio() {

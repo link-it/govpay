@@ -22,6 +22,8 @@ package it.govpay.core.business;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.AnagraficaManager;
 import it.govpay.bd.loader.TracciatiBD;
+import it.govpay.bd.loader.filters.TracciatoFilter;
+import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
 import it.govpay.bd.model.Tracciato;

@@ -18,13 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.bd.operazioni.filters;
-
-import it.govpay.bd.AbstractFilter;
-import it.govpay.bd.ConnectionManager;
-import it.govpay.bd.FilterSortWrapper;
-import it.govpay.orm.constants.StatoTracciatoType;
-import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
+package it.govpay.bd.loader.filters;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -39,6 +33,12 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IExpression;
 import org.openspcoop2.generic_project.expression.SortOrder;
 
+import it.govpay.bd.AbstractFilter;
+import it.govpay.bd.ConnectionManager;
+import it.govpay.bd.FilterSortWrapper;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
+import it.govpay.orm.dao.jdbc.converter.TracciatoFieldConverter;
+
 public class TracciatoFilter extends AbstractFilter {
 
 	private List<Long> idTracciati = null; 
@@ -52,7 +52,11 @@ public class TracciatoFilter extends AbstractFilter {
 	}
 	
 	public TracciatoFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor, false);
+	}
+	
+	public TracciatoFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor, simpleSearch);
 		
 		try{
 			TracciatoFieldConverter converter = new TracciatoFieldConverter(ConnectionManager.getJDBCServiceManagerProperties().getDatabase()); 

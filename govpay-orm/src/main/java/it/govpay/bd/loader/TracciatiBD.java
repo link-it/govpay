@@ -30,8 +30,8 @@ import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.generic_project.expression.IPaginatedExpression;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.operazioni.filters.TracciatoFilter;
-import it.govpay.bd.model.converter.TracciatoConverter;
+import it.govpay.bd.loader.converter.TracciatoConverter;
+import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.orm.Tracciato;
 
 public class TracciatiBD extends BasicBD {
@@ -40,9 +40,9 @@ public class TracciatiBD extends BasicBD {
 		super(basicBD);
 	}
 	
-	private List<it.govpay.bd.model.Tracciato> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException {
+	private List<it.govpay.bd.loader.model.Tracciato> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException {
 		List<Tracciato> findAll = this.getTracciatoService().findAll(exp);
-		List<it.govpay.bd.model.Tracciato> findAllDTO = new ArrayList<it.govpay.bd.model.Tracciato>(); 
+		List<it.govpay.bd.loader.model.Tracciato> findAllDTO = new ArrayList<it.govpay.bd.loader.model.Tracciato>(); 
 		for(Tracciato tracciato : findAll) {
 			findAllDTO.add(TracciatoConverter.toDTO(tracciato));
 		}
@@ -50,7 +50,7 @@ public class TracciatiBD extends BasicBD {
 	}
 	
 	
-	public void insertTracciato(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
+	public void insertTracciato(it.govpay.bd.loader.model.Tracciato tracciato) throws ServiceException {
 		try{
 			Tracciato tracciatoVo = TracciatoConverter.toVO(tracciato);
 			this.getTracciatoService().create(tracciatoVo);
@@ -61,7 +61,7 @@ public class TracciatiBD extends BasicBD {
 		}
 	}
 	
-	public void updateTracciato(it.govpay.bd.model.Tracciato tracciato) throws ServiceException {
+	public void updateTracciato(it.govpay.bd.loader.model.Tracciato tracciato) throws ServiceException {
 		try{
 			Tracciato tracciatoVo = TracciatoConverter.toVO(tracciato);
 			this.getTracciatoService().update(this.getTracciatoService().convertToId(tracciatoVo), tracciatoVo);
@@ -76,6 +76,10 @@ public class TracciatiBD extends BasicBD {
 		return new TracciatoFilter(this.getTracciatoService());
 	}
 	
+	public TracciatoFilter newFilter(boolean simpleSearch) throws ServiceException {
+		return new TracciatoFilter(this.getTracciatoService(),simpleSearch);
+	}
+	
 	public long count(TracciatoFilter filter) throws ServiceException {
 		try {
 			return this.getTracciatoService().count(filter.toExpression()).longValue();
@@ -84,7 +88,7 @@ public class TracciatiBD extends BasicBD {
 		}
 	}
 
-	public List<it.govpay.bd.model.Tracciato> findAll(TracciatoFilter filter) throws ServiceException {
+	public List<it.govpay.bd.loader.model.Tracciato> findAll(TracciatoFilter filter) throws ServiceException {
 		try {
 			return this.findAll(filter.toPaginatedExpression());
 		} catch (NotImplementedException e) {
@@ -92,7 +96,7 @@ public class TracciatiBD extends BasicBD {
 		}
 	}
 	
-	public it.govpay.bd.model.Tracciato getTracciato(long id) throws ServiceException, NotFoundException {
+	public it.govpay.bd.loader.model.Tracciato getTracciato(long id) throws ServiceException, NotFoundException {
 		try {
 			it.govpay.orm.IdTracciato idTracciato = new it.govpay.orm.IdTracciato();
 			idTracciato.setId(id);

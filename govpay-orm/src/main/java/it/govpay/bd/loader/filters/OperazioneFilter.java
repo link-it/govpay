@@ -1,10 +1,10 @@
-package it.govpay.bd.operazioni.filters;
+package it.govpay.bd.loader.filters;
 
 import it.govpay.bd.AbstractFilter;
 import it.govpay.bd.ConnectionManager;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.orm.Operazione;
-import it.govpay.orm.constants.StatoOperazioneType;
+import it.govpay.model.loader.Operazione.StatoOperazioneType;
 import it.govpay.orm.dao.jdbc.converter.OperazioneFieldConverter;
 
 import org.openspcoop2.generic_project.beans.CustomField;
@@ -23,7 +23,11 @@ public class OperazioneFilter extends AbstractFilter {
 	private StatoOperazioneType stato = null;
 	
 	public OperazioneFilter(IExpressionConstructor expressionConstructor) {
-		super(expressionConstructor);
+		this(expressionConstructor, false);
+	}
+	
+	public OperazioneFilter(IExpressionConstructor expressionConstructor, boolean simpleSearch) {
+		super(expressionConstructor,simpleSearch);
 	}
 
 	public enum SortFields {

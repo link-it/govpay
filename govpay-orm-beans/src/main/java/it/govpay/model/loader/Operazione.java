@@ -1,8 +1,10 @@
-package it.govpay.bd.model;
-
-import it.govpay.orm.constants.StatoOperazioneType;
+package it.govpay.model.loader;
 
 public class Operazione {
+	
+	public enum StatoOperazioneType {
+		NON_VALIDO, ESEGUITO_OK, ESEGUITO_KO;
+	}
 	
 	private long id;
 	private long idTracciato;

@@ -51,8 +51,6 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.TipoEvento;
-import it.govpay.model.Operatore;
-import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -63,16 +61,17 @@ import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.InfoForm.Sezione;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.InputText;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
+import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
 public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandler<Evento>{
@@ -86,85 +85,25 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 		super(log, darsService);
 	}
 
-	@SuppressWarnings("unused")
 	@Override
 	public Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException {
 		String methodName = "getElenco " + this.titoloServizio;
 		try{	
 			// Operazione consentita agli utenti registrati
-			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
-			ProfiloOperatore profilo = operatore.getProfilo();
-			boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
+			this.darsService.checkOperatoreAdmin(bd); 
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
-			URI cancellazione = null;
-
-			boolean visualizzaRicerca = true;
-			this.log.info("Esecuzione " + methodName + " in corso...");
-
-
-
-			String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
-			String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
-			SortOrder sortOrder = SortOrder.DESC;
 
 			Map<String, String> params = new HashMap<String, String>();
-
-			boolean simpleSearch = false; 
-			// se visualizzo gli eventi nella pagina delle transazioni li ordino in ordine crescente
-			if(StringUtils.isNotEmpty(idTransazione)){
-				visualizzaRicerca = false;
-				sortOrder = SortOrder.ASC;
-				params.put(idTransazioneId, idTransazione);
-			} else {
-				simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
-			}
-
+			this.log.info("Esecuzione " + methodName + " in corso...");
 			EventiBD eventiBD = new EventiBD(bd);
+			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			EventiFilter filter = eventiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
-			FilterSortWrapper fsw = new FilterSortWrapper();
-			fsw.setField(it.govpay.orm.Evento.model().DATA_1);
 
-			fsw.setSortOrder(sortOrder);
-			filter.getFilterSortList().add(fsw);
-
-
-			if(simpleSearch) {
-				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
-
-				if(StringUtils.isNotEmpty(simpleSearchString)) {
-					filter.setSimpleSearchString(simpleSearchString);
-				}
-			} else {
-				String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
-				String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
-				String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
-
-				String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
-				if(StringUtils.isNotEmpty(codDominio)){
-					filter.setCodDominio(codDominio);
-					params.put(codDominioId, codDominio);
-				}
-
-				String iuv = this.getParameter(uriInfo, iuvId, String.class);
-				if(StringUtils.isNotEmpty(iuv)){
-					filter.setIuv(iuv); 
-					params.put(iuvId, iuv);
-				}
-
-
-				String ccp = this.getParameter(uriInfo, ccpId, String.class);
-				if(StringUtils.isNotEmpty(ccp)){
-					filter.setCcp(ccp); 
-					params.put(ccpId, ccp);
-				}
-			}
+			boolean visualizzaRicerca = this.popolaFiltroRicerca(uriInfo, params, simpleSearch, filter);
 
 			long count = eventiBD.count(filter);
 
@@ -175,7 +114,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
+					count, this.getUriEsportazione(uriInfo, bd, params) , this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
@@ -193,6 +132,129 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+	}
+
+	private boolean popolaFiltroRicerca(UriInfo uriInfo, Map<String, String> params,
+			boolean simpleSearch, EventiFilter filter) throws ConsoleException {
+		String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
+		String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
+		SortOrder sortOrder = SortOrder.DESC;
+		boolean visualizzaRicerca = true; 
+		// se visualizzo gli eventi nella pagina delle transazioni li ordino in ordine crescente
+		if(StringUtils.isNotEmpty(idTransazione)){
+			visualizzaRicerca = false;
+			sortOrder = SortOrder.ASC;
+			params.put(idTransazioneId, idTransazione);
+			simpleSearch = false; 
+		}
+
+
+		FilterSortWrapper fsw = new FilterSortWrapper();
+		fsw.setField(it.govpay.orm.Evento.model().DATA_1);
+		fsw.setSortOrder(sortOrder);
+		filter.getFilterSortList().add(fsw);
+		filter.setSimpleSearch(simpleSearch);
+
+		if(simpleSearch) {
+			// simplesearch
+			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+			}
+		} else {
+			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
+
+			String codDominio = this.getParameter(uriInfo, codDominioId, String.class);
+			if(StringUtils.isNotEmpty(codDominio)){
+				filter.setCodDominio(codDominio);
+				params.put(codDominioId, codDominio);
+			}
+
+			String iuv = this.getParameter(uriInfo, iuvId, String.class);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv); 
+				params.put(iuvId, iuv);
+			}
+
+
+			String ccp = this.getParameter(uriInfo, ccpId, String.class);
+			if(StringUtils.isNotEmpty(ccp)){
+				filter.setCcp(ccp); 
+				params.put(ccpId, ccp);
+			}
+		}
+		return visualizzaRicerca;
+	}
+
+	private boolean popolaFiltroRicerca(List<RawParamValue> rawValues, UriInfo uriInfo,  Map<String, String> params,
+			boolean simpleSearch, EventiFilter filter) throws ConsoleException {
+		String idTransazioneId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idTransazione.id");
+		String idTransazione = this.getParameter(uriInfo, idTransazioneId, String.class);
+		SortOrder sortOrder = SortOrder.DESC;
+		boolean limitRicerca = true;
+		boolean elementoCorrelato = false;
+
+		// se visualizzo gli eventi nella pagina delle transazioni li ordino in ordine crescente
+		if(StringUtils.isNotEmpty(idTransazione)){
+			sortOrder = SortOrder.ASC;
+			params.put(idTransazioneId, idTransazione);
+			simpleSearch = false;
+			limitRicerca = false;
+			elementoCorrelato = true;
+		}
+
+
+		FilterSortWrapper fsw = new FilterSortWrapper();
+		fsw.setField(it.govpay.orm.Evento.model().DATA_1);
+		fsw.setSortOrder(sortOrder);
+		filter.getFilterSortList().add(fsw);
+		filter.setSimpleSearch(simpleSearch);
+
+		if(limitRicerca){
+			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
+			filter.setLimit(limit);
+		}
+
+		if(simpleSearch) {
+			// simplesearch
+			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+
+			if(StringUtils.isNotEmpty(simpleSearchString)) {
+				filter.setSimpleSearchString(simpleSearchString);
+			}
+		} else {
+			String codDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".codDominio.id");
+			String iuvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".iuv.id");
+			String ccpId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".ccp.id");
+
+			String codDominio = elementoCorrelato ? this.getParameter(uriInfo, codDominioId, String.class) : Utils.getValue(rawValues, codDominioId);  
+			if(StringUtils.isNotEmpty(codDominio)){
+				filter.setCodDominio(codDominio);
+				if(elementoCorrelato)
+					params.put(codDominioId, codDominio);
+			}
+
+			String iuv = elementoCorrelato ?  this.getParameter(uriInfo, iuvId, String.class) : Utils.getValue(rawValues, iuvId);
+			if(StringUtils.isNotEmpty(iuv)){
+				filter.setIuv(iuv); 
+				if(elementoCorrelato)
+					params.put(iuvId, iuv);
+			}
+
+
+			String ccp = elementoCorrelato ?  this.getParameter(uriInfo, ccpId, String.class) : Utils.getValue(rawValues, ccpId);
+			if(StringUtils.isNotEmpty(ccp)){
+				filter.setCcp(ccp); 
+				if(elementoCorrelato)
+					params.put(ccpId, ccp);
+			}
+		}
+		return limitRicerca;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -343,33 +405,59 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 				sb.append(long1);
 			}
 		}
-		
-		//		Printer printer  = null;
-		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
-		
-		if(idsToExport == null || idsToExport.size() == 0) {
-			List<String> msg = new ArrayList<String>();
-			msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.erroreSelezioneVuota"));
-			throw new ExportException(msg, EsitoOperazione.ERRORE);
-		}
 
+		String methodName = "esporta " + this.titoloServizio + "[" + sb.toString() + "]";
 		String fileName = "Eventi.zip";
 		try{
 			ByteArrayOutputStream baos  = new ByteArrayOutputStream();
+			Map<String, String> params = new HashMap<String, String>();
 			this.log.info("Esecuzione " + methodName + " in corso...");
-			this.darsService.getOperatoreByPrincipal(bd); 
-
+			this.darsService.checkOperatoreAdmin(bd); 
+			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			EventiBD eventiBD = new EventiBD(bd);
-			EventiFilter filter = eventiBD.newFilter();
-			filter.setIdEventi(idsToExport );
+
+			EventiFilter filter = eventiBD.newFilter(simpleSearch);
+
+			// se ho ricevuto anche gli id li utilizzo per fare il check della count
+			if(idsToExport != null && idsToExport.size() > 0)
+				filter.setIdEventi(idsToExport); 
+
+			boolean checkCount = this.popolaFiltroRicerca(rawValues, uriInfo, params, simpleSearch, filter);
+
+			long count = eventiBD.count(filter);
+
+			if(count < 1){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.nessunElementoDaEsportare"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			} 
+
+			if(checkCount && count > ConsoleProperties.getInstance().getNumeroMassimoElementiExport()){
+				List<String> msg = new ArrayList<String>();
+				msg.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".esporta.numeroElementiDaEsportareSopraSogliaMassima"));
+				throw new ExportException(msg, EsitoOperazione.ERRORE);
+			}
+
+			filter.setOffset(0);
+			if(checkCount)
+				filter.setLimit(ConsoleProperties.getInstance().getNumeroMassimoElementiExport());
+
 			List<Evento> list = eventiBD.findAll(filter);
 
-			this.scriviCSVEventi(baos, list );
+			if(list != null && list.size() > 0) {
+				this.scriviCSVEventi(baos, list );
 
-			ZipEntry datiEvento = new ZipEntry("eventi.csv");
-			zout.putNextEntry(datiEvento);
-			zout.write(baos.toByteArray());
-			zout.closeEntry();
+				ZipEntry datiEvento = new ZipEntry("eventi.csv");
+				zout.putNextEntry(datiEvento);
+				zout.write(baos.toByteArray());
+				zout.closeEntry();
+			} else {
+				String noEntriesTxt = "/README";
+				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
+				zout.putNextEntry(entryTxt);
+				zout.write("Non sono state trovate informazioni sugli eventi selezionati.".getBytes());
+				zout.closeEntry();
+			}
 
 			zout.flush();
 			zout.close();

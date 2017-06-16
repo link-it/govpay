@@ -19064,6 +19064,12 @@ It will also ensure that focus remains in the dialog.
         --paper-toast-color: #9F6000;
       }
 
+      .paper-toast-button {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+      }
+
       .buttonBar {
         padding-top: 24px;
         @apply(--layout-horizontal);
@@ -21590,7 +21596,8 @@ this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,th
       is: 'link-module',
 
       observers: [
-        'setAbsoluteResource(resource)'
+        'setAbsoluteResource(resource)',
+        'setChartResource(chart)'
       ],
 
       properties: {
@@ -21613,11 +21620,25 @@ this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,th
         detailObj: {
           type: Object,
           value: null
+        },
+        chart: {
+          type: Object
         }
       },
 
       setAbsoluteResource: function(resource){
         this.absoluteResource=REST_URL+resource + app.appendLangParameter(resource);
+      },
+
+      setChartResource: function(chart){
+        if(chart) {
+          var _chart = document.createElement('link-chart');
+          _chart.titolo = chart.label;
+          _chart.uri = chart.uri;
+          _chart.language = app.LANGUAGE;
+          Polymer.dom(this.$.pages).appendChild(_chart);
+          this.async(this.toChart);
+        }
       },
 
       showDetail: function(event){
@@ -21653,6 +21674,20 @@ this.currentTarget=a,this.defaultPrevented=!1,this.eventPhase=Event.AT_TARGET,th
             app.showPaperToast(_msg, 'error');
           }
         }
+      },
+
+      toChart: function(){
+        this.$.pages.entryAnimation=undefined;
+        this.$.pages.exitAnimation=undefined;
+        this.$.pages.selectNext();
+      },
+
+      fromChart: function(){
+        this.chart = null;
+        this.$.pages.entryAnimation=undefined;
+        this.$.pages.exitAnimation=undefined;
+        this.$.pages.selectPrevious();
+        this.async(this.removeLastElement);
       },
 
       goNext: function(event){
@@ -27522,6 +27557,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         transition: height 0.1s;
         width: 1px;
         color: var(--disabled-text-color, gray);
+        overflow: hidden;
         @apply(--vaadin-upload-file-meta);
       }
 
@@ -27605,6 +27641,10 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         @apply(--vaadin-upload-file-progress-complete);
       }
 
+      paper-icon-button[hidden] {
+        display: none;
+      }
+
       :host(.fade-out) {
         animation-name: fade-out;
         animation-duration: 0.6s;
@@ -27615,17 +27655,20 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         0% {
           max-height: 38px;
         }
-        33%  {
+
+        33% {
           max-height: 38px;
           margin: 4px 0 0;
           padding: 6px 0 4px;
           opacity: 0.25;
         }
+
         67% {
           opacity: 0;
         }
+
         100% {
-          max-height: 0px;
+          max-height: 0;
           margin: 0;
           padding: 0;
           opacity: 0;
@@ -27742,7 +27785,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
       :host(:not([nodrop])) {
         border: 1px dashed;
-        border-color: var(--divider-color,  #666);
+        border-color: var(--divider-color, #666);
         border-radius: 3px;
         overflow: hidden;
         padding: 16px;
@@ -27762,6 +27805,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         display: none;
         z-index: 10;
       }
+
       :host([dragover])::before {
         display: block;
       }
@@ -27812,14 +27856,18 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
 
       #addFiles {
+        @apply(--vaadin-upload-button-add-wrapper);
+      }
+
+      #addButton {
         @apply(--paper-font-button);
         padding: .43em .57em;
         background: var(--primary-color, #00B4F0);
-        color: var(--primary-font-color, #FFFFFF);
+        color: var(--primary-font-color, #FFF);
         @apply(--vaadin-upload-button-add);
       }
 
-      #addFiles[disabled] {
+      #addButton[disabled] {
         background: var(--divider-color, #e0e0e0);
         color: var(--disabled-text-color, gray);
         @apply(--vaadin-upload-button-add-disabled);
@@ -27828,7 +27876,13 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     <div id="buttons">
       <div id="buttonsPrimary">
-        <paper-button id="addFiles" on-tap="_onAddFilesClick" disabled="[[_maxFilesAdded(maxFiles, files.length)]]">[[_i18nPlural(maxFiles, i18n.addFiles, i18n.addFiles.*)]]</paper-button>
+        <div id="addFiles" on-tap="_onAddFilesClick">
+          <slot name="add-button">
+            <paper-button id="addButton" disabled$="[[maxFilesReached]]">
+              [[_i18nPlural(maxFiles, i18n.addFiles, i18n.addFiles.*)]]
+            </paper-button>
+          </slot>
+        </div>
         <div id="dropLabel" hidden$="[[nodrop]]">
           <content select=".drop-label">
             <iron-icon icon="vaadin-upload:file-upload"></iron-icon>
@@ -27957,10 +28011,21 @@ is separate from validation, and `allowed-pattern` does not affect how the input
        * Limit of files to upload, by default it is unlimited. If the value is
        * set to one, native file browser will prevent selecting multiple files.
        */
-       maxFiles: {
-         type: Number,
-         value: Infinity
-       },
+      maxFiles: {
+        type: Number,
+        value: Infinity
+      },
+
+      /**
+       * Specifies if the maximum number of files have been uploaded
+       */
+      maxFilesReached: {
+        type: Boolean,
+        value: false,
+        notify: true,
+        readOnly: true,
+        computed: '_maxFilesAdded(maxFiles, files.length)'
+      },
 
       /**
        * Specifies the types of files that the server accepts.
@@ -27997,6 +28062,23 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       },
 
       /**
+       * Specifies the 'name' property at Content-Disposition
+       */
+      formDataName: {
+        type: String,
+        value: 'file'
+      },
+
+      /**
+       * Prevents upload(s) from immediately uploading upon adding file(s).
+       * When set, you must manually trigger uploads using the `uploadFiles` method
+       */
+      noAuto: {
+        type: Boolean,
+        value: false
+      },
+
+      /**
        * The object used to localize this component.
        * For changing the default localization, change the entire
        * _i18n_ object or just the property you want to modify.
@@ -28022,7 +28104,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
        status: {
          connecting: 'Connecting...',
          stalled: 'Stalled.',
-         processing: 'Processing File...'
+         processing: 'Processing File...',
+         held: 'Queued'
        },
        remainingTime: {
          prefix: 'remaining time: ',
@@ -28070,7 +28153,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
               status: {
                 connecting: 'Connecting...',
                 stalled: 'Stalled.',
-                processing: 'Processing File...'
+                processing: 'Processing File...',
+                held: 'Queued'
               },
               remainingTime: {
                 prefix: 'remaining time: ',
@@ -28091,9 +28175,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     listeners: {
-      dragover: '_onDragover',
-      dragleave: '_onDragleave',
-      drop: '_onDrop',
+      'dragover': '_onDragover',
+      'dragleave': '_onDragleave',
+      'drop': '_onDrop',
       'file-retry': '_onFileRetry',
       'file-abort': '_onFileAbort',
       'file-remove': '_onFileRemove',
@@ -28116,7 +28200,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       var unitSizes = [60, 60, 24, Infinity];
       var timeValues = [0];
 
-      for (var i = 0, unitSize; i < unitSizes.length && time > 0; i++) {
+      for (var i = 0; i < unitSizes.length && time > 0; i++) {
         timeValues[i] = time % unitSizes[i];
         time = Math.floor(time / unitSizes[i]);
       }
@@ -28151,8 +28235,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
           ')';
     },
 
-    _maxFilesAdded: function() {
-      return this.maxFiles >= 0 && this.files.length >= this.maxFiles;
+    _maxFilesAdded: function(maxFiles, numFiles) {
+      return maxFiles >= 0 && numFiles >= maxFiles;
     },
 
     _dragRippleAction: function(action, event) {
@@ -28203,14 +28287,14 @@ is separate from validation, and `allowed-pattern` does not affect how the input
 
     _onDragover: function(event) {
       event.preventDefault();
-      if (!this._dragover) {
-        this._dragoverValid = !this._maxFilesAdded();
-      }
-      if (this._dragoverValid && !this._dragover && !this.nodrop) {
-        this._dragRippleAction('down', event);
+      if (!this.nodrop && !this._dragover) {
+        this._dragoverValid = !this.maxFilesReached;
+        if (this._dragoverValid) {
+          this._dragRippleAction('down', event);
+        }
+        this._dragover = true;
       }
       event.dataTransfer.dropEffect = !this._dragoverValid || this.nodrop ? 'none' : 'copy';
-      this._dragover = true;
     },
 
     _onDragleave: function(event) {
@@ -28236,7 +28320,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     // Override for tests
-    _createXhr: function(file) {
+    _createXhr: function() {
       return new XMLHttpRequest();
     },
 
@@ -28256,7 +28340,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }
     },
 
-    _setStatus: function(file, total, loaded, elapsed, progress) {
+    _setStatus: function(file, total, loaded, elapsed) {
       file.elapsed = elapsed;
       file.elapsedStr = this._formatTime(file.elapsed, this._splitTimeByUnits(file.elapsed));
       file.remaining = Math.ceil(elapsed * (total / loaded - 1));
@@ -28265,6 +28349,19 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       file.totalStr = this._formatSize(total);
       file.loadedStr = this._formatSize(loaded);
       file.status = this._formatFileProgress(file);
+    },
+
+    /**
+     * Triggers the upload of any files that are not completed
+     *
+     * @param {Array} [files] - Files being uploaded. Defaults to all outstanding files
+     */
+    uploadFiles: function(files) {
+      files = files || this.files;
+      files = files.filter(function(file) {
+        return !file.complete;
+      });
+      Array.prototype.forEach.call(files, this._uploadFile.bind(this));
     },
 
     _uploadFile: function(file) {
@@ -28308,7 +28405,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }.bind(this);
 
       // More reliable than xhr.onload
-      xhr.onreadystatechange = function(e) {
+      xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
           clearTimeout(stalledId);
           file.indeterminate = file.uploading = false;
@@ -28338,13 +28435,15 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       }.bind(this);
 
       var formData = new FormData();
-      formData.append('file', file, file.name);
 
       file.uploadTarget = this.target || '';
+      file.formDataName = this.formDataName;
       var evt = this.fire('upload-before', {file: file, xhr: xhr}, {cancelable: true});
       if (evt.defaultPrevented) {
         return;
       }
+
+      formData.append(file.formDataName, file, file.name);
 
       xhr.open(this.method, file.uploadTarget, true);
       this._configureXhr(xhr);
@@ -28374,15 +28473,15 @@ is separate from validation, and `allowed-pattern` does not affect how the input
     },
 
     _abortFileUpload: function(file) {
-       var evt = this.fire('upload-abort', {file: file, xhr: file.xhr}, {cancelable: true});
-       if (!evt.defaultPrevented) {
-         file.abort = true;
-         if (file.xhr) {
-           file.xhr.abort();
-         }
-         this._notifyFileChanges(file);
-       }
-     },
+      var evt = this.fire('upload-abort', {file: file, xhr: file.xhr}, {cancelable: true});
+      if (!evt.defaultPrevented) {
+        file.abort = true;
+        if (file.xhr) {
+          file.xhr.abort();
+        }
+        this._notifyFileChanges(file);
+      }
+    },
 
     _notifyFileChanges: function(file) {
       var p = 'files.' + this.files.indexOf(file) + '.';
@@ -28403,7 +28502,7 @@ is separate from validation, and `allowed-pattern` does not affect how the input
      * @param {File} file File being added
      */
     _addFile: function(file) {
-      if (this._maxFilesAdded()) {
+      if (this.maxFilesReached) {
         this.fire('file-reject', {file: file, error: this.i18n.error.tooManyFiles});
         return;
       }
@@ -28412,14 +28511,18 @@ is separate from validation, and `allowed-pattern` does not affect how the input
         return;
       }
       var fileExt = file.name.match(/\.[^\.]*$|$/)[0];
-      var re = new RegExp('^(' + this.accept.replace(/[, ]+/g, '|').replace('/*', '/.*') + ')$', 'i');
+      var re = new RegExp('^(' + this.accept.replace(/[, ]+/g, '|').replace(/\/\*/g, '/.*') + ')$', 'i');
       if (this.accept && !(re.test(file.type) || re.test(fileExt))) {
         this.fire('file-reject', {file: file, error: this.i18n.error.incorrectFileType});
         return;
       }
       file.loaded = 0;
+      file.status = this.i18n.uploading.status.held;
       this.unshift('files', file);
-      this._uploadFile(file);
+
+      if (!this.noAuto) {
+        this._uploadFile(file);
+      }
     },
 
     /**
@@ -28430,11 +28533,19 @@ is separate from validation, and `allowed-pattern` does not affect how the input
       this.splice('files', this.files.indexOf(file), 1);
     },
 
-    _onAddFilesClick: function(event) {
-      if (document.createEvent) {
-        this.$.fileInput.value = '';
-        this.$.fileInput.click();
+    _onAddFilesClick: function() {
+      if (Polymer.Gestures.resetMouseCanceller) {
+        /*
+          With Polymer v1.7.1, the ghost-click prevention cancels the synthetic
+          file input click in iOS Safari. This prevents the cancelling.
+
+          See also: https://github.com/Polymer/polymer/issues/4242
+        */
+        Polymer.Gestures.resetMouseCanceller();
       }
+
+      this.$.fileInput.value = '';
+      this.$.fileInput.click();
     },
 
     _onFileInputChange: function(event) {
@@ -28477,8 +28588,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event file-reject
    * @param {Object} detail
-   *  @param {Object} detail.file the file added
-   *  @param {Object} detail.error the cause
+   * @param {Object} detail.file the file added
+   * @param {Object} detail.error the cause
    */
 
   /**
@@ -28487,9 +28598,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-before
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
-   *   @param {Object} detail.file.uploadTarget the upload request URL, initialized with the value of vaadin-upload `target` property
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.file.uploadTarget the upload request URL, initialized with the value of vaadin-upload `target` property
    */
 
   /**
@@ -28500,9 +28611,9 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-request
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
-   *  @param {Object} detail.formData the FormData object
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.formData the FormData object
    */
 
   /**
@@ -28510,8 +28621,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-start
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28519,8 +28630,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-progress
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded with loaded info
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded with loaded info
    */
 
   /**
@@ -28535,8 +28646,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-response
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28544,8 +28655,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-success
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded with loaded info
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded with loaded info
    */
 
   /**
@@ -28553,8 +28664,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-error
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28563,8 +28674,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-retry
    * @param {Object} detail
-   *  @param {Object} detail.xhr the previous upload xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the previous upload xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
   /**
@@ -28573,8 +28684,8 @@ is separate from validation, and `allowed-pattern` does not affect how the input
    *
    * @event upload-abort
    * @param {Object} detail
-   *  @param {Object} detail.xhr the xhr
-   *  @param {Object} detail.file the file being uploaded
+   * @param {Object} detail.xhr the xhr
+   * @param {Object} detail.file the file being uploaded
    */
 
 </script>
@@ -31948,6 +32059,16 @@ Polymer.AppLocalizeBehavior = {
     color: #9e9e9e;
   }
 
+  .vaadin-upload-required {
+    position: relative;
+    display: none;
+    visibility: visible;
+  }
+
+  .vaadin-upload-required-error {
+    display: block;
+  }
+
 </style><script>
   LinkFormBehavior = {
 
@@ -32089,6 +32210,14 @@ Polymer.AppLocalizeBehavior = {
               }
 
               pif.appendChild(vau);
+
+              if(obj.required) {
+                var err = document.createElement('paper-input-error');
+                err.textContent = (obj.errorMessage)?obj.errorMessage:this.localize('campoObbligatorio');
+                err.className = 'vaadin-upload-required';
+                pif.appendChild(err);
+              }
+
               sezioneDiv.appendChild(pif);
               this.setFileInputProperties(vau, obj);
               vau.disabled = !obj.editable;
@@ -32591,6 +32720,8 @@ Polymer.AppLocalizeBehavior = {
 
     setFileInputProperties: function(fileInput, data){
       fileInput.type = 'file';
+      fileInput.noAuto = true;
+      fileInput.i18n.uploading.status.held = this.localize('uploadingStatus');
       fileInput.avanzata = data.avanzata;
       if (data.avanzata){
         fileInput.hidden = !this.avanzata;
@@ -32599,6 +32730,13 @@ Polymer.AppLocalizeBehavior = {
         fileInput.hidden = data.hidden;
       }
       fileInput.required = data.required;
+      if(data.required) {
+        fileInput.validate = function() {
+            var e = this.parentElement.querySelector('.vaadin-upload-required');
+            this.toggleClass('vaadin-upload-required-error', (this.files.length == 0), e);
+            return this.files.length != 0;
+        }
+      }
       //fileInput.label = data.label;
       fileInput.name = data.id;
       fileInput.id = data.id;
@@ -32608,7 +32746,6 @@ Polymer.AppLocalizeBehavior = {
       if (data.pattern){
         fileInput.pattern = data.pattern;
       }
-      fileInput.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         fileInput.refreshParamIds = data.refreshParamIds;
         fileInput.addEventListener('change', this.changeData.bind(this));
@@ -32620,7 +32757,7 @@ Polymer.AppLocalizeBehavior = {
       }
 
       // vaadin properties
-      //      var fu = fu || this.$$('#'+fileInput.id);
+      // var fu = fu || this.$$('#'+fileInput.id);
       if(data.maxFileSize) {
         fileInput.maxFileSize = data.maxFileSize;
       }
@@ -32638,76 +32775,6 @@ Polymer.AppLocalizeBehavior = {
         fileInput.accept = acc;
       }
       fileInput.nodrop = true;
-      if(data.target) {
-        fileInput.target = REST_URL + data.target + app.appendLangParameter(data.target);
-      }
-      fileInput.addEventListener('file-reject', function(event){
-        console.log(event.detail);
-      });
-      fileInput.addEventListener('upload-success', function(event) {
-        console.log("Upload Success: ");
-        if(event.detail){
-          if(event.detail.xhr){
-            if(event.detail.xhr.response){
-              var jsonResponse = JSON.parse(event.detail.xhr.response);
-
-              var isOk = false;
-              if (jsonResponse.dettaglioEsito){
-                switch (jsonResponse.esitoOperazione){
-                  case 'ESEGUITA':
-                    isOk = true;
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'success');
-                    break;
-                  case 'NONESEGUITA':
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'warning');
-                    break;
-                  case 'ERRORE':
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'error');
-                    break;
-                }
-              } else {
-                switch (jsonResponse.esitoOperazione){
-                  case 'ESEGUITA':
-                    isOk = true;
-                    app.showPaperToast(this.localize('okUpload'), 'success');
-                    break;
-                  case 'NONESEGUITA':
-                    app.showPaperToast(this.localize('warningUpload') + jsonResponse.codOperazione, 'warning');
-                    break;
-                  case 'ERRORE':
-                    app.showPaperToast(this.localize('errorUpload') + jsonResponse.codOperazione, 'error');
-                    break;
-                }
-              }
-
-              if(isOk){
-                var form = event.target.parentElement.parentElement.parentElement;
-                var formChildren = form.children;
-                var response = jsonResponse.response;
-
-                for (var s = 0; s < formChildren.length; s ++) {
-                  var dd = formChildren[s];
-                  if(dd.tagName == 'DIV' && dd.className == 'sezioneForm') {
-                    var chSezione = dd.children;
-                    for (var g = 0; g < chSezione.length; g ++) {
-                      var elemento = chSezione[g];
-                      for (var i = 0 ; i < response.length; i ++) {
-                        var toUpdate = response[i];
-                        var idElemento = toUpdate.etichetta;
-                        var valoreElemento = toUpdate.valore;
-                        //   var elemento = document.querySelector('#'+idElemento);
-                        if(elemento.id == idElemento)
-                          elemento.value = ''+valoreElemento;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }.bind(this));
-
     },
 
     refreshFileInputData: function(target){
@@ -33471,41 +33538,130 @@ Polymer.AppLocalizeBehavior = {
 
       edit: function(event){
         var ok = this.$.editForm.validate();
-          if (ok){
+        if(ok) {
+          var vaadinUps = this.querySelectorAll('vaadin-upload');
+          for (var v = 0; v < vaadinUps.length; v++) {
+            if(!vaadinUps[v].validate()){
+                ok = false;
+                break;
+            }
+          }
+        }
+        if (ok) {
           var temp = this.serializeForm(this.$.editForm);
           var ms = this.querySelectorAll('link-multi-select');
           for (var lb = 0; lb < ms.length; lb++) {
             temp[ms[lb].id] = ms[lb].selectedValues;
           }
-          var lista = Object.keys(temp);
-          for (var i = 0; i < lista.length; i++) {
-            var obj = lista[i];
-            var newValue = temp[obj];
-            switch (this.$$('#'+obj).localName){
-              case 'paper-dropdown-menu':
-                if (this.$$('#'+obj).selectedItem){
-                  newValue=this.$$('#'+obj).selectedItem.value;
-                } else {
-                  newValue = null;
-                }
-                break;
-              default:
-                break;
-            }
-            if (newValue!=null){
-              temp[obj]=newValue;
-            }
+
+          //Vaadin-upload files
+          if (vaadinUps && vaadinUps.length > 0) {
+            app.showSpinner();
+            this._nextVaadinUp(vaadinUps[vaadinUps.length-1], vaadinUps.length-1, vaadinUps, temp);
           }
-          //console.log(temp);
-          this.$.editResource.url = this.editUrl;
-          this.$.editResource.method = this.method;
-          this.$.editResource.contentType="application/json";
-          this.$.editResource.body = JSON.stringify(temp);
-          app.showSpinner();
-          this.$.editResource.generateRequest();
+          else {
+              this.postEdit(temp);
+          }
         } else {
           app.showPaperToast('Errori di compilazione');
         }
+      },
+      /** *********** Vaadin-upload files ************ **/
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *       vsl: indice elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextVaadinUp: function(_vaadin, vsl, _vaadins, temp){
+          if(vsl >= 0){
+              var vfl = _vaadin.files.length - 1;
+              this._nextFile(_vaadin, vsl, vfl, _vaadins, temp);
+          } else {
+            app.hideSpinner();
+            this.postEdit(temp);
+          }
+      },
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *         k: indice elemento vaadin-upload
+       *         i: indice .files per elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextFile: function(_vaadin, k, i, _vaadins, temp){
+        if(i >= 0){
+            this._nextReader(_vaadin, k, i, _vaadins, temp);
+        } else {
+          k--;
+          this._nextVaadinUp(_vaadin, k, _vaadins, temp);
+        }
+      },
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *         k: indice elemento vaadin-upload
+       *         i: indice .files per elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextReader: function(_vaadin, k, i, _vaadins, temp){
+        var r = new FileReader();
+        var f = _vaadin.files[i];
+        r.onload = function(_f, e) {
+            var _b64 = this._bufferToB64(e.target.result);
+            if(!temp.hasOwnProperty(_vaadins[k].id) || temp[_vaadins[k].id] == null) {
+              temp[_vaadins[k].id] = [{ data: _b64, filename: _f.name }];
+            } else {
+              temp[_vaadins[k].id].push({ data: _b64, filename: _f.name });
+            }
+            i--;
+            this._nextFile(_vaadin, k, i, _vaadins, temp);
+        }.bind(this, f);
+
+        r.readAsArrayBuffer(f);
+      },
+      _bufferToB64: function(buffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+
+        return btoa(binary);
+      },
+      /** ***************************** **/
+
+      postEdit: function(temp) {
+        var lista = Object.keys(temp);
+        for (var i = 0; i < lista.length; i++) {
+          var obj = lista[i];
+          var newValue = temp[obj];
+          switch (this.$$('#'+obj).localName){
+            case 'paper-dropdown-menu':
+              if (this.$$('#'+obj).selectedItem){
+                newValue=this.$$('#'+obj).selectedItem.value;
+              } else {
+                newValue = null;
+              }
+              break;
+            default:
+              break;
+          }
+          if (newValue!=null){
+            temp[obj]=newValue;
+          }
+        }
+        //console.log(temp);
+        this.$.editResource.url = this.editUrl;
+        this.$.editResource.method = this.method;
+        this.$.editResource.contentType="application/json";
+        this.$.editResource.body = JSON.stringify(temp);
+        app.showSpinner();
+        this.$.editResource.generateRequest();
       },
 
       editResource_responseHandler: function(event){
@@ -35671,9 +35827,10 @@ Polymer.AppLocalizeBehavior = {
 
       .voce {
         min-height: 24px;
-        padding-bottom: 8px;
-        flex-basis: 50%;
-        width: 50%;
+        padding: 0 16px 8px 0;
+        box-sizing: border-box;
+        flex-basis: calc(var(--voce-basis, 50%) - 16px);
+        width: calc(var(--voce-basis, 50%) - 16px);
       }
 
       .card-content .etichetta {
@@ -35727,6 +35884,20 @@ Polymer.AppLocalizeBehavior = {
         .mobile-space {
           width: 100%;
         }
+
+        .card-content {
+          @apply(--layout-vertical);
+          flex-basis: 50%;
+          font-size: 12px;
+          padding: 0;
+          position:relative;
+        }
+
+        .voce {
+          min-height: 24px;
+          padding-bottom: 8px;
+          width: 100%;
+        }
       }
 
     </style>
@@ -35755,7 +35926,7 @@ Polymer.AppLocalizeBehavior = {
               <paper-card class="sezione" heading="[[item.etichetta]]" elevation="0" hidden$="[[_checkSessioni(item, avanzata)]]">
                 <div class="card-content">
                   <template is="dom-repeat" items="[[item.voci]]" as="voce">
-                    <div class="voce ellipsis-text" hidden$="[[_checkVoci(voce, avanzata)]]">
+                    <div class="voce ellipsis-text" style$="[[_setClassAndOrder(index)]]" hidden$="[[_checkVoci(voce, avanzata)]]">
                       <span class$="[[classeEtichetta(voce)]]">[[getEtichetta(voce)]]</span>
                       <span class$="[[classeValore(voce)]]" on-tap="getReference">[[voce.valore]]</span>
                       
@@ -35919,6 +36090,7 @@ Polymer.AppLocalizeBehavior = {
           this.simpleSearchHidden = true;
 
           this.fabsMenu();
+          this._updateBasis(obj);
         }
       },
 
@@ -35928,6 +36100,18 @@ Polymer.AppLocalizeBehavior = {
             this.uriEsportazione || this.uriCancellazione)) {
           this.showFabMenu = true;
         }
+      },
+
+      _updateBasis: function(_obj) {
+        this.customStyle['--voce-basis'] = '50%';
+        this.updateStyles();
+      },
+
+      _setClassAndOrder: function(_index) {
+        var st = 'order: '+ parseInt(_index + 1)+'; ';
+        st += '-webkit-order: '+ parseInt(_index + 1)+'; ';
+        st += '-ms-order: '+ parseInt(_index + 1)+';';
+        return st;
       },
 
       _setVisibility: function(url){
@@ -37466,6 +37650,15 @@ event and do your own custom submission:
         document.body.appendChild(lpp);
       },
 
+      openProfilo: function(){
+        this.$.pmb.close();
+        var _profilo = document.createElement('link-profilo-panel');
+        document.body.appendChild(_profilo);
+        this.async(function(){
+          _profilo.show();
+        });
+      },
+
       logout: function(event){
         this.$.logout.url= REST_SERVER + BASE_URL + app.consoleInfo.logout;
         app.showSpinner();
@@ -38086,8 +38279,10 @@ event and do your own custom submission:
         },
 
         showAbout: function(event){
-          this.aboutInfo = app.consoleInfo.about;
-          this.$.animated.open();
+          if(app.consoleInfo && app.consoleInfo.about) {
+            this.aboutInfo = app.consoleInfo.about;
+            this.$.animated.open();
+          }
         },
 
         close: function(){
@@ -38858,7 +39053,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
         availableDates: Array,
         monthFormat: {
           type: String,
-          value: 'YYYY-MM',
+          value: 'YYYY-MM'
         },
         multidate: Boolean,
         selectedDates: {
@@ -39397,7 +39592,7 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
     <paper-dialog id="dialog" with-backdrop="" on-iron-overlay-opened="_datePickerDialogOpened" on-iron-overlay-closed="_datePickerDialogClosed">
       <paper-dialog-scrollable>
 
-        <link-datepicker locale="[[locale]]" date="{{date}}" m-date="{{mDate}}" date-format="{{dateFormat}}" m-date-trigger="{{mDateTrigger}}" is-selected="{{isSelected}}" min-date="{{minDate}}" max-date="{{maxDate}}" available-dates="{{availableDates}}" multidate="[[multidate]]" selected-dates="{{selectedDates}}" rangedate="[[rangedate]]" ,="" selected-range="{{selectedRange}}" heading-not-selected-format="{{headingNotSelectedFormat}}" heading-selected-format="{{headingSelectedFormat}}"></link-datepicker>
+        <link-datepicker locale="[[locale]]" date="{{date}}" m-date="{{mDate}}" date-format="{{dateFormat}}" m-date-trigger="{{mDateTrigger}}" is-selected="{{isSelected}}" min-date="{{minDate}}" max-date="{{maxDate}}" available-dates="{{availableDates}}" multidate="[[multidate]]" selected-dates="{{selectedDates}}" rangedate="[[rangedate]]" selected-range="{{selectedRange}}" heading-not-selected-format="{{headingNotSelectedFormat}}" heading-selected-format="{{headingSelectedFormat}}"></link-datepicker>
 
         <hr>
 
@@ -39489,7 +39684,6 @@ return k({},n(this))}function Bc(){return n(this).overflow}function Cc(){return{
       _datePickerDialogClosed: function(event){
         if(event.detail.confirmed) {
           if(this.selectedRange.start != '' && this.selectedRange.end != '') {
-            event.currentTarget.querySelector('#monthView').selectedDates = [];
             this.fire('dialog-closed', { range: this.selectedRange });
           }
         }
@@ -40012,7 +40206,7 @@ var xb=["جنوری","فروری","مارچ","اپریل","مئی","جون","ج�
 //! author : Chris Lam : https://github.com/hehachris
 return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:yb,weekdaysMin:yb,longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd، D MMMM YYYY HH:mm"},meridiemParse:/صبح|شام/,isPM:function(a){return"شام"===a},meridiem:function(a,b,c){return a<12?"صبح":"شام"},calendar:{sameDay:"[آج بوقت] LT",nextDay:"[کل بوقت] LT",nextWeek:"dddd [بوقت] LT",lastDay:"[گذشتہ روز بوقت] LT",lastWeek:"[گذشتہ] dddd [بوقت] LT",sameElse:"L"},relativeTime:{future:"%s بعد",past:"%s قبل",s:"چند سیکنڈ",m:"ایک منٹ",mm:"%d منٹ",h:"ایک گھنٹہ",hh:"%d گھنٹے",d:"ایک دن",dd:"%d دن",M:"ایک ماہ",MM:"%d ماہ",y:"ایک سال",yy:"%d سال"},preparse:function(a){return a.replace(/،/g,",")},postformat:function(a){return a.replace(/,/g,"،")},week:{dow:1,doy:4}}),a.defineLocale("uz-latn",{months:"Yanvar_Fevral_Mart_Aprel_May_Iyun_Iyul_Avgust_Sentabr_Oktabr_Noyabr_Dekabr".split("_"),monthsShort:"Yan_Fev_Mar_Apr_May_Iyun_Iyul_Avg_Sen_Okt_Noy_Dek".split("_"),weekdays:"Yakshanba_Dushanba_Seshanba_Chorshanba_Payshanba_Juma_Shanba".split("_"),weekdaysShort:"Yak_Dush_Sesh_Chor_Pay_Jum_Shan".split("_"),weekdaysMin:"Ya_Du_Se_Cho_Pa_Ju_Sha".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Bugun soat] LT [da]",nextDay:"[Ertaga] LT [da]",nextWeek:"dddd [kuni soat] LT [da]",lastDay:"[Kecha soat] LT [da]",lastWeek:"[O'tgan] dddd [kuni soat] LT [da]",sameElse:"L"},relativeTime:{future:"Yaqin %s ichida",past:"Bir necha %s oldin",s:"soniya",m:"bir daqiqa",mm:"%d daqiqa",h:"bir soat",hh:"%d soat",d:"bir kun",dd:"%d kun",M:"bir oy",MM:"%d oy",y:"bir yil",yy:"%d yil"},week:{dow:1,doy:7}}),a.defineLocale("uz",{months:"январ_феврал_март_апрел_май_июн_июл_август_сентябр_октябр_ноябр_декабр".split("_"),monthsShort:"янв_фев_мар_апр_май_июн_июл_авг_сен_окт_ноя_дек".split("_"),weekdays:"Якшанба_Душанба_Сешанба_Чоршанба_Пайшанба_Жума_Шанба".split("_"),weekdaysShort:"Якш_Душ_Сеш_Чор_Пай_Жум_Шан".split("_"),weekdaysMin:"Як_Ду_Се_Чо_Па_Жу_Ша".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"D MMMM YYYY, dddd HH:mm"},calendar:{sameDay:"[Бугун соат] LT [да]",nextDay:"[Эртага] LT [да]",nextWeek:"dddd [куни соат] LT [да]",lastDay:"[Кеча соат] LT [да]",lastWeek:"[Утган] dddd [куни соат] LT [да]",sameElse:"L"},relativeTime:{future:"Якин %s ичида",past:"Бир неча %s олдин",s:"фурсат",m:"бир дакика",mm:"%d дакика",h:"бир соат",hh:"%d соат",d:"бир кун",dd:"%d кун",M:"бир ой",MM:"%d ой",y:"бир йил",yy:"%d йил"},week:{dow:1,doy:7}}),a.defineLocale("vi",{months:"tháng 1_tháng 2_tháng 3_tháng 4_tháng 5_tháng 6_tháng 7_tháng 8_tháng 9_tháng 10_tháng 11_tháng 12".split("_"),monthsShort:"Th01_Th02_Th03_Th04_Th05_Th06_Th07_Th08_Th09_Th10_Th11_Th12".split("_"),monthsParseExact:!0,weekdays:"chủ nhật_thứ hai_thứ ba_thứ tư_thứ năm_thứ sáu_thứ bảy".split("_"),weekdaysShort:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysMin:"CN_T2_T3_T4_T5_T6_T7".split("_"),weekdaysParseExact:!0,meridiemParse:/sa|ch/i,isPM:function(a){return/^ch$/i.test(a)},meridiem:function(a,b,c){return a<12?c?"sa":"SA":c?"ch":"CH"},longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"DD/MM/YYYY",LL:"D MMMM [năm] YYYY",LLL:"D MMMM [năm] YYYY HH:mm",LLLL:"dddd, D MMMM [năm] YYYY HH:mm",l:"DD/M/YYYY",ll:"D MMM YYYY",lll:"D MMM YYYY HH:mm",llll:"ddd, D MMM YYYY HH:mm"},calendar:{sameDay:"[Hôm nay lúc] LT",nextDay:"[Ngày mai lúc] LT",nextWeek:"dddd [tuần tới lúc] LT",lastDay:"[Hôm qua lúc] LT",lastWeek:"dddd [tuần rồi lúc] LT",sameElse:"L"},relativeTime:{future:"%s tới",past:"%s trước",s:"vài giây",m:"một phút",mm:"%d phút",h:"một giờ",hh:"%d giờ",d:"một ngày",dd:"%d ngày",M:"một tháng",MM:"%d tháng",y:"một năm",yy:"%d năm"},dayOfMonthOrdinalParse:/\d{1,2}/,ordinal:function(a){return a},week:{dow:1,doy:4}}),a.defineLocale("x-pseudo",{months:"J~áñúá~rý_F~ébrú~árý_~Márc~h_Áp~ríl_~Máý_~Júñé~_Júl~ý_Áú~gúst~_Sép~témb~ér_Ó~ctób~ér_Ñ~óvém~bér_~Décé~mbér".split("_"),monthsShort:"J~áñ_~Féb_~Már_~Ápr_~Máý_~Júñ_~Júl_~Áúg_~Sép_~Óct_~Ñóv_~Déc".split("_"),monthsParseExact:!0,weekdays:"S~úñdá~ý_Mó~ñdáý~_Túé~sdáý~_Wéd~ñésd~áý_T~húrs~dáý_~Fríd~áý_S~átúr~dáý".split("_"),weekdaysShort:"S~úñ_~Móñ_~Túé_~Wéd_~Thú_~Frí_~Sát".split("_"),weekdaysMin:"S~ú_Mó~_Tú_~Wé_T~h_Fr~_Sá".split("_"),weekdaysParseExact:!0,longDateFormat:{LT:"HH:mm",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY HH:mm",LLLL:"dddd, D MMMM YYYY HH:mm"},calendar:{sameDay:"[T~ódá~ý át] LT",nextDay:"[T~ómó~rró~w át] LT",nextWeek:"dddd [át] LT",lastDay:"[Ý~ést~érdá~ý át] LT",lastWeek:"[L~ást] dddd [át] LT",sameElse:"L"},relativeTime:{future:"í~ñ %s",past:"%s á~gó",s:"á ~féw ~sécó~ñds",m:"á ~míñ~úté",mm:"%d m~íñú~tés",h:"á~ñ hó~úr",hh:"%d h~óúrs",d:"á ~dáý",dd:"%d d~áýs",M:"á ~móñ~th",MM:"%d m~óñt~hs",y:"á ~ýéár",yy:"%d ý~éárs"},dayOfMonthOrdinalParse:/\d{1,2}(th|st|nd|rd)/,ordinal:function(a){var b=a%10,c=1===~~(a%100/10)?"th":1===b?"st":2===b?"nd":3===b?"rd":"th";return a+c},week:{dow:1,doy:4}}),a.defineLocale("yo",{months:"Sẹ́rẹ́_Èrèlè_Ẹrẹ̀nà_Ìgbé_Èbibi_Òkùdu_Agẹmo_Ògún_Owewe_Ọ̀wàrà_Bélú_Ọ̀pẹ̀̀".split("_"),monthsShort:"Sẹ́r_Èrl_Ẹrn_Ìgb_Èbi_Òkù_Agẹ_Ògú_Owe_Ọ̀wà_Bél_Ọ̀pẹ̀̀".split("_"),weekdays:"Àìkú_Ajé_Ìsẹ́gun_Ọjọ́rú_Ọjọ́bọ_Ẹtì_Àbámẹ́ta".split("_"),weekdaysShort:"Àìk_Ajé_Ìsẹ́_Ọjr_Ọjb_Ẹtì_Àbá".split("_"),weekdaysMin:"Àì_Aj_Ìs_Ọr_Ọb_Ẹt_Àb".split("_"),longDateFormat:{LT:"h:mm A",LTS:"h:mm:ss A",L:"DD/MM/YYYY",LL:"D MMMM YYYY",LLL:"D MMMM YYYY h:mm A",LLLL:"dddd, D MMMM YYYY h:mm A"},calendar:{sameDay:"[Ònì ni] LT",nextDay:"[Ọ̀la ni] LT",nextWeek:"dddd [Ọsẹ̀ tón'bọ] [ni] LT",lastDay:"[Àna ni] LT",lastWeek:"dddd [Ọsẹ̀ tólọ́] [ni] LT",sameElse:"L"},relativeTime:{future:"ní %s",past:"%s kọjá",s:"ìsẹjú aayá die",m:"ìsẹjú kan",mm:"ìsẹjú %d",h:"wákati kan",hh:"wákati %d",d:"ọjọ́ kan",dd:"ọjọ́ %d",M:"osù kan",MM:"osù %d",y:"ọdún kan",yy:"ọdún %d"},dayOfMonthOrdinalParse:/ọjọ́\s\d{1,2}/,ordinal:"ọjọ́ %d",week:{dow:1,doy:4}}),a.defineLocale("zh-cn",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"周日_周一_周二_周三_周四_周五_周六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日Ah点mm分",LLLL:"YYYY年MMMD日ddddAh点mm分",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"下午"===b||"晚上"===b?a+12:a>=11?a:a+12},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|周)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"周";default:return a}},relativeTime:{future:"%s内",past:"%s前",s:"几秒",m:"1 分钟",mm:"%d 分钟",h:"1 小时",hh:"%d 小时",d:"1 天",dd:"%d 天",M:"1 个月",MM:"%d 个月",y:"1 年",yy:"%d 年"},week:{dow:1,doy:4}}),a.defineLocale("zh-hk",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"週日_週一_週二_週三_週四_週五_週六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日 HH:mm",LLLL:"YYYY年MMMD日dddd HH:mm",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"中午"===b?a>=11?a:a+12:"下午"===b||"晚上"===b?a+12:void 0},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|週)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"週";default:return a}},relativeTime:{future:"%s內",past:"%s前",s:"幾秒",m:"1 分鐘",mm:"%d 分鐘",h:"1 小時",hh:"%d 小時",d:"1 天",dd:"%d 天",M:"1 個月",MM:"%d 個月",y:"1 年",yy:"%d 年"}}),a.defineLocale("zh-tw",{months:"一月_二月_三月_四月_五月_六月_七月_八月_九月_十月_十一月_十二月".split("_"),monthsShort:"1月_2月_3月_4月_5月_6月_7月_8月_9月_10月_11月_12月".split("_"),weekdays:"星期日_星期一_星期二_星期三_星期四_星期五_星期六".split("_"),weekdaysShort:"週日_週一_週二_週三_週四_週五_週六".split("_"),weekdaysMin:"日_一_二_三_四_五_六".split("_"),longDateFormat:{LT:"HH:mm",LTS:"HH:mm:ss",L:"YYYY年MMMD日",LL:"YYYY年MMMD日",LLL:"YYYY年MMMD日 HH:mm",LLLL:"YYYY年MMMD日dddd HH:mm",l:"YYYY年MMMD日",ll:"YYYY年MMMD日",lll:"YYYY年MMMD日 HH:mm",llll:"YYYY年MMMD日dddd HH:mm"},meridiemParse:/凌晨|早上|上午|中午|下午|晚上/,meridiemHour:function(a,b){return 12===a&&(a=0),"凌晨"===b||"早上"===b||"上午"===b?a:"中午"===b?a>=11?a:a+12:"下午"===b||"晚上"===b?a+12:void 0},meridiem:function(a,b,c){var d=100*a+b;return d<600?"凌晨":d<900?"早上":d<1130?"上午":d<1230?"中午":d<1800?"下午":"晚上"},calendar:{sameDay:"[今天]LT",nextDay:"[明天]LT",nextWeek:"[下]ddddLT",lastDay:"[昨天]LT",lastWeek:"[上]ddddLT",sameElse:"L"},dayOfMonthOrdinalParse:/\d{1,2}(日|月|週)/,ordinal:function(a,b){switch(b){case"d":case"D":case"DDD":return a+"日";case"M":return a+"月";case"w":case"W":return a+"週";default:return a}},relativeTime:{future:"%s內",past:"%s前",s:"幾秒",m:"1 分鐘",mm:"%d 分鐘",h:"1 小時",hh:"%d 小時",d:"1 天",dd:"%d 天",M:"1 個月",MM:"%d 個月",y:"1 年",yy:"%d 年"}}),a.locale("en"),a});</script>
 
-<dom-module id="link-chart-bar" assetpath="link-chart-bar/">
+<dom-module id="link-chart" assetpath="link-chart/">
 
   <template>
     <style include="shared-styles">
@@ -40063,7 +40257,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         @apply(--layout-vertical);
         width: 240px;
         min-width: 200px;
-        height: 240px;
+        padding: 16px;
         margin: 0 24px 0 0;
       }
 
@@ -40099,7 +40293,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
     <paper-header-panel>
       <paper-toolbar class="medium-tall">
         <paper-icon-button icon="menu" on-tap="goBack"></paper-icon-button>
-        <div class="ellipsis-text">Nome statistica</div>
+        <div class="ellipsis-text">[[titolo]]</div>
         <link-user-action id="userAction" user="[[user]]"></link-user-action>
         <paper-tabs class="bottom fit" selected="0" no-slide="" on-iron-select="switchView">
           <paper-tab>NOME VISTA</paper-tab>
@@ -40109,7 +40303,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
       </paper-toolbar>
       <div class="content">
         <paper-material class="filter-group hidden-filter" elevation="0">
-          <form is="iron-form" class="form">
+          <form id="filterForm" is="iron-form" class="form">
           </form>
           <div class="buttonBar">
             <paper-button class="accentColor" on-tap="search">[[localize('cerca')]]</paper-button>
@@ -40131,20 +40325,38 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
     </link-fab-menu>
     <link-datepicker-dialog id="dialog" locale="it" rangedate="true" heading-selected-format="MMM YYYY" heading-not-selected-format="MMM YYYY" on-dialog-closed="_rangeSelected"></link-datepicker-dialog>
 
+
+    <iron-ajax id="getChartInfo" handle-as="json" on-response="getChartInfo_responseHandler" on-error="getChartInfo_errorHandler" debounce-duration="300"></iron-ajax>
+
   </template>
   <script>
     (function() {
       'use strict';
 
       Polymer({
-        is: 'link-chart-bar',
+        is: 'link-chart',
 
         behaviors: [
+          LinkFormBehavior,
           LinkLocalizeBehavior
         ],
 
+        observers: [
+          'requestChartInfo(uri)',
+          'languageLoad(language)'
+        ],
+
         properties: {
+          _currentLanguage: {
+            type: String,
+            value: function() {
+              return app.LANGUAGE;
+            }
+          },
           titolo: {
+            type: String
+          },
+          uri: {
             type: String
           },
           data: {
@@ -40160,6 +40372,10 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           dataSeries: {
             type: Object
           },
+          _baseURL: {
+            type: String,
+            value: ''
+          },
           _maxY: {
             type: Number
           },
@@ -40174,64 +40390,110 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
           }
         },
 
+        languageLoad: function(language){
+          if(this.getBoundingClientRect().height != 0) {
+            if(this._currentLanguage && this._currentLanguage != language) {
+              this._currentLanguage = language;
+              console.log('TODO - refresh for language');
+              //this.requestChartInfo(); //refresh
+            }
+          }
+        },
+
         ready: function() {
           this.listen(window, 'resize', '_resizeChart');
 
           this._canvas = this.querySelector('canvas');
 
-          this.labelsInterval = ['Lun', 'Mar', 'Mer'];
+          //this.labelsInterval = ['Lun', 'Mar', 'Mer'];
 
-          this.createChart();
+          //this.createChart();
         },
 
         attached: function() {
-          this.async(function(){
+          /*this.async(function(){
             this._resizeChart();
-          });
+          });*/
         },
 
         goBack: function(event){
           this.fire('open-drawer', null, true);
         },
 
-        createChart: function () {
-          /*var simplePlugin = {
-            afterEvent: function(chartInstance, event) {
-                if(event.type == 'mouseout') {
-                  this.onHover = false
-                }
-            }.bind(this)
-          };
+        requestChartInfo: function(_uri){
+          if (_uri != '') {
+            this._baseURL = REST_URL + _uri + app.appendLangParameter(_uri);
+            this.retrieveChartData(this._baseURL);
+          }
+        },
 
-          // Let Chart.js know about the new plugin
-          Chart.pluginService.register(simplePlugin);*/
+        retrieveChartData: function(_uri){
+          if (_uri != '') {
+            app.showSpinner();
+            this.$.getChartInfo.url = _uri;
+            this.$.getChartInfo.generateRequest();
+          }
+        },
 
+        getChartInfo_responseHandler: function(event) {
+          app.hideSpinner();
+          this.obj = event.detail.response.response;
+          if (this.obj){
+            this.setResponse(this.obj);
+          } else {
+            if(event.detail.response) {
+              var _msg = (event.detail.response.dettaglioEsito)?event.detail.response.dettaglioEsito:'Error';
+              app.showPaperToast(_msg, 'error');
+            }
+          }
+        },
+
+        getChartInfo_errorHandler: function(event){
+          app.hideSpinner();
+          app.dars_errorHandler(event);
+        },
+
+        setResponse: function(_response){
+          this.buildForm(_response.infoRicerca, this.$.filterForm);
+
+          var _grafico = { datasetsData: [], labelsInterval: [], tooltip: [] };
+          _grafico.type = _response.grafico.tipo.toLowerCase();
+          _grafico.chartTitle = _response.grafico.titolo;
+          _grafico.xLabelString = _response.grafico.labelX;
+          _grafico.yLabelString = _response.grafico.labelY;
+          _grafico.type = _response.grafico.tipo.toLowerCase();
+          _grafico.labelsInterval = _response.grafico.valoriX;
+          _grafico.datasetsData = _response.grafico.serie.map(function (item, index) {
+            return {
+                        label: '',
+                         data: item.dati,
+                         tips: item.tooltip,
+              backgroundColor: 'rgba(255,0,0,1)',
+                  borderColor: 'rgba(255,0,0,1)',
+                  borderWidth: 1,
+                        stack: 1
+            };
+          });
+          for (var i = 0; i < _grafico.datasetsData.length; i++) {
+            var item = _grafico.datasetsData[i];
+            item.label = _response.grafico.categorie[i];
+            item.backgroundColor = _response.grafico.colori[i];
+            item.borderColor = _response.grafico.colori[i];
+          }
+
+          this.createChart(_grafico);
+        },
+
+        createChart: function (_grafico) {
           var ctx = this._canvas.getContext('2d');
 
           //this._generateRandomValues();
 
           this.data = {
-            type: 'bar',
+            type: _grafico.type,
             data: {
-              labels: this.labelsInterval,
-              datasets: [
-                {
-                  label: 'Transazioni completate',
-                  data: [],
-                  backgroundColor: 'rgba(190, 30, 30, .35)',
-                  borderColor: 'rgba(190, 30, 30, 1)',
-                  borderWidth: 1,
-                  stack: 1
-                },
-                {
-                  label: 'Transazioni con errore',
-                  data: [],
-                  backgroundColor: 'rgba(30, 190, 30, .35)',
-                  borderColor: 'rgba(30, 190, 30, 1)',
-                  borderWidth: 1,
-                  stack: 1
-                }
-              ]
+              labels: _grafico.labelsInterval,
+              datasets: _grafico.datasetsData
             },
             options: {
               hover: {
@@ -40245,18 +40507,18 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
                 display: true,
                 fontSize: 20,
                 padding: 30,
-                text: 'Numero Transazioni'
+                text: _grafico.chartTitle
               },
               legend: {
                 display: true,
                 position: 'bottom'
               },
               tooltips: {
-                enaable: true,
+                enable: true,
                 mode: 'index',
                 callbacks: {
                   label: function(tooltipItem, data) {
-                    return data.datasets[tooltipItem.datasetIndex].label + ": " + tooltipItem.yLabel;
+                    return data.datasets[tooltipItem.datasetIndex].tips[tooltipItem.index];
                   }
                 }
               },
@@ -40265,7 +40527,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
                   scaleLabel: {
                     display: true,
                     fontSize: 16,
-                    labelString: 'Tempo'
+                    labelString: _grafico.xLabelString
                   }
                 }],
                 yAxes: [
@@ -40273,7 +40535,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
                     scaleLabel: {
                       display: true,
                       fontSize: 16,
-                      labelString: 'Numero Transazioni'
+                      labelString: _grafico.yLabelString
                     },
                     ticks: {
                       beginAtZero:true
@@ -40286,27 +40548,9 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
           this.stackedChart = new Chart(ctx, this.data);
           this.stackedChart.options.animation.duration = 500;
-          /*this.stackedChart.options.animation.onComplete = function(){
-            if(!this.onHover) {
-              var chartInstance = this.stackedChart.chart,
-              ctx = chartInstance.ctx;
-              ctx.font = Chart.helpers.fontString(Chart.defaults.global.defaultFontSize, Chart.defaults.global.defaultFontStyle, Chart.defaults.global.defaultFontFamily);
-              ctx.textAlign = 'center';
-              ctx.textBaseline = 'bottom';
-
-              this.stackedChart.data.datasets.forEach(function(dataset, i, _datasets) {
-                var meta = chartInstance.controller.getDatasetMeta(i);
-                meta.data.forEach(function(bar, index) {
-                  var data = dataset.data[index];
-                  if(bar._datasetIndex == (_datasets.length - 1)) {
-                    ctx.fillText(data, bar._model.x, bar._model.y - 5);
-                  } else {
-                    ctx.fillText(data, bar._model.x, bar._model.y + Math.abs(bar._model.base - bar._model.y)/2 + Chart.defaults.global.defaultFontSize/2);
-                  }
-                });
-              });
-            }
-          }.bind(this);*/
+          this.async(function(){
+            this._resizeChart();
+          });
         },
 
         _openRange: function() {
@@ -40314,7 +40558,43 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         },
 
         _rangeSelected: function(event) {
-          console.log(event.detail.range);
+          if(event.detail.range.hasOwnProperty('start') && event.detail.range.hasOwnProperty('end')) {
+            var _query = this._serialize_fields();
+            var _uri = '&dataInizio='+event.detail.range.start+'&dataFine='+event.detail.range.end+'&'+_query;
+            this.retrieveChartData(this._baseURL + _uri);
+          }
+        },
+
+        _serialize_fields: function() {
+          var temp = this.serializeForm(this.$.filterForm);
+          var ms = this.querySelectorAll('link-multi-select');
+          for (var lb = 0; lb < ms.length; lb++) {
+            temp[ms[lb].id] = ms[lb].selectedValues;
+          }
+          var lista = Object.keys(temp);
+          var query = [];
+          for (var i = 0; i < lista.length; i++) {
+            var obj = lista[i];
+            var newValue = temp[obj];
+            if (this.$$('#'+obj)){
+              switch (this.$$('#'+obj).localName){
+                case 'vaadin-combo-box':
+                  if (this.$$('#'+obj).selectedItem){
+                    newValue=this.$$('#'+obj).selectedItem.valore;
+                  } else {
+                    newValue = null;
+                  }
+                  break;
+                default:
+                  break;
+              }
+            }
+            if (newValue){
+              query.push(obj+'='+newValue);
+            }
+          }
+
+          return query.join('&');
         },
 
         _toggleFilter: function(){
@@ -40379,7 +40659,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
         },
 
         switchView: function(e) {
-          switch(e.currentTarget.selected){
+          /*switch(e.currentTarget.selected){
             case 0:
               this.labelsInterval = ['Lun', 'Mar', 'Mer'];
                 break;
@@ -40406,7 +40686,7 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
             this.stackedChart.destroy();
             this.stackedChart = new Chart(ctx, pieData);
             //this.stackedChart.data.labels = pieData.labels;
-          }
+          }*/
 
         },
 
@@ -40444,6 +40724,97 @@ return a.defineLocale("ur",{months:xb,monthsShort:xb,weekdays:yb,weekdaysShort:y
 
       });
     })();
+  </script>
+</dom-module>
+<dom-module id="link-profilo-panel" assetpath="link-profilo-panel/">
+  <template>
+    <style>
+
+      :host {
+        display: block;
+      }
+
+      .buttons {
+        @apply(--layout-horizontal);
+        @apply(--layout-flex);
+        @apply(--layout-end-justified);
+      }
+
+      .ellipsis-text {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow-x: hidden;
+      }
+
+      .ruolo {
+
+      }
+
+      .user-roles{
+
+      }
+
+      .wrapped-text {
+        white-space: normal;
+      }
+
+      .icon-dismiss {
+        margin: 0 -8px 0 0;
+      }
+
+    </style>
+
+    <paper-dialog id="profilo" entry-animation="scale-up-animation" exit-animation="scale-down-animation">
+      <h2 class="wrapped-text">[[userInfo.principal]]</h2>
+      <div class="user-roles">
+        <template is="dom-repeat" items="[[userInfo.ruoli]]" as="ruolo">
+          <p class="ruolo ellipsis-text">[[_getRuolo(ruolo)]]</p>
+        </template>
+      </div>
+    </paper-dialog>
+
+  </template>
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'link-profilo-panel',
+
+      behaviors: [
+        LinkLocalizeBehavior
+      ],
+
+      properties: {
+            userInfo: {
+            type: Object,
+            value: null
+          }
+      },
+
+      show: function(){
+        if(app.USER_LOGGED) {
+          this.userInfo = app.USER_LOGGED;
+          this.$.profilo.open();
+        }
+
+
+      },
+
+      close: function(){
+        this.$.profilo.close();
+        document.body.removeChild(this);
+      },
+
+      _getRuolo: function(_ruolo){
+        if(_ruolo){
+            return _ruolo;
+        }
+        return '';
+      }
+
+    });
+  })();
   </script>
 </dom-module>
 </div></body></html>

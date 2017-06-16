@@ -18,14 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.bd.model.converter;
+package it.govpay.bd.loader.converter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.openspcoop2.generic_project.exception.ServiceException;
 
-import it.govpay.bd.model.Tracciato;
+import it.govpay.bd.loader.model.Tracciato;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 import it.govpay.orm.IdOperatore;
 
 public class TracciatoConverter {
@@ -44,7 +45,8 @@ public class TracciatoConverter {
 		Tracciato dto = new Tracciato();
 
 		dto.setId(vo.getId());
-		dto.setStato(vo.getStato());
+		if(vo.getStato()!= null)
+			dto.setStato(StatoTracciatoType.valueOf(vo.getStato().name()));
 		dto.setDescrizioneStato(vo.getDescrizioneStato());
 
 		dto.setIdOperatore(vo.getIdOperatore().getId());
@@ -68,7 +70,8 @@ public class TracciatoConverter {
 		it.govpay.orm.Tracciato vo = new it.govpay.orm.Tracciato();
 		
 		vo.setId(dto.getId());
-		vo.setStato(dto.getStato());
+		if(dto.getStato()!= null)
+			vo.setStato(it.govpay.orm.constants.StatoTracciatoType.valueOf(dto.getStato().name()));
 		vo.setDescrizioneStato(dto.getDescrizioneStato());
 
 		IdOperatore idOperatore = new IdOperatore();
