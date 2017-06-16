@@ -2,11 +2,11 @@ package it.govpay.web.rs.dars.caricamenti.tracciati;
 
 import javax.ws.rs.Path;
 
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 
 @Path("/dars/caricamenti/operazioni")
-public class Operazioni extends BaseDarsService {
+public class Operazioni extends DarsService {
 
 	public Operazioni() {
 		super();

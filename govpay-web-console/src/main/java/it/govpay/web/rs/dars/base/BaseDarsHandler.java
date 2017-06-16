@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars;
+package it.govpay.web.rs.dars.base;
 
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.ArrayList;
@@ -35,7 +34,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.logging.log4j.Logger;
-import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.generic_project.exception.ServiceException;
 import org.openspcoop2.utils.csv.Format;
 import org.openspcoop2.utils.csv.FormatReader;
@@ -44,22 +42,19 @@ import it.govpay.bd.BasicBD;
 import it.govpay.core.utils.CSVSerializerProperties;
 import it.govpay.model.Versionabile.Versione;
 import it.govpay.web.rs.dars.exception.ConsoleException;
-import it.govpay.web.rs.dars.exception.DeleteException;
-import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
-import it.govpay.web.rs.dars.exception.ValidationException;
-import it.govpay.web.rs.dars.model.Dettaglio;
+import it.govpay.web.rs.dars.handler.IBaseDarsHandler;
 import it.govpay.web.rs.dars.model.Elemento;
-import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
+import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 
-public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
+public abstract class BaseDarsHandler<T> implements IBaseDarsHandler<T>{
 
 	protected Logger log ;
 
@@ -67,8 +62,12 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	protected String pathServizio = null;
 	protected String titoloServizio = null;
 	protected BaseDarsService darsService = null;
-	private Integer limit = null;
-	private Format formatW= null;
+	protected Integer limit = null;
+	protected Format formatW= null;
+	
+	protected Map<String, ParamField<?>> infoRicercaMap = null;
+	protected Map<String, ParamField<?>> infoCancellazioneMap = null;
+	protected Map<String, ParamField<?>> infoCreazioneMap = null;
 
 	public BaseDarsHandler(Logger log, BaseDarsService darsService){
 		this.log = log;
@@ -86,9 +85,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 			log.error("Errore durante l'inizializzazione di EstrattoConto: " + e.getMessage(),e);
 		}
 	}
-
-	@Override
-	public abstract Elenco getElenco(UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
+ 
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd ) throws ConsoleException{
 		return this.getInfoRicerca(uriInfo, bd, true);
@@ -124,48 +121,6 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 
 	@Override
-	public abstract InfoForm getInfoCreazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
-	@Override
-	public URI getUriCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		try{
-			URI uri = new URI(this.pathServizio);
-			return uri;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
-	}
-	@Override
-	public abstract InfoForm getInfoModifica(UriInfo uriInfo,BasicBD bd, T entry) throws ConsoleException;
-	@Override
-	public URI getUriModifica(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		try{
-			URI uri = new URI(this.pathServizio);
-			return uri;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
-	}
-	
-	@Override
-	public abstract InfoForm getInfoCancellazione(UriInfo uriInfo,BasicBD bd) throws ConsoleException;
-
-	@Override
-	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
-		return this.getUriCancellazione(uriInfo, bd, null);
-	}
-	
-	@Override
-	public URI getUriCancellazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters)
-			throws ConsoleException {
-		try{
-			URI uri =Utils.creaUriConPathEParametri(this.pathServizio, parameters, BaseDarsService.PATH_CANCELLA);
-			return uri;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
-	}
-
-	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd)throws ConsoleException{
 		return this.getUriEsportazione(uriInfo, bd, null);
 	}
@@ -173,7 +128,7 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	@Override
 	public URI getUriEsportazione(UriInfo uriInfo, BasicBD bd, Map<String, String> parameters) throws ConsoleException {
 		try{
-			URI uri = Utils.creaUriConPathEParametri(this.pathServizio,parameters, BaseDarsService.PATH_ESPORTA);
+			URI uri = Utils.creaUriConPathEParametri(this.pathServizio,parameters, DarsService.PATH_ESPORTA);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -181,22 +136,9 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 	
 	@Override
-	public abstract InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo,BasicBD bd, T entry) throws ConsoleException;
-
-	@Override
-	public URI getUriCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
-		try{
-			URI uri = Utils.creaUriConPath(this.pathServizio, id+"" , BaseDarsService.PATH_CANCELLA); 
-			return uri;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		}
-	}
-
-	@Override
 	public URI getUriEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, long id)throws ConsoleException{
 		try{
-			URI uri = Utils.creaUriConPath(this.pathServizio, id+"" , BaseDarsService.PATH_ESPORTA); 
+			URI uri = Utils.creaUriConPath(this.pathServizio, id+"" , DarsService.PATH_ESPORTA); 
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
@@ -204,42 +146,18 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 	}
 
 	@Override
-	public URI getUriUpload(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+	public abstract Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException;
+	
+	@Override
+	public URI getUriSearchField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
-			URI uri = Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_UPLOAD);
+			URI uri =  Utils.creaUriConPath(this.pathServizio, DarsService.PATH_SEARCH_FIELD , fieldName);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
 	}
-
-	@Override
-	public abstract Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException ;
-	@Override
-	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
-		try{
-			URI uri =  Utils.creaUriConPath(this.pathServizio, BaseDarsService.PATH_FIELD , fieldName);
-			return uri;
-		}catch(Exception e){
-			throw new ConsoleException(e);
-		} 
-	}
-
-	@Override
-	public abstract Dettaglio getDettaglio(long id, UriInfo uriInfo,BasicBD bd) throws WebApplicationException,ConsoleException;
-	@Override
-	public abstract Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,DeleteException;
-	@Override
-	public abstract T creaEntry(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException;
-	@Override
-	public abstract Dettaglio insert(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException,DuplicatedEntryException;
-	@Override
-	public abstract void checkEntry(T entry, T oldEntry) throws ValidationException;
-	@Override
-	public abstract Dettaglio update(InputStream is, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException,ValidationException;
-
-	@Override
-	public abstract Object uplaod(MultipartFormDataInput input, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException, ValidationException;
 
 	@Override
 	public  abstract String getTitolo(T entry, BasicBD bd) throws ConsoleException;

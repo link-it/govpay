@@ -57,16 +57,16 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.stampe.pdf.incasso.IncassoPdf;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -83,13 +83,12 @@ import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHandler<Incasso>{
+public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler<Incasso>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
-	public IncassiHandler(Logger log, BaseDarsService darsService) { 
+	public IncassiHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -108,7 +107,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			IncassiBD incassiBD = new IncassiBD(bd);
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			IncassoFilter filter = incassiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -164,7 +163,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 		if(simpleSearch){
 			// simplesearch
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 			}
@@ -251,7 +250,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 		if(simpleSearch){
 			// simplesearch
-			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			String simpleSearchString = Utils.getValue(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 			}
@@ -496,6 +495,9 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
@@ -722,7 +724,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
-			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			IncassiBD incassiBD = new IncassiBD(bd);
 			IncassoFilter filter = incassiBD.newFilter(simpleSearch);
 

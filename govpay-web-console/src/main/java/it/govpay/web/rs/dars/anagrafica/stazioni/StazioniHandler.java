@@ -43,15 +43,15 @@ import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Stazione;
 import it.govpay.model.Intermediario;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -68,12 +68,11 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsHandler<Stazione> {
+public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandler<Stazione> {
 
-	private static Map<String, ParamField<?>> infoCreazioneMap = null;
 	private String codIntermediario = null;
 
-	public StazioniHandler(Logger log, BaseDarsService darsService) {
+	public StazioniHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -293,6 +292,12 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
 		return null;
 	}
 

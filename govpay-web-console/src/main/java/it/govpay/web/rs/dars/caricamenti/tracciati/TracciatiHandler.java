@@ -30,9 +30,9 @@ import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.loader.Tracciato.StatoTracciatoType;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
@@ -54,13 +54,13 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDarsHandler<Tracciato>{
+public class TracciatiHandler extends DarsHandler<Tracciato> implements IDarsHandler<Tracciato>{
 
 	private Map<String, ParamField<?>> infoCreazioneMap = null;
 	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
-	public TracciatiHandler(Logger log, BaseDarsService darsService) { 
+	public TracciatiHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -77,7 +77,7 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 			URI esportazione = null; //this.getUriEsportazione(uriInfo, bd);
 
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID); 
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID); 
 
 			TracciatoFilter filter = tracciatiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -130,7 +130,7 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 
 		if(simpleSearch){
 			// simplesearch
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 			}
@@ -311,6 +311,9 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 		}
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)

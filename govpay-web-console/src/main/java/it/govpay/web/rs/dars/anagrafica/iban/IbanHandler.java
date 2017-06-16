@@ -46,16 +46,16 @@ import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.model.Dominio;
 import it.govpay.model.IbanAccredito;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.iban.input.IdNegozio;
 import it.govpay.web.rs.dars.anagrafica.iban.input.IdSellerBank;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -71,14 +71,13 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDarsHandler<IbanAccredito> {
+public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHandler<IbanAccredito> {
 
 	public static final String patternIBAN = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"; 
 	public static final String patternBIC = "[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}";
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
 	private Long idDominio = null;
 
-	public IbanHandler(Logger log, BaseDarsService darsService) {
+	public IbanHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -406,6 +405,12 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+		return null;
+	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
 		return null;
 	}
 

@@ -29,9 +29,9 @@ import it.govpay.bd.model.Tributo;
 import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.tributi.Tributi;
@@ -52,12 +52,12 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
 
-public class OperazioniHandler extends BaseDarsHandler<Operazione> implements IDarsHandler<Operazione>{
+public class OperazioniHandler extends DarsHandler<Operazione> implements IDarsHandler<Operazione>{
 
 	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
 
-	public OperazioniHandler(Logger log, BaseDarsService darsService) { 
+	public OperazioniHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -73,7 +73,7 @@ public class OperazioniHandler extends BaseDarsHandler<Operazione> implements ID
 			URI esportazione = null; //this.getUriEsportazione(uriInfo, bd);
 
 			OperazioniBD operazioniBD = new OperazioniBD(bd);
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID); 
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID); 
 
 			OperazioneFilter filter = operazioniBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -138,11 +138,11 @@ public class OperazioniHandler extends BaseDarsHandler<Operazione> implements ID
 
 		if(simpleSearch) {
 			// simplesearch
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 				if(elementoCorrelato)
-					params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+					params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 			}
 		} else {
 			String statoId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id");
@@ -270,6 +270,9 @@ public class OperazioniHandler extends BaseDarsHandler<Operazione> implements ID
 			throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)

@@ -52,9 +52,6 @@ import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Portale;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Versionabile.Versione;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPA;
 import it.govpay.web.rs.dars.anagrafica.portali.input.DominiPO;
@@ -62,11 +59,14 @@ import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPA;
 import it.govpay.web.rs.dars.anagrafica.portali.input.TipiTributoPO;
 import it.govpay.web.rs.dars.anagrafica.portali.input.Trusted;
 import it.govpay.web.rs.dars.anagrafica.tributi.TipiTributoHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -86,12 +86,9 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHandler<Portale>{
+public class PortaliHandler extends DarsHandler<Portale> implements IDarsHandler<Portale>{
 
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
-
-	public PortaliHandler(Logger log, BaseDarsService darsService) {
+	public PortaliHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -108,7 +105,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			PortaliBD portaliBD = new PortaliBD(bd);
 			PortaleFilter filter = portaliBD.newFilter(simpleSearch);
@@ -121,7 +118,7 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 
 			if(simpleSearch){
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -570,6 +567,12 @@ public class PortaliHandler extends BaseDarsHandler<Portale> implements IDarsHan
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+		return null;
+	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
 		return null;
 	}
 

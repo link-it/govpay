@@ -14,13 +14,13 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import org.openspcoop2.utils.resources.GestoreRisorseJMX;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -30,9 +30,9 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHandler<Object> {
+public class StrumentiHandler extends DarsHandler<Object> implements IDarsHandler<Object> {
 
-	public StrumentiHandler(Logger log, BaseDarsService darsService) {
+	public StrumentiHandler(Logger log, DarsService darsService) {
 		super(log, darsService);
 	}
 
@@ -195,6 +195,9 @@ public class StrumentiHandler extends BaseDarsHandler<Object> implements IDarsHa
 	@Override
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {		return null;	}
 
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
+	
 	@Override
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;}
 

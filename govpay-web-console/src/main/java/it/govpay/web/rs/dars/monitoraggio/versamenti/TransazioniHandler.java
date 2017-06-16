@@ -51,9 +51,9 @@ import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Rpt.EsitoPagamento;
 import it.govpay.model.Rpt.FirmaRichiesta;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.psp.Canali;
@@ -78,12 +78,11 @@ import it.govpay.web.rs.dars.monitoraggio.eventi.EventiHandler;
 import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.utils.Utils;
 
-public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHandler<Rpt>{
+public class TransazioniHandler extends DarsHandler<Rpt> implements IDarsHandler<Rpt>{
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 
-	public TransazioniHandler(Logger log, BaseDarsService darsService) {
+	public TransazioniHandler(Logger log, DarsService darsService) {
 		super(log, darsService);
 	}
 
@@ -101,7 +100,7 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
 			RptBD rptBD = new RptBD(bd);
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID); 
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID); 
 
 
 
@@ -190,11 +189,11 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 		if(simpleSearch) {
 			// simplesearch
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 				if(elementoCorrelato)
-					params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+					params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 			}
 		} else {
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".idDominio.id");
@@ -917,6 +916,9 @@ public class TransazioniHandler extends BaseDarsHandler<Rpt> implements IDarsHan
 
 	@Override
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
+
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}

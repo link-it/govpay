@@ -31,14 +31,14 @@ import org.apache.logging.log4j.Logger;
 import it.govpay.bd.BasicBD;
 import it.govpay.model.Operatore;
 import it.govpay.web.rs.BaseRsService;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 
 @Path("/dars/operatori")
-public class Operatori extends BaseDarsService {
+public class Operatori extends DarsService {
 
 	Logger log = LogManager.getLogger();
 	

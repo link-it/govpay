@@ -24,11 +24,11 @@ import javax.ws.rs.Path;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 
 @Path("/dars/applicazioni")
-public class Applicazioni extends BaseDarsService {
+public class Applicazioni extends DarsService {
 
 	public Applicazioni() {
 		super();

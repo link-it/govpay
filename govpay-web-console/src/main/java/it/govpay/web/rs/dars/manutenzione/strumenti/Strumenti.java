@@ -2,11 +2,11 @@ package it.govpay.web.rs.dars.manutenzione.strumenti;
 
 import javax.ws.rs.Path;
 
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 
 @Path("/dars/strumenti")
-public class Strumenti extends BaseDarsService {
+public class Strumenti extends DarsService {
 
 	public Strumenti() {
 		super();

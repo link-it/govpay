@@ -33,16 +33,16 @@ import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.reportistica.EstrattoContoMetadata;
 import it.govpay.web.business.reportistica.EstrattiContoMetadata;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -53,11 +53,9 @@ import it.govpay.web.rs.dars.model.input.ParamField;
 import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.Utils;
 
-public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata> implements IDarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata>{
+public class EstrattiContoHandler   extends DarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata> implements IDarsHandler<it.govpay.model.reportistica.EstrattoContoMetadata>{
 
-	private Map<String, ParamField<?>> infoRicercaMap = null;
-
-	public EstrattiContoHandler(Logger log, BaseDarsService darsService) {
+	public EstrattiContoHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -294,6 +292,9 @@ public class EstrattiContoHandler   extends BaseDarsHandler<it.govpay.model.repo
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {

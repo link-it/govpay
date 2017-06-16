@@ -44,12 +44,12 @@ import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.core.utils.DominioUtils;
 import it.govpay.model.Dominio;
 import it.govpay.model.IbanAccredito;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 
 @Path("/dars/domini")
-public class Domini extends BaseDarsService {
+public class Domini extends DarsService {
 
 	public Domini() {
 		super();

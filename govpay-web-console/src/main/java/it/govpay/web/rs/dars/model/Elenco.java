@@ -35,7 +35,6 @@ public class Elenco {
 	private InfoForm infoCreazione;
 	private InfoForm infoRicerca;
 	private boolean filtro;
-	private boolean exportMassivo;
 	private int numeroMassimoElementiExport;
 	private String simpleSearchPlaceHolder;
 	
@@ -52,7 +51,6 @@ public class Elenco {
 		this.esportazione = esportazione;
 		this.elenco = (new ArrayList<Elemento>());
 		this.setFiltro(false);
-		this.setExportMassivo(false);
 		this.numeroMassimoElementiExport = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 		this.simpleSearchPlaceHolder = simpleSearchPlaceHolder;
 	}
@@ -91,14 +89,6 @@ public class Elenco {
 
 	public void setFiltro(boolean filtro) {
 		this.filtro = filtro;
-	}
-
-	public boolean isExportMassivo() {
-		return this.exportMassivo;
-	}
-
-	public void setExportMassivo(boolean exportMassivo) {
-		this.exportMassivo = exportMassivo;
 	}
 
 	public int getNumeroMassimoElementiExport() {

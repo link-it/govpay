@@ -44,14 +44,14 @@ import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -67,13 +67,11 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements IDarsHandler<TipoTributo>{
+public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDarsHandler<TipoTributo>{
 
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	public static final String ANAGRAFICA_UO = "anagrafica";
 
-	public TipiTributoHandler(Logger log, BaseDarsService darsService) {
+	public TipiTributoHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -91,7 +89,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = tipiTributoBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -103,7 +101,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			if(simpleSearch){
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -431,6 +429,12 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 		}catch(Exception e){
 			throw new ConsoleException(e);
 		}
+		return null;
+	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
 		return null;
 	}
 

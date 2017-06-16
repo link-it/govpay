@@ -25,14 +25,14 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.model.Rr.StatoRr;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -41,11 +41,11 @@ import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.utils.Utils;
 
-public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<Rr>{
+public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
 
-	public RevocheHandler(Logger log, BaseDarsService darsService) {
+	public RevocheHandler(Logger log, DarsService darsService) {
 		super(log, darsService);
 	}
 
@@ -378,6 +378,9 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 
 	@Override
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
+
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}
