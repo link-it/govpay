@@ -20,8 +20,9 @@
 
 package it.govpay.model;
 
-public class Anagrafica {
+public class Anagrafica extends BasicModel {
 
+	private static final long serialVersionUID = 1L;
 	private String ragioneSociale;
 	private String codUnivoco;
 	private String indirizzo;

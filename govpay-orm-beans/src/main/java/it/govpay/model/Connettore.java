@@ -19,8 +19,9 @@
  */
 package it.govpay.model;
 
-public class Connettore {
+public class Connettore extends BasicModel {
 	
+	private static final long serialVersionUID = 1L;
 	public static final String P_TIPOAUTENTICAZIONE_NAME = "TIPOAUTENTICAZIONE";
 	public static final String P_TIPOSSL_NAME = "TIPOSSL";
 	public static final String P_SSLKSTYPE_NAME = "SSLKSTYPE";
