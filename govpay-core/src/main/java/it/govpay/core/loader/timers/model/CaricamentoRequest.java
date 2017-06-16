@@ -1,6 +1,7 @@
 package it.govpay.core.loader.timers.model;
 
 import it.govpay.bd.model.Versamento;
+import it.govpay.model.loader.Operazione.TipoOperazioneType;
 
 import java.util.Date;
 
@@ -12,7 +13,7 @@ import org.openspcoop2.utils.csv.Record;
 public class CaricamentoRequest extends AbstractOperazioneRequest {
 
 	public CaricamentoRequest(Parser parser, Record record) {
-		super("CARICAMENTO", parser, record);
+		super(TipoOperazioneType.ADD, parser, record);
 		try {
 			this.setCodDominio(validaESettaRecord(record, "codDominio", 35, null, false));
 			this.setCfDebitore(validaESettaRecord(record, "cfDebitore", 35, null, false));

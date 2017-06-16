@@ -6,6 +6,10 @@ public class Operazione {
 		NON_VALIDO, ESEGUITO_OK, ESEGUITO_KO;
 	}
 	
+	public enum TipoOperazioneType {
+		ADD, DEL, N_A
+	}
+	
 	private long id;
 	private long idTracciato;
 	private long lineaElaborazione;
@@ -14,7 +18,7 @@ public class Operazione {
 	private StatoOperazioneType stato;
 	private String dettaglioEsito;
 	private String idOperazione;
-	private String tipoOperazione;
+	private TipoOperazioneType tipoOperazione;
 	private long idApplicazione;
 	private String codVersamentoEnte;
 	
@@ -60,10 +64,10 @@ public class Operazione {
 	public void setIdOperazione(String idOperazione) {
 		this.idOperazione = idOperazione;
 	}
-	public String getTipoOperazione() {
+	public TipoOperazioneType getTipoOperazione() {
 		return tipoOperazione;
 	}
-	public void setTipoOperazione(String tipoOperazione) {
+	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
 	public long getIdApplicazione() {

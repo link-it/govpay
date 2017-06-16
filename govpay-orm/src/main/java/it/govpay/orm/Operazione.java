@@ -20,6 +20,7 @@
 package it.govpay.orm;
 
 import it.govpay.orm.constants.StatoOperazioneType;
+import it.govpay.orm.constants.TipoOperazioneType;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,7 +38,7 @@ import java.io.Serializable;
  * &lt;complexType name="Operazione">
  * 		&lt;sequence>
  * 			&lt;element name="idTracciato" type="{http://www.govpay.it/orm}id-tracciato" minOccurs="1" maxOccurs="1"/>
- * 			&lt;element name="tipoOperazione" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="1" maxOccurs="1"/>
+ * 			&lt;element name="tipoOperazione" type="{http://www.govpay.it/orm}TipoOperazioneType" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="lineaElaborazione" type="{http://www.w3.org/2001/XMLSchema}long" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="stato" type="{http://www.govpay.it/orm}StatoOperazioneType" minOccurs="1" maxOccurs="1"/>
  * 			&lt;element name="datiRichiesta" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="1" maxOccurs="1"/>
@@ -99,11 +100,23 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
     this.idTracciato = idTracciato;
   }
 
-  public java.lang.String getTipoOperazione() {
+  public void set_value_tipoOperazione(String value) {
+    this.tipoOperazione = (TipoOperazioneType) TipoOperazioneType.toEnumConstantFromString(value);
+  }
+
+  public String get_value_tipoOperazione() {
+    if(this.tipoOperazione == null){
+    	return null;
+    }else{
+    	return this.tipoOperazione.toString();
+    }
+  }
+
+  public it.govpay.orm.constants.TipoOperazioneType getTipoOperazione() {
     return this.tipoOperazione;
   }
 
-  public void setTipoOperazione(java.lang.String tipoOperazione) {
+  public void setTipoOperazione(it.govpay.orm.constants.TipoOperazioneType tipoOperazione) {
     this.tipoOperazione = tipoOperazione;
   }
 
@@ -197,9 +210,11 @@ public class Operazione extends org.openspcoop2.utils.beans.BaseBean implements 
   @XmlElement(name="idTracciato",required=true,nillable=false)
   protected IdTracciato idTracciato;
 
-  @javax.xml.bind.annotation.XmlSchemaType(name="string")
+  @XmlTransient
+  protected java.lang.String _value_tipoOperazione;
+
   @XmlElement(name="tipoOperazione",required=true,nillable=false)
-  protected java.lang.String tipoOperazione;
+  protected TipoOperazioneType tipoOperazione;
 
   @javax.xml.bind.annotation.XmlSchemaType(name="long")
   @XmlElement(name="lineaElaborazione",required=true,nillable=false)

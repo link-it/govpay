@@ -1,5 +1,7 @@
 package it.govpay.core.loader.timers.model;
 
+import it.govpay.model.loader.Operazione.TipoOperazioneType;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -18,10 +20,10 @@ public abstract class AbstractOperazioneRequest {
 	private String codApplicazione;
 	private String codVersamentoEnte;
 	private byte[] dati;
-	private String tipoOperazione;
+	private TipoOperazioneType tipoOperazione;
 	private boolean isValid;
 	
-	public AbstractOperazioneRequest(String tipoOperazione, Parser parser, Record record) {
+	public AbstractOperazioneRequest(TipoOperazioneType tipoOperazione, Parser parser, Record record) {
 		this.isValid = true;
 		try {
 			this.tipoOperazione = tipoOperazione;
@@ -63,11 +65,11 @@ public abstract class AbstractOperazioneRequest {
 		this.codVersamentoEnte = codVersamentoEnte;
 	}
 
-	public String getTipoOperazione() {
+	public TipoOperazioneType getTipoOperazione() {
 		return tipoOperazione;
 	}
 
-	public void setTipoOperazione(String tipoOperazione) {
+	public void setTipoOperazione(TipoOperazioneType tipoOperazione) {
 		this.tipoOperazione = tipoOperazione;
 	}
 	
