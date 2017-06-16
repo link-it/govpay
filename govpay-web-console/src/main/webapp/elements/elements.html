@@ -32059,6 +32059,16 @@ Polymer.AppLocalizeBehavior = {
     color: #9e9e9e;
   }
 
+  .vaadin-upload-required {
+    position: relative;
+    display: none;
+    visibility: visible;
+  }
+
+  .vaadin-upload-required-error {
+    display: block;
+  }
+
 </style><script>
   LinkFormBehavior = {
 
@@ -32200,6 +32210,14 @@ Polymer.AppLocalizeBehavior = {
               }
 
               pif.appendChild(vau);
+
+              if(obj.required) {
+                var err = document.createElement('paper-input-error');
+                err.textContent = (obj.errorMessage)?obj.errorMessage:this.localize('campoObbligatorio');
+                err.className = 'vaadin-upload-required';
+                pif.appendChild(err);
+              }
+
               sezioneDiv.appendChild(pif);
               this.setFileInputProperties(vau, obj);
               vau.disabled = !obj.editable;
@@ -32703,7 +32721,7 @@ Polymer.AppLocalizeBehavior = {
     setFileInputProperties: function(fileInput, data){
       fileInput.type = 'file';
       fileInput.noAuto = true;
-      fileInput.i18n.uploading.status.held = 'In coda';
+      fileInput.i18n.uploading.status.held = this.localize('uploadingStatus');
       fileInput.avanzata = data.avanzata;
       if (data.avanzata){
         fileInput.hidden = !this.avanzata;
@@ -32712,6 +32730,13 @@ Polymer.AppLocalizeBehavior = {
         fileInput.hidden = data.hidden;
       }
       fileInput.required = data.required;
+      if(data.required) {
+        fileInput.validate = function() {
+            var e = this.parentElement.querySelector('.vaadin-upload-required');
+            this.toggleClass('vaadin-upload-required-error', (this.files.length == 0), e);
+            return this.files.length != 0;
+        }
+      }
       //fileInput.label = data.label;
       fileInput.name = data.id;
       fileInput.id = data.id;
@@ -32721,7 +32746,6 @@ Polymer.AppLocalizeBehavior = {
       if (data.pattern){
         fileInput.pattern = data.pattern;
       }
-      fileInput.errorMessage = (data.errorMessage)?data.errorMessage:(data.required)?this.localize('campoObbligatorio'):'';
       if (data.refreshParamIds.length>0){
         fileInput.refreshParamIds = data.refreshParamIds;
         fileInput.addEventListener('change', this.changeData.bind(this));
@@ -32751,76 +32775,6 @@ Polymer.AppLocalizeBehavior = {
         fileInput.accept = acc;
       }
       fileInput.nodrop = true;
-      /*if(data.target) {
-        fileInput.target = REST_URL + data.target + app.appendLangParameter(data.target);
-      }*/
-      /*fileInput.addEventListener('file-reject', function(event){
-        console.log(event.detail);
-      });
-      fileInput.addEventListener('upload-success', function(event) {
-        console.log("Upload Success: ");
-        if(event.detail){
-          if(event.detail.xhr){
-            if(event.detail.xhr.response){
-              var jsonResponse = JSON.parse(event.detail.xhr.response);
-
-              var isOk = false;
-              if (jsonResponse.dettaglioEsito){
-                switch (jsonResponse.esitoOperazione){
-                  case 'ESEGUITA':
-                    isOk = true;
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'success');
-                    break;
-                  case 'NONESEGUITA':
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'warning');
-                    break;
-                  case 'ERRORE':
-                    app.showPaperToast(jsonResponse.dettaglioEsito, 'error');
-                    break;
-                }
-              } else {
-                switch (jsonResponse.esitoOperazione){
-                  case 'ESEGUITA':
-                    isOk = true;
-                    app.showPaperToast(this.localize('okUpload'), 'success');
-                    break;
-                  case 'NONESEGUITA':
-                    app.showPaperToast(this.localize('warningUpload') + jsonResponse.codOperazione, 'warning');
-                    break;
-                  case 'ERRORE':
-                    app.showPaperToast(this.localize('errorUpload') + jsonResponse.codOperazione, 'error');
-                    break;
-                }
-              }
-
-              if(isOk){
-                var form = event.target.parentElement.parentElement.parentElement;
-                var formChildren = form.children;
-                var response = jsonResponse.response;
-
-                for (var s = 0; s < formChildren.length; s ++) {
-                  var dd = formChildren[s];
-                  if(dd.tagName == 'DIV' && dd.className == 'sezioneForm') {
-                    var chSezione = dd.children;
-                    for (var g = 0; g < chSezione.length; g ++) {
-                      var elemento = chSezione[g];
-                      for (var i = 0 ; i < response.length; i ++) {
-                        var toUpdate = response[i];
-                        var idElemento = toUpdate.etichetta;
-                        var valoreElemento = toUpdate.valore;
-                        //   var elemento = document.querySelector('#'+idElemento);
-                        if(elemento.id == idElemento)
-                          elemento.value = ''+valoreElemento;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }.bind(this));*/
-
     },
 
     refreshFileInputData: function(target){
@@ -33584,7 +33538,16 @@ Polymer.AppLocalizeBehavior = {
 
       edit: function(event){
         var ok = this.$.editForm.validate();
-          if (ok){
+        if(ok) {
+          var vaadinUps = this.querySelectorAll('vaadin-upload');
+          for (var v = 0; v < vaadinUps.length; v++) {
+            if(!vaadinUps[v].validate()){
+                ok = false;
+                break;
+            }
+          }
+        }
+        if (ok) {
           var temp = this.serializeForm(this.$.editForm);
           var ms = this.querySelectorAll('link-multi-select');
           for (var lb = 0; lb < ms.length; lb++) {
@@ -33592,42 +33555,113 @@ Polymer.AppLocalizeBehavior = {
           }
 
           //Vaadin-upload files
-          var vaadinUps = this.querySelectorAll('vaadin-upload');
-          for (var vu = 0; vu < vaadinUps.length; vu++) {
-            temp[vaadinUps[vu].id] = vaadinUps[vu].files.map(function(f) {
-              return { filename: f.name, data: btoa(f) };
-            });
+          if (vaadinUps && vaadinUps.length > 0) {
+            app.showSpinner();
+            this._nextVaadinUp(vaadinUps[vaadinUps.length-1], vaadinUps.length-1, vaadinUps, temp);
           }
-
-          var lista = Object.keys(temp);
-          for (var i = 0; i < lista.length; i++) {
-            var obj = lista[i];
-            var newValue = temp[obj];
-            switch (this.$$('#'+obj).localName){
-              case 'paper-dropdown-menu':
-                if (this.$$('#'+obj).selectedItem){
-                  newValue=this.$$('#'+obj).selectedItem.value;
-                } else {
-                  newValue = null;
-                }
-                break;
-              default:
-                break;
-            }
-            if (newValue!=null){
-              temp[obj]=newValue;
-            }
+          else {
+              this.postEdit(temp);
           }
-          //console.log(temp);
-          this.$.editResource.url = this.editUrl;
-          this.$.editResource.method = this.method;
-          this.$.editResource.contentType="application/json";
-          this.$.editResource.body = JSON.stringify(temp);
-          app.showSpinner();
-          this.$.editResource.generateRequest();
         } else {
           app.showPaperToast('Errori di compilazione');
         }
+      },
+      /** *********** Vaadin-upload files ************ **/
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *       vsl: indice elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextVaadinUp: function(_vaadin, vsl, _vaadins, temp){
+          if(vsl >= 0){
+              var vfl = _vaadin.files.length - 1;
+              this._nextFile(_vaadin, vsl, vfl, _vaadins, temp);
+          } else {
+            app.hideSpinner();
+            this.postEdit(temp);
+          }
+      },
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *         k: indice elemento vaadin-upload
+       *         i: indice .files per elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextFile: function(_vaadin, k, i, _vaadins, temp){
+        if(i >= 0){
+            this._nextReader(_vaadin, k, i, _vaadins, temp);
+        } else {
+          k--;
+          this._nextVaadinUp(_vaadin, k, _vaadins, temp);
+        }
+      },
+      /**
+       *   _vaadin: elemento vaadin-upload
+       *         k: indice elemento vaadin-upload
+       *         i: indice .files per elemento vaadin-upload
+       *  _vaadins: elenco elementi vaadin-upload
+       *
+       *  @return temp
+       */
+      _nextReader: function(_vaadin, k, i, _vaadins, temp){
+        var r = new FileReader();
+        var f = _vaadin.files[i];
+        r.onload = function(_f, e) {
+            var _b64 = this._bufferToB64(e.target.result);
+            if(!temp.hasOwnProperty(_vaadins[k].id) || temp[_vaadins[k].id] == null) {
+              temp[_vaadins[k].id] = [{ data: _b64, filename: _f.name }];
+            } else {
+              temp[_vaadins[k].id].push({ data: _b64, filename: _f.name });
+            }
+            i--;
+            this._nextFile(_vaadin, k, i, _vaadins, temp);
+        }.bind(this, f);
+
+        r.readAsArrayBuffer(f);
+      },
+      _bufferToB64: function(buffer) {
+        var binary = '';
+        var bytes = new Uint8Array(buffer);
+        var len = bytes.byteLength;
+        for (var i = 0; i < len; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+
+        return btoa(binary);
+      },
+      /** ***************************** **/
+
+      postEdit: function(temp) {
+        var lista = Object.keys(temp);
+        for (var i = 0; i < lista.length; i++) {
+          var obj = lista[i];
+          var newValue = temp[obj];
+          switch (this.$$('#'+obj).localName){
+            case 'paper-dropdown-menu':
+              if (this.$$('#'+obj).selectedItem){
+                newValue=this.$$('#'+obj).selectedItem.value;
+              } else {
+                newValue = null;
+              }
+              break;
+            default:
+              break;
+          }
+          if (newValue!=null){
+            temp[obj]=newValue;
+          }
+        }
+        //console.log(temp);
+        this.$.editResource.url = this.editUrl;
+        this.$.editResource.method = this.method;
+        this.$.editResource.contentType="application/json";
+        this.$.editResource.body = JSON.stringify(temp);
+        app.showSpinner();
+        this.$.editResource.generateRequest();
       },
 
       editResource_responseHandler: function(event){

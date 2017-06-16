@@ -1,6 +1,6 @@
 package it.govpay.core.loader.timers.model;
 
-import it.govpay.orm.constants.StatoOperazioneType;
+import it.govpay.model.loader.Operazione.StatoOperazioneType;
 
 
 public abstract class AbstractOperazioneResponse {

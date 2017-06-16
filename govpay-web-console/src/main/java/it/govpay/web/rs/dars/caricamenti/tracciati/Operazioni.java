@@ -24,6 +24,6 @@ public class Operazioni extends BaseDarsService {
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + this.getNomeServizio();
+		return "/dars/caricamenti/operazioni";// + this.getNomeServizio();
 	}
 }

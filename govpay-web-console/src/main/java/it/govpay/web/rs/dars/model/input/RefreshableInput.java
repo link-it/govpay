@@ -32,16 +32,9 @@ public abstract class RefreshableInput<T> extends RefreshableParamField<T>{
 		this.maxLength = maxLength;
 	}
 
-	private String errorMessage;
 	private Integer minLength;
 	private Integer maxLength;
-	private String pattern;
 	
-	public void setValidation(String pattern, String errorMessage) {
-		this.errorMessage = errorMessage;
-		this.pattern = pattern;
-	}
-
 	public Integer getMinLength() {
 		return this.minLength;
 	}
@@ -49,13 +42,6 @@ public abstract class RefreshableInput<T> extends RefreshableParamField<T>{
 	public Integer getMaxLength() {
 		return this.maxLength;
 	}
-
-	public String getPattern() {
-		return this.pattern;
-	}
-
-	public String getErrorMessage() {
-		return this.errorMessage;
-	}
+ 
 
 }

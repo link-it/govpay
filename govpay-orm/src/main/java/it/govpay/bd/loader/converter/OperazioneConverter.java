@@ -1,6 +1,7 @@
-package it.govpay.bd.model.converter;
+package it.govpay.bd.loader.converter;
 
-import it.govpay.bd.model.Operazione;
+import it.govpay.bd.loader.model.Operazione;
+import it.govpay.model.loader.Operazione.StatoOperazioneType;
 import it.govpay.orm.IdTracciato;
 
 import java.util.ArrayList;
@@ -27,7 +28,8 @@ public class OperazioneConverter {
 		dto.setId(vo.getId());
 		dto.setTipoOperazione(vo.getTipoOperazione());
 		dto.setLineaElaborazione(vo.getLineaElaborazione());
-		dto.setStato(vo.getStato());
+		if(vo.getStato() != null)
+		dto.setStato(StatoOperazioneType.valueOf(vo.getStato().name()));
 
 		
 		dto.setDatiRichiesta(vo.getDatiRichiesta());
@@ -49,7 +51,8 @@ public class OperazioneConverter {
 		vo.setId(dto.getId());
 		vo.setTipoOperazione(dto.getTipoOperazione());
 		vo.setLineaElaborazione(dto.getLineaElaborazione());
-		vo.setStato(dto.getStato());
+		if(dto.getStato() != null)
+			vo.setStato(it.govpay.orm.constants.StatoOperazioneType.valueOf(dto.getStato().name()));
 
 		
 		vo.setDatiRichiesta(dto.getDatiRichiesta());
@@ -66,6 +69,30 @@ public class OperazioneConverter {
 		vo.setCodVersamentoEnte(dto.getCodVersamentoEnte());
 		
 		return vo;
+	}
+	
+	public static Operazione toDettaglioDTO(it.govpay.orm.Operazione vo) throws ServiceException {
+		Operazione dto = new Operazione();
+		
+		dto.setId(vo.getId());
+		dto.setTipoOperazione(vo.getTipoOperazione());
+		dto.setLineaElaborazione(vo.getLineaElaborazione());
+		if(vo.getStato() != null)
+		dto.setStato(StatoOperazioneType.valueOf(vo.getStato().name()));
+
+		
+		dto.setDatiRichiesta(vo.getDatiRichiesta());
+		dto.setDatiRisposta(vo.getDatiRisposta());
+		dto.setDettaglioEsito(vo.getDettaglioEsito());
+
+		dto.setIdTracciato(vo.getIdTracciato().getIdTracciato());
+		
+		if(vo.getIdApplicazione() != null)
+			dto.setIdApplicazione(vo.getIdApplicazione().getId());
+		
+		dto.setCodVersamentoEnte(vo.getCodVersamentoEnte());
+
+		return dto;
 	}
 
 }

@@ -4,13 +4,13 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.anagrafica.DominiBD;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.model.Dominio;
-import it.govpay.bd.model.Tracciato;
 import it.govpay.core.loader.timers.model.AbstractOperazioneRequest;
 import it.govpay.core.loader.timers.model.AnnullamentoRequest;
 import it.govpay.core.loader.timers.model.CaricamentoRequest;
 import it.govpay.core.loader.timers.model.OperazioneNonValidaRequest;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
+import it.govpay.model.loader.Tracciato;
 import it.govpay.model.TipoTributo;
 
 import java.util.ArrayList;

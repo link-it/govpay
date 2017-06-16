@@ -173,13 +173,13 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 			String dataInizio = this.getParameter(uriInfo, dataInizioId, String.class);
 			if(StringUtils.isNotEmpty(dataInizio)){
-				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
+				filter.setDataInizio(this.convertJsonStringToDataInizio(dataInizio));
 			}
 
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String dataFine = this.getParameter(uriInfo, dataFineId, String.class);
 			if(StringUtils.isNotEmpty(dataFine)){
-				filter.setDataFine(this.convertJsonStringToDate(dataFine));
+				filter.setDataFine(this.convertJsonStringToDataFine(dataFine));
 			}
 
 			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");
@@ -260,13 +260,13 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 			String dataInizio = Utils.getValue(rawValues, dataInizioId);
 			if(StringUtils.isNotEmpty(dataInizio)){
-				filter.setDataInizio(this.convertJsonStringToDate(dataInizio));
+				filter.setDataInizio(this.convertJsonStringToDataInizio(dataInizio));
 			}
 
 			String dataFineId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataFine.id");
 			String dataFine = Utils.getValue(rawValues, dataFineId);
 			if(StringUtils.isNotEmpty(dataFine)){
-				filter.setDataFine(this.convertJsonStringToDate(dataFine));
+				filter.setDataFine(this.convertJsonStringToDataFine(dataFine));
 			}
 
 			String trnId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".trn.id");

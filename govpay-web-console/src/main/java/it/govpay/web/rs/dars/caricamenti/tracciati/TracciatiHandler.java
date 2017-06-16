@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.WebApplicationException;
@@ -24,11 +25,11 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.OperatoriBD;
 import it.govpay.bd.loader.TracciatiBD;
-import it.govpay.bd.model.Tracciato;
-import it.govpay.bd.operazioni.filters.TracciatoFilter;
+import it.govpay.bd.loader.filters.TracciatoFilter;
+import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 import it.govpay.web.rs.dars.BaseDarsHandler;
 import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.IDarsHandler;
@@ -92,14 +93,14 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 			// visualizza la ricerca solo se i risultati sono > del limit
 			boolean visualizzaRicerca = this.visualizzaRicerca(count, limit);
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
-			
+
 			// Indico la visualizzazione custom
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
 					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
-			
+
 			List<Tracciato> findAll = eseguiRicerca ? tracciatiBD.findAll(filter) : new ArrayList<Tracciato>(); 
 
 			if(findAll != null && findAll.size() > 0){
@@ -122,11 +123,11 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 	private boolean popolaFiltroRicerca(UriInfo uriInfo, BasicBD bd, Operatore operatore , boolean simpleSearch, TracciatoFilter filter) throws ConsoleException, Exception {
 		ProfiloOperatore profilo = operatore.getProfilo();
 		boolean isAdmin = profilo.equals(ProfiloOperatore.ADMIN);
-//		AclBD aclBD = new AclBD(bd);
-//		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
-//		List<Long> idDomini = new ArrayList<Long>();
+		//		AclBD aclBD = new AclBD(bd);
+		//		List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
+		//		List<Long> idDomini = new ArrayList<Long>();
 		boolean eseguiRicerca = true; // isAdmin;
-	
+
 		if(simpleSearch){
 			// simplesearch
 			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
@@ -139,40 +140,40 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 			String stato = this.getParameter(uriInfo, statoId, String.class);
 
 			if(StringUtils.isNotEmpty(stato)){
-				filter.addStatoTracciato(StatoTracciatoType.toEnumConstant(stato));
+				filter.addStatoTracciato(StatoTracciatoType.valueOf(stato));
 			}
 		}
-		
+
 		// [TODO] momentaneamente vede tutti i domini ma aggiungiamo solo il vincolo sui suoi tracciati.
 		// filtro per l'operatore non admin
 		if(!isAdmin){
 			filter.setIdOperatore(operatore.getId()); 
 		}
-		
-//		if(!isAdmin && idDomini.isEmpty()){
-//			boolean vediTuttiDomini = false;
-//
-//			for(Acl acl: aclOperatore) {
-//				if(Tipo.DOMINIO.equals(acl.getTipo())) {
-//					if(acl.getIdDominio() == null) {
-//						vediTuttiDomini = true;
-//						break;
-//					} else {
-//						idDomini.add(acl.getIdDominio());
-//					}
-//				}
-//			}
-//			if(!vediTuttiDomini) {
-//				if(idDomini.isEmpty()) {
-//					eseguiRicerca = false;
-//				} else {
-//					filter.setIdDomini(idDomini);
-//				}
-//			}
-//		}
+
+		//		if(!isAdmin && idDomini.isEmpty()){
+		//			boolean vediTuttiDomini = false;
+		//
+		//			for(Acl acl: aclOperatore) {
+		//				if(Tipo.DOMINIO.equals(acl.getTipo())) {
+		//					if(acl.getIdDominio() == null) {
+		//						vediTuttiDomini = true;
+		//						break;
+		//					} else {
+		//						idDomini.add(acl.getIdDominio());
+		//					}
+		//				}
+		//			}
+		//			if(!vediTuttiDomini) {
+		//				if(idDomini.isEmpty()) {
+		//					eseguiRicerca = false;
+		//				} else {
+		//					filter.setIdDomini(idDomini);
+		//				}
+		//			}
+		//		}
 		return eseguiRicerca;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public InfoForm getInfoRicerca(UriInfo uriInfo, BasicBD bd, boolean visualizzaRicerca,
@@ -208,14 +209,14 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 			List<Voce<String>> stati = new ArrayList<Voce<String>>();
 
 			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.qualsiasi"), ""));
-			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.ANNULLATO.getValue()), StatoTracciatoType.ANNULLATO.getValue()));
-			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.NUOVO.getValue()), StatoTracciatoType.NUOVO.getValue()));
-			//			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.IN_VALIDAZIONE.getValue()), StatoTracciatoType.IN_VALIDAZIONE.getValue()));
-			//			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.VALIDAZIONE_OK.getValue()), StatoTracciatoType.VALIDAZIONE_OK.getValue()));
-			//			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.VALIDAZIONE_KO.getValue()), StatoTracciatoType.VALIDAZIONE_KO.getValue()));
-			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.IN_CARICAMENTO.getValue()), StatoTracciatoType.IN_CARICAMENTO.getValue()));
-			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.CARICAMENTO_OK.getValue()), StatoTracciatoType.CARICAMENTO_OK.getValue()));
-			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.CARICAMENTO_KO.getValue()), StatoTracciatoType.CARICAMENTO_KO.getValue()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.ANNULLATO.name()), StatoTracciatoType.ANNULLATO.name()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.NUOVO.name()), StatoTracciatoType.NUOVO.name()));
+			//			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.IN_VALIDAZIONE.name()), StatoTracciatoType.IN_VALIDAZIONE.name()));
+			//			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.VALIDAZIONE_OK.name()), StatoTracciatoType.VALIDAZIONE_OK.name()));
+			//			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.VALIDAZIONE_KO.name()), StatoTracciatoType.VALIDAZIONE_KO.name()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.IN_CARICAMENTO.name()), StatoTracciatoType.IN_CARICAMENTO.name()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.CARICAMENTO_OK.name()), StatoTracciatoType.CARICAMENTO_OK.name()));
+			stati.add(new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+StatoTracciatoType.CARICAMENTO_KO.name()), StatoTracciatoType.CARICAMENTO_KO.name()));
 			SelectList<String> stato  = new SelectList<String>(statoId, statoLabel, null, false, false, true, stati );
 			this.infoRicercaMap.put(statoId, stato);
 
@@ -258,6 +259,7 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 
 				InputFile fileTracciato = new InputFile(fileTracciatoId,fileTracciatoLabel, true, false, true, mt , dimensioneMassimaFileTracciato ,numeroFileTracciato,null);
 				fileTracciato.setSuggestion(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.suggestion"));
+				fileTracciato.setValidation(null, Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileTracciato.errorMessage"));
 				this.infoCreazioneMap.put(fileTracciatoId, fileTracciato);
 			} catch(Exception e ){
 				throw new ConsoleException(e); 
@@ -324,24 +326,27 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 			// recupero oggetto
 			TracciatiBD tracciatiBD = new TracciatiBD(bd);
 			Tracciato tracciato = tracciatiBD.getTracciato(id);
-			
+
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;
 			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd,id);
-			
+
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioTracciato") ;
 			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
-			
+
 			// dati dell'tracciato
-			String statoTracciatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTracciato." + tracciato.getStato().getValue());
-			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTracciato.label"), statoTracciatoLabel);
+			String statoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + tracciato.getStato().name());
+			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.label"), statoLabel);
 			if(StringUtils.isNotEmpty(tracciato.getDescrizioneStato()))
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".descrizioneStato.label"), tracciato.getDescrizioneStato());
 			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".nomeFile.label"), tracciato.getNomeFile());
 			if(tracciato.getDataCaricamento() != null)
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataCaricamento.label"), this.sdf.format(tracciato.getDataCaricamento()));
+			if(tracciato.getDataUltimoAggiornamento() != null)
+				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataUltimoAggiornamento.label"), this.sdf.format(tracciato.getDataUltimoAggiornamento()));
+
 			//			root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".lineaElaborazione.label"), tracciato.getLineaElaborazione() + "");
 			long idOperatore = tracciato.getIdOperatore();
 			// solo l'amministratore vede chi ha caricato il tracciato, un utente "user" vede solo i suoi.
@@ -350,18 +355,18 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 				Operatore operatore = operatoriBD.getOperatore(idOperatore);
 				root.addVoce(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".operatore.label"), operatore.getNome());
 			}
-			
-//			URI uriTracciatoOriginale = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","tracciatoOriginale");
-//			URI uriTracciatoElaborato = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","tracciatoElaborato");
-//			URI uriAvvisiPagamento = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","avvisiPagamento");
-//
-//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tracciatoOriginale.label"),
-//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriTracciatoOriginale); 
-//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tracciatoElaborato.label"), 
-//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriTracciatoElaborato);
-//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".avvisiPagamento.label"), 
-//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriAvvisiPagamento);
-			
+
+			//			URI uriTracciatoOriginale = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","tracciatoOriginale");
+			//			URI uriTracciatoElaborato = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","tracciatoElaborato");
+			//			URI uriAvvisiPagamento = Utils.creaUriConPath(this.pathServizio,tracciato.getId()+"","avvisiPagamento");
+			//
+			//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tracciatoOriginale.label"),
+			//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriTracciatoOriginale); 
+			//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".tracciatoElaborato.label"), 
+			//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriTracciatoElaborato);
+			//			root.addDownloadLink(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".avvisiPagamento.label"), 
+			//					Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("commons.label.scarica"),uriAvvisiPagamento);
+
 			// Elemento correlato
 			Operazioni operazioniDars = new Operazioni();
 			String etichettaOperazioni = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".elementoCorrelato.operazioni.titolo");
@@ -397,7 +402,7 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 
-//			JsonConfig jsonConfig = new JsonConfig();
+			//			JsonConfig jsonConfig = new JsonConfig();
 			ByteArrayOutputStream baos = new ByteArrayOutputStream();
 			Utils.copy(is, baos);
 
@@ -405,18 +410,18 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 			baos.close();
 
 			JSONObject jsonObjectTracciato = JSONObject.fromObject( baos.toString() );
-			
+
 			JSONArray jsonArrayFile = jsonObjectTracciato.getJSONArray(fileTracciatoId);
-			
+
 			if(jsonArrayFile == null || jsonArrayFile.size() != 1){
 				String msg = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".fileRicevutoNonValido");
 				throw new ConsoleException(msg);
 			}
-			
+
 			JSONObject jsonObjectFile = jsonArrayFile.getJSONObject(0);
 			String fileName = jsonObjectFile.getString(InputFile.FILENAME);
 			String data64 = jsonObjectFile.getString(InputFile.DATA);
-			
+
 			entry = new Tracciato();
 			entry.setDataCaricamento(new Date());
 			entry.setDataUltimoAggiornamento(new Date());
@@ -424,11 +429,11 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 			entry.setIdOperatore(operatore.getId()); 
 			entry.setLineaElaborazione(0);
 			entry.setNomeFile(fileName);
-			entry.setRawData(Base64.decodeBase64(data64));
-			
-//			
-//			jsonConfig.setRootClass(Tracciato.class);
-//			entry = (Tracciato) JSONObject.toBean( jsonObjectTracciato, jsonConfig );
+			entry.setRawDataRichiesta(Base64.decodeBase64(data64));
+
+			//			
+			//			jsonConfig.setRootClass(Tracciato.class);
+			//			entry = (Tracciato) JSONObject.toBean( jsonObjectTracciato, jsonConfig );
 			this.log.info("Esecuzione " + methodName + " completata.");
 			return entry;
 		}catch(WebApplicationException e){
@@ -488,9 +493,9 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 		StringBuilder sb = new StringBuilder();
 
 		String nomeFile = entry.getNomeFile();
-		String statoTracciatoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".statoTracciato." + entry.getStato().getValue());
+		String statoLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato." + entry.getStato().name());
 
-		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", nomeFile, statoTracciatoLabel));
+		sb.append(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle(this.nomeServizio + ".label.titolo", nomeFile, statoLabel));
 
 
 		return sb.toString();
@@ -517,10 +522,65 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
-			throws WebApplicationException, ConsoleException, ExportException {
-		// TODO Auto-generated method stub
-		return null;
+	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException, ExportException {
+		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
+		boolean exportTracciatoOriginale = true;
+		boolean exportTracciatoElaborato = true;
+		int numeroZipEntries = 0;
+		try{
+			this.log.info("Esecuzione " + methodName + " in corso...");
+			this.darsService.getOperatoreByPrincipal(bd); 
+
+			TracciatiBD tracciatiBD = new TracciatiBD(bd);
+			Tracciato tracciato = tracciatiBD.getTracciato(idToExport);
+
+			String f = tracciato.getNomeFile();
+			int indexOfCsv = f.indexOf(".csv");
+			if(indexOfCsv > -1){
+				f = f.substring(0, indexOfCsv);
+			}
+
+			String fileName = f+".zip";
+			if(exportTracciatoOriginale){
+				numeroZipEntries ++;
+				ZipEntry tracciatoOriginaleEntry = new ZipEntry(tracciato.getNomeFile());
+				zout.putNextEntry(tracciatoOriginaleEntry);
+				zout.write(tracciato.getRawDataRichiesta());
+				zout.closeEntry();
+			}
+
+			if(exportTracciatoElaborato && tracciato.getRawDataRisposta() != null){
+				numeroZipEntries ++;
+				String nomeTracciatoNoExt = tracciato.getNomeFile() != null ? tracciato.getNomeFile().substring(0, tracciato.getNomeFile().lastIndexOf(".csv")) : "tracciato";
+				SimpleDateFormat f2 = new SimpleDateFormat("yyyy_MM_dd_HHmm");
+				String fileNameElaborato = nomeTracciatoNoExt +  "_" + f2.format(tracciato.getDataCaricamento())  + ".csv";
+
+				ZipEntry tracciatoElaboratoEntry = new ZipEntry(fileNameElaborato);
+				zout.putNextEntry(tracciatoElaboratoEntry);
+				zout.write(tracciato.getRawDataRisposta());
+				zout.closeEntry();
+			}
+
+			// se non ho inserito nessuna entry
+			if(numeroZipEntries == 0){
+				String noEntriesTxt = "/README";
+				ZipEntry entryTxt = new ZipEntry(noEntriesTxt);
+				zout.putNextEntry(entryTxt);
+				zout.write("Non sono state trovate informazioni sui versamenti selezionati.".getBytes());
+				zout.closeEntry();
+			}
+
+			zout.flush();
+			zout.close();
+
+			this.log.info("Esecuzione " + methodName + " completata.");
+
+			return fileName;
+		}catch(WebApplicationException e){
+			throw e;
+		}catch(Exception e){
+			throw new ConsoleException(e);
+		}
 	}
 
 	@Override
@@ -532,16 +592,16 @@ public class TracciatiHandler extends BaseDarsHandler<Tracciato> implements IDar
 		if(entry.getDataCaricamento() != null){
 			String dataS = this.sdf.format(entry.getDataCaricamento());
 			valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataCaricamento.id"),
-				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataCaricamento.label"),dataS));
+					new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dataCaricamento.label"),dataS));
 		}
-		
+
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".stato."+entry.getStato().name()),
 						entry.getStato().name()));
-		
+
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniOk.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniOk.label"),entry.getNumOperazioniOk()+""));
-		
+
 		valori.put(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniKo.id"),
 				new Voce<String>(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".numOperazioniKo.label"),entry.getNumOperazioniKo()+""));
 

@@ -21,8 +21,8 @@
 package it.govpay.bd.loader;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.bd.model.converter.OperazioneConverter;
-import it.govpay.bd.operazioni.filters.OperazioneFilter;
+import it.govpay.bd.loader.converter.OperazioneConverter;
+import it.govpay.bd.loader.filters.OperazioneFilter;
 import it.govpay.orm.Operazione;
 import it.govpay.orm.dao.IDBOperazioneService;
 
@@ -41,9 +41,9 @@ public class OperazioniBD extends BasicBD {
 		super(basicBD);
 	}
 	
-	private List<it.govpay.bd.model.Operazione> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException {
+	private List<it.govpay.bd.loader.model.Operazione> findAll(IPaginatedExpression exp) throws ServiceException, NotImplementedException {
 		List<Operazione> findAll = this.getOperazioneService().findAll(exp);
-		List<it.govpay.bd.model.Operazione> findAllDTO = new ArrayList<it.govpay.bd.model.Operazione>(); 
+		List<it.govpay.bd.loader.model.Operazione> findAllDTO = new ArrayList<it.govpay.bd.loader.model.Operazione>(); 
 		for(Operazione caricamento : findAll) {
 			findAllDTO.add(OperazioneConverter.toDTO(caricamento));
 		}
@@ -51,7 +51,7 @@ public class OperazioniBD extends BasicBD {
 	}
 	
 	
-	public void insertOperazione(it.govpay.bd.model.Operazione caricamento) throws ServiceException {
+	public void insertOperazione(it.govpay.bd.loader.model.Operazione caricamento) throws ServiceException {
 		try{
 			Operazione caricamentoVo = OperazioneConverter.toVO(caricamento);
 			this.getOperazioneService().create(caricamentoVo);
@@ -60,7 +60,7 @@ public class OperazioniBD extends BasicBD {
 		}
 	}
 	
-	public void updateOperazione(it.govpay.bd.model.Operazione caricamento) throws ServiceException {
+	public void updateOperazione(it.govpay.bd.loader.model.Operazione caricamento) throws ServiceException {
 		try{
 			Operazione caricamentoVo = OperazioneConverter.toVO(caricamento);
 			this.getOperazioneService().update(caricamentoVo);
@@ -87,7 +87,7 @@ public class OperazioniBD extends BasicBD {
 		}
 	}
 
-	public List<it.govpay.bd.model.Operazione> findAll(OperazioneFilter filter) throws ServiceException {
+	public List<it.govpay.bd.loader.model.Operazione> findAll(OperazioneFilter filter) throws ServiceException {
 		try {
 			return this.findAll(filter.toPaginatedExpression());
 		} catch (NotImplementedException e) {
@@ -95,10 +95,10 @@ public class OperazioniBD extends BasicBD {
 		}
 	}
 	
-	public it.govpay.bd.model.Operazione getOperazione(long id) throws ServiceException, NotFoundException {
+	public it.govpay.bd.loader.model.Operazione getOperazione(long id) throws ServiceException, NotFoundException {
 		try {
-			it.govpay.orm.Operazione versamento = ((IDBOperazioneService)this.getOperazioneService()).get(id);
-			return OperazioneConverter.toDTO(versamento);
+			it.govpay.orm.Operazione operazione = ((IDBOperazioneService)this.getOperazioneService()).get(id);
+			return OperazioneConverter.toDettaglioDTO(operazione);
 		} catch (NotImplementedException e) {
 			throw new ServiceException(e);
 		} catch (NotFoundException e) {

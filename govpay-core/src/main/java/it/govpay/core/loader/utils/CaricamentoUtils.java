@@ -11,7 +11,7 @@ import it.govpay.core.loader.timers.model.AnnullamentoResponse;
 import it.govpay.core.loader.timers.model.CaricamentoRequest;
 import it.govpay.core.loader.timers.model.CaricamentoResponse;
 import it.govpay.core.utils.VersamentoUtils;
-import it.govpay.orm.constants.StatoOperazioneType;
+import it.govpay.model.loader.Operazione.StatoOperazioneType;
 
 import org.openspcoop2.generic_project.exception.NotFoundException;
 

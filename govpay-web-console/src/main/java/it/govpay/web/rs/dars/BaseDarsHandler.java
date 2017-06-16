@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -347,6 +348,36 @@ public abstract class BaseDarsHandler<T> implements IDarsHandler<T>{
 
 	public Date convertJsonStringToDate(String dateJson) throws Exception{
 		return BaseDarsService.convertJsonStringToDate(dateJson);
+	}
+	
+	public Date convertJsonStringToDataInizio(String dateJson) throws Exception{
+		Date d = BaseDarsService.convertJsonStringToDate(dateJson);
+		Calendar c = Calendar.getInstance();
+		c.setTime(d);
+		// imposto le ore 00:00:000
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		
+		return c.getTime();
+	}
+	
+	public Date convertJsonStringToDataFine(String dateJson) throws Exception{
+		Date d = BaseDarsService.convertJsonStringToDate(dateJson);
+		Calendar c = Calendar.getInstance();
+		
+		c.setTime(d);
+		// imposto le ore 00:00:000
+		c.set(Calendar.HOUR_OF_DAY, 0);
+		c.set(Calendar.MINUTE, 0);
+		c.set(Calendar.SECOND, 0);
+		c.set(Calendar.MILLISECOND, 0);
+		// imposto le 23:59:59:999
+		c.add(Calendar.DAY_OF_YEAR, 1);
+		c.add(Calendar.MILLISECOND, -1); 
+		
+		return c.getTime();
 	}
 
 	@Override

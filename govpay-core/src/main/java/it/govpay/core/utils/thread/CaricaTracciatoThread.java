@@ -22,13 +22,13 @@ package it.govpay.core.utils.thread;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.loader.OperazioniBD;
 import it.govpay.bd.loader.TracciatiBD;
-import it.govpay.bd.model.Operazione;
-import it.govpay.bd.model.Tracciato;
-import it.govpay.bd.operazioni.filters.OperazioneFilter;
-import it.govpay.bd.operazioni.filters.OperazioneFilter.SortFields;
+import it.govpay.bd.loader.filters.OperazioneFilter;
+import it.govpay.bd.loader.filters.OperazioneFilter.SortFields;
+import it.govpay.bd.loader.model.Operazione;
+import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.core.loader.utils.TimerCaricamentoTracciatoSmistatore;
 import it.govpay.core.utils.GpContext;
-import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

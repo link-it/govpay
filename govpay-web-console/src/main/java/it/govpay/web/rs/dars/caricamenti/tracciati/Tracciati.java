@@ -24,6 +24,6 @@ public class Tracciati extends BaseDarsService {
 	
 	@Override
 	public String getPathServizio() {
-		return "/dars/" + this.getNomeServizio();
+		return "/dars/caricamenti/tracciati";// + this.getNomeServizio();
 	}
 }

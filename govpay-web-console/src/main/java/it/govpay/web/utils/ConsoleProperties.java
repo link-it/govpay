@@ -149,7 +149,7 @@ public class ConsoleProperties {
 				}
 			}
 			
-			String dim = ConsoleProperties.getProperty("it.govpay.console.dimensioneMassimaFileTracciato", props, false);
+			String dim = ConsoleProperties.getProperty("it.govpay.console.caricamentoTracciati.dimensioneMassimaFile", props, false);
 			this.dimensioneMassimaFileTracciato = num != null ? Long.parseLong(dim) : 10485760;
 						
 		} catch (Exception e) {
