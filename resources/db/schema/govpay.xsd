@@ -1935,7 +1935,7 @@
 					</xsd:appinfo>
 				</xsd:annotation>
 			</xsd:element>
-			<xsd:element name="tipoOperazione" type="xsd:string"/>
+			<xsd:element name="tipoOperazione" type="TipoOperazioneType"/>
 			<xsd:element name="lineaElaborazione" type="xsd:long"/>
 			<xsd:element name="stato" type="StatoOperazioneType"/>
 			<xsd:element name="datiRichiesta" type="xsd:base64Binary"/>
@@ -2000,6 +2000,14 @@
 			<xsd:enumeration value="IN_CARICAMENTO" />
 			<xsd:enumeration value="CARICAMENTO_OK" />
 			<xsd:enumeration value="CARICAMENTO_KO" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+	<xsd:simpleType name="TipoOperazioneType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="ADD" />
+			<xsd:enumeration value="DEL" />
+			<xsd:enumeration value="N_V" />
 		</xsd:restriction>
 	</xsd:simpleType>
 	

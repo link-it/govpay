@@ -51,16 +51,16 @@ import it.govpay.bd.pagamento.EventiBD;
 import it.govpay.bd.pagamento.filters.EventiFilter;
 import it.govpay.model.Evento;
 import it.govpay.model.Evento.TipoEvento;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -74,14 +74,13 @@ import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandler<Evento>{
+public class EventiHandler extends DarsHandler<Evento> implements IDarsHandler<Evento>{
 
 	public static final String SEPARATORE_CSV = "|";
 
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-	public EventiHandler(Logger log, BaseDarsService darsService) { 
+	public EventiHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -98,7 +97,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			Map<String, String> params = new HashMap<String, String>();
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			EventiBD eventiBD = new EventiBD(bd);
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			EventiFilter filter = eventiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
 			filter.setLimit(limit);
@@ -114,7 +113,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, this.getUriEsportazione(uriInfo, bd, params) , this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
+					count, this.getInfoEsportazione(uriInfo, bd) , this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<Evento> findAll = eventiBD.findAll(filter); 
 
@@ -157,8 +156,8 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 		if(simpleSearch) {
 			// simplesearch
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-			params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+			String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
@@ -221,8 +220,8 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 
 		if(simpleSearch) {
 			// simplesearch
-			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
-			params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+			String simpleSearchString = Utils.getValue(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
@@ -348,6 +347,9 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
@@ -413,7 +415,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 			Map<String, String> params = new HashMap<String, String>();
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			this.darsService.checkOperatoreAdmin(bd); 
-			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			EventiBD eventiBD = new EventiBD(bd);
 
 			EventiFilter filter = eventiBD.newFilter(simpleSearch);
@@ -609,7 +611,7 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
@@ -622,6 +624,20 @@ public class EventiHandler extends BaseDarsHandler<Evento> implements IDarsHandl
 	@Override
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry) throws ConsoleException {
 		return null;
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Evento entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
 	}
 
 	@Override

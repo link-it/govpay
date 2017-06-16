@@ -36,7 +36,6 @@ import it.govpay.bd.BasicBD;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumAuthType;
 import it.govpay.model.Connettore.EnumSslType;
-import it.govpay.web.rs.dars.BaseDarsService;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.Password;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.SslKsLocation;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.SslKsPasswd;
@@ -48,6 +47,7 @@ import it.govpay.web.rs.dars.anagrafica.intermediari.input.SslTsType;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.SslType;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.TipoSsl;
 import it.govpay.web.rs.dars.anagrafica.intermediari.input.Username;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.ValidationException;
 import it.govpay.web.rs.dars.model.RawParamValue;
@@ -422,7 +422,7 @@ public class ConnettoreHandler {
 
 	public URI getUriField(UriInfo uriInfo, BasicBD bd, String fieldName) throws ConsoleException {
 		try{
-			URI uri = Utils.creaUriConPath(this.pathServizio,BaseDarsService.PATH_FIELD,fieldName);
+			URI uri = Utils.creaUriConPath(this.pathServizio,DarsService.PATH_FIELD,fieldName);
 			return uri;
 		}catch(Exception e){
 			throw new ConsoleException(e);

@@ -25,27 +25,27 @@ import it.govpay.bd.model.Rr;
 import it.govpay.bd.pagamento.RrBD;
 import it.govpay.bd.pagamento.filters.RrFilter;
 import it.govpay.model.Rr.StatoRr;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
+import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
 import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
-import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.utils.Utils;
 
-public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<Rr>{
+public class RevocheHandler extends DarsHandler<Rr> implements IDarsHandler<Rr>{
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm"); 
 
-	public RevocheHandler(Logger log, BaseDarsService darsService) {
+	public RevocheHandler(Logger log, DarsService darsService) {
 		super(log, darsService);
 	}
 
@@ -55,8 +55,6 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 		try{	
 			// Operazione consentita agli utenti registrati
 			this.darsService.getOperatoreByPrincipal(bd); 
-
-			URI esportazione = null; 
 
 			this.log.info("Esecuzione " + methodName + " in corso...");
 
@@ -78,7 +76,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 			params.put(rptId, idRpt);
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Rr> rr = rrBD.findAll(filter);
 
@@ -113,10 +111,10 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, rr);
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, id);
+			InfoForm infoEsportazione = this.getInfoEsportazioneDettaglio(uriInfo, bd, rr);
 
 			String titolo =  Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioRevoca");
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			// Sezione RR
 			it.govpay.web.rs.dars.model.Sezione sezioneRr = dettaglio.getSezioneRoot();
@@ -273,7 +271,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 		}
 
 		if(idsToExport.size() == 1)
-			return this.esporta(idsToExport.get(0), uriInfo, bd, zout); 
+			return this.esporta(idsToExport.get(0), rawValues, uriInfo, bd, zout); 
 
 		String fileName = "RichiesteRevoca.zip";
 		try{
@@ -312,7 +310,7 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues,  UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
@@ -371,6 +369,12 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 	}
 	
 	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rr entry)	throws ConsoleException {	return null;	}
+	
+	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException {		return null;	}
 
 	@Override
@@ -378,6 +382,9 @@ public class RevocheHandler extends BaseDarsHandler<Rr> implements IDarsHandler<
 
 	@Override
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException {	return null;	}
+
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Elenco delete(List<Long> idsToDelete, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd) throws WebApplicationException, ConsoleException, DeleteException {	return null; 	}

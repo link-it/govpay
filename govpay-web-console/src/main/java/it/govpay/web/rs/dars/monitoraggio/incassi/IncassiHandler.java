@@ -57,16 +57,16 @@ import it.govpay.model.Applicazione;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.stampe.pdf.incasso.IncassoPdf;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -83,13 +83,12 @@ import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHandler<Incasso>{
+public class IncassiHandler extends DarsHandler<Incasso> implements IDarsHandler<Incasso>{
 
 	public static final String ANAGRAFICA_DEBITORE = "anagrafica";
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 
-	public IncassiHandler(Logger log, BaseDarsService darsService) { 
+	public IncassiHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -103,12 +102,11 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
 			IncassiBD incassiBD = new IncassiBD(bd);
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			IncassoFilter filter = incassiBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -131,7 +129,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Incasso> findAll = eseguiRicerca ? incassiBD.findAll(filter) : new ArrayList<Incasso>(); 
 
@@ -164,7 +162,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 		if(simpleSearch){
 			// simplesearch
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 			}
@@ -251,7 +249,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 		if(simpleSearch){
 			// simplesearch
-			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			String simpleSearchString = Utils.getValue(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 			}
@@ -496,6 +494,9 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 	public Object getField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd) throws WebApplicationException, ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
@@ -537,10 +538,10 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = null;
-			URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, incassiBD, id);
+			InfoForm infoEsportazione =  incasso != null ? this.getInfoEsportazioneDettaglio(uriInfo, incassiBD, incasso) : null;
 
 			String titolo = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".dettaglioIncasso") ;
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -722,7 +723,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 			this.log.info("Esecuzione " + methodName + " in corso...");
 			Operatore operatore = this.darsService.getOperatoreByPrincipal(bd); 
 			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
-			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			IncassiBD incassiBD = new IncassiBD(bd);
 			IncassoFilter filter = incassiBD.newFilter(simpleSearch);
 
@@ -800,7 +801,7 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
@@ -902,6 +903,20 @@ public class IncassiHandler extends BaseDarsHandler<Incasso> implements IDarsHan
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Incasso entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Incasso entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+		}
 
 	/* Creazione/Update non consentiti**/
 

@@ -26,8 +26,6 @@ import it.govpay.bd.loader.filters.TracciatoFilter;
 import it.govpay.bd.loader.model.Tracciato;
 import it.govpay.bd.model.Notifica;
 import it.govpay.bd.model.Rpt;
-import it.govpay.bd.model.Tracciato;
-import it.govpay.bd.operazioni.filters.TracciatoFilter;
 import it.govpay.bd.pagamento.NotificheBD;
 import it.govpay.bd.pagamento.RptBD;
 import it.govpay.bd.pagamento.filters.RptFilter;
@@ -40,7 +38,7 @@ import it.govpay.core.utils.thread.InviaNotificaThread;
 import it.govpay.core.utils.thread.ThreadExecutorManager;
 import it.govpay.model.Rpt.StatoConservazione;
 import it.govpay.model.Rpt.StatoRpt;
-import it.govpay.orm.constants.StatoTracciatoType;
+import it.govpay.model.loader.Tracciato.StatoTracciatoType;
 
 import java.sql.Connection;
 import java.util.ArrayList;

@@ -49,16 +49,16 @@ import it.govpay.model.Acl.Servizio;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.operatori.input.Domini;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -77,16 +77,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDarsHandler<Operatore>{
+public class OperatoriHandler extends DarsHandler<Operatore> implements IDarsHandler<Operatore>{
 
 	private static final Servizio TIPO_SERVIZIO = Servizio.CRUSCOTTO;
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 
 	public static final String PROFILO_OPERATORE_VALUE_ADMIN = "ADMIN";
 	public static final String PROFILO_OPERATORE_VALUE_OPERATORE = "ENTE";
 
-	public OperatoriHandler(Logger log, BaseDarsService darsService) {
+	public OperatoriHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -101,9 +99,8 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			OperatoriBD operatoriBD = new OperatoriBD(bd);
 			OperatoreFilter filter = operatoriBD.newFilter(simpleSearch);
@@ -117,7 +114,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			if(simpleSearch){
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -144,7 +141,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Operatore> findAll = operatoriBD.findAll(filter);
 
@@ -418,6 +415,12 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operatore entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Operatore entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -445,7 +448,12 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 			throw new ConsoleException(e);
 		}
 	}
-
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -475,9 +483,9 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,operatore);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, operatore);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(operatore,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -771,7 +779,7 @@ public class OperatoriHandler extends BaseDarsHandler<Operatore> implements IDar
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

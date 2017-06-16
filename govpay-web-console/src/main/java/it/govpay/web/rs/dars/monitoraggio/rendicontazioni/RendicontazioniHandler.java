@@ -58,16 +58,16 @@ import it.govpay.model.Operatore.ProfiloOperatore;
 import it.govpay.model.Rendicontazione.Anomalia;
 import it.govpay.model.Rendicontazione.EsitoRendicontazione;
 import it.govpay.model.Rendicontazione.StatoRendicontazione;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -82,14 +82,13 @@ import it.govpay.web.rs.dars.monitoraggio.pagamenti.Pagamenti;
 import it.govpay.web.rs.dars.monitoraggio.pagamenti.PagamentiHandler;
 import it.govpay.web.utils.Utils;
 
-public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> implements IDarsHandler<Rendicontazione>{
+public class RendicontazioniHandler extends DarsHandler<Rendicontazione> implements IDarsHandler<Rendicontazione>{
 
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy"); //  HH:mm  
 	//private SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 
 
-	public RendicontazioniHandler(Logger log, BaseDarsService darsService) { 
+	public RendicontazioniHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -104,11 +103,10 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null; 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			RendicontazioniBD frBD = new RendicontazioniBD(bd);
 			AclBD aclBD = new AclBD(bd);
 			List<Acl> aclOperatore = aclBD.getAclOperatore(operatore.getId());
@@ -138,8 +136,8 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 			if(simpleSearch) {
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
-				params.put(BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				params.put(DarsService.SIMPLE_SEARCH_PARAMETER_ID, simpleSearchString);
 
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
@@ -196,7 +194,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Rendicontazione> findAll = eseguiRicerca ? frBD.findAll(filter) : new ArrayList<Rendicontazione>(); 
 
@@ -300,6 +298,9 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	}
 
 	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
+
+	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
@@ -356,10 +357,10 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = rendicontazione != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, rendicontazione) : null;
-			URI esportazione = rendicontazione != null ? this.getUriEsportazioneDettaglio(uriInfo, bd, id) : null;
+			InfoForm infoEsportazione = rendicontazione != null ? this.getInfoEsportazioneDettaglio(uriInfo, bd, rendicontazione) : null;
 
 			String titolo = rendicontazione != null ? this.getTitolo(rendicontazione,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -565,7 +566,7 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
@@ -582,6 +583,20 @@ public class RendicontazioniHandler extends BaseDarsHandler<Rendicontazione> imp
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rendicontazione entry) throws ConsoleException {
 		return null;
 	}
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Rendicontazione entry)	throws ConsoleException {	
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;		
+	}
+	
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 

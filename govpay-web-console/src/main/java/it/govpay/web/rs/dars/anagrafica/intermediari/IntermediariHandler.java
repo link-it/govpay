@@ -43,16 +43,16 @@ import it.govpay.bd.anagrafica.filters.IntermediarioFilter;
 import it.govpay.model.Connettore;
 import it.govpay.model.Connettore.EnumSslType;
 import it.govpay.model.Intermediario;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.connettori.ConnettoreHandler;
 import it.govpay.web.rs.dars.anagrafica.stazioni.Stazioni;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -68,13 +68,11 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class IntermediariHandler extends BaseDarsHandler<Intermediario> implements IDarsHandler<Intermediario>{
+public class IntermediariHandler extends DarsHandler<Intermediario> implements IDarsHandler<Intermediario>{
 
 	public static final String CONNETTORE_PDD = ConnettoreHandler.CONNETTORE_PDD;
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 
-	public IntermediariHandler(Logger log, BaseDarsService darsService) {
+	public IntermediariHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -87,11 +85,10 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			IntermediariBD intermediariBD = new IntermediariBD(bd);
 			IntermediarioFilter filter = intermediariBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -103,7 +100,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			if(simpleSearch){
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -123,7 +120,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			//elenco.setFiltro(true);
 
@@ -348,6 +345,12 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Intermediario entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Intermediario entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -376,6 +379,12 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 		}
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -392,9 +401,9 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,intermediario);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, intermediario);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(intermediario,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(intermediario,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -619,7 +628,7 @@ public class IntermediariHandler extends BaseDarsHandler<Intermediario> implemen
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

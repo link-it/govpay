@@ -36,14 +36,14 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 import it.govpay.bd.BasicBD;
 import it.govpay.bd.model.Canale;
 import it.govpay.model.Canale.ModelloPagamento;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -51,9 +51,9 @@ import it.govpay.web.rs.dars.model.RawParamValue;
 import it.govpay.web.rs.dars.model.Voce;
 import it.govpay.web.utils.Utils;
 
-public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> implements IDarsHandler<it.govpay.bd.model.Canale>{
+public class CanaliHandler extends DarsHandler<it.govpay.bd.model.Canale> implements IDarsHandler<it.govpay.bd.model.Canale>{
 
-	public CanaliHandler(Logger log,BaseDarsService darsService) {
+	public CanaliHandler(Logger log,DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -69,8 +69,6 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 			String codPspId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle("psp.codPsp.id");
 			String codPsp = this.getParameter(uriInfo, codPspId, String.class);
 
-			URI esportazione = null;
-
 			it.govpay.bd.anagrafica.PspBD pspBD = new it.govpay.bd.anagrafica.PspBD(bd);
 			it.govpay.bd.model.Psp psp = pspBD.getPsp(codPsp);
 
@@ -81,7 +79,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<it.govpay.bd.model.Canale> findAll = psp.getCanalis();
 
@@ -127,9 +125,21 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Canale entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Canale entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
 		return null;
 	}
 
@@ -148,9 +158,9 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,canale);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, canale);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(canale,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -259,7 +269,7 @@ public class CanaliHandler extends BaseDarsHandler<it.govpay.bd.model.Canale> im
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
 

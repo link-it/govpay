@@ -41,17 +41,18 @@ import it.govpay.bd.BasicBD;
 import it.govpay.bd.FilterSortWrapper;
 import it.govpay.bd.anagrafica.TipiTributoBD;
 import it.govpay.bd.anagrafica.filters.TipoTributoFilter;
+import it.govpay.model.Applicazione;
 import it.govpay.model.TipoTributo;
 import it.govpay.model.Tributo;
 import it.govpay.model.Tributo.TipoContabilta;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -67,13 +68,11 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements IDarsHandler<TipoTributo>{
+public class TipiTributoHandler extends DarsHandler<TipoTributo> implements IDarsHandler<TipoTributo>{
 
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	public static final String ANAGRAFICA_UO = "anagrafica";
 
-	public TipiTributoHandler(Logger log, BaseDarsService darsService) {
+	public TipiTributoHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -86,12 +85,11 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = null;
 
 			boolean visualizzaRicerca = true;
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			TipiTributoBD tipiTributoBD = new TipiTributoBD(bd);
 			TipoTributoFilter filter = tipiTributoBD.newFilter(simpleSearch);
 			filter.setOffset(offset);
@@ -103,7 +101,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			if(simpleSearch){
 				// simplesearch
-				String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+				String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 				if(StringUtils.isNotEmpty(simpleSearchString)) {
 					filter.setSimpleSearchString(simpleSearchString);
 				}
@@ -140,7 +138,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 			InfoForm infoRicerca = this.getInfoRicerca(uriInfo, bd, visualizzaRicerca);
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca, this.getInfoCreazione(uriInfo, bd), 
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder);  
 
 			List<TipoTributo> findAll = tipiTributoBD.findAll(filter);
 
@@ -405,6 +403,12 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, TipoTributo entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, TipoTributo entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -433,6 +437,12 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 		}
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -449,9 +459,9 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,tributo);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, tributo);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(tributo,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -672,7 +682,7 @@ public class TipiTributoHandler extends BaseDarsHandler<TipoTributo> implements 
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException ,ExportException{
 		return null;
 	}
 

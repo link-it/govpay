@@ -53,22 +53,23 @@ import it.govpay.bd.model.Psp;
 import it.govpay.bd.pagamento.FrBD;
 import it.govpay.bd.pagamento.filters.FrFilter;
 import it.govpay.model.Acl;
+import it.govpay.model.Applicazione;
 import it.govpay.model.Acl.Tipo;
 import it.govpay.model.Fr.Anomalia;
 import it.govpay.model.Fr.StatoFr;
 import it.govpay.model.Operatore;
 import it.govpay.model.Operatore.ProfiloOperatore;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.domini.Domini;
 import it.govpay.web.rs.dars.anagrafica.domini.DominiHandler;
 import it.govpay.web.rs.dars.anagrafica.psp.PspHandler;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
@@ -84,13 +85,12 @@ import it.govpay.web.rs.dars.model.input.base.SelectList;
 import it.govpay.web.utils.ConsoleProperties;
 import it.govpay.web.utils.Utils;
 
-public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
+public class FrHandler extends DarsHandler<Fr> implements IDarsHandler<Fr>{
 
-	private Map<String, ParamField<?>> infoRicercaMap = null;
 	private SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");  
 	//	private SimpleDateFormat simpleDateFormatAnno = new SimpleDateFormat("yyyy");
 
-	public FrHandler(Logger log, BaseDarsService darsService) { 
+	public FrHandler(Logger log, DarsService darsService) { 
 		super(log, darsService);
 	}
 
@@ -103,10 +103,9 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
-			URI esportazione = this.getUriEsportazione(uriInfo, bd); 
 
 			this.log.info("Esecuzione " + methodName + " in corso..."); 
-			boolean simpleSearch = this.containsParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = this.containsParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 
 			FrBD frBD = new FrBD(bd);
 			FrFilter filter = frBD.newFilter(simpleSearch);
@@ -131,9 +130,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 			String simpleSearchPlaceholder = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".simpleSearch.placeholder");
 			Elenco elenco = new Elenco(this.titoloServizio, infoRicerca,
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
-			// export massivo on
-			elenco.setExportMassivo(true);
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd),simpleSearchPlaceholder); 
 
 			List<Fr> findAll = eseguiRicerca ? frBD.findAllExt(filter) : new ArrayList<Fr>(); 
 
@@ -166,7 +163,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 		if(simpleSearch){
 			// simplesearch
-			String simpleSearchString = this.getParameter(uriInfo, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
+			String simpleSearchString = this.getParameter(uriInfo, DarsService.SIMPLE_SEARCH_PARAMETER_ID, String.class);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 			}
@@ -249,7 +246,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 		if(simpleSearch){
 			// simplesearch
-			String simpleSearchString = Utils.getValue(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			String simpleSearchString = Utils.getValue(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			if(StringUtils.isNotEmpty(simpleSearchString)) {
 				filter.setSimpleSearchString(simpleSearchString);
 			}
@@ -453,6 +450,9 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	}
 
 	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)	throws WebApplicationException, ConsoleException { 	return null; }
+
+	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd)
 			throws WebApplicationException, ConsoleException {
 		String methodName = "dettaglio " + this.titoloServizio + "."+ id;
@@ -509,10 +509,10 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			InfoForm infoModifica = null;
 			InfoForm infoCancellazione = fr != null ? this.getInfoCancellazioneDettaglio(uriInfo, bd, fr) : null;
-			URI esportazione = fr != null ? this.getUriEsportazioneDettaglio(uriInfo, bd, id) : null;
+			InfoForm infoEsportazione = fr != null ? this.getInfoEsportazioneDettaglio(uriInfo, bd, fr) : null;
 
 			String titolo = fr != null ? this.getTitolo(fr,bd) : "";
-			Dettaglio dettaglio = new Dettaglio(titolo, esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(titolo, infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot();
 
@@ -748,7 +748,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 
 			int limit = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 			FrBD frBD = new FrBD(bd);
-			boolean simpleSearch = Utils.containsParameter(rawValues, BaseDarsService.SIMPLE_SEARCH_PARAMETER_ID);
+			boolean simpleSearch = Utils.containsParameter(rawValues, DarsService.SIMPLE_SEARCH_PARAMETER_ID);
 			FrFilter filter = frBD.newFilter(simpleSearch);
 
 			// se ho ricevuto anche gli id li utilizzo per fare il check della count
@@ -811,7 +811,7 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)
 			throws WebApplicationException, ConsoleException,ExportException {
 		String methodName = "esporta " + this.titoloServizio + "[" + idToExport + "]";  
 
@@ -855,6 +855,21 @@ public class FrHandler extends BaseDarsHandler<Fr> implements IDarsHandler<Fr>{
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Fr entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { 
+		URI esportazione = this.getUriCancellazione(uriInfo, bd);
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione; 
+	}
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Fr entry)	throws ConsoleException {
+		URI esportazione = this.getUriEsportazioneDettaglio(uriInfo, bd, entry.getId());
+		InfoForm infoEsportazione = new InfoForm(esportazione);
+		return infoEsportazione;	
+	}
+	
 	@Override
 	public InfoForm getInfoCreazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
 

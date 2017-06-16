@@ -19,7 +19,6 @@
  */
 package it.govpay.web.rs.dars.model;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,29 +29,27 @@ public class Elenco {
 	private List<Elemento> elenco;
 	private long totaleRisultati;
 	private String titolo;
-	private URI esportazione;
 	private InfoForm infoCancellazione;
+	private InfoForm infoEsportazione;
 	private InfoForm infoCreazione;
 	private InfoForm infoRicerca;
 	private boolean filtro;
-	private boolean exportMassivo;
 	private int numeroMassimoElementiExport;
 	private String simpleSearchPlaceHolder;
 	
-	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, InfoForm infoCancellazione) {
+	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, InfoForm esportazione, InfoForm infoCancellazione) {
 		this(titolo, infoRicerca, infoCreazione, totaleRisultati, esportazione, infoCancellazione, null);
 	}
 	
-	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, URI esportazione, InfoForm infoCancellazione,String simpleSearchPlaceHolder) {
+	public Elenco(String titolo, InfoForm infoRicerca, InfoForm infoCreazione, long totaleRisultati, InfoForm infoEsportazione, InfoForm infoCancellazione,String simpleSearchPlaceHolder) {
 		this.totaleRisultati = totaleRisultati;
 		this.titolo = titolo;
 		this.infoRicerca = infoRicerca;
 		this.infoCreazione = infoCreazione;
 		this.infoCancellazione = infoCancellazione;
-		this.esportazione = esportazione;
+		this.infoEsportazione = infoEsportazione;
 		this.elenco = (new ArrayList<Elemento>());
 		this.setFiltro(false);
-		this.setExportMassivo(false);
 		this.numeroMassimoElementiExport = ConsoleProperties.getInstance().getNumeroMassimoElementiExport();
 		this.simpleSearchPlaceHolder = simpleSearchPlaceHolder;
 	}
@@ -73,10 +70,10 @@ public class Elenco {
 		return this.titolo;
 	}
 	
-	public URI getEsportazione() {
-		return this.esportazione;
+	public InfoForm getInfoEsportazione() {
+		return this.infoEsportazione;
 	}
-	
+
 	public InfoForm getInfoCancellazione() {
 		return this.infoCancellazione;
 	}
@@ -91,14 +88,6 @@ public class Elenco {
 
 	public void setFiltro(boolean filtro) {
 		this.filtro = filtro;
-	}
-
-	public boolean isExportMassivo() {
-		return this.exportMassivo;
-	}
-
-	public void setExportMassivo(boolean exportMassivo) {
-		this.exportMassivo = exportMassivo;
 	}
 
 	public int getNumeroMassimoElementiExport() {

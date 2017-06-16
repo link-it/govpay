@@ -43,15 +43,15 @@ import it.govpay.bd.anagrafica.StazioniBD;
 import it.govpay.bd.anagrafica.filters.StazioneFilter;
 import it.govpay.bd.model.Stazione;
 import it.govpay.model.Intermediario;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.intermediari.Intermediari;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elemento;
 import it.govpay.web.rs.dars.model.Elenco;
@@ -68,12 +68,11 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsHandler<Stazione> {
+public class StazioniHandler extends DarsHandler<Stazione> implements IDarsHandler<Stazione> {
 
-	private static Map<String, ParamField<?>> infoCreazioneMap = null;
 	private String codIntermediario = null;
 
-	public StazioniHandler(Logger log, BaseDarsService darsService) {
+	public StazioniHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -89,7 +88,6 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			Intermediari intermediariDars = new Intermediari();
 			String codIntermediarioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(intermediariDars.getNomeServizio()+ ".codIntermediario.id");
 			this.codIntermediario = this.getParameter(uriInfo, codIntermediarioId, String.class);
-			URI esportazione = null;
 
 			StazioniBD stazioniBD = new StazioniBD(bd);
 			StazioneFilter filter = stazioniBD.newFilter();
@@ -108,7 +106,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 			String formatter = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+".elenco.formatter");
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd,params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<Stazione> findAll = stazioniBD.findAll(filter);
 
@@ -290,9 +288,21 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, Stazione entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd, Stazione entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
+		return null;
+	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
 		return null;
 	}
 
@@ -312,9 +322,9 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,stazione);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, stazione);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(stazione,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(stazione,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -568,7 +578,7 @@ public class StazioniHandler extends BaseDarsHandler<Stazione> implements IDarsH
 	}
 
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
 

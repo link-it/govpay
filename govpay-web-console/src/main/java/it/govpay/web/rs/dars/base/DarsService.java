@@ -17,13 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package it.govpay.web.rs.dars;
+package it.govpay.web.rs.dars.base;
 
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipOutputStream;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -35,21 +34,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import it.govpay.bd.BasicBD;
-import it.govpay.web.rs.BaseRsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
-import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.DarsResponse;
 import it.govpay.web.rs.dars.model.DarsResponse.EsitoOperazione;
 import it.govpay.web.rs.dars.model.Dettaglio;
@@ -60,20 +54,14 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Path("/")
-public abstract class BaseDarsService extends BaseRsService {
+public abstract class DarsService extends BaseDarsService {
 
 	public static final String PATH_FIELD = "field";
-	public static final String PATH_ESPORTA = "esporta";
 	public static final String PATH_CANCELLA = "cancella";
 	public static final String PATH_UPLOAD = "upload";
-
-	public static final String SIMPLE_SEARCH_PARAMETER_ID = "simpleSearch";
 	public static final String IDS_TO_DELETE_PARAMETER_ID = "ids";
-	public static final String IDS_TO_EXPORT_PARAMETER_ID = "ids";
 
-	protected Logger log = LogManager.getLogger();
-
-	public BaseDarsService() {
+	public DarsService() {
 		super();
 	}
 
@@ -106,51 +94,6 @@ public abstract class BaseDarsService extends BaseRsService {
 
 			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
 			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.getNomeServizio()+".elenco.erroreGenerico"));
-		}finally {
-			this.response.setHeader("Access-Control-Allow-Origin", "*");
-			if(bd != null) bd.closeConnection();
-		}
-		this.log.info("Richiesta "+methodName +" evasa con successo");
-		return darsResponse;
-	}
-
-	@POST
-	@Path("/field/{id}")
-	@Produces({MediaType.APPLICATION_JSON})
-	public DarsResponse field(List<RawParamValue> rawValues, 
-			@PathParam("id") String id, @Context UriInfo uriInfo) throws Exception,WebApplicationException{
-		String methodName = "field " + this.getNomeServizio() + "." + id; 
-		this.initLogger(methodName);
-
-		BasicBD bd = null;
-		DarsResponse darsResponse = new DarsResponse();
-		darsResponse.setCodOperazione(this.codOperazione);
-
-		try {
-			bd = BasicBD.newInstance(this.codOperazione);
-			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
-			
-			Object field = this.getDarsHandler().getField(uriInfo, rawValues, id, bd);
-
-			// Field richiesto non valido
-			if(field == null){
-				darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-				darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.fieldNonPresente", id,this.getNomeServizio()));
-				return darsResponse;
-			}
-
-			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
-			darsResponse.setResponse(field);
-		} catch(WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			throw e;
-		} catch (Exception e) {
-			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			if(bd != null) 
-				bd.rollback();
-
-			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
-			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
 		}finally {
 			this.response.setHeader("Access-Control-Allow-Origin", "*");
 			if(bd != null) bd.closeConnection();
@@ -196,6 +139,50 @@ public abstract class BaseDarsService extends BaseRsService {
 			if(bd != null) bd.closeConnection();
 		}
 		this.log.info("Richiesta evasa con successo");
+		return darsResponse;
+	}
+	
+	@POST
+	@Path("/field/{id}")
+	@Produces({MediaType.APPLICATION_JSON})
+	public DarsResponse field(List<RawParamValue> rawValues, 
+			@PathParam("id") String id, @Context UriInfo uriInfo) throws Exception,WebApplicationException{
+		String methodName = "field " + this.getNomeServizio() + "." + id; 
+		this.initLogger(methodName);
+
+		BasicBD bd = null;
+		DarsResponse darsResponse = new DarsResponse();
+		darsResponse.setCodOperazione(this.codOperazione);
+
+		try {
+			bd = BasicBD.newInstance(this.codOperazione);
+			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
+			Object field = this.getDarsHandler().getField(uriInfo, rawValues, id, bd);
+
+			// Field richiesto non valido
+			if(field == null){
+				darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+				darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.fieldNonPresente", id,this.getNomeServizio()));
+				return darsResponse;
+			}
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ESEGUITA);
+			darsResponse.setResponse(field);
+		} catch(WebApplicationException e){
+			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			throw e;
+		} catch (Exception e) {
+			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
+			if(bd != null) 
+				bd.rollback();
+
+			darsResponse.setEsitoOperazione(EsitoOperazione.ERRORE);
+			darsResponse.setDettaglioEsito(Utils.getInstance(this.getLanguage()).getMessageWithParamsFromResourceBundle("field.erroreGenerico", id,this.getNomeServizio()));
+		}finally {
+			this.response.setHeader("Access-Control-Allow-Origin", "*");
+			if(bd != null) bd.closeConnection();
+		}
+		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
 	}
 
@@ -323,115 +310,6 @@ public abstract class BaseDarsService extends BaseRsService {
 		}
 		this.log.info("Richiesta "+methodName +" evasa con successo");
 		return darsResponse;
-	}
-
-	@POST
-	@Path("/esporta")
-	@Produces({MediaType.APPLICATION_JSON,MediaType.APPLICATION_OCTET_STREAM})
-	public Response esporta(InputStream is, @Context UriInfo uriInfo) throws Exception{
-		String methodName = "esporta " + this.getNomeServizio() ; //+ "[" + sb.toString() + "]";
-		
-		  
-		this.initLogger(methodName);
-
-		BasicBD bd = null;
-		DarsResponse darsResponse = new DarsResponse();
-		darsResponse.setCodOperazione(this.codOperazione);
-		String idsAsString = null;
-		try {
-			bd = BasicBD.newInstance(this.codOperazione);
-			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
-			
-			ByteArrayOutputStream baosIn = new ByteArrayOutputStream();
-			Utils.copy(is, baosIn);
-
-			baosIn.flush();
-			baosIn.close();
-
-			JSONObject jsonObjectFormExport = JSONObject.fromObject( baosIn.toString() );
-			JSONArray jsonIDS = jsonObjectFormExport.getJSONArray(IDS_TO_EXPORT_PARAMETER_ID);
-
-			List<RawParamValue> rawValues = new ArrayList<RawParamValue>();
-			for (Object key : jsonObjectFormExport.keySet()) {
-				String value = jsonObjectFormExport.getString((String) key);
-				if(StringUtils.isNotEmpty(value) && !"null".equals(value))
-				rawValues.add(new RawParamValue((String) key, value));
-			}
-			
-			idsAsString = Utils.getValue(rawValues, IDS_TO_EXPORT_PARAMETER_ID);
-			this.log.info("Richiesto export degli elementi con id "+idsAsString+""); 
-
-			List<Long> idsToExport = new ArrayList<Long>();
-			if(jsonIDS != null && jsonIDS.size() > 0)
-				for (int i = 0; i < jsonIDS.size(); i++) {
-					long id = jsonIDS.getLong(i);
-					idsToExport.add(id); 
-				}
-			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ZipOutputStream zout = new ZipOutputStream(baos);
-
-			String fileName = this.getDarsHandler().esporta(idsToExport, rawValues, uriInfo, bd, zout);
-			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
-			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
-		} catch(ExportException e){
-			this.log.info("Esito operazione "+methodName+" [" + idsAsString + "] : " + e.getEsito() + ", causa: " +e.getMessaggi());
-			darsResponse.setEsitoOperazione(e.getEsito());
-			darsResponse.setDettaglioEsito(e.getMessaggi());
-			return Response.ok(darsResponse,MediaType.APPLICATION_JSON).build();
-		}catch(WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			throw e;
-		} catch (Exception e) {
-			this.log.error("Esito operazione "+methodName+" [" + idsAsString + "], causa: " +e.getMessage());
-			if(bd != null) 
-				bd.rollback();
-			
-			return Response.serverError().build();
-		}finally {
-			this.response.setHeader("Access-Control-Allow-Origin", "*");
-			this.response.setHeader("Access-Control-Expose-Headers", "content-disposition");
-			if(bd != null) bd.closeConnection();
-		}
-
-	}
-
-	@GET
-	@Path("/{id}/esporta")
-	@Produces({MediaType.APPLICATION_OCTET_STREAM})
-	public Response esportaDettaglio(@PathParam("id") long id, @Context UriInfo uriInfo) throws Exception{
-
-		String methodName = "esporta " + this.getNomeServizio() + "[" + id+ "]";  
-		this.initLogger(methodName);
-
-		BasicBD bd = null;
-		DarsResponse darsResponse = new DarsResponse();
-		darsResponse.setCodOperazione(this.codOperazione);
-
-		try {
-			bd = BasicBD.newInstance(this.codOperazione);
-			bd.setIdOperatore(this.getOperatoreByPrincipal(bd).getId());
-			
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			ZipOutputStream zout = new ZipOutputStream(baos);
-
-			String fileName = this.getDarsHandler().esporta(id, uriInfo, bd, zout);
-			this.log.info("Richiesta "+methodName +" evasa con successo, creato file: " + fileName);
-			return Response.ok(baos.toByteArray(), MediaType.APPLICATION_OCTET_STREAM).header("content-disposition", "attachment; filename=\""+fileName+"\"").build();
-		} catch(WebApplicationException e){
-			this.log.error("Riscontrato errore di autorizzazione durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			throw e;
-		} catch (Exception e) {
-			this.log.error("Riscontrato errore durante l'esecuzione del metodo "+methodName+":" +e.getMessage() , e);
-			if(bd != null) 
-				bd.rollback();
-			return Response.serverError().build();
-		}finally {
-			this.response.setHeader("Access-Control-Allow-Origin", "*");
-			this.response.setHeader("Access-Control-Expose-Headers", "content-disposition");
-			if(bd != null) bd.closeConnection();
-		}
-
 	}
 
 	@POST
@@ -567,11 +445,6 @@ public abstract class BaseDarsService extends BaseRsService {
 		this.log.info("Richiesta evasa con successo");
 		return darsResponse;
 	}
-
-	public abstract String getNomeServizio();
-
-	public abstract String getPathServizio();
-
+	
 	public abstract IDarsHandler<?> getDarsHandler();
-
 }

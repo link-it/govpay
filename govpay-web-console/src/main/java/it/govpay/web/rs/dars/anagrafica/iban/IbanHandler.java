@@ -46,16 +46,16 @@ import it.govpay.bd.anagrafica.IbanAccreditoBD;
 import it.govpay.bd.anagrafica.filters.IbanAccreditoFilter;
 import it.govpay.model.Dominio;
 import it.govpay.model.IbanAccredito;
-import it.govpay.web.rs.dars.BaseDarsHandler;
-import it.govpay.web.rs.dars.BaseDarsService;
-import it.govpay.web.rs.dars.IDarsHandler;
 import it.govpay.web.rs.dars.anagrafica.iban.input.IdNegozio;
 import it.govpay.web.rs.dars.anagrafica.iban.input.IdSellerBank;
+import it.govpay.web.rs.dars.base.DarsHandler;
+import it.govpay.web.rs.dars.base.DarsService;
 import it.govpay.web.rs.dars.exception.ConsoleException;
 import it.govpay.web.rs.dars.exception.DeleteException;
 import it.govpay.web.rs.dars.exception.DuplicatedEntryException;
 import it.govpay.web.rs.dars.exception.ExportException;
 import it.govpay.web.rs.dars.exception.ValidationException;
+import it.govpay.web.rs.dars.handler.IDarsHandler;
 import it.govpay.web.rs.dars.model.Dettaglio;
 import it.govpay.web.rs.dars.model.Elenco;
 import it.govpay.web.rs.dars.model.InfoForm;
@@ -71,14 +71,13 @@ import it.govpay.web.utils.Utils;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
-public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDarsHandler<IbanAccredito> {
+public class IbanHandler extends DarsHandler<IbanAccredito> implements IDarsHandler<IbanAccredito> {
 
 	public static final String patternIBAN = "[a-zA-Z]{2,2}[0-9]{2,2}[a-zA-Z0-9]{1,30}"; 
 	public static final String patternBIC = "[A-Z]{6,6}[A-Z2-9][A-NP-Z0-9]([A-Z0-9]{3,3}){0,1}";
-	private Map<String, ParamField<?>> infoCreazioneMap = null;
 	private Long idDominio = null;
 
-	public IbanHandler(Logger log, BaseDarsService darsService) {
+	public IbanHandler(Logger log, DarsService darsService) {
 		super(log,darsService);
 	}
 
@@ -92,7 +91,6 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			String idDominioId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio+ ".idDominio.id");
 			this.idDominio = this.getParameter(uriInfo, idDominioId, Long.class);
-			URI esportazione = null;
 
 			Integer offset = this.getOffset(uriInfo);
 			Integer limit = this.getLimit(uriInfo);
@@ -115,7 +113,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			Elenco elenco = new Elenco(this.titoloServizio, this.getInfoRicerca(uriInfo, bd, params),
 					this.getInfoCreazione(uriInfo, bd),
-					count, esportazione, this.getInfoCancellazione(uriInfo, bd)); 
+					count, this.getInfoEsportazione(uriInfo, bd), this.getInfoCancellazione(uriInfo, bd)); 
 
 			List<IbanAccredito> findAll = ibanAccreditoBD.findAll(filter);
 
@@ -380,6 +378,12 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	public InfoForm getInfoCancellazioneDettaglio(UriInfo uriInfo, BasicBD bd, IbanAccredito entry) throws ConsoleException {
 		return null;
 	}
+	
+	@Override
+	public InfoForm getInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException { return null; }
+	
+	@Override
+	public InfoForm getInfoEsportazioneDettaglio(UriInfo uriInfo, BasicBD bd,IbanAccredito entry)	throws ConsoleException {	return null;	}
 
 	@Override
 	public Object getField(UriInfo uriInfo,List<RawParamValue>values, String fieldId,BasicBD bd) throws ConsoleException {
@@ -408,6 +412,12 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 		}
 		return null;
 	}
+	
+	@Override
+	public Object getSearchField(UriInfo uriInfo, List<RawParamValue> values, String fieldId, BasicBD bd)
+			throws WebApplicationException, ConsoleException {
+		return null;
+	}
 
 	@Override
 	public Dettaglio getDettaglio(long id, UriInfo uriInfo, BasicBD bd) throws WebApplicationException,ConsoleException {
@@ -427,9 +437,9 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 
 			InfoForm infoModifica = this.getInfoModifica(uriInfo, bd,ibanAccredito);
 			InfoForm infoCancellazione = this.getInfoCancellazioneDettaglio(uriInfo, bd, ibanAccredito);
-			URI esportazione = null;
+			InfoForm infoEsportazione = null;
 
-			Dettaglio dettaglio = new Dettaglio(this.getTitolo(ibanAccredito,bd), esportazione, infoCancellazione, infoModifica);
+			Dettaglio dettaglio = new Dettaglio(this.getTitolo(ibanAccredito,bd), infoEsportazione, infoCancellazione, infoModifica);
 
 			it.govpay.web.rs.dars.model.Sezione root = dettaglio.getSezioneRoot(); 
 
@@ -652,7 +662,7 @@ public class IbanHandler extends BaseDarsHandler<IbanAccredito> implements IDars
 	}
 	
 	@Override
-	public String esporta(Long idToExport, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
+	public String esporta(Long idToExport, List<RawParamValue> rawValues, UriInfo uriInfo, BasicBD bd, ZipOutputStream zout)	throws WebApplicationException, ConsoleException,ExportException {
 		return null;
 	}
 
