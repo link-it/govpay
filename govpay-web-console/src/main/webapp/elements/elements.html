@@ -33932,6 +33932,10 @@ Polymer.AppLocalizeBehavior = {
           type: Object,
           value: null
         },
+        infoEsportazione: {
+          type: Object,
+          value: null
+        },
         simplePlaceholder: {
           type: String,
           value: ''
@@ -34012,8 +34016,9 @@ Polymer.AppLocalizeBehavior = {
           this.cancellazioneUrl = '';
         }
         this.filtrabile = (response.filtro);
-        if (response.esportazione) {
-          this.esportazioneUrl = REST_URL + response.esportazione + app.appendLangParameter(response.esportazione);
+        if (response.infoEsportazione) {
+          this.infoEsportazione = response.infoEsportazione;
+          this.esportazioneUrl = REST_URL + response.infoEsportazione.uri + app.appendLangParameter(response.infoEsportazione.uri);
         } else {
           this.esportazioneUrl = '';
         }
@@ -34166,6 +34171,7 @@ Polymer.AppLocalizeBehavior = {
             document.body.removeChild(e.currentTarget);
           });
           lap.qta = listaId.length;
+          lap.isExport = false;
           lap.template = this.infoCancellazione;
           document.body.appendChild(lap);
         } else {
@@ -34218,27 +34224,54 @@ Polymer.AppLocalizeBehavior = {
         }
         if((listaId.length > 0 && listaId.length <= this.maxSelections) ||
           (listaId.length == 0 && this.numResults > 0 && this.numResults <= this.maxSelections)) {
-          this.$$('#resultsBox').resetSelection();
+          if(this.infoEsportazione.sezioni && this.infoEsportazione.sezioni[0].fields.length != 0) {
+            var lap = document.createElement('link-alert-panel');
+            lap.addEventListener('action-export', function request(e) {
+              e.currentTarget.removeEventListener('action-export', request);
+              var params = e.detail.fields;
+              params['ids'] = listaId;
+              this._doExportCall(params);
 
-          var params = {};
-          var sbox = this.$$('#searchbox');
-          if(sbox.isSimpleQuery.active) {
-            params['simpleSearch'] = sbox.isSimpleQuery.value;
+            }.bind(this));
+            lap.addEventListener('iron-overlay-closed', function closing(e) {
+              e.currentTarget.removeEventListener('iron-overlay-closed', closing);
+              document.body.removeChild(e.currentTarget);
+            });
+            lap.qta = listaId.length;
+            lap.isExport = true;
+            lap.template = this.infoEsportazione;
+            document.body.appendChild(lap);
           } else {
-            params = sbox.serialization_fields();
+            var params = {};
+            params['ids'] = listaId;
+            this._doExportCall(params);
           }
-          params['ids'] = listaId;
-
-          this.$.esportaDati.body = JSON.stringify(params);
-          this.$.esportaDati.url = this.esportazioneUrl;
-
-          this.$.esportaDati.contentType = 'application/json';
-
-          app.showSpinner();
-          this.$.esportaDati.generateRequest();
         } else {
           app.showPaperToast(this.localize('exportSogliaSuperata'), 'error');
         }
+      },
+
+      _doExportCall: function(params){
+        this.$$('#resultsBox').resetSelection();
+        var sbox = this.$$('#searchbox');
+        if(sbox.isSimpleQuery.active) {
+          params['simpleSearch'] = sbox.isSimpleQuery.value;
+        } else {
+          var sbox_params = sbox.serialization_fields();
+          for (var f in sbox_params) {
+            if (sbox_params.hasOwnProperty(f)) {
+              params[f] = sbox_params[f];
+            }
+          }
+        }
+
+        this.$.esportaDati.body = JSON.stringify(params);
+        this.$.esportaDati.url = this.esportazioneUrl;
+
+        this.$.esportaDati.contentType = 'application/json';
+
+        app.showSpinner();
+        this.$.esportaDati.generateRequest();
       },
 
       esportaDati_responseHandler: function(event){
@@ -35953,7 +35986,7 @@ Polymer.AppLocalizeBehavior = {
 
     <iron-ajax id="getDetail" handle-as="json" on-response="getDetail_responseHandler" on-error="getDetail_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="downloadDati" url="[[downloadUrl]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="downloadDati_responseHandler" on-error="downloadDati_errorHandler" debounce-duration="300"></iron-ajax>
-    <iron-ajax id="esportaDati" url="[[uriEsportazione]]" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
+    <iron-ajax id="esportaDati" url="[[uriEsportazione]]" method="POST" handle-as="blob" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="esportaDati_responseHandler" on-error="esportaDati_errorHandler" debounce-duration="300"></iron-ajax>
     <iron-ajax id="elimina" url="[[uriCancellazione]]" method="POST" handle-as="json" headers="{&quot;Accept&quot;:&quot;*/*&quot;}" on-response="elimina_responseHandler" on-error="elimina_errorHandler" debounce-duration="300"></iron-ajax>
   </template>
   <script>
@@ -36011,6 +36044,10 @@ Polymer.AppLocalizeBehavior = {
           value: ''
         },
         infoCancellazione: {
+          type: Object,
+          value: null
+        },
+        infoEsportazione: {
           type: Object,
           value: null
         },
@@ -36077,7 +36114,11 @@ Polymer.AppLocalizeBehavior = {
 
       setUri: function(obj){
         if (obj){
-          this.uriEsportazione = (obj.esportazione)? REST_URL + obj.esportazione + app.appendLangParameter(obj.esportazione) : '';
+          this.uriEsportazione = '';
+          if(obj.infoEsportazione) {
+            this.infoEsportazione = obj.infoEsportazione;
+            this.uriEsportazione = (obj.infoEsportazione.uri)?REST_URL + obj.infoEsportazione.uri + app.appendLangParameter(obj.infoEsportazione.uri):'';
+          }
           this.uriCancellazione = '';
           if(obj.infoCancellazione) {
             this.infoCancellazione = obj.infoCancellazione;
@@ -36352,6 +36393,7 @@ Polymer.AppLocalizeBehavior = {
           e.currentTarget.removeEventListener('iron-overlay-closed', closing);
           document.body.removeChild(e.currentTarget);
         });
+        lap.isExport = false;
         lap.template = this.infoCancellazione;
         document.body.appendChild(lap);
       },
@@ -36387,8 +36429,29 @@ Polymer.AppLocalizeBehavior = {
       },
 
       export: function(event){
-        this.$.esportaDati.url = this.uriEsportazione;
+        if(this.infoEsportazione.sezioni && this.infoEsportazione.sezioni[0].fields.length != 0) {
+          var lap = document.createElement('link-alert-panel');
+          lap.addEventListener('action-export', function request(e) {
+            e.currentTarget.removeEventListener('action-export', request);
+            this._doExportCall(e.detail.fields);
+          }.bind(this));
+          lap.addEventListener('iron-overlay-closed', function closing(e) {
+            e.currentTarget.removeEventListener('iron-overlay-closed', closing);
+            document.body.removeChild(e.currentTarget);
+          });
+          lap.isExport = true;
+          lap.template = this.infoEsportazione;
+          document.body.appendChild(lap);
+        } else {
+          this._doExportCall(null);
+        }
+      },
 
+      _doExportCall: function(params){
+        if(params) {
+          this.$.esportaDati.body = JSON.stringify(params);
+        }
+        this.$.esportaDati.url = this.uriEsportazione;
         this.$.esportaDati.contentType = 'application/json';
         app.showSpinner();
         this.$.esportaDati.generateRequest();
@@ -38082,11 +38145,16 @@ event and do your own custom submission:
         <div class="ellipsis-text">[[_titlePanel(template.titolo)]]</div>
         <paper-icon-button class="icon-dismiss" icon="icons:clear" tabindex="-1" on-tap="closePanel"></paper-icon-button>
       </paper-toolbar>
-      <form is="iron-form" id="delForm">
+      <form is="iron-form" id="alertForm">
       </form>
     </paper-scroll-header-panel>
     <div class="footer">
-      <paper-button class="accentColor" on-tap="validate">[[localize('cancella')]]</paper-button>
+      <template is="dom-if" if="[[isExport]]">
+        <paper-button class="accentColor" on-tap="validate">[[localize('esporta')]]</paper-button>
+      </template>
+      <template is="dom-if" if="[[!isExport]]">
+        <paper-button class="accentColor" on-tap="validate">[[localize('cancella')]]</paper-button>
+      </template>
     </div>
 
   </template>
@@ -38125,6 +38193,9 @@ event and do your own custom submission:
           value: function() {
             return this;
           }
+        },
+        isExport: {
+          type: Boolean
         }
       },
 
@@ -38133,7 +38204,7 @@ event and do your own custom submission:
 
       build: function(template){
         if (template){
-          this.buildForm(template, this.$.delForm);
+          this.buildForm(template, this.$.alertForm);
           this.openPanel();
         }
       },
@@ -38153,15 +38224,15 @@ event and do your own custom submission:
       },
 
       validate: function(){
-        var ok = this.$.delForm.validate();
+        var ok = this.$.alertForm.validate();
         if (ok) {
-          this.fire('action-delete', { fields: this.serialization() });
+          this.fire((this.isExport)?'action-export':'action-delete', { fields: this.serialization() });
           this.closePanel();
         }
       },
 
       serialization: function() {
-        var temp = this.serializeForm(this.$.delForm);
+        var temp = this.serializeForm(this.$.alertForm);
         var ms = this.querySelectorAll('link-multi-select');
         for (var lb = 0; lb < ms.length; lb++) {
           temp[ms[lb].id] = ms[lb].selectedValues;

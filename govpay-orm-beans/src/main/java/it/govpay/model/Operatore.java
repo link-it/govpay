@@ -35,6 +35,7 @@ public class Operatore extends BasicModel implements IAutorizzato {
 	private ProfiloOperatore profilo;
 	private boolean abilitato;
 	private List<Acl> acls;
+	private List<String> ruoli;
 	
 	public Long getId() {
 		return id;
@@ -95,6 +96,12 @@ public class Operatore extends BasicModel implements IAutorizzato {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	public List<String> getRuoli() {
+		return ruoli;
+	}
+	public void setRuoli(List<String> ruoli) {
+		this.ruoli = ruoli;
 	}
 
 }

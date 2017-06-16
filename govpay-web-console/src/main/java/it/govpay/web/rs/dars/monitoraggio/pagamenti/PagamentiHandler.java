@@ -1410,30 +1410,30 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		InfoForm infoEsportazione = new InfoForm(esportazione);
 
 		List<String> titoli = new ArrayList<String>();
-		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportazione.singolo.titolo"));
-		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportazione.multiplo.titolo"));
+		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esporta.singolo.titolo"));
+		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esporta.multiplo.titolo"));
 		infoEsportazione.setTitolo(titoli);
 
 		String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
 		String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
 		String esportaRtId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.id");
 
-		if(this.infoRicercaMap == null){
+		if(this.infoEsportazioneMap == null){
 			this.initInfoEsportazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoEsportazione.getSezioneRoot();
 
-		CheckButton esportaCsv = (CheckButton) this.infoRicercaMap.get(esportaCsvId);
+		CheckButton esportaCsv = (CheckButton) this.infoEsportazioneMap.get(esportaCsvId);
 		esportaCsv.setDefaultValue(true); 
 		sezioneRoot.addField(esportaCsv);
 
-		CheckButton esportaPdf = (CheckButton) this.infoRicercaMap.get(esportaPdfId);
-		esportaPdf.setDefaultValue(true); 
+		CheckButton esportaPdf = (CheckButton) this.infoEsportazioneMap.get(esportaPdfId);
+		esportaPdf.setDefaultValue(false); 
 		sezioneRoot.addField(esportaPdf);
 
-		CheckButton esportaRt = (CheckButton) this.infoRicercaMap.get(esportaRtId);
-		esportaRt.setDefaultValue(true); 
+		CheckButton esportaRt = (CheckButton) this.infoEsportazioneMap.get(esportaRtId);
+		esportaRt.setDefaultValue(false); 
 		sezioneRoot.addField(esportaRt);
 
 		return infoEsportazione; 
@@ -1445,37 +1445,37 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 		InfoForm infoEsportazione = new InfoForm(esportazione);
 
 		List<String> titoli = new ArrayList<String>();
-		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportazione.singolo.titolo"));
+		titoli.add(Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esporta.singolo.titolo"));
 		infoEsportazione.setTitolo(titoli);
 
 		String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
 		String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
 		String esportaRtId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.id");
 
-		if(this.infoRicercaMap == null){
+		if(this.infoEsportazioneMap == null){
 			this.initInfoEsportazione(uriInfo, bd);
 		}
 
 		Sezione sezioneRoot = infoEsportazione.getSezioneRoot();
 
-		CheckButton esportaCsv = (CheckButton) this.infoRicercaMap.get(esportaCsvId);
+		CheckButton esportaCsv = (CheckButton) this.infoEsportazioneMap.get(esportaCsvId);
 		esportaCsv.setDefaultValue(true); 
 		sezioneRoot.addField(esportaCsv);
 
-		CheckButton esportaPdf = (CheckButton) this.infoRicercaMap.get(esportaPdfId);
-		esportaPdf.setDefaultValue(true); 
+		CheckButton esportaPdf = (CheckButton) this.infoEsportazioneMap.get(esportaPdfId);
+		esportaPdf.setDefaultValue(false); 
 		sezioneRoot.addField(esportaPdf);
 
-		CheckButton esportaRt = (CheckButton) this.infoRicercaMap.get(esportaRtId);
-		esportaRt.setDefaultValue(true); 
+		CheckButton esportaRt = (CheckButton) this.infoEsportazioneMap.get(esportaRtId);
+		esportaRt.setDefaultValue(false); 
 		sezioneRoot.addField(esportaRt);
 
 		return infoEsportazione;	
 	}
 
 	private void initInfoEsportazione(UriInfo uriInfo, BasicBD bd) throws ConsoleException{
-		if(this.infoRicercaMap == null){
-			this.infoRicercaMap = new HashMap<String, ParamField<?>>();
+		if(this.infoEsportazioneMap == null){
+			this.infoEsportazioneMap = new HashMap<String, ParamField<?>>();
 
 			String esportaCsvId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.id");
 			String esportaPdfId = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.id");
@@ -1484,17 +1484,17 @@ public class PagamentiHandler extends DarsHandler<Pagamento> implements IDarsHan
 			// esportaCsv
 			String esportaCsvLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaCsv.label");
 			CheckButton esportaCsv = new CheckButton(esportaCsvId, esportaCsvLabel, true, false, false, true);
-			this.infoCreazioneMap.put(esportaCsvId, esportaCsv);
+			this.infoEsportazioneMap.put(esportaCsvId, esportaCsv);
 
 			// esportaPdf
 			String esportaPdfLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaPdf.label");
 			CheckButton esportaPdf = new CheckButton(esportaPdfId, esportaPdfLabel, true, false, false, true);
-			this.infoCreazioneMap.put(esportaPdfId, esportaPdf);
+			this.infoEsportazioneMap.put(esportaPdfId, esportaPdf);
 
 			// esportaRt
 			String esportaRtLabel = Utils.getInstance(this.getLanguage()).getMessageFromResourceBundle(this.nomeServizio + ".esportaRt.label");
 			CheckButton esportaRt = new CheckButton(esportaRtId, esportaRtLabel, true, false, false, true);
-			this.infoCreazioneMap.put(esportaRtId, esportaRt);
+			this.infoEsportazioneMap.put(esportaRtId, esportaRt);
 		}
 	}
 
