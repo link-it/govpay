@@ -7,7 +7,7 @@ public class Operazione {
 	}
 	
 	public enum TipoOperazioneType {
-		ADD, DEL, N_A
+		ADD, DEL, N_V
 	}
 	
 	private long id;

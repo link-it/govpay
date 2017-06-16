@@ -74,7 +74,8 @@ public class TracciatoFilter extends AbstractFilter {
 			boolean addAnd = false;
 			
 			if(this.statoTracciato != null && !this.statoTracciato.isEmpty()) {
-				newExpression.in(it.govpay.orm.Tracciato.model().STATO, this.statoTracciato);
+				List<it.govpay.orm.constants.StatoTracciatoType> statoTracciatoOrm  = toStatoTracciatoOrm(this.statoTracciato);
+				newExpression.in(it.govpay.orm.Tracciato.model().STATO, statoTracciatoOrm);
 				addAnd = true;
 			}
 			
@@ -107,6 +108,20 @@ public class TracciatoFilter extends AbstractFilter {
 		} catch (ExpressionException e) {
 			throw new ServiceException(e);
 		}
+	}
+
+	/**
+	 * @param statoTracciato2
+	 * @return
+	 */
+	private List<it.govpay.orm.constants.StatoTracciatoType> toStatoTracciatoOrm(
+			List<StatoTracciatoType> statoTracciato) {
+		if(statoTracciato == null) return null;
+		List<it.govpay.orm.constants.StatoTracciatoType> lst = new ArrayList<it.govpay.orm.constants.StatoTracciatoType>();
+		for(StatoTracciatoType stato: statoTracciato) {
+			lst.add(it.govpay.orm.constants.StatoTracciatoType.valueOf(stato.name()));
+		}
+		return lst;
 	}
 
 	public void addSortField(SortFields field, boolean asc) {

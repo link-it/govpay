@@ -10,6 +10,7 @@ import it.govpay.core.loader.timers.model.AbstractOperazioneResponse;
 import it.govpay.core.loader.timers.model.AnnullamentoRequest;
 import it.govpay.core.loader.timers.model.CaricamentoRequest;
 import it.govpay.core.loader.timers.model.OperazioneNonValidaRequest;
+import it.govpay.model.Applicazione;
 import it.govpay.model.loader.Operazione.StatoOperazioneType;
 
 import java.util.List;
@@ -46,7 +47,12 @@ public class TimerCaricamentoTracciatoCore implements Callable<Integer> {
 					operazione.setCodVersamentoEnte(request.getCodVersamentoEnte());
 					operazione.setDatiRichiesta(linea);
 					operazione.setStato(StatoOperazioneType.NON_VALIDO);
-					operazione.setIdApplicazione(AnagraficaManager.getApplicazione(bd, request.getCodApplicazione()).getId());
+					if(request.getCodApplicazione() != null) {
+						Applicazione applicazione = AnagraficaManager.getApplicazione(bd, request.getCodApplicazione());
+						if(applicazione != null) {
+							operazione.setIdApplicazione(applicazione.getId());
+						}
+					}
 					operazione.setIdTracciato(request.getIdTracciato());
 					operazione.setLineaElaborazione(request.getLinea());
 					operazione.setTipoOperazione(request.getTipoOperazione());
